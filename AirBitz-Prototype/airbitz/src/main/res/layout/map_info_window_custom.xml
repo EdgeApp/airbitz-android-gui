@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingBottom="16dp"
+        android:id="@+id/balloon_layout"
+        android:background="@drawable/bg_balloon_info">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/background_image"
+                android:layout_width="170dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/infoLayout"
+            android:weightSum="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/padding_layout"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Location"
+                android:textStyle="bold"
+                android:id="@+id/titleYourLocation"
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:visibility="gone"
+                />
+
+            <LinearLayout
+                android:layout_width="170dp"
+                android:layout_height="90dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                android:background="@drawable/gradient_background_map_info"
+                android:id="@+id/shadow_layout">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/addressInfo"
+                    android:text="TITLE"
+                    android:inputType="textNoSuggestions"
+                    android:textStyle="bold"
+                    android:id="@+id/titleInfo"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="3"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="ADDRESS"
+                    android:inputType="textNoSuggestions"
+                    android:id="@+id/addressInfo"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="3" />
+            </LinearLayout>
+        </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
