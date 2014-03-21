@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.airbitz.activities.LandingActivity" >
+    
+   <!-- <item android:id="@+id/action_settings"
+        android:icon="@drawable/ico_tab_directory"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+-->
+
+    <item android:id="@+id/action_directory"
+    android:icon="@drawable/ico_tab_directory"
+        android:showAsAction="always"/>
+
+    <item android:id="@+id/action_request"
+        android:icon="@drawable/ico_tab_request"
+        android:showAsAction="always"/>
+
+    <item android:id="@+id/action_send"
+        android:icon="@drawable/ico_tab_send"
+        android:showAsAction="always"/>
+
+    <item android:id="@+id/action_wallet"
+        android:icon="@drawable/ico_tab_wallet"
+        android:showAsAction="always"/>
+
+    <item android:id="@+id/action_setting"
+        android:icon="@drawable/ico_tab_settings"
+        android:showAsAction="always"/>
+
+
+</menu>

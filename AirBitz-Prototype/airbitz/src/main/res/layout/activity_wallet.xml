@@ -1,0 +1,1901 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_header"
+        android:background="#40000000"
+        android:padding="4dp">
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/button_add"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_add"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wallets"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:textSize="20dp"/>
+
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:id="@+id/button_help"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_padding"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:background="@drawable/bg_tab_bar"
+            android:id="@+id/directory_button"
+            android:src="@drawable/ico_tab_directory"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/layout_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
+        android:layout_above="@id/bottom_padding"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textview_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTAL BALANCE"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_balance"
+                android:layout_below="@id/textview_balance"
+                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp">
+
+                <Button
+                    android:id="@+id/button_bitcoinbalance"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="120.015"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="15dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textSize="22dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_green"
+                    android:drawableLeft="@drawable/ico_coin_btc"
+                    android:drawableRight="@drawable/ico_btc"/>
+
+                <Button
+                    android:id="@+id/button_dollarbalance"
+                    android:layout_below="@id/button_bitcoinbalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1050.67"
+                    android:layout_centerHorizontal="true"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="15dp"
+                    android:textSize="22dp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ico_coin_usd"
+                    android:drawableRight="@drawable/ico_usd"/>
+            </RelativeLayout>
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:background="#AAAAAA"-->
+            <!--android:layout_below="@id/layout_balance"-->
+            <!--android:id="@+id/latest_list_view_scroll">-->
+
+            <!--<ListView-->
+            <!--android:layout_margin="1dp"-->
+            <!--android:id="@+id/listview_latest"-->
+            <!--android:layout_below="@id/layout_balance"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <!--<LinearLayout-->
+            <!--android:id="@+id/layout_latest"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/layout_balance">-->
+
+            <!--<ListView-->
+            <!--android:layout_margin="11dp"-->
+            <!--android:id="@+id/listview_latest"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<ListView-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:id="@+id/listview_latest"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <ListView
+                android:layout_margin="11dp"
+                android:id="@+id/listview_latest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#addff1">
+            </ListView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/listview_latest"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/textview_archive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ARCHIVE"
+                    android:layout_centerVertical="true"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="5dp"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:layout_toRightOf="@id/textview_archive"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/drop_up"/>
+
+                </RelativeLayout>
+
+
+
+            <!--<TextView-->
+            <!--android:id="@+id/textview_archive"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ARCHIVE"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_below="@id/layout_latest"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:textSize="20dp" />-->
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/layout_archived"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="180dp"-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:layout_below="@id/textview_archive"-->
+                <!--android:background="@drawable/rounded_edge_blue">-->
+
+                <ListView
+                    android:id="@+id/listview_archive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="11dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                </ListView>
+
+
+            <!--</RelativeLayout>-->
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navigation_layout"
+        android:layout_alignParentBottom="true">
+        <fragment
+            android:id="@+id/navigation_fragment"
+            android:name="com.airbitz.fragments.NavigationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+
+    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/layout_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/bg_app">-->
+
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/layout_header"-->
+    <!--android:background="#40000000"-->
+    <!--android:padding="4dp">-->
+
+    <!--<ImageButton-->
+    <!--android:layout_width="26dp"-->
+    <!--android:layout_height="26dp"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:id="@+id/button_add"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:src="@drawable/btn_add"-->
+    <!--android:layout_margin="5dp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Wallets"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:textSize="20dp"/>-->
+
+
+    <!--<ImageButton-->
+    <!--android:layout_width="26dp"-->
+    <!--android:layout_height="26dp"-->
+    <!--android:id="@+id/button_help"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:src="@drawable/btn_help"-->
+    <!--android:layout_margin="5dp"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/bottom_padding"-->
+    <!--android:layout_alignParentBottom="true">-->
+    <!--<ImageButton-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:padding="15dp"-->
+    <!--android:background="@drawable/bg_tab_bar"-->
+    <!--android:id="@+id/directory_button"-->
+    <!--android:src="@drawable/ico_tab_directory"-->
+    <!--android:layout_weight="1"-->
+    <!--android:visibility="invisible"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+    <!--<ScrollView-->
+    <!--android:id="@+id/layout_scroll"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:layout_below="@id/layout_header"-->
+    <!--android:layout_above="@id/bottom_padding"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp">-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_balance"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="TOTAL BALANCE"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_margin="15dp"-->
+    <!--android:textSize="20dp" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/layout_balance"-->
+    <!--android:layout_below="@id/textview_balance"-->
+    <!--android:background="@drawable/rounded_edge_black_transparent_30"-->
+    <!--android:layout_marginTop="7dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_marginBottom="20dp">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/button_bitcoinbalance"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="120.015"-->
+    <!--android:paddingLeft="15dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textSize="22dp"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:background="@drawable/btn_green"-->
+    <!--android:drawableLeft="@drawable/ico_coin_btc"-->
+    <!--android:drawableRight="@drawable/ico_btc"/>-->
+
+    <!--<Button-->
+    <!--android:id="@+id/button_dollarbalance"-->
+    <!--android:layout_below="@id/button_bitcoinbalance"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="1050.67"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:paddingLeft="15dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:textSize="22dp"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:gravity="center"-->
+    <!--android:drawableLeft="@drawable/ico_coin_usd"-->
+    <!--android:drawableRight="@drawable/ico_usd"/>-->
+    <!--</RelativeLayout>-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_latest"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_below="@id/layout_balance">-->
+
+    <!--<ListView-->
+    <!--android:layout_margin="11dp"-->
+    <!--android:id="@+id/listview_latest"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#addff1">-->
+    <!--</ListView>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_archive"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="ARCHIVE"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_below="@id/layout_latest"-->
+    <!--android:layout_margin="5dp"-->
+    <!--android:textSize="20dp" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/layout_archived"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="180dp"-->
+    <!--android:layout_margin="11dp"-->
+    <!--android:layout_below="@id/textview_archive"-->
+    <!--android:background="@drawable/rounded_edge_blue">-->
+
+    <!--<ListView-->
+    <!--android:id="@+id/listview_archive"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--</ListView>-->
+
+
+    <!--</RelativeLayout>-->
+
+
+
+    <!--</RelativeLayout>-->
+
+    <!--</ScrollView>-->
+
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/navigation_layout"-->
+    <!--android:layout_alignParentBottom="true">-->
+    <!--<fragment-->
+    <!--android:id="@+id/navigation_fragment"-->
+    <!--android:name="com.airbitz.fragments.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+
+    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/layout_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/bg_app">-->
+
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/layout_header"-->
+    <!--android:background="#40000000"-->
+    <!--android:padding="4dp">-->
+
+    <!--<ImageButton-->
+    <!--android:layout_width="26dp"-->
+    <!--android:layout_height="26dp"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:id="@+id/button_add"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:src="@drawable/btn_add"-->
+    <!--android:layout_margin="5dp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Wallets"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:textSize="20dp"/>-->
+
+
+    <!--<ImageButton-->
+    <!--android:layout_width="26dp"-->
+    <!--android:layout_height="26dp"-->
+    <!--android:id="@+id/button_help"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:src="@drawable/btn_help"-->
+    <!--android:layout_margin="5dp"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/bottom_padding"-->
+    <!--android:layout_alignParentBottom="true">-->
+    <!--<ImageButton-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:padding="15dp"-->
+    <!--android:background="@drawable/bg_tab_bar"-->
+    <!--android:id="@+id/directory_button"-->
+    <!--android:src="@drawable/ico_tab_directory"-->
+    <!--android:layout_weight="1"-->
+    <!--android:visibility="invisible"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+    <!--<ScrollView-->
+    <!--android:id="@+id/layout_scroll"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:layout_below="@id/layout_header"-->
+    <!--android:layout_above="@id/bottom_padding"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp">-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_balance"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="TOTAL BALANCE"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_margin="15dp"-->
+    <!--android:textSize="20dp" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/layout_balance"-->
+    <!--android:layout_below="@id/textview_balance"-->
+    <!--android:background="@drawable/rounded_edge_black_transparent_30"-->
+    <!--android:layout_marginTop="7dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_marginBottom="20dp">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/button_bitcoinbalance"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="120.015"-->
+    <!--android:paddingLeft="15dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textSize="22dp"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:background="@drawable/btn_green"-->
+    <!--android:drawableLeft="@drawable/ico_coin_btc"-->
+    <!--android:drawableRight="@drawable/ico_btc"/>-->
+
+    <!--<Button-->
+    <!--android:id="@+id/button_dollarbalance"-->
+    <!--android:layout_below="@id/button_bitcoinbalance"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="1050.67"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:paddingLeft="15dp"-->
+    <!--android:paddingTop="10dp"-->
+    <!--android:paddingBottom="10dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:textSize="22dp"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--android:gravity="center"-->
+    <!--android:drawableLeft="@drawable/ico_coin_usd"-->
+    <!--android:drawableRight="@drawable/ico_usd"/>-->
+    <!--</RelativeLayout>-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout_latest"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_below="@id/layout_balance">-->
+
+    <!--<ListView-->
+    <!--android:layout_margin="11dp"-->
+    <!--android:id="@+id/listview_latest"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#addff1">-->
+    <!--</ListView>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textview_archive"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="ARCHIVE"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_below="@id/layout_latest"-->
+    <!--android:layout_margin="5dp"-->
+    <!--android:textSize="20dp" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/layout_archived"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="180dp"-->
+    <!--android:layout_margin="11dp"-->
+    <!--android:layout_below="@id/textview_archive"-->
+    <!--android:background="@drawable/rounded_edge_blue">-->
+
+    <!--<ListView-->
+    <!--android:id="@+id/listview_archive"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--</ListView>-->
+
+
+    <!--</RelativeLayout>-->
+
+
+
+    <!--</RelativeLayout>-->
+
+    <!--</ScrollView>-->
+
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/navigation_layout"-->
+    <!--android:layout_alignParentBottom="true">-->
+    <!--<fragment-->
+    <!--android:id="@+id/navigation_fragment"-->
+    <!--android:name="com.airbitz.fragments.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
+
+
+    <!--&lt;!&ndash;<?xml version="1.0" encoding="utf-8"?>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/bg_app">&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_header"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#40000000"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:padding="4dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_add"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/btn_add"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_title"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="Wallets"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp"/>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_help"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/btn_help"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/bottom_padding"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:padding="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/bg_tab_bar"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/directory_button"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/ico_tab_directory"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:visibility="invisible"&ndash;&gt;-->
+    <!--&lt;!&ndash;/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ScrollView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_scroll"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="fill_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_header"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_above="@id/bottom_padding"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginRight="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="TOTAL BALANCE"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/textview_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/rounded_edge_black_transparent_30"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginTop="7dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginBottom="20dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_bitcoinbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentTop="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="120.015"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/btn_green"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_btc"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_btc"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_dollarbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/button_bitcoinbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="1050.67"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/black"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_usd"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_usd"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:background="#addff1">&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="ARCHIVE"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_archived"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="180dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/textview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/rounded_edge_blue">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</ScrollView>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/navigation_layout"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;<fragment&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/navigation_fragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:name="com.airbitz.fragments.NavigationFragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/layout_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/bg_app">-->
+
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/layout_header"-->
+        <!--android:background="#40000000"-->
+        <!--android:padding="4dp">-->
+
+        <!--<ImageButton-->
+            <!--android:layout_width="26dp"-->
+            <!--android:layout_height="26dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:id="@+id/button_add"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:src="@drawable/btn_add"-->
+            <!--android:layout_margin="5dp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/textview_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Wallets"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:textSize="20dp"/>-->
+
+
+        <!--<ImageButton-->
+            <!--android:layout_width="26dp"-->
+            <!--android:layout_height="26dp"-->
+            <!--android:id="@+id/button_help"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:src="@drawable/btn_help"-->
+            <!--android:layout_margin="5dp"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/bottom_padding"-->
+        <!--android:layout_alignParentBottom="true">-->
+        <!--<ImageButton-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:padding="15dp"-->
+            <!--android:background="@drawable/bg_tab_bar"-->
+            <!--android:id="@+id/directory_button"-->
+            <!--android:src="@drawable/ico_tab_directory"-->
+            <!--android:layout_weight="1"-->
+            <!--android:visibility="invisible"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
+
+    <!--<ScrollView-->
+        <!--android:id="@+id/layout_scroll"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_below="@id/layout_header"-->
+        <!--android:layout_above="@id/bottom_padding"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:paddingTop="10dp"-->
+        <!--android:paddingBottom="10dp">-->
+
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/textview_balance"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="TOTAL BALANCE"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_margin="15dp"-->
+                <!--android:textSize="20dp" />-->
+
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/layout_balance"-->
+                <!--android:layout_below="@id/textview_balance"-->
+                <!--android:background="@drawable/rounded_edge_black_transparent_30"-->
+                <!--android:layout_marginTop="7dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginBottom="20dp">-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/button_bitcoinbalance"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="120.015"-->
+                    <!--android:paddingLeft="15dp"-->
+                    <!--android:paddingTop="10dp"-->
+                    <!--android:paddingBottom="10dp"-->
+                    <!--android:paddingRight="15dp"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:textSize="22dp"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:background="@drawable/btn_green"-->
+                    <!--android:drawableLeft="@drawable/ico_coin_btc"-->
+                    <!--android:drawableRight="@drawable/ico_btc"/>-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/button_dollarbalance"-->
+                    <!--android:layout_below="@id/button_bitcoinbalance"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="1050.67"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:paddingLeft="15dp"-->
+                    <!--android:paddingTop="10dp"-->
+                    <!--android:paddingBottom="10dp"-->
+                    <!--android:paddingRight="15dp"-->
+                    <!--android:textSize="22dp"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:background="@android:color/transparent"-->
+                    <!--android:gravity="center"-->
+                    <!--android:drawableLeft="@drawable/ico_coin_usd"-->
+                    <!--android:drawableRight="@drawable/ico_usd"/>-->
+            <!--</RelativeLayout>-->
+
+            <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+            <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/layout_latest"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/layout_balance">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+                <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+            <!--<ListView-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:id="@+id/listview_latest"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/textview_archive"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="ARCHIVE"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_below="@id/listview_latest"-->
+                <!--android:layout_margin="5dp"-->
+                <!--android:textSize="20dp" />-->
+
+            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/textview_archive"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="ARCHIVE"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/layout_latest"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/layout_archived"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="180dp"-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:layout_below="@id/textview_archive"-->
+                <!--android:background="@drawable/rounded_edge_blue">-->
+
+                <!--<ListView-->
+                    <!--android:id="@+id/listview_archive"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                <!--</ListView>-->
+
+
+            <!--</RelativeLayout>-->
+
+
+
+        <!--</LinearLayout>-->
+
+    <!--</ScrollView>-->
+
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/navigation_layout"-->
+        <!--android:layout_alignParentBottom="true">-->
+        <!--<fragment-->
+            <!--android:id="@+id/navigation_fragment"-->
+            <!--android:name="com.airbitz.fragments.NavigationFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
+
+<!--</RelativeLayout>-->
+
+
+    <!--&lt;!&ndash;<?xml version="1.0" encoding="utf-8"?>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/bg_app">&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_header"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#40000000"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:padding="4dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_add"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/btn_add"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_title"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="Wallets"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp"/>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_help"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/btn_help"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/bottom_padding"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:padding="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/bg_tab_bar"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/directory_button"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:src="@drawable/ico_tab_directory"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:visibility="invisible"&ndash;&gt;-->
+    <!--&lt;!&ndash;/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ScrollView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_scroll"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="fill_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_header"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_above="@id/bottom_padding"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginRight="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="TOTAL BALANCE"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/textview_balance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/rounded_edge_black_transparent_30"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginTop="7dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginBottom="20dp">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_bitcoinbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentTop="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="120.015"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/btn_green"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_btc"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_btc"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/button_dollarbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/button_bitcoinbalance"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="1050.67"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/black"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_usd"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_usd"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:background="#addff1">&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_balance">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/textview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="ARCHIVE"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/layout_latest"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_archived"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="180dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@id/textview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/rounded_edge_blue">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/listview_archive"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</ScrollView>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/navigation_layout"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+    <!--&lt;!&ndash;<fragment&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/navigation_fragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:name="com.airbitz.fragments.NavigationFragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+
+<!--&lt;!&ndash;<?xml version="1.0" encoding="utf-8"?>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/layout_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:background="@drawable/bg_app">&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/layout_header"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="#40000000"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:padding="4dp">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/button_add"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:src="@drawable/btn_add"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_margin="5dp" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/textview_title"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="Wallets"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textSize="20dp"/>&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/button_help"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:src="@drawable/btn_help"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_margin="5dp"/>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/bottom_padding"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:padding="15dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="@drawable/bg_tab_bar"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/directory_button"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:src="@drawable/ico_tab_directory"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:visibility="invisible"&ndash;&gt;-->
+            <!--&lt;!&ndash;/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;<ScrollView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/layout_scroll"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="fill_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_below="@id/layout_header"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_above="@id/bottom_padding"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginRight="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:paddingBottom="10dp">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent">&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/textview_balance"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="TOTAL BALANCE"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_margin="15dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/layout_balance"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/textview_balance"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:background="@drawable/rounded_edge_black_transparent_30"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginTop="7dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginBottom="20dp">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/button_bitcoinbalance"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_alignParentTop="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="120.015"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="@drawable/btn_green"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_btc"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_btc"/>&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/button_dollarbalance"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_below="@id/button_bitcoinbalance"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="1050.67"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textSize="22dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textColor="@android:color/black"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_usd"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:drawableRight="@drawable/ico_usd"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="#addff1">&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/layout_latest"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/layout_balance">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="#addff1">&ndash;&gt;-->
+                <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/textview_archive"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="ARCHIVE"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/layout_latest"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/layout_archived"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="180dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_below="@id/textview_archive"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:background="@drawable/rounded_edge_blue">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/listview_archive"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;</ListView>&ndash;&gt;-->
+
+
+            <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+
+        <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</ScrollView>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/navigation_layout"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<fragment&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/navigation_fragment"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:name="com.airbitz.fragments.NavigationFragment"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;&lt;!&ndash;<?xml version="1.0" encoding="utf-8"?>&ndash;&gt;&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:background="@drawable/bg_app">&ndash;&gt;&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_header"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:background="#40000000"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:padding="4dp">&ndash;&gt;&ndash;&gt;-->
+
+        <!--&lt;!&ndash;&lt;!&ndash;<ImageButton&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/button_add"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:src="@drawable/btn_add"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="5dp" />&ndash;&gt;&ndash;&gt;-->
+
+        <!--&lt;!&ndash;&lt;!&ndash;<TextView&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/textview_title"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:text="Wallets"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:textSize="20dp"/>&ndash;&gt;&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;&lt;!&ndash;<ImageButton&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="26dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="26dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/button_help"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:src="@drawable/btn_help"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="5dp"/>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/bottom_padding"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<ImageButton&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:padding="15dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="@drawable/bg_tab_bar"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/directory_button"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:src="@drawable/ico_tab_directory"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_weight="1"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:visibility="invisible"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;/>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;</LinearLayout>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<ScrollView&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_scroll"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="fill_parent"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_header"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_above="@id/bottom_padding"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginRight="5dp"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:paddingBottom="10dp">&ndash;&gt;&ndash;&gt;-->
+
+        <!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<TextView&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/textview_balance"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:text="TOTAL BALANCE"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="15dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;&ndash;&gt;-->
+
+        <!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_balance"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/textview_balance"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:background="@drawable/rounded_edge_black_transparent_30"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginTop="7dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_marginBottom="20dp">&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<Button&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/button_bitcoinbalance"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_alignParentTop="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:text="120.015"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textStyle="bold"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textSize="22dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:background="@drawable/btn_green"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_btc"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:drawableRight="@drawable/ico_btc"/>&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<Button&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/button_dollarbalance"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/button_bitcoinbalance"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:text="1050.67"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingLeft="15dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingTop="10dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingBottom="10dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:paddingRight="15dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textSize="22dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textColor="@android:color/black"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:gravity="center"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:drawableLeft="@drawable/ico_coin_usd"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:drawableRight="@drawable/ico_usd"/>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
+
+                <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_margin="10dp"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:background="#AAAAAA"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:id="@+id/latest_list_view_scroll">&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_margin="1dp"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;android:background="#addff1">&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<LinearLayout&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_latest"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_balance">&ndash;&gt;&ndash;&gt;-->
+
+                <!--&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_latest"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:background="#addff1">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;</LinearLayout>&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<TextView&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/textview_archive"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:text="ARCHIVE"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/layout_latest"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/layout_archived"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="180dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_margin="11dp"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:layout_below="@id/textview_archive"&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;android:background="@drawable/rounded_edge_blue">&ndash;&gt;&ndash;&gt;-->
+
+                <!--&lt;!&ndash;&lt;!&ndash;<ListView&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/listview_archive"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;&ndash;&gt;-->
+
+                <!--&lt;!&ndash;&lt;!&ndash;</ListView>&ndash;&gt;&ndash;&gt;-->
+
+
+            <!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
+
+
+
+        <!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;</ScrollView>&ndash;&gt;&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;&lt;!&ndash;<RelativeLayout&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/navigation_layout"&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;android:layout_alignParentBottom="true">&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<fragment&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/navigation_fragment"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:name="com.airbitz.fragments.NavigationFragment"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="wrap_content" />&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash;</RelativeLayout>&ndash;&gt;&ndash;&gt;-->
