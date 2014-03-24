@@ -42,7 +42,7 @@ public class AirbitzAPI {
 
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
-    private static final String SERVER_ROOT = "http://api.airbitz.co:80/";
+    private static final String SERVER_ROOT = "https://api.airbitz.co/";
     private static final String API_PATH = SERVER_ROOT + "api/v1/";
     private static final String API_SEARCH = API_PATH + "search/";
     private static final String API_BUSINESS = API_PATH + "business/";
