@@ -22,6 +22,10 @@ public class Common {
     public static final String TAG = Common.class.getSimpleName();
     public static final String UNAVAILABLE = "unavailable";
 
+    public static double metersToMiles(double meters) {
+        return meters * (1.0 / 1609.344);
+    }
+
     public static void showHelpInfoDialog(Activity act, String title, String message){
         final Dialog dialog = new Dialog(act);
         dialog.setContentView(R.layout.dialog_help_info);

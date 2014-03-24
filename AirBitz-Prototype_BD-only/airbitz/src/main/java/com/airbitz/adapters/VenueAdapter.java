@@ -16,6 +16,7 @@ import com.airbitz.activities.BusinessDirectoryActivity;
 import com.airbitz.fragments.VenueFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.tasks.GetImageTask;
+import com.airbitz.utils.Common;
 
 import java.util.List;
 
@@ -90,19 +91,19 @@ public class VenueAdapter extends BaseAdapter {
 
         try{
             double distance = Double.parseDouble(mVenues.get(position).getDistance());
-            if(distance<1){
+            distance = Common.metersToMiles(distance);
+            if (distance < 1.0){
                 distance = Math.ceil(distance*10)/10;
                 String distanceString = ""+distance;
                 distanceString = distanceString.substring(1,distanceString.length());
                 distanceTextView.setText(distanceString+" miles");
-            } else if(distance>=1000){
+            } else if (distance >= 1000){
                 int distanceInInt = (int) distance;
                 distanceTextView.setText(String.valueOf(distanceInInt)+" miles");
             } else {
                 distance = Math.ceil(distance*10)/10;
                 distanceTextView.setText(String.valueOf(distance)+" miles");
             }
-
         } catch (Exception e){
             distanceTextView.setText("-");
             e.printStackTrace();
