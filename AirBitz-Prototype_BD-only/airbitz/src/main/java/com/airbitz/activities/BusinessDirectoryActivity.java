@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -192,6 +193,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<String>();
 
+        Log.d("TAG_LOC", "CUR LOC: ");
 
         mRestaurantButton = (Button) findViewById(R.id.button_restaurant);
         mBarButton = (Button) findViewById(R.id.button_bar);
@@ -970,6 +972,8 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                     mProgressDialog.dismiss();
                 }
                 mCurrentLocation = location;
+
+                Log.d("TAG_LOC","CUR LOC: "+mCurrentLocation.getLatitude()+"; "+mCurrentLocation.getLongitude());
                 clearSharedPreference();
                 writeLatLonToSharedPreference();
             }

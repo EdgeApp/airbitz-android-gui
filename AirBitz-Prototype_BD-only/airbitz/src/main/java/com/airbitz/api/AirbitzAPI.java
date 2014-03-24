@@ -39,7 +39,6 @@ public class AirbitzAPI {
 
     private static AirbitzAPI mInstance = null;
 
-
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
     private static final String SERVER_ROOT = "https://api.airbitz.co/";
@@ -66,32 +65,6 @@ public class AirbitzAPI {
         return SERVER_ROOT;
     }
 
-//    private String getRequest(String url, String params){
-//        HttpClient client = new DefaultHttpClient();
-//        HttpGet request = new HttpGet(url + params);
-//
-//        try{
-//            HttpResponse response = client.execute(request);
-//            if(response != null){
-//                try {
-//                    HttpEntity entity = response.getEntity();
-//                    //System.out.print("Test" + Common.convertStreamToString(entity.getContent()));
-//                    return Common.convertStreamToString(entity.getContent());
-//                }catch(IllegalStateException e){
-//                    e.printStackTrace();
-//                }catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }catch(ClientProtocolException e){
-//            e.printStackTrace();
-//        }catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
-
     public String getRequest(String url){
         return getRequest(url,"");
     }
@@ -99,6 +72,7 @@ public class AirbitzAPI {
     public static String getRequest(String url, String params) {
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
+        Log.d(TAG, url + params.toString());
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet();
@@ -107,9 +81,6 @@ public class AirbitzAPI {
             httpGet.setURI(uri);
             String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
             httpGet.addHeader("Authorization", "Token " + token + "");
-//            httpGet.addHeader(BasicScheme.authenticate(
-//                    new UsernamePasswordCredentials("user", "password"),
-//                    HTTP.UTF_8, false));
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
             InputStream inputStream = httpResponse.getEntity().getContent();
@@ -134,36 +105,6 @@ public class AirbitzAPI {
         }
         return stringBuffer.toString();
     }
-
-    private Object postResponse(String url, List<NameValuePair> params){
-        HttpClient client = new DefaultHttpClient();
-        HttpPost request = new HttpPost(url);
-        HttpResponse response = null;
-
-        try{
-            request.setEntity(new UrlEncodedFormEntity(params));
-            Log.v(TAG, request.toString());
-            response = client.execute(request);
-        }catch(ClientProtocolException e){
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (response != null){
-            try {
-                Log.d(TAG, response.getEntity().getContent().toString());
-                return Common.convertStreamToString(response.getEntity().getContent());
-            } catch(IllegalStateException e){
-                e.printStackTrace();
-            } catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-
-        return null;
-    }
-
 
     public static String createURLParams(List<NameValuePair> params){
         String result = "";

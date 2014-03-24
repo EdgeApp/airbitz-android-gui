@@ -633,7 +633,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             mLocateMeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("TAG LOC","CUR LOC: "+mCurrentLocation.getLatitude()+"; "+mCurrentLocation.getLongitude());
+                    Log.d("TAG_LOC","CUR LOC: "+mCurrentLocation.getLatitude()+"; "+mCurrentLocation.getLongitude());
 
                     LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
 

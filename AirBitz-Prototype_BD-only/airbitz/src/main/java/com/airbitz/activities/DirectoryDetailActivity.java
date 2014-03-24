@@ -96,12 +96,13 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         double businessDistance = 0;
         try{
             businessDistance = Double.parseDouble(getIntent().getExtras().getString("bizDistance"));
-            if(businessDistance<1){
+            businessDistance = Common.metersToMiles(businessDistance);
+            if (businessDistance<1){
                 businessDistance = Math.ceil(businessDistance*10)/10;
                 String distanceString = ""+businessDistance;
                 distanceString = distanceString.substring(1,distanceString.length());
                 mDistanceTextView.setText(distanceString+" miles");
-            } else if(businessDistance>=1000){
+            } else if (businessDistance >= 1000) {
                 int distanceInInt = (int) businessDistance;
                 mDistanceTextView.setText(String.valueOf(distanceInInt)+" miles");
             }else {
