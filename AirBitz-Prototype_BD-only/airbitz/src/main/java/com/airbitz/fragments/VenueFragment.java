@@ -2,7 +2,6 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -444,23 +443,23 @@ public class VenueFragment extends Fragment implements
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
-        ProgressDialog mProgressDialog;
+//        ProgressDialog mProgressDialog;
 
         public GetRemainingFirstVenuesTask(Context context) {
             mContext = context;
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting more venues list...");
-            mProgressDialog.setIndeterminate(true);
-            // mProgressDialog.setCancelable(false);
-            if (mIsInBusinessDirectory) {
-                mProgressDialog.show();
-            } else {
-                mProgressDialog.show();
-            }
+//            mProgressDialog = new ProgressDialog(mContext);
+//            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            mProgressDialog.setMessage("Getting more venues list...");
+//            mProgressDialog.setIndeterminate(true);
+//            // mProgressDialog.setCancelable(false);
+//            if (mIsInBusinessDirectory) {
+//                mProgressDialog.show();
+//            } else {
+//                mProgressDialog.show();
+//            }
         }
 
         @Override protected List<BusinessSearchResult> doInBackground(String... params) {
@@ -468,7 +467,7 @@ public class VenueFragment extends Fragment implements
         }
 
         @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
+//            mProgressDialog.dismiss();
             mNoResultView.setVisibility(View.VISIBLE);
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
@@ -483,7 +482,7 @@ public class VenueFragment extends Fragment implements
                 ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
 
             }
-            mProgressDialog.dismiss();
+//            mProgressDialog.dismiss();
         }
     }
 

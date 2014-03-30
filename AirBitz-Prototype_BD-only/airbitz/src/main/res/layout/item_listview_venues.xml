@@ -1,95 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:id="@+id/layout_item_business"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_selected_tab">
+    android:layout_height="112dp">
 
-    <RelativeLayout
-        android:id="@+id/mainLayout"
+    <ImageView
+        android:id="@+id/venueBackground"
         android:layout_width="match_parent"
-        android:layout_height="112dp">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_selected_tab" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentTop="true"
+        android:background="#88FFFFFF" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/bg_selected_tab"
-            android:scaleType="centerCrop"
-            android:id="@+id/venueBackground" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background"
+        android:orientation="vertical" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="@dimen/content_padding_half">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/gradient_background"/>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/textview_business_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:background="@android:color/transparent">
-
-
-            <TextView
-                android:id="@+id/textview_business_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Business Name"
-                android:shadowColor="#000000"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="6"
-                android:textColor="@android:color/white"
-                android:layout_above="@+id/textview_discount"
-                android:textSize="15dp"
-                android:layout_marginLeft="10dp"
-                android:paddingRight="10dp"
-                android:textStyle="bold"
-                android:layout_alignParentRight="true" />
-
-
-            <TextView
-                android:id="@+id/textview_discount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Type | BTC Discount %"
-                android:shadowColor="#000000"
-                android:shadowDx="3"
-                android:shadowDy="3"
-                android:shadowRadius="5"
-                android:textColor="@android:color/white"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:textSize="15dp"
-                android:layout_marginLeft="10dp"
-                android:paddingBottom="10dp"
-                android:paddingRight="10dp"
-                android:layout_alignParentRight="true" />
-
-            </LinearLayout>
+            android:paddingRight="10dp"
+            android:shadowColor="#000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="6"
+            android:text="Business Name"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_h4"
+            android:textStyle="bold" />
 
 
         <TextView
-            android:gravity="center"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:background="@drawable/bg_ribbon"
-            android:text=".45 miles"
-            android:textAlignment="center"
-            android:id="@+id/textview_distance"
+            android:id="@+id/textview_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/content_padding_quarter"
+            android:shadowColor="#000000"
+            android:shadowDx="3"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="Type | BTC Discount %"
             android:textColor="@android:color/white"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            android:textSize="@dimen/text_size_h4" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textview_distance"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg_ribbon"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:text=".45 miles"
+        android:textAlignment="center"
+        android:textColor="@android:color/white" />
 </RelativeLayout>

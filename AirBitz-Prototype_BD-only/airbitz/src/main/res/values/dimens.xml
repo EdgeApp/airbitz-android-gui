@@ -20,5 +20,8 @@
     <dimen name="text_size_small">10sp</dimen>
     <dimen name="text_size_normal">12sp</dimen>
     <dimen name="text_size_h1">20sp</dimen>
+    <dimen name="text_size_h2">18sp</dimen>
+    <dimen name="text_size_h3">16sp</dimen>
+    <dimen name="text_size_h4">14sp</dimen>
 
     </resources>
