@@ -9,4 +9,8 @@
     <dimen name="venue_list_full_height_275">112dp</dimen>
     <dimen name="venue_list_small_height_175">112dp</dimen>
 
+    <dimen name="content_padding">12dp</dimen>
+    <dimen name="content_padding_half">6dp</dimen>
+    <dimen name="content_padding_quarter">3dp</dimen>
+
     </resources>

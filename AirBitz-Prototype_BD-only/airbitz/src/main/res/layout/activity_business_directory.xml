@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.airbitz.activities.LandingActivity"
+    tools:context="com.airbitz.activities.BusinessDirectoryActivity"
     tools:ignore="MergeRootFrame"
     android:background="@drawable/bg_app">
 
