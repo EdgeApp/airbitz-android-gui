@@ -15,17 +15,3 @@
     </item>
 
 </layer-list>
-
-
-
-<!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
-
-    <!--<size android:height="3px" />-->
-
-    <!--<solid android:color="@color/gray_border" />-->
-
-    <!--<stroke-->
-        <!--android:color="#ddeef5"-->
-        <!--android:width="1px" />-->
-
-<!--</shape>-->
