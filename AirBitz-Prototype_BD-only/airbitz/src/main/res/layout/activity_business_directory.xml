@@ -93,7 +93,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:drawableLeft="@drawable/ico_restaurant"
-                                        android:text="Restaurant" />
+                                        android:text="@string/restaurant_and_food_trucks" />
 
                                     <Button
                                         android:id="@+id/button_bar"
@@ -103,7 +103,7 @@
                                         android:drawableLeft="@drawable/ico_bar"
                                         android:drawablePadding="28dp"
                                         android:paddingLeft="28dp"
-                                        android:text="Bar" />
+                                        android:text="@string/bars_and_nightclubs" />
 
                                     <Button
                                         android:id="@+id/button_coffee_tea"
@@ -112,7 +112,7 @@
                                         android:layout_height="wrap_content"
                                         android:drawableLeft="@drawable/ico_coffee"
                                         android:drawablePadding="28dp"
-                                        android:text="Coffee and Tea" />
+                                        android:text="@string/coffee_and_tea" />
 
                                     <Button
                                         android:id="@+id/button_more"
@@ -120,7 +120,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:drawableLeft="@drawable/ico_more"
-                                        android:text="More Categories" />
+                                        android:text="@string/more_categories" />
                                 </LinearLayout>
 
                                 <Spinner

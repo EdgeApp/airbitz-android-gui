@@ -7,4 +7,9 @@
     <string name="google_api_key">AIzaSyDSec0_ES_9u-UJqs7kjLiJSzxgZ2fceto</string>
     <string name="loading">Loading…</string>
 
+    <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
+    <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
+    <string name="coffee_and_tea">Coffee &amp; Tea</string>
+    <string name="more_categories">More Categories</string>
+
 </resources>
