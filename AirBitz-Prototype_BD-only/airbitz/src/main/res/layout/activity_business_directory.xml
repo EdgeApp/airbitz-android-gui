@@ -18,184 +18,28 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical" />
 
-    <LinearLayout
-        android:id="@+id/bottom_padding"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+    <!-- Header -->
 
-        <ImageButton
-            android:id="@+id/directory_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bg_tab_bar"
-            android:padding="15dp"
-            android:src="@drawable/ico_tab_directory"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-    <RelativeLayout
+    <include
         android:id="@+id/layout_header"
+        layout="@layout/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:layout_height="wrap_content" />
 
-        <ImageButton
-            android:id="@+id/button_back"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_back"
-            android:visibility="invisible" />
+    <!-- Search Bar -->
 
-        <TextView
-            android:id="@+id/textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:text="Directory"
-            android:textColor="@android:color/white"
-            android:textSize="20dp" />
-
-
-        <ImageButton
-            android:id="@+id/button_help"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_help"
-            android:visibility="invisible" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/separator_header"
-        android:layout_width="match_parent"
-        android:layout_height="0.8dp"
-        android:layout_below="@id/layout_header"
-        android:background="@android:color/black"
-        android:orientation="vertical"></LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/separator_header_search"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/separator_header"
-        android:background="@android:color/holo_blue_light"
-        android:orientation="vertical" />
-
-    <LinearLayout
+    <include
         android:id="@+id/layout_search"
+        layout="@layout/layout_search"
+        android:layout_below="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/separator_header_search"
-        android:background="#28007bbe"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/layout_edit_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="4dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp">
-
-            <LinearLayout
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
-
-
-            <com.airbitz.objects.ClearableEditText
-                android:id="@+id/edittext_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_edge"
-                android:drawableLeft="@drawable/ico_search"
-                android:drawablePadding="10dp"
-                android:drawableRight="@drawable/btn_x"
-                android:hint="Search"
-                android:inputType="text|textNoSuggestions"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:textColor="#000000"
-                android:textColorHint="#b4b3b4" />
-
-
-            <com.airbitz.objects.ClearableEditText
-                android:id="@+id/edittext_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/edittext_search"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_edge"
-                android:drawableLeft="@drawable/ico_loc"
-                android:drawablePadding="13dp"
-                android:drawableRight="@drawable/btn_x"
-                android:hint="Current Location"
-                android:inputType="text|textNoSuggestions"
-                android:paddingBottom="5dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:textColor="#000000"
-                android:textColorHint="#b4b3b4"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/separator_search_1"
-            android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_below="@id/layout_edit_search"
-            android:background="#50000000"
-            android:orientation="vertical"></LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/separator_search"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_below="@id/separator_search_1"
-            android:background="@android:color/black"
-            android:orientation="vertical"></LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/separator_search_3"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@id/separator_search"
-            android:background="#30000000"
-            android:orientation="vertical"></LinearLayout>
-
-    </LinearLayout>
-
+        android:layout_height="wrap_content" />
 
     <com.airbitz.objects.ObservableScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_search">
+        android:layout_below="@+id/layout_search">
 
         <LinearLayout
             android:id="@+id/layout_main_content"
@@ -234,9 +78,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/rounded_edge_blue"
-                                android:showDividers="middle"
                                 android:divider="@drawable/gray_white_divider"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:showDividers="middle">
 
                                 <Button
                                     android:id="@+id/button_restaurant"
