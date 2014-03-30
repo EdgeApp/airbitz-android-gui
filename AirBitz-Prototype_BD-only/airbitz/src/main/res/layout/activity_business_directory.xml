@@ -31,167 +31,27 @@
     <include
         android:id="@+id/layout_search"
         layout="@layout/layout_search"
-        android:layout_below="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_header" />
 
-    <com.airbitz.objects.ObservableScrollView
-        android:id="@+id/scroll_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:foreground="@drawable/actionbar_shadow"
         android:layout_below="@+id/layout_search">
 
-        <LinearLayout
-            android:id="@+id/layout_main_content"
+        <com.airbitz.objects.ObservableScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="2">
-
+            android:layout_height="match_parent" >
 
             <LinearLayout
+                android:id="@+id/layout_main_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/layout_listview_business"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="10dp">
-
-                    <ScrollView
-                        android:id="@+id/layout_scroll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/rounded_edge_blue"
-                                android:divider="@drawable/gray_white_divider"
-                                android:orientation="vertical"
-                                android:showDividers="middle">
-
-                                <Button
-                                    android:id="@+id/button_restaurant"
-                                    style="@style/CategoryItem"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ico_restaurant"
-                                    android:text="Restaurant" />
-
-                                <Button
-                                    android:id="@+id/button_bar"
-                                    style="@style/CategoryItem"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ico_bar"
-                                    android:drawablePadding="28dp"
-                                    android:paddingLeft="28dp"
-                                    android:text="Bar" />
-
-                                <Button
-                                    android:id="@+id/button_coffee_tea"
-                                    style="@style/CategoryItem"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ico_coffee"
-                                    android:drawablePadding="28dp"
-                                    android:text="Coffee and Tea" />
-
-                                <Button
-                                    android:id="@+id/button_more"
-                                    style="@style/CategoryItem"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ico_more"
-                                    android:text="More Categories" />
-                            </LinearLayout>
-
-                            <Spinner
-                                android:id="@+id/spinner_more_categories"
-                                android:layout_width="match_parent"
-                                android:layout_height="5dp"
-                                android:background="@android:color/transparent"
-                                android:visibility="invisible" />
-                        </LinearLayout>
-                    </ScrollView>
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <Button
-                        android:id="@+id/button_current_location"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#addff1"
-                        android:gravity="left"
-                        android:inputType="textNoSuggestions"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="35dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="10dp"
-                        android:text="Current location"
-                        android:textColor="#006699"
-                        android:textSize="14dp"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:id="@+id/separator_current"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_below="@id/button_current_location"
-                        android:background="@android:color/black"
-                        android:orientation="vertical"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/button_on_the_Web"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/separator_current"
-                        android:layout_centerVertical="true"
-                        android:background="#addff1"
-                        android:gravity="left"
-                        android:inputType="textNoSuggestions"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="35dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="10dp"
-                        android:text="On the Web"
-                        android:textColor="#006699"
-                        android:textSize="14dp"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:id="@+id/separator_on_the_web"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_below="@id/button_on_the_Web"
-                        android:background="@android:color/black"
-                        android:orientation="vertical"
-                        android:visibility="gone" />
-
-                    <ListView
-                        android:id="@+id/listview_search"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/separator_on_the_web"
-                        android:visibility="gone"></ListView>
-                </RelativeLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -199,75 +59,204 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="#40000000"
-                        android:orientation="vertical"></LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/layout_near_you"
+                        android:id="@+id/layout_listview_business"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#C0C0C0"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="10dp">
+
+                        <ScrollView
+                            android:id="@+id/layout_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/rounded_edge_blue"
+                                    android:divider="@drawable/gray_white_divider"
+                                    android:orientation="vertical"
+                                    android:showDividers="middle">
+
+                                    <Button
+                                        android:id="@+id/button_restaurant"
+                                        style="@style/CategoryItem"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawableLeft="@drawable/ico_restaurant"
+                                        android:text="Restaurant" />
+
+                                    <Button
+                                        android:id="@+id/button_bar"
+                                        style="@style/CategoryItem"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawableLeft="@drawable/ico_bar"
+                                        android:drawablePadding="28dp"
+                                        android:paddingLeft="28dp"
+                                        android:text="Bar" />
+
+                                    <Button
+                                        android:id="@+id/button_coffee_tea"
+                                        style="@style/CategoryItem"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawableLeft="@drawable/ico_coffee"
+                                        android:drawablePadding="28dp"
+                                        android:text="Coffee and Tea" />
+
+                                    <Button
+                                        android:id="@+id/button_more"
+                                        style="@style/CategoryItem"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawableLeft="@drawable/ico_more"
+                                        android:text="More Categories" />
+                                </LinearLayout>
+
+                                <Spinner
+                                    android:id="@+id/spinner_more_categories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="5dp"
+                                    android:background="@android:color/transparent"
+                                    android:visibility="invisible" />
+                            </LinearLayout>
+                        </ScrollView>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/button_current_location"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#addff1"
+                            android:gravity="left"
+                            android:inputType="textNoSuggestions"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="35dp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="10dp"
+                            android:text="Current location"
+                            android:textColor="#006699"
+                            android:textSize="14dp"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/separator_current"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_below="@id/button_current_location"
+                            android:background="@android:color/black"
+                            android:orientation="vertical"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/button_on_the_Web"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/separator_current"
+                            android:layout_centerVertical="true"
+                            android:background="#addff1"
+                            android:gravity="left"
+                            android:inputType="textNoSuggestions"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="35dp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="10dp"
+                            android:text="On the Web"
+                            android:textColor="#006699"
+                            android:textSize="14dp"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/separator_on_the_web"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_below="@id/button_on_the_Web"
+                            android:background="@android:color/black"
+                            android:orientation="vertical"
+                            android:visibility="gone" />
+
+                        <ListView
+                            android:id="@+id/listview_search"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/separator_on_the_web"
+                            android:visibility="gone"></ListView>
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:background="#30ffffff"
-                            android:orientation="vertical"></LinearLayout>
-
-                        <TextView
-                            android:id="@+id/textview_nearyou"
+                            android:id="@+id/layout_near_you"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="#C0C0C0"
-                            android:inputType="textNoSuggestions"
-                            android:paddingBottom="3dp"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="2dp"
-                            android:shadowColor="#FFFFFFFF"
-                            android:shadowDx="1"
-                            android:shadowDy="2"
-                            android:shadowRadius="1"
-                            android:text="Near You"
-                            android:textColor="#909090"
-                            android:textSize="14dp" />
+                            android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#30ffffff"
-                            android:orientation="vertical"></LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1px"
+                                android:background="#b9d1dd" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#90000000"
-                            android:orientation="vertical"></LinearLayout>
+                            <TextView
+                                android:id="@+id/textview_nearyou"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#DDC0C0C0"
+                                android:paddingBottom="@dimen/content_padding_quarter"
+                                android:paddingLeft="@dimen/content_padding_1_quarter"
+                                android:paddingTop="@dimen/content_padding_quarter"
+                                android:shadowColor="#FFFFFFFF"
+                                android:shadowDx="1"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:text="Near You"
+                                android:textColor="#4e626d"
+                                android:textSize="@dimen/text_size_small" />
 
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1px"
+                                android:background="@android:color/black" />
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/fragment_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/black"
-                android:orientation="vertical">
-
-                <fragment
-                    android:id="@+id/venue"
-                    android:name="com.airbitz.fragments.VenueFragment"
+                <LinearLayout
+                    android:id="@+id/fragment_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black"
+                    android:orientation="vertical">
+
+                    <fragment
+                        android:id="@+id/venue"
+                        android:name="com.airbitz.fragments.VenueFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
 
             </LinearLayout>
+        </com.airbitz.objects.ObservableScrollView>
 
-        </LinearLayout>
-    </com.airbitz.objects.ObservableScrollView>
-
+    </FrameLayout>
 
 </RelativeLayout>
 
