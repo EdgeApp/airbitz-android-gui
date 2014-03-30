@@ -236,6 +236,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mBarButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mCoffeeButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mMoreButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mNearYouTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         mCurrentLocationButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mOnTheWebButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
