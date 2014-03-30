@@ -87,8 +87,6 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
     private TextView mNearYouTextView;
 
     private LinearLayout mBusinessLayout;
-    private LinearLayout mSearchSeparator1;
-    private LinearLayout mSearchSeparator2;
     private LinearLayout mNearYouContainer;
 
     private ImageButton mBackButton;
@@ -215,8 +213,6 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mMoreSpinner.setAdapter(mMoreCategoryAdapter);
 
         mBusinessLayout = (LinearLayout) findViewById(R.id.layout_listview_business);
-        mSearchSeparator1 = (LinearLayout) findViewById(R.id.separator_search_1);
-        mSearchSeparator2 = (LinearLayout) findViewById(R.id.separator_search);
 
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);

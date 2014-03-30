@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -162,6 +160,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mLocateMeButton = (ImageButton)findViewById(R.id.locateMeButton);
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
+
+        mBackButton.setVisibility(View.VISIBLE);
 
         mSearchEdittext = (ClearableEditText) findViewById(R.id.edittext_search);
         mLocationEdittext = (ClearableEditText) findViewById(R.id.edittext_location);
