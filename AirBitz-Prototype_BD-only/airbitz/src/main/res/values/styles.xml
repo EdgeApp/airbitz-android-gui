@@ -5,4 +5,17 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="CategoryItem">
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/blue_text</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:drawablePadding">@dimen/content_padding_2</item>
+        <item name="android:paddingTop">@dimen/content_padding_1_quarter</item>
+        <item name="android:paddingBottom">@dimen/content_padding_1_quarter</item>
+        <item name="android:paddingLeft">@dimen/content_padding_2</item>
+        <item name="android:paddingRight">@dimen/content_padding_2</item>
+    </style>
+
 </resources>
