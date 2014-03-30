@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="blue_text">#0179b8</color>
+    <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
 </resources>
