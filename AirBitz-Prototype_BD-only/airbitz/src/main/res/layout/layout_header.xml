@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#40000000"
+    android:padding="@dimen/content_padding_three_quarters">
+
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_back"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:text="Directory"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_h1"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/button_help"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_help"
+        android:visibility="gone" />
+
+</RelativeLayout>
