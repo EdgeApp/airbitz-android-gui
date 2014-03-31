@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -47,9 +46,8 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
-        RelativeLayout layoutItem = (RelativeLayout) convertView.findViewById(R.id.layout_item);
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
-        textView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        textView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         textView.setText(mLocationValue.get(position).getName());
         return convertView;
     }

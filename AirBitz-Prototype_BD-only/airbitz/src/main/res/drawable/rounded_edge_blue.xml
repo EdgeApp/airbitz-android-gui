@@ -6,7 +6,7 @@
         android:startColor="#beebf8"
         android:type="linear" />
 
-    <corners android:radius="6dp" />
+    <corners android:radius="@dimen/border_radius_size" />
     <padding
         android:bottom="0dp"
         android:left="1px"
