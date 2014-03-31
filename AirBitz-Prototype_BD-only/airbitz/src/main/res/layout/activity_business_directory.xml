@@ -195,7 +195,9 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/separator_on_the_web"
-                            android:visibility="gone"></ListView>
+                            android:divider="@color/gray_border"
+                            android:dividerHeight="1px"
+                            android:visibility="gone" />
                     </RelativeLayout>
 
                     <LinearLayout
