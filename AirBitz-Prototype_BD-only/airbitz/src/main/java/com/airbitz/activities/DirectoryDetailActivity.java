@@ -1,3 +1,4 @@
+
 package com.airbitz.activities;
 
 import android.app.Activity;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.adapters.BusinessDetailAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Hour;
@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class DirectoryDetailActivity extends Activity implements GestureDetector.OnGestureListener{
+public class DirectoryDetailActivity extends Activity implements GestureDetector.OnGestureListener {
 
     private static final String TAG = DirectoryDetailActivity.class.getSimpleName();
     private EditText mAboutField;
@@ -78,8 +78,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
 
     private GestureDetector mGestureDetector;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_business_detail);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
@@ -93,33 +92,14 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mTypeAndDiscountTextView = (TextView) findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
 
-        double businessDistance = 0;
-        try{
-            businessDistance = Double.parseDouble(getIntent().getExtras().getString("bizDistance"));
-            businessDistance = Common.metersToMiles(businessDistance);
-            if (businessDistance<1){
-                businessDistance = Math.ceil(businessDistance*10)/10;
-                String distanceString = ""+businessDistance;
-                distanceString = distanceString.substring(1,distanceString.length());
-                mDistanceTextView.setText(distanceString+" miles");
-            } else if (businessDistance >= 1000) {
-                int distanceInInt = (int) businessDistance;
-                mDistanceTextView.setText(String.valueOf(distanceInInt)+" miles");
-            }else {
-                businessDistance = Math.ceil(businessDistance*10)/10;
-                mDistanceTextView.setText(String.valueOf(businessDistance)+" miles");
-            }
-        }catch (Exception e){
-            mDistanceTextView.setText("-");
-        }
+        setDistance(getIntent().getStringExtra("bizDistance"));
 
-        if(businessName!=null&&!businessName.equalsIgnoreCase("")){
+        if (businessName != null && !businessName.equalsIgnoreCase("")) {
             mBusinessNameText.setText(businessName);
         }
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            @Override public boolean onTouch(View view, MotionEvent motionEvent) {
                 return mGestureDetector.onTouchEvent(motionEvent);
             }
         });
@@ -131,13 +111,11 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         Handler handler = new Handler();
         handler.postDelayed(new Runnable()
         {
-            @Override
-            public void run() {
-                if (mTask.getStatus() == AsyncTask.Status.RUNNING )
+            @Override public void run() {
+                if (mTask.getStatus() == AsyncTask.Status.RUNNING)
                     mTask.cancel(true);
             }
-        }, timeout );
-
+        }, timeout);
 
         mAddressButton = (Button) findViewById(R.id.button_address);
         mPhoneButton = (Button) findViewById(R.id.button_phone);
@@ -164,33 +142,28 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         aboutEditText.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 finish();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 Common.showHelpInfoDialog(DirectoryDetailActivity.this, "Info", "Business directory info");
             }
         });
 
     }
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
     }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         super.onPause();
     }
 
-    @Override
-    protected void onStop() {
+    @Override protected void onStop() {
         super.onStop();
     }
 
@@ -199,16 +172,41 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
 
         String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
         String saddr = buildLatLonToStr(String.valueOf(getLatFromSharedPreference()),
-                String.valueOf(getLonFromSharedPreference()));
+                                        String.valueOf(getLonFromSharedPreference()));
 
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?saddr=" + saddr + "&daddr=" + daddr + "&dirflg=d"));
-
+                                   Uri.parse("http://maps.google.com/maps?saddr=" + saddr
+                                             + "&daddr="
+                                             + daddr
+                                             + "&dirflg=d"));
 
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
-                "com.google.android.maps.MapsActivity"));
+                                              "com.google.android.maps.MapsActivity"));
 
         startActivity(intent);
+    }
+
+    private void setDistance(String strDistance) {
+
+        double businessDistance = 0;
+        try {
+            businessDistance = Double.parseDouble(strDistance);
+            businessDistance = Common.metersToMiles(businessDistance);
+            if (businessDistance < 1) {
+                businessDistance = Math.ceil(businessDistance * 10) / 10;
+                String distanceString = "" + businessDistance;
+                distanceString = distanceString.substring(1, distanceString.length());
+                mDistanceTextView.setText(distanceString + " miles");
+            } else if (businessDistance >= 1000) {
+                int distanceInInt = (int) businessDistance;
+                mDistanceTextView.setText(String.valueOf(distanceInInt) + " miles");
+            } else {
+                businessDistance = Math.ceil(businessDistance * 10) / 10;
+                mDistanceTextView.setText(String.valueOf(businessDistance) + " miles");
+            }
+        } catch (Exception e) {
+            mDistanceTextView.setText("-");
+        }
     }
 
     private String buildLatLonToStr(String lat, String lon) {
@@ -220,18 +218,17 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         return builder.toString();
     }
 
-    private class GetBusinessDetailTask extends AsyncTask<String,Void,String>{
+    private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
         ProgressDialog mProgressDialog;
 
-        public GetBusinessDetailTask(Context context){
+        public GetBusinessDetailTask(Context context) {
             mContext = context;
         }
 
-        @Override
-        protected void onPreExecute() {
-            mProgressDialog  = new ProgressDialog(mContext);
+        @Override protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venue data...");
             mProgressDialog.setIndeterminate(true);
@@ -239,22 +236,19 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
             mProgressDialog.show();
         }
 
-        @Override
-        protected String doInBackground(String... params) {
+        @Override protected String doInBackground(String... params) {
             return mApi.getBusinessById(params[0]);
         }
 
-        @Override
-        protected void onCancelled() {
+        @Override protected void onCancelled() {
             mProgressDialog.dismiss();
             Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
+                           Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
-        @Override
-        protected void onPostExecute(String results) {
-            try{
+        @Override protected void onPostExecute(String results) {
+            try {
                 mDetail = new BusinessDetail(new JSONObject(results));
                 Location location = mDetail.getLocationObjectArray();
                 mLat = location.getLatitude();
@@ -269,89 +263,90 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mHourButton = (Button) findViewById(R.id.button_hour);
                 backImage = (ImageView) findViewById(R.id.imageview_business);
 
-                if((mDetail.getAddress().length() == 0) || mDetail == null){
-                    if(location!=null){
+                setDistance(mDetail.getDistance());
+
+                if ((mDetail.getAddress().length() == 0) || mDetail == null) {
+                    if (location != null) {
                         mAddressButton.setText("Directions");
                     } else {
                         mAddressButton.setText(Common.UNAVAILABLE);
                     }
                 }
-                else{
-                    mAddressButton.setText(mDetail.getAddress()+", "+mDetail.getCity()+", "+mDetail.getState()+", "+mDetail.getPostalCode());
+                else {
+                    mAddressButton.setText(mDetail.getAddress() + ", "
+                                           + mDetail.getCity()
+                                           + ", "
+                                           + mDetail.getState()
+                                           + ", "
+                                           + mDetail.getPostalCode());
                 }
 
-
-                if((mDetail.getPhone().length() == 0) || mDetail.getPhone() == null){
+                if ((mDetail.getPhone().length() == 0) || mDetail.getPhone() == null) {
                     mPhoneButton.setText(Common.UNAVAILABLE);
                     mPhoneButton.setVisibility(View.GONE);
                 }
-                else{
+                else {
                     mPhoneButton.setText(mDetail.getPhone());
                     mPhoneButton.setVisibility(View.VISIBLE);
                 }
 
-
-                if((mDetail.getWebsite().length() == 0) || mDetail.getWebsite() == null){
+                if ((mDetail.getWebsite().length() == 0) || mDetail.getWebsite() == null) {
                     mWebButton.setText(Common.UNAVAILABLE);
                 }
-                else{
+                else {
                     mWebButton.setText(mDetail.getWebsite());
                 }
 
-
-                if((mDetail.getHourObjectArray().size() == 0) || mDetail.getHourObjectArray() == null){
+                if ((mDetail.getHourObjectArray().size() == 0) || mDetail.getHourObjectArray() == null) {
                     mHourButton.setText(Common.UNAVAILABLE);
                 }
-                else{
+                else {
                     mHourButton.setText(createScheduleString(mDetail.getHourObjectArray()));
                 }
 
-                if((mDetail.getName().length() == 0) || mDetail.getName() == null){
-//                    mBusinessNameText.setText(Common.UNAVAILABLE);
+                if ((mDetail.getName().length() == 0) || mDetail.getName() == null) {
+                    // mBusinessNameText.setText(Common.UNAVAILABLE);
                 }
-                else{
+                else {
                     mBusinessNameText.setText(mDetail.getName());
                 }
 
-                if((mDetail.getDescription().length() == 0) || mDetail.getDescription() == null){
+                if ((mDetail.getDescription().length() == 0) || mDetail.getDescription() == null) {
                     mAboutField.setText(Common.UNAVAILABLE);
                 }
-                else{
+                else {
                     mAboutField.setText(mDetail.getDescription());
                 }
 
                 String discount = mDetail.getFlagBitcoinDiscount();
 
-
                 double discountDouble = 0;
-                try{
+                try {
                     discountDouble = Double.parseDouble(discount);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                int discountInt = (int)(discountDouble*100);
+                int discountInt = (int) (discountDouble * 100);
 
-                if(discountInt==0){
+                if (discountInt == 0) {
                     mTypeAndDiscountTextView.setText(mDetail.getCategoryObject().get(0).getCategoryName());
                 } else {
-                    mTypeAndDiscountTextView.setText(mDetail.getCategoryObject().get(0).getCategoryName()+
-                            " | Disc. "+discountInt+"%");
+                    mTypeAndDiscountTextView.setText(mDetail.getCategoryObject().get(0).getCategoryName() +
+                                                     " | Disc. " + discountInt + "%");
                 }
 
                 GetBackgroundImageTask task = new GetBackgroundImageTask(backImage);
                 task.execute(mDetail.getImages().get(0).getPhotoLink());
 
                 mAddressButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    @Override public void onClick(View view) {
                         getMapLink();
                     }
                 });
                 mPhoneButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    @Override public void onClick(View view) {
 
-                        if((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null){
+                        if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
                             mIntent = new Intent(Intent.ACTION_CALL);
                             mIntent.setData(Uri.parse("tel:" + mDetail.getPhone()));
                             startActivity(mIntent);
@@ -360,9 +355,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     }
                 });
                 mWebButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null){
+                    @Override public void onClick(View view) {
+                        if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
                             mIntent = new Intent(Intent.ACTION_VIEW);
                             mIntent.setData(Uri.parse(mDetail.getWebsite()));
                             startActivity(mIntent);
@@ -370,57 +364,56 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     }
                 });
                 mHourButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    @Override public void onClick(View view) {
 
                     }
                 });
 
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
                 mAddressButton.setText(Common.UNAVAILABLE);
                 mPhoneButton.setText(Common.UNAVAILABLE);
                 mWebButton.setText(Common.UNAVAILABLE);
                 mHourButton.setText(Common.UNAVAILABLE);
                 Toast.makeText(getApplicationContext(), "Can not retrieve data",
-                        Toast.LENGTH_LONG).show();
-            }catch (Exception e){
+                               Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
                 e.printStackTrace();
                 mAddressButton.setText(Common.UNAVAILABLE);
                 mPhoneButton.setText(Common.UNAVAILABLE);
                 mWebButton.setText(Common.UNAVAILABLE);
                 mHourButton.setText(Common.UNAVAILABLE);
                 Toast.makeText(getApplicationContext(), "Can not retrieve data",
-                        Toast.LENGTH_LONG).show();
+                               Toast.LENGTH_LONG).show();
             }
             mProgressDialog.dismiss();
         }
 
-        String createHourString(List<Hour> hours){
+        String createHourString(List<Hour> hours) {
             String dayOfWeek = hours.get(0).getDayOfWeek();
-            String dayOfWeek2 = hours.get(hours.size()-1).getDayOfWeek();
+            String dayOfWeek2 = hours.get(hours.size() - 1).getDayOfWeek();
             String hourStart = hours.get(0).getHourStart();
             String hourEnd = hours.get(0).setHourEnd();
-            if(hours.get(0).getDayOfWeek().length() == 0 || hours.get(0).getDayOfWeek() == null){
+            if (hours.get(0).getDayOfWeek().length() == 0 || hours.get(0).getDayOfWeek() == null) {
                 dayOfWeek = Common.UNAVAILABLE;
             }
-            if(hours.get(hours.size()-1).getDayOfWeek().length() == 0 || hours.get(hours.size()-1).getDayOfWeek() == null){
+            if (hours.get(hours.size() - 1).getDayOfWeek().length() == 0 || hours.get(hours.size() - 1)
+                                                                                 .getDayOfWeek() == null) {
                 dayOfWeek2 = Common.UNAVAILABLE;
             }
-            if(hours.get(0).getHourStart().length() == 0 || hours.get(0).getHourStart() == null){
+            if (hours.get(0).getHourStart().length() == 0 || hours.get(0).getHourStart() == null) {
                 hourStart = Common.UNAVAILABLE;
             }
-            if(hours.get(0).setHourEnd().length() == 0 || hours.get(0).setHourEnd() == null){
+            if (hours.get(0).setHourEnd().length() == 0 || hours.get(0).setHourEnd() == null) {
                 hourEnd = Common.UNAVAILABLE;
             }
 
-            return "Hours: "+dayOfWeek+" - "+ dayOfWeek2+" "+hourStart+" - "+hourEnd;
+            return "Hours: " + dayOfWeek + " - " + dayOfWeek2 + " " + hourStart + " - " + hourEnd;
         }
 
-
-        String createScheduleString(List<Hour> hours){
-            String schedule="";
-            for(Hour hour:hours){
+        String createScheduleString(List<Hour> hours) {
+            String schedule = "";
+            for (Hour hour : hours) {
                 String startHour = hour.getHourStart();
                 String endHour = hour.getHourEnd();
                 SimpleDateFormat militaryFormat = new SimpleDateFormat("HH:mm:ss");
@@ -433,109 +426,100 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     Date hourEndDateMil = militaryFormat.parse(endHour);
                     endHour = amPmFormat.format(hourEndDateMil);
 
-                    hourString = startHour+" - "+endHour;
+                    hourString = startHour + " - " + endHour;
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                if(startHour.equalsIgnoreCase("null")){
-                    if(!endHour.equalsIgnoreCase("null")){
+                if (startHour.equalsIgnoreCase("null")) {
+                    if (!endHour.equalsIgnoreCase("null")) {
                         hourString = endHour;
                     }
-                } else if(endHour.equalsIgnoreCase("null")) {
+                } else if (endHour.equalsIgnoreCase("null")) {
                     hourString = startHour;
                 }
 
-                schedule+=hour.getDayOfWeek()+" "+hourString+"\n";
+                schedule += hour.getDayOfWeek() + " " + hourString + "\n";
             }
-            schedule = schedule.substring(0,schedule.length()-1);
+            schedule = schedule.substring(0, schedule.length() - 1);
             return schedule;
         }
     }
 
-    private class GetBackgroundImageTask extends AsyncTask<String, Void, Bitmap>{
+    private class GetBackgroundImageTask extends AsyncTask<String, Void, Bitmap> {
 
         ImageView mTargetView;
 
-        public GetBackgroundImageTask(ImageView targetView){
+        public GetBackgroundImageTask(ImageView targetView) {
             mTargetView = targetView;
         }
-        @Override
-        protected Bitmap doInBackground(String... params) {
+
+        @Override protected Bitmap doInBackground(String... params) {
             Bitmap image = null;
 
             try {
                 InputStream in = new URL(params[0]).openStream();
                 image = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e(TAG, ""+e.getMessage());
+                Log.e(TAG, "" + e.getMessage());
                 e.printStackTrace();
             }
 
             return image;
         }
 
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
+        @Override protected void onPostExecute(Bitmap bitmap) {
             mTargetView.setImageBitmap(bitmap);
         }
     }
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = getSharedPreferences(BusinessDirectoryActivity.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(BusinessDirectoryActivity.PREF_NAME,
+                                                      Context.MODE_PRIVATE);
         return pref.getFloat(key, -1);
     }
 
-    private double getLatFromSharedPreference(){
-        return (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+    private double getLatFromSharedPreference() {
+        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
     }
 
-
-    private double getLonFromSharedPreference(){
-        return (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+    private double getLonFromSharedPreference() {
+        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    @Override public boolean onTouchEvent(MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
     }
 
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
+    @Override public boolean onDown(MotionEvent motionEvent) {
         return false;
     }
 
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
+    @Override public void onShowPress(MotionEvent motionEvent) {
 
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
+    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
         return false;
     }
 
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
         return false;
     }
 
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
+    @Override public void onLongPress(MotionEvent motionEvent) {
 
     }
 
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
+    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
+        if (start != null & finish != null) {
 
             float yDistance = Math.abs(finish.getY() - start.getY());
 
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 10)){
+            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
                 float xDistance = Math.abs(finish.getRawX() - start.getRawX());
 
-                if(xDistance > 100){
+                if (xDistance > 100) {
                     finish();
                     return true;
                 }
