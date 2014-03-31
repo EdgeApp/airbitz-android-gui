@@ -390,28 +390,6 @@ public class BusinessDirectoryActivity extends Activity implements
             }
         });
 
-        mSearchField.setOnKeyListener(new View.OnKeyListener() {
-            @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                int keyAction = keyEvent.getAction();
-                String test = "";
-                if (keyAction == KeyEvent.ACTION_UP) {
-                    switch (keyCode) {
-                        case KeyEvent.FLAG_EDITOR_ACTION:
-                            mLocationField.requestFocus();
-                            return true;
-                        case KeyEvent.KEYCODE_ENTER:
-                            mLocationField.requestFocus();
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-
-                return false;
-            }
-
-        });
-
         mSearchField.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -423,7 +401,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
             @Override public void afterTextChanged(Editable editable) {
 
-                if (editable.toString().length() > 0) {
+//                if (editable.toString().length() > 0) {
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mCurrentLocationButton.setVisibility(View.GONE);
                     mOnTheWebButton.setVisibility(View.GONE);
@@ -446,21 +424,20 @@ public class BusinessDirectoryActivity extends Activity implements
                         e.printStackTrace();
                     }
 
-                } else {
-                    mDummyFocusLayout.requestFocus();
-                    if (mSearchField.getText().toString().length() <= 0) {
-                        mLocationField.setVisibility(View.GONE);
-                    }
-                    mBusinessLayout.setVisibility(View.VISIBLE);
-                    mNearYouContainer.setVisibility(View.VISIBLE);
-                    mVenueFragmentLayout.setVisibility(View.VISIBLE);
-                    mSearchListView.setVisibility(View.GONE);
-                    mCurrentLocationButton.setVisibility(View.GONE);
-                    mOnTheWebButton.setVisibility(View.GONE);
-                    mCurrentLayoutSeparator.setVisibility(View.GONE);
-                    mOnTheWebSeparator.setVisibility(View.GONE);
-
-                }
+//                } else {
+//                    mDummyFocusLayout.requestFocus();
+//                    if (mSearchField.getText().toString().length() <= 0) {
+//                        mLocationField.setVisibility(View.GONE);
+//                    }
+//                    mBusinessLayout.setVisibility(View.VISIBLE);
+//                    mNearYouContainer.setVisibility(View.VISIBLE);
+//                    mVenueFragmentLayout.setVisibility(View.VISIBLE);
+//                    mSearchListView.setVisibility(View.GONE);
+//                    mCurrentLocationButton.setVisibility(View.GONE);
+//                    mOnTheWebButton.setVisibility(View.GONE);
+//                    mCurrentLayoutSeparator.setVisibility(View.GONE);
+//                    mOnTheWebSeparator.setVisibility(View.GONE);
+//                }
 
             }
         });
@@ -558,7 +535,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
             @Override public void afterTextChanged(Editable editable) {
 
-                if (editable.toString().length() > 0) {
+//                if (editable.toString().length() > 0) {
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
                     mBusinessLayout.setVisibility(View.GONE);
@@ -580,31 +557,32 @@ public class BusinessDirectoryActivity extends Activity implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                } else {
-
-                    mBusinessLayout.setVisibility(View.VISIBLE);
-                    mNearYouContainer.setVisibility(View.VISIBLE);
-                    mVenueFragmentLayout.setVisibility(View.VISIBLE);
-                    mSearchListView.setVisibility(View.GONE);
-                    mCurrentLocationButton.setVisibility(View.GONE);
-                    mOnTheWebButton.setVisibility(View.GONE);
-                    mCurrentLayoutSeparator.setVisibility(View.GONE);
-                    mOnTheWebSeparator.setVisibility(View.GONE);
-
-                }
+//
+//                } else {
+//
+//                    mBusinessLayout.setVisibility(View.VISIBLE);
+//                    mNearYouContainer.setVisibility(View.VISIBLE);
+//                    mVenueFragmentLayout.setVisibility(View.VISIBLE);
+//                    mSearchListView.setVisibility(View.GONE);
+//                    mCurrentLocationButton.setVisibility(View.GONE);
+//                    mOnTheWebButton.setVisibility(View.GONE);
+//                    mCurrentLayoutSeparator.setVisibility(View.GONE);
+//                    mOnTheWebSeparator.setVisibility(View.GONE);
+//                }
             }
         });
 
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+                boolean locationFieldShouldFocus = false;
+
                 if (mSearchField.isFocused()) {
                     BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
                     mSearchField.setText(businessSearchAdapter.getItemValue(position));
                     mBusinessType = businessSearchAdapter.getItem(position).getType();
                     writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
-                    mLocationField.requestFocus();
+                    locationFieldShouldFocus = true;
                 } else if (mLocationField.isFocused()) {
                     LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     mLocationField.setText(locationAdapter.getItem(position));
@@ -616,6 +594,10 @@ public class BusinessDirectoryActivity extends Activity implements
                 mCurrentLayoutSeparator.setVisibility(View.GONE);
                 mOnTheWebSeparator.setVisibility(View.GONE);
                 mSearchListView.setVisibility(View.GONE);
+
+                if (locationFieldShouldFocus) {
+                    mLocationField.requestFocus();
+                }
             }
         });
     }
