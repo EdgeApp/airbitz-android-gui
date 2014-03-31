@@ -22,6 +22,7 @@ public class BusinessDetail {
     private String mBizState;
     private String mBizPostalCode;
     private String mBizCountry;
+    private String mBizDistance;
     private List<Category> mCategory;
     private List<Social> mSocialArray;
     private List<Hour> mHourArray;
@@ -30,8 +31,6 @@ public class BusinessDetail {
     private boolean mHasOnlineBusiness;
     private String mHasBitconDiscount;
     private Location mLocation;
-
-
 
     public BusinessDetail(String mBizId, String mBizName, String mBizDescription,
                           String mBizWebsite, String mBizPhone, String mBizAddress,
@@ -66,6 +65,7 @@ public class BusinessDetail {
         if(jsonResponse != null){
             mBizId = jsonResponse.getString("bizId");
             mBizName = jsonResponse.getString("name");
+            mBizDistance = jsonResponse.getString("distance");
             mBizDescription = jsonResponse.getString("description");
             mBizWebsite = jsonResponse.getString("website");
             mBizPhone = jsonResponse.getString("phone");
@@ -84,6 +84,10 @@ public class BusinessDetail {
             mHasBitconDiscount = jsonResponse.getString("has_bitcoin_discount");
             mLocation = new Location(jsonResponse.getJSONObject("location"));
         }
+    }
+
+    public String getDistance() {
+        return mBizDistance;
     }
 
     public void setName(String name){

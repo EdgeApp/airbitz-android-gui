@@ -402,6 +402,11 @@ public class BusinessDirectoryActivity extends Activity implements
             @Override public void afterTextChanged(Editable editable) {
 
 //                if (editable.toString().length() > 0) {
+
+                if (mSearchListView.getVisibility()  == View.GONE) {
+                    return;
+                }
+
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mCurrentLocationButton.setVisibility(View.GONE);
                     mOnTheWebButton.setVisibility(View.GONE);
@@ -535,6 +540,10 @@ public class BusinessDirectoryActivity extends Activity implements
 
             @Override public void afterTextChanged(Editable editable) {
 
+                if (mSearchListView.getVisibility()  == View.GONE) {
+                    return;
+                }
+
 //                if (editable.toString().length() > 0) {
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
@@ -578,11 +587,27 @@ public class BusinessDirectoryActivity extends Activity implements
                 boolean locationFieldShouldFocus = false;
 
                 if (mSearchField.isFocused()) {
-                    BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
-                    mSearchField.setText(businessSearchAdapter.getItemValue(position));
-                    mBusinessType = businessSearchAdapter.getItem(position).getType();
-                    writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
-                    locationFieldShouldFocus = true;
+
+                    final BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
+
+                    final Business business = businessSearchAdapter.getItem(position);
+
+                    mSearchField.setText(business.getName());
+                    mBusinessType = business.getType();
+
+                    if ("business".equalsIgnoreCase(mBusinessType)) {
+                        Intent intent = new Intent(BusinessDirectoryActivity.this, DirectoryDetailActivity.class);
+                        intent.putExtra("bizId", business.getId());
+                        intent.putExtra("bizName", business.getName());
+//                        intent.putExtra("bizDistance", business.get
+                        startActivity(intent);
+                    } else {
+                        writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
+                        locationFieldShouldFocus = true;
+                    }
+//                    writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
+//                    locationFieldShouldFocus = true;
+
                 } else if (mLocationField.isFocused()) {
                     LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     mLocationField.setText(locationAdapter.getItem(position));
