@@ -144,23 +144,18 @@
                             android:layout_height="wrap_content"
                             android:background="#addff1"
                             android:gravity="left"
-                            android:inputType="textNoSuggestions"
-                            android:paddingBottom="10dp"
-                            android:paddingLeft="35dp"
-                            android:paddingRight="15dp"
-                            android:paddingTop="10dp"
+                            android:padding="@dimen/content_padding"
+                            android:textSize="@dimen/text_size_h4"
                             android:text="Current location"
                             android:textColor="#006699"
-                            android:textSize="14dp"
                             android:visibility="gone" />
 
-                        <LinearLayout
+                        <View
                             android:id="@+id/separator_current"
                             android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
+                            android:layout_height="1px"
+                            android:background="@color/gray_border"
                             android:layout_below="@id/button_current_location"
-                            android:background="@android:color/black"
-                            android:orientation="vertical"
                             android:visibility="gone" />
 
                         <Button
@@ -170,24 +165,19 @@
                             android:layout_below="@id/separator_current"
                             android:layout_centerVertical="true"
                             android:background="#addff1"
+                            android:padding="@dimen/content_padding"
+                            android:textSize="@dimen/text_size_h4"
                             android:gravity="left"
-                            android:inputType="textNoSuggestions"
-                            android:paddingBottom="10dp"
-                            android:paddingLeft="35dp"
-                            android:paddingRight="15dp"
-                            android:paddingTop="10dp"
                             android:text="On the Web"
                             android:textColor="#006699"
-                            android:textSize="14dp"
                             android:visibility="gone" />
 
-                        <LinearLayout
+                        <View
                             android:id="@+id/separator_on_the_web"
                             android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
+                            android:layout_height="1px"
                             android:layout_below="@id/button_on_the_Web"
-                            android:background="@android:color/black"
-                            android:orientation="vertical"
+                            android:background="@color/gray_border"
                             android:visibility="gone" />
 
                         <ListView

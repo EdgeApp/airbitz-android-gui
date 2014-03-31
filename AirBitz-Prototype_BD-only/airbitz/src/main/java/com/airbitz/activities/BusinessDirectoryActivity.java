@@ -1,3 +1,4 @@
+
 package com.airbitz.activities;
 
 import android.app.Activity;
@@ -56,7 +57,9 @@ import java.util.List;
 /**
  * Created on 2/10/14.
  */
-public class BusinessDirectoryActivity extends Activity implements GestureDetector.OnGestureListener, ObservableScrollView.ScrollViewListener{
+public class BusinessDirectoryActivity extends Activity implements
+                                                       GestureDetector.OnGestureListener,
+                                                       ObservableScrollView.ScrollViewListener {
 
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
@@ -101,8 +104,8 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
     private Button mOnTheWebButton;
 
     private RelativeLayout mParentLayout;
-    private LinearLayout mCurrentLayoutSeparator;
-    private LinearLayout mOnTheWebSeparator;
+    private View mCurrentLayoutSeparator;
+    private View mOnTheWebSeparator;
 
     private LinearLayout mVenueFragmentLayout;
 
@@ -122,10 +125,10 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private LocationAdapter mLocationAdapter;
 
-    public final static String CATEGORY="CATEGORY";
-    public final static String LOCATION="LOCATION";
-    public final static String BUSINESS="BUSINESS";
-    public final static String BUSINESSTYPE="BUSINESSTYPE";
+    public final static String CATEGORY = "CATEGORY";
+    public final static String LOCATION = "LOCATION";
+    public final static String BUSINESS = "BUSINESS";
+    public final static String BUSINESSTYPE = "BUSINESSTYPE";
 
     private ArrayList<String> mLocation;
     private ArrayList<Business> mBusinessList;
@@ -155,12 +158,11 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
     private BusinessScrollListener mBusinessScrollListener;
 
-    public interface BusinessScrollListener{
+    public interface BusinessScrollListener {
         void onScrollEnded();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         checkLocationManager();
@@ -172,18 +174,18 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         setContentView(R.layout.activity_business_directory);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if(Build.VERSION.SDK_INT > 9){
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
 
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        montserratBoldTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
-        latoBlackTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
-        latoRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-RegIta.ttf");
-        helveticaNeueTypeFace=Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
+        montserratBoldTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
+        montserratRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
+        latoBlackTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-RegIta.ttf");
+        helveticaNeueTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
 
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<String>();
@@ -200,8 +202,8 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mOnTheWebButton = (Button) findViewById(R.id.button_on_the_Web);
         mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
 
-        mCurrentLayoutSeparator = (LinearLayout) findViewById(R.id.separator_current);
-        mOnTheWebSeparator = (LinearLayout) findViewById(R.id.separator_on_the_web);
+        mCurrentLayoutSeparator = findViewById(R.id.separator_current);
+        mOnTheWebSeparator = findViewById(R.id.separator_on_the_web);
 
         mNearYouContainer = (LinearLayout) findViewById(R.id.layout_near_you);
         mVenueFragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
@@ -234,36 +236,32 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mMoreButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mNearYouTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
-        mCurrentLocationButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        mOnTheWebButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        mCurrentLocationButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mOnTheWebButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
         mMoreCategoriesProgressDialog = new ProgressDialog(BusinessDirectoryActivity.this);
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            @Override public boolean onTouch(View view, MotionEvent motionEvent) {
                 return mGestureDetector.onTouchEvent(motionEvent);
             }
         });
 
         mCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mLocationField.setText("Current Location");
             }
         });
 
         mOnTheWebButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mLocationField.setText("On the Web");
             }
         });
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mIsMoreCategoriesProgressRunning = true;
                 mMoreCategoriesProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mMoreCategoriesProgressDialog.setMessage("Retrieving data...");
@@ -283,49 +281,46 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         Handler handler = new Handler();
         handler.postDelayed(new Runnable()
         {
-            @Override
-            public void run() {
-                if(mIsMoreCategoriesProgressRunning){
+            @Override public void run() {
+                if (mIsMoreCategoriesProgressRunning) {
                     mMoreCategoriesProgressDialog.dismiss();
                 }
 
                 mMoreButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    @Override public void onClick(View view) {
                         Toast.makeText(getApplicationContext(), "No categories retrieved from server",
-                                Toast.LENGTH_LONG).show();
+                                       Toast.LENGTH_LONG).show();
                     }
                 });
             }
-        }, timeout );
+        }, timeout);
 
         mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            @Override public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
-                if(mFirstLoad){
+                if (mFirstLoad) {
                     mFirstLoad = false;
                 }
-                else{
+                else {
 
-                    Intent intent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                    intent.putExtra(BUSINESS, mMoreCategoryAdapter.getListItemName(position).getCategoryName());
+                    Intent intent = new Intent(BusinessDirectoryActivity.this,
+                                               MapBusinessDirectoryActivity.class);
+                    intent.putExtra(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
+                                                                  .getCategoryName());
                     intent.putExtra(LOCATION, "");
                     intent.putExtra(BUSINESSTYPE, "category");
                     startActivity(intent);
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            @Override public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
         mRestaurantButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button)view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -333,10 +328,9 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         });
 
         mBarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button)view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -344,10 +338,9 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         });
 
         mCoffeeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button)view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -355,27 +348,24 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         });
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 finish();
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            @Override public void onClick(View view) {
                 Common.showHelpInfoDialog(BusinessDirectoryActivity.this, "Info", "Business directory info");
             }
         });
 
-        mBusinessSearchAdapter = new BusinessSearchAdapter(BusinessDirectoryActivity.this,mBusinessList);
+        mBusinessSearchAdapter = new BusinessSearchAdapter(BusinessDirectoryActivity.this, mBusinessList);
         mSearchListView.setAdapter(mBusinessSearchAdapter);
 
         mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
+            @Override public void onFocusChange(View view, boolean hasFocus) {
 
-                if(hasFocus){
+                if (hasFocus) {
                     mSearchField.setHint("Category or Business Name");
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
@@ -386,8 +376,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                     mCurrentLayoutSeparator.setVisibility(View.GONE);
                     mOnTheWebSeparator.setVisibility(View.GONE);
 
-
-                    if(getCachedBusinessSearchData() != null){
+                    if (getCachedBusinessSearchData() != null) {
                         mSearchListView.setAdapter(mBusinessSearchAdapter);
                         mBusinessList.clear();
                         mBusinessList.addAll(getCachedBusinessSearchData());
@@ -402,11 +391,10 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         });
 
         mSearchField.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+            @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 int keyAction = keyEvent.getAction();
                 String test = "";
-                if(keyAction == KeyEvent.ACTION_UP){
+                if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
                             mLocationField.requestFocus();
@@ -419,24 +407,21 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                     }
                 }
 
-               return false;
+                return false;
             }
 
         });
 
         mSearchField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mSearchField.onTextChanged();
             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+            @Override public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().length() > 0) {
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
@@ -452,8 +437,10 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
                     try {
                         String latLong = String.valueOf(getLatFromSharedPreference());
-                        latLong += ","+String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(null).execute(editable.toString(), mLocationWords, latLong);
+                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        new BusinessAutoCompleteAsynctask(null).execute(editable.toString(),
+                                                                        mLocationWords,
+                                                                        latLong);
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -461,7 +448,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
                 } else {
                     mDummyFocusLayout.requestFocus();
-                    if(mSearchField.getText().toString().length()<=0){
+                    if (mSearchField.getText().toString().length() <= 0) {
                         mLocationField.setVisibility(View.GONE);
                     }
                     mBusinessLayout.setVisibility(View.VISIBLE);
@@ -482,10 +469,9 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
+            @Override public void onFocusChange(View view, boolean hasFocus) {
 
-                if(hasFocus){
+                if (hasFocus) {
                     mSearchField.setHint("Search");
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
@@ -496,7 +482,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                     mOnTheWebSeparator.setVisibility(View.VISIBLE);
                     mSearchListView.setAdapter(mLocationAdapter);
 
-                    if(getCachedLocationSearchData() != null){
+                    if (getCachedLocationSearchData() != null) {
                         mLocation.clear();
                         mLocation.addAll(getCachedLocationSearchData());
                         mLocationAdapter.notifyDataSetChanged();
@@ -521,77 +507,56 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
             }
         });
 
+        final View.OnKeyListener keyListener =
+                (new View.OnKeyListener() {
+                    @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                        int keyAction = keyEvent.getAction();
+                        mIntent = new Intent(BusinessDirectoryActivity.this,
+                                             MapBusinessDirectoryActivity.class);
+                        if (keyAction == KeyEvent.ACTION_UP) {
+                            switch (keyCode) {
+                                case KeyEvent.FLAG_EDITOR_ACTION:
+                                case KeyEvent.KEYCODE_ENTER:
+                                    mIntent.putExtra(BUSINESS, mSearchField.getText().toString());
+                                    mIntent.putExtra(LOCATION, mLocationField.getText().toString());
+                                    mIntent.putExtra(BUSINESSTYPE, mBusinessType);
+                                    startActivity(mIntent);
 
-        mLocationField.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                int keyAction = keyEvent.getAction();
-                mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                if(keyAction == KeyEvent.ACTION_UP){
-                    switch (keyCode) {
-                        case KeyEvent.FLAG_EDITOR_ACTION:
-                            mIntent.putExtra(BUSINESS, mSearchField.getText().toString());
-                            mIntent.putExtra(LOCATION,mLocationField.getText().toString());
-                            mIntent.putExtra(BUSINESSTYPE, mBusinessType);
-                            startActivity(mIntent);
+                                    if (mBusinessLayout.getVisibility() == View.GONE) {
+                                        mDummyFocusLayout.requestFocus();
+                                        mLocationField.setVisibility(View.GONE);
+                                        mSearchListView.setVisibility(View.GONE);
+                                        mBusinessLayout.setVisibility(View.VISIBLE);
+                                        mNearYouContainer.setVisibility(View.VISIBLE);
+                                        mVenueFragmentLayout.setVisibility(View.VISIBLE);
 
-                            if(mBusinessLayout.getVisibility()==View.GONE){
-                                mDummyFocusLayout.requestFocus();
-                                mLocationField.setVisibility(View.GONE);
-                                mSearchListView.setVisibility(View.GONE);
-                                mBusinessLayout.setVisibility(View.VISIBLE);
-                                mNearYouContainer.setVisibility(View.VISIBLE);
-                                mVenueFragmentLayout.setVisibility(View.VISIBLE);
-
-                                mCurrentLocationButton.setVisibility(View.GONE);
-                                mOnTheWebButton.setVisibility(View.GONE);
-                                mCurrentLayoutSeparator.setVisibility(View.GONE);
-                                mOnTheWebSeparator.setVisibility(View.GONE);
+                                        mCurrentLocationButton.setVisibility(View.GONE);
+                                        mOnTheWebButton.setVisibility(View.GONE);
+                                        mCurrentLayoutSeparator.setVisibility(View.GONE);
+                                        mOnTheWebSeparator.setVisibility(View.GONE);
+                                    }
+                                    return true;
+                                default:
+                                    return false;
                             }
-                            return true;
-                        case KeyEvent.KEYCODE_ENTER:
-                            mIntent.putExtra(BUSINESS, mSearchField.getText().toString());
-                            mIntent.putExtra(LOCATION,mLocationField.getText().toString());
-                            mIntent.putExtra(BUSINESSTYPE, mBusinessType);
-                            startActivity(mIntent);
-
-                            if(mBusinessLayout.getVisibility()==View.GONE){
-                                mDummyFocusLayout.requestFocus();
-                                mLocationField.setVisibility(View.GONE);
-                                mSearchListView.setVisibility(View.GONE);
-                                mBusinessLayout.setVisibility(View.VISIBLE);
-                                mNearYouContainer.setVisibility(View.VISIBLE);
-                                mVenueFragmentLayout.setVisibility(View.VISIBLE);
-
-                                mCurrentLocationButton.setVisibility(View.GONE);
-                                mOnTheWebButton.setVisibility(View.GONE);
-                                mCurrentLayoutSeparator.setVisibility(View.GONE);
-                                mOnTheWebSeparator.setVisibility(View.GONE);
-                            }
-                            return true;
-                        default:
-                            return false;
+                        }
+                        return false;
                     }
-                }
+                });
 
-                return false;
-            }
-
-        });
+        mSearchField.setOnKeyListener(keyListener);
+        mLocationField.setOnKeyListener(keyListener);
 
         mLocationField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mLocationField.onTextChanged();
             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+            @Override public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().length() > 0) {
                     mSearchListView.setAdapter(mLocationAdapter);
@@ -601,21 +566,20 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                     mVenueFragmentLayout.setVisibility(View.GONE);
 
                     String latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += ","+String.valueOf(getLonFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
                     mLocationWords = editable.toString();
 
-                        try {
-                            new LocationAutoCompleteAsynctask(null).execute(mLocationWords, latLong);
+                    try {
+                        new LocationAutoCompleteAsynctask(null).execute(mLocationWords, latLong);
 
-                            mCurrentLocationButton.setVisibility(View.VISIBLE);
-                            mOnTheWebButton.setVisibility(View.VISIBLE);
-                            mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-                            mOnTheWebSeparator.setVisibility(View.VISIBLE);
+                        mCurrentLocationButton.setVisibility(View.VISIBLE);
+                        mOnTheWebButton.setVisibility(View.VISIBLE);
+                        mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
+                        mOnTheWebSeparator.setVisibility(View.VISIBLE);
 
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 } else {
 
@@ -633,67 +597,62 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         });
 
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                if(mSearchField.isFocused()){
-                    BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter)mSearchListView.getAdapter();
+                if (mSearchField.isFocused()) {
+                    BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
                     mSearchField.setText(businessSearchAdapter.getItemValue(position));
                     mBusinessType = businessSearchAdapter.getItem(position).getType();
                     writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
-
-                }
-                else if(mLocationField.isFocused()){
-                    LocationAdapter locationAdapter = (LocationAdapter)mSearchListView.getAdapter();
+                    mLocationField.requestFocus();
+                } else if (mLocationField.isFocused()) {
+                    LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     mLocationField.setText(locationAdapter.getItem(position));
                     writeCachedLocationSearchData(mSearchListView.getAdapter().getItem(position).toString());
                 }
 
-
-                    mCurrentLocationButton.setVisibility(View.GONE);
-                    mOnTheWebButton.setVisibility(View.GONE);
-                    mCurrentLayoutSeparator.setVisibility(View.GONE);
-                    mOnTheWebSeparator.setVisibility(View.GONE);
-                    mSearchListView.setVisibility(View.GONE);
+                mCurrentLocationButton.setVisibility(View.GONE);
+                mOnTheWebButton.setVisibility(View.GONE);
+                mCurrentLayoutSeparator.setVisibility(View.GONE);
+                mOnTheWebSeparator.setVisibility(View.GONE);
+                mSearchListView.setVisibility(View.GONE);
             }
         });
     }
 
-    @Override
-    public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-        if(mBusinessLayout.getVisibility()==View.VISIBLE){
+    @Override public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+        if (mBusinessLayout.getVisibility() == View.VISIBLE) {
             mBusinessScrollListener.onScrollEnded();
         }
     }
 
-    public void setBusinessScrollListener(BusinessScrollListener businessScrollListener){
+    public void setBusinessScrollListener(BusinessScrollListener businessScrollListener) {
         mBusinessScrollListener = businessScrollListener;
     }
 
-
-    class BusinessAutoCompleteAsynctask extends AsyncTask<String, Integer, List<Business>>{
+    class BusinessAutoCompleteAsynctask extends AsyncTask<String, Integer, List<Business>> {
 
         private AirbitzAPI api = AirbitzAPI.getApi();
         private List<Business> mCacheData = null;
 
-        public BusinessAutoCompleteAsynctask(List<Business> cacheData){
+        public BusinessAutoCompleteAsynctask(List<Business> cacheData) {
             mCacheData = cacheData;
         }
 
-        @Override
-        protected List<Business> doInBackground(String... strings) {
-            List<Business> jsonParsingResult = api.getHttpAutoCompleteBusiness(strings[0], strings[1], strings[2]);
+        @Override protected List<Business> doInBackground(String... strings) {
+            List<Business> jsonParsingResult = api.getHttpAutoCompleteBusiness(strings[0],
+                                                                               strings[1],
+                                                                               strings[2]);
             return jsonParsingResult;
         }
 
-        @Override
-        protected void onPostExecute(List<Business> businesses) {
+        @Override protected void onPostExecute(List<Business> businesses) {
             mBusinessList.clear();
-            if(businesses==null){
-                mBusinessList.add(new Business("Result not found","",""));
-            }else{
+            if (businesses == null) {
+                mBusinessList.add(new Business("Result not found", "", ""));
+            } else {
 
-                if(mCacheData != null){
+                if (mCacheData != null) {
                     mBusinessList.addAll(mCacheData);
                 }
                 mBusinessList.addAll(businesses);
@@ -704,11 +663,9 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         }
     }
 
-
-    @Override
-    public void onBackPressed(){
+    @Override public void onBackPressed() {
         mLocationWords = "";
-        if(mBusinessLayout.getVisibility()==View.GONE){
+        if (mBusinessLayout.getVisibility() == View.GONE) {
             mDummyFocusLayout.requestFocus();
             mLocationField.setVisibility(View.GONE);
             mSearchListView.setVisibility(View.GONE);
@@ -725,9 +682,8 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         }
     }
 
-    @Override
-    protected void onResume() {
-        if(mMoreSpinner != null){
+    @Override protected void onResume() {
+        if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
 
@@ -735,47 +691,43 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         super.onResume();
     }
 
-    @Override
-    protected void onStop() {
-        if(mMoreSpinner != null){
+    @Override protected void onStop() {
+        if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
         super.onStop();
     }
 
-    @Override
-    protected void onPause() {
-        if(mMoreSpinner != null){
+    @Override protected void onPause() {
+        if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
         super.onPause();
     }
 
-    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<String>>{
+    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<String>> {
 
         private List<String> mCacheData = null;
         private AirbitzAPI api = AirbitzAPI.getApi();
 
-        public LocationAutoCompleteAsynctask(List<String> cacheData){
+        public LocationAutoCompleteAsynctask(List<String> cacheData) {
             mCacheData = cacheData;
         }
 
-        @Override
-        protected List<String> doInBackground(String... strings) {
+        @Override protected List<String> doInBackground(String... strings) {
 
             List<String> jsonParsingResult = api.getHttpAutoCompleteLocation(strings[0], strings[1]);
             return jsonParsingResult;
 
         }
 
-        @Override
-        protected void onPostExecute(List<String> strings) {
+        @Override protected void onPostExecute(List<String> strings) {
 
             mLocation.clear();
-            if(strings==null){
+            if (strings == null) {
                 mLocation.add("Result not found");
             } else {
-                if(mCacheData != null){
+                if (mCacheData != null) {
                     mLocation.addAll(mCacheData);
                 }
                 mLocation.addAll(strings);
@@ -787,34 +739,34 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
     }
 
-    class BusinessCategoryAsyncTask extends AsyncTask<String, Integer, Categories>{
+    class BusinessCategoryAsyncTask extends AsyncTask<String, Integer, Categories> {
 
         private AirbitzAPI api = AirbitzAPI.getApi();
 
-        @Override
-        protected Categories doInBackground(String... strings) {
+        @Override protected Categories doInBackground(String... strings) {
             Categories jsonParsingResult = null;
-            try{
+            try {
                 jsonParsingResult = api.getHttpCategories(strings[0]);
                 mNextUrl = jsonParsingResult.getNextLink();
                 mCategories = jsonParsingResult;
-                getMoreBusinessCategory(mCategories,mNextUrl);
-            } catch (Exception e){
+                getMoreBusinessCategory(mCategories, mNextUrl);
+            } catch (Exception e) {
 
             }
 
             return jsonParsingResult;
         }
 
-        @Override
-        protected void onPostExecute(Categories categories) {
+        @Override protected void onPostExecute(Categories categories) {
 
-            if(categories!=null){
-                ArrayList<Category> catArrayList= new ArrayList<Category>();
+            if (categories != null) {
+                ArrayList<Category> catArrayList = new ArrayList<Category>();
 
-                for(Category cat: categories.getBusinessCategoryArray()){
-                    if(!cat.getCategoryLevel().equalsIgnoreCase("1") && !cat.getCategoryLevel().equalsIgnoreCase("2")
-                            && !cat.getCategoryLevel().equalsIgnoreCase("3") && !cat.getCategoryLevel().equalsIgnoreCase("null")){
+                for (Category cat : categories.getBusinessCategoryArray()) {
+                    if (!cat.getCategoryLevel().equalsIgnoreCase("1") && !cat.getCategoryLevel()
+                                                                             .equalsIgnoreCase("2")
+                        && !cat.getCategoryLevel().equalsIgnoreCase("3")
+                        && !cat.getCategoryLevel().equalsIgnoreCase("null")) {
                         catArrayList.add(cat);
                     }
                 }
@@ -826,10 +778,10 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                 mMoreSpinner.setAdapter(mMoreCategoryAdapter);
                 mMoreButton.setClickable(true);
 
-                if(mIsMoreCategoriesProgressRunning){
-                    if(categories==null){
+                if (mIsMoreCategoriesProgressRunning) {
+                    if (categories == null) {
                         Toast.makeText(getApplicationContext(), "Can not retrieve data",
-                                Toast.LENGTH_LONG).show();
+                                       Toast.LENGTH_LONG).show();
                     }
                     mIsMoreCategoriesProgressRunning = false;
 
@@ -840,34 +792,33 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
                 }
 
                 mMoreButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    @Override public void onClick(View view) {
                         mMoreSpinner.setVisibility(View.INVISIBLE);
                         mMoreSpinner.performClick();
                     }
                 });
-            } else {mMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "No categories retrieved from server",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+            } else {
+                mMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        Toast.makeText(getApplicationContext(), "No categories retrieved from server",
+                                       Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
         }
     }
 
-    public Categories getMoreBusinessCategory(Categories initial, String link){
-        while(!link.equalsIgnoreCase("null")){
+    public Categories getMoreBusinessCategory(Categories initial, String link) {
+        while (!link.equalsIgnoreCase("null")) {
 
             String jSOnString = api.getRequest(link);
             Categories jsonParsingResult = null;
-            try{
+            try {
                 jsonParsingResult = new Categories(new JSONObject(jSOnString));
                 link = jsonParsingResult.getNextLink();
                 initial.addCategories(jsonParsingResult);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 link = "null";
             }
         }
@@ -880,23 +831,22 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         return pref.getFloat(key, -1);
     }
 
-    private double getLatFromSharedPreference(){
-        return (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+    private double getLatFromSharedPreference() {
+        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
     }
 
-
-    private double getLonFromSharedPreference(){
-        return (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+    private double getLonFromSharedPreference() {
+        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
     }
 
     private void checkLocationManager() {
 
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-        Criteria cri= new Criteria();
+        Criteria cri = new Criteria();
         String provider = mLocationManager.getBestProvider(cri, true);
         mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
-        if(mCurrentLocation!=null){
+        if (mCurrentLocation != null) {
             clearSharedPreference();
             writeLatLonToSharedPreference();
         }
@@ -906,24 +856,22 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         if (!gpsEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("GPS is disabled. Go to Settings and turned on your GPS.")
-                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                   .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                       @Override public void onClick(DialogInterface dialog, int which) {
+                           startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                       }
+                   })
+                   .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                       @Override public void onClick(DialogInterface dialog, int which) {
+                           dialog.dismiss();
+                       }
+                   });
 
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {
-            if(getLatFromSharedPreference()==-1&&getLonFromSharedPreference()==-1){
-                mProgressDialog  = new ProgressDialog(this);
+            if (getLatFromSharedPreference() == -1 && getLonFromSharedPreference() == -1) {
+                mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mProgressDialog.setMessage("Getting location...");
                 mProgressDialog.setIndeterminate(true);
@@ -937,23 +885,19 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
     private final LocationListener listener = new LocationListener() {
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
+        @Override public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
 
-        @Override
-        public void onProviderEnabled(String provider) {
+        @Override public void onProviderEnabled(String provider) {
 
         }
 
-        @Override
-        public void onProviderDisabled(String provider) {
+        @Override public void onProviderDisabled(String provider) {
 
         }
 
-        @Override
-        public void onLocationChanged(android.location.Location location) {
+        @Override public void onLocationChanged(android.location.Location location) {
 
             // Location has changed
             if (mLocationManager != null) {
@@ -962,12 +906,13 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
             }
 
             if (location.hasAccuracy()) {
-                if(getLatFromSharedPreference()==-1&&getLonFromSharedPreference()==-1){
+                if (getLatFromSharedPreference() == -1 && getLonFromSharedPreference() == -1) {
                     mProgressDialog.dismiss();
                 }
                 mCurrentLocation = location;
 
-                Log.d("TAG_LOC","CUR LOC: "+mCurrentLocation.getLatitude()+"; "+mCurrentLocation.getLongitude());
+                Log.d("TAG_LOC",
+                      "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
                 clearSharedPreference();
                 writeLatLonToSharedPreference();
             }
@@ -975,67 +920,64 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
     };
 
-    public void writeCachedLocationSearchData(String recentData){
+    public void writeCachedLocationSearchData(String recentData) {
         SharedPreferences cachePref = null;
 
         cachePref = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = cachePref.edit();
 
-
-        if(cachePref.getString(LOC1_KEY, null) == null){
+        if (cachePref.getString(LOC1_KEY, null) == null) {
             editor.putString(LOC1_KEY, recentData);
         }
-        else{
-                if(!cachePref.getString(LOC1_KEY, null).equalsIgnoreCase(recentData)){
+        else {
+            if (!cachePref.getString(LOC1_KEY, null).equalsIgnoreCase(recentData)) {
 
-                    editor.putString(LOC2_KEY, cachePref.getString(LOC1_KEY, ""));
-                    editor.putString(LOC3_KEY, cachePref.getString(LOC2_KEY, null));
-                    editor.putString(LOC4_KEY, cachePref.getString(LOC3_KEY, null));
-                    editor.putString(LOC5_KEY, cachePref.getString(LOC4_KEY, null));
-                    editor.putString(LOC1_KEY, recentData);
-                }
+                editor.putString(LOC2_KEY, cachePref.getString(LOC1_KEY, ""));
+                editor.putString(LOC3_KEY, cachePref.getString(LOC2_KEY, null));
+                editor.putString(LOC4_KEY, cachePref.getString(LOC3_KEY, null));
+                editor.putString(LOC5_KEY, cachePref.getString(LOC4_KEY, null));
+                editor.putString(LOC1_KEY, recentData);
+            }
         }
 
         editor.commit();
     }
 
-
-    public List<String> getCachedLocationSearchData(){
+    public List<String> getCachedLocationSearchData() {
         SharedPreferences cachePref = null;
         List<String> listRecentLocation = new ArrayList<String>();
 
         cachePref = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = cachePref.edit();
 
-        if((cachePref.getString(LOC1_KEY, null) == null) &&
+        if ((cachePref.getString(LOC1_KEY, null) == null) &&
             (cachePref.getString(LOC2_KEY, null) == null) &&
             (cachePref.getString(LOC3_KEY, null) == null) &&
             (cachePref.getString(LOC4_KEY, null) == null) &&
-            (cachePref.getString(LOC5_KEY, null) == null)){
+            (cachePref.getString(LOC5_KEY, null) == null)) {
             return null;
         }
-        else{
-            if(cachePref.getString(LOC1_KEY, null) != null)
+        else {
+            if (cachePref.getString(LOC1_KEY, null) != null)
                 listRecentLocation.add(cachePref.getString(LOC1_KEY, null));
 
-            if(cachePref.getString(LOC2_KEY, null) != null)
+            if (cachePref.getString(LOC2_KEY, null) != null)
                 listRecentLocation.add(cachePref.getString(LOC2_KEY, null));
 
-            if(cachePref.getString(LOC3_KEY, null) != null)
+            if (cachePref.getString(LOC3_KEY, null) != null)
                 listRecentLocation.add(cachePref.getString(LOC3_KEY, null));
 
-            if(cachePref.getString(LOC4_KEY, null) != null)
+            if (cachePref.getString(LOC4_KEY, null) != null)
                 listRecentLocation.add(cachePref.getString(LOC4_KEY, null));
 
-            if(cachePref.getString(LOC5_KEY, null) != null)
+            if (cachePref.getString(LOC5_KEY, null) != null)
                 listRecentLocation.add(cachePref.getString(LOC5_KEY, null));
-
 
             return listRecentLocation;
         }
     }
 
-    public void writeCachedBusinessSearchData(Business recentData){
+    public void writeCachedBusinessSearchData(Business recentData) {
         SharedPreferences cachePref = null;
 
         cachePref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
@@ -1045,22 +987,22 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         String type = recentData.getType();
         String id = recentData.getId();
 
-        if(cachePref.getString(BIZ1_NAME_KEY, null) == null){
+        if (cachePref.getString(BIZ1_NAME_KEY, null) == null) {
             editor.putString(BIZ1_NAME_KEY, name);
             editor.putString(BIZ1_TYPE_KEY, type);
             editor.putString(BIZ1_ID_KEY, id);
         }
-        else{
+        else {
 
-            if(!cachePref.getString(BIZ1_NAME_KEY, null).equalsIgnoreCase(name)){
-            editor.putString(BIZ2_NAME_KEY, cachePref.getString(BIZ1_NAME_KEY, ""));
-            editor.putString(BIZ1_NAME_KEY, name);
+            if (!cachePref.getString(BIZ1_NAME_KEY, null).equalsIgnoreCase(name)) {
+                editor.putString(BIZ2_NAME_KEY, cachePref.getString(BIZ1_NAME_KEY, ""));
+                editor.putString(BIZ1_NAME_KEY, name);
 
-            editor.putString(BIZ2_TYPE_KEY, cachePref.getString(BIZ1_TYPE_KEY, ""));
-            editor.putString(BIZ1_TYPE_KEY, type);
+                editor.putString(BIZ2_TYPE_KEY, cachePref.getString(BIZ1_TYPE_KEY, ""));
+                editor.putString(BIZ1_TYPE_KEY, type);
 
-            editor.putString(BIZ2_ID_KEY, cachePref.getString(BIZ1_ID_KEY, ""));
-            editor.putString(BIZ1_ID_KEY, name);
+                editor.putString(BIZ2_ID_KEY, cachePref.getString(BIZ1_ID_KEY, ""));
+                editor.putString(BIZ1_ID_KEY, name);
             }
 
         }
@@ -1069,34 +1011,34 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
     }
 
-
-    public List<Business> getCachedBusinessSearchData(){
+    public List<Business> getCachedBusinessSearchData() {
         SharedPreferences cachePref = null;
         List<Business> listRecentBusiness = new ArrayList<Business>();
 
         cachePref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = cachePref.edit();
 
-        if((cachePref.getString(BIZ1_NAME_KEY, null) == null) && (cachePref.getString(BIZ2_NAME_KEY, null) == null)){
+        if ((cachePref.getString(BIZ1_NAME_KEY, null) == null) && (cachePref.getString(BIZ2_NAME_KEY, null) == null)) {
             return null;
         }
-        else{
-            if(cachePref.getString(BIZ1_NAME_KEY, null) != null)
+        else {
+            if (cachePref.getString(BIZ1_NAME_KEY, null) != null)
                 listRecentBusiness.add(new Business(cachePref.getString(BIZ1_NAME_KEY, null),
-                cachePref.getString(BIZ1_TYPE_KEY, null), cachePref.getString(BIZ1_ID_KEY, null)));
+                                                    cachePref.getString(BIZ1_TYPE_KEY, null),
+                                                    cachePref.getString(BIZ1_ID_KEY, null)));
 
-            if(cachePref.getString(BIZ2_NAME_KEY, null) != null)
+            if (cachePref.getString(BIZ2_NAME_KEY, null) != null)
                 listRecentBusiness.add(new Business(cachePref.getString(BIZ2_NAME_KEY, null),
-                        cachePref.getString(BIZ2_TYPE_KEY, null), cachePref.getString(BIZ2_ID_KEY, null)));
+                                                    cachePref.getString(BIZ2_TYPE_KEY, null),
+                                                    cachePref.getString(BIZ2_ID_KEY, null)));
 
             return listRecentBusiness;
         }
     }
 
-
-    private void writeLatLonToSharedPreference(){
-        writeValueToSharedPreference(LAT_KEY, (float)mCurrentLocation.getLatitude());
-        writeValueToSharedPreference(LON_KEY, (float)mCurrentLocation.getLongitude());
+    private void writeLatLonToSharedPreference() {
+        writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());
+        writeValueToSharedPreference(LON_KEY, (float) mCurrentLocation.getLongitude());
     }
 
     private void writeValueToSharedPreference(String key, float value) {
@@ -1114,7 +1056,6 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         editor.commit();
     }
 
-
     private void clearCacheSharedPreference() {
         SharedPreferences pref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -1127,7 +1068,8 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
 
         editor.commit();
 
-        SharedPreferences prefLocation = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
+        SharedPreferences prefLocation = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF,
+                                                              MODE_PRIVATE);
         editor = prefLocation.edit();
 
         editor.remove(LOC2_KEY);
@@ -1139,55 +1081,48 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
         editor.commit();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    @Override public boolean onTouchEvent(MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
     }
 
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
+    @Override public boolean onDown(MotionEvent motionEvent) {
         return false;
     }
 
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
+    @Override public void onShowPress(MotionEvent motionEvent) {
 
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
+    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
         return false;
     }
 
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
         return false;
     }
 
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
+    @Override public void onLongPress(MotionEvent motionEvent) {
 
     }
 
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
+    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
 
-            if(start != null & finish != null){
+        if (start != null & finish != null) {
 
-                float yDistance = Math.abs(finish.getY() - start.getY());
+            float yDistance = Math.abs(finish.getY() - start.getY());
 
-                if((finish.getRawX()>start.getRawX()) && (yDistance < 10)){
-                    float xDistance = Math.abs(finish.getRawX() - start.getRawX());
+            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
+                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
 
-                    if(xDistance > 100){
-                        finish();
-                        return true;
-                    }
+                if (xDistance > 100) {
+                    finish();
+                    return true;
                 }
-
             }
 
-            return false;
         }
+
+        return false;
+    }
 
 }
