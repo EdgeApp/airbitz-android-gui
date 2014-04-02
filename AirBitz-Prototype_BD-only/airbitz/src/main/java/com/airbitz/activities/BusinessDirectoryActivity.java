@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -366,6 +367,7 @@ public class BusinessDirectoryActivity extends Activity implements
             @Override public void onFocusChange(View view, boolean hasFocus) {
 
                 if (hasFocus) {
+
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mSearchField.setHint("Category or Business Name");
                     mBusinessLayout.setVisibility(View.GONE);
@@ -378,17 +380,21 @@ public class BusinessDirectoryActivity extends Activity implements
                     mOnTheWebSeparator.setVisibility(View.GONE);
                     mSearchListView.setVisibility(View.VISIBLE);
 
-                    if (getCachedBusinessSearchData() != null) {
-                        // mBusinessList.clear();
-                        final List<Business> cachedBusinesses = getCachedBusinessSearchData();
-                        for (Business business : cachedBusinesses) {
-                            if (!mBusinessList.contains(business)) {
-                                mBusinessList.add(business);
-                            }
-                        }
-                        mBusinessSearchAdapter.notifyDataSetChanged();
-                        ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-                    }
+                    mBusinessList.clear();
+                    mBusinessSearchAdapter.notifyDataSetChanged();
+
+                    // if (getCachedBusinessSearchData() != null) {
+                    // // mBusinessList.clear();
+                    // final List<Business> cachedBusinesses =
+                    // getCachedBusinessSearchData();
+                    // for (Business business : cachedBusinesses) {
+                    // if (!mBusinessList.contains(business)) {
+                    // mBusinessList.add(business);
+                    // }
+                    // }
+                    // mBusinessSearchAdapter.notifyDataSetChanged();
+                    // ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
+                    // }
 
                     // Start search
                     try {
@@ -438,9 +444,15 @@ public class BusinessDirectoryActivity extends Activity implements
                 try {
                     String latLong = String.valueOf(getLatFromSharedPreference());
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
-                    new BusinessAutoCompleteAsynctask(null).execute(editable.toString(),
-                                                                    mLocationWords,
-                                                                    latLong);
+
+                    // Only include cached searches if text is empty.
+                    final String query = editable.toString();
+                    final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
+                            ? getCachedBusinessSearchData()
+                            : null);
+                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
+                                                                                mLocationWords,
+                                                                                latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
