@@ -22,4 +22,19 @@
         <item name="android:paddingRight">@dimen/content_padding_2</item>
     </style>
 
+    <style name="CategoryItemDetail" >
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/blue_text</item>
+        <item name="android:textSize">@dimen/text_size_h4</item>
+        <item name="android:drawablePadding">@dimen/content_padding_2</item>
+        <item name="android:focusable">false</item>
+        <!-- Note: don't use padding here since layouts will override the value of padding<side> -->
+        <item name="android:paddingLeft">@dimen/content_padding</item>
+        <item name="android:paddingRight">@dimen/content_padding</item>
+        <item name="android:paddingTop">@dimen/content_padding</item>
+        <item name="android:paddingBottom">@dimen/content_padding</item>
+    </style>
+
 </resources>

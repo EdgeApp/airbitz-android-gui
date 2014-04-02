@@ -1,139 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <!-- Header -->
+
+    <include
         android:id="@+id/layout_header"
-        android:background="#40000000"
-        android:padding="4dp">
-
-        <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:id="@+id/button_back"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
-            android:layout_margin="5dp"/>
-
-        <TextView
-            android:id="@+id/textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Business Name"
-            android:singleLine="true"
-            android:paddingLeft="30dp"
-            android:ellipsize="end"
-            android:textColor="@android:color/white"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:textSize="20dp"/>
-
-
-        <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:id="@+id/button_help"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
-            android:layout_margin="5dp"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
+        layout="@layout/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
+        android:id="@+id/layout_banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@id/layout_header"
-        android:id="@+id/layout_banner"
         android:background="#80000000">
 
         <ImageView
             android:id="@+id/imageview_business"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:orientation="vertical"-->
-            <!--android:background="#804f606c"-->
-            <!--android:layout_alignParentBottom="true"/>-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:background="#804f606c"-->
+        <!--android:layout_alignParentBottom="true"/>-->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/layout_business_detil"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent">
-
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/layout_business_detil"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/gradient_background"/>
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/gradient_background"
+                android:orientation="vertical" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_alignParentBottom="true"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:background="@android:color/transparent">
-
-                <TextView
-                    android:id="@+id/textview_business_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Business Name"
-                    android:textColor="@android:color/white"
-                    android:layout_above="@+id/textview_discount"
-                    android:textSize="15dp"
-                    android:inputType="textNoSuggestions"
-                    android:shadowColor="#000000"
-                    android:shadowDx="4"
-                    android:shadowDy="4"
-                    android:shadowRadius="6"
-                    android:layout_marginLeft="10dp"
-                    android:textStyle="bold"
-                    android:layout_alignParentRight="true" />
+                android:background="@android:color/transparent"
+                android:orientation="vertical"
+                android:padding="@dimen/content_padding_half" >
 
                 <TextView
                     android:id="@+id/textview_discount"
-                    android:inputType="textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Type | BTC Discount %"
-                    android:textColor="@android:color/white"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:textSize="15dp"
+                    android:layout_margin="@dimen/content_padding_half"
+                    android:inputType="textNoSuggestions"
                     android:shadowColor="#000000"
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
-                    android:layout_marginLeft="10dp"
-                    android:paddingBottom="10dp" />
-                </LinearLayout>
-
+                    tools:text="Type | BTC Discount %"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_h4" />
+            </LinearLayout>
 
 
             <!--    <LinearLayout
@@ -143,181 +81,107 @@
                     android:layout_alignParentBottom="true">
                 </LinearLayout> -->
             <!--<RelativeLayout-->
-                <!--android:layout_width="200dp"-->
-                <!--android:layout_height="50dp"-->
-                <!--android:layout_alignParentTop="true"-->
-                <!--android:layout_alignParentRight="true">-->
-                <!--<ImageView-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="@drawable/bg_ribbon"-->
-                    <!--android:layout_alignParentTop="true"-->
-                    <!--android:layout_alignParentRight="true" />-->
+            <!--android:layout_width="200dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentRight="true">-->
+            <!--<ImageView-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@drawable/bg_ribbon"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentRight="true" />-->
 
             <!--</RelativeLayout>-->
 
-        <TextView
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:background="@drawable/bg_ribbon"
-            android:text="0 miles"
-            android:textColor="@android:color/white"
-            android:textAlignment="center"
-            android:id="@+id/textview_distance"
-            android:textStyle="bold"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" />
+            <TextView
+                android:id="@+id/textview_distance"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/bg_ribbon"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:text="0 miles"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
 
 
+        </RelativeLayout>
     </RelativeLayout>
-    </RelativeLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_banner"
-        android:layout_margin="10dp">
+        android:clipToPadding="false"
+        android:padding="@dimen/content_padding_1_5"
+        android:layout_below="@id/layout_banner">
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/rounded_edge_blue"
+        <LinearLayout
             android:id="@+id/layout_data"
-            android:layout_margin="10dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edge_blue"
+            android:divider="@drawable/gray_white_divider"
+            android:showDividers="middle"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/button_address"
+                style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Address"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/ico_loc_green_small"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:inputType="text|textCapSentences|textMultiLine|textNoSuggestions"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_1"
-                android:layout_below="@id/button_address"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:paddingLeft="16dp"
+                tools:text="Address" />
 
             <Button
                 android:id="@+id/button_phone"
-                android:layout_below="@id/separator_1"
+                style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone Number"
-                android:inputType="text|textCapSentences|textMultiLine|textNoSuggestions"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/ico_phone"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_2"
-                android:layout_below="@id/button_phone"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:paddingLeft="14dp"
+                tools:text="Phone Number" />
+
             <Button
                 android:id="@+id/button_web"
-                android:layout_below="@id/separator_2"
+                style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Web"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/ico_website"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_4"
-                android:layout_below="@id/button_web"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                android:ellipsize="end"
+                tools:text="Web" />
+
             <Button
                 android:id="@+id/button_hour"
-                android:layout_below="@id/separator_4"
+                style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Schedule"
-                android:textSize="12dp"
-                android:textColor="#000000"
-                android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/ico_time"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="15dp"
-                android:inputType="text|textCapSentences|textMultiLine|textNoSuggestions"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
+                android:paddingLeft="@dimen/content_padding"
+                tools:text="Schedule"
+                android:textColor="#000000" />
 
             <TextView
-                android:id="@+id/textview_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#848484"
-                android:inputType="text|textCapSentences|textMultiLine|textNoSuggestions"
-                android:text="About This Business"
-                android:textStyle="bold"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:textSize="14dp"
-                android:paddingTop="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="5dp"
-                android:background="@android:color/white"
-                android:layout_below="@id/button_hour"
-                android:editable="false"/>
-
-            <EditText
                 android:id="@+id/edittext_about"
+                style="@style/CategoryItemDetail"
+                android:background="@drawable/rounded_edge_light_gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:inputType="text|textCapSentences|textMultiLine|textNoSuggestions"
-                android:background="@android:color/white"
-                android:layout_below="@id/textview_about"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:paddingBottom="40dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:textSize="12dp"
+                android:drawableRight="@null"
+                android:padding="@dimen/content_padding_1_5"
                 android:text="About"
-                android:editable="false"
-                android:focusable="false"/>
+                android:textColor="@android:color/black" />
 
 
-            </RelativeLayout>
-
-
+        </LinearLayout>
 
     </ScrollView>
-
-
 
 </RelativeLayout>

@@ -13,12 +13,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -48,18 +48,18 @@ import java.util.List;
 public class DirectoryDetailActivity extends Activity implements GestureDetector.OnGestureListener {
 
     private static final String TAG = DirectoryDetailActivity.class.getSimpleName();
-    private EditText mAboutField;
+    private TextView mAboutField;
 
     private Intent mIntent;
 
     private RelativeLayout mParentLayout;
 
+    private TextView mTitleTextView;
+    private ImageView mLogo;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private BusinessDetail mDetail;
     private ImageView backImage;
-
-    private TextView mTitleView;
 
     private double mLat;
     private double mLon;
@@ -68,7 +68,6 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
     private Button mPhoneButton;
     private Button mWebButton;
     private Button mHourButton;
-    private TextView mBusinessNameText;
     private String mBusinessId;
 
     private TextView mTypeAndDiscountTextView;
@@ -85,18 +84,12 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mGestureDetector = new GestureDetector(this);
 
         mBusinessId = getIntent().getExtras().getString("bizId");
-        String businessName = getIntent().getExtras().getString("bizName");
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
 
-        mBusinessNameText = (TextView) findViewById(R.id.textview_business_name);
         mTypeAndDiscountTextView = (TextView) findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
 
         setDistance(getIntent().getStringExtra("bizDistance"));
-
-        if (businessName != null && !businessName.equalsIgnoreCase("")) {
-            mBusinessNameText.setText(businessName);
-        }
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -122,24 +115,30 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mWebButton = (Button) findViewById(R.id.button_web);
         mHourButton = (Button) findViewById(R.id.button_hour);
 
-        mAboutField = (EditText) findViewById(R.id.edittext_about);
+        mAboutField = (TextView) findViewById(R.id.edittext_about);
 
+        // Header
+        mLogo = (ImageView) findViewById(R.id.logo);
+        mTitleTextView = (TextView) findViewById(R.id.textview_title);
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
-        mTitleView = (TextView) findViewById(R.id.textview_title);
-        mTitleView.setText(businessName);
 
-        mTitleView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        mLogo.setVisibility(View.GONE);
+        mBackButton.setVisibility(View.VISIBLE);
 
-        mAddressButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        mPhoneButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        mWebButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        mHourButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        String businessName = getIntent().getExtras().getString("bizName");
+        if (!TextUtils.isEmpty(businessName)) {
+            mTitleTextView.setText(businessName);
+            mTitleTextView.setVisibility(View.VISIBLE);
+        }
 
-        TextView aboutTextView = (TextView) findViewById(R.id.textview_about);
-        EditText aboutEditText = (EditText) findViewById(R.id.edittext_about);
-        aboutTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        aboutEditText.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mAddressButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mPhoneButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mWebButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mHourButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mAboutField.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mTypeAndDiscountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -254,7 +253,6 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                mBusinessNameText = (TextView) findViewById(R.id.textview_business_name);
                 mTypeAndDiscountTextView = (TextView) findViewById(R.id.textview_discount);
                 mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
                 mAddressButton = (Button) findViewById(R.id.button_address);
@@ -308,7 +306,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     // mBusinessNameText.setText(Common.UNAVAILABLE);
                 }
                 else {
-                    mBusinessNameText.setText(mDetail.getName());
+                    mTitleTextView.setText(mDetail.getName());
+                    mTitleTextView.setVisibility(View.VISIBLE);
                 }
 
                 if ((mDetail.getDescription().length() == 0) || mDetail.getDescription() == null) {
