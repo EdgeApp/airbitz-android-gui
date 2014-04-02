@@ -11,5 +11,7 @@
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
     <string name="more_categories">More Categories</string>
+    <string name="current_location">Current Location</string>
+    <string name="on_the_web">On the Web</string>
 
 </resources>

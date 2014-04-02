@@ -1,3 +1,4 @@
+
 package com.airbitz.adapters;
 
 import android.content.Context;
@@ -24,27 +25,34 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
 
     private static int sGrayText;
     private static int sGreenText;
+    private static int sBlueText;
 
-    public LocationAdapter(Context context, List<LocationSearchResult> locationValue){
+    private static String sCurrentLocation;
+    private static String sOnTheWeb;
+
+    public LocationAdapter(Context context, List<LocationSearchResult> locationValue) {
         super(context, R.layout.item_listview_location, locationValue);
         mContext = context;
         mLocationValue = locationValue;
+
+        // Text color
         sGrayText = context.getResources().getColor(R.color.gray_text);
         sGreenText = context.getResources().getColor(R.color.green_text);
+        sBlueText = context.getResources().getColor(R.color.blue_text);
+
+        sCurrentLocation = context.getString(R.string.current_location);
+        sOnTheWeb = context.getString(R.string.on_the_web);
     }
 
-    @Override
-    public int getCount() {
+    @Override public int getCount() {
         return mLocationValue.size();
     }
 
-    @Override
-    public LocationSearchResult getItem(int position) {
+    @Override public LocationSearchResult getItem(int position) {
         return mLocationValue.get(position);
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @Override public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
 
@@ -53,11 +61,14 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
         textView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         textView.setText(location.getLocationName());
-        textView.setTextColor(location.isCached() ? sGreenText : sGrayText);
+
+        if (sCurrentLocation.equals(location.getLocationName()) ||
+            sOnTheWeb.equals(location.getLocationName())) {
+            textView.setTextColor(sBlueText);
+        } else {
+            textView.setTextColor(location.isCached() ? sGreenText : sGrayText);
+        }
 
         return convertView;
     }
 }
-
-
-
