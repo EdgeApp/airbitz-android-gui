@@ -97,12 +97,7 @@ public class BusinessDirectoryActivity extends Activity implements
     private Button mCoffeeButton;
     private Button mMoreButton;
 
-    private Button mCurrentLocationButton;
-    private Button mOnTheWebButton;
-
     private RelativeLayout mParentLayout;
-    private View mCurrentLayoutSeparator;
-    private View mOnTheWebSeparator;
 
     private LinearLayout mVenueFragmentLayout;
 
@@ -195,12 +190,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mMoreButton = (Button) findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
 
-        mCurrentLocationButton = (Button) findViewById(R.id.button_current_location);
-        mOnTheWebButton = (Button) findViewById(R.id.button_on_the_Web);
         mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
-
-        mCurrentLayoutSeparator = findViewById(R.id.separator_current);
-        mOnTheWebSeparator = findViewById(R.id.separator_on_the_web);
 
         mNearYouContainer = (LinearLayout) findViewById(R.id.layout_near_you);
         mVenueFragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
@@ -233,27 +223,12 @@ public class BusinessDirectoryActivity extends Activity implements
         mMoreButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mNearYouTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
-        mCurrentLocationButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        mOnTheWebButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-
         mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
         mMoreCategoriesProgressDialog = new ProgressDialog(BusinessDirectoryActivity.this);
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent motionEvent) {
                 return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                mLocationField.setText("Current Location");
-            }
-        });
-
-        mOnTheWebButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                mLocationField.setText("On the Web");
             }
         });
 
@@ -370,10 +345,6 @@ public class BusinessDirectoryActivity extends Activity implements
                     mNearYouContainer.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mLocationField.setVisibility(View.VISIBLE);
-                    mCurrentLocationButton.setVisibility(View.GONE);
-                    mOnTheWebButton.setVisibility(View.GONE);
-                    mCurrentLayoutSeparator.setVisibility(View.GONE);
-                    mOnTheWebSeparator.setVisibility(View.GONE);
                     mSearchListView.setVisibility(View.VISIBLE);
 
                     mBusinessList.clear();
@@ -427,10 +398,6 @@ public class BusinessDirectoryActivity extends Activity implements
                 }
 
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
-                mCurrentLocationButton.setVisibility(View.GONE);
-                mOnTheWebButton.setVisibility(View.GONE);
-                mCurrentLayoutSeparator.setVisibility(View.GONE);
-                mOnTheWebSeparator.setVisibility(View.GONE);
                 mLocationField.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
@@ -482,10 +449,6 @@ public class BusinessDirectoryActivity extends Activity implements
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
-                    mCurrentLocationButton.setVisibility(View.VISIBLE);
-                    mOnTheWebButton.setVisibility(View.VISIBLE);
-                    mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-                    mOnTheWebSeparator.setVisibility(View.VISIBLE);
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
 
@@ -497,10 +460,6 @@ public class BusinessDirectoryActivity extends Activity implements
                     try {
                         new LocationAutoCompleteAsynctask(LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)).execute(mLocationWords,
                                                                                                                                                  latLong);
-                        mCurrentLocationButton.setVisibility(View.VISIBLE);
-                        mOnTheWebButton.setVisibility(View.VISIBLE);
-                        mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-                        mOnTheWebSeparator.setVisibility(View.VISIBLE);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -523,10 +482,6 @@ public class BusinessDirectoryActivity extends Activity implements
                     mBusinessLayout.setVisibility(View.VISIBLE);
                     mNearYouContainer.setVisibility(View.VISIBLE);
                     mVenueFragmentLayout.setVisibility(View.VISIBLE);
-                    mCurrentLocationButton.setVisibility(View.GONE);
-                    mOnTheWebButton.setVisibility(View.GONE);
-                    mCurrentLayoutSeparator.setVisibility(View.GONE);
-                    mOnTheWebSeparator.setVisibility(View.GONE);
                 }
 
             }
@@ -554,11 +509,6 @@ public class BusinessDirectoryActivity extends Activity implements
                                         mBusinessLayout.setVisibility(View.VISIBLE);
                                         mNearYouContainer.setVisibility(View.VISIBLE);
                                         mVenueFragmentLayout.setVisibility(View.VISIBLE);
-
-                                        mCurrentLocationButton.setVisibility(View.GONE);
-                                        mOnTheWebButton.setVisibility(View.GONE);
-                                        mCurrentLayoutSeparator.setVisibility(View.GONE);
-                                        mOnTheWebSeparator.setVisibility(View.GONE);
                                     }
                                     return true;
                                 default:
@@ -599,18 +549,11 @@ public class BusinessDirectoryActivity extends Activity implements
                 mLocationWords = editable.toString();
 
                 try {
-
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
                             ? LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)
                             : null);
 
                     new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
-
-                    mCurrentLocationButton.setVisibility(View.VISIBLE);
-                    mOnTheWebButton.setVisibility(View.VISIBLE);
-                    mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-                    mOnTheWebSeparator.setVisibility(View.VISIBLE);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -665,10 +608,6 @@ public class BusinessDirectoryActivity extends Activity implements
                                                                     location.getLocationName());
                 }
 
-                mCurrentLocationButton.setVisibility(View.GONE);
-                mOnTheWebButton.setVisibility(View.GONE);
-                mCurrentLayoutSeparator.setVisibility(View.GONE);
-                mOnTheWebSeparator.setVisibility(View.GONE);
                 mSearchListView.setVisibility(View.GONE);
 
                 if (locationFieldShouldFocus) {
@@ -737,11 +676,6 @@ public class BusinessDirectoryActivity extends Activity implements
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
-
-            mCurrentLocationButton.setVisibility(View.GONE);
-            mOnTheWebButton.setVisibility(View.GONE);
-            mCurrentLayoutSeparator.setVisibility(View.GONE);
-            mOnTheWebSeparator.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
@@ -786,6 +720,11 @@ public class BusinessDirectoryActivity extends Activity implements
         @Override protected void onPostExecute(List<LocationSearchResult> result) {
 
             mLocationList.clear();
+
+            // Add current location and on the web
+            mLocationList.add(new LocationSearchResult(getString(R.string.current_location), false));
+            mLocationList.add(new LocationSearchResult(getString(R.string.on_the_web), false));
+
             if (result == null) {
                 mLocationList.add(new LocationSearchResult("Result not found", false));
             } else {

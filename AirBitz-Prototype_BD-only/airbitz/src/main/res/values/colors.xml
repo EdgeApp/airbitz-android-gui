@@ -2,6 +2,7 @@
 <resources>
     <color name="green_text">#6fb600</color> <!-- TODO: Get correct color -->
     <color name="blue_text">#0179b8</color>
+    <color name="dark_blue_text">#006699</color>
     <color name="gray_text">#656766</color>
     <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
