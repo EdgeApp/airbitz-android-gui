@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.airbitz.R;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
+import com.airbitz.models.Category;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
@@ -40,6 +41,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -70,7 +72,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
     private Button mHourButton;
     private String mBusinessId;
 
-    private TextView mTypeAndDiscountTextView;
+    private TextView mCategoriesTextView;
+    private TextView mDiscountTextView;
     private TextView mDistanceTextView;
 
     private GetBusinessDetailTask mTask;
@@ -86,7 +89,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mBusinessId = getIntent().getExtras().getString("bizId");
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
 
-        mTypeAndDiscountTextView = (TextView) findViewById(R.id.textview_discount);
+        mCategoriesTextView = (TextView) findViewById(R.id.textview_categories);
+        mDiscountTextView = (TextView) findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
 
         setDistance(getIntent().getStringExtra("bizDistance"));
@@ -138,7 +142,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mWebButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mHourButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mAboutField.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mTypeAndDiscountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mCategoriesTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mDiscountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -253,7 +258,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                mTypeAndDiscountTextView = (TextView) findViewById(R.id.textview_discount);
+                mCategoriesTextView = (TextView) findViewById(R.id.textview_categories);
                 mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
                 mAddressButton = (Button) findViewById(R.id.button_address);
                 mPhoneButton = (Button) findViewById(R.id.button_phone);
@@ -317,8 +322,21 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     mAboutField.setText(mDetail.getDescription());
                 }
 
-                String discount = mDetail.getFlagBitcoinDiscount();
+                // Set categories text
+                final List<Category> categories = mDetail.getCategoryObject();
+                final StringBuilder sb = new StringBuilder();
+                final Iterator<Category> iter = categories.iterator();
+                while (iter.hasNext()) {
+                    final Category category = iter.next();
+                    sb.append(category.getCategoryName());
+                    if (iter.hasNext()) {
+                        sb.append(" | ");
+                    }
+                }
+                mCategoriesTextView.setText(sb.toString());
 
+                // Set discount text
+                String discount = mDetail.getFlagBitcoinDiscount();
                 double discountDouble = 0;
                 try {
                     discountDouble = Double.parseDouble(discount);
@@ -326,14 +344,11 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     e.printStackTrace();
                 }
                 int discountInt = (int) (discountDouble * 100);
-
-                if (discountInt == 0) {
-                    mTypeAndDiscountTextView.setText(mDetail.getCategoryObject().get(0).getCategoryName());
-                } else {
-                    mTypeAndDiscountTextView.setText(mDetail.getCategoryObject().get(0).getCategoryName() +
-                                                     " | Disc. " + discountInt + "%");
+                if (discountInt != 0) {
+                    mDiscountTextView.setText("Discount " + discountInt + "%");
                 }
 
+                // Set photo
                 GetBackgroundImageTask task = new GetBackgroundImageTask(backImage);
                 task.execute(mDetail.getImages().get(0).getPhotoLink());
 
