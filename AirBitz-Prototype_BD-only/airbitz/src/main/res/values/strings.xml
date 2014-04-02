@@ -14,5 +14,8 @@
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
     <string name="category_or_business_name">Category or Business Name</string>
+    <string name="address">Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="web">Web</string>
 
 </resources>
