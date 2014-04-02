@@ -18,8 +18,17 @@ public class Business {
     private String mName;
     private String mType;
     private String mId;
+    private boolean mIsCached;
 
     public Business(){
+    }
+
+    public boolean isCached() {
+        return mIsCached;
+    }
+
+    public void setIsCached(boolean isCached) {
+        mIsCached = isCached;
     }
 
     public Business(String name, String type, String id){
