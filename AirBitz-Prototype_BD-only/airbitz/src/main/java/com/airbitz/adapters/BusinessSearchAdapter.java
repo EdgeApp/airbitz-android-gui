@@ -22,10 +22,15 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
     private Context mContext;
     private List<Business> mLocationValue;
 
+    private static int sGrayText;
+    private static int sGreenText;
+
     public BusinessSearchAdapter(Context context, List<Business> locationValue){
         super(context, R.layout.item_listview_location, locationValue);
         mContext = context;
         mLocationValue = locationValue;
+        sGrayText = context.getResources().getColor(R.color.gray_text);
+        sGreenText = context.getResources().getColor(R.color.green_text);
     }
 
     @Override
@@ -46,9 +51,14 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
+
+        final Business business = mLocationValue.get(position);
+
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
         textView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        textView.setText(mLocationValue.get(position).getName());
+        textView.setText(business.getName());
+        textView.setTextColor(business.isCached() ? sGreenText : sGrayText);
+
         return convertView;
     }
 }

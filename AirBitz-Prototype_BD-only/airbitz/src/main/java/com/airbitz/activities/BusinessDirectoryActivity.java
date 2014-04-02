@@ -376,21 +376,23 @@ public class BusinessDirectoryActivity extends Activity implements
                     mOnTheWebButton.setVisibility(View.GONE);
                     mCurrentLayoutSeparator.setVisibility(View.GONE);
                     mOnTheWebSeparator.setVisibility(View.GONE);
+                    mSearchListView.setVisibility(View.VISIBLE);
 
                     if (getCachedBusinessSearchData() != null) {
-                        mSearchListView.setAdapter(mBusinessSearchAdapter);
-//                        mBusinessList.clear();
+                        // mBusinessList.clear();
                         mBusinessList.addAll(0, getCachedBusinessSearchData());
                         mBusinessSearchAdapter.notifyDataSetChanged();
                         ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-                        mSearchListView.setVisibility(View.VISIBLE);
                     }
 
                     // Start search
                     try {
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(getCachedBusinessSearchData()).execute(mSearchField.getText().toString(), mLocationWords, latLong);
+                        new BusinessAutoCompleteAsynctask(getCachedBusinessSearchData()).execute(mSearchField.getText()
+                                                                                                             .toString(),
+                                                                                                 mLocationWords,
+                                                                                                 latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -678,7 +680,7 @@ public class BusinessDirectoryActivity extends Activity implements
                 mBusinessList.addAll(businesses);
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
-//            mSearchListView.setVisibility(View.VISIBLE);
+            // mSearchListView.setVisibility(View.VISIBLE);
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
         }
     }
@@ -754,7 +756,7 @@ public class BusinessDirectoryActivity extends Activity implements
             }
             mLocationAdapter.notifyDataSetChanged();
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-//            mSearchListView.setVisibility(View.VISIBLE);
+            // mSearchListView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -1042,15 +1044,21 @@ public class BusinessDirectoryActivity extends Activity implements
             return null;
         }
         else {
-            if (cachePref.getString(BIZ1_NAME_KEY, null) != null)
-                listRecentBusiness.add(new Business(cachePref.getString(BIZ1_NAME_KEY, null),
-                                                    cachePref.getString(BIZ1_TYPE_KEY, null),
-                                                    cachePref.getString(BIZ1_ID_KEY, null)));
+            if (cachePref.getString(BIZ1_NAME_KEY, null) != null) {
+                final Business biz1 = new Business(cachePref.getString(BIZ1_NAME_KEY, null),
+                                                   cachePref.getString(BIZ1_TYPE_KEY, null),
+                                                   cachePref.getString(BIZ1_ID_KEY, null));
+                biz1.setIsCached(true);
+                listRecentBusiness.add(biz1);
+            }
 
-            if (cachePref.getString(BIZ2_NAME_KEY, null) != null)
-                listRecentBusiness.add(new Business(cachePref.getString(BIZ2_NAME_KEY, null),
-                                                    cachePref.getString(BIZ2_TYPE_KEY, null),
-                                                    cachePref.getString(BIZ2_ID_KEY, null)));
+            if (cachePref.getString(BIZ2_NAME_KEY, null) != null) {
+                final Business biz2 = new Business(cachePref.getString(BIZ2_NAME_KEY, null),
+                                                   cachePref.getString(BIZ2_TYPE_KEY, null),
+                                                   cachePref.getString(BIZ2_ID_KEY, null));
+                biz2.setIsCached(true);
+                listRecentBusiness.add(biz2);
+            }
 
             return listRecentBusiness;
         }
