@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 buildscript {
     repositories {
         mavenCentral()
@@ -31,6 +33,47 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    signingConfigs {
+        release {
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                def file = variant.outputFile
+                def versionCode = getVersionCode()
+                println "APK Version: " + versionCode
+                variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+            }
+        }
+    }
+
+}
+
+// Used for appending the application version code in the generated .apk
+def getVersionCode() {
+    def manifestFile = file("src/main/AndroidManifest.xml")
+    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+    def manifestText = manifestFile.getText()
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    return matcher.group(1).replace(".", "-")
+}
+
+// specify signing properties on the command line
+if (hasProperty('storeFile')) {
+    println 'Generating a signed package.'
+    android.signingConfigs.release.storeFile = file(storeFile)
+    android.signingConfigs.release.storePassword = storePassword
+    android.signingConfigs.release.keyAlias = keyAlias
+    android.signingConfigs.release.keyPassword = keyPassword
+} else {
+    android.buildTypes.release.signingConfig = null
 }
 
 dependencies {
