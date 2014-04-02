@@ -16,8 +16,8 @@
         <item name="android:shadowDx">1.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:drawablePadding">@dimen/content_padding_2</item>
-        <item name="android:paddingTop">@dimen/content_padding_1_quarter</item>
-        <item name="android:paddingBottom">@dimen/content_padding_1_quarter</item>
+        <item name="android:paddingTop">@dimen/content_padding</item>
+        <item name="android:paddingBottom">@dimen/content_padding</item>
         <item name="android:paddingLeft">@dimen/content_padding_2</item>
         <item name="android:paddingRight">@dimen/content_padding_2</item>
     </style>
