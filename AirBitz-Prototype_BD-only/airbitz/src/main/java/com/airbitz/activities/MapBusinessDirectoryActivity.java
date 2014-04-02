@@ -39,10 +39,12 @@ import com.airbitz.adapters.MapInfoWindowAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
+import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.LocationCacheUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -99,7 +101,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private static final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
 
-    private ArrayList<String> mLocation;
+    private ArrayList<LocationSearchResult> mLocation;
     private ArrayList<Business> mBusinessList;
 
     private Location mCurrentLocation;
@@ -152,7 +154,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
 
         mBusinessList = new ArrayList<Business>();
-        mLocation = new ArrayList<String>();
+        mLocation = new ArrayList<LocationSearchResult>();
 
         mGestureDetector = new GestureDetector(this);
 
@@ -346,9 +348,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mMainContentLayout.setVisibility(View.GONE);
                     mMapLayout.setVisibility(View.GONE);
 
-                    if(getCachedLocationSearchData() != null){
+                    if(LocationCacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this) != null){
                         mLocation.clear();
-                        mLocation.addAll(getCachedLocationSearchData());
+                        mLocation.addAll(LocationCacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this));
                         mLocationAdapter.notifyDataSetChanged();
                         mSearchListView.setVisibility(View.VISIBLE);
                     }
@@ -488,9 +490,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                 }
                 else if(mLocationEdittext.isFocused()){
-                    LocationAdapter locationAdapter = (LocationAdapter)mSearchListView.getAdapter();
-                    mLocationEdittext.setText(locationAdapter.getItem(position));
-                    writeCachedLocationSearchData(mSearchListView.getAdapter().getItem(position).toString());
+                    final LocationAdapter locationAdapter = (LocationAdapter)mSearchListView.getAdapter();
+                    final LocationSearchResult location = locationAdapter.getItem(position);
+                    mLocationEdittext.setText(location.getLocationName());
+                    LocationCacheUtil.writeCachedLocationSearchData(MapBusinessDirectoryActivity.this, location.getLocationName());
                 }
 
                 mCurrentLocationButton.setVisibility(View.GONE);
@@ -875,24 +878,21 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         return mMarkerId;
     }
 
-    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<String>>{
+    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>>{
 
         @Override
-        protected List<String> doInBackground(String... strings) {
-
-            List<String> jsonParsingResult = AirbitzAPI.getApi().getHttpAutoCompleteLocation(strings[0], strings[1]);
-            return jsonParsingResult;
-
+        protected List<LocationSearchResult> doInBackground(String... strings) {
+            return AirbitzAPI.getApi().getHttpAutoCompleteLocation(strings[0], strings[1]);
         }
 
         @Override
-        protected void onPostExecute(List<String> strings) {
+        protected void onPostExecute(List<LocationSearchResult> result) {
 
             mLocation.clear();
-            if(strings==null){
-                mLocation.add("Result not found");
+            if(result == null){
+                mLocation.add(new LocationSearchResult("Result not found", false));
             } else {
-                mLocation.addAll(strings);
+                mLocation.addAll(result);
             }
             mLocationAdapter.notifyDataSetChanged();
         }
@@ -1253,67 +1253,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
 
-    public void writeCachedLocationSearchData(String recentData){
-        SharedPreferences cachePref = null;
-
-        cachePref = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-
-        if(cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, null) == null){
-            editor.putString(BusinessDirectoryActivity.LOC1_KEY, recentData);
-        }
-        else{
-            if(!cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, null).equalsIgnoreCase(recentData)){
-
-                editor.putString(BusinessDirectoryActivity.LOC2_KEY, cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, ""));
-                editor.putString(BusinessDirectoryActivity.LOC3_KEY, cachePref.getString(BusinessDirectoryActivity.LOC2_KEY, null));
-                editor.putString(BusinessDirectoryActivity.LOC4_KEY, cachePref.getString(BusinessDirectoryActivity.LOC3_KEY, null));
-                editor.putString(BusinessDirectoryActivity.LOC5_KEY, cachePref.getString(BusinessDirectoryActivity.LOC4_KEY, null));
-                editor.putString(BusinessDirectoryActivity.LOC1_KEY, recentData);
-            }
-        }
-
-        editor.commit();
-
-    }
-
-    public List<String> getCachedLocationSearchData(){
-        SharedPreferences cachePref = null;
-        List<String> listRecentLocation = new ArrayList<String>();
-
-        cachePref = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        if((cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, null) == null) &&
-                (cachePref.getString(BusinessDirectoryActivity.LOC2_KEY, null) == null) &&
-                (cachePref.getString(BusinessDirectoryActivity.LOC3_KEY, null) == null) &&
-                (cachePref.getString(BusinessDirectoryActivity.LOC4_KEY, null) == null) &&
-                (cachePref.getString(BusinessDirectoryActivity.LOC5_KEY, null) == null)){
-            return null;
-        }
-        else{
-            if(cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(BusinessDirectoryActivity.LOC1_KEY, null));
-
-            if(cachePref.getString(BusinessDirectoryActivity.LOC2_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(BusinessDirectoryActivity.LOC2_KEY, null));
-
-            if(cachePref.getString(BusinessDirectoryActivity.LOC3_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(BusinessDirectoryActivity.LOC3_KEY, null));
-
-            if(cachePref.getString(BusinessDirectoryActivity.LOC4_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(BusinessDirectoryActivity.LOC4_KEY, null));
-
-            if(cachePref.getString(BusinessDirectoryActivity.LOC5_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(BusinessDirectoryActivity.LOC5_KEY, null));
-
-
-            return listRecentLocation;
-        }
-    }
-
-
     public void writeCachedBusinessSearchData(Business recentData){
         SharedPreferences cachePref = null;
 
@@ -1369,31 +1308,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             return listRecentBusiness;
         }
-    }
-
-
-    private void clearCacheSharedPreference() {
-        SharedPreferences pref = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.remove(BusinessDirectoryActivity.BIZ1_NAME_KEY);
-        editor.remove(BusinessDirectoryActivity.BIZ1_TYPE_KEY);
-        editor.remove(BusinessDirectoryActivity.BIZ1_ID_KEY);
-        editor.remove(BusinessDirectoryActivity.BIZ2_NAME_KEY);
-        editor.remove(BusinessDirectoryActivity.BIZ2_TYPE_KEY);
-        editor.remove(BusinessDirectoryActivity.BIZ2_ID_KEY);
-
-        editor.commit();
-
-        SharedPreferences prefLocation = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
-        editor = prefLocation.edit();
-
-        editor.remove(BusinessDirectoryActivity.LOC2_KEY);
-        editor.remove(BusinessDirectoryActivity.LOC3_KEY);
-        editor.remove(BusinessDirectoryActivity.LOC4_KEY);
-        editor.remove(BusinessDirectoryActivity.LOC5_KEY);
-        editor.remove(BusinessDirectoryActivity.LOC1_KEY);
-
-        editor.commit();
     }
 
     @Override

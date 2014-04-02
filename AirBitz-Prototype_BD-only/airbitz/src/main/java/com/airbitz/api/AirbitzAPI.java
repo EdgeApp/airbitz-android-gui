@@ -5,6 +5,7 @@ import android.util.Log;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Business;
 import com.airbitz.models.Categories;
+import com.airbitz.models.LocationSearchResult;
 import com.airbitz.utils.Common;
 
 import org.apache.http.HttpEntity;
@@ -352,10 +353,10 @@ public class AirbitzAPI {
     }
 
 
-    public List<String> getHttpAutoCompleteLocation(String term, String ll){
+    public List<LocationSearchResult> getHttpAutoCompleteLocation(String term, String ll){
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        List<String> resultList = new ArrayList<String>();
+        List<LocationSearchResult> resultList = new ArrayList<LocationSearchResult>();
 
         if(term.length() > 0){
 
@@ -372,7 +373,8 @@ public class AirbitzAPI {
             if (jsonResponse != null){
                 JSONArray results = jsonResponse.getJSONArray("results");
                 for(int index = 0; index<results.length();index ++){
-                    resultList.add(results.getString(index));
+                    final String locationName = results.getString(index);
+                    resultList.add(new LocationSearchResult(locationName, false));
                 }
             }
         }catch (JSONException e){

@@ -45,10 +45,12 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
+import com.airbitz.models.LocationSearchResult;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
+import com.airbitz.utils.LocationCacheUtil;
 
 import org.json.JSONObject;
 
@@ -65,13 +67,7 @@ public class BusinessDirectoryActivity extends Activity implements
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
     public static final String PREF_NAME = "PREF_NAME";
-    public static final String MOSTRECENT_LOCATIONSEARCH_SHARED_PREF = "LOCATION_KEY";
     public static final String MOSTRECENT_BUSINESSSEARCH_SHARED_PREF = "BUSINESS_KEY";
-    public static final String LOC1_KEY = "LOC1_KEY";
-    public static final String LOC2_KEY = "LOC2_KEY";
-    public static final String LOC3_KEY = "LOC3_KEY";
-    public static final String LOC4_KEY = "LOC4_KEY";
-    public static final String LOC5_KEY = "LOC5_KEY";
     public static final String BIZ1_NAME_KEY = "BIZ1_NAME_KEY";
     public static final String BIZ2_NAME_KEY = "BIZ2_NAME_KEY";
     public static final String BIZ1_TYPE_KEY = "BIZ1_TYPE_KEY";
@@ -131,7 +127,7 @@ public class BusinessDirectoryActivity extends Activity implements
     public final static String BUSINESS = "BUSINESS";
     public final static String BUSINESSTYPE = "BUSINESSTYPE";
 
-    private ArrayList<String> mLocation;
+    private ArrayList<LocationSearchResult> mLocationList;
     private ArrayList<Business> mBusinessList;
 
     private String mNextUrl = "null";
@@ -189,7 +185,7 @@ public class BusinessDirectoryActivity extends Activity implements
         helveticaNeueTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
 
         mBusinessList = new ArrayList<Business>();
-        mLocation = new ArrayList<String>();
+        mLocationList = new ArrayList<LocationSearchResult>();
 
         Log.d("TAG_LOC", "CUR LOC: ");
 
@@ -475,7 +471,7 @@ public class BusinessDirectoryActivity extends Activity implements
             }
         });
 
-        mLocationAdapter = new LocationAdapter(BusinessDirectoryActivity.this, mLocation);
+        mLocationAdapter = new LocationAdapter(BusinessDirectoryActivity.this, mLocationList);
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -491,18 +487,35 @@ public class BusinessDirectoryActivity extends Activity implements
                     mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
                     mOnTheWebSeparator.setVisibility(View.VISIBLE);
                     mSearchListView.setAdapter(mLocationAdapter);
+                    mSearchListView.setVisibility(View.VISIBLE);
 
-                    // Show cached search
-                    if (getCachedLocationSearchData() != null) {
-                        mLocation.clear();
-                        mLocation.addAll(getCachedLocationSearchData());
-                        mLocationAdapter.notifyDataSetChanged();
-                        ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-                        mSearchListView.setVisibility(View.VISIBLE);
-                        mBusinessLayout.setVisibility(View.GONE);
-                        mNearYouContainer.setVisibility(View.GONE);
-                        mVenueFragmentLayout.setVisibility(View.GONE);
+                    // Search
+                    String latLong = String.valueOf(getLatFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    mLocationWords = "";
+
+                    try {
+                        new LocationAutoCompleteAsynctask(LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)).execute(mLocationWords,
+                                                                                                                                                 latLong);
+                        mCurrentLocationButton.setVisibility(View.VISIBLE);
+                        mOnTheWebButton.setVisibility(View.VISIBLE);
+                        mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
+                        mOnTheWebSeparator.setVisibility(View.VISIBLE);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+                    // // Show cached search
+                    // if (getCachedLocationSearchData() != null) {
+                    // mLocationList.clear();
+                    // mLocationList.addAll(getCachedLocationSearchData());
+                    // mLocationAdapter.notifyDataSetChanged();
+                    // ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
+                    // mSearchListView.setVisibility(View.VISIBLE);
+                    // mBusinessLayout.setVisibility(View.GONE);
+                    // mNearYouContainer.setVisibility(View.GONE);
+                    // mVenueFragmentLayout.setVisibility(View.GONE);
+                    // }
 
                 } else {
 
@@ -586,7 +599,12 @@ public class BusinessDirectoryActivity extends Activity implements
                 mLocationWords = editable.toString();
 
                 try {
-                    new LocationAutoCompleteAsynctask(null).execute(mLocationWords, latLong);
+
+                    List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
+                            ? LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)
+                            : null);
+
+                    new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
 
                     mCurrentLocationButton.setVisibility(View.VISIBLE);
                     mOnTheWebButton.setVisibility(View.VISIBLE);
@@ -640,9 +658,11 @@ public class BusinessDirectoryActivity extends Activity implements
                     // locationFieldShouldFocus = true;
 
                 } else if (mLocationField.isFocused()) {
-                    LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
-                    mLocationField.setText(locationAdapter.getItem(position));
-                    writeCachedLocationSearchData(mSearchListView.getAdapter().getItem(position).toString());
+                    final LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
+                    final LocationSearchResult location = locationAdapter.getItem(position);
+                    mLocationField.setText(location.getLocationName());
+                    LocationCacheUtil.writeCachedLocationSearchData(BusinessDirectoryActivity.this,
+                                                                    location.getLocationName());
                 }
 
                 mCurrentLocationButton.setVisibility(View.GONE);
@@ -750,36 +770,44 @@ public class BusinessDirectoryActivity extends Activity implements
         super.onPause();
     }
 
-    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<String>> {
+    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>> {
 
-        private List<String> mCacheData = null;
+        private List<LocationSearchResult> mCacheData = null;
         private AirbitzAPI api = AirbitzAPI.getApi();
 
-        public LocationAutoCompleteAsynctask(List<String> cacheData) {
+        public LocationAutoCompleteAsynctask(List<LocationSearchResult> cacheData) {
             mCacheData = cacheData;
         }
 
-        @Override protected List<String> doInBackground(String... strings) {
-
-            List<String> jsonParsingResult = api.getHttpAutoCompleteLocation(strings[0], strings[1]);
-            return jsonParsingResult;
-
+        @Override protected List<LocationSearchResult> doInBackground(String... strings) {
+            return api.getHttpAutoCompleteLocation(strings[0], strings[1]);
         }
 
-        @Override protected void onPostExecute(List<String> strings) {
+        @Override protected void onPostExecute(List<LocationSearchResult> result) {
 
-            mLocation.clear();
-            if (strings == null) {
-                mLocation.add("Result not found");
+            mLocationList.clear();
+            if (result == null) {
+                mLocationList.add(new LocationSearchResult("Result not found", false));
             } else {
+
+                // Add cached search results
                 if (mCacheData != null) {
-                    mLocation.addAll(mCacheData);
+                    for (LocationSearchResult location : mCacheData) {
+                        if (!mLocationList.contains(location)) {
+                            mLocationList.add(location);
+                        }
+                    }
                 }
-                mLocation.addAll(strings);
+
+                // Add search results
+                for (LocationSearchResult location : result) {
+                    if (!mLocationList.contains(location)) {
+                        mLocationList.add(location);
+                    }
+                }
             }
             mLocationAdapter.notifyDataSetChanged();
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-            // mSearchListView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -965,63 +993,6 @@ public class BusinessDirectoryActivity extends Activity implements
 
     };
 
-    public void writeCachedLocationSearchData(String recentData) {
-        SharedPreferences cachePref = null;
-
-        cachePref = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        if (cachePref.getString(LOC1_KEY, null) == null) {
-            editor.putString(LOC1_KEY, recentData);
-        }
-        else {
-            if (!cachePref.getString(LOC1_KEY, null).equalsIgnoreCase(recentData)) {
-
-                editor.putString(LOC2_KEY, cachePref.getString(LOC1_KEY, ""));
-                editor.putString(LOC3_KEY, cachePref.getString(LOC2_KEY, null));
-                editor.putString(LOC4_KEY, cachePref.getString(LOC3_KEY, null));
-                editor.putString(LOC5_KEY, cachePref.getString(LOC4_KEY, null));
-                editor.putString(LOC1_KEY, recentData);
-            }
-        }
-
-        editor.commit();
-    }
-
-    public List<String> getCachedLocationSearchData() {
-        SharedPreferences cachePref = null;
-        List<String> listRecentLocation = new ArrayList<String>();
-
-        cachePref = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        if ((cachePref.getString(LOC1_KEY, null) == null) &&
-            (cachePref.getString(LOC2_KEY, null) == null) &&
-            (cachePref.getString(LOC3_KEY, null) == null) &&
-            (cachePref.getString(LOC4_KEY, null) == null) &&
-            (cachePref.getString(LOC5_KEY, null) == null)) {
-            return null;
-        }
-        else {
-            if (cachePref.getString(LOC1_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(LOC1_KEY, null));
-
-            if (cachePref.getString(LOC2_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(LOC2_KEY, null));
-
-            if (cachePref.getString(LOC3_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(LOC3_KEY, null));
-
-            if (cachePref.getString(LOC4_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(LOC4_KEY, null));
-
-            if (cachePref.getString(LOC5_KEY, null) != null)
-                listRecentLocation.add(cachePref.getString(LOC5_KEY, null));
-
-            return listRecentLocation;
-        }
-    }
-
     public void writeCachedBusinessSearchData(Business recentData) {
         SharedPreferences cachePref = null;
 
@@ -1107,30 +1078,32 @@ public class BusinessDirectoryActivity extends Activity implements
         editor.commit();
     }
 
-    private void clearCacheSharedPreference() {
-        SharedPreferences pref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.remove(BIZ1_NAME_KEY);
-        editor.remove(BIZ1_TYPE_KEY);
-        editor.remove(BIZ1_ID_KEY);
-        editor.remove(BIZ2_NAME_KEY);
-        editor.remove(BIZ2_TYPE_KEY);
-        editor.remove(BIZ2_ID_KEY);
-
-        editor.commit();
-
-        SharedPreferences prefLocation = getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF,
-                                                              MODE_PRIVATE);
-        editor = prefLocation.edit();
-
-        editor.remove(LOC2_KEY);
-        editor.remove(LOC3_KEY);
-        editor.remove(LOC4_KEY);
-        editor.remove(LOC5_KEY);
-        editor.remove(LOC1_KEY);
-
-        editor.commit();
-    }
+    // private void clearCacheSharedPreference() {
+    // SharedPreferences pref =
+    // getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
+    // SharedPreferences.Editor editor = pref.edit();
+    // editor.remove(BIZ1_NAME_KEY);
+    // editor.remove(BIZ1_TYPE_KEY);
+    // editor.remove(BIZ1_ID_KEY);
+    // editor.remove(BIZ2_NAME_KEY);
+    // editor.remove(BIZ2_TYPE_KEY);
+    // editor.remove(BIZ2_ID_KEY);
+    //
+    // editor.commit();
+    //
+    // SharedPreferences prefLocation =
+    // getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF,
+    // MODE_PRIVATE);
+    // editor = prefLocation.edit();
+    //
+    // editor.remove(LOC2_KEY);
+    // editor.remove(LOC3_KEY);
+    // editor.remove(LOC4_KEY);
+    // editor.remove(LOC5_KEY);
+    // editor.remove(LOC1_KEY);
+    //
+    // editor.commit();
+    // }
 
     @Override public boolean onTouchEvent(MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
