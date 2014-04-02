@@ -380,7 +380,12 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     if (getCachedBusinessSearchData() != null) {
                         // mBusinessList.clear();
-                        mBusinessList.addAll(0, getCachedBusinessSearchData());
+                        final List<Business> cachedBusinesses = getCachedBusinessSearchData();
+                        for (Business business : cachedBusinesses) {
+                            if (!mBusinessList.contains(business)) {
+                                mBusinessList.add(business);
+                            }
+                        }
                         mBusinessSearchAdapter.notifyDataSetChanged();
                         ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
                     }
@@ -673,14 +678,20 @@ public class BusinessDirectoryActivity extends Activity implements
             if (businesses == null) {
                 mBusinessList.add(new Business("Result not found", "", ""));
             } else {
-
                 if (mCacheData != null) {
-                    mBusinessList.addAll(mCacheData);
+                    for (Business business : mCacheData) {
+                        if (!mBusinessList.contains(business)) {
+                            mBusinessList.add(business);
+                        }
+                    }
                 }
-                mBusinessList.addAll(businesses);
+                for (Business business : businesses) {
+                    if (!mBusinessList.contains(business)) {
+                        mBusinessList.add(business);
+                    }
+                }
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
-            // mSearchListView.setVisibility(View.VISIBLE);
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
         }
     }

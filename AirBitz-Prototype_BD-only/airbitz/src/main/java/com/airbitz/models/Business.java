@@ -51,6 +51,25 @@ public class Business {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return mId.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return mName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Business) {
+            final Business otherBusiness = (Business) o;
+            return mId.equals(otherBusiness.getId());
+        }
+        return false;
+    }
+
     public static List<Business> generateBusinessObjectListFromJSON(JSONArray objectArray){
         JSONArray temp = objectArray;
         List<Business> resultList = new ArrayList<Business>();
