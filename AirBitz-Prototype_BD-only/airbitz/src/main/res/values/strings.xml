@@ -13,5 +13,6 @@
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
+    <string name="category_or_business_name">Category or Business Name</string>
 
 </resources>
