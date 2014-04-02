@@ -340,15 +340,14 @@ public class BusinessDirectoryActivity extends Activity implements
                 if (hasFocus) {
 
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
-                    mSearchField.setHint("Category or Business Name");
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
 
-                    mBusinessList.clear();
-                    mBusinessSearchAdapter.notifyDataSetChanged();
+//                    mBusinessList.clear();
+//                    mBusinessSearchAdapter.notifyDataSetChanged();
 
                     // if (getCachedBusinessSearchData() != null) {
                     // // mBusinessList.clear();
@@ -445,7 +444,6 @@ public class BusinessDirectoryActivity extends Activity implements
             @Override public void onFocusChange(View view, boolean hasFocus) {
 
                 if (hasFocus) {
-                    mSearchField.setHint("Search");
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
@@ -608,10 +606,16 @@ public class BusinessDirectoryActivity extends Activity implements
                                                                     location.getLocationName());
                 }
 
-                mSearchListView.setVisibility(View.GONE);
+//                mSearchListView.setVisibility(View.GONE);
 
                 if (locationFieldShouldFocus) {
                     mLocationField.requestFocus();
+                    mLocationField.setSelection(mLocationField.length());
+                    mLocationField.setSelected(false);
+                } else {
+                    mSearchField.requestFocus();
+                    mSearchField.setSelection(mSearchField.length());
+                    mSearchField.setSelected(false);
                 }
             }
         });
