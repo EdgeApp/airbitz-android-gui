@@ -76,7 +76,9 @@ if (hasProperty('storeFile')) {
     android.buildTypes.release.signingConfig = null
 }
 
+
 dependencies {
+    compile 'me.grantland:autofittextview:0.1.+'
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.google.android.gms:play-services:4.0.30'
 }
