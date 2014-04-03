@@ -11,7 +11,7 @@
         android:layout_height="26dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/content_padding_half"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
@@ -22,19 +22,21 @@
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo" />
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:id="@+id/textview_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/button_back"
         android:layout_centerInParent="true"
-        android:layout_margin="10dp"
-        android:text="Directory"
+        android:layout_margin="@dimen/content_padding"
+        android:gravity="center"
+        android:singleLine="true"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_h1"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <ImageButton
         android:id="@+id/button_help"
