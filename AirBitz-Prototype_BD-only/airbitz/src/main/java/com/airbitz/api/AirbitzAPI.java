@@ -2,21 +2,15 @@ package com.airbitz.api;
 
 import android.util.Log;
 
-import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Business;
+import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
-import com.airbitz.utils.Common;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
