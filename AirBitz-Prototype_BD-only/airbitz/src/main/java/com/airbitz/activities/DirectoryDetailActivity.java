@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,14 +34,10 @@ import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,15 +58,17 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private BusinessDetail mDetail;
-    private ImageView backImage;
+    private ImageView mBackImage;
 
     private double mLat;
     private double mLon;
 
+    private LinearLayout mHourContainer;
+    private TextView mDaysTextView;
+    private TextView mHoursTextView;
     private Button mAddressButton;
     private Button mPhoneButton;
     private Button mWebButton;
-    private Button mHourButton;
     private String mBusinessId;
 
     private TextView mCategoriesTextView;
@@ -117,7 +116,10 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mAddressButton = (Button) findViewById(R.id.button_address);
         mPhoneButton = (Button) findViewById(R.id.button_phone);
         mWebButton = (Button) findViewById(R.id.button_web);
-        mHourButton = (Button) findViewById(R.id.button_hour);
+        mHourContainer = (LinearLayout) findViewById(R.id.LinearLayout_hourContainer);
+        mDaysTextView = (TextView) findViewById(R.id.TextView_days);
+        mHoursTextView = (TextView) findViewById(R.id.TextView_hours);
+        mBackImage = (ImageView) findViewById(R.id.imageview_business);
 
         mAboutField = (TextView) findViewById(R.id.edittext_about);
 
@@ -140,7 +142,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mAddressButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mPhoneButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mWebButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mHourButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mDaysTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mHoursTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mAboutField.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mCategoriesTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         mDiscountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
@@ -258,14 +261,6 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                mCategoriesTextView = (TextView) findViewById(R.id.textview_categories);
-                mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
-                mAddressButton = (Button) findViewById(R.id.button_address);
-                mPhoneButton = (Button) findViewById(R.id.button_phone);
-                mWebButton = (Button) findViewById(R.id.button_web);
-                mHourButton = (Button) findViewById(R.id.button_hour);
-                backImage = (ImageView) findViewById(R.id.imageview_business);
-
                 setDistance(mDetail.getDistance());
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
@@ -298,10 +293,10 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 }
 
                 if (mDetail.getHourObjectArray() == null || mDetail.getHourObjectArray().size() == 0) {
-                    mHourButton.setVisibility(View.GONE);
+                    mHourContainer.setVisibility(View.GONE);
                 } else {
-                    mHourButton.setText(createScheduleString(mDetail.getHourObjectArray()));
-                    mHourButton.setVisibility(View.VISIBLE);
+                    setSchedule(mDetail.getHourObjectArray());
+                    mHourContainer.setVisibility(View.VISIBLE);
                 }
 
                 if ((mDetail.getName().length() == 0) || mDetail.getName() == null) {
@@ -344,16 +339,16 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                int discountInt = (int) (discountDouble * 100);
-                if (discountInt != 0) {
-                    mDiscountTextView.setText("Discount " + discountInt + "%");
+                if (discountDouble != 0) {
+//                    mDiscountTextView.setText("Discount " + discountInt + "%");
+                    mDiscountTextView.setText(String.format("Discount %.2f%", (discountDouble * 100)));
                     mDiscountTextView.setVisibility(View.VISIBLE);
                 } else {
                     mDiscountTextView.setVisibility(View.GONE);
                 }
 
                 // Set photo
-                GetBackgroundImageTask task = new GetBackgroundImageTask(backImage);
+                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
                 task.execute(mDetail.getImages().get(0).getPhotoLink());
 
                 mAddressButton.setOnClickListener(new View.OnClickListener() {
@@ -381,87 +376,63 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                         }
                     }
                 });
-                mHourButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
 
-                    }
-                });
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                mAddressButton.setText(Common.UNAVAILABLE);
-                mPhoneButton.setText(Common.UNAVAILABLE);
-                mWebButton.setText(Common.UNAVAILABLE);
-                mHourButton.setText(Common.UNAVAILABLE);
-                Toast.makeText(getApplicationContext(), "Can not retrieve data",
-                               Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
-                mAddressButton.setText(Common.UNAVAILABLE);
-                mPhoneButton.setText(Common.UNAVAILABLE);
-                mWebButton.setText(Common.UNAVAILABLE);
-                mHourButton.setText(Common.UNAVAILABLE);
+                mAddressButton.setVisibility(View.GONE);
+                mPhoneButton.setVisibility(View.GONE);
+                mWebButton.setVisibility(View.GONE);
+                mHourContainer.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Can not retrieve data",
                                Toast.LENGTH_LONG).show();
             }
             mProgressDialog.dismiss();
         }
 
-        String createHourString(List<Hour> hours) {
-            String dayOfWeek = hours.get(0).getDayOfWeek();
-            String dayOfWeek2 = hours.get(hours.size() - 1).getDayOfWeek();
-            String hourStart = hours.get(0).getHourStart();
-            String hourEnd = hours.get(0).setHourEnd();
-            if (hours.get(0).getDayOfWeek().length() == 0 || hours.get(0).getDayOfWeek() == null) {
-                dayOfWeek = Common.UNAVAILABLE;
-            }
-            if (hours.get(hours.size() - 1).getDayOfWeek().length() == 0 || hours.get(hours.size() - 1)
-                                                                                 .getDayOfWeek() == null) {
-                dayOfWeek2 = Common.UNAVAILABLE;
-            }
-            if (hours.get(0).getHourStart().length() == 0 || hours.get(0).getHourStart() == null) {
-                hourStart = Common.UNAVAILABLE;
-            }
-            if (hours.get(0).setHourEnd().length() == 0 || hours.get(0).setHourEnd() == null) {
-                hourEnd = Common.UNAVAILABLE;
+        private void setSchedule(List<Hour> hours) {
+            final Iterator<Hour> iter = hours.iterator();
+            final StringBuilder daysSb = new StringBuilder();
+            final StringBuilder hoursSb = new StringBuilder();
+            while (iter.hasNext()) {
+                final Hour hour = iter.next();
+
+                // Day
+                daysSb.append(hour.getDayOfWeek());
+
+                // Hour
+                hoursSb.append(hour.getPrettyStartEndHour());
+
+                if (iter.hasNext()) {
+                    daysSb.append("\n");
+                    hoursSb.append("\n");
+                }
             }
 
-            return "Hours: " + dayOfWeek + " - " + dayOfWeek2 + " " + hourStart + " - " + hourEnd;
+            mDaysTextView.setText(daysSb.toString());
+            mHoursTextView.setText(hoursSb.toString());
         }
 
-        String createScheduleString(List<Hour> hours) {
-            String schedule = "";
-            for (Hour hour : hours) {
-                String startHour = hour.getHourStart();
-                String endHour = hour.getHourEnd();
-                SimpleDateFormat militaryFormat = new SimpleDateFormat("HH:mm:ss");
-                SimpleDateFormat amPmFormat = new SimpleDateFormat("hh:mm a");
-
-                String hourString = "";
-                try {
-                    Date hourStartDateMil = militaryFormat.parse(startHour);
-                    startHour = amPmFormat.format(hourStartDateMil);
-                    Date hourEndDateMil = militaryFormat.parse(endHour);
-                    endHour = amPmFormat.format(hourEndDateMil);
-
-                    hourString = startHour + " - " + endHour;
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if (startHour.equalsIgnoreCase("null")) {
-                    if (!endHour.equalsIgnoreCase("null")) {
-                        hourString = endHour;
-                    }
-                } else if (endHour.equalsIgnoreCase("null")) {
-                    hourString = startHour;
-                }
-
-                schedule += hour.getDayOfWeek() + " " + hourString + "\n";
-            }
-            schedule = schedule.substring(0, schedule.length() - 1);
-            return schedule;
-        }
+//        String createScheduleString(List<Hour> hours) {
+//            String schedule = "";
+//            for (Hour hour : hours) {
+//                String startHour = hour.getHourStart();
+//                String endHour = hour.getHourEnd();
+//
+//                String hourString = "";
+//
+//                if (startHour.equalsIgnoreCase("null")) {
+//                    if (!endHour.equalsIgnoreCase("null")) {
+//                        hourString = endHour;
+//                    }
+//                } else if (endHour.equalsIgnoreCase("null")) {
+//                    hourString = startHour;
+//                }
+//
+//                schedule += hour.getDayOfWeek() + " " + hourString + "\n";
+//            }
+//            schedule = schedule.substring(0, schedule.length() - 1);
+//            return schedule;
+//        }
     }
 
     private class GetBackgroundImageTask extends AsyncTask<String, Void, Bitmap> {

@@ -55,23 +55,23 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
-                android:padding="@dimen/content_padding_half" >
+                android:padding="@dimen/content_padding_half">
 
                 <TextView
                     android:id="@+id/textview_categories"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/content_padding_half"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
                     android:inputType="textNoSuggestions"
                     android:shadowColor="#000000"
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
-                    android:ellipsize="end"
-                    tools:text="Category 1 | Category 2 | Category 3 | Category 4 | Category 5"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_h4" />
+                    android:textSize="@dimen/text_size_h4"
+                    tools:text="Category 1 | Category 2 | Category 3 | Category 4 | Category 5" />
 
                 <TextView
                     android:id="@+id/textview_discount"
@@ -83,9 +83,9 @@
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
-                    tools:text="BTC Discount %"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_h4" />
+                    android:textSize="@dimen/text_size_h4"
+                    tools:text="BTC Discount %" />
             </LinearLayout>
 
 
@@ -131,9 +131,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/layout_banner"
         android:clipToPadding="false"
-        android:padding="@dimen/content_padding_1_5"
-        android:layout_below="@id/layout_banner">
+        android:padding="@dimen/content_padding_1_5">
 
         <LinearLayout
             android:id="@+id/layout_data"
@@ -141,8 +141,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_edge_blue"
             android:divider="@drawable/gray_white_divider"
-            android:showDividers="middle"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:showDividers="middle">
 
             <Button
                 android:id="@+id/button_address"
@@ -168,31 +168,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
-                android:ellipsize="end"
                 tools:text="Web" />
 
-            <Button
-                android:id="@+id/button_hour"
+            <LinearLayout
+                android:id="@+id/LinearLayout_hourContainer"
                 style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ico_time"
-                android:paddingLeft="@dimen/content_padding"
-                tools:text="Schedule"
-                android:textColor="#000000" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/TextView_days"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="45"
+                    android:drawableLeft="@drawable/ico_time"
+                    android:drawablePadding="@dimen/content_padding_2"
+                    android:textColor="@android:color/black"
+                    tools:text="Sunday\nMonday" />
+
+                <TextView
+                    android:id="@+id/TextView_hours"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="55"
+                    android:textColor="@android:color/black"
+                    tools:text="Sunday\nMonday" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/edittext_about"
                 style="@style/CategoryItemDetail"
-                android:background="@drawable/rounded_edge_light_gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edge_light_gray"
                 android:drawableRight="@null"
                 android:padding="@dimen/content_padding_1_5"
-                tools:text="About"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                tools:text="About" />
 
 
         </LinearLayout>
