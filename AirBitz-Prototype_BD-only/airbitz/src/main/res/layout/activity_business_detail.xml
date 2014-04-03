@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@null"
                 android:padding="@dimen/content_padding_1_5"
-                android:text="About"
+                tools:text="About"
                 android:textColor="@android:color/black" />
 
 

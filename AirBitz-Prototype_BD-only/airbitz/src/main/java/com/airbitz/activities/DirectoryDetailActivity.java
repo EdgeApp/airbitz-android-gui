@@ -272,10 +272,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     if (location != null) {
                         mAddressButton.setText("Directions");
                     } else {
-                        mAddressButton.setText(Common.UNAVAILABLE);
+                        mAddressButton.setVisibility(View.GONE);
                     }
-                }
-                else {
+                } else {
                     mAddressButton.setText(mDetail.getAddress() + ", "
                                            + mDetail.getCity()
                                            + ", "
@@ -284,56 +283,58 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                                            + mDetail.getPostalCode());
                 }
 
-                if ((mDetail.getPhone().length() == 0) || mDetail.getPhone() == null) {
-                    mPhoneButton.setText(Common.UNAVAILABLE);
+                if (TextUtils.isEmpty(mDetail.getPhone())) {
                     mPhoneButton.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     mPhoneButton.setText(mDetail.getPhone());
                     mPhoneButton.setVisibility(View.VISIBLE);
                 }
 
-                if ((mDetail.getWebsite().length() == 0) || mDetail.getWebsite() == null) {
-                    mWebButton.setText(Common.UNAVAILABLE);
-                }
-                else {
+                if (TextUtils.isEmpty(mDetail.getWebsite())) {
+                    mWebButton.setVisibility(View.GONE);
+                } else {
                     mWebButton.setText(mDetail.getWebsite());
+                    mWebButton.setVisibility(View.VISIBLE);
                 }
 
-                if ((mDetail.getHourObjectArray().size() == 0) || mDetail.getHourObjectArray() == null) {
-                    mHourButton.setText(Common.UNAVAILABLE);
-                }
-                else {
+                if (mDetail.getHourObjectArray() == null || mDetail.getHourObjectArray().size() == 0) {
+                    mHourButton.setVisibility(View.GONE);
+                } else {
                     mHourButton.setText(createScheduleString(mDetail.getHourObjectArray()));
+                    mHourButton.setVisibility(View.VISIBLE);
                 }
 
                 if ((mDetail.getName().length() == 0) || mDetail.getName() == null) {
-                    // mBusinessNameText.setText(Common.UNAVAILABLE);
-                }
-                else {
+                    mTitleTextView.setVisibility(View.GONE);
+                } else {
                     mTitleTextView.setText(mDetail.getName());
                     mTitleTextView.setVisibility(View.VISIBLE);
                 }
 
-                if ((mDetail.getDescription().length() == 0) || mDetail.getDescription() == null) {
-                    mAboutField.setText(Common.UNAVAILABLE);
-                }
-                else {
+                if (TextUtils.isEmpty(mDetail.getDescription())) {
+                    mAboutField.setVisibility(View.GONE);
+                } else {
                     mAboutField.setText(mDetail.getDescription());
+                    mAboutField.setVisibility(View.VISIBLE);
                 }
 
                 // Set categories text
                 final List<Category> categories = mDetail.getCategoryObject();
-                final StringBuilder sb = new StringBuilder();
-                final Iterator<Category> iter = categories.iterator();
-                while (iter.hasNext()) {
-                    final Category category = iter.next();
-                    sb.append(category.getCategoryName());
-                    if (iter.hasNext()) {
-                        sb.append(" | ");
+                if (categories == null || categories.size() == 0) {
+                    mCategoriesTextView.setVisibility(View.GONE);
+                } else {
+                    final StringBuilder sb = new StringBuilder();
+                    final Iterator<Category> iter = categories.iterator();
+                    while (iter.hasNext()) {
+                        final Category category = iter.next();
+                        sb.append(category.getCategoryName());
+                        if (iter.hasNext()) {
+                            sb.append(" | ");
+                        }
                     }
+                    mCategoriesTextView.setText(sb.toString());
+                    mCategoriesTextView.setVisibility(View.VISIBLE);
                 }
-                mCategoriesTextView.setText(sb.toString());
 
                 // Set discount text
                 String discount = mDetail.getFlagBitcoinDiscount();
@@ -346,6 +347,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 int discountInt = (int) (discountDouble * 100);
                 if (discountInt != 0) {
                     mDiscountTextView.setText("Discount " + discountInt + "%");
+                    mDiscountTextView.setVisibility(View.VISIBLE);
+                } else {
+                    mDiscountTextView.setVisibility(View.GONE);
                 }
 
                 // Set photo
