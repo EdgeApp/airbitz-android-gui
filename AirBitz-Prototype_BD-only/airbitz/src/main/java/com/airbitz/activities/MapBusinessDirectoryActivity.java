@@ -541,6 +541,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     @Override public void onBackPressed() {
         if (mViewAnimator.getDisplayedChild() == 1) {
             mViewAnimator.setDisplayedChild(0);
+            mLocationEdittext.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
