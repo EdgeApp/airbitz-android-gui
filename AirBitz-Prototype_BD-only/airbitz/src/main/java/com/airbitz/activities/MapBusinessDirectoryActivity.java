@@ -56,6 +56,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.greenhalolabs.halohalo.ResHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -530,6 +531,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
         });
 
+        // Hide map if "On the Web" search
+        if (ResHelper.getStringByResId(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
+            mDragLayout.setVisibility(View.GONE);
+            flMapContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override public void onBackPressed() {
