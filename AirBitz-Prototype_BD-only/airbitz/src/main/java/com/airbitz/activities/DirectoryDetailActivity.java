@@ -261,7 +261,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                setDistance(mDetail.getDistance());
+//                setDistance(mDetail.getDistance());
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
                     if (location != null) {
