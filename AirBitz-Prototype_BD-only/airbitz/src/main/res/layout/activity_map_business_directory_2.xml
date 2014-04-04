@@ -60,6 +60,14 @@
                     android:layout_height="480dp"
                     android:layout_gravity="center" />
 
+                    <ImageButton
+                        android:id="@+id/locateMeButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom|right"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/ico_locate_me" />
+
             </FrameLayout>
 
             <LinearLayout
