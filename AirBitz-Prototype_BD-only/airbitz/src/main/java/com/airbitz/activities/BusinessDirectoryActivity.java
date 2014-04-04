@@ -653,16 +653,16 @@ public class BusinessDirectoryActivity extends Activity implements
             if (businesses == null) {
                 mBusinessList.add(new Business("Result not found", "", ""));
             } else {
+
+                // Add all businesses first
+                mBusinessList.addAll(businesses);
+
+                // Add cached businesses
                 if (mCacheData != null) {
                     for (Business business : mCacheData) {
                         if (!mBusinessList.contains(business)) {
-                            mBusinessList.add(business);
+                            mBusinessList.add(0, business);
                         }
-                    }
-                }
-                for (Business business : businesses) {
-                    if (!mBusinessList.contains(business)) {
-                        mBusinessList.add(business);
                     }
                 }
             }
@@ -733,19 +733,15 @@ public class BusinessDirectoryActivity extends Activity implements
                 mLocationList.add(new LocationSearchResult("Result not found", false));
             } else {
 
-                // Add cached search results
+                // Add all location results
+                mLocationList.addAll(result);
+
+                // Add cached location searches
                 if (mCacheData != null) {
                     for (LocationSearchResult location : mCacheData) {
                         if (!mLocationList.contains(location)) {
-                            mLocationList.add(location);
+                            mLocationList.add(0, location);
                         }
-                    }
-                }
-
-                // Add search results
-                for (LocationSearchResult location : result) {
-                    if (!mLocationList.contains(location)) {
-                        mLocationList.add(location);
                     }
                 }
             }
