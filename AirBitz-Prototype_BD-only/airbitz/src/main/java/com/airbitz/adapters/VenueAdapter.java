@@ -3,6 +3,7 @@ package com.airbitz.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,28 +68,40 @@ public class VenueAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.item_listview_venues, parent, false);
         TextView venueNameTextView = (TextView) convertView.findViewById(R.id.textview_business_name);
         TextView distanceTextView = (TextView) convertView.findViewById(R.id.textview_distance);
+        TextView addressTextView = (TextView) convertView.findViewById(R.id.textview_address);
         TextView discountTextView = (TextView) convertView.findViewById(R.id.textview_discount);
 
         venueNameTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
         distanceTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
+        addressTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
         discountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
 
-        String type = mVenues.get(position).getCategoryObject().get(0).getCategoryName();
-        String discount = mVenues.get(position).getBizDiscount();
+        final BusinessSearchResult result = mVenues.get(position);
+
+        // Address
+        if (!TextUtils.isEmpty(result.getAddress())) {
+            addressTextView.setText(result.getAddress());
+            addressTextView.setVisibility(View.VISIBLE);
+        } else {
+            addressTextView.setVisibility(View.INVISIBLE);
+        }
+
+        // Discount
+        String discount = result.getBizDiscount();
         double discountDouble = 0;
-        try{
+        try {
             discountDouble = Double.parseDouble(discount);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        int discountInt = (int)(discountDouble*100);
-
-        if(discountInt==0){
-            discountTextView.setText(type);
+        if (discountDouble != 0) {
+            discountTextView.setText("BTC Discount " + (int) (discountDouble * 100) + "%");
+            discountTextView.setVisibility(View.VISIBLE);
         } else {
-            discountTextView.setText(type+" | Disc. "+discountInt+"%");
+            discountTextView.setVisibility(View.GONE);
         }
 
+        // Distance
         try{
             double distance = Double.parseDouble(mVenues.get(position).getDistance());
             distance = Common.metersToMiles(distance);
