@@ -25,18 +25,27 @@
         android:layout_centerInParent="true"
         android:src="@drawable/logo" />
 
-    <me.grantland.widget.AutofitTextView
-        android:id="@+id/textview_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_toRightOf="@+id/button_back"
-        android:layout_centerInParent="true"
-        android:layout_margin="@dimen/content_padding"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_h1"
-        android:visibility="visible" />
+        android:layout_toLeftOf="@+id/button_help"
+        android:layout_height="wrap_content" >
+
+        <!-- NOTE: this needs to be in a ViewGroup since gravity doesn't work properly on AutofitTextView. -->
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/content_padding"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_h1"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/button_help"
