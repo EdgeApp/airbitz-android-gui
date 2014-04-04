@@ -2,7 +2,6 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,8 @@ import com.airbitz.R;
 import com.airbitz.activities.BusinessDirectoryActivity;
 import com.airbitz.fragments.VenueFragment;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.tasks.GetImageTask;
 import com.airbitz.utils.Common;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class VenueAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
     private boolean firstPlace = false;
-    private VenueFragment mVenueFragment;
+    //private VenueFragment mVenueFragment;
     private double mLat;
     private double mLon;
 
@@ -40,7 +39,7 @@ public class VenueAdapter extends BaseAdapter {
         mContext = context;
         mVenues = venues;
         mInflater = LayoutInflater.from(mContext);
-        mVenueFragment = venueFragment;
+        //mVenueFragment = venueFragment;
         mLat = getLatFromSharedPreference();
         mLon = getLonFromSharedPreference();
     }
@@ -119,13 +118,8 @@ public class VenueAdapter extends BaseAdapter {
             mainLayout.getLayoutParams().height = height;
         }
 
-        final Bitmap bitmap = mVenueFragment.getBitmapFromMemCache(mVenues.get(position).getId());
-        if (bitmap != null) {
-            backgroundView.setImageBitmap(bitmap);
-        } else {
-            GetImageTask getImageTask = new GetImageTask(backgroundView, mVenueFragment, this, position);
-            getImageTask.execute(mVenues.get(position).getProfileImage().getImageThumbnail(),mVenues.get(position).getId());
-        }
+        Picasso.with(mContext).load(mVenues.get(position).getProfileImage().getImageThumbnail()).into(backgroundView);
+
         return convertView;
     }
 

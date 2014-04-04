@@ -1,1 +1,3 @@
 include ':airbitz'
+include ':halohalo'
+project(':halohalo').projectDir = new File(settingsDir, '../../../HaloHalo/lib')

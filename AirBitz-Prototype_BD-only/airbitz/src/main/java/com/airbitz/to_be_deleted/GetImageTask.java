@@ -1,28 +1,23 @@
-package com.airbitz.tasks;
+package com.airbitz.to_be_deleted;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.fragments.VenueFragment;
-import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.utils.ListViewUtility;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created on 2/26/14.
  */
 public class GetImageTask extends AsyncTask<String, Void, Bitmap> {
 
-    public static final String TAG = GetImageTask.class.getSimpleName();
+    public static final String TAG = "GetImageTask";
 
     ImageView mImageView;
     VenueFragment mVenueFragment;
@@ -47,10 +42,10 @@ public class GetImageTask extends AsyncTask<String, Void, Bitmap> {
         try {
             InputStream in = new URL(params[0]).openStream();
             image = BitmapFactory.decodeStream(in);
-            if(!mVenueFragment.isMemoryCacheFull(image.getByteCount())){
-
-                mVenueFragment.addBitmapToMemoryCache(params[1],image);
-            }
+//            if(!mVenueFragment.isMemoryCacheFull(image.getByteCount())){
+//
+//                mVenueFragment.addBitmapToMemoryCache(params[1],image);
+//            }
         } catch (Exception e) {
             Log.e(TAG, ""+e.getMessage());
             e.printStackTrace();

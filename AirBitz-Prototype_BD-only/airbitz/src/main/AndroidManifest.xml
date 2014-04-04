@@ -20,6 +20,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_title"
+        android:name=".App"
         android:uiOptions="splitActionBarWhenNarrow"
         android:theme="@android:style/Theme.NoTitleBar" >
 

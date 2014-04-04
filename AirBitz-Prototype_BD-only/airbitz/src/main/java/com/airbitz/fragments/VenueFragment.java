@@ -5,11 +5,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.LruCache;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -63,22 +62,13 @@ public class VenueFragment extends Fragment implements
     private GetVenuesTask mGetVenuesTask;
     private GestureDetector mGestureDetector;
 
-    private LruCache<String, Bitmap> mMemoryCache;
-
     private boolean mIsInBusinessDirectory = false;
 
-    public int getMemoryCacheSize() {
-        return mMemoryCache.size();
-    }
 
     public boolean getIsBusinessDirectory() {
         return mIsInBusinessDirectory;
     }
 
-    public boolean isMemoryCacheFull(int byteCount) {
-        int allowedSize = byteCount / 1024;
-        return mMemoryCache.maxSize() - mMemoryCache.size() <= allowedSize;
-    }
 
     public ListView getVenueListView() {
         return mVenueListView;
@@ -116,17 +106,6 @@ public class VenueFragment extends Fragment implements
             }
         });
 
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-        final int cacheSize = maxMemory / 4;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.getByteCount() / 1024;
-            }
-        };
 
         if (getActivity().getClass().toString().equalsIgnoreCase(BusinessDirectoryActivity.class.toString())) {
             String latLon = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
@@ -180,15 +159,6 @@ public class VenueFragment extends Fragment implements
         return view;
     }
 
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
-    }
 
     @Override public void onScrollEnded() {
         if (isFirstLoad) {
@@ -217,6 +187,9 @@ public class VenueFragment extends Fragment implements
         @Override protected void onPreExecute() {
 //            mVenueListView.addFooterView(mLoadingFooterView);
             ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+            
+            Log.d(TAG, "VenueFragment: GetVenuesTask");
+
         }
 
         @Override protected String doInBackground(String... params) {
@@ -265,6 +238,7 @@ public class VenueFragment extends Fragment implements
                 if (results != null) {
                     mNextUrl = results.getNextLink();
                     mTempVenues = results.getBusinessSearchObjectArray();
+                    Log.d(TAG, "total venues from results: " + String.valueOf(mTempVenues.size()));
                 }
 
                 if (mTempVenues.isEmpty()) {
@@ -295,8 +269,16 @@ public class VenueFragment extends Fragment implements
                     mNoResultView.setVisibility(View.GONE);
                 }
 
+                Log.d(TAG, "total venues: " + String.valueOf(mVenues.size()));
+
                 mVenueListView.setVisibility(View.VISIBLE);
-                mVenueAdapter.notifyDataSetChanged();
+
+                mVenueAdapter = new VenueAdapter(getActivity(), mVenues, VenueFragment.this);
+                mVenueListView.setAdapter(mVenueAdapter);
+
+               //mVenueAdapter.notifyDataSetChanged();
+
+                Log.d(TAG, "items in list view: " + String.valueOf(mVenueAdapter.getCount()));
 
                 mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
                     @Override public void onScrollStateChanged(AbsListView absListView, int i) {

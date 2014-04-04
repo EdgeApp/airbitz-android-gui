@@ -42,7 +42,7 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="480dp"
             android:layout_gravity="center"/>
 
     </FrameLayout>
@@ -68,15 +68,13 @@
         android:id="@+id/list_view_container"
         android:layout_width="match_parent"
         android:gravity="center"
-        android:padding="10dp"
         android:layout_height="wrap_content">
 
-        <ListView
-            android:id="@+id/listview_search"
+        <fragment
+            android:id="@+id/venue"
+            android:name="com.airbitz.fragments.VenueFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:listSelector="@drawable/autocomplete_list_selector"
-            android:visibility="gone" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

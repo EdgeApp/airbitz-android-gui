@@ -43,6 +43,15 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -90,6 +99,8 @@ if (hasProperty('storeFile')) {
 }
 
 dependencies {
+    compile project(':halohalo')
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.squareup.picasso:picasso:2.2.0'
 }
