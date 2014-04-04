@@ -205,10 +205,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                 if (hasFocus) {
 
+                    mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mLocationEdittext.setVisibility(View.VISIBLE);
                     mViewAnimator.setDisplayedChild(1);
 
-                    // Start search
                     // Start search
                     try {
                         final String text = mSearchEdittext.getText().toString();
@@ -222,14 +222,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                                                                                   latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }
-
-                    if (CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this) != null) {
-                        mSearchListView.setAdapter(mBusinessSearchAdapter);
-                        mBusinessList.clear();
-                        mBusinessList.addAll(CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this));
-                        mBusinessSearchAdapter.notifyDataSetChanged();
-                        mSearchListView.setVisibility(View.VISIBLE);
                     }
                 }
             }
