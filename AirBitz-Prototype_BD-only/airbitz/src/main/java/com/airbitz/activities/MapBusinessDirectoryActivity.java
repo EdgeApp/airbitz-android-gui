@@ -21,7 +21,6 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -56,6 +55,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.greenhalolabs.halohalo.ResHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +86,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
     private FrameLayout flMapContainer;
 
-    int mapOriginalHeight = 0;
+    int mapHeight;
 
     private LinearLayout mDragLayout;
     private FrameLayout mFrameLayout;
@@ -162,7 +162,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mGestureDetector = new GestureDetector(this);
 
         // mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
-        // mLocateMeButton = (ImageButton) findViewById(R.id.locateMeButton);
+        mLocateMeButton = (ImageButton) findViewById(R.id.locateMeButton);
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
@@ -482,19 +482,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) flMapContainer.getLayoutParams();
                         int currentHeight = param.height;
 
-                        if (mapOriginalHeight == 0) {
-                            mapOriginalHeight = param.height;
-                        }
-
                         if (dragBarHeight == 0) {
                             dragBarHeight = mDragLayout.getMeasuredHeight() + 10;
-                            ViewGroup.LayoutParams lpDrag = mDragLayout.getLayoutParams();
-                            // dragBarHeight = lpDrag.height + 10;
                         }
 
                         final int pointerIndexMove = event.findPointerIndex(mActivePointerId);
-
-                        Log.d(TAG, String.format("pointerIndexMove: %d", pointerIndexMove));
 
                         float yMove = event.getY(pointerIndexMove);
 
@@ -543,6 +535,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                         flMapContainer.setLayoutParams(param);
 
+                        int padding = (mapHeight - param.height) / 2;
+                        Log.d(TAG, "map padding: " + String.valueOf(padding));
+                        mGoogleMap.setPadding(0, padding, 0, padding);
+
                         return true;
                     default:
                         return true;
@@ -581,7 +577,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     drawCurrentLocationMarker(location);
                 }
             });
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+            mapHeight = (int) ResHelper.convertDpToPx(480); //hardcoded in layout
+
+            int padding = (int) ResHelper.convertDpToPx(120);
+
+            mGoogleMap.setPadding(0, padding, 0, padding);
 
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -617,22 +619,22 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(MapBusinessDirectoryActivity.this);
             mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
 
-            // mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-            // @Override public void onClick(View view) {
-            // Log.d("TAG_LOC",
-            // "CUR LOC: " + mCurrentLocation.getLatitude()
-            // + "; "
-            // + mCurrentLocation.getLongitude());
-            //
-            // LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-            // mCurrentLocation.getLongitude());
-            //
-            // drawCurrentLocationMarker(currentLatLng);
-            // mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-            //
-            // mUserLocationMarker.showInfoWindow();
-            // }
-            // });
+            mLocateMeButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    Log.d("TAG_LOC",
+                          "CUR LOC: " + mCurrentLocation.getLatitude()
+                                  + "; "
+                                  + mCurrentLocation.getLongitude());
+
+                    LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
+                                                      mCurrentLocation.getLongitude());
+
+                    drawCurrentLocationMarker(currentLatLng);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+
+                    mUserLocationMarker.showInfoWindow();
+                }
+            });
 
             mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override public void onInfoWindowClick(Marker marker) {
