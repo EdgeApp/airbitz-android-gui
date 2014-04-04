@@ -235,28 +235,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
         });
 
-        mSearchEdittext.setOnKeyListener(new View.OnKeyListener() {
-            @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                int keyAction = keyEvent.getAction();
-                String test = "";
-                if (keyAction == KeyEvent.ACTION_UP) {
-                    switch (keyCode) {
-                        case KeyEvent.FLAG_EDITOR_ACTION:
-                            mLocationEdittext.requestFocus();
-                            return true;
-                        case KeyEvent.KEYCODE_ENTER:
-                            mLocationEdittext.requestFocus();
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-
-                return false;
-            }
-
-        });
-
         mSearchEdittext.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
             {
@@ -291,7 +269,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         });
 
         mLocationAdapter = new LocationAdapter(MapBusinessDirectoryActivity.this, mLocation);
-
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -300,18 +277,24 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
 
-                    if (CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this) != null) {
-                        mLocation.clear();
-                        mLocation.addAll(CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this));
-                        mLocationAdapter.notifyDataSetChanged();
-                        mSearchListView.setVisibility(View.VISIBLE);
+                    // Search
+                    String latLong = String.valueOf(getLatFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    mLocationWords = "";
+
+                    try {
+                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this)).execute(mLocationWords,
+                                                                                                                                            latLong);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                 }
 
             }
         });
 
-        mLocationEdittext.setOnKeyListener(new View.OnKeyListener() {
+        final View.OnKeyListener keyListener = new View.OnKeyListener() {
             @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 int keyAction = keyEvent.getAction();
                 String test = "";
@@ -343,8 +326,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                 return false;
             }
-
-        });
+        };
+        mLocationEdittext.setOnKeyListener(keyListener);
+        mSearchEdittext.setOnKeyListener(keyListener);
 
         // mLocationEdittext.addTextChangedListener(new TextWatcher() {
         // @Override
@@ -445,12 +429,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                     if ("business".equalsIgnoreCase(mBusinessType)) {
                         Intent intent = new Intent(MapBusinessDirectoryActivity.this,
-                                DirectoryDetailActivity.class);
+                                                   DirectoryDetailActivity.class);
                         intent.putExtra("bizId", business.getId());
                         intent.putExtra("bizName", business.getName());
                         startActivity(intent);
                     } else {
-                        CacheUtil.writeCachedBusinessSearchData(MapBusinessDirectoryActivity.this, businessSearchAdapter.getItem(position));
+                        CacheUtil.writeCachedBusinessSearchData(MapBusinessDirectoryActivity.this,
+                                                                businessSearchAdapter.getItem(position));
                         locationFieldShouldFocus = true;
                     }
 
@@ -459,7 +444,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     final LocationSearchResult location = locationAdapter.getItem(position);
                     mLocationEdittext.setText(location.getLocationName());
                     CacheUtil.writeCachedLocationSearchData(MapBusinessDirectoryActivity.this,
-                            location.getLocationName());
+                                                            location.getLocationName());
                 }
 
                 if (locationFieldShouldFocus) {
@@ -891,6 +876,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
     class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>> {
 
+        private List<LocationSearchResult> mCacheData = null;
+
+        public LocationAutoCompleteAsynctask(List<LocationSearchResult> cacheData) {
+            mCacheData = cacheData;
+        }
+
         @Override protected List<LocationSearchResult> doInBackground(String... strings) {
             return AirbitzAPI.getApi().getHttpAutoCompleteLocation(strings[0], strings[1]);
         }
@@ -898,13 +889,33 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         @Override protected void onPostExecute(List<LocationSearchResult> result) {
 
             mLocation.clear();
+
+            // Add current location and on the web
+            mLocation.add(new LocationSearchResult(getString(R.string.current_location), false));
+            mLocation.add(new LocationSearchResult(getString(R.string.on_the_web), false));
+
             if (result == null) {
                 mLocation.add(new LocationSearchResult("Result not found", false));
-
             } else {
-                mLocation.addAll(result);
+
+                // Add cached location searches
+                if (mCacheData != null) {
+                    for (LocationSearchResult location : mCacheData) {
+                        if (!mLocation.contains(location)) {
+                            mLocation.add(0, location);
+                        }
+                    }
+                }
+
+                // Add all location results
+                for (LocationSearchResult l : result) {
+                    if (!mLocation.contains(l)) {
+                        mLocation.add(l);
+                    }
+                }
             }
             mLocationAdapter.notifyDataSetChanged();
+
         }
     }
 
