@@ -116,8 +116,9 @@ public class VenueAdapter extends BaseAdapter {
                 distance = Math.ceil(distance*10)/10;
                 distanceTextView.setText(String.valueOf(distance)+" miles");
             }
+            distanceTextView.setVisibility(View.VISIBLE);
         } catch (Exception e){
-            distanceTextView.setText("-");
+            distanceTextView.setVisibility(View.INVISIBLE);
             e.printStackTrace();
         }
         ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
