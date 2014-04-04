@@ -322,55 +322,35 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mLocationEdittext.setOnKeyListener(keyListener);
         mSearchEdittext.setOnKeyListener(keyListener);
 
-        // mLocationEdittext.addTextChangedListener(new TextWatcher() {
-        // @Override
-        // public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-        // {
-        //
-        // }
-        //
-        // @Override
-        // public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        // mLocationEdittext.onTextChanged();
-        // }
-        //
-        // @Override
-        // public void afterTextChanged(Editable editable) {
-        //
-        // if (editable.toString().length() > 0) {
-        // mSearchListView.setAdapter(mLocationAdapter);
-        // mSearchListView.setVisibility(View.VISIBLE);
-        // mLocationWords = editable.toString();
-        // String latLong = String.valueOf(getLatFromSharedPreference());
-        // latLong += ","+String.valueOf(getLonFromSharedPreference());
-        //
-        // try {
-        // new LocationAutoCompleteAsynctask().execute(mLocationWords, latLong);
-        // mMainContentLayout.setVisibility(View.GONE);
-        // mMapLayout.setVisibility(View.GONE);
-        // mCurrentLocationButton.setVisibility(View.VISIBLE);
-        // mOnTheWebButton.setVisibility(View.VISIBLE);
-        // mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-        // mOnTheWebSeparator.setVisibility(View.VISIBLE);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-        //
-        // }
-        // else{
-        // if(mLocationEdittext.getText().toString().length()<=0){
-        // mDummyFocusLayout.requestFocus();
-        // mMainContentLayout.setVisibility(View.VISIBLE);
-        // mMapLayout.setVisibility(View.VISIBLE);
-        // mSearchListView.setVisibility(View.GONE);
-        // mCurrentLocationButton.setVisibility(View.GONE);
-        // mOnTheWebButton.setVisibility(View.GONE);
-        // mCurrentLayoutSeparator.setVisibility(View.GONE);
-        // mOnTheWebSeparator.setVisibility(View.GONE);
-        // }
-        // }
-        // }
-        // });
+        mLocationEdittext.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+
+            }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                mLocationEdittext.onTextChanged();
+            }
+
+            @Override public void afterTextChanged(Editable editable) {
+
+                    mSearchListView.setAdapter(mLocationAdapter);
+                    mSearchListView.setVisibility(View.VISIBLE);
+                    mLocationWords = editable.toString();
+                    String latLong = String.valueOf(getLatFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+
+                    try {
+                        List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
+                                ? CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this)
+                                : null);
+
+                        new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            }
+        });
 
         initializeMap();
         // initializeMarker();
@@ -546,11 +526,17 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
         });
 
+        // Hide map if "On the Web" search
+        if (ResHelper.getStringByResId(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
+            mDragLayout.setVisibility(View.GONE);
+            flMapContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override public void onBackPressed() {
         if (mViewAnimator.getDisplayedChild() == 1) {
             mViewAnimator.setDisplayedChild(0);
+            mLocationEdittext.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
