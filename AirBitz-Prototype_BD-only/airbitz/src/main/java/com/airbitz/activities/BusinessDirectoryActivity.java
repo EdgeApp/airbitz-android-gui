@@ -48,9 +48,9 @@ import com.airbitz.models.Category;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ObservableScrollView;
+import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
-import com.airbitz.utils.LocationCacheUtil;
 
 import org.json.JSONObject;
 
@@ -67,13 +67,6 @@ public class BusinessDirectoryActivity extends Activity implements
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
     public static final String PREF_NAME = "PREF_NAME";
-    public static final String MOSTRECENT_BUSINESSSEARCH_SHARED_PREF = "BUSINESS_KEY";
-    public static final String BIZ1_NAME_KEY = "BIZ1_NAME_KEY";
-    public static final String BIZ2_NAME_KEY = "BIZ2_NAME_KEY";
-    public static final String BIZ1_TYPE_KEY = "BIZ1_TYPE_KEY";
-    public static final String BIZ2_TYPE_KEY = "BIZ2_TYPE_KEY";
-    public static final String BIZ1_ID_KEY = "BIZ1_ID_KEY";
-    public static final String BIZ2_ID_KEY = "BIZ2_ID_KEY";
     public static final String LOCATION_CACHE_SHARED_PREF = "LOCATION_CACHE_PREF";
     public static final String BUSINESS_CACHE_SHARED_PREF = "BUSINESS_CACHE_PREF";
 
@@ -346,8 +339,8 @@ public class BusinessDirectoryActivity extends Activity implements
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
 
-//                    mBusinessList.clear();
-//                    mBusinessSearchAdapter.notifyDataSetChanged();
+                    // mBusinessList.clear();
+                    // mBusinessSearchAdapter.notifyDataSetChanged();
 
                     // if (getCachedBusinessSearchData() != null) {
                     // // mBusinessList.clear();
@@ -364,12 +357,16 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     // Start search
                     try {
+                        final String text = mSearchField.getText().toString();
+                        final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
+                                ? null
+                                : CacheUtil.getCachedBusinessSearchData(BusinessDirectoryActivity.this));
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(getCachedBusinessSearchData()).execute(mSearchField.getText()
-                                                                                                             .toString(),
-                                                                                                 mLocationWords,
-                                                                                                 latLong);
+                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(mSearchField.getText()
+                                                                                              .toString(),
+                                                                                  mLocationWords,
+                                                                                  latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -410,7 +407,7 @@ public class BusinessDirectoryActivity extends Activity implements
                     // Only include cached searches if text is empty.
                     final String query = editable.toString();
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
-                            ? getCachedBusinessSearchData()
+                            ? CacheUtil.getCachedBusinessSearchData(BusinessDirectoryActivity.this)
                             : null);
                     new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
                                                                                 mLocationWords,
@@ -456,7 +453,7 @@ public class BusinessDirectoryActivity extends Activity implements
                     mLocationWords = "";
 
                     try {
-                        new LocationAutoCompleteAsynctask(LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)).execute(mLocationWords,
+                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)).execute(mLocationWords,
                                                                                                                                                  latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -548,7 +545,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
                 try {
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
-                            ? LocationCacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)
+                            ? CacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)
                             : null);
 
                     new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
@@ -589,24 +586,19 @@ public class BusinessDirectoryActivity extends Activity implements
                                                    DirectoryDetailActivity.class);
                         intent.putExtra("bizId", business.getId());
                         intent.putExtra("bizName", business.getName());
-                        // intent.putExtra("bizDistance", business.get
                         startActivity(intent);
                     } else {
-                        writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
+                        CacheUtil.writeCachedBusinessSearchData(BusinessDirectoryActivity.this, businessSearchAdapter.getItem(position));
                         locationFieldShouldFocus = true;
                     }
-                    // writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
-                    // locationFieldShouldFocus = true;
 
                 } else if (mLocationField.isFocused()) {
                     final LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     final LocationSearchResult location = locationAdapter.getItem(position);
                     mLocationField.setText(location.getLocationName());
-                    LocationCacheUtil.writeCachedLocationSearchData(BusinessDirectoryActivity.this,
-                                                                    location.getLocationName());
+                    CacheUtil.writeCachedLocationSearchData(BusinessDirectoryActivity.this,
+                            location.getLocationName());
                 }
-
-//                mSearchListView.setVisibility(View.GONE);
 
                 if (locationFieldShouldFocus) {
                     mLocationField.requestFocus();
@@ -733,15 +725,19 @@ public class BusinessDirectoryActivity extends Activity implements
                 mLocationList.add(new LocationSearchResult("Result not found", false));
             } else {
 
-                // Add all location results
-                mLocationList.addAll(result);
-
                 // Add cached location searches
                 if (mCacheData != null) {
                     for (LocationSearchResult location : mCacheData) {
                         if (!mLocationList.contains(location)) {
                             mLocationList.add(0, location);
                         }
+                    }
+                }
+
+                // Add all location results
+                for (LocationSearchResult l : result) {
+                    if (!mLocationList.contains(l)) {
+                        mLocationList.add(l);
                     }
                 }
             }
@@ -932,70 +928,6 @@ public class BusinessDirectoryActivity extends Activity implements
 
     };
 
-    public void writeCachedBusinessSearchData(Business recentData) {
-        SharedPreferences cachePref = null;
-
-        cachePref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        String name = recentData.getName();
-        String type = recentData.getType();
-        String id = recentData.getId();
-
-        if (cachePref.getString(BIZ1_NAME_KEY, null) == null) {
-            editor.putString(BIZ1_NAME_KEY, name);
-            editor.putString(BIZ1_TYPE_KEY, type);
-            editor.putString(BIZ1_ID_KEY, id);
-        }
-        else {
-
-            if (!cachePref.getString(BIZ1_NAME_KEY, null).equalsIgnoreCase(name)) {
-                editor.putString(BIZ2_NAME_KEY, cachePref.getString(BIZ1_NAME_KEY, ""));
-                editor.putString(BIZ1_NAME_KEY, name);
-
-                editor.putString(BIZ2_TYPE_KEY, cachePref.getString(BIZ1_TYPE_KEY, ""));
-                editor.putString(BIZ1_TYPE_KEY, type);
-
-                editor.putString(BIZ2_ID_KEY, cachePref.getString(BIZ1_ID_KEY, ""));
-                editor.putString(BIZ1_ID_KEY, name);
-            }
-
-        }
-
-        editor.commit();
-
-    }
-
-    public List<Business> getCachedBusinessSearchData() {
-        SharedPreferences cachePref = null;
-        List<Business> listRecentBusiness = new ArrayList<Business>();
-
-        cachePref = getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        if ((cachePref.getString(BIZ1_NAME_KEY, null) == null) && (cachePref.getString(BIZ2_NAME_KEY, null) == null)) {
-            return null;
-        }
-        else {
-            if (cachePref.getString(BIZ1_NAME_KEY, null) != null) {
-                final Business biz1 = new Business(cachePref.getString(BIZ1_NAME_KEY, null),
-                                                   cachePref.getString(BIZ1_TYPE_KEY, null),
-                                                   cachePref.getString(BIZ1_ID_KEY, null));
-                biz1.setIsCached(true);
-                listRecentBusiness.add(biz1);
-            }
-
-            if (cachePref.getString(BIZ2_NAME_KEY, null) != null) {
-                final Business biz2 = new Business(cachePref.getString(BIZ2_NAME_KEY, null),
-                                                   cachePref.getString(BIZ2_TYPE_KEY, null),
-                                                   cachePref.getString(BIZ2_ID_KEY, null));
-                biz2.setIsCached(true);
-                listRecentBusiness.add(biz2);
-            }
-
-            return listRecentBusiness;
-        }
-    }
 
     private void writeLatLonToSharedPreference() {
         writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());

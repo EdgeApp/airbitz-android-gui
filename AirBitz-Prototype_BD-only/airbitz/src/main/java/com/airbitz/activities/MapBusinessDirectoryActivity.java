@@ -13,23 +13,25 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MotionEventCompat;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import com.airbitz.App;
 import com.airbitz.R;
@@ -43,8 +45,8 @@ import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
 import com.airbitz.objects.ClearableEditText;
+import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.LocationCacheUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -86,18 +88,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
     int mapOriginalHeight = 0;
 
-    private Button mCurrentLocationButton;
-    private Button mOnTheWebButton;
-
-    private LinearLayout mCurrentLayoutSeparator;
-    private LinearLayout mOnTheWebSeparator;
-    private LinearLayout mMainContentLayout;
-    private LinearLayout mDummyFocusLayout;
     private LinearLayout mDragLayout;
     private FrameLayout mFrameLayout;
-    private LinearLayout mMapLayout;
     private TextView mTitleTextView;
     private ListView mSearchListView;
+    private ViewAnimator mViewAnimator;
 
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private ArrayList<BusinessVenue> mBusinessVenueList;
@@ -154,23 +149,20 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        mMainContentLayout = (LinearLayout) findViewById(R.id.layout_main_content);
         mDragLayout = (LinearLayout) findViewById(R.id.dragLayout);
         llListContainer = (LinearLayout) findViewById(R.id.list_view_container);
-
         flMapContainer = (FrameLayout) findViewById(R.id.map_container);
+        mViewAnimator = (ViewAnimator) findViewById(R.id.ViewAnimator);
 
         // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
-        //
-        // mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
 
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<LocationSearchResult>();
 
         mGestureDetector = new GestureDetector(this);
 
-        //mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
-        //mLocateMeButton = (ImageButton) findViewById(R.id.locateMeButton);
+        // mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
+        // mLocateMeButton = (ImageButton) findViewById(R.id.locateMeButton);
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
@@ -179,26 +171,15 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mSearchEdittext = (ClearableEditText) findViewById(R.id.edittext_search);
         mLocationEdittext = (ClearableEditText) findViewById(R.id.edittext_location);
 
-        //mCurrentLocationButton = (Button) findViewById(R.id.button_current_location);
-        //mOnTheWebButton = (Button) findViewById(R.id.button_on_the_Web);
-
-        mCurrentLayoutSeparator = (LinearLayout) findViewById(R.id.separator_current);
-        //mOnTheWebSeparator = (LinearLayout) findViewById(R.id.separator_on_the_web);
-
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        // mMapLayout = (LinearLayout) findViewById(R.id.map_layout);
 
-        //mSearchListView = (ListView) findViewById(R.id.listview_search);
+        mSearchListView = (ListView) findViewById(R.id.listview_search);
         mSearchEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mLocationEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        //mCurrentLocationButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        //mOnTheWebButton.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
 
         mSearchEdittext.setText(mBusinessName);
         mLocationEdittext.setText(mLocationName);
-
-        //mTopLayout.getLayoutParams().height = (int) (height);
 
         mBusinessVenueList = new ArrayList<BusinessVenue>();
 
@@ -216,45 +197,43 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
         });
 
-//        mCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
-//            @Override public void onClick(View view) {
-//                mLocationEdittext.setText("Current Location");
-//            }
-//        });
+        mBusinessSearchAdapter = new BusinessSearchAdapter(MapBusinessDirectoryActivity.this, mBusinessList);
+        mSearchListView.setAdapter(mBusinessSearchAdapter);
 
-//        mOnTheWebButton.setOnClickListener(new View.OnClickListener() {
-//            @Override public void onClick(View view) {
-//                mLocationEdittext.setText("On the Web");
-//            }
-//        });
+        mSearchEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View view, boolean hasFocus) {
 
-        //mBusinessSearchAdapter = new BusinessSearchAdapter(MapBusinessDirectoryActivity.this, mBusinessList);
-        //mSearchListView.setAdapter(mBusinessSearchAdapter);
-//
-//        mSearchEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//        @Override
-//        public void onFocusChange(View view, boolean hasFocus) {
-//        if(hasFocus){
-//        mSearchEdittext.setHint("Category or Business Name");
-//        mLocationEdittext.setVisibility(View.VISIBLE);
-//        mCurrentLocationButton.setVisibility(View.GONE);
-//        mOnTheWebButton.setVisibility(View.GONE);
-//        mCurrentLayoutSeparator.setVisibility(View.GONE);
-//        mOnTheWebSeparator.setVisibility(View.GONE);
-//
-//        mMainContentLayout.setVisibility(View.GONE);
-//        mMapLayout.setVisibility(View.GONE);
-//
-//        if(getCachedBusinessSearchData() != null){
-//        mSearchListView.setAdapter(mBusinessSearchAdapter);
-//        mBusinessList.clear();
-//        mBusinessList.addAll(getCachedBusinessSearchData());
-//        mBusinessSearchAdapter.notifyDataSetChanged();
-//        mSearchListView.setVisibility(View.VISIBLE);
-//        }
-//        }
-//        }
-//        });
+                if (hasFocus) {
+
+                    mLocationEdittext.setVisibility(View.VISIBLE);
+                    mViewAnimator.setDisplayedChild(1);
+
+                    // Start search
+                    // Start search
+                    try {
+                        final String text = mSearchEdittext.getText().toString();
+                        final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
+                                ? null
+                                : CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this));
+                        String latLong = String.valueOf(getLatFromSharedPreference());
+                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text,
+                                                                                  mLocationWords,
+                                                                                  latLong);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this) != null) {
+                        mSearchListView.setAdapter(mBusinessSearchAdapter);
+                        mBusinessList.clear();
+                        mBusinessList.addAll(CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this));
+                        mBusinessSearchAdapter.notifyDataSetChanged();
+                        mSearchListView.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
 
         mSearchEdittext.setOnKeyListener(new View.OnKeyListener() {
             @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
@@ -278,82 +257,52 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         });
 
-        // mSearchEdittext.addTextChangedListener(new TextWatcher() {
-        // @Override
-        // public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-        // {
-        //
-        // }
-        //
-        // @Override
-        // public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        // mSearchEdittext.onTextChanged();
-        // }
-        //
-        // @Override
-        // public void afterTextChanged(Editable editable) {
-        //
-        // if (editable.toString().length() > 0) {
-        // mSearchListView.setAdapter(mBusinessSearchAdapter);
-        // mMainContentLayout.setVisibility(View.GONE);
-        // mMapLayout.setVisibility(View.GONE);
-        // mSearchListView.setVisibility(View.GONE);
-        // mCurrentLocationButton.setVisibility(View.GONE);
-        // mOnTheWebButton.setVisibility(View.GONE);
-        // mCurrentLayoutSeparator.setVisibility(View.GONE);
-        // mOnTheWebSeparator.setVisibility(View.GONE);
-        // mLocationEdittext.setVisibility(View.VISIBLE);
-        // mSearchListView.setVisibility(View.VISIBLE);
-        // String latLong = String.valueOf(getLatFromSharedPreference());
-        // latLong += ","+String.valueOf(getLonFromSharedPreference());
-        //
-        //
-        // try {
-        // new BusinessAutoCompleteAsynctask().execute(editable.toString(),
-        // mLocationWords, latLong);
-        //
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-        //
-        // } else {
-        // mDummyFocusLayout.requestFocus();
-        // if(mSearchEdittext.getText().toString().length()<=0){
-        // mLocationEdittext.setVisibility(View.GONE);
-        // }
-        //
-        // mMainContentLayout.setVisibility(View.VISIBLE);
-        // mMapLayout.setVisibility(View.VISIBLE);
-        // mSearchListView.setVisibility(View.GONE);
-        // mCurrentLocationButton.setVisibility(View.GONE);
-        // mOnTheWebButton.setVisibility(View.GONE);
-        // mCurrentLayoutSeparator.setVisibility(View.GONE);
-        // mOnTheWebSeparator.setVisibility(View.GONE);
-        // }
-        // }
-        // });
+        mSearchEdittext.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+
+            }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                mSearchEdittext.onTextChanged();
+            }
+
+            @Override public void afterTextChanged(Editable editable) {
+
+                mSearchListView.setAdapter(mBusinessSearchAdapter);
+                mLocationEdittext.setVisibility(View.VISIBLE);
+                mSearchListView.setVisibility(View.VISIBLE);
+                String latLong = String.valueOf(getLatFromSharedPreference());
+                latLong += "," + String.valueOf(getLonFromSharedPreference());
+
+                try {
+                    // Only include cached searches if text is empty.
+                    final String query = editable.toString();
+                    final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
+                            ? CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this)
+                            : null);
+                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(editable.toString(),
+                                                                                mLocationWords, latLong);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         mLocationAdapter = new LocationAdapter(MapBusinessDirectoryActivity.this, mLocation);
 
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
+            @Override public void onFocusChange(View view, boolean hasFocus) {
 
-                if(hasFocus){
-                    mSearchEdittext.setHint("Search");
-                    mCurrentLocationButton.setVisibility(View.VISIBLE);
-                    mOnTheWebButton.setVisibility(View.VISIBLE);
-                    mCurrentLayoutSeparator.setVisibility(View.VISIBLE);
-                    mOnTheWebSeparator.setVisibility(View.VISIBLE);
+                if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
-                    mMainContentLayout.setVisibility(View.GONE);
-                    mMapLayout.setVisibility(View.GONE);
 
-                    if(LocationCacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this) != null){
+                    if (CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this) != null) {
                         mLocation.clear();
-                        mLocation.addAll(LocationCacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this));
+                        mLocation.addAll(CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this));
                         mLocationAdapter.notifyDataSetChanged();
                         mSearchListView.setVisibility(View.VISIBLE);
                     }
@@ -361,7 +310,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             }
         });
-
 
         mLocationEdittext.setOnKeyListener(new View.OnKeyListener() {
             @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
@@ -449,7 +397,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         // });
 
         initializeMap();
-        //initializeMarker();
+        // initializeMarker();
 
         int timeout = 15000;
         if (mLocationName.equalsIgnoreCase("Current Location")) {
@@ -482,42 +430,58 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+                boolean locationFieldShouldFocus = false;
 
-                if(mSearchEdittext.isFocused()){
-                    BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter)mSearchListView.getAdapter();
-                    mSearchEdittext.setText(businessSearchAdapter.getItemValue(position));
-                    mBusinessType = businessSearchAdapter.getItem(position).getType();
-                    writeCachedBusinessSearchData(businessSearchAdapter.getItem(position));
+                if (mSearchEdittext.isFocused()) {
 
+                    final BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
 
-                }
-                else if(mLocationEdittext.isFocused()){
-                    final LocationAdapter locationAdapter = (LocationAdapter)mSearchListView.getAdapter();
+                    final Business business = businessSearchAdapter.getItem(position);
+
+                    mSearchEdittext.setText(business.getName());
+                    mBusinessType = business.getType();
+
+                    if ("business".equalsIgnoreCase(mBusinessType)) {
+                        Intent intent = new Intent(MapBusinessDirectoryActivity.this,
+                                DirectoryDetailActivity.class);
+                        intent.putExtra("bizId", business.getId());
+                        intent.putExtra("bizName", business.getName());
+                        startActivity(intent);
+                    } else {
+                        CacheUtil.writeCachedBusinessSearchData(MapBusinessDirectoryActivity.this, businessSearchAdapter.getItem(position));
+                        locationFieldShouldFocus = true;
+                    }
+
+                } else if (mLocationEdittext.isFocused()) {
+                    final LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     final LocationSearchResult location = locationAdapter.getItem(position);
                     mLocationEdittext.setText(location.getLocationName());
-                    LocationCacheUtil.writeCachedLocationSearchData(MapBusinessDirectoryActivity.this, location.getLocationName());
+                    CacheUtil.writeCachedLocationSearchData(MapBusinessDirectoryActivity.this,
+                            location.getLocationName());
                 }
 
-                mCurrentLocationButton.setVisibility(View.GONE);
-                mOnTheWebButton.setVisibility(View.GONE);
-                mCurrentLayoutSeparator.setVisibility(View.GONE);
-                mOnTheWebSeparator.setVisibility(View.GONE);
-                mSearchListView.setVisibility(View.GONE);
+                if (locationFieldShouldFocus) {
+                    mLocationEdittext.requestFocus();
+                    mLocationEdittext.setSelection(mLocationEdittext.length());
+                    mLocationEdittext.setSelected(false);
+                } else {
+                    mSearchEdittext.requestFocus();
+                    mSearchEdittext.setSelection(mSearchEdittext.length());
+                    mSearchEdittext.setSelected(false);
+                }
+
             }
         });
 
-        final ViewTreeObserver observer= mFrameLayout.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        mDragBarThreshold = (mFrameLayout.getHeight() * 2) - 70;
-                    }
-                });
-
+        // final ViewTreeObserver observer = mFrameLayout.getViewTreeObserver();
+        // observer.addOnGlobalLayoutListener(
+        // new ViewTreeObserver.OnGlobalLayoutListener() {
+        // @Override public void onGlobalLayout() {
+        // mDragBarThreshold = (mFrameLayout.getHeight() * 2) - 70;
+        // }
+        // });
 
         mDragLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent event) {
@@ -548,7 +512,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         if (dragBarHeight == 0) {
                             dragBarHeight = mDragLayout.getMeasuredHeight() + 10;
                             ViewGroup.LayoutParams lpDrag = mDragLayout.getLayoutParams();
-                            //dragBarHeight = lpDrag.height + 10;
+                            // dragBarHeight = lpDrag.height + 10;
                         }
 
                         final int pointerIndexMove = event.findPointerIndex(mActivePointerId);
@@ -557,42 +521,42 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                         float yMove = event.getY(pointerIndexMove);
 
-//                        Log.d(TAG, String.format("yMove: %f", yMove));
-//
-//                        if (yMove < 0 && mapOriginalHeight == param.height) {
-//                            Log.d(TAG, "max height reached");
-//                            //return true;
-//                        }
-//
-//                        if (param.height == 0 && yMove > 0) {
-//                            Log.d(TAG, "min height reached");
-//                            //return true;
-//                        }
+                        // Log.d(TAG, String.format("yMove: %f", yMove));
+                        //
+                        // if (yMove < 0 && mapOriginalHeight == param.height) {
+                        // Log.d(TAG, "max height reached");
+                        // //return true;
+                        // }
+                        //
+                        // if (param.height == 0 && yMove > 0) {
+                        // Log.d(TAG, "min height reached");
+                        // //return true;
+                        // }
 
                         param.height += yMove;
 
-//                        final float dy = yMove - aLastTouchY;
-//
-//                        aPosY += dy;
-//
-//                        if (aPosY > mDragBarThreshold) {
-//                            aPosY = mDragBarThreshold;
-//                        }
-//
-//                        param.height = (int) (aPosY);
+                        // final float dy = yMove - aLastTouchY;
+                        //
+                        // aPosY += dy;
+                        //
+                        // if (aPosY > mDragBarThreshold) {
+                        // aPosY = mDragBarThreshold;
+                        // }
+                        //
+                        // param.height = (int) (aPosY);
 
-                        //int bottomPadding = param.height - mapOriginalHeight;
+                        // int bottomPadding = param.height - mapOriginalHeight;
 
-                        //Log.d(TAG, String.format("bottomPadding: %d", bottomPadding));
+                        // Log.d(TAG, String.format("bottomPadding: %d", bottomPadding));
 
-                        //param.setMargins(0, 0, 0, bottomPadding);
+                        // param.setMargins(0, 0, 0, bottomPadding);
 
                         int[] dragBarLocation = new int[2];
                         mDragLayout.getLocationOnScreen(dragBarLocation);
 
                         Log.d(TAG, "dragLayout location: " + dragBarLocation[1]);
                         Log.d(TAG, "dragLayout height: " + dragBarHeight);
-                        Log.d(TAG, "display height: " +  App.getDisplayHeight());
+                        Log.d(TAG, "display height: " + App.getDisplayHeight());
 
                         Log.d(TAG, String.format("flMapContainer height: %d", param.height));
                         if (param.height <= 0 || (dragBarLocation[1] + dragBarHeight >= App.getDisplayHeight() && yMove > 0)) {
@@ -612,17 +576,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
     @Override public void onBackPressed() {
-        if (mMainContentLayout.getVisibility() == View.GONE) {
-//            mDummyFocusLayout.requestFocus();
-            mMainContentLayout.setVisibility(View.VISIBLE);
-//            mMapLayout.setVisibility(View.VISIBLE);
-            mLocationEdittext.setVisibility(View.GONE);
-            //mSearchListView.setVisibility(View.GONE);
-
-//            mCurrentLocationButton.setVisibility(View.GONE);
-//            mOnTheWebButton.setVisibility(View.GONE);
-            mCurrentLayoutSeparator.setVisibility(View.GONE);
-//            mOnTheWebSeparator.setVisibility(View.GONE);
+        if (mViewAnimator.getDisplayedChild() == 1) {
+            mViewAnimator.setDisplayedChild(0);
         } else {
             super.onBackPressed();
         }
@@ -644,8 +599,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
 
             mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                @Override
-                public void onMyLocationChange(Location location) {
+                @Override public void onMyLocationChange(Location location) {
                     mCurrentLocation = location;
                     drawCurrentLocationMarker(location);
                 }
@@ -686,22 +640,22 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(MapBusinessDirectoryActivity.this);
             mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
 
-//            mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-//                @Override public void onClick(View view) {
-//                    Log.d("TAG_LOC",
-//                          "CUR LOC: " + mCurrentLocation.getLatitude()
-//                                  + "; "
-//                                  + mCurrentLocation.getLongitude());
-//
-//                    LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-//                                                      mCurrentLocation.getLongitude());
-//
-//                    drawCurrentLocationMarker(currentLatLng);
-//                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-//
-//                    mUserLocationMarker.showInfoWindow();
-//                }
-//            });
+            // mLocateMeButton.setOnClickListener(new View.OnClickListener() {
+            // @Override public void onClick(View view) {
+            // Log.d("TAG_LOC",
+            // "CUR LOC: " + mCurrentLocation.getLatitude()
+            // + "; "
+            // + mCurrentLocation.getLongitude());
+            //
+            // LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
+            // mCurrentLocation.getLongitude());
+            //
+            // drawCurrentLocationMarker(currentLatLng);
+            // mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+            //
+            // mUserLocationMarker.showInfoWindow();
+            // }
+            // });
 
             mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override public void onInfoWindowClick(Marker marker) {
@@ -935,19 +889,16 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         return mMarkerId;
     }
 
+    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>> {
 
-    class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>>{
-
-        @Override
-        protected List<LocationSearchResult> doInBackground(String... strings) {
+        @Override protected List<LocationSearchResult> doInBackground(String... strings) {
             return AirbitzAPI.getApi().getHttpAutoCompleteLocation(strings[0], strings[1]);
         }
 
-        @Override
-        protected void onPostExecute(List<LocationSearchResult> result) {
+        @Override protected void onPostExecute(List<LocationSearchResult> result) {
 
             mLocation.clear();
-            if(result == null){
+            if (result == null) {
                 mLocation.add(new LocationSearchResult("Result not found", false));
 
             } else {
@@ -958,6 +909,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
     class BusinessAutoCompleteAsynctask extends AsyncTask<String, Integer, List<Business>> {
+
+        private List<Business> mCacheData = null;
+
+        public BusinessAutoCompleteAsynctask(List<Business> cacheData) {
+            mCacheData = cacheData;
+        }
 
         @Override protected List<Business> doInBackground(String... strings) {
             List<Business> jsonParsingResult = AirbitzAPI.getApi().getHttpAutoCompleteBusiness(strings[0],
@@ -972,7 +929,18 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             if (businesses == null) {
                 mBusinessList.add(new Business("Result not found", "", ""));
             } else {
+
+                // Add all businesses first
                 mBusinessList.addAll(businesses);
+
+                // Add cached businesses
+                if (mCacheData != null) {
+                    for (Business business : mCacheData) {
+                        if (!mBusinessList.contains(business)) {
+                            mBusinessList.add(0, business);
+                        }
+                    }
+                }
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
         }
@@ -1283,81 +1251,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         double lon = (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
         return lon;
     }
-
-
-    public void writeCachedBusinessSearchData(Business recentData){
-
-        SharedPreferences cachePref = null;
-
-        cachePref = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_BUSINESSSEARCH_SHARED_PREF,
-                                         MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        String name = recentData.getName();
-        String type = recentData.getType();
-        String id = recentData.getId();
-
-        if (cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY, null) == null) {
-            editor.putString(BusinessDirectoryActivity.BIZ1_NAME_KEY, name);
-            editor.putString(BusinessDirectoryActivity.BIZ1_TYPE_KEY, type);
-            editor.putString(BusinessDirectoryActivity.BIZ1_ID_KEY, id);
-        }
-        else {
-
-            if (!cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY, null).equalsIgnoreCase(name)) {
-                editor.putString(BusinessDirectoryActivity.BIZ2_NAME_KEY,
-                                 cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY, ""));
-                editor.putString(BusinessDirectoryActivity.BIZ1_NAME_KEY, name);
-
-                editor.putString(BusinessDirectoryActivity.BIZ2_TYPE_KEY,
-                                 cachePref.getString(BusinessDirectoryActivity.BIZ1_TYPE_KEY, ""));
-                editor.putString(BusinessDirectoryActivity.BIZ1_TYPE_KEY, type);
-
-                editor.putString(BusinessDirectoryActivity.BIZ2_ID_KEY,
-                                 cachePref.getString(BusinessDirectoryActivity.BIZ1_ID_KEY, ""));
-                editor.putString(BusinessDirectoryActivity.BIZ1_ID_KEY, name);
-            }
-
-        }
-
-        editor.commit();
-
-    }
-
-    public List<Business> getCachedBusinessSearchData() {
-        SharedPreferences cachePref = null;
-        List<Business> listRecentBusiness = new ArrayList<Business>();
-
-        cachePref = getSharedPreferences(BusinessDirectoryActivity.MOSTRECENT_BUSINESSSEARCH_SHARED_PREF,
-                                         MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
-
-        if ((cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY, null) == null) && (cachePref.getString(BusinessDirectoryActivity.BIZ2_NAME_KEY,
-                                                                                                                 null) == null)) {
-            return null;
-        }
-        else {
-            if (cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY, null) != null)
-                listRecentBusiness.add(new Business(cachePref.getString(BusinessDirectoryActivity.BIZ1_NAME_KEY,
-                                                                        null),
-                                                    cachePref.getString(BusinessDirectoryActivity.BIZ1_TYPE_KEY,
-                                                                        null),
-                                                    cachePref.getString(BusinessDirectoryActivity.BIZ1_ID_KEY,
-                                                                        null)));
-
-            if (cachePref.getString(BusinessDirectoryActivity.BIZ2_NAME_KEY, null) != null)
-                listRecentBusiness.add(new Business(cachePref.getString(BusinessDirectoryActivity.BIZ2_NAME_KEY,
-                                                                        null),
-                                                    cachePref.getString(BusinessDirectoryActivity.BIZ2_TYPE_KEY,
-                                                                        null),
-                                                    cachePref.getString(BusinessDirectoryActivity.BIZ2_ID_KEY,
-                                                                        null)));
-
-            return listRecentBusiness;
-        }
-    }
-
-
 
     @Override public boolean onDown(MotionEvent motionEvent) {
         return false;

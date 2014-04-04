@@ -53,7 +53,7 @@ public class Business {
 
     @Override
     public int hashCode() {
-        return mId.hashCode();
+        return mName.hashCode();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Business {
     public boolean equals(Object o) {
         if (o instanceof Business) {
             final Business otherBusiness = (Business) o;
-            return mId.equals(otherBusiness.getId());
+            return mName.equals(otherBusiness.getName());
         }
         return false;
     }

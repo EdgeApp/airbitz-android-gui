@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_app"
-                android:orientation="vertical"
-                tools:context="com.airbitz.activities.LandingActivity"
-                tools:ignore="MergeRootFrame">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
+    android:orientation="vertical"
+    tools:context="com.airbitz.activities.LandingActivity"
+    tools:ignore="MergeRootFrame">
 
     <LinearLayout
         android:id="@+id/dummy_focus"
@@ -15,7 +15,7 @@
         android:layout_height="0px"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <!-- Header -->
 
@@ -23,7 +23,7 @@
         android:id="@+id/layout_header"
         layout="@layout/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <!-- Search Bar -->
 
@@ -31,57 +31,77 @@
         android:id="@+id/layout_search"
         layout="@layout/layout_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
-    <FrameLayout
-        android:id="@+id/map_container"
+    <!-- Main Content -->
+
+    <ViewAnimator
+        android:id="@+id/ViewAnimator"
         android:layout_width="match_parent"
-        android:layout_height="240dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.MapFragment"
+        <!-- Map View -->
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="480dp"
-            android:layout_gravity="center"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </FrameLayout>
+            <FrameLayout
+                android:id="@+id/map_container"
+                android:layout_width="match_parent"
+                android:layout_height="240dp">
 
-    <LinearLayout
-        android:id="@+id/dragLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#000000">
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.MapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="480dp"
+                    android:layout_gravity="center" />
 
-        <ImageView
-            android:id="@+id/dragImageView"
-            android:layout_width="match_parent"
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/dragLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#000000">
+
+                <ImageView
+                    android:id="@+id/dragImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#C0C0C0"
+                    android:padding="8dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ico_drag" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/list_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <fragment
+                    android:id="@+id/venue"
+                    android:name="com.airbitz.fragments.VenueFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Search ListView -->
+        <ListView
+            android:id="@+id/listview_search"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#C0C0C0"
-            android:padding="8dp"
-            android:scaleType="center"
-            android:src="@drawable/ico_drag"/>
+            android:divider="@color/gray_border"
+            android:dividerHeight="1px"
+            android:visibility="gone" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/list_view_container"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content">
-
-        <fragment
-            android:id="@+id/venue"
-            android:name="com.airbitz.fragments.VenueFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-
-
-
-
-
-
+    </ViewAnimator>
 </LinearLayout>
