@@ -2,20 +2,15 @@ package com.airbitz.api;
 
 import android.util.Log;
 
-import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Business;
+import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
-import com.airbitz.utils.Common;
+import com.airbitz.models.LocationSearchResult;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -352,10 +347,10 @@ public class AirbitzAPI {
     }
 
 
-    public List<String> getHttpAutoCompleteLocation(String term, String ll){
+    public List<LocationSearchResult> getHttpAutoCompleteLocation(String term, String ll){
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        List<String> resultList = new ArrayList<String>();
+        List<LocationSearchResult> resultList = new ArrayList<LocationSearchResult>();
 
         if(term.length() > 0){
 
@@ -372,7 +367,8 @@ public class AirbitzAPI {
             if (jsonResponse != null){
                 JSONArray results = jsonResponse.getJSONArray("results");
                 for(int index = 0; index<results.length();index ++){
-                    resultList.add(results.getString(index));
+                    final String locationName = results.getString(index);
+                    resultList.add(new LocationSearchResult(locationName, false));
                 }
             }
         }catch (JSONException e){

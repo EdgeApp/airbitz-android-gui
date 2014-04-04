@@ -1,12 +1,16 @@
 package com.airbitz.models;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +23,8 @@ public class Hour {
     private String mHourStart;
     private String mHourEnd;
 
+    private static SimpleDateFormat sMilitaryFormat = new SimpleDateFormat("HH:mm:ss");
+    private static SimpleDateFormat sAmPmFormat = new SimpleDateFormat("hh:mm a");
 
     public Hour(){
 
@@ -78,5 +84,27 @@ public class Hour {
 
     public String setHourEnd(){
         return mHourEnd;
+    }
+
+    public String getPrettyStartEndHour() {
+
+        if (TextUtils.isEmpty(mHourEnd) || "null".equals(mHourEnd)) {
+            return "Open 24 Hours";
+        }
+
+        String startHour = "";
+        String endHour = "";
+
+        try {
+            Date hourStartDateMil = sMilitaryFormat.parse(mHourStart);
+            startHour = sAmPmFormat.format(hourStartDateMil);
+            Date hourEndDateMil = sMilitaryFormat.parse(mHourEnd);
+            endHour = sAmPmFormat.format(hourEndDateMil);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return startHour + " - " + endHour;
     }
 }
