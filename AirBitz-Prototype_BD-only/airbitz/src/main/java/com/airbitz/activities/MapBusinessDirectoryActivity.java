@@ -18,15 +18,16 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.App;
 import com.airbitz.R;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MapInfoWindowAdapter;
@@ -89,7 +90,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     // private FrameLayout mFrameLayout;
     // private LinearLayout mMapLayout;
     private TextView mTitleTextView;
-    private ListView mSearchListView;
+    //private ListView mSearchListView;
 
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private ArrayList<BusinessVenue> mBusinessVenueList;
@@ -133,6 +134,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private GetVenuesByBusinessAndLocation mGetVenuesByBusinessAndLocation;
 
     private double mDensity;
+
+    int dragBarHeight = 0;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,7 +181,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
         // mMapLayout = (LinearLayout) findViewById(R.id.map_layout);
 
-        mSearchListView = (ListView) findViewById(R.id.listview_search);
+        //mSearchListView = (ListView) findViewById(R.id.listview_search);
         mSearchEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mLocationEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
@@ -324,7 +327,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         // });
 
         mLocationAdapter = new LocationAdapter(MapBusinessDirectoryActivity.this, mLocation);
-        mSearchListView.setAdapter(mLocationAdapter);
+        //mSearchListView.setAdapter(mLocationAdapter);
 
         // mLocationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
         // @Override
@@ -527,6 +530,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                             mapOriginalHeight = param.height;
                         }
 
+                        if (dragBarHeight == 0) {
+                            dragBarHeight = mDragLayout.getMeasuredHeight() + 10;
+                            ViewGroup.LayoutParams lpDrag = mDragLayout.getLayoutParams();
+                            //dragBarHeight = lpDrag.height + 10;
+                        }
+
                         final int pointerIndexMove = event.findPointerIndex(mActivePointerId);
 
                         Log.d(TAG, String.format("pointerIndexMove: %d", pointerIndexMove));
@@ -563,8 +572,15 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                         //param.setMargins(0, 0, 0, bottomPadding);
 
+                        int[] dragBarLocation = new int[2];
+                        mDragLayout.getLocationOnScreen(dragBarLocation);
+
+                        Log.d(TAG, "dragLayout location: " + dragBarLocation[1]);
+                        Log.d(TAG, "dragLayout height: " + dragBarHeight);
+                        Log.d(TAG, "display height: " +  App.getDisplayHeight());
+
                         Log.d(TAG, String.format("flMapContainer height: %d", param.height));
-                        if (param.height <= 0 || param.height > mapOriginalHeight) {
+                        if (param.height <= 0 || (dragBarLocation[1] + dragBarHeight >= App.getDisplayHeight() && yMove > 0)) {
                             Log.d(TAG, "height is out of bounds.");
                             param.height = currentHeight;
                         }
@@ -613,7 +629,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
 
             mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                @Override public void onMyLocationChange(Location location) {
+                @Override
+                public void onMyLocationChange(Location location) {
                     mCurrentLocation = location;
                     drawCurrentLocationMarker(location);
                 }
@@ -967,6 +984,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected String doInBackground(String... params) {
+
+            Log.d(TAG, "GetVenuesByBoundTask params: " + params);
             if (mBusinessType.equalsIgnoreCase("category")) {
 
                 return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], "", "", "");
@@ -993,16 +1012,15 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
     private boolean isNewVenuesAdded(List<BusinessSearchResult> newVenues) {
-        boolean result = false;
-        int iterator = 0;
-        while (!result && iterator <= newVenues.size()) {
-            if (!mVenues.contains(newVenues.get(iterator))) {
-                result = true;
+
+        for (BusinessSearchResult item : newVenues) {
+            if (!mVenues.contains(item)) {
+                return true;
             }
-            iterator++;
         }
 
-        return result;
+        return false;
+
     }
 
     private class GetVenuesByLocationTask extends AsyncTask<String, Void, String> {

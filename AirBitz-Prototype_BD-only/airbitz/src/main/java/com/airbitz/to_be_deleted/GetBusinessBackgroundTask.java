@@ -1,6 +1,5 @@
-package com.airbitz.tasks;
+package com.airbitz.to_be_deleted;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -45,8 +44,8 @@ public class GetBusinessBackgroundTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String responseString) {
         try{
             BusinessDetail bizDetail = new BusinessDetail(new JSONObject(responseString));
-            GetImageTask task = new GetImageTask(mTargetView, mVenueFragment, mVenueAdapter, mPosition);
-            task.execute(bizDetail.getImages().get(0).getPhotoLink(), mBizId);
+            //GetImageTask task = new GetImageTask(mTargetView, mVenueFragment, mVenueAdapter, mPosition);
+            //task.execute(bizDetail.getImages().get(0).getPhotoLink(), mBizId);
 
         }catch (JSONException e){
             e.printStackTrace();
