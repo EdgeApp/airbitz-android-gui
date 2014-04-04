@@ -340,8 +340,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     e.printStackTrace();
                 }
                 if (discountDouble != 0) {
-//                    mDiscountTextView.setText("Discount " + discountInt + "%");
-                    mDiscountTextView.setText(String.format("Discount %.2f%", (discountDouble * 100)));
+                    mDiscountTextView.setText("Discount " + (int) (discountDouble * 100) + "%");
                     mDiscountTextView.setVisibility(View.VISIBLE);
                 } else {
                     mDiscountTextView.setVisibility(View.GONE);
