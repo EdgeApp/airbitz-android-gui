@@ -122,9 +122,7 @@ public class VenueAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
-
         venueNameTextView.setText(mVenues.get(position).getName());
-
 
         if(position==0){
             RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);

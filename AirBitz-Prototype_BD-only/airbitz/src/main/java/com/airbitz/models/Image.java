@@ -21,9 +21,9 @@ public class Image {
     private double mPhotoHeight;
     private double mPhotoWidth;
     private BoundingBox mBoundingBox;
+    private List<String> mTags;
 
     public Image(){
-
     }
 
     public Image(String photoLink, double photoHeight, double mPhotoWidth){
@@ -41,6 +41,14 @@ public class Image {
             mPhotoHeight = jsonResponse.getDouble("width");
             mPhotoWidth = jsonResponse.getDouble("height");
             mBoundingBox = new BoundingBox(jsonResponse.getJSONObject("bounding_box"));
+
+            mTags = new ArrayList<String>();
+            final JSONArray tags = jsonResponse.getJSONArray("tags");
+            final int len = tags.length();
+            for (int i = 0; i < len; i++) {
+                final String tag = tags.getString(i);
+                mTags.add(tag);
+            }
         }
     }
 
@@ -89,6 +97,10 @@ public class Image {
 
     public BoundingBox getBoundingBoxObject(){
         return mBoundingBox;
+    }
+
+    public List<String> getTags() {
+        return mTags;
     }
 
 }

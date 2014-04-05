@@ -242,4 +242,23 @@ public class BusinessDetail {
         return mLocation;
     }
 
+    public Image getPrimaryImage() {
+
+        // Try to find image with tag "primary"
+        Image primaryImage = null;
+        for (Image image : mImageArray) {
+            if (image.getTags().contains("Primary")) {
+                primaryImage = image;
+                break;
+            }
+        }
+
+        // Otherwise, just use the first image
+        if (primaryImage == null) {
+            primaryImage = mImageArray.get(0);
+        }
+
+        return primaryImage;
+    }
+
 }

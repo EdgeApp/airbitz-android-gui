@@ -348,7 +348,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
 
                 // Set photo
                 GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
-                task.execute(mDetail.getImages().get(0).getPhotoLink());
+                task.execute(mDetail.getPrimaryImage().getPhotoLink());
 
                 mAddressButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
