@@ -16,9 +16,6 @@ public class CacheUtil {
     
     public static final String LOC1_KEY = "LOC1_KEY";
     public static final String LOC2_KEY = "LOC2_KEY";
-    public static final String LOC3_KEY = "LOC3_KEY";
-    public static final String LOC4_KEY = "LOC4_KEY";
-    public static final String LOC5_KEY = "LOC5_KEY";
     public static final String MOSTRECENT_LOCATIONSEARCH_SHARED_PREF = "LOCATION_KEY";
 
     public static final String MOSTRECENT_BUSINESSSEARCH_SHARED_PREF = "BUSINESS_KEY";
@@ -104,11 +101,7 @@ public class CacheUtil {
         }
         else {
             if (!cachePref.getString(LOC1_KEY, null).equalsIgnoreCase(recentData)) {
-
                 editor.putString(LOC2_KEY, cachePref.getString(LOC1_KEY, ""));
-                editor.putString(LOC3_KEY, cachePref.getString(LOC2_KEY, null));
-                editor.putString(LOC4_KEY, cachePref.getString(LOC3_KEY, null));
-                editor.putString(LOC5_KEY, cachePref.getString(LOC4_KEY, null));
                 editor.putString(LOC1_KEY, recentData);
             }
         }
@@ -124,10 +117,7 @@ public class CacheUtil {
         SharedPreferences.Editor editor = cachePref.edit();
 
         if ((cachePref.getString(LOC1_KEY, null) == null) &&
-                (cachePref.getString(LOC2_KEY, null) == null) &&
-                (cachePref.getString(LOC3_KEY, null) == null) &&
-                (cachePref.getString(LOC4_KEY, null) == null) &&
-                (cachePref.getString(LOC5_KEY, null) == null)) {
+                (cachePref.getString(LOC2_KEY, null) == null)) {
             return null;
         }
         else {
@@ -138,21 +128,6 @@ public class CacheUtil {
 
             if (cachePref.getString(LOC2_KEY, null) != null) {
                 final LocationSearchResult location = new LocationSearchResult(cachePref.getString(LOC2_KEY, null), true);
-                listRecentLocation.add(location);
-            }
-
-            if (cachePref.getString(LOC3_KEY, null) != null) {
-                final LocationSearchResult location = new LocationSearchResult(cachePref.getString(LOC3_KEY, null), true);
-                listRecentLocation.add(location);
-            }
-
-            if (cachePref.getString(LOC4_KEY, null) != null) {
-                final LocationSearchResult location = new LocationSearchResult(cachePref.getString(LOC4_KEY, null), true);
-                listRecentLocation.add(location);
-            }
-
-            if (cachePref.getString(LOC5_KEY, null) != null) {
-                final LocationSearchResult location = new LocationSearchResult(cachePref.getString(LOC5_KEY, null), true);
                 listRecentLocation.add(location);
             }
 
