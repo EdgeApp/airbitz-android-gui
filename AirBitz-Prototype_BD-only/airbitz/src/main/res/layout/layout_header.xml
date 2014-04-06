@@ -58,6 +58,6 @@
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         android:src="@drawable/btn_help"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
 </RelativeLayout>
