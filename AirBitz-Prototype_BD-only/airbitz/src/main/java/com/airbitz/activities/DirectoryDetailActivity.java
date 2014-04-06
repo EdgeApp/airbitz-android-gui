@@ -33,6 +33,7 @@ import com.airbitz.models.Category;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -87,6 +88,8 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
 
         mBusinessId = getIntent().getExtras().getString("bizId");
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
+
+        Log.d(TAG, "Business ID: " + mBusinessId);
 
         mCategoriesTextView = (TextView) findViewById(R.id.textview_categories);
         mDiscountTextView = (TextView) findViewById(R.id.textview_discount);
@@ -342,8 +345,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 }
 
                 // Set photo
-                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
-                task.execute(mDetail.getPrimaryImage().getPhotoLink());
+                Picasso.with(DirectoryDetailActivity.this).load(mDetail.getPrimaryImage().getPhotoThumbnailLink()).into(mBackImage);
+//                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
+//                task.execute(mDetail.getPrimaryImage().getPhotoLink());
 
                 mAddressButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {

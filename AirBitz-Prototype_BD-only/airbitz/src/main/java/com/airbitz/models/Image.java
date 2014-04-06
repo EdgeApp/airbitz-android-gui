@@ -18,6 +18,7 @@ public class Image {
 
     public static final String TAG = Image.class.getSimpleName();
     private String mPhotoLink;
+    private String mPhotoThumbnailLink;
     private double mPhotoHeight;
     private double mPhotoWidth;
     private BoundingBox mBoundingBox;
@@ -41,6 +42,7 @@ public class Image {
             mPhotoHeight = jsonResponse.getDouble("width");
             mPhotoWidth = jsonResponse.getDouble("height");
             mBoundingBox = new BoundingBox(jsonResponse.getJSONObject("bounding_box"));
+            mPhotoThumbnailLink = serverRoot+jsonResponse.getString("thumbnail");
 
             mTags = new ArrayList<String>();
             final JSONArray tags = jsonResponse.getJSONArray("tags");
@@ -66,6 +68,9 @@ public class Image {
         return resultList;
     }
 
+    public String getPhotoThumbnailLink() {
+        return mPhotoThumbnailLink;
+    }
 
     public void setPhotoLink(String photoLink){
         mPhotoLink = photoLink;
