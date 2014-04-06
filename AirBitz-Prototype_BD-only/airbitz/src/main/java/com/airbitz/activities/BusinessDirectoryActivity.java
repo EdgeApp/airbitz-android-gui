@@ -237,7 +237,7 @@ public class BusinessDirectoryActivity extends Activity implements
         });
 
         try {
-            mBusinessCategoryAsynctask.execute("name");
+            mBusinessCategoryAsynctask.execute("level");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -250,12 +250,13 @@ public class BusinessDirectoryActivity extends Activity implements
                 if (mIsMoreCategoriesProgressRunning) {
                     mMoreCategoriesProgressDialog.dismiss();
                 }
-//                mMoreButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override public void onClick(View view) {
-//                        Toast.makeText(getApplicationContext(), "No categories retrieved from server",
-//                                       Toast.LENGTH_LONG).show();
-//                    }
-//                });
+                // mMoreButton.setOnClickListener(new View.OnClickListener() {
+                // @Override public void onClick(View view) {
+                // Toast.makeText(getApplicationContext(),
+                // "No categories retrieved from server",
+                // Toast.LENGTH_LONG).show();
+                // }
+                // });
             }
         }, timeout);
 
@@ -453,7 +454,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     try {
                         new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(BusinessDirectoryActivity.this)).execute(mLocationWords,
-                                                                                                                                                 latLong);
+                                                                                                                                         latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -587,7 +588,8 @@ public class BusinessDirectoryActivity extends Activity implements
                         intent.putExtra("bizName", business.getName());
                         startActivity(intent);
                     } else {
-                        CacheUtil.writeCachedBusinessSearchData(BusinessDirectoryActivity.this, businessSearchAdapter.getItem(position));
+                        CacheUtil.writeCachedBusinessSearchData(BusinessDirectoryActivity.this,
+                                                                businessSearchAdapter.getItem(position));
                         locationFieldShouldFocus = true;
                     }
 
@@ -596,7 +598,7 @@ public class BusinessDirectoryActivity extends Activity implements
                     final LocationSearchResult location = locationAdapter.getItem(position);
                     mLocationField.setText(location.getLocationName());
                     CacheUtil.writeCachedLocationSearchData(BusinessDirectoryActivity.this,
-                            location.getLocationName());
+                                                            location.getLocationName());
                 }
 
                 if (locationFieldShouldFocus) {
@@ -770,8 +772,8 @@ public class BusinessDirectoryActivity extends Activity implements
                 ArrayList<Category> catArrayList = new ArrayList<Category>();
 
                 for (Category cat : categories.getBusinessCategoryArray()) {
-                    if (!cat.getCategoryLevel().equalsIgnoreCase("1") && !cat.getCategoryLevel()
-                                                                             .equalsIgnoreCase("2")
+                    if (!cat.getCategoryLevel().equalsIgnoreCase("1")
+                        && !cat.getCategoryLevel().equalsIgnoreCase("2")
                         && !cat.getCategoryLevel().equalsIgnoreCase("3")
                         && !cat.getCategoryLevel().equalsIgnoreCase("null")) {
                         catArrayList.add(cat);
@@ -926,7 +928,6 @@ public class BusinessDirectoryActivity extends Activity implements
         }
 
     };
-
 
     private void writeLatLonToSharedPreference() {
         writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());
