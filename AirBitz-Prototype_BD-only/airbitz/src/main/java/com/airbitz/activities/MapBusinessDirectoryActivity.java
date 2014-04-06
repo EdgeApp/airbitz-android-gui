@@ -748,6 +748,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
     protected void initializeMarkerWithBusinessSearchResult() {
 
+        Log.d(TAG, "initializeMarkerWithBusinessSearchResult");
+
         mMarkersLatLngList = new ArrayList<LatLng>();
         Marker firstMarker = null;
         mMarkerId.put(null, 0);
@@ -787,12 +789,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             zoomToContainAllMarkers();
 
-            if (firstMarker != null) {
-                firstMarker.showInfoWindow();
-            } else {
-                drawCurrentLocationMarker(mCurrentLocation);
-                mUserLocationMarker.showInfoWindow();
-            }
+//            if (firstMarker != null) {
+//                firstMarker.showInfoWindow();
+//            } else {
+//                drawCurrentLocationMarker(mCurrentLocation);
+//                mUserLocationMarker.showInfoWindow();
+//            }
         } else {
             drawCurrentLocationMarker(mCurrentLocation);
             mUserLocationMarker.showInfoWindow();
@@ -801,6 +803,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
     protected void initializeMarkerWithBoundSearchResult() {
+
+        Log.d(TAG, "initializeMarkerWithBoundSearchResult");
 
         Marker firstMarker = null;
         mMarkerId.put(null, 0);
