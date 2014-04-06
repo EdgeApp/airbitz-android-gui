@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.BusinessDirectoryActivity;
-import com.airbitz.fragments.VenueFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
@@ -31,16 +30,14 @@ public class VenueAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
     private boolean firstPlace = false;
-    //private VenueFragment mVenueFragment;
     private double mLat;
     private double mLon;
 
-    public VenueAdapter(Context context, List<BusinessSearchResult> venues, VenueFragment venueFragment) {
+    public VenueAdapter(Context context, List<BusinessSearchResult> venues) {
         firstPlace = false;
         mContext = context;
         mVenues = venues;
         mInflater = LayoutInflater.from(mContext);
-        //mVenueFragment = venueFragment;
         mLat = getLatFromSharedPreference();
         mLon = getLonFromSharedPreference();
     }

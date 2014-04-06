@@ -95,7 +95,7 @@ public class VenueFragment extends Fragment implements
         // Set-up list adapter
 //        mVenueListView.addFooterView(mLoadingFooterView);
         mVenues = new ArrayList<BusinessSearchResult>();
-        mVenueAdapter = new VenueAdapter(getActivity(), mVenues, VenueFragment.this);
+        mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
         mVenueListView.setAdapter(mVenueAdapter);
 //        mVenueListView.removeFooterView(mLoadingFooterView);
 
@@ -154,7 +154,9 @@ public class VenueFragment extends Fragment implements
             }
         }, timeout);
 
-        ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+        if (mIsInBusinessDirectory) {
+            ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+        }
 
         return view;
     }
@@ -186,7 +188,9 @@ public class VenueFragment extends Fragment implements
 
         @Override protected void onPreExecute() {
 //            mVenueListView.addFooterView(mLoadingFooterView);
-            ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+            if (mIsInBusinessDirectory) {
+                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+            }
             
             Log.d(TAG, "VenueFragment: GetVenuesTask");
 
@@ -273,7 +277,7 @@ public class VenueFragment extends Fragment implements
 
                 mVenueListView.setVisibility(View.VISIBLE);
 
-                mVenueAdapter = new VenueAdapter(getActivity(), mVenues, VenueFragment.this);
+                mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
                 mVenueListView.setAdapter(mVenueAdapter);
 
                //mVenueAdapter.notifyDataSetChanged();
@@ -342,7 +346,9 @@ public class VenueFragment extends Fragment implements
 
         @Override protected void onPreExecute() {
 //            mVenueListView.addFooterView(mLoadingFooterView);
-            ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+            if (mIsInBusinessDirectory) {
+                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+            }
         }
 
         @Override protected String doInBackground(String... params) {
@@ -461,7 +467,9 @@ public class VenueFragment extends Fragment implements
 
                 mVenues.addAll(mTempVenues);
                 mVenueAdapter.notifyDataSetChanged();
-                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                if (mIsInBusinessDirectory) {
+                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                }
 
             }
 //            mProgressDialog.dismiss();
