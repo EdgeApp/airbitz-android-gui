@@ -250,13 +250,12 @@ public class BusinessDirectoryActivity extends Activity implements
                 if (mIsMoreCategoriesProgressRunning) {
                     mMoreCategoriesProgressDialog.dismiss();
                 }
-
-                mMoreButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(), "No categories retrieved from server",
-                                       Toast.LENGTH_LONG).show();
-                    }
-                });
+//                mMoreButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override public void onClick(View view) {
+//                        Toast.makeText(getApplicationContext(), "No categories retrieved from server",
+//                                       Toast.LENGTH_LONG).show();
+//                    }
+//                });
             }
         }, timeout);
 
