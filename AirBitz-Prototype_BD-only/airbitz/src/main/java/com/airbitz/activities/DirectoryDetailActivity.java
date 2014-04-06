@@ -270,12 +270,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                         mAddressButton.setVisibility(View.GONE);
                     }
                 } else {
-                    mAddressButton.setText(mDetail.getAddress() + ", "
-                                           + mDetail.getCity()
-                                           + ", "
-                                           + mDetail.getState()
-                                           + ", "
-                                           + mDetail.getPostalCode());
+                    mAddressButton.setText(mDetail.getPrettyAddressString());
                 }
 
                 if (TextUtils.isEmpty(mDetail.getPhone())) {

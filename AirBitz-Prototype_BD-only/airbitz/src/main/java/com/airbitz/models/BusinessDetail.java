@@ -1,5 +1,10 @@
 package com.airbitz.models;
 
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+
+import com.greenhalolabs.halohalo.utils.SpannableUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -259,6 +264,19 @@ public class BusinessDetail {
         }
 
         return primaryImage;
+    }
+
+    public Spannable getPrettyAddressString() {
+        final SpannableStringBuilder ssb = new SpannableStringBuilder();
+        ssb.append(mBizAddress)
+                .append("\n")
+                .append(mBizCity)
+                .append(", ")
+                .append(mBizState)
+                .append(" ")
+                .append(mBizPostalCode);
+        SpannableUtil.setBoldSpan(ssb, mBizAddress);
+        return ssb;
     }
 
 }
