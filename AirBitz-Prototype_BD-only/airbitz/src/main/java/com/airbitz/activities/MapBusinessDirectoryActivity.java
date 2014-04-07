@@ -38,6 +38,7 @@ import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MapInfoWindowAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.fragments.VenueFragment;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.LocationSearchResult;
@@ -69,7 +70,6 @@ import java.util.List;
  */
 public class MapBusinessDirectoryActivity extends Activity implements GestureDetector.OnGestureListener {
 
-    public static final String YOUR_LOCATION = "Your Location";
     private static final String TAG = MapBusinessDirectoryActivity.class.getSimpleName();
 
     private GoogleMap mGoogleMap;
@@ -134,6 +134,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private GetVenuesByBusinessTask mGetVenuesByBusinessTask;
     private GetVenuesByLatLongTask mGetVenuesByLatLongTask;
     private GetVenuesByBusinessAndLocation mGetVenuesByBusinessAndLocation;
+    
+    VenueFragment fragmentVenue;
 
     private double mDensity;
 
@@ -146,6 +148,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mBusinessType = getIntent().getStringExtra(BusinessDirectoryActivity.BUSINESSTYPE);
         setContentView(R.layout.activity_map_business_directory_2);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        fragmentVenue = (VenueFragment)getFragmentManager().findFragmentById(R.id.venue);
 
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
@@ -624,7 +628,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override public void onInfoWindowClick(Marker marker) {
-                    if (marker.getTitle().equalsIgnoreCase(YOUR_LOCATION)) {
+                    if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
 
                     } else {
                         Intent intent = new Intent(MapBusinessDirectoryActivity.this,
@@ -686,7 +690,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
         mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                                                                       .position(currentPosition)
-                                                                      .title(YOUR_LOCATION)
+                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
                                                                       .snippet("")
                                                                       .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
                                         );
@@ -701,7 +705,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
         mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                                                                       .position(location)
-                                                                      .title(YOUR_LOCATION)
+                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
                                                                       .snippet("")
                                                                       .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
                                         );
@@ -980,6 +984,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mVenues = results.getBusinessSearchObjectArray();
                     mGoogleMap.clear();
                     initializeMarkerWithBoundSearchResult();
+                    fragmentVenue.setListView(searchResult);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
