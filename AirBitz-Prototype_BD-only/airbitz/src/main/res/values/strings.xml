@@ -16,5 +16,6 @@
     <string name="address">Address</string>
     <string name="phone_number">Phone Number</string>
     <string name="web">Web</string>
+    <string name="your_location">Your Location</string>
 
 </resources>

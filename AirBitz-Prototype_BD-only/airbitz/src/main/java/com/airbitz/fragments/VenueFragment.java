@@ -235,45 +235,8 @@ public class VenueFragment extends Fragment implements
         @Override protected void onPostExecute(String searchResult) {
 //            mProgressDialog.dismiss();
             try {
-                SearchResult results = new SearchResult(new JSONObject(searchResult));
 
-                mNextUrl = "null";
-                mTempVenues = new ArrayList<BusinessSearchResult>();
-                if (results != null) {
-                    mNextUrl = results.getNextLink();
-                    mTempVenues = results.getBusinessSearchObjectArray();
-                    Log.d(TAG, "total venues from results: " + String.valueOf(mTempVenues.size()));
-                }
-
-                if (mTempVenues.isEmpty()) {
-                    mNoResultView.setVisibility(View.VISIBLE);
-                } else {
-
-                    if (mIsInBusinessDirectory) {
-
-                        if (mTempVenues.size() >= 5) {
-                            for (int i = 0; i < 5; i++) {
-                                mVenues.add(mTempVenues.get(i));
-                            }
-
-                            for (int i = 4; i >= 0; i--) {
-                                mTempVenues.remove(i);
-                            }
-                        } else {
-                            for (int i = 0; i < mTempVenues.size(); i++) {
-                                mVenues.add(mTempVenues.get(i));
-                            }
-                            for (int i = mTempVenues.size() - 1; i >= 0; i--) {
-                                mTempVenues.remove(i);
-                            }
-                        }
-                    } else {
-                        mVenues = mTempVenues;
-                    }
-                    mNoResultView.setVisibility(View.GONE);
-                }
-
-                Log.d(TAG, "total venues: " + String.valueOf(mVenues.size()));
+                processSearchResults(searchResult);
 
                 mVenueListView.setVisibility(View.VISIBLE);
 
@@ -333,6 +296,71 @@ public class VenueFragment extends Fragment implements
             }
 
         }
+    }
+
+
+    public void setListView(String searchResults) {
+
+        try {
+            processSearchResults(searchResults);
+
+            mVenueListView.setVisibility(View.VISIBLE);
+
+            mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
+            mVenueListView.setAdapter(mVenueAdapter);
+
+            Log.d(TAG, "refreshing list view");
+
+        } catch (JSONException e) {
+            mNoResultView.setVisibility(View.VISIBLE);
+            e.printStackTrace();
+        } catch (Exception e) {
+            mNoResultView.setVisibility(View.VISIBLE);
+            e.printStackTrace();
+        }
+    }
+
+    void processSearchResults(String searchResult) throws JSONException {
+
+        SearchResult results = new SearchResult(new JSONObject(searchResult));
+
+        mNextUrl = "null";
+        mTempVenues = new ArrayList<BusinessSearchResult>();
+        if (results != null) {
+            mNextUrl = results.getNextLink();
+            mTempVenues = results.getBusinessSearchObjectArray();
+            Log.d(TAG, "total venues from results: " + String.valueOf(mTempVenues.size()));
+        }
+
+        if (mTempVenues.isEmpty()) {
+            mNoResultView.setVisibility(View.VISIBLE);
+        } else {
+
+            if (mIsInBusinessDirectory) {
+
+                if (mTempVenues.size() >= 5) {
+                    for (int i = 0; i < 5; i++) {
+                        mVenues.add(mTempVenues.get(i));
+                    }
+
+                    for (int i = 4; i >= 0; i--) {
+                        mTempVenues.remove(i);
+                    }
+                } else {
+                    for (int i = 0; i < mTempVenues.size(); i++) {
+                        mVenues.add(mTempVenues.get(i));
+                    }
+                    for (int i = mTempVenues.size() - 1; i >= 0; i--) {
+                        mTempVenues.remove(i);
+                    }
+                }
+            } else {
+                mVenues = mTempVenues;
+            }
+            mNoResultView.setVisibility(View.GONE);
+        }
+
+        Log.d(TAG, "total venues: " + String.valueOf(mVenues.size()));
     }
 
     private class GetMoreVenuesTask extends AsyncTask<String, Void, String> {

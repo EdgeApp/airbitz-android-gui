@@ -3,8 +3,6 @@ package com.airbitz.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +14,7 @@ import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.utils.ImageHelper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.greenhalolabs.halohalo.ResHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +47,7 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         LinearLayout shadowLayout = (LinearLayout) view.findViewById(R.id.shadow_layout);
 
         titleView.setText(marker.getTitle());
-        if (marker.getTitle().equalsIgnoreCase(MapBusinessDirectoryActivity.YOUR_LOCATION)) {
+        if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
             addressView.setText(" ");
             LinearLayout balloonLayout = (LinearLayout) view.findViewById(R.id.balloon_layout);
             balloonLayout.setPadding(0, 0, 0, 0);
