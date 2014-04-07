@@ -12,7 +12,7 @@ export ORG_GRADLE_PROJECT_keyPassword="airb1tzBd"
 read -p "Is this correct? [y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    ./gradlew build
+    ./gradlew assembleProdRelease
 
     # Create apks directory if it doesn't exist.
     if [ ! -d apks ]; then
