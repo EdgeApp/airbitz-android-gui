@@ -52,6 +52,7 @@ import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+import com.crashlytics.android.Crashlytics;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -149,6 +150,8 @@ public class BusinessDirectoryActivity extends Activity implements
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
 
         checkLocationManager();
 
