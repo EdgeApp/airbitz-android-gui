@@ -25,10 +25,10 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -86,10 +86,10 @@ public class BusinessDirectoryActivity extends Activity implements
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
-    private Button mRestaurantButton;
-    private Button mBarButton;
-    private Button mCoffeeButton;
-    private Button mMoreButton;
+    private TextView mRestaurantButton;
+    private TextView mBarButton;
+    private TextView mCoffeeButton;
+    private TextView mMoreButton;
 
     private RelativeLayout mParentLayout;
 
@@ -102,6 +102,9 @@ public class BusinessDirectoryActivity extends Activity implements
     private LocationManager mLocationManager;
 
     private ObservableScrollView mScrollView;
+
+    private ViewGroup mViewGroupLoading;
+    private TextView mLoadingText;
 
     private static String mLocationWords = "";
     private static String mBusinessType = "business";
@@ -179,10 +182,10 @@ public class BusinessDirectoryActivity extends Activity implements
 
         Log.d("TAG_LOC", "CUR LOC: ");
 
-        mRestaurantButton = (Button) findViewById(R.id.button_restaurant);
-        mBarButton = (Button) findViewById(R.id.button_bar);
-        mCoffeeButton = (Button) findViewById(R.id.button_coffee_tea);
-        mMoreButton = (Button) findViewById(R.id.button_more);
+        mRestaurantButton = (TextView) findViewById(R.id.button_restaurant);
+        mBarButton = (TextView) findViewById(R.id.button_bar);
+        mCoffeeButton = (TextView) findViewById(R.id.button_coffee_tea);
+        mMoreButton = (TextView) findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
 
         mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
@@ -207,6 +210,9 @@ public class BusinessDirectoryActivity extends Activity implements
         mNearYouTextView = (TextView) findViewById(R.id.textview_nearyou);
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
 
+        mViewGroupLoading = (ViewGroup) findViewById(R.id.ViewGroup_loading);
+        mLoadingText = (TextView) findViewById(R.id.TextView_loading);
+
         mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mSearchField.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mLocationField.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
@@ -216,6 +222,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mCoffeeButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mMoreButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mNearYouTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mLoadingText.setTypeface(montserratRegularTypeFace);
 
         mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
         mMoreCategoriesProgressDialog = new ProgressDialog(BusinessDirectoryActivity.this);
@@ -264,7 +271,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mRestaurantButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((TextView) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -274,7 +281,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mBarButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((TextView) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -284,7 +291,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mCoffeeButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 mIntent = new Intent(BusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
-                mIntent.putExtra(BUSINESS, ((Button) view).getText().toString());
+                mIntent.putExtra(BUSINESS, ((TextView) view).getText().toString());
                 mIntent.putExtra(LOCATION, "");
                 mIntent.putExtra(BUSINESSTYPE, "category");
                 startActivity(mIntent);
@@ -817,6 +824,10 @@ public class BusinessDirectoryActivity extends Activity implements
             }
 
         }
+    }
+
+    public void hideLoadingIndicator() {
+        mViewGroupLoading.setVisibility(View.GONE);
     }
 
     public Categories getMoreBusinessCategory(Categories initial, String link) {

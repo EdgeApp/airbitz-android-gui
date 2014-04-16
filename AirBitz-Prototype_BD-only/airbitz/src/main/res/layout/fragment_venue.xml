@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/darker_gray">
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical">
+
     <TextView
+        android:id="@+id/no_result_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No Result Found"
         android:gravity="center"
-        android:textSize="20dp"
         android:inputType="textNoSuggestions"
         android:padding="20dp"
+        android:text="No Result Found"
         android:textColor="@android:color/black"
+        android:textSize="20dp"
         android:textStyle="bold"
-        android:id="@+id/no_result_view"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/listView"
-                android:drawSelectorOnTop="false"/>
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false" />
 
 
 </LinearLayout>
