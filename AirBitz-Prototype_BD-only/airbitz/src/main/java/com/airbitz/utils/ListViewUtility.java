@@ -1,3 +1,4 @@
+
 package com.airbitz.utils;
 
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.ListView;
  */
 public class ListViewUtility {
     public static void setListViewHeightBasedOnChildren(ListView listView, int position) {
-//        position = position+1;
+        // position = position+1;
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             return;
@@ -21,7 +22,8 @@ public class ListViewUtility {
         for (int i = 0; i <= position; i++) {
             View listItem = listAdapter.getView(i, null, listView);
             if (listItem instanceof ViewGroup) {
-                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                    ViewGroup.LayoutParams.WRAP_CONTENT));
             }
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
@@ -31,6 +33,7 @@ public class ListViewUtility {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
@@ -39,13 +42,26 @@ public class ListViewUtility {
 
         int totalHeight = 0;
         totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
+        // for (int i = 0; i < listAdapter.getCount(); i++) {
+        // View listItem = listAdapter.getView(i, null, listView);
+        // if (listItem instanceof ViewGroup) {
+        // listItem.setLayoutParams(new
+        // ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        // ViewGroup.LayoutParams.WRAP_CONTENT));
+        // }
+        // listItem.measure(0, 0);
+        // totalHeight += listItem.getMeasuredHeight();
+        // }
+
+        final int childCount = listAdapter.getCount();
+        if (childCount > 0) {
+            final View listItem = listAdapter.getView(0, null, listView);
             if (listItem instanceof ViewGroup) {
-                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                    ViewGroup.LayoutParams.WRAP_CONTENT));
             }
             listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
+            totalHeight += (listItem.getMeasuredHeight() * childCount);
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
