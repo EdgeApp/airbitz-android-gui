@@ -14,7 +14,6 @@ import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,6 +37,16 @@ public class MoreCategoryAdapter extends BaseAdapter {
             mListCategory = new ArrayList<Category>();
         }
         mInflater = LayoutInflater.from(mContext);
+    }
+
+    public void setCategories(Categories categories) {
+        mCategories = categories;
+        if(mCategories!=null){
+            mListCategory = categories.getBusinessCategoryArray();
+        } else {
+            mListCategory = new ArrayList<Category>();
+        }
+        notifyDataSetChanged();
     }
 
     @Override
