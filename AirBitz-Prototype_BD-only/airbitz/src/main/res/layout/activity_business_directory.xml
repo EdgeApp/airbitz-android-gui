@@ -123,7 +123,7 @@
                                         android:text="@string/more_categories" />
                                 </LinearLayout>
 
-                                <Spinner
+                                <com.airbitz.widgets.NoDefaultSpinner
                                     android:id="@+id/spinner_more_categories"
                                     android:layout_width="match_parent"
                                     android:layout_height="5dp"

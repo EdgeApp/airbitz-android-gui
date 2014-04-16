@@ -51,8 +51,8 @@ import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
-
 import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -152,7 +152,6 @@ public class BusinessDirectoryActivity extends Activity implements
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-
         checkLocationManager();
 
         mGestureDetector = new GestureDetector(this);
@@ -195,7 +194,6 @@ public class BusinessDirectoryActivity extends Activity implements
         mScrollView.setScrollViewListener(this);
 
         mMoreSpinner = (Spinner) findViewById(R.id.spinner_more_categories);
-        mMoreSpinner.setAdapter(mMoreCategoryAdapter);
 
         mBusinessLayout = (LinearLayout) findViewById(R.id.layout_listview_business);
 
@@ -262,28 +260,6 @@ public class BusinessDirectoryActivity extends Activity implements
                 // });
             }
         }, timeout);
-
-        mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-
-                if (mFirstLoad) {
-                    mFirstLoad = false;
-                }
-                else {
-
-                    Intent intent = new Intent(BusinessDirectoryActivity.this,
-                                               MapBusinessDirectoryActivity.class);
-                    intent.putExtra(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
-                                                                  .getCategoryName());
-                    intent.putExtra(LOCATION, "");
-                    intent.putExtra(BUSINESSTYPE, "category");
-                    startActivity(intent);
-                }
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
 
         mRestaurantButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -788,6 +764,28 @@ public class BusinessDirectoryActivity extends Activity implements
 
                 mMoreCategoryAdapter = new MoreCategoryAdapter(BusinessDirectoryActivity.this, mCategories);
                 mMoreSpinner.setAdapter(mMoreCategoryAdapter);
+                mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override public void onItemSelected(AdapterView<?> adapterView,
+                                                         View view,
+                                                         int position,
+                                                         long l) {
+
+                        if (mFirstLoad) {
+                            mFirstLoad = false;
+                        } else {
+                            Intent intent = new Intent(BusinessDirectoryActivity.this,
+                                                       MapBusinessDirectoryActivity.class);
+                            intent.putExtra(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
+                                                                          .getCategoryName());
+                            intent.putExtra(LOCATION, "");
+                            intent.putExtra(BUSINESSTYPE, "category");
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                });
                 mMoreButton.setClickable(true);
 
                 if (mIsMoreCategoriesProgressRunning) {
