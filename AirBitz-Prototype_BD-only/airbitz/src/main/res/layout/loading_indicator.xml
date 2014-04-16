@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ViewGroup_loading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -12,10 +13,12 @@
         android:layout_marginRight="@dimen/content_padding" />
 
     <TextView
+        android:id="@+id/TextView_loading"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@id/ProgressBar_loading"
+        android:textColor="@color/blue_text"
         android:text="@string/loading" />
 
 </RelativeLayout>

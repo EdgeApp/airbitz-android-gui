@@ -87,7 +87,7 @@
                                     android:orientation="vertical"
                                     android:showDividers="middle">
 
-                                    <Button
+                                    <TextView
                                         android:id="@+id/button_restaurant"
                                         style="@style/CategoryItem"
                                         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
                                         android:drawableLeft="@drawable/ico_restaurant"
                                         android:text="@string/restaurant_and_food_trucks" />
 
-                                    <Button
+                                    <TextView
                                         android:id="@+id/button_bar"
                                         style="@style/CategoryItem"
                                         android:layout_width="match_parent"
@@ -105,7 +105,7 @@
                                         android:paddingLeft="28dp"
                                         android:text="@string/bars_and_nightclubs" />
 
-                                    <Button
+                                    <TextView
                                         android:id="@+id/button_coffee_tea"
                                         style="@style/CategoryItem"
                                         android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                                         android:drawablePadding="28dp"
                                         android:text="@string/coffee_and_tea" />
 
-                                    <Button
+                                    <TextView
                                         android:id="@+id/button_more"
                                         style="@style/CategoryItem"
                                         android:layout_width="match_parent"
@@ -244,6 +244,8 @@
                         android:layout_height="match_parent" />
 
                 </LinearLayout>
+
+                <include layout="@layout/loading_indicator" />
 
             </LinearLayout>
         </com.airbitz.objects.ObservableScrollView>

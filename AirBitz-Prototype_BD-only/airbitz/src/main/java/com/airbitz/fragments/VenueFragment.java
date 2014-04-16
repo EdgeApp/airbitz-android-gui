@@ -161,6 +161,11 @@ public class VenueFragment extends Fragment implements
         return view;
     }
 
+    private void hideLoadingIndicator() {
+        if (getActivity() instanceof BusinessDirectoryActivity) {
+            ((BusinessDirectoryActivity) getActivity()).hideLoadingIndicator();
+        }
+    }
 
     @Override public void onScrollEnded() {
         if (isFirstLoad) {
@@ -227,6 +232,7 @@ public class VenueFragment extends Fragment implements
         @Override protected void onCancelled() {
 //            mVenueListView.removeFooterView(mLoadingFooterView);
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
             super.onCancelled();
@@ -287,10 +293,12 @@ public class VenueFragment extends Fragment implements
                 }
             } catch (JSONException e) {
                 mNoResultView.setVisibility(View.VISIBLE);
+                hideLoadingIndicator();
                 e.printStackTrace();
                 this.cancel(true);
             } catch (Exception e) {
                 mNoResultView.setVisibility(View.VISIBLE);
+                hideLoadingIndicator();
                 e.printStackTrace();
                 this.cancel(true);
             }
@@ -313,9 +321,11 @@ public class VenueFragment extends Fragment implements
 
         } catch (JSONException e) {
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
             e.printStackTrace();
         } catch (Exception e) {
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
             e.printStackTrace();
         }
     }
@@ -334,6 +344,7 @@ public class VenueFragment extends Fragment implements
 
         if (mTempVenues.isEmpty()) {
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
         } else {
 
             if (mIsInBusinessDirectory) {
@@ -389,6 +400,7 @@ public class VenueFragment extends Fragment implements
         @Override protected void onCancelled() {
 //            mVenueListView.removeFooterView(mLoadingFooterView);
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
             super.onCancelled();
@@ -450,6 +462,8 @@ public class VenueFragment extends Fragment implements
                     this.cancel(true);
 
                 }
+            } else {
+                hideLoadingIndicator();
             }
             isGettingMoreVenueFinished = true;
         }
@@ -485,6 +499,7 @@ public class VenueFragment extends Fragment implements
         @Override protected void onCancelled() {
 //            mProgressDialog.dismiss();
             mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
             super.onCancelled();
