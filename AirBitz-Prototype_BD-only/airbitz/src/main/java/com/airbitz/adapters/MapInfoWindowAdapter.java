@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.MapBusinessDirectoryActivity;
+import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.ImageHelper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.greenhalolabs.halohalo.ResHelper;
 
 import java.io.IOException;
 import java.io.InputStream;

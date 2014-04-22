@@ -5,7 +5,8 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.greenhalolabs.halohalo.HaloApp;
+import com.airbitz.shared.app.HaloApp;
+
 
 /**
  * Created by dannyroa on 4/2/14.

@@ -45,6 +45,7 @@ import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
 import com.airbitz.objects.ClearableEditText;
+import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,7 +57,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.greenhalolabs.halohalo.ResHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
