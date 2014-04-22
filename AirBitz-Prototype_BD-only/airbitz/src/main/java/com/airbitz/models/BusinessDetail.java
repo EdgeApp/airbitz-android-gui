@@ -3,7 +3,7 @@ package com.airbitz.models;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 
-import com.greenhalolabs.halohalo.utils.SpannableUtil;
+import com.airbitz.shared.utils.SpannableUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
