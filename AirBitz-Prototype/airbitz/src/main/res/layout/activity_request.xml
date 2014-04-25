@@ -266,19 +266,6 @@
     </ScrollView>
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/navigation_layout">
-        <fragment
-            android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
-
     <android.inputmethodservice.KeyboardView
         android:id="@+id/layout_calculator"
         android:background="@drawable/bg_calc"
@@ -286,6 +273,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:visibility="gone"/>

@@ -1,10 +1,15 @@
 package com.airbitz.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 2/10/14.
  */
-public class SignUpActivity extends Activity implements GestureDetector.OnGestureListener{
+public class SignUpActivity extends Activity {
 
     private Button mNextButton;
 
@@ -33,23 +38,20 @@ public class SignUpActivity extends Activity implements GestureDetector.OnGestur
     private EditText mWithdrawalPinEditText;
     private TextView mTitleTextView;
     private TextView mHintTextView;
+    private View mProgressView;
+    private View mLoginView;
+    private UserLoginTask mAuthTask;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
-    private RelativeLayout mParentLayout;
-    private ScrollView mScrollView;
-
-    private String mUsername;
-    private String mPassword;
-    private String mPasswordConfirmation;
-    private String mWithdrawalPin;
-
     private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
+    private static final String passwordPattern = ".*[" + Pattern.quote(specialChar) + "].*";
+
 
     private Intent mIntent;
 
-    private GestureDetector mGestureDetector;
+//    private GestureDetector mGestureDetector;
 
     public static String KEY_USERNAME = "KEY_USERNAME";
     public static String KEY_PASSWORD = "KEY_PASSWORD";
@@ -61,10 +63,8 @@ public class SignUpActivity extends Activity implements GestureDetector.OnGestur
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        mGestureDetector = new GestureDetector(this);
-
-        mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
-        mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
+        mLoginView = (View) findViewById(R.id.layout_signup);
+        mProgressView = (View) findViewById(R.id.layout_progress);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -93,68 +93,7 @@ public class SignUpActivity extends Activity implements GestureDetector.OnGestur
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-        mUsername = mUsernameEditText.getText().toString();
-        mPassword = mPasswordEditText.getText().toString();
-        mPasswordConfirmation = mPasswordConfirmationEditText.getText().toString();
-        mWithdrawalPin = mWithdrawalPinEditText.getText().toString();
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        String pattern = ".*[" + Pattern.quote(specialChar) + "].*";
-
-                if(mUsername.length() != 0 && mWithdrawalPin.length() != 0 &&  mPassword.length() != 0){
-
-                    if(mPassword.length() >= 10){
-
-                        if( mPassword.matches(".*[A-Z].*") &&
-                                mPassword.matches(".*[a-z].*") &&
-                                mPassword.matches(".*\\d.*") &&
-                                mPassword.matches(pattern)){
-
-                            if(mPassword.equals(mPasswordConfirmation)){
-
-                                if(mWithdrawalPin.matches("[0-9]+")){
-
-                                    mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
-                                    mIntent.putExtra(KEY_USERNAME, mUsername);
-                                    mIntent.putExtra(KEY_PASSWORD, mPassword);
-                                    mIntent.putExtra(KEY_WITHDRAWAL, mWithdrawalPin);
-                                    startActivity(mIntent);
-
-                                }
-                                else{
-                                    Toast.makeText(SignUpActivity.this, "Withdrawal pin must consist of only numeric characters", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            else{
-                                Toast.makeText(SignUpActivity.this, "Password confirmation does not match", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        else{
-                            Toast.makeText(SignUpActivity.this, "Password must contain at least 1 upper and lower case, number and special character ", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    else{
-                        Toast.makeText(SignUpActivity.this, "Password must contain at least 10 characters", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    Toast.makeText(SignUpActivity.this, "Please fill the empty field", Toast.LENGTH_SHORT).show();
-                }
-
+                attemptLogin();
             }
         });
 
@@ -173,72 +112,200 @@ public class SignUpActivity extends Activity implements GestureDetector.OnGestur
 
     }
 
-
-    @Override
-    protected void onResume() {
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
+    private boolean goodUsername(String name) {
+        return name.length() != 0;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
+    private boolean goodPassword(String password) {
+        if (password.length() >= 10 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*") &&
+                password.matches(passwordPattern)) {
+                return true;
             }
+        return false;
+    }
 
+    private boolean goodConfirmation(String password, String confirmation) {
+        return password.equals(confirmation);
+    }
+
+    private boolean goodPin(String pin) {
+        return pin.matches("[0-9]+");
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUsername;
+        private final String mPassword;
+        private final String mPin;
+
+        UserLoginTask(String email, String password, String pin) {
+            mUsername = email;
+            mPassword = password;
+            mPin = pin;
         }
 
-        return false;
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service. Remove below code.
+
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
+                mIntent.putExtra(KEY_USERNAME, mUsername);
+                mIntent.putExtra(KEY_PASSWORD, mPassword);
+                mIntent.putExtra(KEY_WITHDRAWAL, mPin);
+                startActivity(mIntent);
+            } else {
+                showProgress(false);
+                showErrorDialog();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
     }
+
+    private void showErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.error_on_signup))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    public void attemptLogin() {
+        if (mAuthTask != null) {
+            return;
+        }
+
+        // Store values at the time of the login attempt.
+        String username = mUsernameEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+        String confirmation = mPasswordConfirmationEditText.getText().toString();
+        String pin = mWithdrawalPinEditText.getText().toString();
+
+        // Reset errors.
+        mPasswordEditText.setError(null);
+        mUsernameEditText.setError(null);
+        mPasswordConfirmationEditText.setError(null);
+        mWithdrawalPinEditText.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid username.
+        if (!goodUsername(username)) {
+            mUsernameEditText.setError(getString(R.string.error_invalid_username));
+            focusView = mUsernameEditText;
+            cancel = true;
+        }
+
+        // Check for a valid password.
+        else if (!goodPassword(password)) {
+            mPasswordEditText.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordEditText;
+            cancel = true;
+        }
+
+        // Check for a valid confirmation.
+        else if (!goodConfirmation(password, confirmation)) {
+            mPasswordConfirmationEditText.setError(getString(R.string.error_invalid_confirmation));
+            focusView = mPasswordConfirmationEditText;
+            cancel = true;
+        }
+
+        // Check for a valid confirmation.
+        else if (!goodPin(pin)) {
+            mWithdrawalPinEditText.setError(getString(R.string.error_invalid_pin));
+            focusView = mWithdrawalPinEditText;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            mAuthTask = new UserLoginTask(username, password, pin);
+            mAuthTask.execute((Void) null);
+        }
+    }
+
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
 
 }

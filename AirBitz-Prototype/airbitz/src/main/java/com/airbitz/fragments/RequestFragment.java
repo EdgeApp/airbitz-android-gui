@@ -1,4 +1,4 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,11 +10,14 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -28,12 +31,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.ImportActivity;
+import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.WalletActivity;
 import com.airbitz.utils.Common;
 
 /**
  * Created on 2/13/14.
  */
-public class RequestActivity extends Activity implements KeyboardView.OnKeyboardActionListener, GestureDetector.OnGestureListener{
+public class RequestFragment extends Fragment implements KeyboardView.OnKeyboardActionListener {
 
     private EditText mBitcoinField;
     private EditText mDollarField;
@@ -57,8 +63,6 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
 
     private ScrollView mScrollView;
 
-    public static String CLASSNAME = "CLASSNAME";
-
     private Keyboard mKeyboard;
     private KeyboardView mKeyboardView;
 
@@ -69,51 +73,50 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
     public final static int CodeCancel   = -3;
     private int mButtonWidth = 0;
 
-    private GestureDetector mGestureDetector;
-
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_request, container, false);
 
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        mGestureDetector = new GestureDetector(this);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
-        mNavigationLayout = (RelativeLayout) findViewById(R.id.navigation_layout);
-        mFocusDistractorLayout = (LinearLayout) findViewById(R.id.layout_focus_distractor);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mFocusDistractorLayout = (LinearLayout) view.findViewById(R.id.layout_focus_distractor);
         mFocusDistractorLayout.requestFocus();
 
-        mScrollView = (ScrollView) findViewById(R.id.layout_amount);
+        mScrollView = (ScrollView) view.findViewById(R.id.layout_amount);
 
-        mKeyboard = new Keyboard(RequestActivity.this, R.xml.layout_keyboard);
-        mKeyboardView = (KeyboardView) findViewById(R.id.layout_calculator);
+        mKeyboard = new Keyboard(this.getActivity(), R.xml.layout_keyboard);
+        mKeyboardView = (KeyboardView) view.findViewById(R.id.layout_calculator);
 
         mKeyboardView.setKeyboard(mKeyboard);
         mKeyboardView.setEnabled(true);
         mKeyboardView.setPreviewEnabled(false);
-        mKeyboardView.setOnKeyboardActionListener(RequestActivity.this);
+        mKeyboardView.setOnKeyboardActionListener(RequestFragment.this);
         mKeyboardView.setBackgroundResource(R.drawable.bg_calc);
 
-        mNavigationLayout = (RelativeLayout) findViewById(R.id.navigation_layout);
+        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
 
-        mBitcoinField = (EditText) findViewById(R.id.edittext_btc);
-        mDollarField = (EditText) findViewById(R.id.edittext_dollar);
-        mWalletButton = (Button) findViewById(R.id.button_wallet);
+        mBitcoinField = (EditText) view.findViewById(R.id.edittext_btc);
+        mDollarField = (EditText) view.findViewById(R.id.edittext_dollar);
+        mWalletButton = (Button) view.findViewById(R.id.button_wallet);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
-        mImportWalletButton = (ImageButton) findViewById(R.id.button_importwallet);
-        mEmailButton = (ImageButton) findViewById(R.id.button_email);
-        mSmsButton = (ImageButton) findViewById(R.id.button_sms);
-        mQRCodeButton = (ImageButton) findViewById(R.id.button_qrcode);
+        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mImportWalletButton = (ImageButton) view.findViewById(R.id.button_importwallet);
+        mEmailButton = (ImageButton) view.findViewById(R.id.button_email);
+        mSmsButton = (ImageButton) view.findViewById(R.id.button_sms);
+        mQRCodeButton = (ImageButton) view.findViewById(R.id.button_qrcode);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        mWalletTextView = (TextView) findViewById(R.id.textview_wallet);
-        mConverterTextView = (TextView) findViewById(R.id.textview_converter);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
+        mConverterTextView = (TextView) view.findViewById(R.id.textview_converter);
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mWalletTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
@@ -126,44 +129,23 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
         mWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent = new Intent(RequestActivity.this, WalletActivity.class);
-                mIntent.putExtra(CLASSNAME, "RequestActivity");
-                startActivity(mIntent);
+//                mIntent = new Intent(RequestFragment.this, WalletActivity.class);
+//                mIntent.putExtra(CLASSNAME, "RequestActivity");
+//                startActivity(mIntent);
             }
         });
 
-        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-                if (heightDiff > 100) {
-                    mNavigationLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    mNavigationLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return mGestureDetector.onTouchEvent(motionEvent);
+//            }
+//        });
 
         mImportWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent = new Intent(RequestActivity.this, ImportActivity.class);
+                mIntent = new Intent(getActivity(), ImportActivity.class);
                 startActivity(mIntent);
             }
         });
@@ -180,11 +162,11 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
                 emailIntent.setType("text/html");
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject");
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Content description");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Content description");
                 startActivity(Intent.createChooser(emailIntent, "Email:"));
             }
         });
@@ -212,8 +194,8 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
         mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = android.content.ClipData.newPlainText("private key","SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf");
+                clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("private key","SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf");
                 clipboard.setPrimaryClip(clip);
 
                 return true;
@@ -276,34 +258,36 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+//                finish();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(RequestActivity.this, "Info", "Business directory info");
+                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
+
+        return view;
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        int importWidth = mImportWalletButton.getWidth();
-        int emailWidth = mEmailButton.getWidth();
-        int smsWidth = mSmsButton.getWidth();
-        int qrCodeWidth = mQRCodeButton.getWidth();
-
-        mImportWalletButton.getLayoutParams().height = importWidth;
-        mEmailButton.getLayoutParams().height = emailWidth;
-        mSmsButton.getLayoutParams().height = smsWidth;
-        mQRCodeButton.getLayoutParams().height = qrCodeWidth;
-
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        int importWidth = mImportWalletButton.getWidth();
+//        int emailWidth = mEmailButton.getWidth();
+//        int smsWidth = mSmsButton.getWidth();
+//        int qrCodeWidth = mQRCodeButton.getWidth();
+//
+//        mImportWalletButton.getLayoutParams().height = importWidth;
+//        mEmailButton.getLayoutParams().height = emailWidth;
+//        mSmsButton.getLayoutParams().height = smsWidth;
+//        mQRCodeButton.getLayoutParams().height = qrCodeWidth;
+//
+//    }
 
     public void showQRCodePopUpDialog(){
-        final Dialog dialog = new Dialog(RequestActivity.this);
+        final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_qrcode);
         ImageView imageviewQRCode = (ImageView) dialog.findViewById(R.id.imageview_qrcode);
         imageviewQRCode.setImageResource(R.drawable.img_qr_code);
@@ -319,9 +303,12 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
         dialog.show();
     }
 
-    @Override public void onBackPressed() {
-        if( isCustomKeyboardVisible() ) hideCustomKeyboard(); else this.finish();
-    }
+//    @Override public void onBackPressed() {
+//        if( isCustomKeyboardVisible() )
+//            hideCustomKeyboard();
+//        else
+//            this.finish();
+//    }
 
     public void hideCustomKeyboard() {
         mKeyboardView.setVisibility(View.GONE);
@@ -329,7 +316,7 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
     }
 
     public void showCustomKeyboard( View v ) {
-        if( v!=null ) ((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if( v!=null ) ((InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         mKeyboardView.setVisibility(View.VISIBLE);
         mKeyboardView.setEnabled(true);
@@ -337,22 +324,6 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
 
     public boolean isCustomKeyboardVisible() {
         return mKeyboardView.getVisibility() == View.VISIBLE;
-    }
-
-    @Override
-    protected void onResume() {
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -365,10 +336,9 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
 
     }
 
-    @Override
     public void onKey(int keyCode, int[] keyCodes) {
 
-        View focusCurrent = RequestActivity.this.getWindow().getCurrentFocus();
+        View focusCurrent = getActivity().getWindow().getCurrentFocus();
         if( focusCurrent==null || focusCurrent.getClass()!=EditText.class ) return;
         EditText edittext = (EditText) focusCurrent;
         Editable editable = edittext.getText();
@@ -385,79 +355,18 @@ public class RequestActivity extends Activity implements KeyboardView.OnKeyboard
     }
 
     @Override
-    public void onText(CharSequence charSequence) {
-
-    }
+    public void onText(CharSequence charSequence) {}
 
     @Override
-    public void swipeLeft() {
-
-    }
+    public void swipeLeft() {}
 
     @Override
-    public void swipeRight() {
-
-    }
+    public void swipeRight() {}
 
     @Override
-    public void swipeDown() {
-
-    }
+    public void swipeDown() {}
 
     @Override
-    public void swipeUp() {
-
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
+    public void swipeUp() {}
 
 }

@@ -456,20 +456,6 @@
     </LinearLayout>
 </com.airbitz.objects.ObservableScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/navigation_layout"
-        android:layout_alignParentBottom="true">
-        <fragment
-
-            android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
-
 </RelativeLayout>
 
 

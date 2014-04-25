@@ -1,30 +1,28 @@
 package com.airbitz.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.adapters.QuestionArrayAdapter;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 2/10/14.
  */
-public class ForgotPasswordActivity extends Activity implements GestureDetector.OnGestureListener{
+public class ForgotPasswordActivity extends Activity {
 
-    private ListView mListView;
     private Button mSubmitButton;
 
     private ImageButton mBackButton;
@@ -32,10 +30,9 @@ public class ForgotPasswordActivity extends Activity implements GestureDetector.
 
     private TextView mTitleTextView;
 
-    private RelativeLayout mParentLayout;
-    private ScrollView mScrollView;
+    private LinearLayout mItemsLayout;
 
-    private GestureDetector mGestureDetector;
+    private Map mRecoveryQA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -43,53 +40,25 @@ public class ForgotPasswordActivity extends Activity implements GestureDetector.
         setContentView(R.layout.activity_forgot_password);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        mGestureDetector = new GestureDetector(this);
-
-        mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
-        mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
-
-        mListView = (ListView)findViewById(R.id.listView);
         mSubmitButton = (Button)findViewById(R.id.submitButton);
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
-
-        ArrayList<String> questions = new ArrayList<String>();
-        questions.add("Name of Favorite Teacher");
-        questions.add("Mother's Maiden Name");
-        questions.add("Favorite Food");
-        questions.add("Favorite Movie");
-        questions.add("Favorite Team");
-
-
-        mListView.setDivider(null);
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+
+        mRecoveryQA = getRecoveryQA();
+
         mSubmitButton.setTypeface(LandingActivity.montserratBoldTypeFace);
-
-        QuestionArrayAdapter listAdapter = new QuestionArrayAdapter(this, questions);
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mListView.setAdapter(listAdapter);
-        ListViewUtility.setListViewHeightBasedOnChildren(mListView);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(answersCorrect(mRecoveryQA)) {
+                    //TODO Is this right when answers are correct - email password?
+                   startActivity(new Intent(ForgotPasswordActivity.this, NavigationActivity.class));
+                   finish();
+                }
             }
         });
 
@@ -106,63 +75,55 @@ public class ForgotPasswordActivity extends Activity implements GestureDetector.
                 Common.showHelpInfo(ForgotPasswordActivity.this, "Info", "Business directory info");
             }
         });
+
+        mItemsLayout = (LinearLayout) findViewById(R.id.forgot_questions_layout);
+
+        populateQuestions(mRecoveryQA);
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
+    private boolean answersCorrect(Map<String, String> map) {
+        boolean truth = true;
+        for(int i=0; i<mItemsLayout.getChildCount(); i++) {
+            View v = mItemsLayout.getChildAt(i);
+            String question = ((TextView) ((ViewGroup)v).getChildAt(0)).getText().toString();
+            String userAnswer = ((TextView) ((ViewGroup)v).getChildAt(1)).getText().toString();
+            String realAnswer = map.get(question);
+            if(!userAnswer.equals(realAnswer))
+                truth = false;
         }
+        return truth;
+    }
 
-        return false;
+    private void populateQuestions(Map<String, String> map) {
+        for(String s: map.keySet()) {
+            mItemsLayout.addView(getQueryView(s));
+        }
     }
 
     @Override
     protected void onResume() {
-
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
+    }
+
+    private Map getRecoveryQA() {
+        //TODO replace with server received Q & A
+
+        Map map = new HashMap<String, String>();
+        ArrayList<String> questions = new ArrayList<String>();
+        map.put("Name of Favorite Teacher", "Teacher");
+        map.put("Mother's Maiden Name", "Name");
+        map.put("Favorite Food", "Food");
+
+        return map;
+    }
+
+    private View getQueryView(String question) {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.item_password_forgot, null);
+        TextView questionTextView = (TextView)view.findViewById(R.id.item_password_forgot_question);
+        questionTextView.setText(question);
+
+        return view;
     }
 }

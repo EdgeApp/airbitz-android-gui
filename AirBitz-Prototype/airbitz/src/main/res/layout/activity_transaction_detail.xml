@@ -132,7 +132,6 @@
 
                 <com.airbitz.objects.RoundedImageView
                     android:id="@+id/imageview_photo"
-                    android:layout_alignParentStart="true"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"
@@ -434,7 +433,7 @@
         android:layout_alignParentBottom="true">
         <fragment
             android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationFragment"
+            android:name="com.airbitz.fragments.NavigationBarFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>

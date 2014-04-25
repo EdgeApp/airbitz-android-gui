@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_header"
+        android:background="#40000000"
+        android:padding="4dp">
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/button_add"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_add"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wallets"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:textSize="20dp"/>
+
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:id="@+id/button_help"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_padding"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:background="@drawable/bg_tab_bar"
+            android:id="@+id/directory_button"
+            android:src="@drawable/ico_tab_directory"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/layout_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
+        android:layout_above="@id/bottom_padding"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textview_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTAL BALANCE"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_balance"
+                android:layout_below="@id/textview_balance"
+                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp">
+
+                <Button
+                    android:id="@+id/button_bitcoinbalance"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="120.015"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="15dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textSize="22dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_green"
+                    android:drawableLeft="@drawable/ico_coin_btc"
+                    android:drawableRight="@drawable/ico_btc"/>
+
+                <Button
+                    android:id="@+id/button_dollarbalance"
+                    android:layout_below="@id/button_bitcoinbalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1050.67"
+                    android:layout_centerHorizontal="true"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="15dp"
+                    android:textSize="22dp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ico_coin_usd"
+                    android:drawableRight="@drawable/ico_usd"/>
+            </RelativeLayout>
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:background="#AAAAAA"-->
+            <!--android:layout_below="@id/layout_balance"-->
+            <!--android:id="@+id/latest_list_view_scroll">-->
+
+            <!--<ListView-->
+            <!--android:layout_margin="1dp"-->
+            <!--android:id="@+id/listview_latest"-->
+            <!--android:layout_below="@id/layout_balance"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <!--<LinearLayout-->
+            <!--android:id="@+id/layout_latest"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/layout_balance">-->
+
+            <!--<ListView-->
+            <!--android:layout_margin="11dp"-->
+            <!--android:id="@+id/listview_latest"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<ListView-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:id="@+id/listview_latest"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:background="#addff1">-->
+            <!--</ListView>-->
+
+            <ListView
+                android:layout_margin="11dp"
+                android:id="@+id/listview_latest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#addff1">
+            </ListView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/listview_latest"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/textview_archive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ARCHIVE"
+                    android:layout_centerVertical="true"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="5dp"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:layout_toRightOf="@id/textview_archive"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/drop_up"/>
+
+                </RelativeLayout>
+
+
+
+            <!--<TextView-->
+            <!--android:id="@+id/textview_archive"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ARCHIVE"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_below="@id/layout_latest"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:textSize="20dp" />-->
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/layout_archived"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="180dp"-->
+                <!--android:layout_margin="11dp"-->
+                <!--android:layout_below="@id/textview_archive"-->
+                <!--android:background="@drawable/rounded_edge_blue">-->
+
+                <ListView
+                    android:id="@+id/listview_archive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="11dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                </ListView>
+
+
+            <!--</RelativeLayout>-->
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

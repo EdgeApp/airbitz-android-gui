@@ -1,6 +1,5 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -9,11 +8,12 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,21 +21,22 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.LandingActivity;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
 
 /**
  * Created on 2/22/14.
  */
-public class SendActivity extends Activity implements Camera.PreviewCallback, GestureDetector.OnGestureListener{
+public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     private Handler mHandler;
     private EditText mToEdittext;
 
+    private View mView;
     private Button mFromButton;
 
     private TextView mFromTextView;
@@ -50,13 +51,11 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
 
-    private FrameLayout preview;
+    private FrameLayout mPreviewFrame;
 
     private int BACK_CAMERA_INDEX = 0;
 
     private Intent mIntent;
-
-    private GestureDetector mGestureDetector;
 
     private RelativeLayout mParentLayout;
     private RelativeLayout mNavigationLayout;
@@ -68,28 +67,31 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
     private boolean mFlashOnInActive = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mGestureDetector = new GestureDetector(this);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
 
-        mParentLayout = (RelativeLayout) findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) findViewById(R.id.navigation_layout);
-//        mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_send, container, false);
 
-        mFlashOffButton = (ImageButton) findViewById(R.id.button_flash_off);
-        mFlashOnButton = (ImageButton) findViewById(R.id.button_flash_on);
-        mAutoFlashButton = (ImageButton) findViewById(R.id.button_flash_auto);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        mFromTextView = (TextView) findViewById(R.id.textview_from);
-        mToTextView = (TextView) findViewById(R.id.textview_to);
-        mQRCodeTextView = (TextView) findViewById(R.id.textview_scan_qrcode);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
+        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
 
-        mFromButton = (Button) findViewById(R.id.button_from);
-        mToEdittext = (EditText) findViewById(R.id.edittext_to);
+        mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
+        mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
+        mAutoFlashButton = (ImageButton) view.findViewById(R.id.button_flash_auto);
+
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
+        mToTextView = (TextView) view.findViewById(R.id.textview_to);
+        mQRCodeTextView = (TextView) view.findViewById(R.id.textview_scan_qrcode);
+
+        mFromButton = (Button) view.findViewById(R.id.button_from);
+        mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(LandingActivity.latoBlackTypeFace);
@@ -106,9 +108,9 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
         mFromButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent = new Intent(SendActivity.this, WalletActivity.class);
-                mIntent.putExtra(RequestActivity.CLASSNAME, "RequestActivity");
-                startActivity(mIntent);
+//                mIntent = new Intent(getActivity(), WalletActivity.class);
+//                mIntent.putExtra(RequestActivity.CLASSNAME, "RequestActivity");
+//                startActivity(mIntent);
             }
         });
 
@@ -162,36 +164,19 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
                     mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_on);
-                    Intent intent = new Intent(SendActivity.this, SendConfirmationActivity.class);
-                    startActivity(intent);
                     mFlashAutoActive = true;
                 }
             }
         });
 
-        preview = (FrameLayout) findViewById(R.id.layout_camera_preview);
+        mPreviewFrame = (FrameLayout) view.findViewById(R.id.layout_camera_preview);
 
-        startCamera(BACK_CAMERA_INDEX);
-
-        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-                if (heightDiff > 100) {
-                    mNavigationLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    mNavigationLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        mView = view;
+        return view;
     }
 
     class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
-        public FakeCapturePhoto(){
-
-        }
+        public FakeCapturePhoto() { }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -209,7 +194,7 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
         protected void onPostExecute(Boolean aBoolean) {
 
             try{
-            mCamera.takePicture(null, null, new PhotoHandler(SendActivity.this, "SendConfirmationActivity"));
+            mCamera.takePicture(null, null, new PhotoHandler(getActivity(), "SendConfirmationActivity"));
             }
             catch (Exception e){
 
@@ -223,7 +208,7 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
-            preview.removeView(mPreview);
+            mPreviewFrame.removeView(mPreview);
             mCamera.release();
         }
         mCamera = null;
@@ -238,50 +223,19 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
             Log.d("TAG", "Camera Does Not exist");
         }
 
-        mPreview = new CameraSurfacePreview(SendActivity.this, mCamera);
-        SurfaceView msPreview = new SurfaceView(getApplicationContext());
+        mPreview = new CameraSurfacePreview(getActivity(), mCamera);
+        SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
         Log.d("TAG", "removeView");
-        preview.removeView(mPreview);
-        preview = (FrameLayout) findViewById(R.id.layout_camera_preview);
+        mPreviewFrame.removeView(mPreview);
+        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         Log.d("TAG", "addView");
-        preview.addView(mPreview);
+        mPreviewFrame.addView(mPreview);
         Log.d("TAG", "setPreviewCallback");
         if(mCamera!=null)
-            mCamera.setPreviewCallback(SendActivity.this);
+            mCamera.setPreviewCallback(SendFragment.this);
         Log.d("TAG", "end setPreviewCallback");
 
-
-        new FakeCapturePhoto().execute();
-    }
-
-    @Override
-    protected void onResume() {
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-        if (mCamera != null) {
-            stopCamera();
-        }
-        if(mHandler==null)
-            mHandler = new Handler();
-        mHandler.postDelayed(cameraDelayRunner, 500);
-    }
-
-    Runnable cameraDelayRunner = new Runnable() {
-        @Override
-        public void run() { startCamera(BACK_CAMERA_INDEX); }
-    };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(cameraDelayRunner);
-        stopCamera();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopCamera();
+//        new FakeCapturePhoto().execute();
     }
 
     @Override
@@ -290,54 +244,42 @@ public class SendActivity extends Activity implements Camera.PreviewCallback, Ge
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
+    public void onResume() {
+        super.onResume();
+        if(mHandler==null)
+            mHandler = new Handler();
     }
 
     @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mHandler.postDelayed(cameraDelayRunner, 500);
         }
-
-        return false;
+        else {
+            if (mCamera != null) {
+                stopCamera();
+            }
+        }
     }
 
+    Runnable cameraDelayRunner = new Runnable() {
+        @Override
+        public void run() { startCamera(BACK_CAMERA_INDEX); }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mHandler != null)
+            mHandler.removeCallbacks(cameraDelayRunner);
+        stopCamera();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopCamera();
+    }
 
 }
