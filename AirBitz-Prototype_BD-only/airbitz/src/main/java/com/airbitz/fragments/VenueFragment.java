@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +31,8 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.ListViewUtility;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,6 +101,7 @@ public class VenueFragment extends Fragment implements
         mVenues = new ArrayList<BusinessSearchResult>();
         mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
         mVenueListView.setAdapter(mVenueAdapter);
+        preloadVenueImages();
 //        mVenueListView.removeFooterView(mLoadingFooterView);
 
         mVenueListView.setVisibility(View.INVISIBLE);
@@ -245,9 +250,9 @@ public class VenueFragment extends Fragment implements
                 processSearchResults(searchResult);
 
                 mVenueListView.setVisibility(View.VISIBLE);
-
                 mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
                 mVenueListView.setAdapter(mVenueAdapter);
+                preloadVenueImages();
 
                //mVenueAdapter.notifyDataSetChanged();
 
@@ -374,6 +379,27 @@ public class VenueFragment extends Fragment implements
         Log.d(TAG, "total venues: " + String.valueOf(mVenues.size()));
     }
 
+    private void preloadVenueImages() {
+        if (mVenues != null) {
+            for (BusinessSearchResult venue : mVenues) {
+                Picasso.with(getActivity()).load(venue.getProfileImage().getImageThumbnail()).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        Log.d(TAG, "Loaded from: " + from.toString());
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    }
+                });
+            }
+        }
+    }
+
     private class GetMoreVenuesTask extends AsyncTask<String, Void, String> {
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
@@ -415,6 +441,7 @@ public class VenueFragment extends Fragment implements
                     mVenues.addAll(results.getBusinessSearchObjectArray());
                     mVenueAdapter.notifyDataSetChanged();
                     mVenueListView.setVisibility(View.VISIBLE);
+                    preloadVenueImages();
 
                     mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
                         @Override public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -510,10 +537,10 @@ public class VenueFragment extends Fragment implements
 
                 mVenues.addAll(mTempVenues);
                 mVenueAdapter.notifyDataSetChanged();
+                preloadVenueImages();
                 if (mIsInBusinessDirectory) {
                     ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
                 }
-
             }
 //            mProgressDialog.dismiss();
         }
