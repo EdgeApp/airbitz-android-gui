@@ -127,7 +127,8 @@ public class VenueAdapter extends BaseAdapter {
             mainLayout.getLayoutParams().height = height;
         }
 
-        Picasso.with(mContext).load(mVenues.get(position).getProfileImage().getImageThumbnail()).into(backgroundView);
+        final Picasso p = Picasso.with(mContext);
+        p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(backgroundView);
 
         return convertView;
     }
