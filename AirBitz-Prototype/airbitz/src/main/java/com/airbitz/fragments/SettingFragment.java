@@ -1,23 +1,29 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.DisplayActivity;
+import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.SecurityActivity;
 import com.airbitz.utils.Common;
 
 /**
  * Created on 2/12/14.
  */
-public class SettingActivity extends Activity implements GestureDetector.OnGestureListener{
+public class SettingFragment extends Fragment {
 
     private Button mDisplayButton;
     private Button mSecurityButton;
@@ -32,29 +38,29 @@ public class SettingActivity extends Activity implements GestureDetector.OnGestu
     private TextView mLanguageTextView;
     private TextView mExchangeTextView;
 
-    private GestureDetector mGestureDetector;
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_setting, container, false);
 
-        mGestureDetector = new GestureDetector(this);
+        mDisplayButton = (Button) view.findViewById(R.id.button_display);
+        mSecurityButton = (Button) view.findViewById(R.id.button_security);
+        mLanguageButton = (Button) view.findViewById(R.id.button_language);
+        mExchangeRateButton = (Button) view.findViewById(R.id.button_exchange);
+        mCategoriesButton = (Button) view.findViewById(R.id.button_categories);
 
-        mDisplayButton = (Button) findViewById(R.id.button_display);
-        mSecurityButton = (Button) findViewById(R.id.button_security);
-        mLanguageButton = (Button) findViewById(R.id.button_language);
-        mExchangeRateButton = (Button) findViewById(R.id.button_exchange);
-        mCategoriesButton = (Button) findViewById(R.id.button_categories);
+        mLanguageTextView = (TextView) view.findViewById(R.id.language_chosen);
+        mExchangeTextView = (TextView) view.findViewById(R.id.exchange_rate_chosen);
 
-        mLanguageTextView = (TextView) findViewById(R.id.language_chosen);
-        mExchangeTextView = (TextView) findViewById(R.id.exchange_rate_chosen);
+        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
-
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mDisplayButton.setTypeface(LandingActivity.latoBlackTypeFace);
@@ -69,20 +75,20 @@ public class SettingActivity extends Activity implements GestureDetector.OnGestu
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+//                finish();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(SettingActivity.this, "Info", "Business directory info");
+                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
 
         mDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingActivity.this, DisplayActivity.class);
+                Intent intent = new Intent(getActivity(), DisplayActivity.class);
                 startActivity(intent);
             }
         });
@@ -90,7 +96,7 @@ public class SettingActivity extends Activity implements GestureDetector.OnGestu
         mSecurityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingActivity.this, SecurityActivity.class);
+                Intent intent = new Intent(getActivity(), SecurityActivity.class);
                 startActivity(intent);
             }
         });
@@ -116,61 +122,19 @@ public class SettingActivity extends Activity implements GestureDetector.OnGestu
             }
         });
 
+        return view;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
-
-    @Override
-    protected void onResume() {
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    public void onResume() {
         super.onResume();
+        //TODO load state here
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //TODO save state here
+    }
+
 }

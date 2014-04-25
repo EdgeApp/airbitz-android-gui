@@ -41,7 +41,6 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
             android:layout_margin="5dp"/>
 
         <TextView
@@ -256,18 +255,5 @@
     </ScrollView>
 
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/navigation_layout"
-        android:layout_alignParentBottom="true">
-
-        <fragment
-            android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
 
 </RelativeLayout>

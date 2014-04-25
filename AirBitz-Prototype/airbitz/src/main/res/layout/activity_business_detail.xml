@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -176,7 +177,6 @@
             android:background="@drawable/bg_ribbon"
             android:text="0 miles"
             android:textColor="@android:color/white"
-            android:textAlignment="center"
             android:id="@+id/textview_distance"
             android:textStyle="bold"
             android:paddingBottom="5dp"
@@ -340,9 +340,10 @@
         android:layout_alignParentBottom="true">
         <fragment
             android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationFragment"
+            android:name="com.airbitz.fragments.NavigationBarFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_navigation" />
     </RelativeLayout>
 
 </RelativeLayout>

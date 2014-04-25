@@ -86,7 +86,6 @@
             android:paddingLeft="10dp"
             android:background="@drawable/bg_ribbon"
             android:text=".45 miles"
-            android:textAlignment="center"
             android:id="@+id/textview_distance"
             android:textColor="@android:color/white"
             android:layout_alignParentTop="true"

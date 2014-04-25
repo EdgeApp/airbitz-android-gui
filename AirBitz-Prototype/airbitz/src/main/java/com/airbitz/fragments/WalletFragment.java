@@ -1,13 +1,16 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,6 +21,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.OfflineWalletActivity;
+import com.airbitz.activities.RequestActivity;
+import com.airbitz.activities.TransactionActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Transaction;
 import com.airbitz.utils.Common;
@@ -29,7 +36,7 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletActivity extends Activity implements GestureDetector.OnGestureListener{
+public class WalletFragment extends Fragment {
 
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
@@ -50,7 +57,6 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
 
     private Intent mIntent;
     private Bundle mExtras = null;
-    private GestureDetector mGestureDetector;
 
     private String mRequestClass = null;
 
@@ -62,12 +68,16 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        if(savedInstanceState!=null)
+            mRequestClass = savedInstanceState.getString(RequestActivity.CLASSNAME, null);
+    }
 
-        mGestureDetector = new GestureDetector(this);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_wallet, container, false);
 
         mLatestTransactionList = new ArrayList<Transaction>();
         mLatestTransactionList.add(new Transaction("Baseball Team", "B15.000"));
@@ -78,45 +88,27 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         mArchivedTransactionList.add(new Transaction("Mexico", "B0.000"));
         mArchivedTransactionList.add(new Transaction("Other", "B0.000"));
 
-        mExtras = getIntent().getExtras();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if(mExtras != null){
-            mRequestClass = getIntent().getExtras().getString(RequestActivity.CLASSNAME, null);
-        }
-        else
-        {
-            mRequestClass = null;
-        }
+        mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestTransactionList);
+        mArchiveWalletAdapter = new WalletAdapter(getActivity(), mArchivedTransactionList);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mScrollLayout = (ScrollView) view.findViewById(R.id.layout_scroll);
 
-        mLatestWalletAdapter = new WalletAdapter(WalletActivity.this, mLatestTransactionList);
-        mArchiveWalletAdapter = new WalletAdapter(WalletActivity.this, mArchivedTransactionList);
+        mBitCoinBalanceButton = (Button) view.findViewById(R.id.button_bitcoinbalance);
+        mDollarBalanceButton = (Button) view.findViewById(R.id.button_dollarbalance);
 
-        mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
-        mScrollLayout = (ScrollView) findViewById(R.id.layout_scroll);
-
-        mBitCoinBalanceButton = (Button) findViewById(R.id.button_bitcoinbalance);
-        mDollarBalanceButton = (Button) findViewById(R.id.button_dollarbalance);
-
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
-        mAddButton = (ImageButton) findViewById(R.id.button_add);
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mAddButton = (ImageButton) view.findViewById(R.id.button_add);
 
 
-        mScrollLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+//        mScrollLayout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return mGestureDetector.onTouchEvent(motionEvent);
+//            }
+//        });
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +120,7 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(WalletActivity.this, "Wallet Info", "Wallet info description");
+                Common.showHelpInfo(getActivity(), "Wallet Info", "Wallet info description");
             }
         });
 
@@ -261,16 +253,16 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         mBitCoinBalanceButton.setPadding(15, 10, 15, 10);
         mDollarBalanceButton.setPadding(15, 10, 15, 10);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mArchivedWalletListView = (ListView) findViewById(R.id.listview_archive);
-        mLatestWalletListView = (ListView) findViewById(R.id.listview_latest);
+        mArchivedWalletListView = (ListView) view.findViewById(R.id.listview_archive);
+        mLatestWalletListView = (ListView) view.findViewById(R.id.listview_latest);
 
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestTransactionList.size(), this);
+        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestTransactionList.size(), getActivity());
 
         mArchivedWalletListView.setAdapter(mArchiveWalletAdapter);
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mArchivedWalletListView, mArchivedTransactionList.size(),this);
+        ListViewUtility.setWalletListViewHeightBasedOnChildren(mArchivedWalletListView, mArchivedTransactionList.size(),getActivity());
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mBitCoinBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
@@ -279,49 +271,33 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         mArchivedWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                mIntent = new Intent(WalletActivity.this, TransactionActivity.class);
+                mIntent = new Intent(getActivity(), TransactionActivity.class);
                 startActivity(mIntent);
-
             }
         });
+
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                mIntent = new Intent(WalletActivity.this, TransactionActivity.class);
+                mIntent = new Intent(getActivity(), TransactionActivity.class);
                 startActivity(mIntent);
             }
         });
+
+        return view;
     }
 
-    @Override
-    protected void onResume() {
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(mRequestClass == null){
-            finish();
-        }
-        else{
-            super.onBackPressed();
-        }
-
-    }
-
+//    @Override
+//    public void onBackPressed() {
+//        if(mRequestClass == null){
+//            finish();
+//        }
+//        else{
+//            super.onBackPressed();
+//        }
+//
+//    }
+//
 
     public void addItemToLatestTransactionList(String name, String amount, List<Transaction> mTransactionList){
 
@@ -339,14 +315,14 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         mTransactionList.add(new Transaction(name, amount));
         mLatestWalletAdapter.notifyDataSetChanged();
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestTransactionList.size(),this);
+        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestTransactionList.size(),getActivity());
 
     }
 
 
     public void showDialogWalletType(){
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(WalletActivity.this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         alertDialogBuilder.setTitle("Wallet Type");
 
@@ -371,7 +347,7 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
                     public void onClick(DialogInterface dialog,int id) {
 
 
-                        mIntent = new Intent(WalletActivity.this, com.airbitz.activities.OfflineWalletActivity.class);
+                        mIntent = new Intent(getActivity(), OfflineWalletActivity.class);
                         startActivity(mIntent);
                     }
                 });
@@ -380,57 +356,4 @@ public class WalletActivity extends Activity implements GestureDetector.OnGestur
         alertDialog.show();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    if(mRequestClass == null){
-                        finish();
-                    }
-                    else{
-                        super.onBackPressed();
-                    }
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }

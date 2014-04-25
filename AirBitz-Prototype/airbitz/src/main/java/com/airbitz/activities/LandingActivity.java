@@ -1,7 +1,10 @@
 package com.airbitz.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +13,10 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -18,12 +24,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbitz.R;
 
@@ -31,6 +37,19 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
     public static final String LAT_KEY = "LATITUDE_KEY";
     public static final String LON_KEY = "LONGITUDE_KEY";
+
+    /**
+     * A dummy authentication store containing known user names and passwords.
+     * TODO: remove after connecting to a real authentication system.
+     */
+    private static final String[] DUMMY_CREDENTIALS = new String[]{
+            "air1:hello", "air2:goodbye"
+    };
+
+    /**
+     * Keep track of the login task to ensure we can cancel it if requested.
+     */
+    private UserLoginTask mAuthTask = null;
 
     private EditText mUserNameField;
     private EditText mPasswordField;
@@ -42,6 +61,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
     private TextView mForgotPasswordTextView;
     private int mDisplayWidth;
     private Location mLocation;
+    private View mProgressView;
 
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
@@ -57,11 +77,12 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_landing);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
         mParentLayout = (RelativeLayout) findViewById(R.id.container);
         mAnimationLayout = (RelativeLayout) findViewById(R.id.layout_animation);
+        mProgressView = findViewById(R.id.login_progress);
 
         montserratBoldTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
         montserratRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
@@ -129,23 +150,10 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userName = mUserNameField.getText().toString();
-                String password = mPasswordField.getText().toString();
-
-                if (userName.isEmpty()) {
-                    if (password.isEmpty()) {
-                        Toast.makeText(LandingActivity.this, "Username and password must not be empty", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(LandingActivity.this, "Username must not be empty", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (password.isEmpty()) {
-                    Toast.makeText(LandingActivity.this, "Password must not be empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    //going to business directory
-                    Intent intent = new Intent(LandingActivity.this, BusinessDirectoryActivity.class);
-                    startActivity(intent);
-                }
-
+                InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
+                attemptLogin();
             }
         });
 
@@ -160,6 +168,176 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         checkLocationManager();
     }
 
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service. Remove below code.
+
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+            for (String credential : DUMMY_CREDENTIALS) {
+                String[] pieces = credential.split(":");
+                if (pieces[0].equals(mEmail)) {
+                    // Account exists, return true if the password matches.
+                    return pieces[1].equals(mPassword);
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+            if (success) {
+                //going to main Navigation
+                Intent intent = new Intent(LandingActivity.this, NavigationActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                showProgress(false);
+                showErrorDialog();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    public void attemptLogin() {
+        if (mAuthTask != null) {
+            return;
+        }
+
+        // Reset errors.
+        mPasswordField.setError(null);
+        mUserNameField.setError(null);
+
+        // Store values at the time of the login attempt.
+        String username = mUserNameField.getText().toString();
+        String password = mPasswordField.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid username.
+        if (TextUtils.isEmpty(username)) {
+            mUserNameField.setError(getString(R.string.error_field_required));
+            focusView = mUserNameField;
+            cancel = true;
+        } else if (!isUsernameValid(username)) {
+            mUserNameField.setError(getString(R.string.error_invalid_username));
+            focusView = mUserNameField;
+            cancel = true;
+        }
+
+        // Check for a valid password.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordField.setError(getString(R.string.error_field_required));
+            focusView = mPasswordField;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mPasswordField.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordField;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            mAuthTask = new UserLoginTask(username, password);
+            mAuthTask.execute((Void) null);
+        }
+    }
+
+    private boolean isUsernameValid(String username) {
+        //TODO real logic for good username
+        return !username.isEmpty();
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO real logic for good password
+        return !password.isEmpty();
+    }
+    
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            mAnimationLayout.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void showErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.error_invalid_credentials))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public void onBackPressed() {
         System.exit(0);
@@ -167,7 +345,6 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
     @Override
     protected void onResume() {
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
         mAnimationLayout.setVisibility(View.VISIBLE);
     }
@@ -228,7 +405,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     mAnimationLayout.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(LandingActivity.this, BusinessDirectoryActivity.class);
+                    Intent intent = new Intent(LandingActivity.this, NavigationActivity.class);
                     startActivity(intent);
                 }
 

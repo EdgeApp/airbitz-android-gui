@@ -916,7 +916,7 @@ public class BusinessDirectoryActivity extends Activity implements GestureDetect
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
 
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
     }
 
