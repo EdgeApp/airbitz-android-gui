@@ -120,7 +120,6 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:text="0 miles"
-                android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 

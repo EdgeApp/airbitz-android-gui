@@ -96,7 +96,6 @@
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:text=".45 miles"
-            android:textAlignment="center"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 </RelativeLayout>

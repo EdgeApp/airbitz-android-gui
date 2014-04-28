@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AirBitz-Prototype.iml" filepath="$PROJECT_DIR$/AirBitz-Prototype.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DragNDropList/DragNDropList.iml" filepath="$PROJECT_DIR$/DragNDropList/DragNDropList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/airbitz/airbitz.iml" filepath="$PROJECT_DIR$/airbitz/airbitz.iml" />
     </modules>
   </component>
 </project>
