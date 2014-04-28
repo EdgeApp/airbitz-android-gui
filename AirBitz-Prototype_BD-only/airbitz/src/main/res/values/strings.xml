@@ -5,7 +5,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="loading">Loading…</string>
+    <string name="no_break_space_character">\u00A0</string>
+    <string name="google_api_key">AIzaSyDSec0_ES_9u-UJqs7kjLiJSzxgZ2fceto</string>
 
+    <!-- Generic strings -->
+    <string name="string_ok">OK</string>
+    <string name="string_yes">Yes</string>
+    <string name="string_no">No</string>
+
+    <!-- Strings for Business Directory -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
@@ -18,4 +26,39 @@
     <string name="web">Web</string>
     <string name="your_location">Your Location</string>
 
-</resources>
+    <!-- Strings related to LandingActivity -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="error_invalid_username">This username is invalid - it must be one or more characters</string>
+    <string name="error_invalid_password">This password  is invalid - it must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
+    <string name="error_invalid_confirmation">The two passwords do not match</string>
+    <string name="error_invalid_pin">The withdrawal pin is invalid - it must be one or more numbers</string>
+
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_credentials">The username or password is invalid</string>
+
+    <string name="activity_landing_swipe_text">Swipe to View Business Directory only</string>
+    <string name="activity_landing_button_signin">Sign In</string>
+    <string name="activity_landing_button_signup">Sign Up</string>
+    <string name="activity_landing_forgot_label">Forgot Password</string>
+
+    <!-- Strings for SignupActivity -->
+    <string name="activity_signup_title">Sign Up</string>
+    <string name="activity_signup_button_next">Next Step</string>
+    <string name="activity_signup_username_hint">User Name</string>
+    <string name="activity_signup_password_hint">Password</string>
+    <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
+    <string name="activity_signup_pin_label">Withdrawal Pin</string>
+    <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
+
+    <!-- Strings for PasswordRecoveryActivity -->
+    <string name="activity_recovery_title">Password Recovery</string>
+    <string name="activity_recovery_complete_button">Complete Sign Up</string>
+    <string name="activity_recovery_prompt_title">Warning</string>
+    <string name="activity_recovery_prompt_skip">Are you sure you want to skip?</string>
+
+    <!-- Strings for ForgotPasswordActivity -->
+    <string name="activity_forgot_title">Forgot Password</string>
+    <string name="activity_forgot_submit">Submit</string></resources>

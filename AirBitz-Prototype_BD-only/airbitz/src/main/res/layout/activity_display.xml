@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
+    android:id="@+id/layout_root">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_padding"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:background="@drawable/bg_tab_bar"
+            android:id="@+id/directory_button"
+            android:src="@drawable/ico_tab_directory"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_header"
+        android:background="#40000000"
+        android:padding="4dp">
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/button_back"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_back"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Display"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:textSize="20dp"/>
+
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:id="@+id/button_help"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
+        android:layout_above="@id/bottom_padding">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="20dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edge_blue"
+                    android:id="@+id/layout_data"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp">
+
+                    <TextView
+                        android:id="@+id/denomination"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="mBit\u00A0"
+                        android:textStyle="italic"
+                        android:textColor="#484748"
+                        android:textSize="11dp"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="10dp"
+                        android:gravity="right|center_vertical"
+                        android:paddingTop="15dp"
+                        android:paddingRight="50dp"
+                        android:paddingBottom="12dp"
+                        android:paddingLeft="12dp"
+                        android:focusable="false"/>
+
+                    <Button
+                        android:id="@+id/button_denomination"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="B Denomination"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ico_bitcoin_blue"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:inputType="text|textCapSentences|textMultiLine"
+                        android:padding="13dp"
+                        android:textSize="13dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/separator_1"
+                        android:layout_below="@id/button_denomination"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+                    <TextView
+                        android:layout_below="@id/separator_1"
+                        android:id="@+id/dollar"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Dollar\u00A0"
+                        android:textStyle="italic"
+                        android:textSize="11dp"
+                        android:textColor="#484748"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="10dp"
+                        android:gravity="right|center_vertical"
+                        android:paddingTop="15dp"
+                        android:paddingRight="50dp"
+                        android:paddingBottom="12dp"
+                        android:paddingLeft="12dp"
+                        android:focusable="false"/>
+
+                    <Button
+                        android:id="@+id/button_currency"
+                        android:layout_below="@id/separator_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Currency"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ico_dollar_green"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:padding="13dp"
+                        android:textSize="13dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/separator_2"
+                        android:layout_below="@id/button_currency"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+                    <Button
+                        android:id="@+id/button_advance_features"
+                        android:layout_below="@id/separator_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Advanced Features"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ico_star"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:padding="13dp"
+                        android:textSize="13dp"
+                        android:focusable="false"/>
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</RelativeLayout>

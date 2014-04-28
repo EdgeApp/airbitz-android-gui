@@ -8,6 +8,8 @@
     <dimen name="map_info_window_width">150dp</dimen>
     <dimen name="venue_list_full_height_275">112dp</dimen>
     <dimen name="venue_list_small_height_175">112dp</dimen>
+    <dimen name="wallet_list_view_height">70dp</dimen>
+    <dimen name="transaction_list_view_height">90dp</dimen>
 
     <dimen name="border_radius_size">6dp</dimen>
 
