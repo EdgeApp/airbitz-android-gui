@@ -590,8 +590,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                     if ("business".equalsIgnoreCase(mBusinessType)) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("bizId", business.getId());
-                        bundle.putString("bizName", business.getName());
+                        bundle.putString(DirectoryDetailFragment.BIZID, business.getId());
+                        bundle.putString(DirectoryDetailFragment.BIZNAME, business.getName());
                         Fragment fragment = new DirectoryDetailFragment();
                         fragment.setArguments(bundle);
                         ((NavigationActivity) getActivity()).pushFragment(fragment);
@@ -695,7 +695,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override public void onResume() {
         if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.INVISIBLE);
+            mMoreSpinner.setVisibility(View.GONE);
         }
 
         super.onResume();
@@ -703,14 +703,14 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override public void onStop() {
         if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.INVISIBLE);
+            mMoreSpinner.setVisibility(View.GONE);
         }
         super.onStop();
     }
 
     @Override public void onPause() {
         if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.INVISIBLE);
+            mMoreSpinner.setVisibility(View.GONE);
         }
         super.onPause();
     }

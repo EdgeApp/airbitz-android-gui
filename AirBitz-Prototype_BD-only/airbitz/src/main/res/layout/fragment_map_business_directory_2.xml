@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
     android:orientation="vertical"
-    tools:context="com.airbitz.activities.LandingActivity"
+    tools:context="com.airbitz.activities.NavigationActivity"
     tools:ignore="MergeRootFrame">
 
     <LinearLayout
@@ -44,6 +44,7 @@
         <!-- Map View -->
 
         <LinearLayout
+            android:id="@+id/map_view_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
