@@ -26,6 +26,7 @@ import com.airbitz.R;
 import com.airbitz.activities.BusinessDirectoryActivity;
 import com.airbitz.activities.DirectoryDetailActivity;
 import com.airbitz.activities.MapBusinessDirectoryActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessSearchResult;
@@ -258,12 +259,7 @@ public class VenueFragment extends Fragment implements
 
                 mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Intent intent = new Intent(getActivity(), DirectoryDetailActivity.class);
-                        int firstVisiblePosition = mVenueListView.getFirstVisiblePosition();
-                        intent.putExtra("bizId", mVenues.get(i).getId());
-                        intent.putExtra("bizName", mVenues.get(i).getName());
-                        intent.putExtra("bizDistance", mVenues.get(i).getDistance());
-                        startActivity(intent);
+                        showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
                     }
                 });
                 if (mIsInBusinessDirectory) {
@@ -282,6 +278,16 @@ public class VenueFragment extends Fragment implements
             }
 
         }
+    }
+
+    private void showDirectoryDetailFragment(String id, String name, String distance) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DirectoryDetailFragment.BIZID, id);
+        bundle.putString("", name);
+        bundle.putString("", distance);
+        Fragment fragment = new DirectoryDetailFragment();
+        fragment.setArguments(bundle);
+        ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
 
 
@@ -441,15 +447,9 @@ public class VenueFragment extends Fragment implements
 
                     mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Intent intent = new Intent(getActivity(), DirectoryDetailActivity.class);
-                            int firstVisiblePosition = mVenueListView.getFirstVisiblePosition();
-                            intent.putExtra("bizId", mVenues.get(i).getId());
-                            intent.putExtra("bizName", mVenues.get(i).getName());
-                            intent.putExtra("bizDistance", mVenues.get(i).getDistance());
-                            startActivity(intent);
+                            showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
                         }
                     });
-//                    mVenueListView.removeFooterView(mLoadingFooterView);
 
                     if (mIsInBusinessDirectory) {
                         ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
