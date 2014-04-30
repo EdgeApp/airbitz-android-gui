@@ -53,9 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="240dp">
 
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.google.android.gms.maps.MapFragment"
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/map_view"
                     android:layout_width="match_parent"
                     android:layout_height="480dp"
                     android:layout_gravity="center" />
@@ -91,13 +90,14 @@
                 android:id="@+id/venue_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:orientation="horizontal"
+                android:gravity="center" >
 
-                <fragment
-                    android:id="@+id/venue"
-                    android:name="com.airbitz.fragments.VenueFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                <!--<fragment-->
+                    <!--android:id="@+id/venue"-->
+                    <!--android:name="com.airbitz.fragments.VenueFragment"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent" />-->
 
             </LinearLayout>
         </LinearLayout>

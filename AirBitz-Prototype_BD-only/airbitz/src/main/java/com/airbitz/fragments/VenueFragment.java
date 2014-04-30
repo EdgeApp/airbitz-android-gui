@@ -1,7 +1,6 @@
 
 package com.airbitz.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class VenueFragment extends Fragment implements
                                            GestureDetector.OnGestureListener,
-                                           BusinessDirectoryActivity.BusinessScrollListener {
+                                           BusinessDirectoryFragment.BusinessScrollListener {
 
     public static final String TAG = VenueFragment.class.getSimpleName();
     private ListView mVenueListView;
@@ -67,6 +67,7 @@ public class VenueFragment extends Fragment implements
     private GestureDetector mGestureDetector;
 
     private boolean mIsInBusinessDirectory = false;
+    private boolean mIsInMapBusinessDirectory = false;
 
 
     public boolean getIsBusinessDirectory() {
@@ -112,38 +113,25 @@ public class VenueFragment extends Fragment implements
         });
 
 
-        if (getActivity().getClass().toString().equalsIgnoreCase(BusinessDirectoryActivity.class.toString())) {
+        mIsInBusinessDirectory = false;
+        mIsInMapBusinessDirectory = false;
+        if (getParentFragment().getClass().toString().equalsIgnoreCase(BusinessDirectoryFragment.class.toString())) {
             String latLon = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
 
             mIsInBusinessDirectory = true;
             mGetVenuesTask = new GetVenuesTask(getActivity());
             mGetVenuesTask.execute(latLon);
-            BusinessDirectoryActivity businessDirectoryActivity = (BusinessDirectoryActivity) getActivity();
-            businessDirectoryActivity.setBusinessScrollListener(this);
-        } else if (getActivity().getClass()
-                                .toString()
-                                .equalsIgnoreCase(MapBusinessDirectoryActivity.class.toString())) {
+            ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
 
-            mIsInBusinessDirectory = false;
-            mLocationName = getActivity().getIntent().getStringExtra(BusinessDirectoryActivity.LOCATION);
-            mBusinessType = getActivity().getIntent().getStringExtra(BusinessDirectoryActivity.BUSINESSTYPE);
-            mBusinessName = getActivity().getIntent().getStringExtra(BusinessDirectoryActivity.BUSINESS);
+        } else if (getParentFragment().getClass().toString().equalsIgnoreCase(MapBusinessDirectoryFragment.class.toString()))  {
+            mIsInMapBusinessDirectory = true;
+            mLocationName = getArguments().getString(BusinessDirectoryActivity.LOCATION);
+            mBusinessType = getArguments().getString(BusinessDirectoryActivity.BUSINESSTYPE);
+            mBusinessName = getArguments().getString(BusinessDirectoryActivity.BUSINESS);
 
             mGetVenuesTask = new GetVenuesTask(getActivity());
             mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
-            // if(mLocationName.length()>0){
-            // mGetVenuesTask.execute(mLocationName);
-            // } else if(mCategoryName.length()>0){
-            // mGetVenuesTask.execute(mCategoryName);
-            // } else if(mBusinessName.length()>0){
-            // mGetVenuesTask.execute(mBusinessName);
-            // } else {
-            // String latlong =
-            // ""+getLatFromSharedPreference()+","+getLonFromSharedPreference();
-            // mGetVenuesTask.execute(latlong);
-            // }
         } else {
-            mIsInBusinessDirectory = false;
             mGetVenuesTask = new GetVenuesTask(getActivity());
             String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
             mGetVenuesTask.execute(latlong);
@@ -203,29 +191,14 @@ public class VenueFragment extends Fragment implements
             }
             
             Log.d(TAG, "VenueFragment: GetVenuesTask");
-
         }
 
         @Override protected String doInBackground(String... params) {
             String result = "";
-            if (getActivity().getClass()
-                             .toString()
-                             .equalsIgnoreCase(BusinessDirectoryActivity.class.toString())) {
-
+            if (mIsInBusinessDirectory) {
                 result = mApi.getSearchByLatLong(params[0], "", "", "1");
 
-            } else if (getActivity().getClass()
-                                    .toString()
-                                    .equalsIgnoreCase(MapBusinessDirectoryActivity.class.toString())) {
-                // if(mLocationName.length()>0){
-                // result = mApi.getSearchByLocation(params[0],"","","");
-                // } else if(mCategoryName.length()>0){
-                // result = mApi.getSearchByCategory(params[0],"","","");
-                // } else if(mBusinessName.length()>0){
-                // result = mApi.getSearchByTerm(params[0],"","","");
-                // } else {
-                // result = mApi.getSearchByLatLong(params[0],"","","");
-                // }
+            } else if (mIsInMapBusinessDirectory) {
                 String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
                 result = mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "",
                                                                        "1", params[2], latlong);

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.MapBusinessDirectoryActivity;
+import com.airbitz.fragments.MapBusinessDirectoryFragment;
 import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.ImageHelper;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,14 +28,14 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private MapBusinessDirectoryActivity mActivity;
+    private MapBusinessDirectoryFragment mFragment;
 
     private static final String TAG = MapInfoWindowAdapter.class.getSimpleName();
 
-    public MapInfoWindowAdapter(Context context) {
+    public MapInfoWindowAdapter(Context context, MapBusinessDirectoryFragment frag) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mContext = context;
-        this.mActivity = (MapBusinessDirectoryActivity) context;
+        this.mFragment = frag;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             Bitmap image = null;
             try {
-                String imageUrl = mActivity.getMarkerImageLink().get(marker);
+                String imageUrl = mFragment.getMarkerImageLink().get(marker);
                 InputStream in = new URL(imageUrl).openStream();
                 image = BitmapFactory.decodeStream(in);
             } catch (IOException e) {
