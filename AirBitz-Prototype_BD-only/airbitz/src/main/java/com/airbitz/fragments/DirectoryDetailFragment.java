@@ -95,9 +95,10 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mBusinessId = savedInstanceState.getString(BIZID);
-        mBusinessName = savedInstanceState.getString(BIZNAME);
-        mBusinessDistance = savedInstanceState.getString(BIZDISTANCE);
+
+        mBusinessId = getArguments().getString(BIZID);
+        mBusinessName = getArguments().getString(BIZNAME);
+        mBusinessDistance = getArguments().getString(BIZDISTANCE);
     }
 
     @Override

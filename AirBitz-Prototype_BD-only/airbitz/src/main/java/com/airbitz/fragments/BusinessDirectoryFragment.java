@@ -40,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.activities.DirectoryDetailActivity;
 import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
