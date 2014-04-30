@@ -25,7 +25,7 @@ public class Transaction {
         mAmount = amount;
     }
 
-    public String getmAmount(){
+    public String getAmount(){
         return mAmount;
     }
 }
