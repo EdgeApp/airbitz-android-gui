@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.ImportActivity;
 import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.WalletActivity;
 import com.airbitz.utils.Common;
 
@@ -129,24 +130,15 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(RequestFragment.this, WalletActivity.class);
-//                mIntent.putExtra(CLASSNAME, "RequestActivity");
-//                startActivity(mIntent);
+                ((NavigationActivity) getActivity()).setFragment(3);
             }
         });
-
-//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });
 
         mImportWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent = new Intent(getActivity(), ImportActivity.class);
-                startActivity(mIntent);
+                Fragment frag = new ImportFragment();
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
 
