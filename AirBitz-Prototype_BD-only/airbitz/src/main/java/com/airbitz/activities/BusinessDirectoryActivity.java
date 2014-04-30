@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -61,7 +62,7 @@ import java.util.List;
 /**
  * Created on 2/10/14.
  */
-public class BusinessDirectoryActivity extends Activity implements
+public class BusinessDirectoryActivity extends FragmentActivity implements
                                                        GestureDetector.OnGestureListener,
                                                        ObservableScrollView.ScrollViewListener {
 

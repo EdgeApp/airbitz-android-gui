@@ -1,7 +1,6 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -10,25 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
-import com.airbitz.activities.DirectoryDetailActivity;
-import com.airbitz.activities.DisplayActivity;
-import com.airbitz.activities.ExportActivity;
-import com.airbitz.activities.ExportSavingOptionActivity;
-import com.airbitz.activities.ImportActivity;
-import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.OfflineWalletActivity;
-import com.airbitz.activities.ReceivedSuccessActivity;
-import com.airbitz.activities.RequestActivity;
-import com.airbitz.activities.SecurityActivity;
-import com.airbitz.activities.SendActivity;
-import com.airbitz.activities.SendConfirmationActivity;
-import com.airbitz.activities.SettingActivity;
-import com.airbitz.activities.TransactionActivity;
-import com.airbitz.activities.TransactionDetailActivity;
-import com.airbitz.activities.WalletActivity;
-import com.airbitz.activities.WalletPasswordActivity;
 
 /**
  * Created by Thomas Baker on 4/22/14.
@@ -51,7 +32,7 @@ public class NavigationBarFragment extends Fragment {
 
     //Callbacks for containing Activity to implement
     public interface OnScreenSelectedListener {
-        public void onScreenSelected(int position);
+        public void onNavBarSelected(int position);
     }
 
     @Override
@@ -108,7 +89,7 @@ public class NavigationBarFragment extends Fragment {
             selectTab(selectedTab);
             unselectTab(mLastTab);
             mLastTab = selectedTab;
-            ((NavigationActivity)this.getActivity()).onScreenSelected(selectedTab);
+            ((NavigationActivity)this.getActivity()).onNavBarSelected(selectedTab);
         }
     }
 

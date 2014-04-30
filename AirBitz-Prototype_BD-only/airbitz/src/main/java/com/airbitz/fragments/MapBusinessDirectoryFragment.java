@@ -1,5 +1,4 @@
-
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,6 +11,8 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,8 +20,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,11 +37,13 @@ import android.widget.ViewAnimator;
 
 import com.airbitz.App;
 import com.airbitz.R;
+import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.activities.DirectoryDetailActivity;
+import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MapInfoWindowAdapter;
 import com.airbitz.api.AirbitzAPI;
-import com.airbitz.fragments.VenueFragment;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.LocationSearchResult;
@@ -47,10 +52,15 @@ import com.airbitz.objects.BusinessVenue;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.CacheUtil;
-import com.airbitz.utils.Common;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -66,10 +76,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created on 2/12/14.
+ * Created by Thomas Baker on 4/22/14.
  */
-public class MapBusinessDirectoryActivity extends Activity implements GestureDetector.OnGestureListener {
-
+public class MapBusinessDirectoryFragment extends Fragment implements GestureDetector.OnGestureListener {
     private static final String TAG = MapBusinessDirectoryActivity.class.getSimpleName();
 
     private GoogleMap mGoogleMap;
@@ -114,6 +123,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private String mLocationName;
     private String mBusinessName;
     private String mBusinessType;
+    private Bundle mVenueBundle;
 
     private GestureDetector mGestureDetector;
 
@@ -134,29 +144,44 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private GetVenuesByBusinessTask mGetVenuesByBusinessTask;
     private GetVenuesByLatLongTask mGetVenuesByLatLongTask;
     private GetVenuesByBusinessAndLocation mGetVenuesByBusinessAndLocation;
-    
+    private LinearLayout mVenueFragmentLayout;
+
     VenueFragment fragmentVenue;
 
     private double mDensity;
 
     int dragBarHeight = 0;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        mLocationName = getIntent().getStringExtra(BusinessDirectoryActivity.LOCATION);
-        mBusinessName = getIntent().getStringExtra(BusinessDirectoryActivity.BUSINESS);
-        mBusinessType = getIntent().getStringExtra(BusinessDirectoryActivity.BUSINESSTYPE);
-        setContentView(R.layout.activity_map_business_directory_2);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        mVenueBundle = this.getArguments();
+        mBusinessName = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESS);
+        mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
+        mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_map_business_directory_2, container, false);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 //        fragmentVenue = (VenueFragment)getFragmentManager().findFragmentById(R.id.venue);
+        mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
+        if(mVenueFragmentLayout.getChildCount()<=0) {
+            VenueFragment venueFragment = new VenueFragment();
+            venueFragment.setArguments(mVenueBundle);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.venue_container, venueFragment, "venue").commit();
+        }
 
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-
-        mDragLayout = (LinearLayout) findViewById(R.id.dragLayout);
-        llListContainer = (LinearLayout) findViewById(R.id.venue_container);
-        flMapContainer = (FrameLayout) findViewById(R.id.map_container);
-        mViewAnimator = (ViewAnimator) findViewById(R.id.ViewAnimator);
+        mDragLayout = (LinearLayout) view.findViewById(R.id.dragLayout);
+        llListContainer = (LinearLayout) view.findViewById(R.id.venue_container);
+        flMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
+        mViewAnimator = (ViewAnimator) view.findViewById(R.id.ViewAnimator);
 
         // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
 
@@ -166,18 +191,18 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mGestureDetector = new GestureDetector(this);
 
         // mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
-        mLocateMeButton = (ImageButton) findViewById(R.id.locateMeButton);
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
+        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
 
         mBackButton.setVisibility(View.VISIBLE);
 
-        mSearchEdittext = (ClearableEditText) findViewById(R.id.edittext_search);
-        mLocationEdittext = (ClearableEditText) findViewById(R.id.edittext_location);
+        mSearchEdittext = (ClearableEditText) view.findViewById(R.id.edittext_search);
+        mLocationEdittext = (ClearableEditText) view.findViewById(R.id.edittext_location);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mSearchListView = (ListView) findViewById(R.id.listview_search);
+        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mSearchEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mLocationEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
@@ -187,21 +212,21 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         mBusinessVenueList = new ArrayList<BusinessVenue>();
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                finish();
-            }
-        });
+//        mBackButton.setOnClickListener(new View.OnClickListener() {
+//            @Override public void onClick(View view) {
+//                finish();
+//            }
+//        });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Common.showHelpInfoDialog(MapBusinessDirectoryActivity.this,
-                                          "Info",
-                                          "Business directory info");
+//                Common.showHelpInfoDialog(this,
+//                        "Info",
+//                        "Business directory info");
             }
         });
 
-        mBusinessSearchAdapter = new BusinessSearchAdapter(MapBusinessDirectoryActivity.this, mBusinessList);
+        mBusinessSearchAdapter = new BusinessSearchAdapter(getActivity(), mBusinessList);
         mSearchListView.setAdapter(mBusinessSearchAdapter);
 
         mSearchEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -218,12 +243,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         final String text = mSearchEdittext.getText().toString();
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
-                                : CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this));
+                                : CacheUtil.getCachedBusinessSearchData(getActivity()));
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
                         new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text,
-                                                                                  mLocationWords,
-                                                                                  latLong);
+                                mLocationWords,
+                                latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -253,10 +278,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     // Only include cached searches if text is empty.
                     final String query = editable.toString();
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
-                            ? CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this)
+                            ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
                     new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(editable.toString(),
-                                                                                mLocationWords, latLong);
+                            mLocationWords, latLong);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -264,7 +289,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             }
         });
 
-        mLocationAdapter = new LocationAdapter(MapBusinessDirectoryActivity.this, mLocation);
+        mLocationAdapter = new LocationAdapter(getActivity(), mLocation);
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -279,8 +304,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mLocationWords = "";
 
                     try {
-                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this)).execute(mLocationWords,
-                                                                                                                                            latLong);
+                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity())).execute(mLocationWords,
+                                latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -294,26 +319,26 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 int keyAction = keyEvent.getAction();
                 String test = "";
-                mIntent = new Intent(MapBusinessDirectoryActivity.this, MapBusinessDirectoryActivity.class);
+                mIntent = new Intent(getActivity(), MapBusinessDirectoryActivity.class);
                 if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText()
-                                                                                                .toString());
+                                    .toString());
                             mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText()
-                                                                                                  .toString());
+                                    .toString());
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESSTYPE, mBusinessType);
                             startActivity(mIntent);
-                            finish();
+//                            finish();
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText()
-                                                                                                .toString());
+                                    .toString());
                             mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText()
-                                                                                                  .toString());
+                                    .toString());
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESSTYPE, mBusinessType);
                             startActivity(mIntent);
-                            finish();
+                            //finish();
                             return true;
                         default:
                             return false;
@@ -338,30 +363,29 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             @Override public void afterTextChanged(Editable editable) {
 
-                    mSearchListView.setAdapter(mLocationAdapter);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                    mLocationWords = editable.toString();
-                    String latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                mSearchListView.setAdapter(mLocationAdapter);
+                mSearchListView.setVisibility(View.VISIBLE);
+                mLocationWords = editable.toString();
+                String latLong = String.valueOf(getLatFromSharedPreference());
+                latLong += "," + String.valueOf(getLonFromSharedPreference());
 
-                    try {
-                        List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
-                                ? CacheUtil.getCachedLocationSearchData(MapBusinessDirectoryActivity.this)
-                                : null);
+                try {
+                    List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
+                            ? CacheUtil.getCachedLocationSearchData(getActivity())
+                            : null);
 
-                        new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        initializeMap();
-        // initializeMarker();
+        initializeMap((MapView) view.findViewById(R.id.map_view));
 
         int timeout = 15000;
         if (mLocationName.equalsIgnoreCase("Current Location")) {
-            mGetVenuesByLatLongTask = new GetVenuesByLatLongTask(this);
+            mGetVenuesByLatLongTask = new GetVenuesByLatLongTask(getActivity());
             String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
             if (mBusinessType.equalsIgnoreCase("business")) {
 
@@ -378,7 +402,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 }
             }, timeout);
         } else {
-            mGetVenuesByBusinessAndLocation = new GetVenuesByBusinessAndLocation(this);
+            mGetVenuesByBusinessAndLocation = new GetVenuesByBusinessAndLocation(getActivity());
             mGetVenuesByBusinessAndLocation.execute(mBusinessName, mLocationName, mBusinessType);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -404,14 +428,14 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mBusinessType = business.getType();
 
                     if ("business".equalsIgnoreCase(mBusinessType)) {
-                        Intent intent = new Intent(MapBusinessDirectoryActivity.this,
-                                                   DirectoryDetailActivity.class);
+                        Intent intent = new Intent(getActivity(),
+                                DirectoryDetailActivity.class);
                         intent.putExtra("bizId", business.getId());
                         intent.putExtra("bizName", business.getName());
                         startActivity(intent);
                     } else {
-                        CacheUtil.writeCachedBusinessSearchData(MapBusinessDirectoryActivity.this,
-                                                                businessSearchAdapter.getItem(position));
+                        CacheUtil.writeCachedBusinessSearchData(getActivity(),
+                                businessSearchAdapter.getItem(position));
                         locationFieldShouldFocus = true;
                     }
 
@@ -419,8 +443,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     final LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
                     final LocationSearchResult location = locationAdapter.getItem(position);
                     mLocationEdittext.setText(location.getLocationName());
-                    CacheUtil.writeCachedLocationSearchData(MapBusinessDirectoryActivity.this,
-                                                            location.getLocationName());
+                    CacheUtil.writeCachedLocationSearchData(getActivity(),
+                            location.getLocationName());
                 }
 
                 if (locationFieldShouldFocus) {
@@ -535,30 +559,49 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             mDragLayout.setVisibility(View.GONE);
             flMapContainer.setVisibility(View.GONE);
         }
+        return view;
     }
 
-    @Override public void onBackPressed() {
-        if (mViewAnimator.getDisplayedChild() == 1) {
-            mViewAnimator.setDisplayedChild(0);
-            mLocationEdittext.setVisibility(View.GONE);
-        } else {
-            super.onBackPressed();
-        }
+//    @Override public void onBackPressed() {
+//        if (mViewAnimator.getDisplayedChild() == 1) {
+//            mViewAnimator.setDisplayedChild(0);
+//            mLocationEdittext.setVisibility(View.GONE);
+//        } else {
+////            super.onBackPressed();
+//        }
+//    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
-    @Override protected void onResume() {
-
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-    }
-
-    private void initializeMap() {
+    private void initializeMap(MapView mapView) {
+        int good = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
         if (mGoogleMap == null) {
-            mGoogleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+            mapView.onCreate(null);
+
+            // Gets to GoogleMap from the MapView and does initialization stuff
+            mGoogleMap = mapView.getMap();
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mGoogleMap.setMyLocationEnabled(true);
+
+            // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+            try {
+                MapsInitializer.initialize(this.getActivity());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Updates the location and zoom of the MapView
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
+            mGoogleMap.animateCamera(cameraUpdate);
+
+//            mGoogleMap = ((MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map_view)).getMap();
 
             if (mGoogleMap == null) {
-                Toast.makeText(getApplicationContext(), "Sorry! unable to create maps", Toast.LENGTH_SHORT)
-                     .show();
+                Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                        .show();
             }
 
             mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
@@ -575,7 +618,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
             mGoogleMap.setPadding(0, padding, 0, padding);
 
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
             Criteria cri = new Criteria();
             String provider = locationManager.getBestProvider(cri, true);
@@ -594,7 +637,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 mCurrentLocation = mGoogleMap.getMyLocation();
                 Log.d("TAG LOC",
-                      "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
+                        "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
 
                 currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             } catch (Exception e) {
@@ -606,18 +649,18 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-//            MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(MapBusinessDirectoryActivity.this);
-//            mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
+            MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
+            mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
 
             mLocateMeButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     Log.d("TAG_LOC",
-                          "CUR LOC: " + mCurrentLocation.getLatitude()
-                                  + "; "
-                                  + mCurrentLocation.getLongitude());
+                            "CUR LOC: " + mCurrentLocation.getLatitude()
+                                    + "; "
+                                    + mCurrentLocation.getLongitude());
 
                     LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-                                                      mCurrentLocation.getLongitude());
+                            mCurrentLocation.getLongitude());
 
                     drawCurrentLocationMarker(currentLatLng);
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
@@ -631,8 +674,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
 
                     } else {
-                        Intent intent = new Intent(MapBusinessDirectoryActivity.this,
-                                                   DirectoryDetailActivity.class);
+                        Intent intent = new Intent(getActivity(),
+                                DirectoryDetailActivity.class);
                         int id = mMarkerId.get(marker);
                         String distance = mMarkerDistances.get(marker);
                         intent.putExtra("bizId", "" + id);
@@ -654,10 +697,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         String northEast = "" + northEastLatLng.latitude + "%2C" + northEastLatLng.longitude;
                         String bound = southWest + "%7C" + northEast;
                         String userLatLong = "" + mCurrentLocation.getLatitude()
-                                             + ","
-                                             + mCurrentLocation.getLongitude();
+                                + ","
+                                + mCurrentLocation.getLongitude();
 
-                        GetVenuesByBoundTask getVenuesByBoundTask = new GetVenuesByBoundTask(MapBusinessDirectoryActivity.this);
+                        GetVenuesByBoundTask getVenuesByBoundTask = new GetVenuesByBoundTask(getActivity());
                         getVenuesByBoundTask.execute(bound, mBusinessName, userLatLong);
                     } else {
                         mCameraChangeListenerEnabled = true;
@@ -689,11 +732,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
         mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                      .position(currentPosition)
-                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
-                                                                      .snippet("")
-                                                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-                                        );
+                        .position(currentPosition)
+                        .title(ResHelper.getStringByResId(R.string.your_location))
+                        .snippet("")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
+        );
     }
 
     private void drawCurrentLocationMarker(LatLng location) {
@@ -704,11 +747,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             location = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
         mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                      .position(location)
-                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
-                                                                      .snippet("")
-                                                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-                                        );
+                        .position(location)
+                        .title(ResHelper.getStringByResId(R.string.your_location))
+                        .snippet("")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
+        );
     }
 
     protected void initializeMarker() {
@@ -721,12 +764,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 mMarkersLatLngList.add(businessVenue.getLocation());
                 currentLatLng = businessVenue.getLocation();
                 mGoogleMap.addMarker(new MarkerOptions()
-                                                        .position(businessVenue.getLocation())
-                                                        .title(businessVenue.getName())
-                                                        .snippet(businessVenue.getAddress())
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                          )
-                          .showInfoWindow();
+                                .position(businessVenue.getLocation())
+                                .title(businessVenue.getName())
+                                .snippet(businessVenue.getAddress())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                )
+                        .showInfoWindow();
             }
         }
 
@@ -771,15 +814,15 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             for (BusinessSearchResult businessSearchResult : mVenues) {
 
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
-                                                   businessSearchResult.getLocationObject().getLongitude());
+                        businessSearchResult.getLocationObject().getLongitude());
                 mMarkersLatLngList.add(locationLatLng);
 
                 Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                        .position(locationLatLng)
-                                                                        .title(businessSearchResult.getName())
-                                                                        .snippet(businessSearchResult.getAddress())
-                                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                                          );
+                                .position(locationLatLng)
+                                .title(businessSearchResult.getName())
+                                .snippet(businessSearchResult.getAddress())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                );
 
                 if (first) {
                     first = false;
@@ -824,14 +867,14 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             boolean first = true;
             for (BusinessSearchResult businessSearchResult : mVenues) {
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
-                                                   businessSearchResult.getLocationObject().getLongitude());
+                        businessSearchResult.getLocationObject().getLongitude());
 
                 Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                        .position(locationLatLng)
-                                                                        .title(businessSearchResult.getName())
-                                                                        .snippet(businessSearchResult.getAddress())
-                                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                                          );
+                                .position(locationLatLng)
+                                .title(businessSearchResult.getName())
+                                .snippet(businessSearchResult.getAddress())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                );
 
                 if (first) {
                     first = false;
@@ -853,6 +896,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
     }
+
 
     public HashMap<Marker, String> getMarkerImageLink() {
         return mMarkerImageLink;
@@ -917,8 +961,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected List<Business> doInBackground(String... strings) {
             List<Business> jsonParsingResult = AirbitzAPI.getApi().getHttpAutoCompleteBusiness(strings[0],
-                                                                                               strings[1],
-                                                                                               strings[2]);
+                    strings[1],
+                    strings[2]);
             ;
             return jsonParsingResult;
         }
@@ -960,8 +1004,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1027,8 +1071,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1076,8 +1120,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1122,8 +1166,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1167,8 +1211,8 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1209,15 +1253,15 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
         @Override protected String doInBackground(String... params) {
             String latLong = String.valueOf(getLatFromSharedPreference())
-                             + "," + String.valueOf(getLonFromSharedPreference());
+                    + "," + String.valueOf(getLonFromSharedPreference());
             return mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "", "1",
-                                                                 params[2], latLong);
+                    params[2], latLong);
         }
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Timeout retrieving data",
-                           Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1238,7 +1282,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     }
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = getSharedPreferences(BusinessDirectoryActivity.PREF_NAME, MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences(BusinessDirectoryActivity.PREF_NAME, Activity.MODE_PRIVATE);
         return pref.getFloat(key, -1);
     }
 
@@ -1281,7 +1325,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 float xDistance = Math.abs(finish.getRawX() - start.getRawX());
 
                 if (xDistance > 100) {
-                    finish();
+//                    finish();
                     return true;
                 }
             }

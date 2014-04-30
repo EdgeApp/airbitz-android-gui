@@ -3,19 +3,21 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/activityLayout"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="60dp" >
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/activityPager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/activity_navigation_viewpager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
 
     </RelativeLayout>
 
@@ -30,7 +32,7 @@
             android:name="com.airbitz.fragments.NavigationBarFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_navigation" />
+            tools:layout="@layout/fragment_navigation_bar" />
     </RelativeLayout>
 
 </RelativeLayout>
