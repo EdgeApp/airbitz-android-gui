@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:text="Settings"
+            android:text="@string/settings_title"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
@@ -78,7 +78,7 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="BITCOIN DENOMINATION\u00A0"
+                    android:text="@string/settings_denomination_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -106,7 +106,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="Bitcoin"
+                        android:text="@string/settings_denomination_buttons_bitcoin"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -128,7 +128,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="mBitcoin = (0.001 Bitcoin)"
+                        android:text="@string/settings_denomination_buttons_mbitcoin"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -150,7 +150,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="uBitcoin = (0.000001 Bitcoin)"
+                        android:text="@string/settings_denomination_buttons_ubitcoin"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -173,7 +173,7 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="CREDENTIALS\u00A0"
+                    android:text="@string/settings_credentials_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -200,7 +200,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="Change password"
+                        android:text="@string/settings_button_change_password"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -211,7 +211,7 @@
                         android:orientation="vertical" />
 
                     <Button
-                        android:id="@+id/button_security"
+                        android:id="@+id/button_pin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -221,7 +221,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="Change withdrawal PIN"
+                        android:text="@string/settings_button_pin"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -242,7 +242,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:text="Change recovery questions"
+                        android:text="@string/settings_button_recovery"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
@@ -265,7 +265,7 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="USER NAME\u00A0"
+                    android:text="@string/settings_user_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -299,7 +299,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Send name on payment"
+                            android:text="@string/settings_button_send_user_info"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -321,7 +321,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/button_first_name"
+                        android:id="@+id/edit_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -334,7 +334,7 @@
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:paddingTop="8dp"
-                        android:hint="First Name (optional)"
+                        android:hint="@string/settings_edit_first_name"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -345,7 +345,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/button_last_name"
+                        android:id="@+id/edit_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -358,7 +358,7 @@
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:paddingTop="8dp"
-                        android:hint="Last Name (optional)"
+                        android:hint="@string/settings_edit_last_name"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -369,7 +369,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/button_nick_name"
+                        android:id="@+id/edit_nick_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -382,7 +382,7 @@
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:paddingTop="8dp"
-                        android:hint="Nickname (optional)"
+                        android:hint="@string/settings_edit_nick_name"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -405,7 +405,7 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="GENERAL\u00A0"
+                    android:text="@string/settings_general_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -438,7 +438,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Auto log off after"
+                            android:text="@string/settings_title_auto_logoff"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -474,7 +474,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Language"
+                            android:text="@string/settings_title_language"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -510,7 +510,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Default Currency"
+                            android:text="@string/settings_title_currency"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -542,7 +542,7 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="DEFAULT EXCHANGE\u00A0"
+                    android:text="@string/settings_exchange_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -575,7 +575,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="US dollar"
+                            android:text="@string/settings_title_usd"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -611,7 +611,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Canadian dollar"
+                            android:text="@string/settings_title_canadian"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -647,7 +647,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Euro"
+                            android:text="@string/settings_title_euro"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -683,7 +683,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Mexican Peso"
+                            android:text="@string/settings_title_peso"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -719,7 +719,7 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Yuan"
+                            android:text="@string/settings_title_yuan"
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
@@ -736,9 +736,10 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log Out"
+                android:text="@string/settings_button_logout"
                 android:textColor="@android:color/white"
                 android:textStyle="normal"
                 android:textSize="24sp"
@@ -755,9 +756,10 @@
                 android:orientation="horizontal" >
 
                 <Button
+                    android:id="@+id/button_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="@string/settings_button_cancel"
                     android:textColor="@android:color/white"
                     android:textStyle="normal"
                     android:textSize="24sp"
@@ -768,9 +770,10 @@
                     android:background="@drawable/btn_green" />
 
                 <Button
+                    android:id="@+id/button_done"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Done"
+                    android:text="@string/settings_button_done"
                     android:textColor="@android:color/white"
                     android:textStyle="normal"
                     android:textSize="24sp"
