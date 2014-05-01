@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.models.Transaction;
 import com.airbitz.utils.Common;
 
 /**

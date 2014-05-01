@@ -532,8 +532,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
     private void showDirectoryDetailFragment(String id, String name, String distance) {
         Bundle bundle = new Bundle();
         bundle.putString(DirectoryDetailFragment.BIZID, id);
-        bundle.putString("", name);
-        bundle.putString("", distance);
+        bundle.putString(DirectoryDetailFragment.BIZNAME, name);
+        bundle.putString(DirectoryDetailFragment.BIZDISTANCE, distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);

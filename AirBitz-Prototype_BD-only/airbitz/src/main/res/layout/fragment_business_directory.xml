@@ -191,12 +191,6 @@
                     android:background="@android:color/black"
                     android:orientation="vertical">
 
-                    <!--<fragment-->
-                        <!--android:id="@+id/venue"-->
-                        <!--android:name="com.airbitz.fragments.VenueFragment"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent" />-->
-
                 </LinearLayout>
 
                 <include layout="@layout/loading_indicator" />

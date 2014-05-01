@@ -13,12 +13,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -31,10 +29,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.ImportActivity;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.WalletActivity;
 import com.airbitz.utils.Common;
 
 /**
@@ -67,7 +63,6 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
     private Keyboard mKeyboard;
     private KeyboardView mKeyboardView;
 
-    private Intent mIntent;
     private ClipboardManager clipboard;
 
     public final static int CodeDelete   = -5;
@@ -82,7 +77,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_request, container, false);
+        View view = inflater.inflate(R.layout.fragment_request, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

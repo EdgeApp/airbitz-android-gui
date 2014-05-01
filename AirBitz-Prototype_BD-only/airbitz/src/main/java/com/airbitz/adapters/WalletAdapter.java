@@ -10,31 +10,31 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.BusinessDirectoryActivity;
-import com.airbitz.models.Transaction;
+import com.airbitz.models.Wallet;
 
 import java.util.List;
 
 /**
  * Created on 2/12/14.
  */
-public class WalletAdapter extends ArrayAdapter<Transaction> {
+public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     private Context mContext;
-    private List<Transaction> mTransactionList;
+    private List<Wallet> mWalletList;
 
-    public WalletAdapter(Context context, List<Transaction> transactionList){
-        super(context, R.layout.item_listview_wallets, transactionList);
+    public WalletAdapter(Context context, List<Wallet> walletList){
+        super(context, R.layout.item_listview_wallets, walletList);
         mContext = context;
-        mTransactionList = transactionList;
+        mWalletList = walletList;
     }
 
     @Override
-    public Transaction getItem(int position) {
+    public Wallet getItem(int position) {
         return super.getItem(position);
     }
 
-    public List<Transaction> getList(){
-        return mTransactionList;
+    public List<Wallet> getList(){
+        return mWalletList;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class WalletAdapter extends ArrayAdapter<Transaction> {
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
         titleTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         amountTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace, Typeface.ITALIC);
-        titleTextView.setText(mTransactionList.get(position).getName());
-        amountTextView.setText(mTransactionList.get(position).getmAmount()
+        titleTextView.setText(mWalletList.get(position).getName());
+        amountTextView.setText(mWalletList.get(position).getAmount()
                 + mContext.getResources().getString(R.string.no_break_space_character));
         return convertView;
     }

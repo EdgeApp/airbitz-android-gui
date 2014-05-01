@@ -6,14 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.airbitz.R;
-import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.DirectoryDetailFragment;
 import com.airbitz.fragments.MapBusinessDirectoryFragment;
@@ -21,11 +16,8 @@ import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
-import com.airbitz.fragments.WalletFragment;
+import com.airbitz.fragments.WalletsFragment;
 import com.crashlytics.android.Crashlytics;
-
-import java.util.List;
-import java.util.Stack;
 
 /**
  * The main Navigation activity holding fragments for anything controlled with
@@ -40,7 +32,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         new BusinessDirectoryFragment(),
                 new RequestFragment(),
                 new SendFragment(),
-                new WalletFragment(),
+                new WalletsFragment(),
                 new SettingFragment(),
                 new MapBusinessDirectoryFragment(),
                 new DirectoryDetailFragment() };
