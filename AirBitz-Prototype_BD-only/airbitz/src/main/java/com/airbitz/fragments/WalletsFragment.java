@@ -44,7 +44,6 @@ public class WalletsFragment extends Fragment {
     private Button mDollarBalanceButton;
 
     private ListView mLatestWalletListView;
-    private ListView mArchivedWalletListView;
 
     private ImageButton mHelpButton;
     private ImageButton mAddButton;
@@ -55,7 +54,6 @@ public class WalletsFragment extends Fragment {
     private ScrollView mScrollLayout;
 
     private WalletAdapter mLatestWalletAdapter;
-    private WalletAdapter mArchiveWalletAdapter;
 
     private Intent mIntent;
     private Bundle mExtras = null;
@@ -66,7 +64,6 @@ public class WalletsFragment extends Fragment {
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
-    private List<Wallet> mArchivedWalletList;
 
 
     @Override
@@ -82,12 +79,10 @@ public class WalletsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mLatestWalletList = getWallets(LATEST_WALLETS);
-        mArchivedWalletList = getWallets(ARCHIVED_WALLETS);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestWalletList);
-        mArchiveWalletAdapter = new WalletAdapter(getActivity(), mArchivedWalletList);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mScrollLayout = (ScrollView) view.findViewById(R.id.layout_scroll);
@@ -132,7 +127,6 @@ public class WalletsFragment extends Fragment {
 
 
                 mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-                mArchivedWalletListView.setAdapter(mArchiveWalletAdapter);
 
                 if(!mOnBitcoinMode){
 
@@ -149,20 +143,6 @@ public class WalletsFragment extends Fragment {
                     }
 
                     mLatestWalletAdapter.notifyDataSetChanged();
-
-
-                    for(Wallet trans: mArchivedWalletList){
-                        try{
-                            double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                            String amount = String.format("B%.3f", item);
-                            trans.setAmount(amount);
-                        } catch (Exception e){
-                            trans.setAmount("0");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    mArchiveWalletAdapter.notifyDataSetChanged();
                 }
                 mOnBitcoinMode = true;
 
@@ -188,7 +168,6 @@ public class WalletsFragment extends Fragment {
                 mDollarBalanceButton.setPadding(15,10,15,10);
 
                 mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-                mArchivedWalletListView.setAdapter(mArchiveWalletAdapter);
 
                 if(mOnBitcoinMode){
 
@@ -205,19 +184,6 @@ public class WalletsFragment extends Fragment {
                     }
 
                     mLatestWalletAdapter.notifyDataSetChanged();
-
-                    for(Wallet trans: mArchivedWalletList){
-                        try{
-                            double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                            String amount = String.format("$%.3f", item);
-                            trans.setAmount(amount);
-                        } catch (Exception e){
-                            trans.setAmount("0");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    mArchiveWalletAdapter.notifyDataSetChanged();
                 }
                 mOnBitcoinMode = false;
 
@@ -243,34 +209,18 @@ public class WalletsFragment extends Fragment {
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mArchivedWalletListView = (ListView) view.findViewById(R.id.listview_archive);
-        mLatestWalletListView = (ListView) view.findViewById(R.id.listview_latest);
+        mLatestWalletListView = (ListView) view.findViewById(R.id.layout_listview);
 
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
-
-        mArchivedWalletListView.setAdapter(mArchiveWalletAdapter);
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mArchivedWalletListView, mArchivedWalletList.size(),getActivity());
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mBitCoinBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
         mDollarBalanceButton.setTypeface(LandingActivity.helveticaNeueTypeFace);
 
-        mArchivedWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                mIntent = new Intent(getActivity(), TransactionActivity.class);
-//                startActivity(mIntent);
-                WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
-            }
-        });
-
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                mIntent = new Intent(getActivity(), TransactionActivity.class);
-//                startActivity(mIntent);
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
             }
@@ -294,15 +244,12 @@ public class WalletsFragment extends Fragment {
     private List<Wallet> getWallets(int type) {
         // TODO replace with API call
         List<Wallet> list = new ArrayList<Wallet>();
-        if(type==LATEST_WALLETS) {
             list.add(new Wallet("Baseball Team", "B15.000"));
             list.add(new Wallet("Fantasy Football", "B10.000"));
-        } else if(type==ARCHIVED_WALLETS) {
             list.add(new Wallet("Shared", "B0.000"));
             list.add(new Wallet("Mexico", "B0.000"));
             list.add(new Wallet("Alpha Centauri", "B0.000"));
             list.add(new Wallet("Other", "B0.000"));
-        }
         return list;
     }
 

@@ -73,7 +73,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_send, container, false);
+        View view = inflater.inflate(R.layout.fragment_send, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

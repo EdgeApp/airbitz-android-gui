@@ -245,14 +245,12 @@
 
         </RelativeLayout>
 
-
-    <!--</LinearLayout>-->
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_camera"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/layout_action"
         android:layout_below="@id/layout_data">
 
