@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
 
@@ -54,8 +55,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private FrameLayout mPreviewFrame;
 
     private int BACK_CAMERA_INDEX = 0;
-
-    private Intent mIntent;
 
     private RelativeLayout mParentLayout;
     private RelativeLayout mNavigationLayout;
@@ -108,9 +107,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mFromButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(getActivity(), WalletActivity.class);
-//                mIntent.putExtra(RequestActivity.CLASSNAME, "RequestActivity");
-//                startActivity(mIntent);
+                ((NavigationActivity) getActivity()).setFragment(1);
             }
         });
 
