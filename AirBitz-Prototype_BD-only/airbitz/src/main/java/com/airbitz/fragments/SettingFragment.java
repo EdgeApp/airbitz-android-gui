@@ -46,81 +46,81 @@ public class SettingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_setting, container, false);
+        View view = inflater.inflate(R.layout.fragment_setting, container, false);
 
-        mDisplayButton = (Button) view.findViewById(R.id.button_display);
-        mSecurityButton = (Button) view.findViewById(R.id.button_security);
-        mLanguageButton = (Button) view.findViewById(R.id.button_language);
-        mExchangeRateButton = (Button) view.findViewById(R.id.button_exchange);
-        mCategoriesButton = (Button) view.findViewById(R.id.button_categories);
-
-        mLanguageTextView = (TextView) view.findViewById(R.id.language_chosen);
-        mExchangeTextView = (TextView) view.findViewById(R.id.exchange_rate_chosen);
-
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mDisplayButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mSecurityButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mLanguageButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mExchangeRateButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mCategoriesButton.setTypeface(LandingActivity.latoBlackTypeFace);
-
-        mLanguageTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.ITALIC);
-        mExchangeTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.ITALIC);
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                finish();
-            }
-        });
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
-            }
-        });
-
-        mDisplayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), DisplayActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mSecurityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SecurityActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mLanguageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        mExchangeRateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        mCategoriesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        mDisplayButton = (Button) view.findViewById(R.id.button_display);
+//        mSecurityButton = (Button) view.findViewById(R.id.button_security);
+//        mLanguageButton = (Button) view.findViewById(R.id.button_language);
+//        mExchangeRateButton = (Button) view.findViewById(R.id.button_exchange);
+//        mCategoriesButton = (Button) view.findViewById(R.id.button_categories);
+//
+//        mLanguageTextView = (TextView) view.findViewById(R.id.language_chosen);
+//        mExchangeTextView = (TextView) view.findViewById(R.id.exchange_rate_chosen);
+//
+//        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+//        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+//
+//        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+//
+//        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+//        mDisplayButton.setTypeface(LandingActivity.latoBlackTypeFace);
+//        mSecurityButton.setTypeface(LandingActivity.latoBlackTypeFace);
+//        mLanguageButton.setTypeface(LandingActivity.latoBlackTypeFace);
+//        mExchangeRateButton.setTypeface(LandingActivity.latoBlackTypeFace);
+//        mCategoriesButton.setTypeface(LandingActivity.latoBlackTypeFace);
+//
+//        mLanguageTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.ITALIC);
+//        mExchangeTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.ITALIC);
+//
+//        mBackButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                finish();
+//            }
+//        });
+//        mHelpButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
+//            }
+//        });
+//
+//        mDisplayButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), DisplayActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        mSecurityButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), SecurityActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        mLanguageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+//
+//        mExchangeRateButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+//
+//        mCategoriesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         return view;
     }

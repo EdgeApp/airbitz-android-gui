@@ -1,252 +1,787 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
-    android:id="@+id/layout_root">
+    android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout_header"
         android:background="#40000000"
         android:padding="4dp">
 
         <ImageButton
+            android:id="@+id/button_back"
             android:layout_width="26dp"
             android:layout_height="26dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:id="@+id/button_back"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_margin="5dp"/>
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="20dp"/>
+            android:text="Settings"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
 
         <ImageButton
+            android:id="@+id/button_help"
             android:layout_width="26dp"
             android:layout_height="26dp"
-            android:id="@+id/button_help"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help" />
 
     </RelativeLayout>
 
-     <ScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-         android:layout_below="@id/layout_header"
-        android:paddingBottom="10dp"
-        android:layout_marginBottom="20dp">
+        android:layout_below="@id/layout_header">
 
-
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/settings_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp">
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/denomination_title"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/denomination_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="28dp"
+                    android:paddingTop="2dp"
+                    android:text="BITCOIN DENOMINATION\u00A0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/denomination_buttons"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                    <Button
+                        android:id="@+id/denomination_buttons_bitcoin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="15dp"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="Bitcoin"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/denomination_buttons_mbitcoin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="20dp"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="mBitcoin = (0.001 Bitcoin)"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/denomination_buttons_ubitcoin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="20dp"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="uBitcoin = (0.000001 Bitcoin)"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/credentials_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="28dp"
+                    android:paddingTop="2dp"
+                    android:text="CREDENTIALS\u00A0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/credentials_buttons"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                    <Button
+                        android:id="@+id/button_change_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="15dp"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="Change password"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/button_security"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="20dp"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="Change withdrawal PIN"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/button_recovery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="20dp"
+                        android:gravity="left"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="13dp"
+                        android:paddingTop="13dp"
+                        android:text="Change recovery questions"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/user_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="28dp"
+                    android:paddingTop="2dp"
+                    android:text="USER NAME\u00A0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/user_buttons"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <Button
+                            android:id="@+id/button_send_user_info"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Send name on payment"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <ToggleButton
+                            android:id="@+id/button_send_user_info_switch"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/toggle_selector"
+                            android:textOff=""
+                            android:textOn=""/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <EditText
+                        android:id="@+id/button_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:gravity="left"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="8dp"
+                        android:hint="First Name (optional)"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <EditText
+                        android:id="@+id/button_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:gravity="left"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="8dp"
+                        android:hint="Last Name (optional)"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <EditText
+                        android:id="@+id/button_nick_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:gravity="left"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="8dp"
+                        android:hint="Nickname (optional)"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/general_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="28dp"
+                    android:paddingTop="2dp"
+                    android:text="GENERAL\u00A0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/misc_views"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_auto_logoff"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Auto log off after"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_auto_logoff"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_language"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Language"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_language"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_currency"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Default Currency"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_currency"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/exchange_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="28dp"
+                    android:paddingTop="2dp"
+                    android:text="DEFAULT EXCHANGE\u00A0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/exchange_views"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_edge_blue">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_usd"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="US dollar"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_usd"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_canadian"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Canadian dollar"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_canadian"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_euro"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Euro"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_euro"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_peso"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Mexican Peso"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_peso"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal" >
+                        <TextView
+                            android:id="@+id/title_yuan"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:drawablePadding="15dp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:paddingBottom="13dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="13dp"
+                            android:paddingTop="13dp"
+                            android:text="Yuan"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_yuan"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/btn_trans_rounded" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="BITCOIN DENOMINATION\u00A0"
-                android:textStyle="bold"
-                android:textSize="16dp"
+                android:text="Log Out"
                 android:textColor="@android:color/white"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:paddingLeft="12dp"
-                android:focusable="false"/>
+                android:textStyle="normal"
+                android:textSize="24sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:padding="5dp"
+                android:background="@drawable/btn_blue" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/denomination_title"
-                android:background="@drawable/rounded_edge_blue"
-                android:id="@+id/layout_data"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="30dp">
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:orientation="horizontal" >
 
                 <Button
-                    android:id="@+id/button_display"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Display"
-                    android:textColor="#005f96"
-                    android:textSize="13dp"
-                    android:gravity="left|center_vertical"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ico_display"
-                    android:drawableRight="@drawable/arrow_right"
-                    android:drawablePadding="15dp"
-                    android:inputType="text|textCapSentences|textMultiLine"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="13dp"
-                    android:paddingTop="13dp"/>
-                <LinearLayout
-                    android:id="@+id/separator_1"
-                    android:layout_below="@id/button_display"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:textColor="@android:color/white"
+                    android:textStyle="normal"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_green" />
 
                 <Button
-                    android:id="@+id/button_security"
-                    android:layout_below="@id/separator_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Security"
-                    android:textColor="#005f96"
-                    android:textSize="13dp"
-                    android:gravity="left|center_vertical"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ico_security"
-                    android:drawableRight="@drawable/arrow_right"
-                    android:drawablePadding="20dp"
-                    android:paddingLeft="13dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="13dp"
-                    android:paddingTop="13dp"/>
-                <LinearLayout
-                    android:id="@+id/separator_2"
-                    android:layout_below="@id/button_security"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
-                <Button
-                    android:id="@+id/button_language"
-                    android:layout_below="@id/separator_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Language"
-                    android:textColor="#005f96"
-                    android:textSize="13dp"
-                    android:gravity="left|center_vertical"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ico_language"
-                    android:drawableRight="@drawable/arrow_right"
-                    android:drawablePadding="20dp"
-                    android:paddingLeft="9dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="13dp"
-                    android:paddingTop="13dp"
-                    android:focusable="false"/>
-                <TextView
-                    android:id="@+id/language_chosen"
-                    android:layout_below="@id/separator_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_centerVertical="true"
-                    android:text="English\u00A0"
-                    android:textStyle="italic"
-                    android:textSize="11dp"
-                    android:textColor="#484748"
-                    android:background="@android:color/transparent"
-                    android:gravity="right|center_vertical"
-                    android:paddingTop="12dp"
-                    android:paddingRight="50dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="12dp"
-                    android:focusable="false"/>
-                <LinearLayout
-                    android:id="@+id/separator_4"
-                    android:layout_below="@id/button_language"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
-                <TextView
-                    android:id="@+id/exchange_rate_chosen"
-                    android:layout_below="@id/separator_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Bitstamp > Dollar\u00A0"
-                    android:textStyle="italic"
-                    android:textColor="#484748"
-                    android:textSize="11dp"
-                    android:gravity="right|center_vertical"
-                    android:background="@android:color/transparent"
-                    android:drawablePadding="20dp"
-                    android:paddingTop="12dp"
-                    android:paddingRight="50dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="12dp"
-                    android:focusable="false"/>
-                <Button
-                    android:id="@+id/button_exchange"
-                    android:layout_below="@id/separator_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Exchange Rate"
-                    android:textColor="#005f96"
-                    android:textSize="13dp"
-                    android:gravity="left|center_vertical"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ico_exchange_rate"
-                    android:drawableRight="@drawable/arrow_right"
-                    android:drawablePadding="20dp"
-                    android:paddingLeft="11dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="13dp"
-                    android:paddingTop="13dp"/>
-                <LinearLayout
-                    android:id="@+id/separator_5"
-                    android:layout_below="@id/button_exchange"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
-                <Button
-                    android:id="@+id/button_categories"
-                    android:layout_below="@id/separator_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Categories"
-                    android:textSize="13dp"
-                    android:gravity="left|center_vertical"
-                    android:textColor="#005f96"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ico_categories"
-                    android:drawableRight="@drawable/arrow_right"
-                    android:drawablePadding="13dp"
-                    android:paddingLeft="13dp"
-                    android:paddingRight="13dp"
-                    android:paddingBottom="13dp"
-                    android:paddingTop="13dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textColor="@android:color/white"
+                    android:textStyle="normal"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_btn_orange" />
 
-            </RelativeLayout>
-
-
-        </RelativeLayout>
-
-
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>
