@@ -324,7 +324,7 @@
                         android:id="@+id/settings_edit_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:background="@drawable/rounded_edge_black_transparent_30_padded"
                         android:gravity="left"
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="5dp"
@@ -344,7 +344,7 @@
                         android:id="@+id/settings_edit_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:background="@drawable/rounded_edge_black_transparent_30_padded"
                         android:gravity="left"
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="5dp"
@@ -368,7 +368,7 @@
                         android:id="@+id/settings_edit_nick_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:background="@drawable/rounded_edge_black_transparent_30_padded"
                         android:gravity="left"
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="5dp"
@@ -438,14 +438,13 @@
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
-                        <Spinner
-                            android:id="@+id/settings_spinner_auto_logoff"
+                        <Button
+                            android:id="@+id/settings_button_auto_logoff"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown"/>
+                            android:background="@drawable/btn_trans_rounded"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -747,6 +746,7 @@
                 android:textSize="24sp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
                 android:padding="5dp"
                 android:background="@drawable/btn_blue" />
 

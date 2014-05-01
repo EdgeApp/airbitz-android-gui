@@ -1,6 +1,10 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,6 +19,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -47,7 +52,7 @@ public class SettingFragment extends Fragment {
     private EditText mLastEditText;
     private EditText mNicknameEditText;
 
-    private Spinner mAutoLogoffSpinner;
+    private Button mAutoLogoffButton;
     private Spinner mLanguageSpinner;
     private Spinner mCurrencySpinner;
 
@@ -56,6 +61,13 @@ public class SettingFragment extends Fragment {
     private Spinner mEuroSpinner;
     private Spinner mPesoSpinner;
     private Spinner mYuanSpinner;
+
+    private NumberPicker mHourPicker;
+    private NumberPicker mDayPicker;
+    private NumberPicker mMinPicker;
+    private int mHourSelection;
+    private int mDaySelection;
+    private int mMinSelection;
 
 
     @Override
@@ -86,7 +98,7 @@ public class SettingFragment extends Fragment {
         mLastEditText = (EditText) view.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
 
-        mAutoLogoffSpinner = (Spinner) view.findViewById(R.id.settings_spinner_auto_logoff);
+        mAutoLogoffButton = (Button) view.findViewById(R.id.settings_button_auto_logoff);
         mLanguageSpinner = (Spinner) view.findViewById(R.id.settings_spinner_language);
         mCurrencySpinner = (Spinner) view.findViewById(R.id.settings_spinner_currency);
 
@@ -159,9 +171,15 @@ public class SettingFragment extends Fragment {
         });
 
         //TODO setup spinners
-        String[] auto_logoff_items = getResources().getStringArray(R.array.auto_logoff_array);
-        ArrayAdapter<String> auto_logoff_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, auto_logoff_items);
-        mAutoLogoffSpinner.setAdapter(auto_logoff_adapter);
+
+        mAutoLogoffButton.setText("0:0:15");
+        mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAutoLogoffDialog();
+            }
+        });
+
 
         String[] language_items = getResources().getStringArray(R.array.language_array);
         ArrayAdapter<String> language_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, language_items);
@@ -212,6 +230,52 @@ public class SettingFragment extends Fragment {
             mNicknameEditText.setEnabled(false);
             mNicknameEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent);
         }
+    }
+
+    private void showAutoLogoffDialog() {
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View npView = inflater.inflate(R.layout.dialog_auto_logoff, null);
+        mHourPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_hour_picker);
+        mDayPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_day_picker);
+        mMinPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_min_picker);
+
+        mDayPicker.setMaxValue(60);
+        mDayPicker.setMinValue(0);
+        mHourPicker.setMaxValue(60);
+        mHourPicker.setMinValue(0);
+        mMinPicker.setMaxValue(59);
+        mMinPicker.setMinValue(0);
+
+        String[] current = mAutoLogoffButton.getText().toString().split(":");
+        if(current[1]!=null) {
+            int a = Integer.valueOf(current[0]);
+            mDayPicker.setValue(Integer.valueOf(current[0]));
+            mHourPicker.setValue(Integer.valueOf(current[1]));
+            mMinPicker.setValue(Integer.valueOf(current[2]));
+        }
+
+        AlertDialog frag = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.dialog_title))
+                .setView(npView)
+                .setPositiveButton(R.string.string_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                mHourSelection = mHourPicker.getValue();
+                                mDaySelection = mDayPicker.getValue();
+                                mMinSelection = mMinPicker.getValue();
+                                mAutoLogoffButton.setText(""+mDaySelection+":"+mHourSelection+":"+mMinSelection);
+                            }
+                        }
+                )
+                .setNegativeButton(R.string.string_cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        }
+                )
+                .create();
+        frag.show();
     }
 
     @Override

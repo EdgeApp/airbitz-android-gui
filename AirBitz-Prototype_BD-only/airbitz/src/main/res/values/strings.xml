@@ -12,6 +12,7 @@
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
+    <string name="string_cancel">Cancel</string>
 
     <!-- Strings for Business Directory -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
@@ -91,4 +92,11 @@
     <string name="settings_button_logout">Log Out</string>
     <string name="settings_button_cancel">Cancel</string>
     <string name="settings_button_done">Done</string>
+
+    <!-- Strings for AutoLogoff Dialog -->
+    <string name="dialog_days">Days</string>
+    <string name="dialog_hours">Hours</string>
+    <string name="dialog_mins">Mins</string>
+    <string name="dialog_title">Set Auto Logoff time</string>
+
 </resources>
