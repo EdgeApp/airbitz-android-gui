@@ -15,7 +15,7 @@
         android:padding="4dp">
 
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/settings_button_back"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_alignParentLeft="true"
@@ -26,7 +26,7 @@
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/textview_title"
+            android:id="@+id/settings_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -38,7 +38,7 @@
 
 
         <ImageButton
-            android:id="@+id/button_help"
+            android:id="@+id/settings_button_help"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_alignParentRight="true"
@@ -71,7 +71,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/denomination_title"
+                    android:id="@+id/settings_denomination_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -95,7 +95,7 @@
                     android:background="@drawable/rounded_edge_blue">
 
                     <Button
-                        android:id="@+id/denomination_buttons_bitcoin"
+                        android:id="@+id/settings_denomination_buttons_bitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -117,7 +117,7 @@
                         android:orientation="vertical" />
 
                     <Button
-                        android:id="@+id/denomination_buttons_mbitcoin"
+                        android:id="@+id/settings_denomination_buttons_mbitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -139,7 +139,7 @@
                         android:orientation="vertical" />
 
                     <Button
-                        android:id="@+id/denomination_buttons_ubitcoin"
+                        android:id="@+id/settings_denomination_buttons_ubitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -166,7 +166,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/credentials_title"
+                    android:id="@+id/settings_credentials_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -190,7 +190,7 @@
                     android:background="@drawable/rounded_edge_blue">
 
                     <Button
-                        android:id="@+id/button_change_password"
+                        android:id="@+id/settings_button_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -211,7 +211,7 @@
                         android:orientation="vertical" />
 
                     <Button
-                        android:id="@+id/button_pin"
+                        android:id="@+id/settings_button_pin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -232,7 +232,7 @@
                         android:orientation="vertical" />
 
                     <Button
-                        android:id="@+id/button_recovery"
+                        android:id="@+id/settings_button_recovery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
@@ -258,7 +258,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/user_title"
+                    android:id="@+id/settings_user_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -287,7 +287,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <Button
-                            android:id="@+id/button_send_user_info"
+                            android:id="@+id/settings_button_send_user_info"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -304,7 +304,7 @@
                             android:textSize="13sp" />
 
                         <ToggleButton
-                            android:id="@+id/button_send_user_info_switch"
+                            android:id="@+id/settings_toggle_send_user_info"
                             android:layout_width="60dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
@@ -321,7 +321,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/edit_first_name"
+                        android:id="@+id/settings_edit_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -330,10 +330,6 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="5dp"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:paddingTop="8dp"
                         android:hint="@string/settings_edit_first_name"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
@@ -345,7 +341,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/edit_last_name"
+                        android:id="@+id/settings_edit_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -369,7 +365,7 @@
                         android:orientation="vertical" />
 
                     <EditText
-                        android:id="@+id/edit_nick_name"
+                        android:id="@+id/settings_edit_nick_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -398,7 +394,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/general_title"
+                    android:id="@+id/settings_general_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -427,7 +423,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_auto_logoff"
+                            android:id="@+id/settings_title_auto_logoff"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -443,12 +439,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_auto_logoff"
+                            android:id="@+id/settings_spinner_auto_logoff"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -463,7 +460,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_language"
+                            android:id="@+id/settings_title_language"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -479,12 +476,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_language"
+                            android:id="@+id/settings_spinner_language"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -499,7 +497,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_currency"
+                            android:id="@+id/settings_title_currency"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -515,12 +513,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_currency"
+                            android:id="@+id/settings_spinner_currency"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -535,7 +534,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/exchange_title"
+                    android:id="@+id/settings_exchange_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -564,7 +563,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_usd"
+                            android:id="@+id/settings_title_usd"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -580,12 +579,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_usd"
+                            android:id="@+id/settings_spinner_usd"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -600,7 +600,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_canadian"
+                            android:id="@+id/settings_title_canadian"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -616,12 +616,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_canadian"
+                            android:id="@+id/settings_spinner_canadian"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -636,7 +637,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_euro"
+                            android:id="@+id/settings_title_euro"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -652,12 +653,13 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_euro"
+                            android:id="@+id/settings_spinner_euro"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_margin="5dp"
+                            android:background="@drawable/btn_trans_rounded"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -672,7 +674,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_peso"
+                            android:id="@+id/settings_title_peso"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -688,11 +690,11 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_peso"
+                            android:id="@+id/settings_spinner_peso"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
+                            android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded" />
                     </LinearLayout>
 
@@ -708,7 +710,7 @@
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <TextView
-                            android:id="@+id/title_yuan"
+                            android:id="@+id/settings_title_yuan"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -724,11 +726,11 @@
                             android:textSize="13sp" />
 
                         <Spinner
-                            android:id="@+id/spinner_yuan"
+                            android:id="@+id/settings_spinner_yuan"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_margin="8dp"
+                            android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded" />
                     </LinearLayout>
                 </LinearLayout>
@@ -736,7 +738,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button_logout"
+                android:id="@+id/settings_button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_button_logout"
@@ -748,43 +750,6 @@
                 android:padding="5dp"
                 android:background="@drawable/btn_blue" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="15dp"
-                android:background="@android:color/transparent"
-                android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/button_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_button_cancel"
-                    android:textColor="@android:color/white"
-                    android:textStyle="normal"
-                    android:textSize="24sp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:padding="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_green" />
-
-                <Button
-                    android:id="@+id/button_done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_button_done"
-                    android:textColor="@android:color/white"
-                    android:textStyle="normal"
-                    android:textSize="24sp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:padding="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_btn_orange" />
-
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
