@@ -26,7 +26,7 @@
     <string name="web">Web</string>
     <string name="your_location">Your Location</string>
 
-    <!-- Strings related to LandingActivity -->
+    <!-- Strings related to Landing -->
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -44,7 +44,7 @@
     <string name="activity_landing_button_signup">Sign Up</string>
     <string name="activity_landing_forgot_label">Forgot Password</string>
 
-    <!-- Strings for SignupActivity -->
+    <!-- Strings for Signup -->
     <string name="activity_signup_title">Sign Up</string>
     <string name="activity_signup_button_next">Next Step</string>
     <string name="activity_signup_username_hint">User Name</string>
@@ -53,12 +53,42 @@
     <string name="activity_signup_pin_label">Withdrawal Pin</string>
     <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
 
-    <!-- Strings for PasswordRecoveryActivity -->
+    <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_title">Password Recovery</string>
     <string name="activity_recovery_complete_button">Complete Sign Up</string>
     <string name="activity_recovery_prompt_title">Warning</string>
     <string name="activity_recovery_prompt_skip">Are you sure you want to skip?</string>
 
-    <!-- Strings for ForgotPasswordActivity -->
+    <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
-    <string name="activity_forgot_submit">Submit</string></resources>
+    <string name="activity_forgot_submit">Submit</string>
+
+    <!-- Strings for Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_denomination_title">BITCOIN DENOMINATION</string>
+    <string name="settings_denomination_buttons_bitcoin">Bitcoin</string>
+    <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0.001 Bitcoin)</string>
+    <string name="settings_denomination_buttons_ubitcoin">uBitcoin = (0.000001 Bitcoin)</string>
+    <string name="settings_credentials_title">CREDENTIALS</string>
+    <string name="settings_button_change_password">Change password</string>
+    <string name="settings_button_pin">Change withdrawal PIN</string>
+    <string name="settings_button_recovery">Change recovery questions</string>
+    <string name="settings_user_title">USER NAME</string>
+    <string name="settings_button_send_user_info">Send name on payment</string>
+    <string name="settings_edit_first_name">First Name (optional)</string>
+    <string name="settings_edit_last_name">Last Name (optional)</string>
+    <string name="settings_edit_nick_name">Nickname (optional)</string>
+    <string name="settings_general_title">GENERAL</string>
+    <string name="settings_title_auto_logoff">Auto log off after</string>
+    <string name="settings_title_language">Language</string>
+    <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
+    <string name="settings_title_usd">US dollar</string>
+    <string name="settings_title_canadian">Canadian dollar</string>
+    <string name="settings_title_euro">Euro</string>
+    <string name="settings_title_peso">Mexican Peso</string>
+    <string name="settings_title_yuan">Yuan</string>
+    <string name="settings_button_logout">Log Out</string>
+    <string name="settings_button_cancel">Cancel</string>
+    <string name="settings_button_done">Done</string>
+</resources>
