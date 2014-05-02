@@ -30,12 +30,12 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wallets"
+            android:text="@string/wallets_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
 
         <ImageButton
@@ -63,18 +63,16 @@
             android:id="@+id/textview_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TOTAL BALANCE"
+            android:text="@string/wallets_balance_text"
             android:layout_gravity="center_horizontal"
             android:textColor="@android:color/white"
-            android:layout_centerHorizontal="true"
             android:layout_margin="15dp"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/layout_balance"
-            android:layout_below="@id/textview_balance"
             android:background="@drawable/rounded_edge_black_transparent_30"
             android:layout_marginTop="0dp"
             android:layout_marginLeft="10dp"
@@ -94,7 +92,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textStyle="bold"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/btn_green"
                 android:drawableLeft="@drawable/ico_coin_btc"
@@ -111,7 +109,7 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="15dp"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textColor="@android:color/black"
                 android:background="@android:color/transparent"
                 android:gravity="center"
@@ -130,6 +128,7 @@
         android:layout_above="@id/bottom_padding"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:background="#addff1">
     </ListView>
 
