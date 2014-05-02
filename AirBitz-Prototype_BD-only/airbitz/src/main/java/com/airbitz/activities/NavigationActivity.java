@@ -28,18 +28,18 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
-        new BusinessDirectoryFragment(),
-                new RequestFragment(),
-                new SendFragment(),
-                new WalletsFragment(),
-                new SettingFragment() };
+            new BusinessDirectoryFragment(),
+            new RequestFragment(),
+            new SendFragment(),
+            new WalletsFragment(),
+            new SettingFragment()};
 
     private String[] mFragmentNames = {
-        "BusinessDirectory",
-                "Request",
-                "Send",
-                "Wallet",
-                "Setting"
+            "BusinessDirectory",
+            "Request",
+            "Send",
+            "Wallet",
+            "Setting"
     };
 
     // These stacks are the five "threads" of fragments represented in mNavFragments
