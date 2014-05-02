@@ -14,7 +14,7 @@
     <string name="string_no">No</string>
     <string name="string_cancel">Cancel</string>
 
-    <!-- Strings for Business Directory -->
+    <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
@@ -26,6 +26,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="web">Web</string>
     <string name="your_location">Your Location</string>
+    <string name="near_you">Near You</string>
 
     <!-- Strings related to Landing -->
     <string name="title_activity_login">Sign in</string>
@@ -64,7 +65,7 @@
     <string name="activity_forgot_title">Forgot Password</string>
     <string name="activity_forgot_submit">Submit</string>
 
-    <!-- Strings for Settings -->
+    <!-- Strings for Settings fragment -->
     <string name="settings_title">Settings</string>
     <string name="settings_denomination_title">BITCOIN DENOMINATION</string>
     <string name="settings_denomination_buttons_bitcoin">Bitcoin</string>
@@ -99,4 +100,9 @@
     <string name="dialog_mins">Mins</string>
     <string name="dialog_title">Set Auto Logoff time</string>
 
+    <!-- Strings for Send fragment -->
+    <string name="send_title">Send Bitcoin</string>
+    <string name="send_from_title">Send From:</string>
+    <string name="send_to_title">Send To:</string>
+    <string name="send_scan_text">Scan QR Code</string>
 </resources>
