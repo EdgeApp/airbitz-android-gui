@@ -187,7 +187,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="10dp"
                     android:padding="5dp"
-                    android:background="@drawable/circle_edge_black_transparent_30"
+                    android:background="@drawable/btn_trans_rounded"
                     android:textSize="20sp"
                     android:layout_centerVertical="true" />
 
