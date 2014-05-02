@@ -32,12 +32,12 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Bitcoin"
+            android:text="@string/send_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
 
         <ImageButton
@@ -83,7 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="2"
+                        android:weightSum="3"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp">
@@ -92,14 +92,13 @@
                             android:id="@+id/textview_from"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Send From:"
+                            android:text="@string/send_from_title"
                             android:gravity="right|center_vertical"
                             android:textColor="@android:color/white"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginRight="40dp"
+                            android:layout_marginRight="20dp"
                             android:layout_marginLeft="10dp"
-                            android:textSize="15dp"
-                            android:layout_weight="1"
+                            android:textSize="15sp"
+                            android:layout_weight="2"
                             android:layout_gravity="right"
                             android:textStyle="bold"/>
 
@@ -107,8 +106,6 @@
                             android:id="@+id/button_from"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/textview_account"
-                            android:text="Checking"
                             android:background="@drawable/btn_trans_rounded"
                             android:gravity="center"
                             android:textColor="@android:color/white"
@@ -118,7 +115,7 @@
                             android:paddingRight="20dp"
                             android:paddingBottom="5dp"
                             android:paddingTop="5dp"
-                            android:textSize="18dp"
+                            android:textSize="18sp"
                             android:layout_weight="1"/>
 
                     </LinearLayout>
@@ -130,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_below="@id/layout_from"
-                        android:weightSum="2"
+                        android:weightSum="3"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="0dp">
@@ -139,23 +136,20 @@
                             android:id="@+id/textview_to"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Send To:"
+                            android:text="@string/send_to_title"
                             android:gravity="right"
                             android:textColor="@android:color/white"
-                            android:layout_below="@id/textview_account"
-                            android:layout_marginRight="40dp"
+                            android:layout_marginRight="20dp"
                             android:layout_marginLeft="10dp"
-                            android:textSize="15dp"
-                            android:layout_weight="1"
+                            android:textSize="15sp"
+                            android:layout_weight="2"
                             android:textStyle="bold"/>
 
                         <EditText
                             android:id="@+id/edittext_to"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/textview_to"
-                            android:text="John Smith"
-                            android:background="@drawable/btn_trans_rounded"
+                            android:background="@drawable/rounded_edge_black_transparent_30"
                             android:gravity="center"
                             android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
@@ -164,8 +158,7 @@
                             android:paddingRight="20dp"
                             android:paddingBottom="5dp"
                             android:paddingTop="5dp"
-                            android:textSize="15dp"
-                            android:drawableRight="@drawable/ico_login"
+                            android:textSize="15sp"
                             android:layout_weight="1"/>
                     </LinearLayout>
 
@@ -173,17 +166,14 @@
 
                 <TextView
                     android:id="@+id/textview_scan_qrcode"
-                    android:layout_below="@id/layout_send"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Scan QR Code or NFC"
+                    android:text="@string/send_scan_text"
                     android:gravity="center"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
-                    android:layout_weight="1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"/>
+                    android:textSize="15sp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"/>
 
 
     </LinearLayout>
@@ -214,7 +204,6 @@
                     android:layout_height="40dp"
                     android:scaleType="centerInside"
                     android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:src="@drawable/ico_flash_on_off"
                     android:background="@android:color/transparent"
@@ -225,7 +214,6 @@
                     android:layout_height="40dp"
                     android:scaleType="centerInside"
                     android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
                     android:src="@drawable/ico_flash_auto_on"
                     android:background="@android:color/transparent"
                     android:layout_weight="1"/>
@@ -235,7 +223,6 @@
                     android:layout_height="40dp"
                     android:scaleType="centerInside"
                     android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ico_flash_off_off"
                     android:layout_weight="1"/>
