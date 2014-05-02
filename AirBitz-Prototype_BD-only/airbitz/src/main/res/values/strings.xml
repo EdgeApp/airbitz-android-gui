@@ -115,5 +115,9 @@
     <string name="wallet_title">Transactions</string>
     <string name="wallet">xxx</string>
 
+    <!-- Strings for Request fragment -->
+    <string name="request_title">Request Bitcoin</string>
+    <string name="request_wallet_title">Wallet:</string>
+
 
 </resources>

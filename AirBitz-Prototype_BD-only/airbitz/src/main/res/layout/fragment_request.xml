@@ -45,7 +45,7 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Request Bitcoin"
+            android:text="@string/request_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -115,13 +115,12 @@
                         android:id="@+id/textview_wallet"
                         android:layout_width="200dp"
                         android:layout_height="match_parent"
-                        android:text="Wallet:"
+                        android:text="@string/request_wallet_title"
                         android:gravity="center_vertical|right"
                         android:textColor="@android:color/white"
-                        android:layout_alignParentTop="true"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:layout_weight="1"
                         android:textStyle="bold"/>
 
@@ -130,7 +129,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="My Wallet"
                         android:textStyle="bold"
                         android:textSize="20sp"
                         android:background="@drawable/btn_trans_rounded"
@@ -149,7 +147,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/textview_account"
-                    android:hint="1.000"
+                    android:hint="0.00000"
                     android:textColorHint="#DDDDDD"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_edge_black_transparent_30"
@@ -160,7 +158,7 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:layout_marginBottom="6dp"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:drawableRight="@drawable/ico_btc"/>
                 <EditText
                     android:id="@+id/edittext_dollar"
@@ -168,7 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/textview_account"
-                    android:hint="$975.20"
+                    android:hint="0.00"
                     android:textColorHint="#DDDDDD"
                     android:background="@drawable/rounded_edge_black_transparent_30"
                     android:textColor="@android:color/white"
@@ -178,7 +176,7 @@
                     android:paddingRight="20dp"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:drawableRight="@drawable/ico_usd_white"/>
 
             </RelativeLayout>
@@ -187,18 +185,16 @@
                 android:id="@+id/textview_converter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 BTC = $975.00"
+                android:text="1 BTC = $600.00"
                 android:textColor="@android:color/white"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
-                android:layout_below="@id/layout_export_data"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <LinearLayout
                 android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textview_converter"
                 android:id="@+id/layout_menu"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
