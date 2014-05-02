@@ -164,7 +164,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-//        fragmentVenue = (VenueFragment)getFragmentManager().findFragmentById(R.id.venue);
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
         if(mVenueFragmentLayout.getChildCount()<=0) {
             mFragmentVenue = new VenueFragment();
@@ -209,7 +208,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                ((NavigationActivity) getActivity()).popFragment();
+            getActivity().onBackPressed();
             }
         });
 

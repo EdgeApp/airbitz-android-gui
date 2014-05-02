@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbitz.R;
@@ -25,6 +24,8 @@ import java.util.Stack;
  */
 public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
+
+    public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -56,7 +57,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             mNavStacks[i] = new Stack<Fragment>();
             mNavStacks[i].push(mNavFragments[i]);
         }
-        switchFragmentThread(0);
+        switchFragmentThread(Tabs.BD.ordinal());
     }
 
     /*
@@ -64,7 +65,6 @@ implements NavigationBarFragment.OnScreenSelectedListener {
      */
     public void onNavBarSelected(int position) {
         if(userLoggedIn()) {
-//            clearBackStack();
             switchFragmentThread(position);
         } else {
             startActivity(new Intent(this, LandingActivity.class));
@@ -76,6 +76,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
         transaction.commit();
+        //TODO update the NavigationBarFragment to correct position
     }
 
     public void pushFragment(Fragment fragment) {

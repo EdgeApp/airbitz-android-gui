@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.objects.ClearableEditText;
@@ -111,6 +112,7 @@ public class WalletFragment extends Fragment {
 //                mIntent = new Intent(getActivity(), WalletActivity.class);
 //                mIntent.putExtra(RequestActivity.CLASSNAME, "TransactionActivity");
 //                startActivity(mIntent);
+                // TODO this should show a Wallet name picker?
             }
         });
 
@@ -124,16 +126,14 @@ public class WalletFragment extends Fragment {
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(TransactionFragment.this, RequestActivity.class);
-//                startActivity(mIntent);
+                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(TransactionFragment.this, SendActivity.class);
-//                startActivity(mIntent);
+                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal());
             }
         });
 
