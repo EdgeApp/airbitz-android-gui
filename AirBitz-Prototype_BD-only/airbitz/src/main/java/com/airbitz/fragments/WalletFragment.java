@@ -62,14 +62,12 @@ public class WalletFragment extends Fragment {
     private List<AccountTransaction> mAccountTransaction;
 
     private String mWalletName;
-    private String mWalletAmount;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mWalletName = getArguments().getString(WalletsFragment.WALLET_NAME);
-        mWalletAmount = getArguments().getString(WalletsFragment.WALLET_AMOUNT);
     }
 
     @Override
@@ -106,8 +104,7 @@ public class WalletFragment extends Fragment {
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
 
         mWalletNameButton.setText(mWalletName);
-        mButtonBitcoinBalance.setText(mWalletAmount);
-        mButtonDollarBalance.setText(String.valueOf(bitcoinToUSD(mWalletAmount)));
+        mButtonDollarBalance.setText(getWalletBalance(mWalletName));
         mWalletNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,11 +162,10 @@ public class WalletFragment extends Fragment {
         return view;
     }
 
-    private double bitcoinToUSD(String bitcoin) {
-        //TODO get conversion value here
-        double conversion = 450.0;
-
-        return Float.valueOf(bitcoin) * conversion;
+    // AirbitzAPI calls here
+    private String getWalletBalance(String name) {
+        //TODO get actual wallet balance
+        return "120.015";
     }
 
     private List<AccountTransaction> getTransactions(String name) {
