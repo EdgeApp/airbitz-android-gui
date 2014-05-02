@@ -39,7 +39,8 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/textview_title"
