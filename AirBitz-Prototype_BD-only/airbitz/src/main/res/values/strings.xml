@@ -105,4 +105,10 @@
     <string name="send_from_title">Send From:</string>
     <string name="send_to_title">Send To:</string>
     <string name="send_scan_text">Scan QR Code</string>
+
+    <!-- Strings for Wallets fragment -->
+    <string name="wallets_title">Wallets</string>
+    <string name="wallets_balance_text">TOTAL BALANCE</string>
+
+
 </resources>
