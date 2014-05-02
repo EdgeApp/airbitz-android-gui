@@ -13,6 +13,7 @@
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
     <string name="string_cancel">Cancel</string>
+    <string name="string_search">Search</string>
 
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
@@ -109,6 +110,10 @@
     <!-- Strings for Wallets fragment -->
     <string name="wallets_title">Wallets</string>
     <string name="wallets_balance_text">TOTAL BALANCE</string>
+
+    <!-- Strings for Wallet fragment -->
+    <string name="wallet_title">Transactions</string>
+    <string name="wallet">xxx</string>
 
 
 </resources>

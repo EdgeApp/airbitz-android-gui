@@ -29,12 +29,12 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transactions"
+            android:text="@string/wallet_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
 
         <ImageButton
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:orientation="vertical"
-        android:background="@android:color/black"></LinearLayout>
+        android:background="@android:color/black"/>
     <LinearLayout
         android:id="@+id/separator_header_search"
         android:layout_below="@id/separator_header"
@@ -90,9 +90,8 @@
                 android:textColor="#000000"
                 android:textColorHint="#b4b3b4"
                 android:drawablePadding="10dp"
-                android:hint="Search"
+                android:hint="@string/string_search"
                 android:inputType="text"
-                android:layout_centerHorizontal="true"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:paddingBottom="5dp"
@@ -111,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="1.5dp"
         android:orientation="vertical"
-        android:background="#50000000"></LinearLayout>
+        android:background="#50000000"/>
 
     <LinearLayout
         android:id="@+id/separator_search"
@@ -119,7 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:orientation="vertical"
-        android:background="@android:color/black"></LinearLayout>
+        android:background="@android:color/black"/>
 
     <LinearLayout
         android:id="@+id/separator_search_3"
@@ -127,7 +126,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:orientation="vertical"
-        android:background="#30000000"></LinearLayout>
+        android:background="#30000000"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -179,7 +178,6 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/button_export"
                     android:layout_toLeftOf="@id/button_export_padding"
-                    android:text="CHECKING"
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:layout_centerHorizontal="true"
@@ -190,7 +188,7 @@
                     android:layout_marginTop="10dp"
                     android:padding="5dp"
                     android:background="@drawable/circle_edge_black_transparent_30"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:layout_centerVertical="true" />
 
             </RelativeLayout>
@@ -219,7 +217,7 @@
                     android:paddingRight="10dp"
                     android:layout_centerHorizontal="true"
                     android:textStyle="bold"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/white"
                     android:background="@drawable/btn_green"
                     android:drawableLeft="@drawable/ico_coin_btc"
@@ -236,7 +234,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingRight="10dp"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textColor="#4c4c4c"
                     android:background="@android:color/transparent"
                     android:gravity="center"
