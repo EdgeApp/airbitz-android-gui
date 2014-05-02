@@ -14,11 +14,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginBottom="60dp" >
 
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/activity_navigation_viewpager"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"/>-->
-
     </RelativeLayout>
 
     <RelativeLayout
