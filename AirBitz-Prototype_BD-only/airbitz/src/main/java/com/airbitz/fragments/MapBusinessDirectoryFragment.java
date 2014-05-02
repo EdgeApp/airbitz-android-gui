@@ -66,6 +66,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -208,7 +209,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                ((NavigationActivity) getActivity()).popFragment();
             }
         });
 
@@ -569,6 +570,23 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                         mGetVenuesByBusinessAndLocation.cancel(true);
                 }
             }, timeout);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+//        if(mBusinessCategoryAsynctask!=null)
+//            mBusinessCategoryAsynctask.cancel(true);
+
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

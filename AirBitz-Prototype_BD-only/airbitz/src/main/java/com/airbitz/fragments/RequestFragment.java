@@ -125,7 +125,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).setFragment(3);
+                ((NavigationActivity) getActivity()).switchFragmentThread(3);
             }
         });
 

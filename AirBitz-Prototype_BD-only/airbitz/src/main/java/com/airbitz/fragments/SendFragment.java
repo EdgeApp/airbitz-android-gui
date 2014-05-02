@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -14,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,7 +105,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mFromButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).setFragment(1);
+                ((NavigationActivity) getActivity()).switchFragmentThread(1);
             }
         });
 
