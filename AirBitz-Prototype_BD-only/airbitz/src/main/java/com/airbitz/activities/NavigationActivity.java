@@ -6,18 +6,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.RelativeLayout;
 
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.fragments.DirectoryDetailFragment;
-import com.airbitz.fragments.MapBusinessDirectoryFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.crashlytics.android.Crashlytics;
+
+import java.util.Stack;
 
 /**
  * The main Navigation activity holding fragments for anything controlled with
@@ -27,25 +26,24 @@ import com.crashlytics.android.Crashlytics;
 public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
 
-    private RelativeLayout mViewPager;
-    private Fragment[] mFragments = {
+    private int mNavFragmentId;
+    private Fragment[] mNavFragments = {
         new BusinessDirectoryFragment(),
                 new RequestFragment(),
                 new SendFragment(),
                 new WalletsFragment(),
-                new SettingFragment(),
-                new MapBusinessDirectoryFragment(),
-                new DirectoryDetailFragment() };
+                new SettingFragment() };
 
     private String[] mFragmentNames = {
         "BusinessDirectory",
                 "Request",
                 "Send",
                 "Wallet",
-                "Setting",
-                "MapBusinessDirectory",
-                "DirectoryDetail"
+                "Setting"
     };
+
+    // These stacks are the five "threads" of fragments represented in mNavFragments
+    private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,10 +52,11 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         Crashlytics.start(this);
 
         setContentView(R.layout.activity_navigation);
-
-        mViewPager = (RelativeLayout)findViewById(R.id.activityLayout);
-
-        setFragment(0);
+        for(int i=0; i< mNavFragments.length; i++) {
+            mNavStacks[i] = new Stack<Fragment>();
+            mNavStacks[i].push(mNavFragments[i]);
+        }
+        switchFragmentThread(0);
     }
 
     /*
@@ -65,39 +64,40 @@ implements NavigationBarFragment.OnScreenSelectedListener {
      */
     public void onNavBarSelected(int position) {
         if(userLoggedIn()) {
-            clearBackStack();
-            setFragment(position);
+//            clearBackStack();
+            switchFragmentThread(position);
         } else {
             startActivity(new Intent(this, LandingActivity.class));
-            finish();
         }
     }
 
-    public void setFragment(int id) {
+    public void switchFragmentThread(int id) {
+        mNavFragmentId = id;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mFragments[id]);
+        transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
         transaction.commit();
     }
 
     public void pushFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, fragment);
-        transaction.addToBackStack("name");
+        mNavStacks[mNavFragmentId].push(fragment);
         transaction.commit();
     }
 
-    private void clearBackStack() {
-        FragmentManager manager = getSupportFragmentManager();
-        if (manager.getBackStackEntryCount() > 0) {
-            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
-            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+    public void popFragment() {
+        mNavStacks[mNavFragmentId].pop();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activityLayout, mNavStacks[mNavFragmentId].peek());
+        transaction.commit();
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onBackPressed() {
+        if(mNavStacks[mNavFragmentId].size() == 1)
+            super.onBackPressed();
+        else
+            popFragment();
     }
 
     private boolean userLoggedIn() {

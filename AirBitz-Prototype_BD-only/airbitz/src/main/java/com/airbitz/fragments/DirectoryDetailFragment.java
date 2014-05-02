@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
@@ -41,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -172,7 +174,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                ((NavigationActivity) getActivity()).popFragment();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +184,23 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         });
 
         return view;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+//        if(mBusinessCategoryAsynctask!=null)
+//            mBusinessCategoryAsynctask.cancel(true);
+
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void getMapLink() {
