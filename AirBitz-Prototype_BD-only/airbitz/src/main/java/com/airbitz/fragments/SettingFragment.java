@@ -249,7 +249,6 @@ public class SettingFragment extends Fragment {
 
         String[] current = mAutoLogoffButton.getText().toString().split(":");
         if(current[1]!=null) {
-            int a = Integer.valueOf(current[0]);
             mDayPicker.setValue(Integer.valueOf(current[0]));
             mHourPicker.setValue(Integer.valueOf(current[1]));
             mMinPicker.setValue(Integer.valueOf(current[2]));

@@ -130,6 +130,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private MoreCategoryAdapter mMoreCategoryAdapter;
 
+    private VenueFragment mVenueFragment;
+
     private AirbitzAPI api = AirbitzAPI.getApi();
 
     private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
@@ -199,10 +201,14 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mNearYouContainer = (LinearLayout) view.findViewById(R.id.layout_near_you);
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.fragment_layout);
+        if(mVenueFragment == null) {
+            mVenueFragment = new VenueFragment();
+        }
         if(mVenueFragmentLayout.getChildCount()<=0) {
-                VenueFragment venueFragment = new VenueFragment();
+            if(getChildFragmentManager().findFragmentByTag("venue") == null) {
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_layout, venueFragment, "venue").commit();
+                transaction.add(R.id.fragment_layout, mVenueFragment, "venue").commit();
+            }
         }
 
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scroll_view);
@@ -558,18 +564,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //
-                // } else {
-                //
-                // mBusinessLayout.setVisibility(View.VISIBLE);
-                // mNearYouContainer.setVisibility(View.VISIBLE);
-                // mVenueFragmentLayout.setVisibility(View.VISIBLE);
-                // mSearchListView.setVisibility(View.GONE);
-                // mCurrentLocationButton.setVisibility(View.GONE);
-                // mOnTheWebButton.setVisibility(View.GONE);
-                // mCurrentLayoutSeparator.setVisibility(View.GONE);
-                // mOnTheWebSeparator.setVisibility(View.GONE);
-                // }
             }
         });
 
