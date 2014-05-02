@@ -174,7 +174,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                ((NavigationActivity) getActivity()).popFragment();
+                getActivity().onBackPressed();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
