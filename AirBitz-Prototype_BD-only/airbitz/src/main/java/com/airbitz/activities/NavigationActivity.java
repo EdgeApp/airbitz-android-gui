@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
@@ -27,6 +32,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
+    private RelativeLayout mNavBarFragmentLayout;
+    private LinearLayout mFragmentLayout;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -47,12 +54,28 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
         setContentView(R.layout.activity_navigation);
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+        mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
 
         for(int i=0; i< mNavFragments.length; i++) {
             mNavStacks[i] = new Stack<Fragment>();
             mNavStacks[i].push(mNavFragments[i]);
         }
         switchFragmentThread(Tabs.BD.ordinal());
+
+        // for keyboard hide and show
+        final View activityRootView = findViewById(R.id.activity_navigation_root);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    mNavBarFragmentLayout.setVisibility(ViewGroup.GONE);
+                } else {
+                    mNavBarFragmentLayout.setVisibility(ViewGroup.VISIBLE);
+                }
+            }
+        });
     }
 
     /*
