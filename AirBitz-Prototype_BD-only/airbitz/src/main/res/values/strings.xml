@@ -14,6 +14,7 @@
     <string name="string_no">No</string>
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
+    <string name="string_done">Done</string>
 
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
@@ -119,5 +120,13 @@
     <string name="request_title">Request Bitcoin</string>
     <string name="request_wallet_title">Wallet:</string>
 
+    <!-- Strings for Transaction Details fragment -->
+    <string name="transaction_details_title">Transaction Details</string>
+    <string name="transaction_details_advanced_title">Advanced Details</string>
+    <string name="transaction_details_to_title">To:</string>
+    <string name="transaction_details_category_title">Category</string>
+    <string name="transaction_details_notes_title">Notes</string>
+    <string name="transaction_details_category_hint">Add category</string>
+    <string name="transaction_details_notes_hint">Add transaction note</string>
 
 </resources>
