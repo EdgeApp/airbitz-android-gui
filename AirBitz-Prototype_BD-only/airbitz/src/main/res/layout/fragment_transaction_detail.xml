@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_parent"
+    android:id="@+id/transaction_detail_layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app">
@@ -18,7 +18,7 @@
             android:layout_height="26dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:id="@+id/button_back"
+            android:id="@+id/transaction_detail_button_back"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
@@ -26,7 +26,7 @@
             android:layout_margin="5dp"/>
 
         <TextView
-            android:id="@+id/textview_title"
+            android:id="@+id/transaction_detail_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/transaction_details_title"
@@ -40,7 +40,7 @@
         <ImageButton
             android:layout_width="26dp"
             android:layout_height="26dp"
-            android:id="@+id/button_help"
+            android:id="@+id/transaction_detail_button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
@@ -53,7 +53,7 @@
 
 
     <ScrollView
-        android:id="@+id/layout_scroll"
+        android:id="@+id/transaction_detail_layout_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_header"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textview_date"
+                android:id="@+id/transaction_detail_textview_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -83,7 +83,7 @@
                 android:textSize="14sp"/>
 
             <RelativeLayout
-                android:id="@+id/layout_name"
+                android:id="@+id/transaction_detail_layout_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textview_date"
@@ -92,7 +92,7 @@
                 android:background="@android:color/transparent" >
 
                 <EditText
-                    android:id="@+id/textview_name"
+                    android:id="@+id/transaction_detail_textview_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -101,7 +101,7 @@
                     android:ems="10"/>
 
                 <ImageView
-                    android:id="@+id/clear_name_textview"
+                    android:id="@+id/transaction_detail_clear_name_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -111,11 +111,11 @@
 
 
             <Button
-                android:id="@+id/button_serial"
+                android:id="@+id/transaction_detail_button_advanced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/layout_name"
+                android:layout_below="@id/transaction_detail_layout_name"
                 android:text="@string/transaction_details_advanced_title"
                 android:textStyle="bold"
                 android:background="@drawable/btn_trans_rounded"
@@ -142,14 +142,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_below="@id/button_serial"
+                android:layout_below="@id/transaction_detail_button_advanced"
                 android:paddingTop="10dp"
                 android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp">
 
                 <LinearLayout
-                    android:id="@+id/layout_sent_from"
+                    android:id="@+id/transaction_detail_layout_sent_from"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -161,7 +161,7 @@
 
 
                     <TextView
-                        android:id="@+id/textview_to"
+                        android:id="@+id/transaction_detail_textview_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/transaction_details_to_title"
@@ -176,7 +176,7 @@
                         android:textSize="15sp"/>
 
                     <TextView
-                        android:id="@+id/textview_to_wallet"
+                        android:id="@+id/transaction_detail_textview_to_wallet"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Baseball Team"
@@ -194,10 +194,10 @@
 
 
                 <TextView
-                    android:id="@+id/textview_bitcoint_value"
+                    android:id="@+id/transaction_detail_textview_bitcoin_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/layout_sent_from"
+                    android:layout_below="@id/transaction_detail_layout_sent_from"
                     android:layout_centerHorizontal="true"
                     android:hint="B 25.000"
                     android:textColorHint="@android:color/white"
@@ -211,10 +211,10 @@
 
 
                 <EditText
-                    android:id="@+id/edittext_dollar_value"
+                    android:id="@+id/transaction_detail_edittext_dollar_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/textview_bitcoint_value"
+                    android:layout_below="@id/transaction_detail_textview_bitcoin_value"
                     android:hint="$ 2000.00"
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_textfield"
@@ -234,7 +234,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/layout_note"
+                android:id="@+id/transaction_detail_layout_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_trans_dark_lighter"
@@ -250,7 +250,7 @@
                 android:gravity="center_horizontal">
 
                 <TextView
-                    android:id="@+id/textview_category"
+                    android:id="@+id/transaction_detail_textview_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -269,8 +269,8 @@
 
 
                 <EditText
-                    android:id="@+id/edittext_category"
-                    android:layout_below="@+id/textview_category"
+                    android:id="@+id/transaction_detail_edittext_category"
+                    android:layout_below="@+id/transaction_detail_textview_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -290,11 +290,11 @@
 
 
                 <TextView
-                    android:id="@+id/textview_notes"
+                    android:id="@+id/transaction_detail_textview_notes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/edittext_category"
+                    android:layout_below="@id/transaction_detail_edittext_category"
                     android:text="@string/transaction_details_notes_title"
                     android:textStyle="bold"
                     android:background="@android:color/transparent"
@@ -308,10 +308,10 @@
                     android:textSize="15sp"/>
 
                 <EditText
-                android:id="@+id/edittext_notes"
+                android:id="@+id/transaction_detail_edittext_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textview_notes"
+                android:layout_below="@id/transaction_detail_textview_notes"
                 android:hint="@string/transaction_details_notes_hint"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -332,7 +332,7 @@
                     android:id="@+id/spinner_categories"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:layout_below="@+id/edittext_notes"
+                    android:layout_below="@+id/transaction_detail_edittext_notes"
                     android:layout_alignParentLeft="true"
                     android:background="@android:color/transparent"
                     android:layout_marginLeft="5dp"
@@ -347,14 +347,14 @@
 
 
                 <Button
-                    android:id="@+id/button_done"
+                    android:id="@+id/transaction_detail_button_done"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/string_done"
                     android:textStyle="bold"
                     android:textSize="15sp"
                     android:textColor="@android:color/white"
-                    android:layout_below="@+id/edittext_notes"
+                    android:layout_below="@+id/transaction_detail_edittext_notes"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
