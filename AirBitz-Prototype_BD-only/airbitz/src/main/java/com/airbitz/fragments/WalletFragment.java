@@ -140,8 +140,12 @@ public class WalletFragment extends Fragment {
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                mIntent = new Intent(TransactionFragment.this, TransactionDetailActivity.class);
-//                startActivity(mIntent);
+                Bundle bundle = new Bundle();
+//                bundle.putString(WALLET_NAME, name);
+//                bundle.putString(WALLET_AMOUNT, amount);
+                Fragment fragment = new TransactionDetailFragment();
+                fragment.setArguments(bundle);
+                ((NavigationActivity) getActivity()).pushFragment(fragment);
             }
         });
 
