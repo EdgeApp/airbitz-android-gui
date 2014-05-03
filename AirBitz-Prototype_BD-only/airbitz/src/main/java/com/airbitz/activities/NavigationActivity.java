@@ -26,6 +26,7 @@ public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
+    private NavigationBarFragment mNavBarFragment;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -53,6 +54,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         Crashlytics.start(this);
 
         setContentView(R.layout.activity_navigation);
+        mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+
         for(int i=0; i< mNavFragments.length; i++) {
             mNavStacks[i] = new Stack<Fragment>();
             mNavStacks[i].push(mNavFragments[i]);
@@ -72,11 +75,13 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     }
 
     public void switchFragmentThread(int id) {
+        mNavBarFragment.unselectTab(mNavFragmentId);
+        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
+        mNavBarFragment.selectTab(id);
         mNavFragmentId = id;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
         transaction.commit();
-        //TODO update the NavigationBarFragment to correct position
     }
 
     public void pushFragment(Fragment fragment) {
