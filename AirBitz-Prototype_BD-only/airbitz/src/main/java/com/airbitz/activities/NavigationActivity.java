@@ -36,14 +36,6 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             new WalletsFragment(),
             new SettingFragment()};
 
-    private String[] mFragmentNames = {
-            "BusinessDirectory",
-            "Request",
-            "Send",
-            "Wallet",
-            "Setting"
-    };
-
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
 
