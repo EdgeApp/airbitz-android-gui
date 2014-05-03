@@ -147,9 +147,9 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
                 {
                     @Override
                     public void run() {
-                        mIntent = new Intent(ReceivedSuccessActivity.this, TransactionDetailActivity.class);
-                        startActivity(mIntent);
-                        finish();
+//                        mIntent = new Intent(ReceivedSuccessActivity.this, TransactionDetailActivity.class);
+//                        startActivity(mIntent);
+//                        finish();
                     }
                 }, 2000 );
             }

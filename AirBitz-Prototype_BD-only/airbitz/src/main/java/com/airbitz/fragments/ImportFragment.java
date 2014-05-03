@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -18,7 +17,6 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,16 +28,13 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.RequestActivity;
-import com.airbitz.activities.WalletActivity;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
-import com.airbitz.utils.Common;
 
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends Fragment implements Camera.PreviewCallback, GestureDetector.OnGestureListener{
+public class ImportFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback, GestureDetector.OnGestureListener{
 
     private EditText mToEdittext;
 
@@ -196,35 +191,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         preview = (FrameLayout) view.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
 
-//        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-//                if (heightDiff > 100) {
-//                    mNavigationLayout.setVisibility(View.GONE);
-//                }
-//                else
-//                {
-//                    mNavigationLayout.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-//
-//
-//        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });
-//
-//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });
-
         try {
             mCamera = Camera.open(cameraIndex);
             mCamParam = mCamera.getParameters();
@@ -309,7 +275,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         protected void onPostExecute(Boolean aBoolean) {
 
             try{
-                mCamera.takePicture(null, null, new PhotoHandler(getActivity(), "WalletPasswordActivity"));
+                mCamera.takePicture(null, null, ImportFragment.this);
             }
             catch (Exception e){
 
@@ -317,6 +283,16 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         }
     }
 
+    @Override
+    public void onPictureTaken(byte[] data, Camera camera) {
+
+        Camera.CameraInfo info = new Camera.CameraInfo();
+
+        new PhotoHandler(getActivity(), data, info);
+
+        Fragment fragment = new WalletPasswordFragment();
+        ((NavigationActivity) getActivity()).pushFragment(fragment);
+    }
 
     public void startCamera(int cameraIndex) {
 

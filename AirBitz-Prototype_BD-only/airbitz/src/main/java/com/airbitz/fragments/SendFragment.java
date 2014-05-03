@@ -30,7 +30,7 @@ import com.airbitz.objects.PhotoHandler;
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends Fragment implements Camera.PreviewCallback {
+public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -189,13 +189,25 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         protected void onPostExecute(Boolean aBoolean) {
 
             try{
-            mCamera.takePicture(null, null, new PhotoHandler(getActivity(), "SendConfirmationActivity"));
+            mCamera.takePicture(null, null, SendFragment.this);
             }
             catch (Exception e){
 
             }
         }
     }
+
+    @Override
+    public void onPictureTaken(byte[] data, Camera camera) {
+
+        Camera.CameraInfo info = new Camera.CameraInfo();
+
+        new PhotoHandler(getActivity(), data, info);
+
+        Fragment fragment = new SendConfirmationFragment();
+        ((NavigationActivity) getActivity()).pushFragment(fragment);
+    }
+
 
 
     public void stopCamera() {

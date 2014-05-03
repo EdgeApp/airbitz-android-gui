@@ -83,27 +83,13 @@ public class ExportActivity  extends Activity implements GestureDetector.OnGestu
 
 
         calendar = Calendar.getInstance();
-        mYear = calendar.get(Calendar.YEAR);
-        mMonth = calendar.get(Calendar.MONTH);
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+//        mYear = calendar.get(Calendar.YEAR);
+//        mMonth = calendar.get(Calendar.MONTH);
+//        mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
         mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
 
         mNavigationLayout = (RelativeLayout) findViewById(R.id.navigation_layout);
-
-        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-                if (heightDiff > 100) {
-                    mNavigationLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    mNavigationLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
 
         mCSVButton = (Button) findViewById(R.id.button_csv);
         mQuickenButton = (Button) findViewById(R.id.button_quicken);
@@ -155,9 +141,9 @@ public class ExportActivity  extends Activity implements GestureDetector.OnGestu
         mAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent = new Intent(ExportActivity.this, WalletActivity.class);
-                mIntent.putExtra(RequestActivity.CLASSNAME, "ImportActivity");
-                startActivity(mIntent);
+//                mIntent = new Intent(ExportActivity.this, WalletActivity.class);
+//                mIntent.putExtra(RequestActivity.CLASSNAME, "ImportActivity");
+//                startActivity(mIntent);
             }
         });
 

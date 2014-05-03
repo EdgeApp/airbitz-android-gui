@@ -1,15 +1,11 @@
 package com.airbitz.fragments;
 
-import android.app.ProgressDialog;
-import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
@@ -17,32 +13,20 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
-import com.airbitz.activities.RequestActivity;
-import com.airbitz.activities.WalletActivity;
 import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.adapters.NoteCategoryAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Categories;
-import com.airbitz.models.Category;
-import com.airbitz.objects.RoundedImageView;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created on 2/20/14.
