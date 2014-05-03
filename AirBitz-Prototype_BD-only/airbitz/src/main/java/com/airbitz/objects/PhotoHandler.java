@@ -2,7 +2,6 @@ package com.airbitz.objects;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -10,9 +9,6 @@ import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.os.Environment;
 import android.util.Log;
-
-import com.airbitz.activities.SendConfirmationActivity;
-import com.airbitz.activities.WalletPasswordActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,37 +20,21 @@ import java.io.InputStreamReader;
  * Created on 12/27/13.
  */
 @TargetApi(11)
-public class PhotoHandler implements Camera.PictureCallback{
+public class PhotoHandler {
 
     private Context mContext;
-    private String mClassName;
+    private byte[] mData;
+    private Camera.CameraInfo mCameraInfo;
 
     private static String mMimeType = "image/jpg";
 
-    public PhotoHandler(Context context, String className)
+    public PhotoHandler(Context context, byte[] data, Camera.CameraInfo info)
     {
         Log.d("TAG custom", "Constructing Photohandler...");
         this.mContext = context;
-        mClassName = className;
+        mData = data;
+        mCameraInfo = info;
         Log.d("TAG custom", "Finish Constructing Photohandler...  " + mContext);
-    }
-
-
-    @Override
-    public void onPictureTaken(byte[] data, Camera camera) {
-
-        Camera.CameraInfo info =
-                new Camera.CameraInfo();
-
-
-        if(mClassName.equalsIgnoreCase("SendConfirmationActivity")){
-            Intent capturedPicIntent = new Intent(mContext, SendConfirmationActivity.class);
-            mContext.startActivity(capturedPicIntent);
-        }
-        else{
-            Intent capturedPicIntent = new Intent(mContext, WalletPasswordActivity.class);
-            mContext.startActivity(capturedPicIntent);
-        }
     }
 
     private void saveData(String filename, byte[] data){

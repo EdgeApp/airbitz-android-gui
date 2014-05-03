@@ -21,7 +21,6 @@ import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.OfflineWalletActivity;
-import com.airbitz.activities.RequestActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
@@ -70,8 +69,8 @@ public class WalletsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null)
-            mRequestClass = savedInstanceState.getString(RequestActivity.CLASSNAME, null);
+//        if(savedInstanceState!=null)
+//            mRequestClass = savedInstanceState.getString(RequestActivity.CLASSNAME, null);
     }
 
     @Override
