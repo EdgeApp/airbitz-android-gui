@@ -108,8 +108,8 @@ public class NavigationBarFragment extends Fragment {
         else return -1;
     }
 
-
     public void selectTab(int position) {
+        selectedTab = position;
         switch (position) {
             case 0:
                 mDirectoryButton.setImageResource(R.drawable.ico_tab_directory_white);
@@ -136,7 +136,8 @@ public class NavigationBarFragment extends Fragment {
         }
     }
 
-    private void unselectTab(int position) {
+    public void unselectTab(int position) {
+        mLastTab = position;
         switch (position) {
             case 0:
                 mDirectoryButton.setImageResource(R.drawable.ico_tab_directory);
