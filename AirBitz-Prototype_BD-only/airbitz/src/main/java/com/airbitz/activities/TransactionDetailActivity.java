@@ -117,7 +117,7 @@ public class TransactionDetailActivity extends Activity implements GestureDetect
         mSentFromTextView = (TextView) findViewById(R.id.textview_sent_from);
         mCategoryTextView = (TextView) findViewById(R.id.textview_category);
         mNoteTextView = (TextView) findViewById(R.id.textview_notes);
-        mBitcoinValueTextview = (TextView) findViewById(R.id.textview_bitcoint_value);
+        mBitcoinValueTextview = (TextView) findViewById(R.id.textview_bitcoin_value);
         mDateTextView = (TextView) findViewById(R.id.textview_date);
 
         mDollarValueEdittext = (EditText) findViewById(R.id.edittext_dollar_value);
