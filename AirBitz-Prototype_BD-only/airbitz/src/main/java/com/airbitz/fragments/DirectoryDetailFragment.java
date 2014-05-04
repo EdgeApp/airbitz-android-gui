@@ -103,7 +103,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_business_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_business_detail, container, false);
 
         mGestureDetector = new GestureDetector(this);
 
