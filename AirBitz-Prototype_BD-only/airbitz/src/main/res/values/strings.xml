@@ -129,7 +129,7 @@
     <string name="transaction_details_category_hint">Add category</string>
     <string name="transaction_details_notes_hint">Add transaction note</string>
 
-    <!-- Strings for Request fragment -->
+    <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
     <string name="export_account_title">Account:</string>
     <string name="export_account_button_hint">Account:</string>
@@ -143,5 +143,9 @@
     <string name="export_quickbooks_title">Quickbooks</string>
     <string name="export_pdf_title">View</string>
     <string name="export_print_title">Print</string>
+
+    <!-- Strings for Export Saving fragment -->
+    <string name="export_saving_title">Title?</string>
+
 
 </resources>
