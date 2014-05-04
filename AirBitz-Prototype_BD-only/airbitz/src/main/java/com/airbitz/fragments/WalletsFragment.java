@@ -30,11 +30,6 @@ import java.util.List;
  */
 public class WalletsFragment extends Fragment {
 
-    private static final int LATEST_WALLETS = 0;
-    private static final int ARCHIVED_WALLETS = 1;
-    public static final String WALLET_NAME = "name";
-    public static final String WALLET_AMOUNT = "amount";
-
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
 
@@ -214,8 +209,8 @@ public class WalletsFragment extends Fragment {
 
     private void showWalletFragment(String name, String amount) {
         Bundle bundle = new Bundle();
-        bundle.putString(WALLET_NAME, name);
-        bundle.putString(WALLET_AMOUNT, amount);
+        bundle.putString(Wallet.WALLET_NAME, name);
+        bundle.putString(Wallet.WALLET_AMOUNT, amount);
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
