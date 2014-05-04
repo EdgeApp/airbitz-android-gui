@@ -156,4 +156,8 @@
     <string name="offline_wallet_copy_button_title">Copy Public Address</string>
     <string name="offline_wallet_print_button_title">External Storage / Print</string>
 
+    <!-- Strings for Received Success fragment -->
+    <string name="received_success_title">Send Bitcoin</string>
+    <string name="received_success_sending_title">Sending...</string>
+    <string name="received_success_received_title">Received!</string>
 </resources>
