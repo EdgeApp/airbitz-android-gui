@@ -1,17 +1,11 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,9 +19,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.airbitz.R;
-import com.airbitz.activities.DisplayActivity;
 import com.airbitz.activities.LandingActivity;
-import com.airbitz.activities.SecurityActivity;
 import com.airbitz.utils.Common;
 
 /**

@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Wallet;
 
 import java.util.List;
@@ -44,8 +44,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
         TextView titleTextView = (TextView) convertView.findViewById(R.id.textview_title);
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
-        titleTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        amountTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace, Typeface.ITALIC);
+        titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
         titleTextView.setText(mWalletList.get(position).getName());
         amountTextView.setText(mWalletList.get(position).getAmount()
                 + mContext.getResources().getString(R.string.no_break_space_character));

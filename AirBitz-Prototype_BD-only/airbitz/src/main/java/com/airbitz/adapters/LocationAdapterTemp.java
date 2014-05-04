@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class LocationAdapterTemp extends ArrayAdapter<String> implements Filtera
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
         RelativeLayout layoutItem = (RelativeLayout) convertView.findViewById(R.id.layout_item);
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
-        textView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         textView.setText(mLocationValue.get(position));
 
 //        if(position == 0 || position == 1){

@@ -10,7 +10,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.LocationSearchResult;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
         final LocationSearchResult location = mLocationValue.get(position);
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
-        textView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         textView.setText(location.getLocationName());
 
         if (sCurrentLocation.equals(location.getLocationName()) ||

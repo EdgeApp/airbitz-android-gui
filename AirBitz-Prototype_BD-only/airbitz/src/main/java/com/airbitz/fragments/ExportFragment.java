@@ -1,13 +1,10 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,7 +20,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.ExportSavingOptionActivity;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.adapters.ExportAdapter;
 import com.airbitz.utils.Common;

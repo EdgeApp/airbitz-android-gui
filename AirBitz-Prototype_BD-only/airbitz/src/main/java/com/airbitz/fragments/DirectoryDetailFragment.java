@@ -29,8 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
@@ -154,7 +152,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
 
-        mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         mLogo.setVisibility(View.GONE);
         mBackButton.setVisibility(View.VISIBLE);
 
@@ -163,14 +161,14 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
             mTitleTextView.setVisibility(View.VISIBLE);
         }
 
-        mAddressButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mPhoneButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mWebButton.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mDaysTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mHoursTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mAboutField.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mCategoriesTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        mDiscountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -489,7 +487,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     private float getStateFromSharedPreferences(String key) {
         Activity activity = getActivity();
         if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(BusinessDirectoryActivity.PREF_NAME,
+            SharedPreferences pref = activity.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
                     Context.MODE_PRIVATE);
             return pref.getFloat(key, -1);
         }
@@ -497,11 +495,11 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     }
 
     private double getLatFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+        return (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
     }
 
     private double getLonFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+        return (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
     }
 
     @Override public boolean onDown(MotionEvent motionEvent) {

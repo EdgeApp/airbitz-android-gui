@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.AccountTransaction;
 
 import java.util.List;
@@ -42,10 +42,10 @@ public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
         debitAmountTextView.setText(mListAccountTransaction.get(position).getDebitAmount());
         creditAmountTextView.setText(mListAccountTransaction.get(position).getCreditAmount()
                 + mContext.getResources().getString(R.string.no_break_space_character));
-        dateTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
-        nameTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        debitAmountTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
-        creditAmountTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace, Typeface.ITALIC);
+        dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+        nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+        debitAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
         return convertView;
     }
 }

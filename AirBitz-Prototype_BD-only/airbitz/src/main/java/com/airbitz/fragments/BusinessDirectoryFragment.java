@@ -40,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
@@ -496,7 +495,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 (new View.OnKeyListener() {
                     @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                         int keyAction = keyEvent.getAction();
-                        mIntent = new Intent(getActivity(), MapBusinessDirectoryActivity.class);
                         if (keyAction == KeyEvent.ACTION_UP) {
                             switch (keyCode) {
                                 case KeyEvent.FLAG_EDITOR_ACTION:
