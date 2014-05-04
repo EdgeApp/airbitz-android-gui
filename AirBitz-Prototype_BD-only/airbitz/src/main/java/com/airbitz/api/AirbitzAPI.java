@@ -2,10 +2,12 @@ package com.airbitz.api;
 
 import android.util.Log;
 
+import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
+import com.airbitz.models.Wallet;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -404,9 +406,9 @@ public class AirbitzAPI {
             JSONObject jsonResponse = new JSONObject(response);
             return Business.generateBusinessObjectListFromJSON(jsonResponse.getJSONArray("results"));
         }catch (JSONException e){
-            Log.e(TAG, ""+e.getMessage());
+            Log.e(TAG, "" + e.getMessage());
         }catch (Exception e){
-            Log.e(TAG, ""+e.getMessage());
+            Log.e(TAG, "" + e.getMessage());
         }
         return null;
     }
@@ -466,6 +468,32 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
+    /*
+        Get wallets with their transactions
+     */
+    public static List<Wallet> getWallets() {
+        // TODO replace with API call
+        List<Wallet> list = new ArrayList<Wallet>();
+        list.add(new Wallet("Baseball Team", "B15.000"));
+        list.add(new Wallet("Fantasy Football", "B10.000"));
+        list.add(new Wallet("Shared", "B0.000"));
+        list.add(new Wallet("Mexico", "B0.000"));
+        list.add(new Wallet("Alpha Centauri", "B0.000"));
+        list.add(new Wallet("Other", "B0.000"));
+        return list;
+    }
 
+    /*
+        Get wallets with their transactions
+     */
+    public static List<AccountTransaction> getTransactions(String walletName) {
+        // TODO replace with API call
+        List<AccountTransaction> list = new ArrayList<AccountTransaction>();
+        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "-B5.000"));
+        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "-B65.000"));
+        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "-B95.000"));
+
+        return list;
+    }
 
 }

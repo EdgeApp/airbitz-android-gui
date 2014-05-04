@@ -20,6 +20,7 @@ import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
@@ -60,29 +61,32 @@ public class WalletFragment extends Fragment {
 
     private Intent mIntent;
 
-    private List<AccountTransaction> mAccountTransaction;
+    private List<AccountTransaction> mAccountTransactions;
 
     private String mWalletName;
+    private AirbitzAPI mAPI;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mWalletName = getArguments().getString(WalletsFragment.WALLET_NAME);
+        mAPI = AirbitzAPI.getApi();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        mAccountTransaction = getTransactions("nothing");
+        mAccountTransactions = mAPI.getTransactions(mWalletName);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
 
-        mTransactionAdapter = new TransactionAdapter(getActivity(), mAccountTransaction);
+        mTransactionAdapter = new TransactionAdapter(getActivity(), mAccountTransactions);
 
         mSearchField = (ClearableEditText) view.findViewById(R.id.edittext_search);
 
@@ -100,7 +104,7 @@ public class WalletFragment extends Fragment {
         mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mAccountTransaction.size(), getActivity());
+        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mAccountTransactions.size(), getActivity());
 
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
 

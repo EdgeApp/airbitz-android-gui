@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,19 +12,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,42 +45,30 @@ public class WalletsFragment extends Fragment {
 
     private TextView mTitleTextView;
 
-    private RelativeLayout mParentLayout;
-    private ScrollView mScrollLayout;
-
     private WalletAdapter mLatestWalletAdapter;
-
-    private Intent mIntent;
-    private Bundle mExtras = null;
-
-    private String mRequestClass = null;
 
     private boolean mSwitchWordOne = true;
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
-
+    private AirbitzAPI mAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        if(savedInstanceState!=null)
-//            mRequestClass = savedInstanceState.getString(RequestActivity.CLASSNAME, null);
+        mAPI = AirbitzAPI.getApi();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
-        mLatestWalletList = getWallets(LATEST_WALLETS);
+        mLatestWalletList = mAPI.getWallets();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestWalletList);
-
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
-        mScrollLayout = (ScrollView) view.findViewById(R.id.layout_scroll);
 
         mBitCoinBalanceButton = (Button) view.findViewById(R.id.button_bitcoinbalance);
         mDollarBalanceButton = (Button) view.findViewById(R.id.button_dollarbalance);
@@ -234,21 +219,6 @@ public class WalletsFragment extends Fragment {
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
-    }
-
-    /*
-        Get wallets with their transactions
-     */
-    private List<Wallet> getWallets(int type) {
-        // TODO replace with API call
-        List<Wallet> list = new ArrayList<Wallet>();
-            list.add(new Wallet("Baseball Team", "B15.000"));
-            list.add(new Wallet("Fantasy Football", "B10.000"));
-            list.add(new Wallet("Shared", "B0.000"));
-            list.add(new Wallet("Mexico", "B0.000"));
-            list.add(new Wallet("Alpha Centauri", "B0.000"));
-            list.add(new Wallet("Other", "B0.000"));
-        return list;
     }
 
 //    @Override
