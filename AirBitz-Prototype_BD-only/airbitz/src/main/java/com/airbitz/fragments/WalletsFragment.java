@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.OfflineWalletActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
@@ -310,10 +309,7 @@ public class WalletsFragment extends Fragment {
                 })
                 .setNegativeButton("Offline",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
-
-
-                        mIntent = new Intent(getActivity(), OfflineWalletActivity.class);
-                        startActivity(mIntent);
+                        ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment());
                     }
                 });
 
