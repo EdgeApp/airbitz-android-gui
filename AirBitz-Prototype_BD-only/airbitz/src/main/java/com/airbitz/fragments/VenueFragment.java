@@ -2,7 +2,6 @@
 package com.airbitz.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -23,9 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
-import com.airbitz.activities.DirectoryDetailActivity;
-import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -113,9 +109,9 @@ public class VenueFragment extends Fragment implements
 
             } else if (getParentFragment().getClass().toString().equalsIgnoreCase(MapBusinessDirectoryFragment.class.toString()))  {
                 mIsInMapBusinessDirectory = true;
-                mLocationName = getArguments().getString(BusinessDirectoryActivity.LOCATION);
-                mBusinessType = getArguments().getString(BusinessDirectoryActivity.BUSINESSTYPE);
-                mBusinessName = getArguments().getString(BusinessDirectoryActivity.BUSINESS);
+                mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
+                mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
+                mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
 
                 mGetVenuesTask = new GetVenuesTask(getActivity());
                 mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
@@ -152,9 +148,9 @@ public class VenueFragment extends Fragment implements
     }
 
     private void hideLoadingIndicator() {
-        if (getActivity() instanceof BusinessDirectoryActivity) {
-            ((BusinessDirectoryActivity) getActivity()).hideLoadingIndicator();
-        }
+//        if (getActivity() instanceof BusinessDirectoryFragment) {
+//            ((BusinessDirectoryFragment) getActivity()).hideLoadingIndicator();
+//        }
     }
 
     @Override public void onScrollEnded() {
@@ -483,18 +479,18 @@ public class VenueFragment extends Fragment implements
     }
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = getActivity().getSharedPreferences(BusinessDirectoryActivity.PREF_NAME,
+        SharedPreferences pref = getActivity().getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
                                                                     Context.MODE_PRIVATE);
         return pref.getFloat(key, -1);
     }
 
     private double getLatFromSharedPreference() {
-        double lat = (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+        double lat = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
         return lat;
     }
 
     private double getLonFromSharedPreference() {
-        double lon = (double) getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+        double lon = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
         return lon;
     }
 

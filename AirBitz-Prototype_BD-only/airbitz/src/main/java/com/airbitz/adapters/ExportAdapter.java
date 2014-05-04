@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
 import com.airbitz.activities.LandingActivity;
 
 /**

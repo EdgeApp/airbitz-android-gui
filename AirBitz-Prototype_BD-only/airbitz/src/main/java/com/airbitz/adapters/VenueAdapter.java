@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
@@ -67,10 +67,10 @@ public class VenueAdapter extends BaseAdapter {
         TextView addressTextView = (TextView) convertView.findViewById(R.id.textview_address);
         TextView discountTextView = (TextView) convertView.findViewById(R.id.textview_discount);
 
-        venueNameTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
-        distanceTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
-        addressTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-        discountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+        venueNameTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+        distanceTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+        addressTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        discountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         final BusinessSearchResult result = mVenues.get(position);
 
@@ -134,17 +134,17 @@ public class VenueAdapter extends BaseAdapter {
     }
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = mContext.getSharedPreferences(BusinessDirectoryActivity.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = mContext.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME, Context.MODE_PRIVATE);
         return pref.getFloat(key, -1);
     }
 
     private double getLatFromSharedPreference(){
-        double lat = (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+        double lat = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
         return lat;
     }
 
     private double getLonFromSharedPreference(){
-        double lon = (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+        double lon = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
         return lon;
     }
 

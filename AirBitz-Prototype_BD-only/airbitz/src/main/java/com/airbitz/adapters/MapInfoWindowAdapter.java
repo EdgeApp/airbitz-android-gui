@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.MapBusinessDirectoryActivity;
 import com.airbitz.fragments.MapBusinessDirectoryFragment;
 import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.ImageHelper;
