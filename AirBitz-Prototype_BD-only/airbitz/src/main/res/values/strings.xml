@@ -15,6 +15,8 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
     <string name="string_done">Done</string>
+    <string name="string_back_button">Back button returns to the previous screen</string>
+    <string name="string_help_button">Help button shows help for this screen</string>
 
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
@@ -147,5 +149,11 @@
     <!-- Strings for Export Saving fragment -->
     <string name="export_saving_title">Title?</string>
 
+    <!-- Strings for Offline Wallet fragment -->
+    <string name="offline_wallet_title">Offline Wallet</string>
+    <string name="offline_wallet_public_address_title">PUBLIC ADDRESS</string>
+    <string name="offline_wallet_private_key_title">PRIVATE KEY</string>
+    <string name="offline_wallet_copy_button_title">Copy Public Address</string>
+    <string name="offline_wallet_print_button_title">External Storage / Print</string>
 
 </resources>
