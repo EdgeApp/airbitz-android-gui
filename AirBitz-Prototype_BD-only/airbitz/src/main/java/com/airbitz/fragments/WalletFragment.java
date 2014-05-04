@@ -22,6 +22,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.ListViewUtility;
@@ -71,7 +72,7 @@ public class WalletFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mWalletName = getArguments().getString(WalletsFragment.WALLET_NAME);
+        mWalletName = getArguments().getString(Wallet.WALLET_NAME);
         mAPI = AirbitzAPI.getApi();
     }
 

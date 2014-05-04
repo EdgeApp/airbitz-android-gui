@@ -7,6 +7,9 @@ import java.util.List;
  */
 public class Wallet {
 
+    public static final String WALLET_NAME = "name";
+    public static final String WALLET_AMOUNT = "amount";
+
     private String mName;
     private String mAmount;
     private List<AccountTransaction> mList;
