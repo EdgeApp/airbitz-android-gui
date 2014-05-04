@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -9,7 +8,6 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -31,7 +29,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
-import com.airbitz.activities.ReceivedSuccessActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
 /**
@@ -588,10 +586,7 @@ public class SendConfirmationFragment extends Fragment implements GestureDetecto
                         if(!mSuccess){
                             mSuccess = true;
                             mConfirmSwipeButton.setVisibility(View.INVISIBLE);
-//                            mIntent = new Intent(getActivity(), ReceivedSuccessActivity.class);
-//                            startActivity(mIntent);
-//                            finish();
-                            //TODO goto success fragment or dialog
+                            ((NavigationActivity) getActivity()).pushFragment(new ReceivedSuccessFragment());
                         }
                     }
 

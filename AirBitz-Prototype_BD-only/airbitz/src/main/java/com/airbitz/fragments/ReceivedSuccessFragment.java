@@ -1,25 +1,29 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.LandingActivity;
 import com.airbitz.utils.Common;
 
 /**
  * Created on 2/22/14.
  */
-public class ReceivedSuccessActivity extends Activity implements GestureDetector.OnGestureListener{
+public class ReceivedSuccessFragment extends Fragment implements GestureDetector.OnGestureListener{
 
     private TextView mSendingTextView;
     private TextView mBitcoinAmountTextView;
@@ -40,26 +44,32 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
     private GestureDetector mGestureDetector;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_received_success);
+    }
 
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_received_success, container, false);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mGestureDetector = new GestureDetector(this);
 
-        mSendingTextView = (TextView) findViewById(R.id.textview_sending);
-        mBitcoinAmountTextView = (TextView) findViewById(R.id.textview_bitcoin_amount);
-        mDollarAmountTextView = (TextView) findViewById(R.id.textview_dollar_amount);
-        mReceivedTextView = (TextView) findViewById(R.id.textview_received);
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mSendingTextView = (TextView) view.findViewById(R.id.textview_sending);
+        mBitcoinAmountTextView = (TextView) view.findViewById(R.id.textview_bitcoin_amount);
+        mDollarAmountTextView = (TextView) view.findViewById(R.id.textview_dollar_amount);
+        mReceivedTextView = (TextView) view.findViewById(R.id.textview_received);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mLogoImageView = (ImageView) findViewById(R.id.imageview_logo);
+        mLogoImageView = (ImageView) view.findViewById(R.id.imageview_logo);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
 
-        mSendingLayout = (RelativeLayout) findViewById(R.id.layout_sending);
-        mSuccessLayout = (RelativeLayout) findViewById(R.id.layout_success);
+        mSendingLayout = (RelativeLayout) view.findViewById(R.id.layout_sending);
+        mSuccessLayout = (RelativeLayout) view.findViewById(R.id.layout_success);
 
         mSendingTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
@@ -70,34 +80,20 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                getActivity().onBackPressed();
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(ReceivedSuccessActivity.this, "Info", "Info description");
+                Common.showHelpInfo(getActivity(), "Info", "Info description");
             }
         });
 
         new RequestSendingAsynctask().execute();
-    }
 
-    @Override
-    protected void onResume() {
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        return view;
     }
 
     class RequestSendingAsynctask extends AsyncTask<Void, Integer, Boolean>{
@@ -122,14 +118,14 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
         protected void onProgressUpdate(Integer... values) {
             if(values[0]%3 == 1){
                 mLogoImageView.setImageResource(R.drawable.ico_sending_1);
-                ReceivedSuccessActivity.this.mSendingTextView.setText("Sending.");
+                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending.");
             }
             else if(values[0]%3 == 2){
-                ReceivedSuccessActivity.this.mSendingTextView.setText("Sending..");
+                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending..");
                 mLogoImageView.setImageResource(R.drawable.ico_sending_2);
             }
             else if(values[0]%3 == 0){
-                ReceivedSuccessActivity.this.mSendingTextView.setText("Sending...");
+                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending...");
                 mLogoImageView.setImageResource(R.drawable.ico_sending_3);
             }
 
@@ -138,8 +134,8 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
         @Override
         protected void onPostExecute(Boolean result) {
 
-            ReceivedSuccessActivity.this.mSendingLayout.setVisibility(View.GONE);
-            ReceivedSuccessActivity.this.mSuccessLayout.setVisibility(View.VISIBLE);
+            ReceivedSuccessFragment.this.mSendingLayout.setVisibility(View.GONE);
+            ReceivedSuccessFragment.this.mSuccessLayout.setVisibility(View.VISIBLE);
             if(result == true){
                 mReceivedTextView.setText("Received!!");
                 Handler handler = new Handler();
@@ -167,11 +163,6 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
 //                }, 3000 );
             }
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
     }
 
     @Override
@@ -209,7 +200,7 @@ public class ReceivedSuccessActivity extends Activity implements GestureDetector
                 float xDistance = Math.abs(finish.getRawX() - start.getRawX());
 
                 if(xDistance > 50){
-                    finish();
+                    getActivity().onBackPressed();
                     return true;
                 }
             }
