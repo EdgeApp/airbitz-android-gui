@@ -7,42 +7,6 @@
     android:background="@drawable/bg_app"
     android:id="@+id/layout_root">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_padding"
-        android:layout_alignParentBottom="true">
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="15dp"
-            android:background="@drawable/bg_tab_bar"
-            android:id="@+id/directory_button"
-            android:src="@drawable/ico_tab_directory"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_padding"
-        android:layout_alignParentBottom="true">
-
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="15dp"
-            android:background="@drawable/bg_tab_bar"
-            android:id="@+id/directory_button"
-            android:src="@drawable/ico_tab_directory"
-            android:layout_weight="1"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,12 +30,12 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Export"
+            android:text="@string/export_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
 
         <ImageButton
@@ -93,13 +57,10 @@
         android:id="@+id/layout_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_header"
-        android:layout_above="@id/bottom_padding"
-        android:paddingBottom="10dp"
-        android:layout_marginBottom="30dp">
+        android:layout_below="@id/layout_header">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="30dp">
 
@@ -135,14 +96,13 @@
                         android:id="@+id/textview_account"
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
-                        android:text="Account:"
+                        android:text="@string/export_account_title"
                         android:gravity="right"
                         android:layout_gravity="right"
                         android:textColor="@android:color/white"
-                        android:layout_alignParentTop="true"
                         android:layout_marginRight="20dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:layout_weight="1"
                         android:padding="5dp"
                         android:textStyle="bold"/>
@@ -151,9 +111,7 @@
                         android:id="@+id/button_acount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_account"
                         android:textStyle="bold"
-                        android:hint="Checking"
                         android:textColorHint="#DDDDDD"
                         android:background="@drawable/btn_trans_rounded"
                         android:gravity="center"
@@ -165,7 +123,7 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="7dp"
                         android:paddingTop="7dp"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:layout_weight="1"/>
 
                     </LinearLayout>
@@ -189,13 +147,12 @@
                     android:id="@+id/textview_from"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:text="From:"
+                    android:text="@string/export_account_from_title"
                     android:gravity="right"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/textview_account"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:padding="5dp"
                     android:layout_weight="1"
                     android:textStyle="bold"/>
@@ -204,8 +161,6 @@
                         android:id="@+id/edittext_from"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_account"
-                        android:text="10/4/2014"
                         android:textStyle="bold"
                         android:textColorHint="#DDDDDD"
                         android:background="@drawable/btn_trans_rounded"
@@ -217,7 +172,7 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:drawableLeft="@drawable/ico_calendar"
                         android:layout_weight="1"/>
 
@@ -238,12 +193,11 @@
                     android:id="@+id/textview_to"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:text="To:"
+                    android:text="@string/export_account_to_title"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/textview_from"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:layout_weight="1"
                     android:gravity="right"
                     android:padding="5dp"
@@ -254,8 +208,6 @@
                         android:id="@+id/edittext_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_from"
-                        android:text="10/4/2014"
                         android:textColorHint="#DDDDDD"
                         android:textStyle="bold"
                         android:background="@drawable/btn_trans_rounded"
@@ -267,7 +219,7 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:drawableLeft="@drawable/ico_calendar"
                         android:layout_weight="1"/>
 
@@ -291,7 +243,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="This Week"
+                    android:text="@string/export_account_this_week"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="5dp"
@@ -302,7 +254,7 @@
                     android:paddingRight="10dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical|center_horizontal"
                     android:background="@drawable/bg_btn_orange"
                     android:layout_weight="1"/>
@@ -310,14 +262,14 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="This Month"
+                    android:text="@string/export_account_this_month"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:id="@+id/button_this_month"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="5dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="10dp"
@@ -329,10 +281,10 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="This Year"
+                    android:text="@string/export_account_this_year"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:id="@+id/button_this_year"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
@@ -345,14 +297,6 @@
                     android:layout_weight="1"/>
             </LinearLayout>
 
-            <!--<ListView-->
-                <!--android:id="@+id/listview_export"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@drawable/rounded_edge_blue"-->
-                <!--android:layout_below="@id/layout_export_periode"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:layout_marginLeft="10dp"></ListView>-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -360,21 +304,19 @@
                 android:id="@+id/layout_data"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="30dp"
                 android:layout_below="@id/layout_export_period">
 
                 <Button
                     android:id="@+id/button_csv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CSV"
+                    android:text="@string/export_csv_title"
                     android:textColor="#005f96"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ico_csv"
                     android:drawableRight="@drawable/arrow_right"
                     android:drawablePadding="25dp"
                     android:gravity="left"
-                    android:inputType="text|textCapSentences|textMultiLine"
                     android:paddingLeft="20dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="15dp"
@@ -392,7 +334,7 @@
                     android:layout_below="@id/separator_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Quicken"
+                    android:text="@string/export_quicken_title"
                     android:textColor="#005f96"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ico_quicken"
@@ -416,7 +358,7 @@
                     android:layout_below="@id/separator_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Quickbooks"
+                    android:text="@string/export_quickbooks_title"
                     android:textColor="#005f96"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ico_quickooks"
@@ -437,7 +379,7 @@
                     android:layout_below="@id/separator_4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="View"
+                    android:text="@string/export_pdf_title"
                     android:textColor="#005f96"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ico_pdf"
@@ -458,7 +400,7 @@
                     android:layout_below="@id/separator_5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Print"
+                    android:text="@string/export_print_title"
                     android:textColor="#000000"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ico_wallet"
@@ -468,28 +410,9 @@
                     android:padding="20dp"
                     android:focusable="false"/>
             </RelativeLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_below="@id/layout_data">
-
-            </LinearLayout>
 
         </RelativeLayout>
 
 </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/navigation_layout"
-        android:layout_alignParentBottom="true">
-
-        <fragment
-            android:id="@+id/navigation_fragment"
-            android:name="com.airbitz.fragments.NavigationBarFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
 
 </RelativeLayout>

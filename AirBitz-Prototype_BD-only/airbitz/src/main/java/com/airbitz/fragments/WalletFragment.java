@@ -119,8 +119,8 @@ public class WalletFragment extends Fragment {
         mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(TransactionFragment.this, ExportActivity.class);
-//                startActivity(mIntent);
+                Fragment fragment = new ExportFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment);
             }
         });
         mRequestButton.setOnClickListener(new View.OnClickListener() {

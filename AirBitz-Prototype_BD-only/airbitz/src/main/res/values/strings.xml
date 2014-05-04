@@ -129,4 +129,19 @@
     <string name="transaction_details_category_hint">Add category</string>
     <string name="transaction_details_notes_hint">Add transaction note</string>
 
+    <!-- Strings for Request fragment -->
+    <string name="export_title">Export</string>
+    <string name="export_account_title">Account:</string>
+    <string name="export_account_button_hint">Account:</string>
+    <string name="export_account_from_title">From:</string>
+    <string name="export_account_to_title">To:</string>
+    <string name="export_account_this_week">This Week</string>
+    <string name="export_account_this_month">This Month</string>
+    <string name="export_account_this_year">This Year</string>
+    <string name="export_csv_title">CSV</string>
+    <string name="export_quicken_title">Quicken</string>
+    <string name="export_quickbooks_title">Quickbooks</string>
+    <string name="export_pdf_title">View</string>
+    <string name="export_print_title">Print</string>
+
 </resources>
