@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -40,7 +41,7 @@ public class SettingFragment extends Fragment {
     private Button mChangePINButton;
     private Button mChangeRecoveryButton;
 
-    private ToggleButton mSendNameToggle;
+    private Switch mSendNameToggle;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
@@ -87,7 +88,7 @@ public class SettingFragment extends Fragment {
         mChangePINButton = (Button) view.findViewById(R.id.settings_button_pin);
         mChangeRecoveryButton = (Button) view.findViewById(R.id.settings_button_recovery);
 
-        mSendNameToggle = (ToggleButton) view.findViewById(R.id.settings_toggle_send_user_info);
+        mSendNameToggle = (Switch) view.findViewById(R.id.settings_toggle_send_user_info);
         mFirstEditText = (EditText) view.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) view.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
@@ -140,8 +141,6 @@ public class SettingFragment extends Fragment {
                 setUserNameState(isChecked);
             }
         });
-
-        //TODO setup spinners
 
         mAutoLogoffButton.setText("0:0:15");
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
