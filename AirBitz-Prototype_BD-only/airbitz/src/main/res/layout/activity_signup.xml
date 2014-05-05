@@ -86,7 +86,7 @@
         android:id="@+id/layout_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_header"
+        android:layout_below="@id/layout_signup"
         android:layout_above="@id/button_next">
         <RelativeLayout
             android:layout_width="match_parent"
