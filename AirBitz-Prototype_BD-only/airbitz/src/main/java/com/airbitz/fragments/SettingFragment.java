@@ -8,14 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -40,20 +38,20 @@ public class SettingFragment extends Fragment {
     private Button mChangePINButton;
     private Button mChangeRecoveryButton;
 
-    private Switch mSendNameToggle;
+    private Switch mSendNameSwitch;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
 
     private Button mAutoLogoffButton;
-    private Spinner mLanguageSpinner;
-    private Spinner mCurrencySpinner;
+    private Button mLanguageButton;
+    private Button mCurrencyButton;
 
-    private Spinner mUSDollarSpinner;
-    private Spinner mCanadianDollarSpinner;
-    private Spinner mEuroSpinner;
-    private Spinner mPesoSpinner;
-    private Spinner mYuanSpinner;
+    private Button mUSDollarButton;
+    private Button mCanadianDollarButton;
+    private Button mEuroButton;
+    private Button mPesoButton;
+    private Button mYuanButton;
 
     private NumberPicker mNumberPicker;
     private NumberPicker mTextPicker;
@@ -86,20 +84,20 @@ public class SettingFragment extends Fragment {
         mChangePINButton = (Button) view.findViewById(R.id.settings_button_pin);
         mChangeRecoveryButton = (Button) view.findViewById(R.id.settings_button_recovery);
 
-        mSendNameToggle = (Switch) view.findViewById(R.id.settings_toggle_send_user_info);
+        mSendNameSwitch = (Switch) view.findViewById(R.id.settings_toggle_send_user_info);
         mFirstEditText = (EditText) view.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) view.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
 
         mAutoLogoffButton = (Button) view.findViewById(R.id.settings_button_auto_logoff);
-        mLanguageSpinner = (Spinner) view.findViewById(R.id.settings_spinner_language);
-        mCurrencySpinner = (Spinner) view.findViewById(R.id.settings_spinner_currency);
+        mLanguageButton = (Button) view.findViewById(R.id.settings_button_language);
+        mCurrencyButton = (Button) view.findViewById(R.id.settings_button_currency);
 
-        mUSDollarSpinner = (Spinner) view.findViewById(R.id.settings_spinner_usd);
-        mCanadianDollarSpinner = (Spinner) view.findViewById(R.id.settings_spinner_canadian);
-        mEuroSpinner = (Spinner) view.findViewById(R.id.settings_spinner_euro);
-        mPesoSpinner = (Spinner) view.findViewById(R.id.settings_spinner_peso);
-        mYuanSpinner = (Spinner) view.findViewById(R.id.settings_spinner_yuan);
+        mUSDollarButton = (Button) view.findViewById(R.id.settings_button_usd);
+        mCanadianDollarButton = (Button) view.findViewById(R.id.settings_button_canadian);
+        mEuroButton = (Button) view.findViewById(R.id.settings_button_euro);
+        mPesoButton = (Button) view.findViewById(R.id.settings_button_peso);
+        mYuanButton = (Button) view.findViewById(R.id.settings_button_yuan);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +130,7 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mSendNameToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSendNameSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
@@ -148,34 +146,61 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        mLanguageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] language_items = getResources().getStringArray(R.array.language_array);
+                showSelectorDialog(mLanguageButton, language_items, "Select an item");
+            }
+        });
 
-        String[] language_items = getResources().getStringArray(R.array.language_array);
-        ArrayAdapter<String> language_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, language_items);
-        mLanguageSpinner.setAdapter(language_adapter);
+        mCurrencyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] currency_items = getResources().getStringArray(R.array.default_currency_array);
+                showSelectorDialog(mCurrencyButton, currency_items, "Select an item");
+            }
+        });
 
-        String[] currency_items = getResources().getStringArray(R.array.default_currency_array);
-        ArrayAdapter<String> currency_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, currency_items);
-        mCurrencySpinner.setAdapter(currency_adapter);
+        mUSDollarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] usd_items = getResources().getStringArray(R.array.usd_exchange_array);
+                showSelectorDialog(mUSDollarButton, usd_items, "Select an item");
+            }
+        });
 
-        String[] usd_items = getResources().getStringArray(R.array.usd_exchange_array);
-        ArrayAdapter<String> usd_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, usd_items);
-        mUSDollarSpinner.setAdapter(usd_adapter);
+        mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] canadian_items = getResources().getStringArray(R.array.canadian_exchange_array);
+                showSelectorDialog(mCanadianDollarButton, canadian_items, "Select an item");
+            }
+        });
 
-        String[] canadian_items = getResources().getStringArray(R.array.canadian_exchange_array);
-        ArrayAdapter<String> canadian_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, canadian_items);
-        mCanadianDollarSpinner.setAdapter(canadian_adapter);
+        mEuroButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] euro_items = getResources().getStringArray(R.array.euro_exchange_array);
+                showSelectorDialog(mEuroButton, euro_items, "Select an item");
+            }
+        });
 
-        String[] euro_items = getResources().getStringArray(R.array.euro_exchange_array);
-        ArrayAdapter<String> euro_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, euro_items);
-        mEuroSpinner.setAdapter(euro_adapter);
+        mPesoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] peso_items = getResources().getStringArray(R.array.peso_exchange_array);
+                showSelectorDialog(mPesoButton, peso_items, "Select an item");
+            }
+        });
 
-        String[] peso_items = getResources().getStringArray(R.array.peso_exchange_array);
-        ArrayAdapter<String> peso_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, peso_items);
-        mPesoSpinner.setAdapter(peso_adapter);
-
-        String[] yuan_items = getResources().getStringArray(R.array.yuan_exchange_array);
-        ArrayAdapter<String> yuan_adapter = new ArrayAdapter<String>(getActivity(),  R.layout.item_setting_spinner, yuan_items);
-        mYuanSpinner.setAdapter(yuan_adapter);
+        mYuanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] yuan_items = getResources().getStringArray(R.array.yuan_exchange_array);
+                showSelectorDialog(mYuanButton, yuan_items, "Select an item");
+            }
+        });
 
         //TODO populate from PREFS
 
@@ -233,6 +258,36 @@ public class SettingFragment extends Fragment {
                                 mNumberSelection = mNumberPicker.getValue();
                                 mTextSelection = mTextPicker.getValue();
                                 mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[Integer.valueOf(mTextSelection)]);
+                            }
+                        }
+                )
+                .setNegativeButton(R.string.string_cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        }
+                )
+                .create();
+        frag.show();
+    }
+
+    private void showSelectorDialog(final Button button, final String[] items, String title) {
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View npView = inflater.inflate(R.layout.dialog_text_selector, null);
+        mTextPicker = (NumberPicker) npView.findViewById(R.id.dialog_text_picker);
+
+        mTextPicker.setMaxValue(items.length - 1);
+        mTextPicker.setMinValue(0);
+        mTextPicker.setDisplayedValues(items);
+
+        AlertDialog frag = new AlertDialog.Builder(getActivity())
+                .setTitle(title)
+                .setView(npView)
+                .setPositiveButton(R.string.string_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                button.setText(items[Integer.valueOf(mTextPicker.getValue())]);
                             }
                         }
                 )
