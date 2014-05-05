@@ -18,7 +18,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.airbitz.R;
 import com.airbitz.activities.LandingActivity;
@@ -56,12 +55,11 @@ public class SettingFragment extends Fragment {
     private Spinner mPesoSpinner;
     private Spinner mYuanSpinner;
 
-    private NumberPicker mHourPicker;
-    private NumberPicker mDayPicker;
-    private NumberPicker mMinPicker;
-    private int mHourSelection;
-    private int mDaySelection;
-    private int mMinSelection;
+    private NumberPicker mNumberPicker;
+    private NumberPicker mTextPicker;
+    private int mNumberSelection;
+    private int mTextSelection;
+    private String[] mAutoLogoffStrings = { "Day", "Hour", "Minute" };
 
 
     @Override
@@ -142,7 +140,7 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mAutoLogoffButton.setText("0:0:15");
+        mAutoLogoffButton.setText("1 Hour");
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,22 +204,24 @@ public class SettingFragment extends Fragment {
         LayoutInflater inflater = (LayoutInflater)
                 getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View npView = inflater.inflate(R.layout.dialog_auto_logoff, null);
-        mHourPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_hour_picker);
-        mDayPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_day_picker);
-        mMinPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_min_picker);
+        mNumberPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_number_picker);
+        mTextPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_text_picker);
 
-        mDayPicker.setMaxValue(60);
-        mDayPicker.setMinValue(0);
-        mHourPicker.setMaxValue(60);
-        mHourPicker.setMinValue(0);
-        mMinPicker.setMaxValue(59);
-        mMinPicker.setMinValue(0);
+        mTextPicker.setMaxValue(2);
+        mTextPicker.setMinValue(0);
+        mTextPicker.setDisplayedValues( mAutoLogoffStrings);
+        mNumberPicker.setMaxValue(60);
+        mNumberPicker.setMinValue(0);
 
-        String[] current = mAutoLogoffButton.getText().toString().split(":");
-        if(current[1]!=null) {
-            mDayPicker.setValue(Integer.valueOf(current[0]));
-            mHourPicker.setValue(Integer.valueOf(current[1]));
-            mMinPicker.setValue(Integer.valueOf(current[2]));
+        String[] current = mAutoLogoffButton.getText().toString().split(" ");
+        if(current[0]!=null && current[1]!=null) {
+            mNumberPicker.setValue(Integer.valueOf(current[0]));
+            String temp = current[1];
+            for(int i=0; i<mAutoLogoffStrings.length; i++) {
+                if(mAutoLogoffStrings[i].contains(temp)) {
+                    mTextPicker.setValue(i);
+                }
+            }
         }
 
         AlertDialog frag = new AlertDialog.Builder(getActivity())
@@ -230,10 +230,9 @@ public class SettingFragment extends Fragment {
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                mHourSelection = mHourPicker.getValue();
-                                mDaySelection = mDayPicker.getValue();
-                                mMinSelection = mMinPicker.getValue();
-                                mAutoLogoffButton.setText(""+mDaySelection+":"+mHourSelection+":"+mMinSelection);
+                                mNumberSelection = mNumberPicker.getValue();
+                                mTextSelection = mTextPicker.getValue();
+                                mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[Integer.valueOf(mTextSelection)]);
                             }
                         }
                 )
