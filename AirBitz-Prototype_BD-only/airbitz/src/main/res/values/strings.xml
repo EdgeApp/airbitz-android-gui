@@ -80,7 +80,7 @@
     <string name="settings_button_pin">Change withdrawal PIN</string>
     <string name="settings_button_recovery">Change recovery questions</string>
     <string name="settings_user_title">USER NAME</string>
-    <string name="settings_button_send_user_info">Send name on payment</string>
+    <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
     <string name="settings_edit_last_name">Last Name (optional)</string>
     <string name="settings_edit_nick_name">Nickname (optional)</string>
