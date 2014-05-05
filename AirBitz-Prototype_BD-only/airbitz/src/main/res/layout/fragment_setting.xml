@@ -68,7 +68,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_marginTop="5dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/settings_denomination_title"
@@ -283,20 +283,21 @@
                     android:layout_marginTop="0dp"
                     android:background="@drawable/rounded_edge_blue">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:orientation="horizontal" >
                         <Button
                             android:id="@+id/settings_button_send_user_info"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -305,17 +306,21 @@
                             android:textColor="@android:color/black"
                             android:textSize="13sp" />
 
-                        <ToggleButton
+                        <Switch
                             android:id="@+id/settings_toggle_send_user_info"
-                            android:layout_width="60dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:background="@drawable/toggle_selector"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textOn=""
                             android:textOff=""
-                            android:textOn=""/>
-                    </LinearLayout>
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:layout_alignParentRight="true"
+                            android:thumb="@drawable/btn_toggle_thumb"
+                            android:track="@drawable/toggle_selector"
+                            android:switchMinWidth="0dp"
+                            android:checked="false" />
+
+                    </RelativeLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -483,7 +488,7 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -520,7 +525,7 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -586,7 +591,7 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -623,7 +628,7 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -660,7 +665,7 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:background="@drawable/btn_trans_rounded"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
                     </LinearLayout>
 
                     <LinearLayout
