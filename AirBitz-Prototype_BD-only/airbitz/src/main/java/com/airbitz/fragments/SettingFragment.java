@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -31,9 +32,9 @@ public class SettingFragment extends Fragment {
     private ImageButton mHelpButton;
     private TextView mTitleTextView;
 
-    private Button mBitcoinButton;
-    private Button mmBitcoinButton;
-    private Button muBitcoinButton;
+    private RadioButton mBitcoinButton;
+    private RadioButton mmBitcoinButton;
+    private RadioButton muBitcoinButton;
 
     private Button mChangePasswordButton;
     private Button mChangePINButton;
@@ -77,9 +78,10 @@ public class SettingFragment extends Fragment {
         mTitleTextView = (TextView) view.findViewById(R.id.settings_textview_title);
         mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
 
-        mBitcoinButton = (Button) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
-        mmBitcoinButton = (Button) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
-        muBitcoinButton = (Button) view.findViewById(R.id.settings_denomination_buttons_ubitcoin);
+        mBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
+        mmBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
+        muBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_ubitcoin);
+        mBitcoinButton.setChecked(true);
 
         mChangePasswordButton = (Button) view.findViewById(R.id.settings_button_change_password);
         mChangePINButton = (Button) view.findViewById(R.id.settings_button_pin);
@@ -100,11 +102,6 @@ public class SettingFragment extends Fragment {
         mPesoSpinner = (Spinner) view.findViewById(R.id.settings_spinner_peso);
         mYuanSpinner = (Spinner) view.findViewById(R.id.settings_spinner_yuan);
 
-//        mDisplayButton = (Button) view.findViewById(R.id.button_display);
-//        mCategoriesButton.setTypeface(LandingActivity.latoBlackTypeFace);
-//
-//        mLanguageTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.ITALIC);
-//
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

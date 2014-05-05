@@ -83,7 +83,7 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <RadioGroup
                     android:id="@+id/denomination_buttons"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -94,13 +94,14 @@
                     android:layout_marginTop="0dp"
                     android:background="@drawable/rounded_edge_blue">
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/settings_denomination_buttons_bitcoin"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:background="@android:color/transparent"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:button="@null"
                         android:drawablePadding="15dp"
-                        android:drawableRight="@drawable/arrow_right"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
@@ -116,13 +117,14 @@
                         android:background="@android:color/darker_gray"
                         android:orientation="vertical" />
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/settings_denomination_buttons_mbitcoin"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:background="@android:color/transparent"
                         android:drawablePadding="20dp"
-                        android:drawableRight="@drawable/arrow_right"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:button="@null"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
@@ -138,13 +140,13 @@
                         android:background="@android:color/darker_gray"
                         android:orientation="vertical" />
 
-                    <Button
+                    <RadioButton
                         android:id="@+id/settings_denomination_buttons_ubitcoin"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:background="@android:color/transparent"
-                        android:drawablePadding="20dp"
-                        android:drawableRight="@drawable/arrow_right"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:button="@null"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
@@ -154,7 +156,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
 
-                </LinearLayout>
+                </RadioGroup>
 
             </LinearLayout>
 
