@@ -69,7 +69,7 @@
             android:layout_margin="15dp"
             android:textSize="20sp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -80,36 +80,27 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp">
 
-
-            <!--<com.airbitz.widgets.VerticalSeekBar-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="50dp"-->
-                <!--android:id="@+id/view"-->
-                <!--android:max="1"-->
-                <!--android:progress="1"-->
-                <!--android:thumb="@drawable/btn_toggle_thumb"-->
-                <!--android:layout_gravity="center_horizontal" />-->
-
             <Button
                 android:id="@+id/button_bitcoinbalance"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="120.015"
+                android:layout_height="50dp"
+                android:text="110.015"
                 android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="15dp"
-                android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/btn_green"
-                android:drawableLeft="@drawable/ico_coin_btc"
-                android:drawableRight="@drawable/ico_btc"/>
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:drawableLeft="@drawable/ico_coin_btc_dark"
+                android:drawableRight="@drawable/ico_usd_dark"/>
 
             <Button
                 android:id="@+id/button_dollarbalance"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:layout_below="@id/button_bitcoinbalance"
                 android:text="1050.67"
                 android:paddingLeft="15dp"
                 android:paddingTop="5dp"
@@ -120,9 +111,37 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:drawableLeft="@drawable/ico_coin_usd"
-                android:drawableRight="@drawable/ico_usd"/>
+                android:drawableRight="@drawable/ico_usd_dark"/>
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/button_mover"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/button_bitcoinbalance"
+                android:text="1050.67"
+                android:textStyle="bold"
+                android:paddingLeft="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingRight="15dp"
+                android:textSize="22sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btn_green"
+                android:gravity="center"
+                android:drawableLeft="@drawable/ico_coin_btc"
+                android:drawableRight="@drawable/ico_usd_white"/>
+
+            <com.airbitz.widgets.VerticalSeekBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/button_dollarbalance"
+                android:id="@+id/button_slider"
+                android:max="100"
+                android:thumb="@null"
+                android:progressDrawable="@android:color/transparent"
+                android:progress="100" />
+
+        </RelativeLayout>
 
 
     </LinearLayout>
