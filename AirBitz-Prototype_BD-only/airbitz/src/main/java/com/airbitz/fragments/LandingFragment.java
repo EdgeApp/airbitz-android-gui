@@ -212,6 +212,7 @@ public class LandingFragment extends Fragment {
             if (success) {
                 ((NavigationActivity) getActivity()).setUserLoggedIn(true);
                 ((NavigationActivity) getActivity()).setLoginView(false);
+                ((NavigationActivity) getActivity()).onNavBarSelected(0);
             } else {
                 showProgress(false);
                 showErrorDialog();

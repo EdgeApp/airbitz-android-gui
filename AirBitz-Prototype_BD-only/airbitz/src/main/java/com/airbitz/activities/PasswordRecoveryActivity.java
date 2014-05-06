@@ -67,7 +67,7 @@ public class PasswordRecoveryActivity extends Activity {
         mDoneSignUpButton = (Button) findViewById(R.id.button_complete_signup);
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override

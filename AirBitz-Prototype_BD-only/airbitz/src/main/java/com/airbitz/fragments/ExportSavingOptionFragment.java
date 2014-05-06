@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
@@ -8,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ExportAdapter;
 import com.airbitz.utils.Common;
 
@@ -86,15 +84,15 @@ public class ExportSavingOptionFragment extends Fragment implements GestureDetec
         mFromTextView = (TextView) view.findViewById(R.id.textview_from);
         mToTextView = (TextView) view.findViewById(R.id.textview_to);
 
-        mAccountEdittext.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mFromEdittext.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mToEdittext.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mAccountEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mFromEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mToEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mAccountTexView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mFromTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mToTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mAccountTexView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mToTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mFromEdittext.setKeyListener(null);
         mToEdittext.setKeyListener(null);

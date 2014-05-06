@@ -45,11 +45,11 @@ public class ForgotPasswordActivity extends Activity {
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mRecoveryQA = getRecoveryQA();
 
-        mSubmitButton.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mSubmitButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override

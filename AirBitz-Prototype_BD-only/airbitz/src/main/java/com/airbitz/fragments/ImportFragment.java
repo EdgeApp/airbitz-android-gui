@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
@@ -110,12 +110,12 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
         mAutoFlashButton = (ImageButton) view.findViewById(R.id.button_flash_auto);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mFromTextView.setTypeface(LandingActivity.latoBlackTypeFace);
-        mToTextView.setTypeface(LandingActivity.latoBlackTypeFace);
-        mFromButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mToEdittext.setTypeface(LandingActivity.latoBlackTypeFace);
-        mQRCodeTextView.setTypeface(LandingActivity.helveticaNeueTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mFromButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},

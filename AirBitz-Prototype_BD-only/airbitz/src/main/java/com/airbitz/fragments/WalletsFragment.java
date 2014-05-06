@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -97,8 +97,8 @@ public class WalletsFragment extends Fragment {
                 mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
                 mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
 
-                mBitCoinBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
-                mDollarBalanceButton.setTypeface(LandingActivity.helveticaNeueTypeFace);
+                mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
+                mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
                 mBitCoinBalanceButton.setPadding(15,10,15,10);
                 mDollarBalanceButton.setPadding(15,10,15,10);
@@ -139,8 +139,8 @@ public class WalletsFragment extends Fragment {
                 mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
                 mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
 
-                mBitCoinBalanceButton.setTypeface(LandingActivity.helveticaNeueTypeFace);
-                mDollarBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
+                mBitCoinBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                mDollarBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
                 mBitCoinBalanceButton.setPadding(15,10,15,10);
                 mDollarBalanceButton.setPadding(15,10,15,10);
@@ -179,8 +179,8 @@ public class WalletsFragment extends Fragment {
         mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
         mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
 
-        mBitCoinBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mDollarBalanceButton.setTypeface(LandingActivity.helveticaNeueTypeFace);
+        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mBitCoinBalanceButton.setPadding(15, 10, 15, 10);
         mDollarBalanceButton.setPadding(15, 10, 15, 10);
@@ -192,9 +192,9 @@ public class WalletsFragment extends Fragment {
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mBitCoinBalanceButton.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mDollarBalanceButton.setTypeface(LandingActivity.helveticaNeueTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

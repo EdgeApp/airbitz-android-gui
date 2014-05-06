@@ -20,7 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.adapters.NoteCategoryAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -117,21 +117,21 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
 
         mCategoryEdittext.setKeyListener(null);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mDateTextView.setTypeface(LandingActivity.helveticaNeueTypeFace, Typeface.BOLD);
-        mNameTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-//        mSerialButton.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-        mSentFromTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-//        mCheckingButton.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-        mCategoryEdittext.setTypeface(LandingActivity.latoBlackTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
+        mNameTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+//        mSerialButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mSentFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+//        mCheckingButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mCategoryEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        mDollarValueEdittext.setTypeface(LandingActivity.helveticaNeueTypeFace);
-        mBitcoinValueTextview.setTypeface(LandingActivity.helveticaNeueTypeFace, Typeface.BOLD);
+        mDollarValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
 
-//        mCategoryTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mNoteTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mNoteEdittext.setTypeface(LandingActivity.latoBlackTypeFace);
-        mDoneButton.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
+//        mCategoryTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mNoteTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
 //        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @Override

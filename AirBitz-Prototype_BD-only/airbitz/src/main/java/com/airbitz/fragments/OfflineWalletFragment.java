@@ -29,7 +29,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -86,7 +86,7 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mAddressTextView.getPaint().setShader(textShader);
 
-        mAddressTextView.setTypeface(LandingActivity.helveticaNeueTypeFace);
+        mAddressTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mRootLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -118,8 +118,8 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mCopyButton = (Button) view.findViewById(R.id.button_copy_address);
         mPrintButton = (Button) view.findViewById(R.id.button_external_storage);
 
-        mCopyButton.setTypeface(LandingActivity.montserratRegularTypeFace, Typeface.BOLD);
-        mPrintButton.setTypeface(LandingActivity.montserratRegularTypeFace, Typeface.BOLD);
+        mCopyButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
+        mPrintButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
 
         mQRCodeImage = (ImageView) view.findViewById(R.id.imageview_qrcode);
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
@@ -127,9 +127,9 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
 
         TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        titleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mAddressField.setTypeface(LandingActivity.helveticaNeueTypeFace, Typeface.ITALIC);
-        mPrivateKeyField.setTypeface(LandingActivity.helveticaNeueTypeFace, Typeface.ITALIC);
+        titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mAddressField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);
+        mPrivateKeyField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);
         mRootLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

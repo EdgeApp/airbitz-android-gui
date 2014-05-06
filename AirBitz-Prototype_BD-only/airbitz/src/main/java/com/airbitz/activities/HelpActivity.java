@@ -67,17 +67,17 @@ public class HelpActivity extends Activity implements GestureDetector.OnGestureL
         mQuestionLayout3 = (LinearLayout) findViewById(R.id.layout_separator_3);
         mQuestionLayout4 = (LinearLayout) findViewById(R.id.layout_separator_4);
 
-        mQuestion1.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mQuestion2.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mQuestion3.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mQuestion4.setTypeface(LandingActivity.montserratRegularTypeFace);
+        mQuestion1.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mQuestion2.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mQuestion3.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mQuestion4.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mAnswerTextView1.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mAnswerTextView2.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mAnswerTextView3.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mAnswerTextView4.setTypeface(LandingActivity.montserratRegularTypeFace);
+        mAnswerTextView1.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mAnswerTextView2.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mAnswerTextView3.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mAnswerTextView4.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);

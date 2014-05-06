@@ -1,6 +1,7 @@
 package com.airbitz.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -55,6 +56,12 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     private boolean mUserLoggedIn = false;
 
+    public static Typeface montserratBoldTypeFace;
+    public static Typeface montserratRegularTypeFace;
+    public static Typeface latoBlackTypeFace;
+    public static Typeface latoRegularTypeFace;
+    public static Typeface helveticaNeueTypeFace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -65,6 +72,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
+
+        setTypeFaces();
 
         for(int i=0; i< mNavFragments.length; i++) {
             mNavStacks[i] = new Stack<Fragment>();
@@ -118,6 +127,14 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         }
     }
 
+    private void setTypeFaces() {
+        montserratBoldTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
+        montserratRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
+        latoBlackTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
+        latoRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-RegIta.ttf");
+        helveticaNeueTypeFace=Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
+    }
+
     /*
         Implements interface to receive navigation changes from the bottom nav bar
      */
@@ -125,6 +142,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         if(getUserLoggedIn()) {
             switchFragmentThread(position);
         } else {
+            switchFragmentThread(0);
             setLoginView(true);
         }
     }
