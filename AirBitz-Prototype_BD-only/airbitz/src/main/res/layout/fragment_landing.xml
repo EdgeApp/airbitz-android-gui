@@ -82,6 +82,8 @@
             android:inputType="textPersonName"
             android:hint="User Name"
             android:ems="10"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/passwordField"
             android:textColor="@android:color/white"
             android:textColorHint="#DDDDDD"
             android:textSize="15dp"

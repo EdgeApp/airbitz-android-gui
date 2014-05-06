@@ -12,15 +12,11 @@ import java.util.List;
  */
 public class NavigationAdapter extends FragmentPagerAdapter {
 
-        private final List<Fragment> mFragments = new ArrayList<Fragment>();
+        private final List<Fragment> mFragments;
 
-        public NavigationAdapter(FragmentManager manager) {
+        public NavigationAdapter(FragmentManager manager, List<Fragment> fragments) {
             super(manager);
-        }
-
-        public void addFragment(Fragment fragment) {
-            mFragments.add(fragment);
-            notifyDataSetChanged();
+            mFragments = fragments;
         }
 
         @Override

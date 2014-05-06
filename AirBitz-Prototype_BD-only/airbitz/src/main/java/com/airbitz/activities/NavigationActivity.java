@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -12,14 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.airbitz.R;
+import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
+import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.crashlytics.android.Crashlytics;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -34,6 +40,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
     private LinearLayout mFragmentLayout;
+    private ViewPager mViewPager;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -45,6 +52,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
+
+    private boolean mUserLoggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,16 +85,47 @@ implements NavigationBarFragment.OnScreenSelectedListener {
                 }
             }
         });
+
+        // Setup top screen - the Landing - that swipes away if no login
+        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
+
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new LandingFragment());
+        fragments.add(new TransparentFragment());
+
+        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), fragments);
+        mViewPager.setAdapter(pageAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                // Disappear if transparent page shows
+                if(position==1) {
+                    mViewPager.setVisibility(View.GONE);
+                }
+            }
+        });
+        setLoginView(!mUserLoggedIn);
+    }
+
+    public void setLoginView(boolean show) {
+        if(show) {
+            mViewPager.setVisibility(View.VISIBLE);
+            mViewPager.setCurrentItem(0);
+        } else {
+            mViewPager.setCurrentItem(1);
+        }
     }
 
     /*
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-        if(userLoggedIn()) {
+        if(getUserLoggedIn()) {
             switchFragmentThread(position);
         } else {
-            startActivity(new Intent(this, LandingActivity.class));
+            setLoginView(true);
         }
     }
 
@@ -121,7 +161,11 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             popFragment();
     }
 
-    private boolean userLoggedIn() {
-        return true;
+    private boolean getUserLoggedIn() {
+        return mUserLoggedIn;
+    }
+
+    public void setUserLoggedIn(boolean state) {
+        mUserLoggedIn = state;
     }
 }
