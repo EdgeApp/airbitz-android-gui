@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
 /**
@@ -71,11 +71,11 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
         mSendingLayout = (RelativeLayout) view.findViewById(R.id.layout_sending);
         mSuccessLayout = (RelativeLayout) view.findViewById(R.id.layout_success);
 
-        mSendingTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mBitcoinAmountTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mDollarAmountTextView.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mReceivedTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mBitcoinAmountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mDollarAmountTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mReceivedTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override

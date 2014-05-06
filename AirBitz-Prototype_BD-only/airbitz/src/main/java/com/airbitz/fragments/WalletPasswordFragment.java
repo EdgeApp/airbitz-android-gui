@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
 /**
@@ -60,7 +60,7 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
 
 
         TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
-        titleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mPasswordEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

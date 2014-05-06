@@ -29,7 +29,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
@@ -114,12 +114,12 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) view.findViewById(R.id.textview_converter);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mWalletTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
-        mWalletButton.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mBitcoinField.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mDollarField.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mConverterTextView.setTypeface(LandingActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mWalletButton.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mDollarField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
 
         mWalletButton.setOnClickListener(new View.OnClickListener() {

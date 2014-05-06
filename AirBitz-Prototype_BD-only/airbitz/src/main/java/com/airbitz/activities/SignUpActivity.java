@@ -77,14 +77,14 @@ public class SignUpActivity extends Activity {
         mHintTextView = (TextView) findViewById(R.id.textview_pass_hint);
         TextView withdrawalTextView = (TextView) findViewById(R.id.textview_withdrawal);
 
-        withdrawalTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        withdrawalTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mUsernameEditText.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mPasswordEditText.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mPasswordConfirmationEditText.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mHintTextView.setTypeface(LandingActivity.montserratRegularTypeFace);
+        mUsernameEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mPasswordConfirmationEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mHintTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);

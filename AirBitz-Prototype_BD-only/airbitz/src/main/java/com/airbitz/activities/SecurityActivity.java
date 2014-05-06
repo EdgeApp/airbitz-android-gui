@@ -57,12 +57,12 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
 
-        mDisplayButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mSecurityButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mLanguageButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mExchangeRateButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mCategoriesButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mDisplayButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mSecurityButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mLanguageButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mExchangeRateButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mCategoriesButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

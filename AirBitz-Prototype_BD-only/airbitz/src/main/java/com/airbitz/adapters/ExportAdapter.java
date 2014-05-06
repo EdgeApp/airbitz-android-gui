@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 
 /**
  * Created on 2/13/14.
@@ -50,7 +50,7 @@ public class ExportAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_business, parent, false);
         TextView nameTextView = (TextView) convertView.findViewById(R.id.textview_business_title);
-        nameTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        nameTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageview_icon);
         nameTextView.setText(mMenus[position]);
 

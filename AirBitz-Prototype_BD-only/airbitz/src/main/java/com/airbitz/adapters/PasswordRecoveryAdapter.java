@@ -1,18 +1,12 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Filterable;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
 
 import java.util.List;
 

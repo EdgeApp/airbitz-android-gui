@@ -20,7 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ExportAdapter;
 import com.airbitz.utils.Common;
 
@@ -118,16 +118,16 @@ public class ExportFragment extends Fragment implements GestureDetector.OnGestur
         mThisMonthButton = (Button) view.findViewById(R.id.button_this_month);
         mThisYearButton = (Button) view.findViewById(R.id.button_this_year);
 
-        mAccountButton.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mFromDateEdittext.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mToDateEdittext.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mAccountTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mFromTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mToTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mThisWeekButton.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mThisMonthButton.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mThisYearButton.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mAccountButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mFromDateEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mToDateEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mAccountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mToTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mThisWeekButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mThisMonthButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mThisYearButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
         mScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override

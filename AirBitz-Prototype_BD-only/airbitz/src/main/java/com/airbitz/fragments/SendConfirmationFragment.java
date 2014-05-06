@@ -28,7 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
@@ -131,16 +131,16 @@ public class SendConfirmationFragment extends Fragment implements GestureDetecto
         mSlideLayout = (LinearLayout) view.findViewById(R.id.layout_slide);
 
         mConfirmImageView = (ImageView) view.findViewById(R.id.imageview_confirm);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mFromEdittext.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-        mToEdittext.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
-        mFromTextView.setTypeface(LandingActivity.latoBlackTypeFace);
-        mToTextView.setTypeface(LandingActivity.latoBlackTypeFace);
-        mValueTextView.setTypeface(LandingActivity.helveticaNeueTypeFace);
-        mPinTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-        mSlideTextView.setTypeface(LandingActivity.latoBlackTypeFace, Typeface.BOLD);
-        mConfirmTextView.setTypeface(LandingActivity.latoBlackTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mValueTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPinTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mConfirmTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
         mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);

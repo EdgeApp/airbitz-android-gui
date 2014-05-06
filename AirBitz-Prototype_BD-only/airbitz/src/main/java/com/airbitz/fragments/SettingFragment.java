@@ -18,7 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.LandingActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
 /**
@@ -73,7 +73,7 @@ public class SettingFragment extends Fragment {
         mBackButton = (ImageButton) view.findViewById(R.id.settings_button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.settings_button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.settings_textview_title);
-        mTitleTextView.setTypeface(LandingActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
         mmBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
