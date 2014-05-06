@@ -142,7 +142,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         if(getUserLoggedIn()) {
             switchFragmentThread(position);
         } else {
-            switchFragmentThread(0);
+            mNavBarFragment.unselectTab(position); // just needed for resetting mLastTab
             setLoginView(true);
         }
     }
