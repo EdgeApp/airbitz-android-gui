@@ -69,9 +69,10 @@
             android:layout_margin="15dp"
             android:textSize="20sp" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:id="@+id/layout_balance"
             android:background="@drawable/rounded_edge_black_transparent_30"
             android:layout_marginTop="0dp"
@@ -79,9 +80,18 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp">
 
+
+            <!--<com.airbitz.widgets.VerticalSeekBar-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:id="@+id/view"-->
+                <!--android:max="1"-->
+                <!--android:progress="1"-->
+                <!--android:thumb="@drawable/btn_toggle_thumb"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
             <Button
                 android:id="@+id/button_bitcoinbalance"
-                android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="120.015"
@@ -89,8 +99,6 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="15dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
                 android:textStyle="bold"
                 android:textSize="22sp"
                 android:textColor="@android:color/white"
@@ -100,11 +108,9 @@
 
             <Button
                 android:id="@+id/button_dollarbalance"
-                android:layout_below="@id/button_bitcoinbalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1050.67"
-                android:layout_centerHorizontal="true"
                 android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
@@ -115,7 +121,8 @@
                 android:gravity="center"
                 android:drawableLeft="@drawable/ico_coin_usd"
                 android:drawableRight="@drawable/ico_usd"/>
-        </RelativeLayout>
+
+        </LinearLayout>
 
 
     </LinearLayout>
