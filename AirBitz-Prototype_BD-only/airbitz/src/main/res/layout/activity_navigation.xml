@@ -11,6 +11,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/tabbedNavigationLayout"
+        android:layout_alignParentBottom="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/navigationLayout"
         android:layout_alignParentBottom="true">
 
@@ -32,5 +38,13 @@
         android:layout_marginBottom="-75dp">
 
     </LinearLayout>
+        </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigation_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 
 </RelativeLayout>

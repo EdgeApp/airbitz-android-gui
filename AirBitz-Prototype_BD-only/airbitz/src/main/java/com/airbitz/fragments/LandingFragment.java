@@ -1,4 +1,4 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,14 +16,15 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,8 +33,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.ForgotPasswordActivity;
+import com.airbitz.activities.NavigationActivity;
+import com.airbitz.activities.SignUpActivity;
 
-public class LandingActivity extends Activity implements GestureDetector.OnGestureListener {
+public class LandingFragment extends Fragment {
 
     public static final String LAT_KEY = "LATITUDE_KEY";
     public static final String LON_KEY = "LONGITUDE_KEY";
@@ -71,60 +75,55 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
     private LocationManager mLocationManager;
 
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mAnimationLayout;
+    private RelativeLayout mLandingLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_landing);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
 
-        mParentLayout = (RelativeLayout) findViewById(R.id.container);
-        mAnimationLayout = (RelativeLayout) findViewById(R.id.landing_main_layout);
-        mProgressView = findViewById(R.id.login_progress);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_landing, container, false);
 
-        montserratBoldTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
-        latoBlackTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
-        latoRegularTypeFace=Typeface.createFromAsset(getAssets(), "font/Lato-RegIta.ttf");
-        helveticaNeueTypeFace=Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mProgressView = view.findViewById(R.id.login_progress);
+        mLandingLayout = (RelativeLayout) view.findViewById(R.id.landing_main_layout);
 
-        mUserNameField = (EditText) findViewById(R.id.userNameField);
-        mPasswordField = (EditText) findViewById(R.id.passwordField);
-        mSignInButton = (Button) findViewById(R.id.signinButton);
-        mSignUpButton = (Button) findViewById(R.id.signUpButton);
-        mForgotImageView = (ImageView) findViewById(R.id.forgotPassImage);
-        mLogoImageView = (ImageView) findViewById(R.id.imageView);
-        mForgotPasswordTextView = (TextView) findViewById(R.id.forgotPassText);
+        montserratBoldTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Bold.ttf");
+        montserratRegularTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Regular.ttf");
+        latoBlackTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Bla.ttf");
+        latoRegularTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-RegIta.ttf");
+        helveticaNeueTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
 
-        mUserNameField.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mPasswordField.setTypeface(LandingActivity.montserratRegularTypeFace);
-        mSignInButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mSignUpButton.setTypeface(LandingActivity.latoBlackTypeFace);
-        mForgotPasswordTextView.setTypeface(LandingActivity.latoBlackTypeFace);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        TextView swipeText = (TextView) findViewById(R.id.swipe_text);
+        mUserNameField = (EditText) view.findViewById(R.id.userNameField);
+        mPasswordField = (EditText) view.findViewById(R.id.passwordField);
+        mSignInButton = (Button) view.findViewById(R.id.signinButton);
+        mSignUpButton = (Button) view.findViewById(R.id.signUpButton);
+        mForgotImageView = (ImageView) view.findViewById(R.id.forgotPassImage);
+        mLogoImageView = (ImageView) view.findViewById(R.id.imageView);
+        mForgotPasswordTextView = (TextView) view.findViewById(R.id.forgotPassText);
 
-        swipeText.setTypeface(LandingActivity.montserratRegularTypeFace);
+        mUserNameField.setTypeface(LandingFragment.montserratRegularTypeFace);
+        mPasswordField.setTypeface(LandingFragment.montserratRegularTypeFace);
+        mSignInButton.setTypeface(LandingFragment.latoBlackTypeFace);
+        mSignUpButton.setTypeface(LandingFragment.latoBlackTypeFace);
+        mForgotPasswordTextView.setTypeface(LandingFragment.latoBlackTypeFace);
 
-        Display display = getWindowManager().getDefaultDisplay();
+        TextView swipeText = (TextView) view.findViewById(R.id.swipe_text);
+
+        swipeText.setTypeface(LandingFragment.montserratRegularTypeFace);
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         mDisplayWidth = size.x;
 
-        mGestureDetector = new GestureDetector(this,this);
-
         mLogoImageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return mGestureDetector.onTouchEvent(motionEvent);
@@ -134,7 +133,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         mForgotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LandingActivity.this, ForgotPasswordActivity.class);
+                Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -142,7 +141,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LandingActivity.this, ForgotPasswordActivity.class);
+                Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -150,7 +149,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
                 mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
                 attemptLogin();
@@ -160,12 +159,14 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LandingActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(getActivity(), SignUpActivity.class);
                 startActivity(intent);
             }
         });
 
         checkLocationManager();
+
+        return view;
     }
 
     /**
@@ -209,10 +210,8 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
             mAuthTask = null;
 
             if (success) {
-                //going to main Navigation
-                Intent intent = new Intent(LandingActivity.this, NavigationActivity.class);
-                startActivity(intent);
-                finish();
+                ((NavigationActivity) getActivity()).setUserLoggedIn(true);
+                ((NavigationActivity) getActivity()).setLoginView(false);
             } else {
                 showProgress(false);
                 showErrorDialog();
@@ -291,7 +290,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         //TODO real logic for good password
         return !password.isEmpty();
     }
-    
+
     public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
@@ -299,12 +298,12 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-            mAnimationLayout.animate().setDuration(shortAnimTime).alpha(
+            mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLandingLayout.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -320,12 +319,12 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mAnimationLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
     private void showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getResources().getString(R.string.error_invalid_credentials))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
@@ -339,112 +338,18 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
     }
 
     @Override
-    public void onBackPressed() {
-        System.exit(0);
-    }
-
-    @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        mAnimationLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent event) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent event) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        float sensitivity = 30;
-        float yDistance = Math.abs(e2.getY() - e1.getY());
-
-        if (e1.getY() - e2.getY() > sensitivity) {
-            return true;
-        }
-        //Swipe Down Check
-        else if (e2.getY() - e1.getY() > sensitivity) {
-            return true;
-        }
-        //Swipe Left Check
-        else if (e1.getX() - e2.getX() > sensitivity) {
-            TranslateAnimation animation = new TranslateAnimation(0, -1*mDisplayWidth, 0, 0);
-            animation.setDuration(100);
-            animation.setFillAfter(false);
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mAnimationLayout.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(LandingActivity.this, NavigationActivity.class);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            mAnimationLayout.startAnimation(animation);
-
-
-            return true;
-        }
-        //Swipe Right Check
-        else if (e2.getX() - e1.getX() > sensitivity) {
-            return true;
-        } else if((e2.getRawX()>e1.getRawX()) && (yDistance < 15)){
-            float xDistance = Math.abs(e2.getRawX() - e1.getRawX());
-
-            if(xDistance > 50){
-                finish();
-                return true;
-            }
-        }else{
-            return true;
-        }
-
-        return false;
     }
 
     private void checkLocationManager() {
 
-        mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
 
         final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("GPS is disabled. Go to Settings and turned on your GPS.")
                     .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                         @Override
@@ -489,7 +394,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
 
         @Override
-        public void onLocationChanged(android.location.Location location) {
+        public void onLocationChanged(Location location) {
 
             if (mLocationManager != null) {
                 mLocationManager.removeUpdates(listener);
@@ -505,7 +410,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
 
     private void writeValueToSharedPreference(String key, float value) {
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
         editor.putFloat(key, value);
         editor.commit();
     }
@@ -517,7 +422,7 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
 
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
         return prefs.getFloat(key, -1);
     }
 
@@ -530,13 +435,13 @@ public class LandingActivity extends Activity implements GestureDetector.OnGestu
     }
 
     private void clearSharedPreference(String key) {
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
         editor.remove(key);
         editor.commit();
     }
 
     private void clearSharedPreference() {
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
         editor.remove(LAT_KEY);
         editor.remove(LON_KEY);
         editor.commit();
