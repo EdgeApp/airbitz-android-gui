@@ -67,12 +67,6 @@ public class LandingFragment extends Fragment {
     private Location mLocation;
     private View mProgressView;
 
-    public static Typeface montserratBoldTypeFace;
-    public static Typeface montserratRegularTypeFace;
-    public static Typeface latoBlackTypeFace;
-    public static Typeface latoRegularTypeFace;
-    public static Typeface helveticaNeueTypeFace;
-
     private LocationManager mLocationManager;
 
     private RelativeLayout mLandingLayout;
@@ -92,12 +86,6 @@ public class LandingFragment extends Fragment {
         mProgressView = view.findViewById(R.id.login_progress);
         mLandingLayout = (RelativeLayout) view.findViewById(R.id.landing_main_layout);
 
-        montserratBoldTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Regular.ttf");
-        latoBlackTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Bla.ttf");
-        latoRegularTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-RegIta.ttf");
-        helveticaNeueTypeFace=Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
-
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mUserNameField = (EditText) view.findViewById(R.id.userNameField);
@@ -108,27 +96,27 @@ public class LandingFragment extends Fragment {
         mLogoImageView = (ImageView) view.findViewById(R.id.imageView);
         mForgotPasswordTextView = (TextView) view.findViewById(R.id.forgotPassText);
 
-        mUserNameField.setTypeface(LandingFragment.montserratRegularTypeFace);
-        mPasswordField.setTypeface(LandingFragment.montserratRegularTypeFace);
-        mSignInButton.setTypeface(LandingFragment.latoBlackTypeFace);
-        mSignUpButton.setTypeface(LandingFragment.latoBlackTypeFace);
-        mForgotPasswordTextView.setTypeface(LandingFragment.latoBlackTypeFace);
+        mUserNameField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mPasswordField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mSignInButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mSignUpButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mForgotPasswordTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         TextView swipeText = (TextView) view.findViewById(R.id.swipe_text);
 
-        swipeText.setTypeface(LandingFragment.montserratRegularTypeFace);
+        swipeText.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         mDisplayWidth = size.x;
 
-        mLogoImageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+//        mLogoImageView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return mGestureDetector.onTouchEvent(motionEvent);
+//            }
+//        });
 
         mForgotImageView.setOnClickListener(new View.OnClickListener() {
             @Override

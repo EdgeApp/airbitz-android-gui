@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,10 +13,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -28,10 +30,14 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletsFragment extends Fragment {
+public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+
+    private static final int UPPER = 0;
+    private static final int LOWER = 1;
 
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
+    private Button mButtonMover;
 
     private ListView mLatestWalletListView;
 
@@ -39,6 +45,8 @@ public class WalletsFragment extends Fragment {
     private ImageButton mAddButton;
 
     private TextView mTitleTextView;
+
+    private SeekBar mSeekBar;
 
     private WalletAdapter mLatestWalletAdapter;
 
@@ -67,6 +75,7 @@ public class WalletsFragment extends Fragment {
 
         mBitCoinBalanceButton = (Button) view.findViewById(R.id.button_bitcoinbalance);
         mDollarBalanceButton = (Button) view.findViewById(R.id.button_dollarbalance);
+        mButtonMover = (Button) view.findViewById(R.id.button_mover);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mAddButton = (ImageButton) view.findViewById(R.id.button_add);
@@ -170,20 +179,20 @@ public class WalletsFragment extends Fragment {
 
         mOnBitcoinMode = true;
 
-        mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
-        mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
-
-        mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc, 0, R.drawable.ico_btc, 0);
-        mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd, 0, R.drawable.ico_usd, 0);
-
-        mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
-        mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
-
-        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-
-        mBitCoinBalanceButton.setPadding(15, 10, 15, 10);
-        mDollarBalanceButton.setPadding(15, 10, 15, 10);
+//        mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
+//        mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
+//
+//        mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc, 0, R.drawable.ico_btc, 0);
+//        mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd, 0, R.drawable.ico_usd, 0);
+//
+//        mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
+//        mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
+//        mBitCoinBalanceButton.setPadding(15, 10, 15, 10);
+//        mDollarBalanceButton.setPadding(15, 10, 15, 10);
+//
+//        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
+//        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+//
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
@@ -193,8 +202,9 @@ public class WalletsFragment extends Fragment {
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mBitCoinBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mButtonMover.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -203,6 +213,9 @@ public class WalletsFragment extends Fragment {
                 showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
             }
         });
+
+        mSeekBar = (SeekBar) view.findViewById(R.id.button_slider);
+        mSeekBar.setOnSeekBarChangeListener(this);
 
         return view;
     }
@@ -227,6 +240,50 @@ public class WalletsFragment extends Fragment {
 //
 //    }
 //
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        float heightDiff = mBitCoinBalanceButton.getHeight();
+        float moveX = heightDiff*progress/seekBar.getMax();
+        RelativeLayout.LayoutParams absParams =
+                (RelativeLayout.LayoutParams)mButtonMover.getLayoutParams();
+
+        absParams.leftMargin = 0;
+        absParams.topMargin = (int) -moveX;
+
+        mButtonMover.setLayoutParams(absParams);
+    }
+
+    public void onStartTrackingTouch(SeekBar seekBar) { }
+
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(seekBar.getProgress() > seekBar.getMax()/2) {
+            seekBar.setProgress(seekBar.getMax());
+            setSwitchSelection(UPPER);
+        } else {
+            seekBar.setProgress(0);
+            setSwitchSelection(LOWER);
+        }
+        onProgressChanged(seekBar, seekBar.getProgress(), true);
+    }
+
+    private void setSwitchSelection(int selection) {
+        Drawable[] drawables;
+        switch(selection) {
+            case UPPER:
+                mButtonMover.setText(mBitCoinBalanceButton.getText());
+                drawables = mBitCoinBalanceButton.getCompoundDrawables();
+                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+               break;
+            case LOWER:
+                mButtonMover.setText(mDollarBalanceButton.getText());
+                drawables = mDollarBalanceButton.getCompoundDrawables();
+                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                break;
+            default:
+                break;
+        }
+    }
 
     public void addItemToLatestTransactionList(String name, String amount, List<Wallet> mTransactionList){
 
