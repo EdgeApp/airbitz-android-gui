@@ -27,7 +27,6 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
-    private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
     private boolean firstPlace = false;
     private double mLat;
@@ -37,7 +36,6 @@ public class VenueAdapter extends BaseAdapter {
         firstPlace = false;
         mContext = context;
         mVenues = venues;
-        mInflater = LayoutInflater.from(mContext);
         mLat = getLatFromSharedPreference();
         mLon = getLonFromSharedPreference();
     }
