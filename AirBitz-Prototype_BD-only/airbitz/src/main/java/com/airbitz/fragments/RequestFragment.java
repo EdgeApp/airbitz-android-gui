@@ -31,7 +31,11 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
+
+import java.security.Key;
+import java.text.DecimalFormat;
 
 /**
  * Created on 2/13/14.
@@ -65,13 +69,26 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 
     private ClipboardManager clipboard;
 
-    public final static int CodeDelete   = -5;
-    public final static int CodeCancel   = -3;
-    private int mButtonWidth = 0;
+    private Boolean userIsInTheMiddleOfTypingANumber = false;
+    private CalculatorBrain mCalculatorBrain;
+    private static final String DIGITS = "0123456789.";
+
+    DecimalFormat mDF = new DecimalFormat("@###########");
+    public final static int CodePrev = 55000;
+    public final static int CodeAllLeft = 55001;
+    public final static int CodeLeft = 55002;
+    public final static int CodeRight = 55003;
+    public final static int CodeAllRight = 55004;
+    public final static int CodeNext = 55005;
+    public final static int CodeClear = 55006;
+    public final static int CodeConst = 55009;
+    public final static int CodeLog = 55010;
+    public final static int CodeConv = 55011; // Conversions like round or degrees
+    public final static int CodeTrig = 55012;
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -90,6 +107,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 
         mKeyboard = new Keyboard(this.getActivity(), R.xml.layout_keyboard);
         mKeyboardView = (KeyboardView) view.findViewById(R.id.layout_calculator);
+        mCalculatorBrain = new CalculatorBrain();
 
         mKeyboardView.setKeyboard(mKeyboard);
         mKeyboardView.setEnabled(true);
@@ -120,7 +138,6 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mDollarField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
-
 
         mWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,10 +178,9 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     showCustomKeyboard(view);
-                }
-                else{
+                } else {
                     hideCustomKeyboard();
                 }
             }
@@ -182,7 +198,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
             @Override
             public boolean onLongClick(View view) {
                 clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("private key","SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf");
+                ClipData clip = ClipData.newPlainText("private key", "SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf");
                 clipboard.setPrimaryClip(clip);
 
                 return true;
@@ -193,10 +209,9 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mDollarField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     showCustomKeyboard(view);
-                }
-                else{
+                } else {
                     hideCustomKeyboard();
                 }
             }
@@ -218,7 +233,8 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         });
 
         mBitcoinField.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View v, MotionEvent event) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
 
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
@@ -231,7 +247,8 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 
 
         mDollarField.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View v, MotionEvent event) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
@@ -273,7 +290,8 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 //
 //    }
 
-    public void showQRCodePopUpDialog(){
+
+    public void showQRCodePopUpDialog() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_qrcode);
         ImageView imageviewQRCode = (ImageView) dialog.findViewById(R.id.imageview_qrcode);
@@ -302,58 +320,106 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mKeyboardView.setEnabled(false);
     }
 
-    public void showCustomKeyboard( View v ) {
-        if( v!=null ) ((InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+    public void showCustomKeyboard(View v) {
+        if (v != null)
+            ((InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+
 
         mKeyboardView.setVisibility(View.VISIBLE);
         mKeyboardView.setEnabled(true);
-   }
+    }
 
     public boolean isCustomKeyboardVisible() {
         return mKeyboardView.getVisibility() == View.VISIBLE;
     }
 
-    @Override
-    public void onPress(int i) {
 
-    }
-
-    @Override
-    public void onRelease(int i) {
-
-    }
-
-    public void onKey(int keyCode, int[] keyCodes) {
+    public void onKey(int primaryCode, int[] keyCodes) {
 
         View focusCurrent = getActivity().getWindow().getCurrentFocus();
-        if( focusCurrent==null || focusCurrent.getClass()!=EditText.class ) return;
-        EditText edittext = (EditText) focusCurrent;
-        Editable editable = edittext.getText();
-        int start = edittext.getSelectionStart();
-
-        if( keyCode==CodeCancel ) {
-            hideCustomKeyboard();
-        } else if( keyCode==CodeDelete ) {
-            if( editable!=null && start>0 ) editable.delete(start - 1, start);
-        } else {
-            editable.insert(start, Character.toString((char) keyCode));
+        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
+        EditText display = (EditText) focusCurrent;
+        Editable editable = display.getText();
+        int start = display.getSelectionStart();
+        // delete the selection, if chars are selected:
+        int end = display.getSelectionEnd();
+        if (end > start) {
+            editable.delete(start, end);
         }
 
+        // Apply the key to the edittext
+        if (primaryCode == Keyboard.KEYCODE_CANCEL) {
+            hideCustomKeyboard();
+        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
+            if (editable != null && start > 0) editable.delete(start - 1, start);
+        } else if (primaryCode == CodeClear) {
+            if (editable != null) editable.clear();
+        } else if (primaryCode == CodeLeft) {
+            if (start > 0) display.setSelection(start - 1);
+        } else if (primaryCode == CodeRight) {
+            if (start < display.length()) display.setSelection(start + 1);
+        } else if (primaryCode == CodeAllLeft) {
+            display.setSelection(0);
+        } else if (primaryCode == CodeAllRight) {
+            display.setSelection(display.length());
+        } else { // insert character
+            String s = Character.toString((char) primaryCode);
+
+//            editable.insert(start, s);
+            if (DIGITS.contains(s)) { // digit was pressed
+                if (userIsInTheMiddleOfTypingANumber) {
+                    if (s.equals(".") && display.getText().toString().contains(".")) {
+                        // ERROR PREVENTION Eliminate entering multiple decimals
+                    } else {
+                        display.append(s);
+                    }
+                } else {
+                    if (s.equals(".")) {
+                        // ERROR PREVENTION
+                        // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                        // before the decimal
+                        display.setText(0 + s);
+                    } else {
+                        display.setText(s);
+                    }
+                    userIsInTheMiddleOfTypingANumber = true;
+                }
+            } else { // operation was pressed
+                if (userIsInTheMiddleOfTypingANumber) {
+                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                    userIsInTheMiddleOfTypingANumber = false;
+                }
+                mCalculatorBrain.performOperation(s);
+                display.setText(mDF.format(mCalculatorBrain.getResult()));
+            }
+        }
     }
 
     @Override
-    public void onText(CharSequence charSequence) {}
+    public void onText(CharSequence charSequence) {
+    }
 
     @Override
-    public void swipeLeft() {}
+    public void swipeLeft() {
+    }
 
     @Override
-    public void swipeRight() {}
+    public void swipeRight() {
+    }
 
     @Override
-    public void swipeDown() {}
+    public void swipeDown() {
+    }
 
     @Override
-    public void swipeUp() {}
+    public void swipeUp() {
+    }
 
+    @Override
+    public void onPress(int arg0) {
+    }
+
+    @Override
+    public void onRelease(int primaryCode) {
+    }
 }

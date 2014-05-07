@@ -6,22 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_app">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_padding"
-        android:layout_alignParentBottom="true">
-        <ImageButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="15dp"
-            android:background="@drawable/bg_tab_bar"
-            android:id="@+id/directory_button"
-            android:src="@drawable/ico_tab_directory"
-            android:layout_weight="1"
-            android:visibility="invisible"/>
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -259,18 +243,15 @@
 
     </ScrollView>
 
-
     <android.inputmethodservice.KeyboardView
         android:id="@+id/layout_calculator"
         android:background="@drawable/bg_calc"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="70dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:visibility="gone"/>
-
 
 </RelativeLayout>
