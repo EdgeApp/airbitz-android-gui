@@ -84,7 +84,7 @@
                     android:textStyle="bold" />
 
                 <RadioGroup
-                    android:id="@+id/denomination_buttons"
+                    android:id="@+id/settings_denomination_denomination_group"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,6 +107,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
+                        android:checked="true"
                         android:text="@string/settings_denomination_buttons_bitcoin"
                         android:textColor="@android:color/black"
                         android:textSize="13sp" />
