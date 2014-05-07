@@ -180,7 +180,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     }
 
     private boolean getUserLoggedIn() {
-        return true; //mUserLoggedIn;
+        return mUserLoggedIn;
     }
 
     public void setUserLoggedIn(boolean state) {

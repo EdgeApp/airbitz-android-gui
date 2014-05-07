@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
@@ -14,10 +15,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -33,7 +34,11 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class WalletFragment extends Fragment {
+public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChangeListener {
+
+    private static final int UPPER = 0;
+    private static final int LOWER = 1;
+
 
     private ClearableEditText mSearchField;
 
@@ -52,6 +57,9 @@ public class WalletFragment extends Fragment {
 
     private Button mButtonBitcoinBalance;
     private Button mButtonDollarBalance;
+    private Button mButtonMover;
+    private SeekBar mSeekBar;
+
     private Button mWalletNameButton;
 
     private ListView mListTransaction;
@@ -97,11 +105,15 @@ public class WalletFragment extends Fragment {
 
         mExportButton = (ImageButton) view.findViewById(R.id.button_export);
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mButtonMover = (Button) view.findViewById(R.id.button_mover);
+        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
+        mSeekBar.setOnSeekBarChangeListener(this);
+
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mButtonBitcoinBalance = (Button) view.findViewById(R.id.button_bitcoinbalance);
-        mButtonDollarBalance = (Button) view.findViewById(R.id.button_dollarbalance);
+        mButtonBitcoinBalance = (Button) view.findViewById(R.id.back_button_top);
+        mButtonDollarBalance = (Button) view.findViewById(R.id.back_button_bottom);
         mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
@@ -176,6 +188,52 @@ public class WalletFragment extends Fragment {
         //TODO get actual wallet balance
         return "120.015";
     }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        float heightDiff = mButtonBitcoinBalance.getHeight();
+        float moveX = heightDiff*progress/seekBar.getMax();
+        RelativeLayout.LayoutParams absParams =
+                (RelativeLayout.LayoutParams)mButtonMover.getLayoutParams();
+
+        absParams.leftMargin = 0;
+        absParams.topMargin = (int) -moveX;
+
+        mButtonMover.setLayoutParams(absParams);
+    }
+
+    public void onStartTrackingTouch(SeekBar seekBar) { }
+
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(seekBar.getProgress() > seekBar.getMax()/2) {
+            seekBar.setProgress(seekBar.getMax());
+            setSwitchSelection(UPPER);
+        } else {
+            seekBar.setProgress(0);
+            setSwitchSelection(LOWER);
+        }
+        onProgressChanged(seekBar, seekBar.getProgress(), true);
+    }
+
+    private void setSwitchSelection(int selection) {
+        Drawable[] drawables;
+        switch(selection) {
+            case UPPER:
+                mButtonMover.setText(mButtonBitcoinBalance.getText());
+                drawables = mButtonBitcoinBalance.getCompoundDrawables();
+                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                break;
+            case LOWER:
+                mButtonMover.setText(mButtonDollarBalance.getText());
+                drawables = mButtonDollarBalance.getCompoundDrawables();
+                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                break;
+            default:
+                break;
+        }
+    }
+
 
     private List<AccountTransaction> getTransactions(String name) {
         //TODO replace with API call
