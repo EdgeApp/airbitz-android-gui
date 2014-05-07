@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_balance"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="0dp"
+    android:background="@drawable/rounded_edge_black_transparent_30"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/back_button_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ico_coin_btc_dark"
+        android:drawableRight="@drawable/ico_usd_dark"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
+        android:text="110.015"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/back_button_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/back_button_top"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/ico_coin_usd"
+        android:drawableRight="@drawable/ico_usd_dark"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
+        android:text="1050.67"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/button_mover"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/back_button_top"
+        android:background="@drawable/btn_green"
+        android:drawableLeft="@drawable/ico_coin_btc"
+        android:drawableRight="@drawable/ico_usd_white"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
+        android:text="1050.67"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <com.airbitz.widgets.VerticalSeekBar
+        android:id="@+id/seekbar_slider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/back_button_bottom"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@android:color/transparent"
+        android:thumb="@null" />
+
+</RelativeLayout>

@@ -38,6 +38,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
     private Button mButtonMover;
+    private SeekBar mSeekBar;
+
 
     private ListView mLatestWalletListView;
 
@@ -45,8 +47,6 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private ImageButton mAddButton;
 
     private TextView mTitleTextView;
-
-    private SeekBar mSeekBar;
 
     private WalletAdapter mLatestWalletAdapter;
 
@@ -73,8 +73,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestWalletList);
 
-        mBitCoinBalanceButton = (Button) view.findViewById(R.id.button_bitcoinbalance);
-        mDollarBalanceButton = (Button) view.findViewById(R.id.button_dollarbalance);
+        mBitCoinBalanceButton = (Button) view.findViewById(R.id.back_button_top);
+        mDollarBalanceButton = (Button) view.findViewById(R.id.back_button_bottom);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
@@ -214,7 +214,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             }
         });
 
-        mSeekBar = (SeekBar) view.findViewById(R.id.button_slider);
+        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
         mSeekBar.setOnSeekBarChangeListener(this);
 
         return view;
