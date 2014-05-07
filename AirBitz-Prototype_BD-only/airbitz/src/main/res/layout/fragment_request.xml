@@ -160,7 +160,7 @@
                     android:paddingTop="5dp"
                     android:layout_marginBottom="6dp"
                     android:textSize="20sp"
-                    android:drawableRight="@drawable/ico_btc"/>
+                    android:drawableRight="@drawable/ico_btc_white"/>
                 <EditText
                     android:id="@+id/edittext_dollar"
                     android:layout_below="@id/edittext_btc"
