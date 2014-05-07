@@ -1,78 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="100.00%p"
-    android:keyHeight="5.00%p"
+    android:keyWidth="20.00%p"
+    android:keyHeight="10.00%p"
     >
 
     <Row>
-        <Key android:codes="49" android:keyIcon="@drawable/btn_calc_1" android:keyWidth="15.00%p" android:keyEdgeFlags="left" />
-        <Key android:codes="50" android:keyIcon="@drawable/btn_calc_2" android:keyWidth="15.00%p" />
-        <Key android:codes="51" android:keyIcon="@drawable/btn_calc_3" android:keyWidth="15.00%p" />
-        <Key android:codes="43" android:keyIcon="@drawable/btn_calc_plus" android:keyWidth="15.00%p"  />
-        <Key android:codes="37" android:keyIcon="@drawable/btn_calc_percent" android:keyWidth="15.00%p"/>
+        <Key android:codes="49" android:keyIcon="@drawable/btn_calc_1"/>
+        <Key android:codes="50" android:keyIcon="@drawable/btn_calc_2" />
+        <Key android:codes="51" android:keyIcon="@drawable/btn_calc_3"/>
+        <Key android:codes="43" android:keyIcon="@drawable/btn_calc_plus"/>
+        <Key android:codes="37" android:keyIcon="@drawable/btn_calc_percent"/>
     </Row>
     <Row>
-        <Key android:codes="52"    android:keyIcon="@drawable/btn_calc_4" android:keyWidth="15.00%p" android:keyEdgeFlags="left" />
-        <Key android:codes="53"    android:keyIcon="@drawable/btn_calc_5" android:keyWidth="15.00%p" />
-        <Key android:codes="54"    android:keyIcon="@drawable/btn_calc_6" android:keyWidth="15.00%p" />
-        <Key android:codes="45"    android:keyIcon="@drawable/btn_calc_minus" android:keyWidth="15.00%p" />
-        <Key android:codes="42"    android:keyIcon="@drawable/btn_calc_multi" android:keyWidth="15.00%p"/>
+        <Key android:codes="52" android:keyIcon="@drawable/btn_calc_4"/>
+        <Key android:codes="53" android:keyIcon="@drawable/btn_calc_5"/>
+        <Key android:codes="54" android:keyIcon="@drawable/btn_calc_6"/>
+        <Key android:codes="45" android:keyIcon="@drawable/btn_calc_minus"/>
+        <Key android:codes="42" android:keyIcon="@drawable/btn_calc_multi"/>
     </Row>
     <Row>
-        <Key android:codes="55"    android:keyIcon="@drawable/btn_calc_7" android:keyWidth="15.00%p" android:keyEdgeFlags="left" />
-        <Key android:codes="56"    android:keyIcon="@drawable/btn_calc_8" android:keyWidth="15.00%p" />
-        <Key android:codes="57"    android:keyIcon="@drawable/btn_calc_9" android:keyWidth="15.00%p" />
-        <Key android:codes="47"    android:keyIcon="@drawable/btn_calc_division" android:keyWidth="15.00%p" />
-        <Key android:codes="61"    android:keyIcon="@drawable/btn_calc_equals" android:keyWidth="15.00%p" />
+        <Key android:codes="55" android:keyIcon="@drawable/btn_calc_7"/>
+        <Key android:codes="56" android:keyIcon="@drawable/btn_calc_8"/>
+        <Key android:codes="57" android:keyIcon="@drawable/btn_calc_9"/>
+        <Key android:codes="47" android:keyIcon="@drawable/btn_calc_division"/>
+        <Key android:codes="61" android:keyIcon="@drawable/btn_calc_equals"/>
     </Row>
     <Row>
-        <Key android:codes="-5"    android:keyIcon="@drawable/btn_calc_c" android:keyWidth="15.00%p" android:keyEdgeFlags="left" />
-        <Key android:codes="48"    android:keyIcon="@drawable/btn_calc_0" android:keyWidth="15.00%p" />
-        <Key android:codes="46"    android:keyIcon="@drawable/btn_calc_dot" android:keyWidth="15.00%p" />
-        <Key android:codes="-5"    android:keyIcon="@drawable/btn_calc_back" android:keyWidth="15.00%p" />
-        <Key android:codes="-3"    android:keyIcon="@drawable/btn_calc_done" android:keyWidth="15.00%p" />
+        <Key android:codes="-5" android:keyIcon="@drawable/btn_calc_c"/>
+        <Key android:codes="48" android:keyIcon="@drawable/btn_calc_0"/>
+        <Key android:codes="46" android:keyIcon="@drawable/btn_calc_dot"/>
+        <Key android:codes="-5" android:keyIcon="@drawable/btn_calc_back"/>
+        <Key android:codes="-3" android:keyIcon="@drawable/btn_calc_done"/>
     </Row>
 </Keyboard>
-
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:keyWidth="12.50%p"-->
-    <!--android:keyHeight="10%p" >-->
-
-    <!--<Row>-->
-        <!--<Key android:codes="55"    android:keyLabel="7" android:keyEdgeFlags="left" />-->
-        <!--<Key android:codes="56"    android:keyLabel="8" />-->
-        <!--<Key android:codes="57"    android:keyLabel="9" />-->
-        <!--<Key android:codes="65"    android:keyLabel="A" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="66"    android:keyLabel="B" />-->
-        <!--<Key android:codes="-5"    android:keyIcon="@drawable/btn_calc_back" android:isRepeatable="true" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="55006" android:keyLabel="CLR" android:keyEdgeFlags="right"/>-->
-    <!--</Row>-->
-    <!--<Row>-->
-        <!--<Key android:codes="52"    android:keyLabel="4" android:keyEdgeFlags="left"  />-->
-        <!--<Key android:codes="53"    android:keyLabel="5" />-->
-        <!--<Key android:codes="54"    android:keyLabel="6" />-->
-        <!--<Key android:codes="67"    android:keyLabel="C" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="68"    android:keyLabel="D" />-->
-        <!--<Key android:codes="55002" android:keyIcon="@drawable/btn_calc_back" android:isRepeatable="true" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="55003" android:keyIcon="@drawable/btn_calc_back" android:isRepeatable="true" android:keyEdgeFlags="right" />-->
-    <!--</Row>-->
-    <!--<Row>-->
-        <!--<Key android:codes="49"    android:keyLabel="1"  android:keyEdgeFlags="left" />-->
-        <!--<Key android:codes="50"    android:keyLabel="2" />-->
-        <!--<Key android:codes="51"    android:keyLabel="3" />-->
-        <!--<Key android:codes="69"    android:keyLabel="E" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="70"    android:keyLabel="F" />-->
-        <!--<Key android:codes="55001" android:keyIcon="@drawable/btn_calc_back" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="55004" android:keyIcon="@drawable/btn_calc_back" android:keyEdgeFlags="right" />-->
-    <!--</Row>-->
-    <!--<Row>-->
-        <!--<Key android:codes="48"    android:keyLabel="0" android:keyWidth="25%p" android:horizontalGap="6.25%p" android:keyEdgeFlags="left" />-->
-        <!--<Key android:codes="-3"    android:keyIcon="@drawable/btn_calc_back" android:keyWidth="25%p" android:horizontalGap="12.50%p" />-->
-        <!--<Key android:codes="55000" android:keyLabel="PREV" android:horizontalGap="6.25%p" />-->
-        <!--<Key android:codes="55005" android:keyLabel="NEXT" android:keyEdgeFlags="right" />-->
-    <!--</Row>-->
-<!--</Keyboard>-->
-
-
