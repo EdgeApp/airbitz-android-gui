@@ -36,9 +36,9 @@ import java.util.List;
  */
 public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChangeListener {
 
-    private static final int UPPER = 0;
-    private static final int LOWER = 1;
-
+    private static final int BTC = 0;
+    private static final int CURRENCY = 1;
+    private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private ClearableEditText mSearchField;
 
@@ -193,12 +193,12 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     public void onProgressChanged(SeekBar seekBar, int progress,
                                   boolean fromUser) {
         float heightDiff = mButtonBitcoinBalance.getHeight();
-        float moveX = heightDiff*progress/seekBar.getMax();
+        float moveX = heightDiff*(seekBar.getMax()-progress)/seekBar.getMax();
         RelativeLayout.LayoutParams absParams =
                 (RelativeLayout.LayoutParams)mButtonMover.getLayoutParams();
 
         absParams.leftMargin = 0;
-        absParams.topMargin = (int) -moveX;
+        absParams.topMargin = (int) moveX;
 
         mButtonMover.setLayoutParams(absParams);
     }
@@ -208,31 +208,39 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     public void onStopTrackingTouch(SeekBar seekBar) {
         if(seekBar.getProgress() > seekBar.getMax()/2) {
             seekBar.setProgress(seekBar.getMax());
-            setSwitchSelection(UPPER);
+            setSwitchSelection(BTC);
         } else {
             seekBar.setProgress(0);
-            setSwitchSelection(LOWER);
+            setSwitchSelection(CURRENCY);
         }
         onProgressChanged(seekBar, seekBar.getProgress(), true);
     }
 
     private void setSwitchSelection(int selection) {
-        Drawable[] drawables;
+
         switch(selection) {
-            case UPPER:
+            case BTC:
+                onProgressChanged(mSeekBar, 100, true);
                 mButtonMover.setText(mButtonBitcoinBalance.getText());
-                drawables = mButtonBitcoinBalance.getCompoundDrawables();
-                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_coin_btc_white), null,
+                        getResources().getDrawable(R.drawable.ico_btc_white), null);
                 break;
-            case LOWER:
+            case CURRENCY:
+                onProgressChanged(mSeekBar, 0, true);
                 mButtonMover.setText(mButtonDollarBalance.getText());
-                drawables = mButtonDollarBalance.getCompoundDrawables();
-                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                String left = "ico_coin_"+mCurrencyResourceString+"_white";
+                String right = "ico_"+mCurrencyResourceString+"_white";
+                int leftID = getResources().getIdentifier(left,"drawable",getActivity().getPackageName());
+                int rightID = getResources().getIdentifier(right,"drawable",getActivity().getPackageName());
+                Drawable leftD = getResources().getDrawable(leftID);
+                Drawable rightD = getResources().getDrawable(rightID);
+                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(leftD, null, rightD, null);
                 break;
             default:
                 break;
         }
     }
+
 
 
     private List<AccountTransaction> getTransactions(String name) {

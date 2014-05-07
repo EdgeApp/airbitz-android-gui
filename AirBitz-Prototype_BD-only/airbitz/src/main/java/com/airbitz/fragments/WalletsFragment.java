@@ -32,8 +32,9 @@ import java.util.List;
  */
 public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
 
-    private static final int UPPER = 0;
-    private static final int LOWER = 1;
+    private static final int BTC = 0;
+    private static final int CURRENCY = 1;
+    private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
@@ -100,8 +101,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
                 mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
 
-                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc, 0, R.drawable.ico_btc, 0);
-                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd, 0, R.drawable.ico_usd, 0);
+                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_white, 0, R.drawable.ico_btc_white, 0);
+                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_dark, 0, R.drawable.ico_usd_dark, 0);
 
                 mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
                 mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
@@ -142,8 +143,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 mBitCoinBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
                 mDollarBalanceButton.setBackgroundResource(R.drawable.btn_green);
 
-                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_dark, 0, R.drawable.ico_btc, 0);
-                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_dollar_white, 0, R.drawable.ico_usd_white, 0);
+                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_dark, 0, R.drawable.ico_btc_white, 0);
+                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_white, 0, R.drawable.ico_usd_white, 0);
 
                 mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
                 mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
@@ -182,8 +183,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 //        mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
 //        mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
 //
-//        mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc, 0, R.drawable.ico_btc, 0);
-//        mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd, 0, R.drawable.ico_usd, 0);
+//        mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_white, 0, R.drawable.ico_btc_white, 0);
+//        mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_dark, 0, R.drawable.ico_usd_dark, 0);
 //
 //        mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
 //        mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
@@ -244,12 +245,12 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void onProgressChanged(SeekBar seekBar, int progress,
                                   boolean fromUser) {
         float heightDiff = mBitCoinBalanceButton.getHeight();
-        float moveX = heightDiff*progress/seekBar.getMax();
+        float moveX = heightDiff*(seekBar.getMax()-progress)/seekBar.getMax();
         RelativeLayout.LayoutParams absParams =
                 (RelativeLayout.LayoutParams)mButtonMover.getLayoutParams();
 
         absParams.leftMargin = 0;
-        absParams.topMargin = (int) -moveX;
+        absParams.topMargin = (int) moveX;
 
         mButtonMover.setLayoutParams(absParams);
     }
@@ -259,26 +260,33 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void onStopTrackingTouch(SeekBar seekBar) {
         if(seekBar.getProgress() > seekBar.getMax()/2) {
             seekBar.setProgress(seekBar.getMax());
-            setSwitchSelection(UPPER);
+            setSwitchSelection(BTC);
         } else {
             seekBar.setProgress(0);
-            setSwitchSelection(LOWER);
+            setSwitchSelection(CURRENCY);
         }
         onProgressChanged(seekBar, seekBar.getProgress(), true);
     }
 
     private void setSwitchSelection(int selection) {
-        Drawable[] drawables;
+
         switch(selection) {
-            case UPPER:
+            case BTC:
+                onProgressChanged(mSeekBar, 100, true);
                 mButtonMover.setText(mBitCoinBalanceButton.getText());
-                drawables = mBitCoinBalanceButton.getCompoundDrawables();
-                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_coin_btc_white), null,
+                        getResources().getDrawable(R.drawable.ico_btc_white), null);
                break;
-            case LOWER:
+            case CURRENCY:
+                onProgressChanged(mSeekBar, 0, true);
                 mButtonMover.setText(mDollarBalanceButton.getText());
-                drawables = mDollarBalanceButton.getCompoundDrawables();
-                mButtonMover.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                String left = "ico_coin_"+mCurrencyResourceString+"_white";
+                String right = "ico_"+mCurrencyResourceString+"_white";
+                int leftID = getResources().getIdentifier(left,"drawable",getActivity().getPackageName());
+                int rightID = getResources().getIdentifier(right,"drawable",getActivity().getPackageName());
+                Drawable leftD = getResources().getDrawable(leftID);
+                Drawable rightD = getResources().getDrawable(rightID);
+                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(leftD, null, rightD, null);
                 break;
             default:
                 break;
