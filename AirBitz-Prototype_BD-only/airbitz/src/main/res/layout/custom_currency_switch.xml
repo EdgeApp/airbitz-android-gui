@@ -57,6 +57,10 @@
         android:paddingRight="15dp"
         android:paddingTop="5dp"
         android:text="1050.67"
+        android:shadowColor="#000000"
+        android:shadowDx="-1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold" />
