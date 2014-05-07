@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="20.00%p"
+    android:keyWidth="30.00%p"
     android:keyHeight="10.00%p"
+    android:horizontalGap="0dp"
+    android:verticalGap="0dp"
     >
-
     <Row>
-        <Key android:codes="49" android:keyIcon="@drawable/btn_calc_1"/>
+        <Key android:codes="49" android:keyIcon="@drawable/btn_calc_1" />
         <Key android:codes="50" android:keyIcon="@drawable/btn_calc_2" />
         <Key android:codes="51" android:keyIcon="@drawable/btn_calc_3"/>
         <Key android:codes="43" android:keyIcon="@drawable/btn_calc_plus"/>
