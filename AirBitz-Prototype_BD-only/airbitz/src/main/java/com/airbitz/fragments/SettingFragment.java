@@ -1,8 +1,10 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -26,10 +29,26 @@ import com.airbitz.utils.Common;
  */
 public class SettingFragment extends Fragment {
 
+    public static final String SETTINGS_NAME = "Settings";
+    public static final String DENOMINATION = "Denomination";
+    public static final String NAME_SWITCH = "SendName";
+    public static final String FIRST_NAME = "FirstName";
+    public static final String LAST_NAME = "LastName";
+    public static final String NICK_NAME = "Nickname";
+    public static final String AUTO_LOGOFF = "Logoff";
+    public static final String LANGUAGE = "Language";
+    public static final String CURRENCY = "Currency";
+    public static final String USD_EXCHANGE = "USD_EXCHANGE";
+    public static final String CANADIAN_EXCHANGE = "CANADIAN_EXCHANGE";
+    public static final String EURO_EXCHANGE = "EURO_EXCHANGE";
+    public static final String PESO_EXCHANGE = "PESO_EXCHANGE";
+    public static final String YUAN_EXCHANGE = "YUAN_EXCHANGE";
+
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private TextView mTitleTextView;
 
+    private RadioGroup mDenominationGroup;
     private RadioButton mBitcoinButton;
     private RadioButton mmBitcoinButton;
     private RadioButton muBitcoinButton;
@@ -59,11 +78,25 @@ public class SettingFragment extends Fragment {
     private int mTextSelection;
     private String[] mAutoLogoffStrings = { "Day", "Hour", "Minute" };
 
+    private String[] mLanguageItems;
+    private String[] mCurrencyItems;
+    private String[] mUSDExchangeItems;
+    private String[] mCanadianExchangeItems;
+    private String[] mEuroExchangeItems;
+    private String[] mPesoExchangeItems;
+    private String[] mYuanExchangeItems;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mLanguageItems = getResources().getStringArray(R.array.language_array);
+        mCurrencyItems = getResources().getStringArray(R.array.default_currency_array);
+        mUSDExchangeItems = getResources().getStringArray(R.array.usd_exchange_array);
+        mCanadianExchangeItems = getResources().getStringArray(R.array.canadian_exchange_array);
+        mEuroExchangeItems = getResources().getStringArray(R.array.euro_exchange_array);
+        mPesoExchangeItems = getResources().getStringArray(R.array.peso_exchange_array);
+        mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
     }
 
     @Override
@@ -75,10 +108,10 @@ public class SettingFragment extends Fragment {
         mTitleTextView = (TextView) view.findViewById(R.id.settings_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
+        mDenominationGroup = (RadioGroup) view.findViewById(R.id.settings_denomination_denomination_group);
         mBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
         mmBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
         muBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_ubitcoin);
-        mBitcoinButton.setChecked(true);
 
         mChangePasswordButton = (Button) view.findViewById(R.id.settings_button_change_password);
         mChangePINButton = (Button) view.findViewById(R.id.settings_button_pin);
@@ -99,12 +132,6 @@ public class SettingFragment extends Fragment {
         mPesoButton = (Button) view.findViewById(R.id.settings_button_peso);
         mYuanButton = (Button) view.findViewById(R.id.settings_button_yuan);
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                finish();
-            }
-        });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,56 +176,49 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] language_items = getResources().getStringArray(R.array.language_array);
-                showSelectorDialog(mLanguageButton, language_items, "Select an item");
+                showSelectorDialog(mLanguageButton, mLanguageItems, "Select an item");
             }
         });
 
         mCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] currency_items = getResources().getStringArray(R.array.default_currency_array);
-                showSelectorDialog(mCurrencyButton, currency_items, "Select an item");
+                showSelectorDialog(mCurrencyButton, mCurrencyItems, "Select an item");
             }
         });
 
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] usd_items = getResources().getStringArray(R.array.usd_exchange_array);
-                showSelectorDialog(mUSDollarButton, usd_items, "Select an item");
+                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item");
             }
         });
 
         mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] canadian_items = getResources().getStringArray(R.array.canadian_exchange_array);
-                showSelectorDialog(mCanadianDollarButton, canadian_items, "Select an item");
+                showSelectorDialog(mCanadianDollarButton, mCanadianExchangeItems, "Select an item");
             }
         });
 
         mEuroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] euro_items = getResources().getStringArray(R.array.euro_exchange_array);
-                showSelectorDialog(mEuroButton, euro_items, "Select an item");
+                showSelectorDialog(mEuroButton, mEuroExchangeItems, "Select an item");
             }
         });
 
         mPesoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] peso_items = getResources().getStringArray(R.array.peso_exchange_array);
-                showSelectorDialog(mPesoButton, peso_items, "Select an item");
+                showSelectorDialog(mPesoButton, mPesoExchangeItems, "Select an item");
             }
         });
 
         mYuanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] yuan_items = getResources().getStringArray(R.array.yuan_exchange_array);
-                showSelectorDialog(mYuanButton, yuan_items, "Select an item");
+                showSelectorDialog(mYuanButton, mYuanExchangeItems, "Select an item");
             }
         });
 
@@ -304,12 +324,72 @@ public class SettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //TODO load state here
+        loadPreferences();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        savePreferences();
     }
+
+    private void loadPreferences() {
+        Activity activity = getActivity();
+        if(activity!=null) {
+            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
+            int selected = pref.getInt(DENOMINATION, 0);
+            switch(selected) {
+                case 0:
+                    mBitcoinButton.setChecked(true);
+                    break;
+                case 1:
+                    mmBitcoinButton.setChecked(true);
+                    break;
+                case 2:
+                    muBitcoinButton.setChecked(true);
+                    break;
+                default:
+                    break;
+            }
+            mSendNameSwitch.setChecked(pref.getBoolean(NAME_SWITCH, false));
+            mFirstEditText.setText(pref.getString(FIRST_NAME, ""));
+            mLastEditText.setText(pref.getString(LAST_NAME, ""));
+            mNicknameEditText.setText(pref.getString(NICK_NAME, ""));
+            mAutoLogoffButton.setText(pref.getString(AUTO_LOGOFF, "1 Hour"));
+            mLanguageButton.setText(pref.getString(LANGUAGE, mLanguageItems[0]));
+            mCurrencyButton.setText(pref.getString(CURRENCY, mCurrencyItems[0]));
+            mUSDollarButton.setText(pref.getString(USD_EXCHANGE, mUSDExchangeItems[0]));
+            mCanadianDollarButton.setText(pref.getString(CANADIAN_EXCHANGE, mCanadianExchangeItems[0]));
+            mEuroButton.setText(pref.getString(EURO_EXCHANGE, mEuroExchangeItems[0]));
+            mPesoButton.setText(pref.getString(PESO_EXCHANGE, mPesoExchangeItems[0]));
+            mYuanButton.setText(pref.getString(YUAN_EXCHANGE, mYuanExchangeItems[0]));
+        }
+    }
+
+    private void savePreferences() {
+        Activity activity = getActivity();
+        if(activity!=null) {
+            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            int selected = 0;
+            if(mmBitcoinButton.isChecked()) selected=1;
+            else if(muBitcoinButton.isChecked()) selected=2;
+            editor.putInt(DENOMINATION, selected);
+            editor.putBoolean(NAME_SWITCH, mSendNameSwitch.isChecked());
+            editor.putString(FIRST_NAME, mFirstEditText.getText().toString());
+            editor.putString(LAST_NAME, mLastEditText.getText().toString());
+            editor.putString(NICK_NAME, mNicknameEditText.getText().toString());
+            editor.putString(AUTO_LOGOFF, mAutoLogoffButton.getText().toString());
+            editor.putString(LANGUAGE, mLanguageButton.getText().toString());
+            editor.putString(CURRENCY, mCurrencyButton.getText().toString());
+            editor.putString(USD_EXCHANGE, mUSDollarButton.getText().toString());
+            editor.putString(CANADIAN_EXCHANGE, mCanadianDollarButton.getText().toString());
+            editor.putString(EURO_EXCHANGE, mEuroButton.getText().toString());
+            editor.putString(PESO_EXCHANGE, mPesoButton.getText().toString());
+            editor.putString(YUAN_EXCHANGE, mYuanButton.getText().toString());
+            editor.commit();
+        }
+    }
+
 
 }
