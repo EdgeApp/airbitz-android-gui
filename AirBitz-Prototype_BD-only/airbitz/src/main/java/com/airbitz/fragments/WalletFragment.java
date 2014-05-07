@@ -26,6 +26,7 @@ import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
+import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     private List<AccountTransaction> mAccountTransactions;
 
     private String mWalletName;
+    private Wallet mWallet;
     private AirbitzAPI mAPI;
 
 
@@ -89,6 +91,11 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mAccountTransactions = mAPI.getTransactions(mWalletName);
+        mWallet = null;
+        for(Wallet w: mAPI.getWallets()) {
+            if(w.getName().contains(mWalletName))
+                mWallet = w;
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -122,7 +129,7 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mWalletNameButton.setText(mWalletName);
-        mButtonDollarBalance.setText(getWalletBalance(mWalletName));
+        mButtonDollarBalance.setText(getWalletBalance());
         mWalletNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +183,7 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Common.showHelpInfo(TransactionFragment.this, "Info", "Business directory info");
+                Common.showHelpInfo(getActivity(), "Info", "Wallet info");
             }
         });
 
@@ -184,9 +191,8 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     }
 
     // AirbitzAPI calls here
-    private String getWalletBalance(String name) {
-        //TODO get actual wallet balance
-        return "120.015";
+    private String getWalletBalance() {
+        return mWallet.getAmount();
     }
 
     @Override
@@ -239,17 +245,5 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
             default:
                 break;
         }
-    }
-
-
-
-    private List<AccountTransaction> getTransactions(String name) {
-        //TODO replace with API call
-        List<AccountTransaction> list = new ArrayList<AccountTransaction>();
-        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "-B5.000"));
-        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "-B65.000"));
-        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "-B95.000"));
-
-        return list;
     }
 }
