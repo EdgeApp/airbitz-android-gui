@@ -328,7 +328,8 @@
                         android:layout_marginTop="5dp"
                         android:hint="@string/settings_edit_first_name"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -352,7 +353,8 @@
                         android:paddingTop="8dp"
                         android:hint="@string/settings_edit_last_name"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:singleLine="true" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -376,7 +378,8 @@
                         android:paddingTop="8dp"
                         android:hint="@string/settings_edit_nick_name"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:singleLine="true" />
 
                 </LinearLayout>
 
