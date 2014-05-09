@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -18,7 +17,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,18 +28,17 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
-import java.security.Key;
 import java.text.DecimalFormat;
 
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends Fragment implements KeyboardView.OnKeyboardActionListener {
+public class RequestFragment extends Fragment implements View.OnClickListener {
 
+    private View mView;
     private EditText mBitcoinField;
     private EditText mDollarField;
 
@@ -86,6 +83,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
     public final static int CodeConv = 55011; // Conversions like round or degrees
     public final static int CodeTrig = 55012;
 
+    private float mBTCtoUSDConversion = 450.0f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +93,7 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
+        mView = view;
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -105,15 +104,21 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 
         mScrollView = (ScrollView) view.findViewById(R.id.layout_amount);
 
-        mKeyboard = new Keyboard(this.getActivity(), R.xml.layout_keyboard);
-        mKeyboardView = (KeyboardView) view.findViewById(R.id.layout_calculator);
         mCalculatorBrain = new CalculatorBrain();
+        mDF.setMinimumFractionDigits(0);
+        mDF.setMaximumFractionDigits(6);
+        mDF.setMinimumIntegerDigits(1);
+        mDF.setMaximumIntegerDigits(8);
 
-        mKeyboardView.setKeyboard(mKeyboard);
-        mKeyboardView.setEnabled(true);
-        mKeyboardView.setPreviewEnabled(false);
-        mKeyboardView.setOnKeyboardActionListener(RequestFragment.this);
-        mKeyboardView.setBackgroundResource(R.drawable.bg_calc);
+//        mKeyboardView = ((NavigationActivity) getActivity()).getCalculatorView(); //(KeyboardView) view.findViewById(R.id.layout_calculator);
+////        mKeyboardView.setEnabled(true);
+//        mKeyboard = new Keyboard(this.getActivity(), R.xml.layout_keyboard);
+//        mKeyboardView.setKeyboard(mKeyboard);
+//        mKeyboardView.setPreviewEnabled(false);
+//        mKeyboardView.setOnKeyboardActionListener(RequestFragment.this);
+//        mKeyboardView.setBackgroundResource(R.drawable.bg_calc);
+
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
 
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
 
@@ -175,17 +180,6 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
             }
         });
 
-        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    showCustomKeyboard(view);
-                } else {
-                    hideCustomKeyboard();
-                }
-            }
-        });
-
         mQRCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,6 +196,17 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
                 clipboard.setPrimaryClip(clip);
 
                 return true;
+            }
+        });
+
+        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    showCustomKeyboard(view);
+                } else {
+                    hideCustomKeyboard();
+                }
             }
         });
 
@@ -235,7 +240,6 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
         mBitcoinField.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
@@ -290,6 +294,93 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 //
 //    }
 
+    private void setupCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        View focusCurrent = getActivity().getWindow().getCurrentFocus();
+        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
+        EditText display = (EditText) focusCurrent;
+        Editable editable = display.getText();
+        int start = display.getSelectionStart();
+        // delete the selection, if chars are selected:
+        int end = display.getSelectionEnd();
+        if (end > start) {
+            editable.delete(start, end);
+        }
+        String buttonTag = v.getTag().toString();
+
+        if(buttonTag.equals("done")) {
+            hideCustomKeyboard();
+        } else if (DIGITS.contains(buttonTag)) {
+
+            // digit was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+
+                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
+                    // ERROR PREVENTION
+                    // Eliminate entering multiple decimals
+                } else {
+                    display.append(buttonTag);
+                }
+
+            } else {
+
+                if (buttonTag.equals(".")) {
+                    // ERROR PREVENTION
+                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                    // before the decimal
+                    display.setText(0 + buttonTag);
+                } else {
+                    display.setText(buttonTag);
+                }
+
+                userIsInTheMiddleOfTypingANumber = true;
+            }
+
+        } else {
+            // operation was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+
+                mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                userIsInTheMiddleOfTypingANumber = false;
+            }
+
+            mCalculatorBrain.performOperation(buttonTag);
+            display.setText(mDF.format(mCalculatorBrain.getResult()));
+                if(buttonTag.equals("=")) {
+                    if(display.equals(mBitcoinField)) {
+                        mDollarField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
+                    } else {
+                        mBitcoinField.setText(mDF.format(getBTCfromUSD(mCalculatorBrain.getResult())));
+                    }
+                }
+        }
+
+    }
 
     public void showQRCodePopUpDialog() {
         final Dialog dialog = new Dialog(getActivity());
@@ -315,111 +406,120 @@ public class RequestFragment extends Fragment implements KeyboardView.OnKeyboard
 //            this.finish();
 //    }
 
+    private double getUSDfromBTC(double value) {
+        return value*mBTCtoUSDConversion;
+    }
+
+    private double getBTCfromUSD(double value) {
+        return value/mBTCtoUSDConversion;
+    }
+
     public void hideCustomKeyboard() {
-        mKeyboardView.setVisibility(View.GONE);
-        mKeyboardView.setEnabled(false);
+        ((NavigationActivity) getActivity()).hideCalculator();
     }
 
     public void showCustomKeyboard(View v) {
-        if (v != null)
-            ((InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-
-        mKeyboardView.setVisibility(View.VISIBLE);
-        mKeyboardView.setEnabled(true);
+        ((NavigationActivity) getActivity()).showCalculator();
     }
 
     public boolean isCustomKeyboardVisible() {
         return mKeyboardView.getVisibility() == View.VISIBLE;
     }
 
-
-    public void onKey(int primaryCode, int[] keyCodes) {
-
-        View focusCurrent = getActivity().getWindow().getCurrentFocus();
-        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
-        EditText display = (EditText) focusCurrent;
-        Editable editable = display.getText();
-        int start = display.getSelectionStart();
-        // delete the selection, if chars are selected:
-        int end = display.getSelectionEnd();
-        if (end > start) {
-            editable.delete(start, end);
-        }
-
-        // Apply the key to the edittext
-        if (primaryCode == Keyboard.KEYCODE_CANCEL) {
-            hideCustomKeyboard();
-        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
-            if (editable != null && start > 0) editable.delete(start - 1, start);
-        } else if (primaryCode == CodeClear) {
-            if (editable != null) editable.clear();
-        } else if (primaryCode == CodeLeft) {
-            if (start > 0) display.setSelection(start - 1);
-        } else if (primaryCode == CodeRight) {
-            if (start < display.length()) display.setSelection(start + 1);
-        } else if (primaryCode == CodeAllLeft) {
-            display.setSelection(0);
-        } else if (primaryCode == CodeAllRight) {
-            display.setSelection(display.length());
-        } else { // insert character
-            String s = Character.toString((char) primaryCode);
-
-//            editable.insert(start, s);
-            if (DIGITS.contains(s)) { // digit was pressed
-                if (userIsInTheMiddleOfTypingANumber) {
-                    if (s.equals(".") && display.getText().toString().contains(".")) {
-                        // ERROR PREVENTION Eliminate entering multiple decimals
-                    } else {
-                        display.append(s);
-                    }
-                } else {
-                    if (s.equals(".")) {
-                        // ERROR PREVENTION
-                        // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
-                        // before the decimal
-                        display.setText(0 + s);
-                    } else {
-                        display.setText(s);
-                    }
-                    userIsInTheMiddleOfTypingANumber = true;
-                }
-            } else { // operation was pressed
-                if (userIsInTheMiddleOfTypingANumber) {
-                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
-                    userIsInTheMiddleOfTypingANumber = false;
-                }
-                mCalculatorBrain.performOperation(s);
-                display.setText(mDF.format(mCalculatorBrain.getResult()));
-            }
-        }
-    }
-
-    @Override
-    public void onText(CharSequence charSequence) {
-    }
-
-    @Override
-    public void swipeLeft() {
-    }
-
-    @Override
-    public void swipeRight() {
-    }
-
-    @Override
-    public void swipeDown() {
-    }
-
-    @Override
-    public void swipeUp() {
-    }
-
-    @Override
-    public void onPress(int arg0) {
-    }
-
-    @Override
-    public void onRelease(int primaryCode) {
-    }
+//
+//    public void onKey(int primaryCode, int[] keyCodes) {
+//
+//        View focusCurrent = getActivity().getWindow().getCurrentFocus();
+//        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
+//        EditText display = (EditText) focusCurrent;
+//        Editable editable = display.getText();
+//        int start = display.getSelectionStart();
+//        // delete the selection, if chars are selected:
+//        int end = display.getSelectionEnd();
+//        if (end > start) {
+//            editable.delete(start, end);
+//        }
+//
+//        // Apply the key to the edittext
+//        if (primaryCode == Keyboard.KEYCODE_CANCEL) {
+//            hideCustomKeyboard();
+//        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
+//            if (editable != null && start > 0) editable.delete(start - 1, start);
+//        } else if (primaryCode == CodeClear) {
+//            if (editable != null) editable.clear();
+//        } else if (primaryCode == CodeLeft) {
+//            if (start > 0) display.setSelection(start - 1);
+//        } else if (primaryCode == CodeRight) {
+//            if (start < display.length()) display.setSelection(start + 1);
+//        } else if (primaryCode == CodeAllLeft) {
+//            display.setSelection(0);
+//        } else if (primaryCode == CodeAllRight) {
+//            display.setSelection(display.length());
+//        } else { // insert character
+//            String s = Character.toString((char) primaryCode);
+//
+//            if (DIGITS.contains(s)) { // digit was pressed
+//                if (userIsInTheMiddleOfTypingANumber) {
+//                    if (s.equals(".") && display.getText().toString().contains(".")) {
+//                        // ERROR PREVENTION Eliminate entering multiple decimals
+//                    } else {
+////                        editable.insert(start, s);
+//                        display.append(s);
+//                    }
+//                } else {
+//                    if (s.equals(".")) {
+//                        // ERROR PREVENTION
+//                        // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+//                        // before the decimal
+//                        display.setText(0 + s);
+//                    } else {
+//                        display.setText(s);
+//                    }
+//                    userIsInTheMiddleOfTypingANumber = true;
+//                }
+//            } else { // operation was pressed
+//                if (userIsInTheMiddleOfTypingANumber) {
+//                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+//                    userIsInTheMiddleOfTypingANumber = false;
+//                }
+//                mCalculatorBrain.performOperation(s);
+//                display.setText(mDF.format(mCalculatorBrain.getResult()));
+//                if(s.equals("=")) {
+//                    if(display.equals(mBitcoinField)) {
+//                        mDollarField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
+//                    } else {
+//                        mBitcoinField.setText(mDF.format(getBTCfromUSD(mCalculatorBrain.getResult())));
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onText(CharSequence charSequence) {
+//    }
+//
+//    @Override
+//    public void swipeLeft() {
+//    }
+//
+//    @Override
+//    public void swipeRight() {
+//    }
+//
+//    @Override
+//    public void swipeDown() {
+//    }
+//
+//    @Override
+//    public void swipeUp() {
+//    }
+//
+//    @Override
+//    public void onPress(int arg0) {
+//    }
+//
+//    @Override
+//    public void onRelease(int primaryCode) {
+//    }
 }

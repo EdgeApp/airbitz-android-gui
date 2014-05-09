@@ -2,6 +2,7 @@ package com.airbitz.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +41,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
+    private LinearLayout mCalculatorView;
+    private RelativeLayout mCalculatorLayout;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
 
@@ -72,6 +75,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
+        mCalculatorView = (LinearLayout) findViewById(R.id.calculator_layout);
+        mCalculatorLayout = (RelativeLayout) findViewById(R.id.navigation_calculator_layout);
 
         setTypeFaces();
 
@@ -88,9 +93,9 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    mNavBarFragmentLayout.setVisibility(ViewGroup.GONE);
+                    hideNavBar();
                 } else {
-                    mNavBarFragmentLayout.setVisibility(ViewGroup.VISIBLE);
+                    showNavBar();
                 }
             }
         });
@@ -171,6 +176,30 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         transaction.commit();
     }
 
+    public void hideNavBar() {
+        mNavBarFragmentLayout.setVisibility(View.GONE);
+    }
+
+    public void showNavBar() {
+        mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+    }
+
+    public LinearLayout getCalculatorView() {
+        return mCalculatorView;
+    }
+
+    public void hideCalculator() {
+        mCalculatorLayout.setVisibility(View.GONE);
+        mCalculatorLayout.setEnabled(false);
+        showNavBar();
+    }
+
+    public void showCalculator() {
+        hideNavBar();
+        mCalculatorLayout.setVisibility(View.VISIBLE);
+        mCalculatorLayout.setEnabled(true);
+    }
+
     @Override
     public void onBackPressed() {
         if(mNavStacks[mNavFragmentId].size() == 1)
@@ -180,8 +209,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     }
 
     private boolean getUserLoggedIn() {
-        return mUserLoggedIn;
-    }
+        return true; //mUserLoggedIn;
+    }  // FIXME override login
 
     public void setUserLoggedIn(boolean state) {
         mUserLoggedIn = state;

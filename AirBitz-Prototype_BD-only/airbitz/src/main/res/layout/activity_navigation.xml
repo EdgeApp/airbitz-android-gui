@@ -1,50 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/activity_navigation_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/tabbedNavigationLayout"
-        android:layout_alignParentBottom="true">
-
-    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/navigationLayout"
         android:layout_alignParentBottom="true">
 
-        <fragment
-            android:id="@+id/navigationFragment"
-            android:name="com.airbitz.fragments.NavigationBarFragment"
+        <RelativeLayout
+            android:id="@+id/navigationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_navigation_bar" />
-    </RelativeLayout>
+            android:layout_alignParentBottom="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/activityLayout"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/navigationLayout"
-        android:layout_marginBottom="-75dp">
+            <fragment
+                android:id="@+id/navigationFragment"
+                android:name="com.airbitz.fragments.NavigationBarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_navigation_bar" />
 
-    </LinearLayout>
         </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
+            android:id="@+id/activityLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/navigationLayout"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="-75dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/navigation_calculator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+        <include layout="@layout/keyboard_layout"
+            android:id="@+id/calculator_layout"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigation_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible" />
+
 
 </RelativeLayout>
