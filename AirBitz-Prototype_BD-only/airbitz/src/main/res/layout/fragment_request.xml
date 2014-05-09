@@ -243,15 +243,15 @@
 
     </ScrollView>
 
-    <android.inputmethodservice.KeyboardView
-        android:id="@+id/layout_calculator"
-        android:background="@drawable/bg_calc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:visibility="gone"/>
+    <!--<android.inputmethodservice.KeyboardView-->
+        <!--android:id="@+id/layout_calculator"-->
+        <!--android:background="@drawable/bg_calc"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:focusable="true"-->
+        <!--android:focusableInTouchMode="true"-->
+        <!--android:visibility="gone"/>-->
 
 </RelativeLayout>

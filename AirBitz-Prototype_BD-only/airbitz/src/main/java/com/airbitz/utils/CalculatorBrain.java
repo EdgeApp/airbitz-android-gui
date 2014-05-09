@@ -19,7 +19,9 @@ public class CalculatorBrain {
     public static final String SUBTRACT = "-";
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
+    public static final String PERCENT = "%" ;
 
+    public static final String BACK = "back" ;
     public static final String CLEAR = "C" ;
     public static final String CLEARMEMORY = "MC";
     public static final String ADDTOMEMORY = "M+";
@@ -87,6 +89,15 @@ public class CalculatorBrain {
             mWaitingOperator = "";
             mWaitingOperand = 0;
             // mCalculatorMemory = 0;
+        } else if (operator.equals(PERCENT)) {
+            mOperand = mOperand*0.01;
+        } else if (operator.equals(BACK)) {
+            // FIXME
+//            if(mOperand==0) return mOperand;
+//            String s = String.valueOf(mOperand);
+//            if(s.length() > 1) {
+//                mOperand = Double.valueOf(s.substring(0, s.length()-2));
+//            }
         } else if (operator.equals(CLEARMEMORY)) {
             mCalculatorMemory = 0;
         } else if (operator.equals(ADDTOMEMORY)) {

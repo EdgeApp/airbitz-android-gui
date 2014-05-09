@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_calc">
 
 
@@ -23,6 +23,7 @@
             android:layout_weight="1">
 
             <ImageButton
+                android:tag="1"
                 android:id="@+id/button_calc_1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -34,6 +35,7 @@
                 android:layout_margin="2dp"/>
 
             <ImageButton
+                android:tag="2"
                 android:id="@+id/button_calc_2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -45,6 +47,7 @@
                 android:layout_margin="2dp"/>
 
             <ImageButton
+                android:tag="3"
                 android:id="@+id/button_calc_3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -56,6 +59,7 @@
                 android:layout_margin="2dp"/>
 
             <ImageButton
+                android:tag="+"
                 android:id="@+id/button_calc_plus"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -67,6 +71,7 @@
                 android:layout_margin="2dp"/>
 
             <ImageButton
+                android:tag="%"
                 android:id="@+id/button_calc_percent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -88,6 +93,7 @@
             android:layout_weight="1">
 
             <ImageButton
+                android:tag="4"
                 android:id="@+id/button_calc_4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -99,6 +105,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="5"
                 android:id="@+id/button_calc_5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -110,6 +117,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="6"
                 android:id="@+id/button_calc_6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -121,6 +129,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="-"
                 android:id="@+id/button_calc_minus"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -132,6 +141,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="*"
                 android:id="@+id/button_calc_multiply"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -155,6 +165,7 @@
 
 
             <ImageButton
+                android:tag="7"
                 android:id="@+id/button_calc_7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -166,6 +177,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="8"
                 android:id="@+id/button_calc_8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -177,6 +189,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="9"
                 android:id="@+id/button_calc_9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -188,6 +201,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="/"
                 android:id="@+id/button_calc_division"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -199,6 +213,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="="
                 android:id="@+id/button_calc_equal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -220,6 +235,7 @@
             android:layout_weight="1">
 
             <ImageButton
+                android:tag="C"
                 android:id="@+id/button_calc_c"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -231,6 +247,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="0"
                 android:id="@+id/button_calc_0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -242,6 +259,7 @@
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="."
                 android:id="@+id/button_calc_dot"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -254,6 +272,7 @@
 
 
             <ImageButton
+                android:tag="back"
                 android:id="@+id/button_calc_back"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -262,11 +281,10 @@
                 android:src="@drawable/btn_calc_back"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:layout_below="@id/button_calc_division"
-                android:layout_toRightOf="@id/button_calc_dot"
                 android:background="@android:color/transparent"/>
 
             <ImageButton
+                android:tag="done"
                 android:id="@+id/button_calc_done"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -275,8 +293,6 @@
                 android:src="@drawable/btn_calc_done"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:layout_below="@id/button_calc_equal"
-                android:layout_toRightOf="@id/button_calc_back"
                 android:background="@android:color/transparent"/>
 
         </LinearLayout>
