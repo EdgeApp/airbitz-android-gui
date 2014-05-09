@@ -335,20 +335,25 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         if(buttonTag.equals("done")) {
             hideCustomKeyboard();
+        } else if(buttonTag.equals("back")) {
+            String s = display.getText().toString();
+            if(s.length() == 1) { // 1 character, just set to 0
+                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
+            } else if (s.length() > 1) {
+                display.setText(s.substring(0, s.length()-1));
+            }
+
         } else if (DIGITS.contains(buttonTag)) {
 
             // digit was pressed
             if (userIsInTheMiddleOfTypingANumber) {
-
                 if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
                     // ERROR PREVENTION
                     // Eliminate entering multiple decimals
                 } else {
                     display.append(buttonTag);
                 }
-
             } else {
-
                 if (buttonTag.equals(".")) {
                     // ERROR PREVENTION
                     // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
@@ -357,7 +362,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 } else {
                     display.setText(buttonTag);
                 }
-
                 userIsInTheMiddleOfTypingANumber = true;
             }
 
