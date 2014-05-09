@@ -209,8 +209,9 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     }
 
     private boolean getUserLoggedIn() {
-        return true; //mUserLoggedIn;
-    }  // FIXME override login
+//        return true;  // uncomment only for debugging
+        return mUserLoggedIn;
+    }
 
     public void setUserLoggedIn(boolean state) {
         mUserLoggedIn = state;
