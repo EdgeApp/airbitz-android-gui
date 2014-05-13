@@ -265,10 +265,13 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLon = location.getLongitude();
 
 //                setDistance(mDetail.getDistance());
+                if( mLat== 0 && mLon == 0 ){
+                    mAddressButton.setClickable(false);
+                }
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
-                    if (location != null) {
-                        mAddressButton.setText("Directions");
+                    if (mLat != 0 && mLon != 0) {
+                            mAddressButton.setText("Directions");
                     } else {
                         mAddressButton.setVisibility(View.GONE);
                     }
@@ -348,12 +351,14 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 Picasso.with(DirectoryDetailActivity.this).load(mDetail.getPrimaryImage().getPhotoThumbnailLink()).into(mBackImage);
 //                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
 //                task.execute(mDetail.getPrimaryImage().getPhotoLink());
-
-                mAddressButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        getMapLink();
-                    }
-                });
+                if (mLat != 0 && mLon != 0) {
+                    mAddressButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getMapLink();
+                        }
+                    });
+                }
                 mPhoneButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
 
