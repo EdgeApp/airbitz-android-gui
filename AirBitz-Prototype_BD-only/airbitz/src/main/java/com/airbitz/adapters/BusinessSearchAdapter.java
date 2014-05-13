@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -33,6 +36,7 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
         sGreenText = context.getResources().getColor(R.color.green_text);
     }
 
+
     @Override
     public int getCount() {
         return mLocationValue.size();
@@ -49,8 +53,9 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
+
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
 
         final Business business = mLocationValue.get(position);
 

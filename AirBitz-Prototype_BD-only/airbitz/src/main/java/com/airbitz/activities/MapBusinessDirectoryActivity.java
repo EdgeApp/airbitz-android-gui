@@ -360,7 +360,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         // initializeMarker();
 
         int timeout = 15000;
-        if (mLocationName.equalsIgnoreCase("Current Location")) {
+        if (mLocationName.equalsIgnoreCase("Current Location")) {//TODO: Latlong problem i think
             mGetVenuesByLatLongTask = new GetVenuesByLatLongTask(this);
             String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
             if (mBusinessType.equalsIgnoreCase("business")) {

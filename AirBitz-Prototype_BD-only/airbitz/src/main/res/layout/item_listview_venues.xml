@@ -19,18 +19,21 @@
             android:src="@drawable/bg_selected_tab" />
 
         <View
+            android:id="@+id/blank_view_venue"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_alignParentTop="true"
             android:background="#88FFFFFF" />
 
         <LinearLayout
+            android:id="@+id/linear_layout_gradient_venue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/gradient_background"
             android:orientation="vertical" />
 
         <LinearLayout
+            android:id="@+id/linear_layout_info_container_venue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -52,6 +55,7 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/linear_layout_bottom_container_venue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/content_padding_quarter"
