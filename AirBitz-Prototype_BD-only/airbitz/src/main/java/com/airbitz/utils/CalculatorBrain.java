@@ -91,39 +91,32 @@ public class CalculatorBrain {
             // mCalculatorMemory = 0;
         } else if (operator.equals(PERCENT)) {
             mOperand = mOperand*0.01;
-        } else if (operator.equals(BACK)) {
-            // FIXME
-//            if(mOperand==0) return mOperand;
-//            String s = String.valueOf(mOperand);
-//            if(s.length() > 1) {
-//                mOperand = Double.valueOf(s.substring(0, s.length()-2));
+//        } else if (operator.equals(CLEARMEMORY)) {
+//            mCalculatorMemory = 0;
+//        } else if (operator.equals(ADDTOMEMORY)) {
+//            mCalculatorMemory = mCalculatorMemory + mOperand;
+//        } else if (operator.equals(SUBTRACTFROMMEMORY)) {
+//            mCalculatorMemory = mCalculatorMemory - mOperand;
+//        } else if (operator.equals(RECALLMEMORY)) {
+//            mOperand = mCalculatorMemory;
+//        } else if (operator.equals(SQUAREROOT)) {
+//            mOperand = Math.sqrt(mOperand);
+//
+//        } else if (operator.equals(SQUARED)) {
+//            mOperand = mOperand * mOperand;
+//
+//        } else if (operator.equals(INVERT)) {
+//            if (mOperand != 0) {
+//                mOperand = 1 / mOperand;
 //            }
-        } else if (operator.equals(CLEARMEMORY)) {
-            mCalculatorMemory = 0;
-        } else if (operator.equals(ADDTOMEMORY)) {
-            mCalculatorMemory = mCalculatorMemory + mOperand;
-        } else if (operator.equals(SUBTRACTFROMMEMORY)) {
-            mCalculatorMemory = mCalculatorMemory - mOperand;
-        } else if (operator.equals(RECALLMEMORY)) {
-            mOperand = mCalculatorMemory;
-        } else if (operator.equals(SQUAREROOT)) {
-            mOperand = Math.sqrt(mOperand);
-
-        } else if (operator.equals(SQUARED)) {
-            mOperand = mOperand * mOperand;
-
-        } else if (operator.equals(INVERT)) {
-            if (mOperand != 0) {
-                mOperand = 1 / mOperand;
-            }
-        } else if (operator.equals(TOGGLESIGN)) {
-            mOperand = -mOperand;
-        } else if (operator.equals(SINE)) {
-            mOperand = Math.sin(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
-        } else if (operator.equals(COSINE)) {
-            mOperand = Math.cos(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
-        } else if (operator.equals(TANGENT)) {
-            mOperand = Math.tan(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
+//        } else if (operator.equals(TOGGLESIGN)) {
+//            mOperand = -mOperand;
+//        } else if (operator.equals(SINE)) {
+//            mOperand = Math.sin(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
+//        } else if (operator.equals(COSINE)) {
+//            mOperand = Math.cos(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
+//        } else if (operator.equals(TANGENT)) {
+//            mOperand = Math.tan(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
         } else {
             performWaitingOperation();
             mWaitingOperator = operator;
