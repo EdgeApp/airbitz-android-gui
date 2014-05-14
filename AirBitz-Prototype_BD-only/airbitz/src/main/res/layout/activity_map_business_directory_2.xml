@@ -71,27 +71,28 @@
             </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/dragLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#000000">
-
-                <ImageView
-                    android:id="@+id/dragImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#C0C0C0"
-                    android:padding="8dp"
-                    android:scaleType="center"
-                    android:src="@drawable/ico_drag" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/list_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/dragLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#000000">
+
+                    <ImageView
+                        android:id="@+id/dragImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#C0C0C0"
+                        android:padding="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ico_drag" />
+
+                </LinearLayout>
 
                 <fragment
                     android:id="@+id/venue"
