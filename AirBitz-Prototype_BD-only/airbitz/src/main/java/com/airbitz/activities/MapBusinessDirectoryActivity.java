@@ -453,7 +453,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         Log.d(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
-                        final float y = event.getY(mActivePointerId);
+                        final float y = event.getY(0);
 
                         aLastTouchY = y;
                         if (aPosY == 0) {
