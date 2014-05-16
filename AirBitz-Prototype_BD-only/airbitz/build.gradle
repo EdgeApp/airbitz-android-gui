@@ -1,5 +1,7 @@
 import java.util.regex.Pattern
 
+apply plugin: 'android'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -37,7 +39,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-
 
     productFlavors {
 
@@ -82,6 +83,7 @@ android {
         }
     }
 
+    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build
 }
 
 // Used for appending the application version code in the generated .apk
@@ -116,3 +118,4 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
 
 }
+
