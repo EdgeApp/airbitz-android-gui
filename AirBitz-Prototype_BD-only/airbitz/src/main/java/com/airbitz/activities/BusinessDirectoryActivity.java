@@ -79,9 +79,12 @@ public class BusinessDirectoryActivity extends Activity implements
     private TextView mTitleTextView;
 
     private TextView mNearYouTextView;
+    private TextView mNearYouTextViewSticky;
 
     private LinearLayout mBusinessLayout;
     private LinearLayout mNearYouContainer;
+
+    private boolean mLoadingVisible = true;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -93,9 +96,11 @@ public class BusinessDirectoryActivity extends Activity implements
 
     private RelativeLayout mParentLayout;
 
-    private LinearLayout mVenueFragmentLayout;
+    private RelativeLayout mVenueFragmentLayout;
 
     private LinearLayout mDummyFocusLayout;
+
+    private LinearLayout mStickyLayout;
 
     private Spinner mMoreSpinner;
 
@@ -190,11 +195,15 @@ public class BusinessDirectoryActivity extends Activity implements
 
         mDummyFocusLayout = (LinearLayout) findViewById(R.id.dummy_focus);
 
+        mStickyLayout = (LinearLayout) findViewById(R.id.layout_near_you_sticky);
+
         mNearYouContainer = (LinearLayout) findViewById(R.id.layout_near_you);
-        mVenueFragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+        mVenueFragmentLayout = (RelativeLayout) findViewById(R.id.fragment_layout);
 
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
         mScrollView.setScrollViewListener(this);
+        mScrollView.setContext(this);
+        mScrollView.setSticky(mStickyLayout);
 
         mMoreSpinner = (Spinner) findViewById(R.id.spinner_more_categories);
 
@@ -208,6 +217,7 @@ public class BusinessDirectoryActivity extends Activity implements
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
 
         mNearYouTextView = (TextView) findViewById(R.id.textview_nearyou);
+        mNearYouTextViewSticky = (TextView) findViewById(R.id.textview_nearyou_sticky);
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_parent);
 
         mViewGroupLoading = (ViewGroup) findViewById(R.id.ViewGroup_loading);
@@ -222,10 +232,13 @@ public class BusinessDirectoryActivity extends Activity implements
         mCoffeeButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mMoreButton.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mNearYouTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mNearYouTextViewSticky.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
         mLoadingText.setTypeface(montserratRegularTypeFace);
 
         mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
         mMoreCategoriesProgressDialog = new ProgressDialog(BusinessDirectoryActivity.this);
+
+
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -321,10 +334,15 @@ public class BusinessDirectoryActivity extends Activity implements
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
+                    mViewGroupLoading.setVisibility(View.GONE);
+                    //mStickyLayout.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
 
+                    if(mSearchField.getText().toString().isEmpty()) {
+                        mSearchField.setText(" ");
+                    }
                     // mBusinessList.clear();
                     // mBusinessSearchAdapter.notifyDataSetChanged();
 
@@ -343,20 +361,29 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     // Start search
                     try {
-                        final String text = mSearchField.getText().toString();
+                        final String text;
+                        if(mSearchField.getText().toString().charAt(0)==' '){
+                             text = mSearchField.getText().toString().substring(1);
+                        }else{
+                            text = mSearchField.getText().toString();
+                        }
+
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(BusinessDirectoryActivity.this));
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(mSearchField.getText()
-                                                                                              .toString(),
+                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text,
                                                                                   mLocationWords,
                                                                                   latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
+                }else{
+                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                        mSearchField.setText(mSearchField.getText().toString().substring(1));
+                    }
                 }
 
             }
@@ -384,6 +411,9 @@ public class BusinessDirectoryActivity extends Activity implements
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
+                mViewGroupLoading.setVisibility(View.GONE);
+                //mStickyLayout.setVisibility(View.GONE);
+
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
                 try {
@@ -391,8 +421,13 @@ public class BusinessDirectoryActivity extends Activity implements
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
 
                     // Only include cached searches if text is empty.
-                    final String query = editable.toString();
-                    final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
+                    List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(BusinessDirectoryActivity.this)
                             : null);
                     new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
@@ -402,6 +437,9 @@ public class BusinessDirectoryActivity extends Activity implements
                     e.printStackTrace();
                 }
 
+                if(editable.toString().isEmpty() && mSearchField.hasFocus()){
+                    editable.append(' ');
+                }
                 // } else {
                 // mDummyFocusLayout.requestFocus();
                 // if (mSearchField.getText().toString().length() <= 0) {
@@ -429,10 +467,15 @@ public class BusinessDirectoryActivity extends Activity implements
                 if (hasFocus) {
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
+                    mViewGroupLoading.setVisibility(View.GONE);
+                    //mStickyLayout.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
 
+                    if(mLocationField.getText().toString().isEmpty()) {
+                        mLocationField.setText(" ");
+                    }
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
@@ -462,7 +505,13 @@ public class BusinessDirectoryActivity extends Activity implements
                     mDummyFocusLayout.requestFocus();
                     mBusinessLayout.setVisibility(View.VISIBLE);
                     mNearYouContainer.setVisibility(View.VISIBLE);
+                    if(mLoadingVisible){
+                        mViewGroupLoading.setVisibility(View.VISIBLE);
+                    }
                     mVenueFragmentLayout.setVisibility(View.VISIBLE);
+                    if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' ') {
+                        mLocationField.setText(mLocationField.getText().toString().substring(1));
+                    }
                 }
 
             }
@@ -478,8 +527,16 @@ public class BusinessDirectoryActivity extends Activity implements
                             switch (keyCode) {
                                 case KeyEvent.FLAG_EDITOR_ACTION:
                                 case KeyEvent.KEYCODE_ENTER:
-                                    mIntent.putExtra(BUSINESS, mSearchField.getText().toString());
-                                    mIntent.putExtra(LOCATION, mLocationField.getText().toString());
+                                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                                        mIntent.putExtra(BUSINESS, mSearchField.getText().toString().substring(1));
+                                    }else{
+                                        mIntent.putExtra(BUSINESS, mSearchField.getText().toString());
+                                    }
+                                    if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' '){;
+                                        mIntent.putExtra(LOCATION, mLocationField.getText().toString().substring(1));
+                                    }else{
+                                        mIntent.putExtra(LOCATION, mLocationField.getText().toString());
+                                    }
                                     mIntent.putExtra(BUSINESSTYPE, mBusinessType);
                                     startActivity(mIntent);
 
@@ -489,6 +546,9 @@ public class BusinessDirectoryActivity extends Activity implements
                                         mSearchListView.setVisibility(View.GONE);
                                         mBusinessLayout.setVisibility(View.VISIBLE);
                                         mNearYouContainer.setVisibility(View.VISIBLE);
+                                        if(mLoadingVisible){
+                                            mViewGroupLoading.setVisibility(View.VISIBLE);
+                                        }
                                         mVenueFragmentLayout.setVisibility(View.VISIBLE);
                                     }
                                     return true;
@@ -523,11 +583,17 @@ public class BusinessDirectoryActivity extends Activity implements
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
+                mViewGroupLoading.setVisibility(View.GONE);
+                //mStickyLayout.setVisibility(View.GONE);
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
                 String latLong = String.valueOf(getLatFromSharedPreference());
                 latLong += "," + String.valueOf(getLonFromSharedPreference());
-                mLocationWords = editable.toString();
+                if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                    mLocationWords = editable.toString().substring(1);
+                }else{
+                    mLocationWords = editable.toString();
+                }
 
                 try {
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
@@ -537,6 +603,10 @@ public class BusinessDirectoryActivity extends Activity implements
                     new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                if(editable.toString().isEmpty() && mLocationField.hasFocus()){
+                    editable.append(' ');
                 }
                 //
                 // } else {
@@ -658,6 +728,9 @@ public class BusinessDirectoryActivity extends Activity implements
             mSearchListView.setVisibility(View.GONE);
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
+            if(mLoadingVisible){
+                mViewGroupLoading.setVisibility(View.VISIBLE);
+            }
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
@@ -828,6 +901,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
     public void hideLoadingIndicator() {
         mViewGroupLoading.setVisibility(View.GONE);
+        mLoadingVisible = false;
     }
 
     public Categories getMoreBusinessCategory(Categories initial, String link) {

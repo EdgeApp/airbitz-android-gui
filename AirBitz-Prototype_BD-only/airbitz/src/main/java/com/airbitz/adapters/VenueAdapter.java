@@ -133,10 +133,17 @@ public class VenueAdapter extends BaseAdapter {
                 double distance = Double.parseDouble(mVenues.get(position).getDistance());
                 distance = Common.metersToMiles(distance);
                 if (distance < 1.0){
-                    distance = Math.ceil(distance*10)/10;
-                    String distanceString = ""+distance;
-                    distanceString = distanceString.substring(1,distanceString.length());
-                    distanceTextView.setText(distanceString+" miles");
+                    double distFeet = Common.milesToFeet(distance);
+                    if(distFeet<=1000){
+                        int intDist = (int) Math.floor(distFeet);
+                        String distanceString = ""+intDist;
+                        distanceTextView.setText(distanceString+" feet");
+                    }else{
+                        distance = Math.ceil(distance*10)/10;
+                        String distanceString = ""+distance;
+                        distanceString = distanceString.substring(1,distanceString.length());
+                        distanceTextView.setText(distanceString+" miles");
+                    }
                 } else if (distance >= 1000){
                     int distanceInInt = (int) distance;
                     distanceTextView.setText(String.valueOf(distanceInInt)+" miles");
@@ -152,10 +159,18 @@ public class VenueAdapter extends BaseAdapter {
             ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
             venueNameTextView.setText(mVenues.get(position).getName());
 
+
             if(position==0){
                 RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
-                int height = (int) mContext.getResources().getDimension(R.dimen.venue_list_full_height_275);
-                mainLayout.getLayoutParams().height = height;
+                int height = (int) mContext.getResources().getDimension(R.dimen.new_height);
+                RelativeLayout.LayoutParams ilp = new RelativeLayout.LayoutParams(mainLayout.getLayoutParams().width, height);
+                mainLayout.setLayoutParams(ilp);
+                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(distanceTextView.getLayoutParams().width, distanceTextView.getLayoutParams().height);
+                llp.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.offset_height), 0, 0); // llp.setMargins(left, top, right, bottom);
+                distanceTextView.setLayoutParams(llp);
+            }else{
+                RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
+                mainLayout.getLayoutParams().height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
             }
 
 
@@ -180,9 +195,16 @@ public class VenueAdapter extends BaseAdapter {
         final BusinessSearchResult result = mVenues.get(position);
 
         if(position==0){
-            RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
-            int height = (int) mContext.getResources().getDimension(R.dimen.venue_list_full_height_275);
-            mainLayout.getLayoutParams().height = height;
+            int height = (int) mContext.getResources().getDimension(R.dimen.new_height);
+            RelativeLayout.LayoutParams ilp = new RelativeLayout.LayoutParams(viewHolder.relativeLayoutItem.getLayoutParams().width, height);
+            viewHolder.relativeLayoutItem.setLayoutParams(ilp);
+            RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(viewHolder.textViewDistanceItem.getLayoutParams().width, viewHolder.textViewDistanceItem.getLayoutParams().height);
+            llp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            llp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            llp.topMargin = (int) mContext.getResources().getDimension(R.dimen.offset_height); // llp.setMargins(left, top, right, bottom);
+            viewHolder.textViewDistanceItem.setLayoutParams(llp);
+        }else{
+            viewHolder.relativeLayoutItem.getLayoutParams().height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
         }
 
         p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(viewHolder.venueBackgroundItem);
@@ -214,10 +236,17 @@ public class VenueAdapter extends BaseAdapter {
             double distance = Double.parseDouble(mVenues.get(position).getDistance());
             distance = Common.metersToMiles(distance);
             if (distance < 1.0){
-                distance = Math.ceil(distance*10)/10;
-                String distanceString = ""+distance;
-                distanceString = distanceString.substring(1,distanceString.length());
-                viewHolder.textViewDistanceItem.setText(distanceString+" miles");
+                double distFeet = Common.milesToFeet(distance);
+                if(distFeet<=1000){
+                    int intDist = (int) Math.floor(distFeet);
+                    String distanceString = ""+intDist;
+                    viewHolder.textViewDistanceItem.setText(distanceString+" feet");
+                }else{
+                    distance = Math.ceil(distance*10)/10;
+                    String distanceString = ""+distance;
+                    distanceString = distanceString.substring(1,distanceString.length());
+                    viewHolder.textViewDistanceItem.setText(distanceString+" miles");
+                }
             } else if (distance >= 1000){
                 int distanceInInt = (int) distance;
                 viewHolder.textViewDistanceItem.setText(String.valueOf(distanceInInt)+" miles");
@@ -247,6 +276,5 @@ public class VenueAdapter extends BaseAdapter {
         double lon = (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
         return lon;
     }
-
 
 }

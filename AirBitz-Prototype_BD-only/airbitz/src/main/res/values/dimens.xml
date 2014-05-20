@@ -9,6 +9,12 @@
     <dimen name="venue_list_full_height_275">112dp</dimen>
     <dimen name="venue_list_small_height_175">112dp</dimen>
 
+    <dimen name="offset_height">20dp</dimen>
+    <dimen name="new_height">135dp</dimen>
+    <dimen name="ribbon_height">40dp</dimen>
+    <dimen name="ribbon_width">120dp</dimen>
+    <dimen name="padding_map_info">5dp</dimen>
+
     <dimen name="border_radius_size">6dp</dimen>
 
     <dimen name="content_padding_2">24dp</dimen>

@@ -1,10 +1,13 @@
 
 package com.airbitz.utils;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.airbitz.R;
 
 /**
  * Created on 2/10/14.
@@ -61,7 +64,28 @@ public class ListViewUtility {
                                                                     ViewGroup.LayoutParams.WRAP_CONTENT));
             }
             listItem.measure(0, 0);
+            int height = listItem.getMeasuredHeight();
+            height -=
             totalHeight += (listItem.getMeasuredHeight() * childCount);
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView, Context mContext) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = 0;
+
+        final int childCount = listAdapter.getCount();
+        if (childCount > 0) {
+            int height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
+            totalHeight = (height * childCount) + (int) mContext.getResources().getDimension(R.dimen.offset_height);
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();

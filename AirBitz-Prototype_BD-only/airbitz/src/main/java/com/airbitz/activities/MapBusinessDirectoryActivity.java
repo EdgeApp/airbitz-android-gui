@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -82,7 +83,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private ClearableEditText mSearchEdittext;
     private ClearableEditText mLocationEdittext;
 
-    private LinearLayout llListContainer;
+    private RelativeLayout llListContainer;
 
     private FrameLayout flMapContainer;
 
@@ -110,6 +111,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private LocationAdapter mLocationAdapter;
 
     private Intent mIntent = null;
+
+    private int[] locSticky = {0,0};
+    private int[] locFrame = {0,0};
 
     private String mLocationName;
     private String mBusinessName;
@@ -154,7 +158,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
         mDragLayout = (LinearLayout) findViewById(R.id.dragLayout);
-        llListContainer = (LinearLayout) findViewById(R.id.list_view_container);
+        llListContainer = (RelativeLayout) findViewById(R.id.list_view_container);
         flMapContainer = (FrameLayout) findViewById(R.id.map_container);
         mViewAnimator = (ViewAnimator) findViewById(R.id.ViewAnimator);
 
@@ -178,9 +182,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
 
         mSearchListView = (ListView) findViewById(R.id.listview_search);
-        mSearchEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        mLocationEdittext.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
-        mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratBoldTypeFace);
+        mSearchEdittext.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mLocationEdittext.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         mSearchEdittext.setText(mBusinessName);
         mLocationEdittext.setText(mLocationName);
@@ -212,10 +216,17 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mLocationEdittext.setVisibility(View.VISIBLE);
                     mViewAnimator.setDisplayedChild(1);
-
+                    if(mSearchEdittext.getText().toString().isEmpty()) {
+                        mSearchEdittext.setText(" ");
+                    }
                     // Start search
                     try {
-                        final String text = mSearchEdittext.getText().toString();
+                        final String text;
+                        if(mSearchEdittext.getText().toString().charAt(0)==' ') {
+                            text = mSearchEdittext.getText().toString().substring(1);
+                        }else{
+                            text = mSearchEdittext.getText().toString();
+                        }
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this));
@@ -227,10 +238,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }else{
+                    if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                        mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
+                    }
                 }
             }
         });
-
         mSearchEdittext.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
             {
@@ -251,15 +265,23 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                 try {
                     // Only include cached searches if text is empty.
-                    final String query = editable.toString();
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(MapBusinessDirectoryActivity.this)
                             : null);
-                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(editable.toString(),
+                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
                                                                                 mLocationWords, latLong);
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
+                    editable.append(' ');
                 }
             }
         });
@@ -273,6 +295,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
 
+                    if(mLocationEdittext.getText().toString().isEmpty()) {
+                        mLocationEdittext.setText(" ");
+                    }
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
@@ -285,6 +310,10 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         e.printStackTrace();
                     }
 
+                }else{
+                    if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
+                        mLocationEdittext.setText(mLocationEdittext.getText().toString().substring(1));
+                    }
                 }
 
             }
@@ -298,19 +327,31 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
-                            mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText()
-                                                                                                .toString());
-                            mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText()
-                                                                                                  .toString());
+                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                                mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString().substring(1));
+                            }else{
+                                mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString());
+                            }
+                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
+                                mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText().toString().substring(1));
+                            }else{
+                                mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText().toString());
+                            }
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESSTYPE, mBusinessType);
                             startActivity(mIntent);
                             finish();
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
-                            mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText()
-                                                                                                .toString());
-                            mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText()
-                                                                                                  .toString());
+                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                                mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString().substring(1));
+                            }else{
+                                mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString());
+                            }
+                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
+                                mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText().toString().substring(1));
+                            }else{
+                                mIntent.putExtra(BusinessDirectoryActivity.LOCATION, mLocationEdittext.getText().toString());
+                            }
                             mIntent.putExtra(BusinessDirectoryActivity.BUSINESSTYPE, mBusinessType);
                             startActivity(mIntent);
                             finish();
@@ -340,7 +381,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
-                    mLocationWords = editable.toString();
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        mLocationWords = editable.toString().substring(1);
+                    }else{
+                        mLocationWords = editable.toString();
+                    }
                     String latLong = String.valueOf(getLatFromSharedPreference());
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
 
@@ -353,6 +398,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
+                        editable.append(' ');
+                    }
             }
         });
 
@@ -360,7 +408,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         // initializeMarker();
 
         int timeout = 15000;
-        if (mLocationName.equalsIgnoreCase("Current Location")) {//TODO: Latlong problem i think
+        if (mLocationName.equalsIgnoreCase("Current Location")) {
             mGetVenuesByLatLongTask = new GetVenuesByLatLongTask(this);
             String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
             if (mBusinessType.equalsIgnoreCase("business")) {
@@ -773,7 +821,6 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                                                    businessSearchResult.getLocationObject().getLongitude());
                 mMarkersLatLngList.add(locationLatLng);
-
                 Marker marker = mGoogleMap.addMarker(new MarkerOptions()
                                                                         .position(locationLatLng)
                                                                         .title(businessSearchResult.getName())
@@ -1017,7 +1064,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venues list...");
             mProgressDialog.setIndeterminate(true);
@@ -1062,7 +1109,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venues list...");
             mProgressDialog.setIndeterminate(true);
@@ -1108,7 +1155,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venues list...");
             mProgressDialog.setIndeterminate(true);
@@ -1153,7 +1200,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venues list...");
             mProgressDialog.setIndeterminate(true);
@@ -1199,7 +1246,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setMessage("Getting venues list...");
             mProgressDialog.setIndeterminate(true);

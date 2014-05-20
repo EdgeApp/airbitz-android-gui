@@ -40,7 +40,7 @@
                             android:gravity="left|center_vertical"
                             android:text="Restaurant"
                             android:textColor="#005f96"
-                            android:background="@android:color/transparent"
+                            android:background="@drawable/transparent_until_pressed"
                             android:drawableLeft="@drawable/ico_restaurant"
                             android:drawableRight="@drawable/arrow_right"
                             android:drawablePadding="15dp"
