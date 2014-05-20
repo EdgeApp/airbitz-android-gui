@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -72,6 +73,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
     private Button mWebButton;
     private String mBusinessId;
 
+    private double mTempDist = 0;
+    private String businessName;
+
     private TextView mCategoriesTextView;
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
@@ -95,7 +99,10 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mDiscountTextView = (TextView) findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
 
-        setDistance(getIntent().getStringExtra("bizDistance"));
+        if(getIntent().getStringExtra("bizDistance") != null) {
+            setDistance(getIntent().getStringExtra("bizDistance"));
+            mTempDist = Double.parseDouble(getIntent().getStringExtra("bizDistance"));
+        }
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -136,7 +143,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mLogo.setVisibility(View.GONE);
         mBackButton.setVisibility(View.VISIBLE);
 
-        String businessName = getIntent().getExtras().getString("bizName");
+        businessName = getIntent().getExtras().getString("bizName");
         if (!TextUtils.isEmpty(businessName)) {
             mTitleTextView.setText(businessName);
             mTitleTextView.setVisibility(View.VISIBLE);
@@ -203,10 +210,17 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
             businessDistance = Double.parseDouble(strDistance);
             businessDistance = Common.metersToMiles(businessDistance);
             if (businessDistance < 1) {
-                businessDistance = Math.ceil(businessDistance * 10) / 10;
-                String distanceString = "" + businessDistance;
-                distanceString = distanceString.substring(1, distanceString.length());
-                mDistanceTextView.setText(distanceString + " miles");
+                int distFeet = (int) Common.milesToFeet(businessDistance);
+                if(distFeet<=1000){
+                    int intDist = (int) Math.floor(distFeet);
+                    String distanceString = ""+intDist;
+                    mDistanceTextView.setText(distanceString+" feet");
+                }else {
+                    businessDistance = Math.ceil(businessDistance * 10) / 10;
+                    String distanceString = "" + businessDistance;
+                    distanceString = distanceString.substring(1, distanceString.length());
+                    mDistanceTextView.setText(distanceString + " miles");
+                }
             } else if (businessDistance >= 1000) {
                 int distanceInInt = (int) businessDistance;
                 mDistanceTextView.setText(String.valueOf(distanceInInt) + " miles");
@@ -238,8 +252,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext);//,R.style.ProgressDialogCustom);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mProgressDialog.setMessage("Getting venue data...");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
@@ -247,7 +262,9 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         }
 
         @Override protected String doInBackground(String... params) {
-            return mApi.getBusinessById(params[0]);
+            String latLong = String.valueOf(getLatFromSharedPreference())
+                    + "," + String.valueOf(getLonFromSharedPreference());
+            return mApi.getBusinessByIdAndLatLong(params[0],latLong);
         }
 
         @Override protected void onCancelled() {
@@ -264,7 +281,7 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-//                setDistance(mDetail.getDistance());
+                setDistance(mDetail.getDistance());
                 if( mLat== 0 && mLon == 0 ){
                     mAddressButton.setClickable(false);
                 }
@@ -314,6 +331,37 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
                     mAboutField.setVisibility(View.VISIBLE);
                 }
 
+                //set drawables round if others are missing
+                //Address
+                if(mAddressButton.getVisibility()==View.VISIBLE){
+                    if(mPhoneButton.getVisibility()==View.GONE && mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE) {
+                        mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                    }
+                }
+                //Phone Number
+                if(mPhoneButton.getVisibility()==View.VISIBLE){
+                    if(mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
+                        if(mAddressButton.getVisibility()==View.GONE) {
+                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                        }else{
+                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
+                        }
+                    }else if(mAddressButton.getVisibility()==View.GONE){
+                        mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
+                    }
+                }
+                //Web Button
+                if(mWebButton.getVisibility()==View.VISIBLE){
+                    if(mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
+                        if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                        }else{
+                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
+                        }
+                    }else if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                        mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
+                    }
+                }
                 // Set categories text
                 final List<Category> categories = mDetail.getCategoryObject();
                 if (categories == null || categories.size() == 0) {

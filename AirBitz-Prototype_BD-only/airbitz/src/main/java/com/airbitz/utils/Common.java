@@ -26,6 +26,8 @@ public class Common {
         return meters * (1.0 / 1609.344);
     }
 
+    public static double milesToFeet(double miles) { return (miles*5280);}
+
     public static void showHelpInfoDialog(Activity act, String title, String message){
         final Dialog dialog = new Dialog(act);
         dialog.setContentView(R.layout.dialog_help_info);

@@ -8,7 +8,41 @@
 
     <style name="CategoryItem">
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@drawable/transparent_until_pressed</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/blue_text</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowRadius">1.0</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:drawablePadding">@dimen/content_padding_2</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">@dimen/content_padding_2</item>
+        <item name="android:paddingRight">@dimen/content_padding_2</item>
+    </style>
+
+    <style name="CategoryItemTop">
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@drawable/transparent_until_pressed_top</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/blue_text</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowRadius">1.0</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:drawablePadding">@dimen/content_padding_2</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">@dimen/content_padding_2</item>
+        <item name="android:paddingRight">@dimen/content_padding_2</item>
+    </style>
+
+    <style name="CategoryItemBottom">
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@drawable/transparent_until_pressed_bottom</item>
         <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/blue_text</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
@@ -25,7 +59,7 @@
 
     <style name="CategoryItemDetail" >
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@drawable/transparent_until_pressed</item>
         <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/blue_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
@@ -37,5 +71,39 @@
         <item name="android:paddingTop">@dimen/content_padding</item>
         <item name="android:paddingBottom">@dimen/content_padding</item>
     </style>
+
+    <style name="CategoryItemDetailTop" >
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:background">@drawable/transparent_until_pressed_top</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/blue_text</item>
+        <item name="android:textSize">@dimen/text_size_h4</item>
+        <item name="android:drawablePadding">@dimen/content_padding_2</item>
+        <item name="android:focusable">false</item>
+        <!-- Note: don't use padding here since layouts will override the value of padding<side> -->
+        <item name="android:paddingLeft">@dimen/content_padding</item>
+        <item name="android:paddingRight">@dimen/content_padding</item>
+        <item name="android:paddingTop">@dimen/content_padding</item>
+        <item name="android:paddingBottom">@dimen/content_padding</item>
+    </style>
+
+    <style name="ProgressDialogCustom" parent="@android:style/Theme.Dialog">
+        <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
+        <item name="android:textColorPrimary">#000000</item>
+    </style>
+
+    <style name="CustomAlertDialogStyle">
+        <item name="android:bottomBright">@android:color/holo_purple</item>
+        <item name="android:bottomDark">@android:color/holo_purple</item>
+        <item name="android:bottomMedium">@android:color/holo_purple</item>
+        <item name="android:centerBright">@android:color/holo_blue_light</item>
+        <item name="android:centerDark">@android:color/holo_blue_light</item>
+        <item name="android:centerMedium">@android:color/holo_blue_light</item>
+        <item name="android:fullBright">@android:color/holo_blue_light</item>
+        <item name="android:fullDark">@android:color/holo_blue_light</item>
+        <item name="android:topBright">@android:color/holo_blue_light</item>
+        <item name="android:topDark">@android:color/holo_blue_light</item>
+    </style>
+
 
 </resources>

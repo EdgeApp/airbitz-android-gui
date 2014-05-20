@@ -165,6 +165,7 @@ public class AirbitzAPI {
     public String getSearchByLatLong(String latlong, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", latlong));
+        System.out.println("THIS IS THE LAT LONG OF OUR LIVES: " +latlong);
 
         if(page_size.length() != 0){
             params.add(new BasicNameValuePair("page_size", page_size));
@@ -182,6 +183,7 @@ public class AirbitzAPI {
 
     public String getSearchByLatLongAndBusiness(String latlong, String businessName, String category, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
+        System.out.println("THIS IS THE LAT LONG OF OUR LIVES: " +latlong);
         params.add(new BasicNameValuePair("ll", latlong));
 
         if(businessName.length()>0){
@@ -289,7 +291,7 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public BusinessDetail getHttpBusiness(int bizId){
+    public BusinessDetail getHttpBusiness(String bizId){
 
         String url = API_BUSINESS+bizId +"/";
 
@@ -413,6 +415,12 @@ public class AirbitzAPI {
 
     public String getBusinessById(String businessId){
         return getRequest(API_BUSINESS+businessId,"");
+    }
+
+    public String getBusinessByIdAndLatLong(String businessId, String ll){
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("ll", ll));
+        return getRequest(API_BUSINESS+businessId+"/",createURLParams(params));
     }
 
     public String getSearchByCategoryAndLocation(String category, String location, String page_size, String page, String sort){

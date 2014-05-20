@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator_header_search"
-        android:background="#28007bbe"
+        android:background="@drawable/search_bar"
         android:orientation="vertical">
 
         <LinearLayout
@@ -31,10 +31,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="4dp"
+            android:paddingBottom="6dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="4dp">
+            android:paddingTop="6dp">
 
             <LinearLayout
                 android:layout_width="0px"
@@ -42,61 +42,55 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
 
-            <com.airbitz.objects.ClearableEditText
-                android:id="@+id/edittext_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_edge"
-                android:drawableLeft="@drawable/ico_search"
-                android:drawablePadding="10dp"
-                android:drawableRight="@drawable/btn_x"
-                android:hint="@string/category_or_business_name"
-                android:selectAllOnFocus="true"
-                android:inputType="text|textNoSuggestions"
-                android:imeOptions="actionSearch"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:textColor="#000000"
-                android:textColorHint="#b4b3b4" />
+                <com.airbitz.objects.ClearableEditText
+                    android:id="@+id/edittext_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/rounded_edge"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="2dp"
+                    android:drawableLeft="@drawable/ico_search"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/btn_x"
+                    android:hint="@string/category_or_business_name"
+                    android:selectAllOnFocus="true"
+                    android:inputType="text|textNoSuggestions"
+                    android:imeOptions="actionSearch"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:textSize="16dp"
+                    android:textColor="#000000"
+                    android:textColorHint="#44000000" />
 
 
-            <com.airbitz.objects.ClearableEditText
-                android:id="@+id/edittext_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/edittext_search"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_edge"
-                android:drawableLeft="@drawable/ico_loc"
-                android:drawablePadding="13dp"
-                android:drawableRight="@drawable/btn_x"
-                android:hint="Current Location"
-                android:selectAllOnFocus="true"
-                android:inputType="text|textNoSuggestions"
-                android:imeOptions="actionSearch"
-                android:paddingBottom="5dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:textColor="#000000"
-                android:textColorHint="#b4b3b4"
-                android:visibility="gone" />
+                <com.airbitz.objects.ClearableEditText
+                    android:id="@+id/edittext_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edittext_search"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="7dp"
+                    android:background="@drawable/rounded_edge"
+                    android:drawableLeft="@drawable/ico_loc"
+                    android:drawablePadding="13dp"
+                    android:drawableRight="@drawable/btn_x"
+                    android:hint="Current Location"
+                    android:selectAllOnFocus="true"
+                    android:inputType="text|textNoSuggestions"
+                    android:imeOptions="actionSearch"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:textSize="16dp"
+                    android:textColor="#000000"
+                    android:textColorHint="#44000000"
+                    android:visibility="gone" />
+
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#50000000"
-            android:orientation="vertical" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#00225a" />
 
     </LinearLayout>
 </RelativeLayout>

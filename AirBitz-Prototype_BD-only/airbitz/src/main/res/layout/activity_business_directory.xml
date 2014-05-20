@@ -33,12 +33,13 @@
         layout="@layout/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_header" />
+        android:layout_below="@id/layout_header" />
 
     <FrameLayout
+        android:id="@+id/scroll_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/layout_search"
+        android:layout_below="@id/layout_search"
         android:foreground="@drawable/actionbar_shadow">
 
         <com.airbitz.objects.ObservableScrollView
@@ -89,7 +90,7 @@
 
                                     <TextView
                                         android:id="@+id/button_restaurant"
-                                        style="@style/CategoryItem"
+                                        style="@style/CategoryItemTop"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:drawableLeft="@drawable/ico_restaurant"
@@ -116,7 +117,7 @@
 
                                     <TextView
                                         android:id="@+id/button_more"
-                                        style="@style/CategoryItem"
+                                        style="@style/CategoryItemBottom"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:drawableLeft="@drawable/ico_more"
@@ -189,48 +190,10 @@
                         android:visibility="gone" />
                     <!--</RelativeLayout>-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:id="@+id/layout_near_you"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1px"
-                                android:background="#b9d1dd" />
-
-                            <TextView
-                                android:id="@+id/textview_nearyou"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#DDC0C0C0"
-                                android:paddingBottom="@dimen/content_padding_quarter"
-                                android:paddingLeft="@dimen/content_padding_1_quarter"
-                                android:paddingTop="@dimen/content_padding_quarter"
-                                android:shadowColor="#FFFFFFFF"
-                                android:shadowDx="1"
-                                android:shadowDy="1"
-                                android:shadowRadius="1"
-                                android:text="Near You"
-                                android:textColor="#4e626d"
-                                android:textSize="@dimen/text_size_small" />
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1px"
-                                android:background="@android:color/black" />
-
-                        </LinearLayout>
-                    </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/fragment_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -241,16 +204,99 @@
                         android:id="@+id/venue"
                         android:name="com.airbitz.fragments.VenueFragment"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"/>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/layout_near_you"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentTop="true">
+
+                        <View
+                            android:id="@+id/flag_for_sticky"
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:background="#b9d1dd" />
+
+                        <TextView
+                            android:id="@+id/textview_nearyou"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradient_background_grey"
+                            android:paddingBottom="@dimen/content_padding_quarter"
+                            android:paddingLeft="@dimen/content_padding_1_quarter"
+                            android:paddingTop="@dimen/content_padding_quarter"
+                            android:shadowColor="#FFFFFFFF"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:text="Near You"
+                            android:textColor="#ff384954"
+                            android:textSize="@dimen/text_size_small" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:background="@android:color/black" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:background="#88FFFFFF" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <include layout="@layout/loading_indicator" />
 
             </LinearLayout>
+
         </com.airbitz.objects.ObservableScrollView>
 
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_near_you_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/layout_search"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#b9d1dd" />
+
+        <TextView
+            android:id="@+id/textview_nearyou_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_background_grey"
+            android:paddingBottom="@dimen/content_padding_quarter"
+            android:paddingLeft="@dimen/content_padding_1_quarter"
+            android:paddingTop="@dimen/content_padding_quarter"
+            android:shadowColor="#FFFFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="Near You"
+            android:textColor="#ff384954"
+            android:textSize="@dimen/text_size_small" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/black" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#88FFFFFF" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
 

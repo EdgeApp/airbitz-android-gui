@@ -1,5 +1,6 @@
 package com.airbitz.adapters;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,11 +47,22 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         LinearLayout infoLayout = (LinearLayout) view.findViewById(R.id.infoLayout);
         LinearLayout shadowLayout = (LinearLayout) view.findViewById(R.id.shadow_layout);
 
-        titleView.setText(marker.getTitle());
+        if(marker.getTitle().length()>19){
+            titleView.setText(marker.getTitle().substring(0,15)+"...");
+        }else{
+            titleView.setText(marker.getTitle());
+        }
         if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
             addressView.setText(" ");
             LinearLayout balloonLayout = (LinearLayout) view.findViewById(R.id.balloon_layout);
-            balloonLayout.setPadding(0, 0, 0, 0);
+            LinearLayout balloonLayoutInner = (LinearLayout) view.findViewById(R.id.balloon_layout_inner);
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            balloonLayout.setLayoutParams(llp);
+            balloonLayout.setPadding((int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info));
+            balloonLayout.setBackgroundResource(R.drawable.bg_balloon_info);
+            balloonLayoutInner.setLayoutParams(llp);
+            balloonLayoutInner.setPadding((int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info), (int)mContext.getResources().getDimension(R.dimen.padding_map_info));
+
 
             shadowLayout.setVisibility(View.GONE);
             ImageView backgroundImageView = (ImageView) view.findViewById(R.id.background_image);
@@ -65,8 +77,8 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             addressView.setText(marker.getSnippet());
 
             Bitmap backgroundImage = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bg_selected_tab);
-            Bitmap roundedBackground = ImageHelper.scaleCenterCrop(backgroundImage, 90, 170);
-            roundedBackground = ImageHelper.getRoundedCornerBitmap(roundedBackground, 5);
+            Bitmap roundedBackground = ImageHelper.scaleCenterCrop(backgroundImage, 70, 164);
+            roundedBackground = ImageHelper.getRoundedCornerBitmap(roundedBackground, 25);
             ImageView backgroundImageView = (ImageView) view.findViewById(R.id.background_image);
             backgroundImageView.setImageBitmap(roundedBackground);
 
@@ -83,7 +95,7 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             if(image==null){
                 image = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.bg_navbar);
             }
-            roundedBackground = ImageHelper.scaleCenterCrop(image, 90, 170);
+            roundedBackground = ImageHelper.scaleCenterCrop(image, 70, 164);
             roundedBackground = ImageHelper.getRoundedCornerBitmap(roundedBackground, 5);
             backgroundImageView.setImageBitmap(roundedBackground);
         }

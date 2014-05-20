@@ -3,6 +3,7 @@
     android:id="@+id/layout_item_business"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="112dp"
     android:background="@drawable/bg_selected_tab">
 
     <RelativeLayout

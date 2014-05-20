@@ -2,8 +2,12 @@ package com.airbitz.objects;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+
+import com.airbitz.R;
 
 /**
  * Created on 3/10/14.
@@ -11,6 +15,19 @@ import android.widget.ScrollView;
 public class ObservableScrollView extends ScrollView {
 
     private ScrollViewListener scrollViewListener = null;
+    private Context mContext;;
+    private LinearLayout stickyPopUp;
+
+    int[] locSticky = {0,0};
+    int[] locFrame = {0,0};
+
+    public void setContext(Context context){
+        mContext = context;
+    }
+
+    public void setSticky(LinearLayout stickyLayout){
+        stickyPopUp = stickyLayout;
+    }
 
     public interface ScrollViewListener {
         void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy);
@@ -35,6 +52,25 @@ public class ObservableScrollView extends ScrollView {
 
     @Override
     protected void onScrollChanged(int x, int y, int oldx, int oldy) {
+
+        LinearLayout unstickyPopUp = (LinearLayout) findViewById(R.id.layout_near_you);
+        View stickyView = findViewById(R.id.flag_for_sticky);
+
+        this.getLocationOnScreen(locFrame);
+        stickyView.getLocationOnScreen(locSticky);
+
+        if(locSticky[1]<=locFrame[1]) {
+            if (stickyPopUp.getVisibility() == VISIBLE || unstickyPopUp.getVisibility() == VISIBLE){
+                stickyPopUp.setVisibility(VISIBLE);
+                unstickyPopUp.setVisibility(GONE);
+            }
+        }else{
+            if (stickyPopUp.getVisibility() == VISIBLE || unstickyPopUp.getVisibility() == VISIBLE) {
+                stickyPopUp.setVisibility(GONE);
+                unstickyPopUp.setVisibility(VISIBLE);
+            }
+        }
+
 
         View view = (View) getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY()));
