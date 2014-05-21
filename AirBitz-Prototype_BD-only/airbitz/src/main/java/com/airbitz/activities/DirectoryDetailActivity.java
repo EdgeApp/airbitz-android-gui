@@ -99,9 +99,12 @@ public class DirectoryDetailActivity extends Activity implements GestureDetector
         mDiscountTextView = (TextView) findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) findViewById(R.id.textview_distance);
 
-        if(getIntent().getStringExtra("bizDistance") != null) {
+        String tempDist = getIntent().getStringExtra("bizDistance");
+
+        if(tempDist != null && tempDist != "null") {
+            System.out.println("Business Distance: "+tempDist);
             setDistance(getIntent().getStringExtra("bizDistance"));
-            mTempDist = Double.parseDouble(getIntent().getStringExtra("bizDistance"));
+            //mTempDist = Double.parseDouble(getIntent().getStringExtra("bizDistance"));
         }
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
