@@ -98,7 +98,11 @@ public class AirbitzAPI {
                 }
             }
         }
-        return stringBuffer.toString();
+        String temp = stringBuffer.toString();
+        if(temp == null){
+            temp = "{}";
+        }
+        return temp;
     }
 
     public static String createURLParams(List<NameValuePair> params){
