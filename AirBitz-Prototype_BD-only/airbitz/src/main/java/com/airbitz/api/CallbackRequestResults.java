@@ -5,5 +5,5 @@ package com.airbitz.api;
  */
 
 public interface CallbackRequestResults {
-    void OnRequestResults(tABC_RequestResults pResults);
+    void OnRequestResults(int val);
 }

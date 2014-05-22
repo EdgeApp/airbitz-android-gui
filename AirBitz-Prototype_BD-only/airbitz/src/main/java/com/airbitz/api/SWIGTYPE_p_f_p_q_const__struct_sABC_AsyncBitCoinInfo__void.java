@@ -9,7 +9,7 @@
 package com.airbitz.api;
 
 public class SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void {
-  private long swigCPtr;
+  public long swigCPtr;
 
   protected SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;

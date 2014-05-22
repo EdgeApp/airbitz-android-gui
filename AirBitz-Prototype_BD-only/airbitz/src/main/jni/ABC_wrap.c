@@ -207,6 +207,23 @@ void java_callback(int arg, void *ptr) {
   (*data->env)->CallVoidMethod(data->env, data->obj, meth, (jint)arg);
 }
 
+// 1:
+struct callback_data_r {
+  JNIEnv *env;
+  jobject obj;
+};
+
+// 2:
+void java_callback_r(int arg, void *ptr) {
+  struct callback_data_r *data_r = ptr;
+  jclass callbackInterfaceClass_r = (*(data_r->env))->GetObjectClass(data_r->env, data_r->obj);
+  assert(callbackInterfaceClass_r);
+  const jmethodID meth = (*data_r->env)->GetMethodID(data_r->env, callbackInterfaceClass_r, "OnRequestResults", "(I)V");
+  assert(meth);
+  (*data_r->env)->CallVoidMethod(data_r->env, data_r->obj, meth, (jint)arg);
+}
+
+
 
 #include "ABC.h"
 
@@ -259,7 +276,51 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_active_1get(JNIEnv *jenv, 
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_set(JNIEnv *jenv, jclass jcls, jobject jarg1) {
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_data_1r_1set(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  void *arg1 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(void **)&jarg1; 
+  data_r = arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_data_1r_1get(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (void *)data_r;
+  *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_active_1r_1set(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  callback_r arg1 = (callback_r) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(callback_r *)&jarg1; 
+  active_r = arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_active_1r_1get(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  callback_r result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (callback_r)active_r;
+  *(callback_r *)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_setInfoCallback(JNIEnv *jenv, jclass jcls, jobject jarg1) {
   callback_t arg1 = (callback_t) 0 ;
   void *arg2 = (void *) 0 ;
   
@@ -273,17 +334,69 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_set(JNIEnv *jenv, jclass jc
     arg1 = java_callback;
     arg2 = data;
   }
-  set(arg1,arg2);
+  setInfoCallback(arg1,arg2);
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_dispatch(JNIEnv *jenv, jclass jcls, jint jarg1) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_getInfoCallback(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  long result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (long)getInfoCallback();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_setRequestCallback(JNIEnv *jenv, jclass jcls, jobject jarg1) {
+  callback_r arg1 = (callback_r) 0 ;
+  void *arg2 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  {
+    struct callback_data *data_r = malloc(sizeof *data_r);
+    data_r->env = jenv;
+    data_r->obj = (*jenv)->NewGlobalRef(jenv, jarg1);
+    (*jenv)->DeleteLocalRef(jenv, jarg1);
+    arg1 = java_callback_r;
+    arg2 = data_r;
+  }
+  setRequestCallback(arg1,arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_getRequestCallback(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  long result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (long)getRequestCallback();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_dispatchInfo(JNIEnv *jenv, jclass jcls, jint jarg1) {
   int arg1 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = (int)jarg1; 
-  dispatch(arg1);
+  dispatchInfo(arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_dispatchRequest(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  int arg1 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  dispatchRequest(arg1);
 }
 
 

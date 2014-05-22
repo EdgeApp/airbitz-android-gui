@@ -15,11 +15,15 @@ import android.widget.RelativeLayout;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CallbackAsyncBitCoinInfo;
+import com.airbitz.api.CallbackRequestResults;
+import com.airbitz.api.SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void;
+import com.airbitz.api.SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AsyncBitCoinInfo;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
@@ -42,8 +46,7 @@ import java.util.Stack;
  * Created by Thomas Baker on 4/22/14.
  */
 public class NavigationActivity extends FragmentActivity
-implements NavigationBarFragment.OnScreenSelectedListener,
-        CallbackAsyncBitCoinInfo {
+implements NavigationBarFragment.OnScreenSelectedListener {
 
     static {
         System.loadLibrary("airbitz");
@@ -134,25 +137,48 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         setLoginView(!mUserLoggedIn);
 
         tABC_Error pError = new tABC_Error();
-        tABC_AsyncBitCoinInfo pInfo = new tABC_AsyncBitCoinInfo();
+        SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void infoCallback = new InfoCallback();
 
         String seed = getSeedData();
 
         SWIGTYPE_p_void pData =null;
 
-        tABC_CC code = core.ABC_Initialize("test", null, pData, seed, seed.length(), pError);
-        String s = code.toString();
+        tABC_CC code = core.ABC_Initialize("test", infoCallback, pData, seed, seed.length(), pError);
 
-        core.set(this);
-        Log.d("NavigationActivity", "Callback set in Java");
-        core.dispatch(666);
-        Log.d("NavigationActivity", "Callback dispatched in Java");
+//        core.dispatchInfo(666);
+
+        SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void resultsCallback = new ResultsCallback();
+//        core.dispatchRequest(999);
+
+        code = core.ABC_SignIn("", "", resultsCallback, pData, pError);
+        Log.d("Signin code", code.toString());
     }
 
-    public void OnAsyncBitCoinInfo(int val) {
-        Log.d("Callback received", String.valueOf(val));
+    public class InfoCallback extends SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void implements CallbackAsyncBitCoinInfo {
+        public InfoCallback() {
+            core.setInfoCallback(this);
+            long ptr = core.getInfoCallback();
+//            Log.d("InfoCallback long", String.valueOf(ptr));
+            this.swigCPtr = ptr;
+        }
+
+        public void OnAsyncBitCoinInfo(int val) {
+            Log.d("InfoCallback received ", String.valueOf(val));
+        }
     }
 
+    public class ResultsCallback extends SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void implements CallbackRequestResults {
+        public ResultsCallback() {
+            core.setRequestCallback(this);
+            long ptr = core.getRequestCallback();
+//            Log.d("RequestCallback long", String.valueOf(ptr));
+            this.swigCPtr = ptr;
+        }
+
+        public void OnRequestResults(int val) {
+            Log.d("RequestCallback received ", String.valueOf(val));
+        }
+    }
 
     public void setLoginView(boolean show) {
         if(show) {

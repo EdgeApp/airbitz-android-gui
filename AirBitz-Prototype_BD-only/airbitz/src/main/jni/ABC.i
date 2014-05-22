@@ -23,6 +23,23 @@ void java_callback(int arg, void *ptr) {
   assert(meth);
   (*data->env)->CallVoidMethod(data->env, data->obj, meth, (jint)arg);
 }
+
+// 1:
+struct callback_data_r {
+  JNIEnv *env;
+  jobject obj;
+};
+
+// 2:
+void java_callback_r(int arg, void *ptr) {
+  struct callback_data_r *data_r = ptr;
+  jclass callbackInterfaceClass_r = (*(data_r->env))->GetObjectClass(data_r->env, data_r->obj);
+  assert(callbackInterfaceClass_r);
+  const jmethodID meth = (*data_r->env)->GetMethodID(data_r->env, callbackInterfaceClass_r, "OnRequestResults", "(I)V");
+  assert(meth);
+  (*data_r->env)->CallVoidMethod(data_r->env, data_r->obj, meth, (jint)arg);
+}
+
 %}
 
 // 3:
@@ -39,6 +56,22 @@ void java_callback(int arg, void *ptr) {
   $1 = java_callback;
   $2 = data;
 }
+
+// 3:
+%typemap(jstype) callback_r cb "CallbackRequestResults";
+%typemap(jtype) callback_r cb "CallbackRequestResults";
+%typemap(jni) callback_r cb "jobject";
+%typemap(javain) callback_r cb "$javainput";
+// 4:
+%typemap(in,numinputs=1) (callback_r cb, void *userdata) {
+  struct callback_data *data_r = malloc(sizeof *data_r);
+  data_r->env = jenv;
+  data_r->obj = JCALL1(NewGlobalRef, jenv, $input);
+  JCALL1(DeleteLocalRef, jenv, $input);
+  $1 = java_callback_r;
+  $2 = data_r;
+}
+
 
 %include "callback.h"
 
