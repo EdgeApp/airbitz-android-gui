@@ -34,10 +34,6 @@ import java.util.List;
 
 public class AirbitzAPI {
 
-    static {
-        System.loadLibrary("airbitz");
-    }
-
     private static AirbitzAPI mInstance = null;
 
     private static String TAG = AirbitzAPI.class.getSimpleName();
