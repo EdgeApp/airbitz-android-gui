@@ -744,8 +744,8 @@ extern "C" {
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
     // temp functions
-    void tempEventA();
-    void tempEventB();
+//    void tempEventA();
+//    void tempEventB();
 
 #ifdef __cplusplus
 }

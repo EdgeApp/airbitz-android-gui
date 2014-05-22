@@ -1,0 +1,17 @@
+5/16/14:
+As of Android Studio 0.5.8, the NDK build process is not mature. Thus, manual efforts are necessary to build and link the native interface to the core library.
+Note that the airbitz build.gradle file turns off automatic ndk building so these manual techniques are not overwritten.
+
+Here is the basic procedure:
+
+1) Obtain the core library .so file and the ABC.h file
+2) Create an ABC.i file for swig. It just references the ABC.h file
+3) build the bridge JNI using swig in a terminal
+4) Perform ndk-build in a terminal at the jni directory (note at this time tempEventA and tempEventB are not in the core .so file, so comment those out in ABC_wrap.c)
+5) Place the core library .so file in the appropriate jniLibs/XXX directory
+6) use the obj version of the ndk-build, not the libs version, of libairbitz.so, placed next to the core.so library.
+7) remove the libs and obj directories so Studio isn't confused which libairbitz.so to use
+
+Here's a working swig command issued from the main airbitz directory: swig -java -package com.airbitz.api -outdir src/main/java/com/airbitz/api -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
+
+See NavigationActivity for how to initialize the core library.
