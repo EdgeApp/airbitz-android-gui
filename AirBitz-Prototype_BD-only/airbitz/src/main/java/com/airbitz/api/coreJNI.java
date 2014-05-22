@@ -13,8 +13,16 @@ public class coreJNI {
   public final static native long data_get();
   public final static native void active_set(long jarg1);
   public final static native long active_get();
-  public final static native void set(CallbackAsyncBitCoinInfo jarg1);
-  public final static native void dispatch(int jarg1);
+  public final static native void data_r_set(long jarg1);
+  public final static native long data_r_get();
+  public final static native void active_r_set(long jarg1);
+  public final static native long active_r_get();
+  public final static native void setInfoCallback(CallbackAsyncBitCoinInfo jarg1);
+  public final static native int getInfoCallback();
+  public final static native void setRequestCallback(CallbackRequestResults jarg1);
+  public final static native int getRequestCallback();
+  public final static native void dispatchInfo(int jarg1);
+  public final static native void dispatchRequest(int jarg1);
   public final static native int ABC_MAX_STRING_LENGTH_get();
   public final static native int ABC_CC_Ok_get();
   public final static native int ABC_CC_Error_get();

@@ -27,12 +27,46 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_int_p_void__void(cPtr, false);
   }
 
-  public static void set(CallbackAsyncBitCoinInfo cb) {
-    coreJNI.set(cb);
+  public static void setData_r(SWIGTYPE_p_void value) {
+    coreJNI.data_r_set(SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public static void dispatch(int val) {
-    coreJNI.dispatch(val);
+  public static SWIGTYPE_p_void getData_r() {
+    long cPtr = coreJNI.data_r_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  }
+
+  public static void setActive_r(SWIGTYPE_p_f_int_p_void__void value) {
+    coreJNI.active_r_set(SWIGTYPE_p_f_int_p_void__void.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_f_int_p_void__void getActive_r() {
+    long cPtr = coreJNI.active_r_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_int_p_void__void(cPtr, false);
+  }
+
+  public static void setInfoCallback(CallbackAsyncBitCoinInfo cb) {
+    coreJNI.setInfoCallback(cb);
+  }
+
+  public static int getInfoCallback() {
+    return coreJNI.getInfoCallback();
+  }
+
+  public static void setRequestCallback(CallbackRequestResults cb) {
+    coreJNI.setRequestCallback(cb);
+  }
+
+  public static int getRequestCallback() {
+    return coreJNI.getRequestCallback();
+  }
+
+  public static void dispatchInfo(int val) {
+    coreJNI.dispatchInfo(val);
+  }
+
+  public static void dispatchRequest(int val) {
+    coreJNI.dispatchRequest(val);
   }
 
   public static tABC_CC ABC_Initialize(String szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void fAsyncBitCoinEventCallback, SWIGTYPE_p_void pData, String pSeedData, long seedLength, tABC_Error pError) {
