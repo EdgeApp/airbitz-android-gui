@@ -1,21 +1,25 @@
 package com.airbitz.activities;
 
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
+import com.airbitz.api.CallbackAsyncBitCoinInfo;
+import com.airbitz.api.SWIGTYPE_p_void;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_AsyncBitCoinInfo;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
@@ -26,8 +30,10 @@ import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.crashlytics.android.Crashlytics;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -36,7 +42,12 @@ import java.util.Stack;
  * Created by Thomas Baker on 4/22/14.
  */
 public class NavigationActivity extends FragmentActivity
-implements NavigationBarFragment.OnScreenSelectedListener {
+implements NavigationBarFragment.OnScreenSelectedListener,
+        CallbackAsyncBitCoinInfo {
+
+    static {
+        System.loadLibrary("airbitz");
+    }
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
@@ -121,7 +132,27 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             }
         });
         setLoginView(!mUserLoggedIn);
+
+        tABC_Error pError = new tABC_Error();
+        tABC_AsyncBitCoinInfo pInfo = new tABC_AsyncBitCoinInfo();
+
+        String seed = getSeedData();
+
+        SWIGTYPE_p_void pData =null;
+
+        tABC_CC code = core.ABC_Initialize("test", null, pData, seed, seed.length(), pError);
+        String s = code.toString();
+
+        core.set(this);
+        Log.d("NavigationActivity", "Callback set in Java");
+        core.dispatch(666);
+        Log.d("NavigationActivity", "Callback dispatched in Java");
     }
+
+    public void OnAsyncBitCoinInfo(int val) {
+        Log.d("Callback received", String.valueOf(val));
+    }
+
 
     public void setLoginView(boolean show) {
         if(show) {
@@ -216,4 +247,43 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     public void setUserLoggedIn(boolean state) {
         mUserLoggedIn = state;
     }
+
+    private String getSeedData()
+    {
+        String strSeed = new String();
+
+//        // add the advertiser identifier
+//        if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
+//        {
+//            [strSeed appendString:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+//        }
+//
+//        // add the UUID
+//        CFUUIDRef theUUID = CFUUIDCreate(NULL);
+//        CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+//        CFRelease(theUUID);
+//        [strSeed appendString:[[NSString alloc] initWithString:(__bridge NSString *)string]];
+//        CFRelease(string);
+//
+//        // add the device name
+//        [strSeed appendString:[[UIDevice currentDevice] name]];
+//
+//        // add the string to the data
+//        //NSLog(@"seed string: %@", strSeed);
+//        [data appendData:[strSeed dataUsingEncoding:NSUTF8StringEncoding]];
+
+        long time = System.nanoTime();
+        ByteBuffer bb1 = ByteBuffer.allocate(8);
+        bb1.putLong(time);
+        strSeed += bb1.array();
+
+        Random r = new Random();
+        ByteBuffer bb2 = ByteBuffer.allocate(4);
+        bb2.putInt(r.nextInt());
+        strSeed += bb2.array();
+
+        return strSeed;
+    }
+
+
 }
