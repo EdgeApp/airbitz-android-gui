@@ -39,6 +39,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.api.tABC_RequestType;
 
 public class LandingFragment extends Fragment {
 
@@ -169,15 +170,12 @@ public class LandingFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pData = new tABC_RequestResults();
+            tABC_RequestResults pResults = new tABC_RequestResults();
 
-            tABC_CC code = code = core.ABC_SignIn(mUsername, mPassword, null, pData, pError);
-            int line = pError.getNSourceLine();
-            String desc = pError.getSzSourceFile();
-            String func = pError.getSzSourceFunc();
-            boolean success = pData.getBSuccess();
-            Log.d("Signin code", code.toString());
+            tABC_CC code = core.ABC_SignIn(mUsername, mPassword, null, pResults, pError);
+            tABC_RequestType type = pResults.getRequestType();
 
+            boolean success = type == tABC_RequestType.ABC_RequestType_AccountSignIn? true: false;
             return success;
         }
 

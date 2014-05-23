@@ -161,14 +161,6 @@ public class SignUpActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pData, pError);
-//            int line = pError.getNSourceLine();
-//            String desc = pError.getSzSourceFile();
-//            String func = pError.getSzSourceFunc();
-//            boolean success = pData.getBSuccess();
-//            tABC_Error error = pData.getErrorInfo();
-//            tABC_RequestType pType = pData.getRequestType();
-//            String type = pType.toString();
-//            Log.d("Signup code", code.toString());
             boolean success = code == tABC_CC.ABC_CC_Ok? true: false;
             return success;
         }
