@@ -15,9 +15,9 @@
 %apply char * { unsigned char * }
 
 %{
-#include "ABC.h"
+#include "ABC_android.h"
 %}
 
 /* Let's just grab the original header file here */
-%include "ABC.h"
+%include "ABC_android.h"
 

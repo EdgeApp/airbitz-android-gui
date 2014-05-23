@@ -144,7 +144,6 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         tABC_RequestResults pData = new tABC_RequestResults();
 
         tABC_CC code = core.ABC_Initialize(this.getApplicationContext().getFilesDir().toString(), null, null, seed, seed.length(), pError);
-
     }
 
 
