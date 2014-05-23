@@ -23,6 +23,7 @@
 
 typedef void (*callback_t)(int arg, void *data);
 typedef void (*callback_r)(int arg, void *data);
+typedef void (*callback_r_proxy) (int arg);
 
 static void *data = NULL;
 static callback_t active = NULL;
@@ -36,6 +37,12 @@ static void setInfoCallback(callback_t cb, void *userdata) {
 //    ALOG("Setting values callback %lu, userdata %lu", active, userdata);
 }
 
+
+static void dispatchInfo(int val) {
+//    ALOG("Dispatching value %d", val);
+    active(val, data);
+}
+
 static long getInfoCallback() {
     return (long) active;
 }
@@ -46,18 +53,14 @@ static void setRequestCallback(callback_r cb, void *userdata) {
 //    ALOG("Setting values callback %lu, userdata %lu", active, userdata);
 }
 
-static long getRequestCallback() {
-    return (long) active_r;
-}
-
-
-static void dispatchInfo(int val) {
-//    ALOG("Dispatching value %d", val);
-    active(val, data);
-}
-
-static void dispatchRequest(int val) {
+static callback_r_proxy dispatchRequest(int val) {
 //    ALOG("Dispatching value %d", val);
     active_r(val, data_r);
 }
+
+static callback_r_proxy getRequestCallback() {
+    return dispatchRequest;
+}
+
+
 

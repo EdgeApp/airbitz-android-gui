@@ -9,18 +9,18 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbitz.R;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
 
 import java.util.regex.Pattern;
@@ -29,6 +29,10 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpActivity extends Activity {
+
+    static {
+        System.loadLibrary("airbitz");
+    }
 
     private Button mNextButton;
 
@@ -40,7 +44,7 @@ public class SignUpActivity extends Activity {
     private TextView mHintTextView;
     private View mProgressView;
     private View mLoginView;
-    private UserLoginTask mAuthTask;
+    private CreateAccountTask mAuthTask;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -139,13 +143,15 @@ public class SignUpActivity extends Activity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
         private final String mPassword;
         private final String mPin;
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pData = new tABC_RequestResults();
 
-        UserLoginTask(String email, String password, String pin) {
+        CreateAccountTask(String email, String password, String pin) {
             mUsername = email;
             mPassword = password;
             mPin = pin;
@@ -153,16 +159,18 @@ public class SignUpActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service. Remove below code.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            return true;
+            tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pData, pError);
+//            int line = pError.getNSourceLine();
+//            String desc = pError.getSzSourceFile();
+//            String func = pError.getSzSourceFunc();
+//            boolean success = pData.getBSuccess();
+//            tABC_Error error = pData.getErrorInfo();
+//            tABC_RequestType pType = pData.getRequestType();
+//            String type = pType.toString();
+//            Log.d("Signup code", code.toString());
+            boolean success = code == tABC_CC.ABC_CC_Ok? true: false;
+            return success;
         }
 
         @Override
@@ -170,6 +178,8 @@ public class SignUpActivity extends Activity {
             mAuthTask = null;
 
             if (success) {
+                //TODO set global account created success, login timeout stuff, etc
+
                 mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
                 mIntent.putExtra(KEY_USERNAME, mUsername);
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
@@ -270,7 +280,7 @@ public class SignUpActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password, pin);
+            mAuthTask = new CreateAccountTask(username, password, pin);
             mAuthTask.execute((Void) null);
         }
     }

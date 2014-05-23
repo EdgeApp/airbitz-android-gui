@@ -75,6 +75,14 @@ public class tABC_TxDetails {
     return coreJNI.tABC_TxDetails_szName_get(swigCPtr, this);
   }
 
+  public void setBizId(long value) {
+    coreJNI.tABC_TxDetails_bizId_set(swigCPtr, this, value);
+  }
+
+  public long getBizId() {
+    return coreJNI.tABC_TxDetails_bizId_get(swigCPtr, this);
+  }
+
   public void setSzCategory(String value) {
     coreJNI.tABC_TxDetails_szCategory_set(swigCPtr, this, value);
   }

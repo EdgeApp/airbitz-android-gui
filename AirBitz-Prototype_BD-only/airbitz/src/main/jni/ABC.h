@@ -308,6 +308,8 @@ extern "C" {
         double amountCurrency;
         /** payer or payee */
         char *szName;
+        /** payee business-directory id (0 otherwise) */
+        unsigned int bizId;
         /** category for the transaction */
         char *szCategory;
         /** notes for the transaction */
@@ -482,14 +484,14 @@ extern "C" {
     tABC_CC ABC_SignIn(const char *szUserName,
                        const char *szPassword,
                        tABC_Request_Callback fRequestCallback,
-                       void *pData,
+                       tABC_RequestResults *pData,
                        tABC_Error *pError);
 
     tABC_CC ABC_CreateAccount(const char *szUserName,
                               const char *szPassword,
                               const char *szPIN,
                               tABC_Request_Callback fRequestCallback,
-                              void *pData,
+                              tABC_RequestResults *pData,
                               tABC_Error *pError);
 
     tABC_CC ABC_SetAccountRecoveryQuestions(const char *szUserName,
@@ -679,6 +681,14 @@ extern "C" {
                                 tABC_TxInfo ***paTransactions,
                                 unsigned int *pCount,
                                 tABC_Error *pError);
+
+    tABC_CC ABC_SearchTransactions(const char *szUserName,
+                                   const char *szPassword,
+                                   const char *szWalletUUID,
+                                   const char *szQuery,
+                                   tABC_TxInfo ***paTransactions,
+                                   unsigned int *pCount,
+                                   tABC_Error *pError);
 
     void ABC_FreeTransaction(tABC_TxInfo *pTransaction);
 
