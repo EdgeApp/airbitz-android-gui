@@ -16,6 +16,7 @@ import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CallbackAsyncBitCoinInfo;
 import com.airbitz.api.CallbackRequestResults;
+import com.airbitz.api.SWIGTYPE_p_f_int__void;
 import com.airbitz.api.SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void;
 import com.airbitz.api.SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void;
 import com.airbitz.api.SWIGTYPE_p_void;
@@ -137,48 +138,15 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         setLoginView(!mUserLoggedIn);
 
         tABC_Error pError = new tABC_Error();
-        SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void infoCallback = new InfoCallback();
 
         String seed = getSeedData();
 
-        SWIGTYPE_p_void pData =null;
+        tABC_RequestResults pData = new tABC_RequestResults();
 
-        tABC_CC code = core.ABC_Initialize("test", infoCallback, pData, seed, seed.length(), pError);
+        tABC_CC code = core.ABC_Initialize(this.getApplicationContext().getFilesDir().toString(), null, null, seed, seed.length(), pError);
 
-//        core.dispatchInfo(666);
-
-        SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void resultsCallback = new ResultsCallback();
-//        core.dispatchRequest(999);
-
-        code = core.ABC_SignIn("", "", resultsCallback, pData, pError);
-        Log.d("Signin code", code.toString());
     }
 
-    public class InfoCallback extends SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void implements CallbackAsyncBitCoinInfo {
-        public InfoCallback() {
-            core.setInfoCallback(this);
-            long ptr = core.getInfoCallback();
-//            Log.d("InfoCallback long", String.valueOf(ptr));
-            this.swigCPtr = ptr;
-        }
-
-        public void OnAsyncBitCoinInfo(int val) {
-            Log.d("InfoCallback received ", String.valueOf(val));
-        }
-    }
-
-    public class ResultsCallback extends SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void implements CallbackRequestResults {
-        public ResultsCallback() {
-            core.setRequestCallback(this);
-            long ptr = core.getRequestCallback();
-//            Log.d("RequestCallback long", String.valueOf(ptr));
-            this.swigCPtr = ptr;
-        }
-
-        public void OnRequestResults(int val) {
-            Log.d("RequestCallback received ", String.valueOf(val));
-        }
-    }
 
     public void setLoginView(boolean show) {
         if(show) {

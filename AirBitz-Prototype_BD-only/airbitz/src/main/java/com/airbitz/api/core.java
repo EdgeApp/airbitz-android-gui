@@ -9,66 +9,6 @@
 package com.airbitz.api;
 
 public class core implements coreConstants {
-  public static void setData(SWIGTYPE_p_void value) {
-    coreJNI.data_set(SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public static SWIGTYPE_p_void getData() {
-    long cPtr = coreJNI.data_get();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
-  }
-
-  public static void setActive(SWIGTYPE_p_f_int_p_void__void value) {
-    coreJNI.active_set(SWIGTYPE_p_f_int_p_void__void.getCPtr(value));
-  }
-
-  public static SWIGTYPE_p_f_int_p_void__void getActive() {
-    long cPtr = coreJNI.active_get();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_f_int_p_void__void(cPtr, false);
-  }
-
-  public static void setData_r(SWIGTYPE_p_void value) {
-    coreJNI.data_r_set(SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public static SWIGTYPE_p_void getData_r() {
-    long cPtr = coreJNI.data_r_get();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
-  }
-
-  public static void setActive_r(SWIGTYPE_p_f_int_p_void__void value) {
-    coreJNI.active_r_set(SWIGTYPE_p_f_int_p_void__void.getCPtr(value));
-  }
-
-  public static SWIGTYPE_p_f_int_p_void__void getActive_r() {
-    long cPtr = coreJNI.active_r_get();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_f_int_p_void__void(cPtr, false);
-  }
-
-  public static void setInfoCallback(CallbackAsyncBitCoinInfo cb) {
-    coreJNI.setInfoCallback(cb);
-  }
-
-  public static int getInfoCallback() {
-    return coreJNI.getInfoCallback();
-  }
-
-  public static void setRequestCallback(CallbackRequestResults cb) {
-    coreJNI.setRequestCallback(cb);
-  }
-
-  public static int getRequestCallback() {
-    return coreJNI.getRequestCallback();
-  }
-
-  public static void dispatchInfo(int val) {
-    coreJNI.dispatchInfo(val);
-  }
-
-  public static void dispatchRequest(int val) {
-    coreJNI.dispatchRequest(val);
-  }
-
   public static tABC_CC ABC_Initialize(String szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void fAsyncBitCoinEventCallback, SWIGTYPE_p_void pData, String pSeedData, long seedLength, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Initialize(szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void.getCPtr(fAsyncBitCoinEventCallback), SWIGTYPE_p_void.getCPtr(pData), pSeedData, seedLength, tABC_Error.getCPtr(pError), pError));
   }
@@ -81,12 +21,12 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_ClearKeyCache(tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_SignIn(String szUserName, String szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SignIn(szUserName, szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_SignIn(String szUserName, String szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, tABC_RequestResults pData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SignIn(szUserName, szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), tABC_RequestResults.getCPtr(pData), pData, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_CreateAccount(String szUserName, String szPassword, String szPIN, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_CreateAccount(szUserName, szPassword, szPIN, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_CreateAccount(String szUserName, String szPassword, String szPIN, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, tABC_RequestResults pData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_CreateAccount(szUserName, szPassword, szPIN, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), tABC_RequestResults.getCPtr(pData), pData, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_SetAccountRecoveryQuestions(String szUserName, String szPassword, String szRecoveryQuestions, String szRecoveryAnswers, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
@@ -227,6 +167,10 @@ public class core implements coreConstants {
 
   public static tABC_CC ABC_GetTransactions(String szUserName, String szPassword, String szWalletUUID, SWIGTYPE_p_p_p_sABC_TxInfo paTransactions, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetTransactions(szUserName, szPassword, szWalletUUID, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(paTransactions), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_SearchTransactions(String szUserName, String szPassword, String szWalletUUID, String szQuery, SWIGTYPE_p_p_p_sABC_TxInfo paTransactions, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SearchTransactions(szUserName, szPassword, szWalletUUID, szQuery, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(paTransactions), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
   }
 
   public static void ABC_FreeTransaction(tABC_TxInfo pTransaction) {
