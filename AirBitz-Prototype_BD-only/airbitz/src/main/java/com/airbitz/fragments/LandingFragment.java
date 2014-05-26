@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,10 +17,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -36,19 +35,16 @@ import com.airbitz.R;
 import com.airbitz.activities.ForgotPasswordActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.SignUpActivity;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.api.tABC_RequestType;
 
 public class LandingFragment extends Fragment {
 
     public static final String LAT_KEY = "LATITUDE_KEY";
     public static final String LON_KEY = "LONGITUDE_KEY";
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "air1:hello", "air2:goodbye"
-    };
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -163,34 +159,24 @@ public class LandingFragment extends Fragment {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String username, String password) {
+            mUsername = username;
             mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service. Remove below code.
+            tABC_Error pError = new tABC_Error();
+            tABC_RequestResults pResults = new tABC_RequestResults();
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            tABC_CC code = core.ABC_SignIn(mUsername, mPassword, null, pResults, pError);
+            tABC_RequestType type = pResults.getRequestType();
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            return false;
+            boolean success = type == tABC_RequestType.ABC_RequestType_AccountSignIn? true: false;
+            return success;
         }
 
         @Override
