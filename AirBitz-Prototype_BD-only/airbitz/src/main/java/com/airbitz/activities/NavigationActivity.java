@@ -1,12 +1,15 @@
 package com.airbitz.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -111,6 +114,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
 
         List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new TransparentFragment());
         fragments.add(new LandingFragment());
         fragments.add(new TransparentFragment());
 
@@ -122,7 +126,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
             public void onPageSelected(int position) {
                 // Disappear if transparent page shows
-                if(position==1) {
+                if(position==0 || position==2) {
                     mViewPager.setVisibility(View.GONE);
                 }
             }
@@ -142,9 +146,9 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     public void setLoginView(boolean show) {
         if(show) {
             mViewPager.setVisibility(View.VISIBLE);
-            mViewPager.setCurrentItem(0);
-        } else {
             mViewPager.setCurrentItem(1);
+        } else {
+            mViewPager.setCurrentItem(2);
         }
     }
 
