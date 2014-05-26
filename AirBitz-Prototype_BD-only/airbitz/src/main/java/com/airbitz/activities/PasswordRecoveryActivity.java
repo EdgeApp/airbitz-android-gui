@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,11 +21,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_QuestionChoices;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -55,9 +49,6 @@ public class PasswordRecoveryActivity extends Activity {
 
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
-    private List<String> mQuestions;
-
-    private FetchQuestionsTask mFetchQuestionsTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,12 +103,8 @@ public class PasswordRecoveryActivity extends Activity {
 
         mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.password_recovery_listview);
         mQuestionViews = new ArrayList<View>();
-        mQuestions = getQuestionList(null);
         mQuestionViews.add(getQuestionView());
-
-        mFetchQuestionsTask = new FetchQuestionsTask(mUsername, mPassword, mWithdrawal);
-        mFetchQuestionsTask.execute((Void) null);
-
+        populateQuestionViews();
     }
 
     private void saveQuestionsAndAnswers() {
@@ -166,68 +153,8 @@ public class PasswordRecoveryActivity extends Activity {
         alertDialog.show();
     }
 
-    /**
-     * Represents an asynchronous question fetch task
-     */
-    public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        private final String mPassword;
-        private final String mPin;
-        tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pData = new tABC_RequestResults();
-
-        FetchQuestionsTask(String username, String password, String pin) {
-            mUsername = username;
-            mPassword = password;
-            mPin = pin;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-            tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pData = new tABC_RequestResults();
-            tABC_CC result = core.ABC_GetQuestionChoices("junktest3", null, pData, pError);
-//            tABC_QuestionChoices pQuestions = new tABC_QuestionChoices();
-//            pQuestions.swigCPtr = (pData.getPRetData()).swigCPtr;
-//            long num = pQuestions.getNumChoices();
-
-            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-            return success;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mFetchQuestionsTask = null;
-//                if (pResults->requestType == ABC_RequestType_GetQuestionChoices)
-//                {
-//                    //NSLog(@"GetQuestionChoices completed with cc: %ld (%s)", (unsigned long) pResults->errorInfo.code, pResults->errorInfo.szDescription);
-//                    if (pResults->bSuccess)
-//                    {
-//                        tABC_QuestionChoices *pQuestionChoices = (tABC_QuestionChoices *)pResults->pRetData;
-//                        [controller categorizeQuestionChoices:pQuestionChoices];
-//                        ABC_FreeQuestionChoices(pQuestionChoices);
-//                    }
-//                    [controller performSelectorOnMainThread:@selector(getPasswordRecoveryQuestionsComplete) withObject:nil waitUntilDone:FALSE];
-
-            if (success) {
-                populateQuestionViews();
-            } else {
-//                showProgress(false);
-//                showErrorDialog();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mFetchQuestionsTask = null;
-        }
-    }
-
-    private List<String> getQuestionList(tABC_QuestionChoices questionChoices) {
+    private List<String> getQuestionList() {
         //TODO replace with server questions
-
         List<String> out = new ArrayList<String>();
         for(int i=0; i<5; i++) {
             out.add("Question "+i);
@@ -240,7 +167,7 @@ public class PasswordRecoveryActivity extends Activity {
         View view = inflater.inflate(R.layout.item_password_recovery, null);
         Spinner mySpinner = (Spinner)view.findViewById(R.id.item_password_recovery_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mQuestions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getQuestionList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(adapter);
 

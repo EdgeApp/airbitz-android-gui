@@ -87,7 +87,12 @@ public class BusinessDetail {
             mHasPhysicalBusiness = jsonResponse.getBoolean("has_physical_business");
             mHasOnlineBusiness = jsonResponse.getBoolean("has_online_business");
             mHasBitconDiscount = jsonResponse.getString("has_bitcoin_discount");
-            mLocation = new Location(jsonResponse.getJSONObject("location"));
+            if(!jsonResponse.isNull("location")) {
+                mLocation = new Location(jsonResponse.getJSONObject("location"));
+            }else{
+                mLocation = new Location(0,0);
+            }
+
         }
     }
 

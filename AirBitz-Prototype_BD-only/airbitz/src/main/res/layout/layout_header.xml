@@ -7,11 +7,13 @@
 
     <ImageButton
         android:id="@+id/button_back"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_margin="@dimen/content_padding_half"
+        android:layout_marginLeft="@dimen/content_padding_half"
+        android:layout_marginRight="@dimen/content_padding_half"
+        android:padding="10dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"

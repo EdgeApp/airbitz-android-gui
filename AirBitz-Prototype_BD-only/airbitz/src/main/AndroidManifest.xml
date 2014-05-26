@@ -22,7 +22,8 @@
         android:label="@string/app_name"
         android:name=".App"
         android:uiOptions="splitActionBarWhenNarrow"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:theme="@android:style/Theme.NoTitleBar"
+        android:largeHeap="true">
 
         <meta-data 
             android:name="com.google.android.gms.version"
@@ -59,6 +60,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+        <uses-library android:name="com.google.android.maps" />
         <meta-data android:name="com.crashlytics.ApiKey" android:value="852573192e7c47b3cf3990b031922286cfd1477d"/>
 
     </application>

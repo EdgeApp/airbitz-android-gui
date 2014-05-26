@@ -308,8 +308,6 @@ extern "C" {
         double amountCurrency;
         /** payer or payee */
         char *szName;
-        /** payee business-directory id (0 otherwise) */
-        unsigned int bizId;
         /** category for the transaction */
         char *szCategory;
         /** notes for the transaction */
@@ -484,14 +482,14 @@ extern "C" {
     tABC_CC ABC_SignIn(const char *szUserName,
                        const char *szPassword,
                        tABC_Request_Callback fRequestCallback,
-                       tABC_RequestResults *pData,
+                       void *pData,
                        tABC_Error *pError);
 
     tABC_CC ABC_CreateAccount(const char *szUserName,
                               const char *szPassword,
                               const char *szPIN,
                               tABC_Request_Callback fRequestCallback,
-                              tABC_RequestResults *pData,
+                              void *pData,
                               tABC_Error *pError);
 
     tABC_CC ABC_SetAccountRecoveryQuestions(const char *szUserName,
@@ -499,7 +497,7 @@ extern "C" {
                                             const char *szRecoveryQuestions,
                                             const char *szRecoveryAnswers,
                                             tABC_Request_Callback fRequestCallback,
-                                            tABC_RequestResults *pData,
+                                            void *pData,
                                             tABC_Error *pError);
 
     tABC_CC ABC_CreateWallet(const char *szUserName,
@@ -508,7 +506,7 @@ extern "C" {
                              int        currencyNum,
                              unsigned int attributes,
                              tABC_Request_Callback fRequestCallback,
-                             tABC_RequestResults *pData,
+                             void *pData,
                              tABC_Error *pError);
 
     tABC_CC ABC_GetCurrencies(tABC_Currency **paCurrencyArray,
@@ -580,7 +578,7 @@ extern "C" {
 
     tABC_CC ABC_GetQuestionChoices(const char *szUserName,
                                    tABC_Request_Callback fRequestCallback,
-                                   tABC_RequestResults *pData,
+                                   void *pData,
                                    tABC_Error *pError);
 
     void ABC_FreeQuestionChoices(tABC_QuestionChoices *pQuestionChoices);
@@ -594,7 +592,7 @@ extern "C" {
                                const char *szNewPassword,
                                const char *szNewPIN,
                                tABC_Request_Callback fRequestCallback,
-                               tABC_RequestResults *pData,
+                               void *pData,
                                tABC_Error *pError);
 
     tABC_CC ABC_ChangePasswordWithRecoveryAnswers(const char *szUserName,
@@ -602,7 +600,7 @@ extern "C" {
                                                   const char *szNewPassword,
                                                   const char *szNewPIN,
                                                   tABC_Request_Callback fRequestCallback,
-                                                  tABC_RequestResults *pData,
+                                                  void *pData,
                                                   tABC_Error *pError);
 
     tABC_CC ABC_ParseBitcoinURI(const char *szURI,
@@ -665,7 +663,7 @@ extern "C" {
                                     const char *szDestAddress,
                                     tABC_TxDetails *pDetails,
                                     tABC_Request_Callback fRequestCallback,
-                                    tABC_RequestResults *pData,
+                                    void *pData,
                                     tABC_Error *pError);
 
     tABC_CC ABC_GetTransaction(const char *szUserName,
@@ -681,14 +679,6 @@ extern "C" {
                                 tABC_TxInfo ***paTransactions,
                                 unsigned int *pCount,
                                 tABC_Error *pError);
-
-    tABC_CC ABC_SearchTransactions(const char *szUserName,
-                                   const char *szPassword,
-                                   const char *szWalletUUID,
-                                   const char *szQuery,
-                                   tABC_TxInfo ***paTransactions,
-                                   unsigned int *pCount,
-                                   tABC_Error *pError);
 
     void ABC_FreeTransaction(tABC_TxInfo *pTransaction);
 
@@ -754,8 +744,8 @@ extern "C" {
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
     // temp functions
-//    void tempEventA();
-//    void tempEventB();
+    void tempEventA();
+    void tempEventB();
 
 #ifdef __cplusplus
 }
