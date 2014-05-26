@@ -499,7 +499,7 @@ extern "C" {
                                             const char *szRecoveryQuestions,
                                             const char *szRecoveryAnswers,
                                             tABC_Request_Callback fRequestCallback,
-                                            void *pData,
+                                            tABC_RequestResults *pData,
                                             tABC_Error *pError);
 
     tABC_CC ABC_CreateWallet(const char *szUserName,
@@ -508,7 +508,7 @@ extern "C" {
                              int        currencyNum,
                              unsigned int attributes,
                              tABC_Request_Callback fRequestCallback,
-                             void *pData,
+                             tABC_RequestResults *pData,
                              tABC_Error *pError);
 
     tABC_CC ABC_GetCurrencies(tABC_Currency **paCurrencyArray,
@@ -580,7 +580,7 @@ extern "C" {
 
     tABC_CC ABC_GetQuestionChoices(const char *szUserName,
                                    tABC_Request_Callback fRequestCallback,
-                                   void *pData,
+                                   tABC_RequestResults *pData,
                                    tABC_Error *pError);
 
     void ABC_FreeQuestionChoices(tABC_QuestionChoices *pQuestionChoices);
@@ -594,7 +594,7 @@ extern "C" {
                                const char *szNewPassword,
                                const char *szNewPIN,
                                tABC_Request_Callback fRequestCallback,
-                               void *pData,
+                               tABC_RequestResults *pData,
                                tABC_Error *pError);
 
     tABC_CC ABC_ChangePasswordWithRecoveryAnswers(const char *szUserName,
@@ -602,7 +602,7 @@ extern "C" {
                                                   const char *szNewPassword,
                                                   const char *szNewPIN,
                                                   tABC_Request_Callback fRequestCallback,
-                                                  void *pData,
+                                                  tABC_RequestResults *pData,
                                                   tABC_Error *pError);
 
     tABC_CC ABC_ParseBitcoinURI(const char *szURI,
@@ -665,7 +665,7 @@ extern "C" {
                                     const char *szDestAddress,
                                     tABC_TxDetails *pDetails,
                                     tABC_Request_Callback fRequestCallback,
-                                    void *pData,
+                                    tABC_RequestResults *pData,
                                     tABC_Error *pError);
 
     tABC_CC ABC_GetTransaction(const char *szUserName,
