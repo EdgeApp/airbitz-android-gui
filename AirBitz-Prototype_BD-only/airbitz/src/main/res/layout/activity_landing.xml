@@ -54,6 +54,10 @@
                 android:textSize="13dp"
                 android:textColor="@android:color/white"
                 android:text="@string/activity_landing_swipe_text"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ico_arrow_right"/>
         </LinearLayout>
         </LinearLayout>
 

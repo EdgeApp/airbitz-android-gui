@@ -23,38 +23,52 @@
         android:visibility="visible"
         android:background="@android:color/transparent">
 
-    <ImageView
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/swipeLayout"
-        android:src="@drawable/img_logo"
-        android:id="@+id/imageView" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/swipeLayout"
-        android:layout_above="@+id/inputLayout">
-        <LinearLayout
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/img_logo"
+            android:id="@+id/imageView" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_text"
+            android:padding="5dp"
+            android:textSize="15dp"
+            android:layout_above="@+id/swipeLayout"
             android:gravity="center"
-            android:orientation="horizontal">
-            <ImageView
+            android:textColor="@android:color/white"
+            android:text="Digital Currency Wallet"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/swipeLayout"
+            android:layout_above="@+id/inputLayout">
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ico_arrow_left"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/swipe_text"
-                android:padding="5dp"
-                android:textSize="13dp"
-                android:textColor="@android:color/white"
-                android:text="@string/activity_landing_swipe_text"/>
-        </LinearLayout>
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ico_arrow_left"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/swipe_text"
+                    android:padding="5dp"
+                    android:textSize="13dp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/activity_landing_swipe_text"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ico_arrow_right"/>
+            </LinearLayout>
         </LinearLayout>
 
 
@@ -63,11 +77,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:layout_marginBottom="30dp"
-    android:layout_marginTop="15dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="45dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:padding="15dp">
+    android:padding="10dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -85,13 +99,13 @@
             android:singleLine="true"
             android:nextFocusDown="@+id/passwordField"
             android:textColor="@android:color/white"
-            android:textColorHint="#DDDDDD"
+            android:textColorHint="#BBDDDDDD"
             android:textSize="15dp"
             android:id="@+id/userNameField"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
@@ -104,15 +118,15 @@
             android:inputType="textPassword"
             android:hint="Password"
             android:textColor="@android:color/white"
-            android:textColorHint="#DDDDDD"
+            android:textColorHint="#BBDDDDDD"
             android:ems="10"
             android:textSize="15dp"
             android:id="@+id/passwordField"
             android:layout_marginBottom="5dp"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:background="@drawable/bg_textfield"/>
@@ -131,8 +145,8 @@
             android:layout_marginBottom="5dp"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="@drawable/btn_green"/>
 
         <Button
@@ -149,8 +163,8 @@
             android:layout_marginBottom="10dp"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="@drawable/btn_blue"/>
 
             <LinearLayout
@@ -173,8 +187,8 @@
                         android:text="@string/activity_landing_forgot_label"
                         android:id="@+id/forgotPassText"/>
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:src="@drawable/ico_forgot"
                         android:id="@+id/forgotPassImage"/>
                 </LinearLayout>

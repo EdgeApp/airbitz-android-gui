@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.airbitz.activities.NavigationActivity"
+    tools:ignore="MergeRootFrame">
 
     <LinearLayout
         android:id="@+id/dummy_focus"
@@ -32,12 +35,6 @@
 
     <!-- Main Content -->
 
-    <ViewAnimator
-        android:id="@+id/ViewAnimator"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
         <!-- Map View -->
 
         <LinearLayout
@@ -49,55 +46,74 @@
             <FrameLayout
                 android:id="@+id/map_container"
                 android:layout_width="match_parent"
-                android:layout_height="240dp">
+                android:layout_height="240dp"
+                android:foreground="@drawable/map_container_shadows">
 
-                <com.google.android.gms.maps.MapView
+                <LinearLayout
                     android:id="@+id/map_view"
                     android:layout_width="match_parent"
                     android:layout_height="480dp"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:orientation="vertical" />
 
-                    <ImageButton
-                        android:id="@+id/locateMeButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="bottom|right"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ico_locate_me" />
+                <ImageButton
+                    android:id="@+id/locateMeButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ico_locate_me" />
 
             </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/dragLayout"
+            <RelativeLayout
+                android:id="@+id/list_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#000000">
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/dragImageView"
+                <LinearLayout
+                    android:id="@+id/venue_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#C0C0C0"
-                    android:padding="8dp"
-                    android:scaleType="center"
-                    android:src="@drawable/ico_drag" />
+                    android:orientation="horizontal"
+                    android:gravity="center" >
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/venue_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center" >
-
-                <!--<fragment-->
+                    <!--<fragment-->
                     <!--android:id="@+id/venue"-->
                     <!--android:name="com.airbitz.fragments.VenueFragment"-->
                     <!--android:layout_width="match_parent"-->
                     <!--android:layout_height="match_parent" />-->
 
-            </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dragLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#000000"
+                    android:orientation="vertical"
+                    android:layout_alignParentTop="true">
+
+                    <ImageView
+                        android:id="@+id/dragImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradient_background_grey"
+                        android:padding="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ico_drag" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@android:color/black"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="#88FFFFFF" />
+
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
         <!-- Search ListView -->
@@ -109,5 +125,5 @@
             android:dividerHeight="1px"
             android:visibility="gone" />
 
-    </ViewAnimator>
+
 </LinearLayout>

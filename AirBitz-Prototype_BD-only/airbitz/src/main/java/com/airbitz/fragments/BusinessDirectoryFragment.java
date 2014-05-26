@@ -82,9 +82,12 @@ public class BusinessDirectoryFragment extends Fragment implements
     private TextView mTitleTextView;
 
     private TextView mNearYouTextView;
+    private TextView mNearYouTextViewSticky;
 
     private LinearLayout mBusinessLayout;
     private LinearLayout mNearYouContainer;
+
+    private boolean mLoadingVisible = true;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -96,9 +99,13 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private RelativeLayout mParentLayout;
 
-    private LinearLayout mVenueFragmentLayout;
+    private RelativeLayout mVenueFragmentLayout;
 
     private LinearLayout mDummyFocusLayout;
+
+    private LinearLayout mStickyLayout;
+
+    private LinearLayout mVenueFragmentLayoutInner;
 
     private Spinner mMoreSpinner;
 
@@ -198,12 +205,16 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mDummyFocusLayout = (LinearLayout) view.findViewById(R.id.dummy_focus);
 
+        mStickyLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
+
         mNearYouContainer = (LinearLayout) view.findViewById(R.id.layout_near_you);
-        mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.fragment_layout);
+        mVenueFragmentLayout = (RelativeLayout) view.findViewById(R.id.fragment_layout_container);
+        mVenueFragmentLayoutInner = (LinearLayout) view.findViewById(R.id.fragment_layout);
+
         if(mVenueFragment == null) {
             mVenueFragment = new VenueFragment();
         }
-        if(mVenueFragmentLayout.getChildCount()<=0) {
+        if(mVenueFragmentLayoutInner.getChildCount()<=0) {
             if(getChildFragmentManager().findFragmentByTag("venue") == null) {
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.add(R.id.fragment_layout, mVenueFragment, "venue").commit();
@@ -212,6 +223,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scroll_view);
         mScrollView.setScrollViewListener(this);
+        mScrollView.setContext(getActivity());
+        mScrollView.setSticky(mStickyLayout);
 
         mMoreSpinner = (Spinner) view.findViewById(R.id.spinner_more_categories);
 
@@ -225,6 +238,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mNearYouTextView = (TextView) view.findViewById(R.id.textview_nearyou);
+        mNearYouTextViewSticky = (TextView) view.findViewById(R.id.textview_nearyou_sticky);
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
         mViewGroupLoading = (ViewGroup) view.findViewById(R.id.ViewGroup_loading);
@@ -239,6 +253,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mCoffeeButton.setTypeface(montserratRegularTypeFace);
         mMoreButton.setTypeface(montserratRegularTypeFace);
         mNearYouTextView.setTypeface(montserratRegularTypeFace);
+        mNearYouTextViewSticky.setTypeface(montserratRegularTypeFace);
         mLoadingText.setTypeface(montserratRegularTypeFace);
 
         mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
@@ -344,9 +359,14 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
+                    mViewGroupLoading.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
+
+                    if(mSearchField.getText().toString().isEmpty()) {
+                        mSearchField.setText(" ");
+                    }
 
                     // mBusinessList.clear();
                     // mBusinessSearchAdapter.notifyDataSetChanged();
@@ -366,13 +386,18 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                     // Start search
                     try {
-                        final String text = mSearchField.getText().toString();
+                        final String text;
+                        if(mSearchField.getText().toString().charAt(0)==' '){
+                            text = mSearchField.getText().toString().substring(1);
+                        }else{
+                            text = mSearchField.getText().toString();
+                        }
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(mSearchField.getText()
+                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text
                                         .toString(),
                                 mLocationWords,
                                 latLong);
@@ -380,7 +405,12 @@ public class BusinessDirectoryFragment extends Fragment implements
                         e.printStackTrace();
                     }
 
+                }else{
+                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                        mSearchField.setText(mSearchField.getText().toString().substring(1));
+                    }
                 }
+
 
             }
         });
@@ -407,6 +437,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
+                mViewGroupLoading.setVisibility(View.GONE);
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
                 try {
@@ -414,8 +445,13 @@ public class BusinessDirectoryFragment extends Fragment implements
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
 
                     // Only include cached searches if text is empty.
-                    final String query = editable.toString();
-                    final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
+                    List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
                     new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
@@ -423,6 +459,10 @@ public class BusinessDirectoryFragment extends Fragment implements
                             latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                if(editable.toString().isEmpty() && mSearchField.hasFocus()){
+                    editable.append(' ');
                 }
 
                 // } else {
@@ -453,8 +493,13 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mBusinessLayout.setVisibility(View.GONE);
                     mNearYouContainer.setVisibility(View.GONE);
                     mVenueFragmentLayout.setVisibility(View.GONE);
+                    mViewGroupLoading.setVisibility(View.GONE);
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
+
+                    if(mLocationField.getText().toString().isEmpty()) {
+                        mLocationField.setText(" ");
+                    }
 
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
@@ -485,7 +530,13 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mDummyFocusLayout.requestFocus();
                     mBusinessLayout.setVisibility(View.VISIBLE);
                     mNearYouContainer.setVisibility(View.VISIBLE);
+                    if(mLoadingVisible){
+                        mViewGroupLoading.setVisibility(View.VISIBLE);
+                    }
                     mVenueFragmentLayout.setVisibility(View.VISIBLE);
+                    if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' ') {
+                        mLocationField.setText(mLocationField.getText().toString().substring(1));
+                    }
                 }
 
             }
@@ -500,8 +551,16 @@ public class BusinessDirectoryFragment extends Fragment implements
                                 case KeyEvent.FLAG_EDITOR_ACTION:
                                 case KeyEvent.KEYCODE_ENTER:
                                     Bundle bundle = new Bundle();
-                                    bundle.putString(BUSINESS, mSearchField.getText().toString());
-                                    bundle.putString(LOCATION, mLocationField.getText().toString());
+                                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                                        bundle.putString(BUSINESS, mSearchField.getText().toString().substring(1));
+                                    }else{
+                                        bundle.putString(BUSINESS, mSearchField.getText().toString());
+                                    }
+                                    if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' '){;
+                                        bundle.putString(LOCATION, mLocationField.getText().toString().substring(1));
+                                    }else{
+                                        bundle.putString(LOCATION, mLocationField.getText().toString());
+                                    }
                                     bundle.putString(BUSINESSTYPE, mBusinessType);
                                     Fragment fragment = new MapBusinessDirectoryFragment();
                                     fragment.setArguments(bundle);
@@ -513,6 +572,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                                         mSearchListView.setVisibility(View.GONE);
                                         mBusinessLayout.setVisibility(View.VISIBLE);
                                         mNearYouContainer.setVisibility(View.VISIBLE);
+                                        if(mLoadingVisible){
+                                            mViewGroupLoading.setVisibility(View.VISIBLE);
+                                        }
                                         mVenueFragmentLayout.setVisibility(View.VISIBLE);
                                     }
                                     return true;
@@ -547,11 +609,16 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
+                mViewGroupLoading.setVisibility(View.GONE);
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
                 String latLong = String.valueOf(getLatFromSharedPreference());
                 latLong += "," + String.valueOf(getLonFromSharedPreference());
-                mLocationWords = editable.toString();
+                if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                    mLocationWords = editable.toString().substring(1);
+                }else{
+                    mLocationWords = editable.toString();
+                }
 
                 try {
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
@@ -561,6 +628,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                     new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                if(editable.toString().isEmpty() && mLocationField.hasFocus()){
+                    editable.append(' ');
                 }
             }
         });
@@ -678,6 +748,9 @@ public class BusinessDirectoryFragment extends Fragment implements
             mSearchListView.setVisibility(View.GONE);
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
+            if(mLoadingVisible){
+                mViewGroupLoading.setVisibility(View.VISIBLE);
+            }
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
         } else {
 //            super.onBackPressed();
@@ -848,6 +921,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     public void hideLoadingIndicator() {
         mViewGroupLoading.setVisibility(View.GONE);
+        mLoadingVisible = false;
     }
 
     public Categories getMoreBusinessCategory(Categories initial, String link) {

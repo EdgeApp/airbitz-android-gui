@@ -60,6 +60,9 @@ public class VenueFragment extends Fragment implements
     private String mBusinessName;
     private String mBusinessType;
 
+    private boolean loadingVisible = true;
+    private int venueAmount = 0;
+
     private GetVenuesTask mGetVenuesTask;
     private GestureDetector mGestureDetector;
 
@@ -71,6 +74,7 @@ public class VenueFragment extends Fragment implements
         return mIsInBusinessDirectory;
     }
 
+    public boolean getVisibilityLoading(){ return loadingVisible; }
 
     public ListView getVenueListView() {
         return mVenueListView;
@@ -148,9 +152,10 @@ public class VenueFragment extends Fragment implements
     }
 
     private void hideLoadingIndicator() {
-//        if (getActivity() instanceof BusinessDirectoryFragment) {
-//            ((BusinessDirectoryFragment) getActivity()).hideLoadingIndicator();
-//        }
+       if (mIsInBusinessDirectory) {
+           ((BusinessDirectoryFragment)getParentFragment()).hideLoadingIndicator();
+           loadingVisible = false;//TODO
+      }
     }
 
     @Override public void onScrollEnded() {
@@ -158,13 +163,18 @@ public class VenueFragment extends Fragment implements
             isFirstLoad = false;
             GetRemainingFirstVenuesTask getRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(getActivity());
             getRemainingFirstVenuesTask.execute("");
+            venueAmount = 20;
         } else {
-            if (isGettingMoreVenueFinished) {
-                isGettingMoreVenueFinished = false;
+            if( venueAmount < 100) {
+                if (isGettingMoreVenueFinished) {
+                    isGettingMoreVenueFinished = false;
 
-                GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(getActivity());
-                getMoreVenuesTask.execute(mNextUrl);
+                    GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(getActivity());
+                    getMoreVenuesTask.execute(mNextUrl);
+                    venueAmount += 20;
+                }
             }
+
         }
     }
 
@@ -180,7 +190,7 @@ public class VenueFragment extends Fragment implements
         @Override protected void onPreExecute() {
 //            mVenueListView.addFooterView(mLoadingFooterView);
             if (mIsInBusinessDirectory) {
-                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
             }
             
             Log.d(TAG, "VenueFragment: GetVenuesTask");
@@ -218,7 +228,7 @@ public class VenueFragment extends Fragment implements
                 setListView(mVenues);
 
                 if (mIsInBusinessDirectory) {
-                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
                 }
             } catch (JSONException e) {
                 mNoResultView.setVisibility(View.VISIBLE);
@@ -381,7 +391,7 @@ public class VenueFragment extends Fragment implements
         @Override protected void onPreExecute() {
 //            mVenueListView.addFooterView(mLoadingFooterView);
             if (mIsInBusinessDirectory) {
-                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
             }
         }
 
@@ -411,7 +421,7 @@ public class VenueFragment extends Fragment implements
                     setListView(mVenues);
 
                     if (mIsInBusinessDirectory) {
-                        ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                        ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView,mContext);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -422,6 +432,9 @@ public class VenueFragment extends Fragment implements
 
                 }
             } else {
+                hideLoadingIndicator();
+            }
+            if(venueAmount >= 100){
                 hideLoadingIndicator();
             }
             isGettingMoreVenueFinished = true;
@@ -471,7 +484,7 @@ public class VenueFragment extends Fragment implements
                 mVenueAdapter.notifyDataSetChanged();
                 preloadVenueImages();
                 if (mIsInBusinessDirectory) {
-                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
                 }
             }
 //            mProgressDialog.dismiss();

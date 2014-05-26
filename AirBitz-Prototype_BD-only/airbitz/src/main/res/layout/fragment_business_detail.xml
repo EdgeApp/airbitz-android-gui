@@ -145,7 +145,7 @@
 
             <Button
                 android:id="@+id/button_address"
-                style="@style/CategoryItemDetail"
+                style="@style/CategoryItemDetailTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ico_loc_green_small"

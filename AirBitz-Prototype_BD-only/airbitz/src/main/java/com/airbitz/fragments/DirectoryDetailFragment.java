@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -115,7 +116,10 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mDiscountTextView = (TextView) view.findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) view.findViewById(R.id.textview_distance);
 
-        setDistance(mBusinessDistance);
+        if(mBusinessDistance != null && mBusinessDistance != "null") {
+            setDistance(mBusinessDistance);
+        }
+
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -227,18 +231,26 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
             businessDistance = Double.parseDouble(strDistance);
             businessDistance = Common.metersToMiles(businessDistance);
             if (businessDistance < 1) {
-                businessDistance = Math.ceil(businessDistance * 10) / 10;
-                String distanceString = "" + businessDistance;
-                distanceString = distanceString.substring(1, distanceString.length());
-                mDistanceTextView.setText(distanceString + " miles");
-            } else if (businessDistance >= 1000) {
+                int distFeet = (int) Common.milesToFeet(businessDistance);
+                if (distFeet <= 1000) {
+                    int intDist = (int) Math.floor(distFeet);
+                    String distanceString = "" + intDist;
+                    mDistanceTextView.setText(distanceString + " feet");
+                } else {
+                    businessDistance = Math.ceil(businessDistance * 10) / 10;
+                    String distanceString = "" + businessDistance;
+                    distanceString = distanceString.substring(1, distanceString.length());
+                    mDistanceTextView.setText(distanceString + " miles");
+                }
+
+            }else if (businessDistance >= 1000) {
                 int distanceInInt = (int) businessDistance;
                 mDistanceTextView.setText(String.valueOf(distanceInInt) + " miles");
             } else {
                 businessDistance = Math.ceil(businessDistance * 10) / 10;
                 mDistanceTextView.setText(String.valueOf(businessDistance) + " miles");
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             mDistanceTextView.setText("-");
         }
     }
@@ -271,7 +283,9 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         }
 
         @Override protected String doInBackground(String... params) {
-            return mApi.getBusinessById(params[0]);
+            String latLong = String.valueOf(getLatFromSharedPreference())
+                    + "," + String.valueOf(getLonFromSharedPreference());
+            return mApi.getBusinessByIdAndLatLong(params[0],latLong);
         }
 
         @Override protected void onCancelled() {
@@ -288,10 +302,14 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-//                setDistance(mDetail.getDistance());
+                setDistance(mDetail.getDistance());
+                if( mLat== 0 && mLon == 0 ){
+                    mAddressButton.setClickable(false);
+                }
+
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
-                    if (location != null) {
+                    if (mLat != 0 && mLon != 0) {
                         mAddressButton.setText("Directions");
                     } else {
                         mAddressButton.setVisibility(View.GONE);
@@ -335,6 +353,38 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
                     mAboutField.setVisibility(View.VISIBLE);
                 }
 
+                //set drawables round if others are missing
+                //Address
+                if(mAddressButton.getVisibility()==View.VISIBLE){
+                    if(mPhoneButton.getVisibility()==View.GONE && mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE) {
+                        mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                    }
+                }
+                //Phone Number
+                if(mPhoneButton.getVisibility()==View.VISIBLE){
+                    if(mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
+                        if(mAddressButton.getVisibility()==View.GONE) {
+                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                        }else{
+                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
+                        }
+                    }else if(mAddressButton.getVisibility()==View.GONE){
+                        mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
+                    }
+                }
+                //Web Button
+                if(mWebButton.getVisibility()==View.VISIBLE){
+                    if(mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
+                        if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
+                        }else{
+                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
+                        }
+                    }else if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                        mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
+                    }
+                }
+
                 // Set categories text
                 final List<Category> categories = mDetail.getCategoryObject();
                 if (categories == null || categories.size() == 0) {
@@ -373,11 +423,14 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 //                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
 //                task.execute(mDetail.getPrimaryImage().getPhotoLink());
 
-                mAddressButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        getMapLink();
-                    }
-                });
+                if (mLat != 0 && mLon != 0) {
+                    mAddressButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getMapLink();
+                        }
+                    });
+                }
                 mPhoneButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
 

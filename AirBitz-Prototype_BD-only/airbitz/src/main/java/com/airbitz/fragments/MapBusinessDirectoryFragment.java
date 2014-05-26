@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -54,6 +55,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -74,7 +76,7 @@ import java.util.List;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class MapBusinessDirectoryFragment extends Fragment implements GestureDetector.OnGestureListener {
+public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener {//implements GestureDetector.OnGestureListener {
     private static final String TAG = MapBusinessDirectoryFragment.class.getSimpleName();
 
     private GoogleMap mGoogleMap;
@@ -86,7 +88,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
     private ClearableEditText mSearchEdittext;
     private ClearableEditText mLocationEdittext;
 
-    private LinearLayout llListContainer;
+    private RelativeLayout llListContainer;
 
     private FrameLayout flMapContainer;
 
@@ -96,7 +98,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
     private FrameLayout mFrameLayout;
     private TextView mTitleTextView;
     private ListView mSearchListView;
-    private ViewAnimator mViewAnimator;
+    //private ViewAnimator mViewAnimator;
+
+    private LinearLayout mMapLayout;
 
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private ArrayList<BusinessVenue> mBusinessVenueList;
@@ -114,13 +118,18 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
     private LocationAdapter mLocationAdapter;
 
     private Intent mIntent = null;
+    private int[] locSticky = {0,0};
+    private int[] locFrame = {0,0};
+
+    private LinearLayout mapView;
+    private CustomMapFragment mapFragment;
 
     private String mLocationName;
     private String mBusinessName;
     private String mBusinessType;
     private Bundle mVenueBundle;
 
-    private GestureDetector mGestureDetector;
+    //private GestureDetector mGestureDetector;
 
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
     private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
@@ -159,6 +168,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
     }
 
     @Override
+    public void onMapReady() {
+        mGoogleMap = mapFragment.getMap();
+        initializeMap();
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map_business_directory_2, container, false);
 
@@ -172,17 +188,26 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
             transaction.add(R.id.venue_container, mFragmentVenue, "venue").commit();
         }
 
+        mapView = (LinearLayout) view.findViewById(R.id.map_view);
+        if(mapView.getChildCount()<=0) {
+            mapFragment = CustomMapFragment.newInstance();
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.map_view, mapFragment, "map").commit();
+        }
+
+        mMapLayout = (LinearLayout) view.findViewById(R.id.map_view_layout);
+
         mDragLayout = (LinearLayout) view.findViewById(R.id.dragLayout);
-        llListContainer = (LinearLayout) view.findViewById(R.id.venue_container);
+        llListContainer = (RelativeLayout) view.findViewById(R.id.list_view_container);
         flMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
-        mViewAnimator = (ViewAnimator) view.findViewById(R.id.ViewAnimator);
+        //mViewAnimator = (ViewAnimator) view.findViewById(R.id.ViewAnimator);
 
         // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
 
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<LocationSearchResult>();
 
-        mGestureDetector = new GestureDetector(this);
+        //mGestureDetector = new GestureDetector(this);
 
         // mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
         mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
@@ -197,9 +222,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
-        mSearchEdittext.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-        mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+        mSearchEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
 
         mSearchEdittext.setText(mBusinessName);
         mLocationEdittext.setText(mLocationName);
@@ -231,9 +256,17 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                     mLocationEdittext.setVisibility(View.VISIBLE);
                     showViewAnimatorChild(1);
 
+                    if(mSearchEdittext.getText().toString().isEmpty()) {
+                        mSearchEdittext.setText(" ");
+                    }
                     // Start search
                     try {
-                        final String text = mSearchEdittext.getText().toString();
+                        final String text;
+                        if(mSearchEdittext.getText().toString().charAt(0)==' ') {
+                            text = mSearchEdittext.getText().toString().substring(1);
+                        }else{
+                            text = mSearchEdittext.getText().toString();
+                        }
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
@@ -244,6 +277,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                                 latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
+                    }
+                }else {
+                    if (!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0) == ' ') {
+                        mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
                     }
                 }
             }
@@ -269,15 +306,23 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
                 try {
                     // Only include cached searches if text is empty.
-                    final String query = editable.toString();
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
-                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(editable.toString(),
+                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
                             mLocationWords, latLong);
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
+                    editable.append(' ');
                 }
             }
         });
@@ -291,6 +336,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
 
+                    if(mLocationEdittext.getText().toString().isEmpty()) {
+                        mLocationEdittext.setText(" ");
+                    }
+
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
                     latLong += "," + String.valueOf(getLonFromSharedPreference());
@@ -302,9 +351,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
+                }else{
+                    if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
+                        mLocationEdittext.setText(mLocationEdittext.getText().toString().substring(1));
+                    }
                 }
-
             }
         });
 
@@ -317,9 +368,29 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
                             showViewAnimatorChild(0);
+                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                                mBusinessName = mSearchEdittext.getText().toString().substring(1);
+                            }else{
+                                mBusinessName = mSearchEdittext.getText().toString();
+                            }
+                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
+                                mLocationName = mLocationEdittext.getText().toString().substring(1);
+                            }else{
+                                mLocationName = mLocationEdittext.getText().toString();
+                            }
+                            search();
+                            return true;
                         case KeyEvent.FLAG_EDITOR_ACTION:
-                            mBusinessName = mSearchEdittext.getText().toString();
-                            mLocationName = mLocationEdittext.getText().toString();
+                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                                mBusinessName = mSearchEdittext.getText().toString().substring(1);
+                            }else{
+                                mBusinessName = mSearchEdittext.getText().toString();
+                            }
+                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
+                                mLocationName = mLocationEdittext.getText().toString().substring(1);
+                            }else{
+                                mLocationName = mLocationEdittext.getText().toString();
+                            }
                             search();
 
 //                            mIntent.putExtra(BusinessDirectoryFragment.BUSINESS, mSearchEdittext.getText()
@@ -355,7 +426,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
-                mLocationWords = editable.toString();
+                if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                    mLocationWords = editable.toString().substring(1);
+                }else{
+                    mLocationWords = editable.toString();
+                }
                 String latLong = String.valueOf(getLatFromSharedPreference());
                 latLong += "," + String.valueOf(getLonFromSharedPreference());
 
@@ -368,10 +443,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
+                    editable.append(' ');
+                }
             }
         });
 
-        initializeMap((MapView) view.findViewById(R.id.map_view));
+        //initializeMap();//(MapView) view.findViewById(R.id.map_view));
 
         search();
 
@@ -435,7 +513,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                         Log.d(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
-                        final float y = event.getY(mActivePointerId);
+                        final float y = event.getY(0);
 
                         aLastTouchY = y;
                         if (aPosY == 0) {
@@ -522,10 +600,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
     private void showViewAnimatorChild(int num) {
         if(num==0) {
-            mViewAnimator.setDisplayedChild(num);
+            mSearchListView.setVisibility(View.GONE);
+            mMapLayout.setVisibility(View.VISIBLE);
             mLocationEdittext.setVisibility(View.GONE);
         } else {
-            mViewAnimator.setDisplayedChild(num);
+            mSearchListView.setVisibility(View.VISIBLE);
+            mMapLayout.setVisibility(View.GONE);
         }
     }
 
@@ -602,12 +682,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
         super.onDestroyView();
     }
 
-    private void initializeMap(MapView mapView) {
-        if (mGoogleMap == null) {
-            mapView.onCreate(null);
+    private void initializeMap(){//MapView mapView) {
+        //if (mGoogleMap == null) {
+            //mapView.onCreate(null);
 
             // Gets to GoogleMap from the MapView and does initialization stuff
-            mGoogleMap = mapView.getMap();
+            //mGoogleMap = mapView.getMap();
+            mGoogleMap = mapFragment.getMap();
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
             mGoogleMap.setMyLocationEnabled(true);
 
@@ -658,11 +739,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                 currentLatLng = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
             }
             try {
-                mCurrentLocation = mGoogleMap.getMyLocation();
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 10);
+                mGoogleMap.animateCamera(cameraUpdate);
                 Log.d("TAG LOC",
                         "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
 
-                currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             } catch (Exception e) {
 
             }
@@ -704,7 +785,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
             mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override public void onCameraChange(CameraPosition cameraPosition) {
-
+                    System.out.println("");
                     if (mCameraChangeListenerEnabled) {
                         LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                         LatLng southWestLatLng = latLngBounds.southwest;
@@ -733,7 +814,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
                 }
             });
             mGoogleMap.setMyLocationEnabled(false);
-        }
+        //}
     }
 
     private void drawCurrentLocationMarker(Location location) {
@@ -1312,7 +1393,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
         return lon;
     }
 
-    @Override public boolean onDown(MotionEvent motionEvent) {
+    /*@Override public boolean onDown(MotionEvent motionEvent) {
         return false;
     }
 
@@ -1348,5 +1429,5 @@ public class MapBusinessDirectoryFragment extends Fragment implements GestureDet
 
         }
         return false;
-    }
+    }*/
 }
