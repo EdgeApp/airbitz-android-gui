@@ -226,8 +226,8 @@ public class coreJNI {
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_SignIn(String jarg1, String jarg2, long jarg3, long jarg4, tABC_RequestResults jarg4_, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CreateAccount(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_RequestResults jarg5_, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
-  public final static native int ABC_CreateWallet(String jarg1, String jarg2, String jarg3, int jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
+  public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_RequestResults jarg6_, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_CreateWallet(String jarg1, String jarg2, String jarg3, int jarg4, long jarg5, long jarg6, long jarg7, tABC_RequestResults jarg7_, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_GetCurrencies(long jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_GetPIN(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SetPIN(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
@@ -242,11 +242,11 @@ public class coreJNI {
   public final static native int ABC_GetWallets(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfoArray(long jarg1, long jarg2);
   public final static native int ABC_SetWalletOrder(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
-  public final static native int ABC_GetQuestionChoices(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_GetQuestionChoices(String jarg1, long jarg2, long jarg3, tABC_RequestResults jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeQuestionChoices(long jarg1, tABC_QuestionChoices jarg1_);
   public final static native int ABC_GetRecoveryQuestions(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
-  public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
-  public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_RequestResults jarg6_, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_RequestResults jarg6_, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_ParseBitcoinURI(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native void ABC_FreeURIInfo(long jarg1, tABC_BitcoinURIInfo jarg1_);
   public final static native double ABC_SatoshiToBitcoin(long jarg1);
@@ -258,7 +258,7 @@ public class coreJNI {
   public final static native int ABC_FinalizeReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CancelReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GenerateRequestQRCode(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
-  public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
+  public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, tABC_RequestResults jarg7_, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);

@@ -140,8 +140,7 @@ public class SignUpActivity extends Activity {
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Represents an asynchronous account creation task
      */
     public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
 
