@@ -59,7 +59,7 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     private Button mButtonBitcoinBalance;
     private Button mButtonDollarBalance;
     private Button mButtonMover;
-    private SeekBar mSeekBar;
+    //private SeekBar mSeekBar;
 
     private Button mWalletNameButton;
 
@@ -113,8 +113,8 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         mExportButton = (ImageButton) view.findViewById(R.id.button_export);
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
-        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
-        mSeekBar.setOnSeekBarChangeListener(this);
+       // mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
+        //mSeekBar.setOnSeekBarChangeListener(this);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
@@ -226,13 +226,13 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
 
         switch(selection) {
             case BTC:
-                onProgressChanged(mSeekBar, 100, true);
+                //onProgressChanged(mSeekBar, 100, true);
                 mButtonMover.setText(mButtonBitcoinBalance.getText());
                 mButtonMover.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_coin_btc_white), null,
                         getResources().getDrawable(R.drawable.ico_btc_white), null);
                 break;
             case CURRENCY:
-                onProgressChanged(mSeekBar, 0, true);
+                //onProgressChanged(mSeekBar, 0, true);
                 mButtonMover.setText(mButtonDollarBalance.getText());
                 String left = "ico_coin_"+mCurrencyResourceString+"_white";
                 String right = "ico_"+mCurrencyResourceString+"_white";

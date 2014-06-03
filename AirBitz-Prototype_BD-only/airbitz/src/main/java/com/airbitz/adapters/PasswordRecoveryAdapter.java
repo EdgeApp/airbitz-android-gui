@@ -3,10 +3,15 @@ package com.airbitz.adapters;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 
 import java.util.List;
 
@@ -28,12 +33,25 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<View> implements Filte
 
     @Override
     public int getCount() {
-        return mItems.size();
+        return mItems.size()-1;
     }
 
     @Override
     public View getItem(int position) {
         return mItems.get(position);
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent){
+        View v = getItem(position);
+        /*if(position == 0){
+            AbsListView.LayoutParams vlp =  new AbsListView.LayoutParams(0,0);
+            v.setLayoutParams(vlp);
+        }*/
+        ((TextView) v).setHeight((int)mContext.getResources().getDimension(R.dimen.drop_down_height));
+        ((TextView) v).setTypeface(NavigationActivity.montserratRegularTypeFace);
+        ((TextView) v).setSingleLine(false);
+        return v;
     }
 
     @Override
@@ -60,8 +78,9 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<View> implements Filte
 //            }
 //        });
 
-        return getItem(position);
-
-//        return convertView;
+        View v = getItem(position);
+        ((TextView) v).setTypeface(NavigationActivity.montserratRegularTypeFace);
+        ((TextView) v).setSingleLine(false);
+        return v;
     }
 }

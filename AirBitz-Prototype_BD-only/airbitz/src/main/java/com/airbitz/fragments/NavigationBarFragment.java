@@ -30,6 +30,10 @@ public class NavigationBarFragment extends Fragment {
     private View mView, mButtons;
     private int selectedTab = 0;
 
+    public int getCurrentTab(){ return selectedTab; }
+    public int getLastTab(){ return mLastTab; }
+    public void setLastTab(int tab){ mLastTab = tab; }
+
     //Callbacks for containing Activity to implement
     public interface OnScreenSelectedListener {
         public void onNavBarSelected(int position);
@@ -112,23 +116,23 @@ public class NavigationBarFragment extends Fragment {
         selectedTab = position;
         switch (position) {
             case 0:
-                mDirectoryButton.setImageResource(R.drawable.ico_tab_directory_white);
+                mDirectoryButton.setImageResource(R.drawable.tab_popup_directory_btm);
                 mDirectoryButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             case 1:
-                mRequestButton.setImageResource(R.drawable.ico_tab_request_white);
+                mRequestButton.setImageResource(R.drawable.tab_popup_request_btm);
                 mRequestButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             case 2:
-                mSendButton.setImageResource(R.drawable.ico_tab_send_white);
+                mSendButton.setImageResource(R.drawable.tab_popup_send_btm);
                 mSendButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             case 3:
-                mWalletButton.setImageResource(R.drawable.ico_tab_wallet_white);
+                mWalletButton.setImageResource(R.drawable.tab_popup_wallet_btm);
                 mWalletButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             case 4:
-                mSettingButton.setImageResource(R.drawable.ico_tab_settings_white);
+                mSettingButton.setImageResource(R.drawable.tab_popup_wallet_btm);
                 mSettingButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             default:

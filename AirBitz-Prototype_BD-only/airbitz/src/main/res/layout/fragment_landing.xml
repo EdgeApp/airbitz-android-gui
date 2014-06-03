@@ -25,19 +25,19 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="16mm"
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="2mm"
             android:src="@drawable/img_logo"
             android:id="@+id/imageView" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/detail_text"
-            android:padding="5dp"
+            android:layout_marginTop="5mm"
             android:textSize="15dp"
-            android:layout_above="@+id/swipeLayout"
+            android:layout_below="@id/imageView"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:text="Digital Currency Wallet"/>
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/swipe_text"
-                    android:padding="5dp"
+                    android:padding="1mm"
                     android:textSize="13dp"
                     android:textColor="@android:color/white"
                     android:text="@string/activity_landing_swipe_text"/>
@@ -77,11 +77,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:layout_marginBottom="5dp"
-    android:layout_marginTop="45dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:padding="10dp">
+    android:layout_marginBottom="1mm"
+    android:layout_marginTop="15mm" >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -91,80 +88,65 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:layout_width="39mm"
+            android:layout_height="6mm"
+            android:inputType="textVisiblePassword|textNoSuggestions"
             android:hint="User Name"
             android:ems="10"
             android:singleLine="true"
             android:nextFocusDown="@+id/passwordField"
             android:textColor="@android:color/white"
-            android:textColorHint="#BBDDDDDD"
-            android:textSize="15dp"
+            android:textColorHint="#DDDDDDDD"
+            android:textCursorDrawable="@drawable/bold_cursor_white"
+            android:textSize="14dp"
             android:id="@+id/userNameField"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:paddingLeft="2mm"
+            android:layout_marginTop="2mm"
+            android:layout_marginBottom="1mm"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_textfield"/>
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:layout_width="39mm"
+            android:layout_height="6mm"
+            android:inputType="textPassword|textNoSuggestions"
             android:hint="Password"
             android:textColor="@android:color/white"
-            android:textColorHint="#BBDDDDDD"
+            android:textColorHint="#DDDDDDDD"
+            android:textCursorDrawable="@drawable/bold_cursor_white"
             android:ems="10"
-            android:textSize="15dp"
+            android:textSize="14dp"
             android:id="@+id/passwordField"
-            android:layout_marginBottom="5dp"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginBottom="1mm"
+            android:paddingLeft="2mm"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_textfield"/>
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="39mm"
+            android:layout_height="7mm"
             android:text="@string/activity_landing_button_signin"
-            android:textSize="18dp"
+            android:textSize="16dp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="#DDFFFFFF"
             android:id="@+id/signinButton"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:layout_marginTop="1mm"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="1mm"
             android:background="@drawable/btn_green"/>
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="39mm"
+            android:layout_height="7mm"
             android:text="@string/activity_landing_button_signup"
-            android:textSize="18dp"
-            android:textColor="@android:color/white"
+            android:textSize="16dp"
+            android:textColor="#DDFFFFFF"
             android:id="@+id/signUpButton"
             android:textStyle="bold"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:layout_marginTop="1mm"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="2mm"
             android:background="@drawable/btn_blue"/>
 
             <LinearLayout
@@ -182,13 +164,13 @@
                         android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
+                        android:padding="1mm"
                         android:textColor="@android:color/white"
                         android:text="@string/activity_landing_forgot_label"
                         android:id="@+id/forgotPassText"/>
                     <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="2mm"
+                        android:layout_height="2mm"
                         android:src="@drawable/ico_forgot"
                         android:id="@+id/forgotPassImage"/>
                 </LinearLayout>
@@ -199,5 +181,10 @@
     </RelativeLayout>
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/density_identifier" />
 
 </RelativeLayout>

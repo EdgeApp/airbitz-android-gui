@@ -150,10 +150,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onClick(View view) {
                 if(mFlashAutoActive){
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashAutoActive = false;
+
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);

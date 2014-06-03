@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -18,6 +19,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -174,16 +176,22 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
             @Override
             public void onClick(View view) {
                 if(mFlashAutoActive){
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashAutoActive = false;
+
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
                     mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_on);
                     mFlashAutoActive = true;
+                }
+            }
+        });
+        mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus){
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
             }
         });
@@ -210,7 +218,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().onBackPressed();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -289,7 +297,12 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         Camera.CameraInfo info = new Camera.CameraInfo();
 
         new PhotoHandler(getActivity(), data, info);
-
+        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+        if (heightDiff > 100) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
         Fragment fragment = new WalletPasswordFragment();
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }

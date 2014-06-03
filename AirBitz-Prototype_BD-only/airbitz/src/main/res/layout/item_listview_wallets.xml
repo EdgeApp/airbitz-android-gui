@@ -15,7 +15,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/wallet_list_view_height"
-    android:background="@android:color/transparent"
+    android:background="#addff1"
     android:paddingLeft="13dp"
     android:paddingRight="15dp"
     android:paddingTop="15dp"

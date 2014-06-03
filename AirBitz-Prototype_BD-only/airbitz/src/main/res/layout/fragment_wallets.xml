@@ -4,27 +4,28 @@
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app">
+    android:background="@drawable/bg_app"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ListViewAnimations">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="7mm"
         android:id="@+id/layout_header"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:background="#40000000">
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="7mm"
+            android:layout_height="7mm"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:id="@+id/button_add"
+            android:padding="2mm"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_add"
-            android:layout_margin="5dp" />
+            android:src="@drawable/btn_add" />
 
         <TextView
             android:id="@+id/textview_title"
@@ -34,13 +35,12 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
             android:textSize="20sp"/>
 
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="7mm"
+            android:layout_height="7mm"
             android:id="@+id/button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
@@ -48,7 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
+            android:padding="2mm"/>
 
     </RelativeLayout>
 
@@ -57,32 +57,34 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2mm"
+        android:layout_marginLeft="2mm"
         android:layout_below="@id/layout_header">
 
         <TextView
             android:id="@+id/textview_balance"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="10mm"
             android:text="@string/wallets_balance_text"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:textColor="@android:color/white"
-            android:layout_margin="15dp"
-            android:textSize="20sp" />
+            android:textSize="14sp" />
 
         <include layout="@layout/custom_currency_switch"/>
 
     </LinearLayout>
 
-    <ListView
+    <com.airbitz.objects.DynamicListView
         android:id="@+id/layout_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_marginRight="2mm"
+        android:layout_marginLeft="2mm"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
         android:layout_below="@id/layout_data"
         android:layout_above="@id/bottom_padding"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="#addff1">
-    </ListView>
+        android:layout_marginTop="2mm"
+        android:background="@android:color/transparent" />
 
 </RelativeLayout>
