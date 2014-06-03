@@ -111,9 +111,12 @@ public class ForgotPasswordActivity extends Activity {
 
         Map map = new HashMap<String, String>();
         ArrayList<String> questions = new ArrayList<String>();
-        map.put("Name of Favorite Teacher", "Teacher");
-        map.put("Mother's Maiden Name", "Name");
-        map.put("Favorite Food", "Food");
+        map.put("What is your father\'s birthdate?", "fbday");
+        map.put("What is your mother\'s maiden and current last name?", "mname");
+        map.put("What is your oldest sibling\'s birthdate?", "sbday");
+        map.put("Who is your favorite superhero?", "superhero");
+        map.put("What is the first street address you remember living in?", "firstaddress");
+        map.put("What was the address of your home in college?", "collegehome");
 
         return map;
     }

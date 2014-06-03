@@ -4,16 +4,24 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -22,6 +30,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 
 import java.util.regex.Pattern;
 
@@ -45,6 +54,15 @@ public class SignUpActivity extends Activity {
     private View mProgressView;
     private View mLoginView;
     private CreateAccountTask mAuthTask;
+
+    private LinearLayout popupContainer;
+    private ImageView switchImage1;
+    private ImageView switchImage2;
+    private ImageView switchImage3;
+    private ImageView switchImage4;
+    private ImageView switchImage5;
+
+    private View redRingDummy;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -70,7 +88,7 @@ public class SignUpActivity extends Activity {
         mLoginView = (View) findViewById(R.id.layout_signup);
         mProgressView = (View) findViewById(R.id.layout_progress);
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        redRingDummy = findViewById(R.id.red_ring);
 
         mUsernameEditText = (EditText) findViewById(R.id.edittext_username);
         mPasswordEditText = (EditText) findViewById(R.id.edittext_password);
@@ -89,17 +107,26 @@ public class SignUpActivity extends Activity {
         mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mPasswordConfirmationEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mHintTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         mBackButton = (ImageButton) findViewById(R.id.button_back);
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
-        mNextButton = (Button) findViewById(R.id.button_next);
+        switchImage1 = (ImageView) findViewById(R.id.switch_image_1);
+        switchImage2 = (ImageView) findViewById(R.id.switch_image_2);
+        switchImage3 = (ImageView) findViewById(R.id.switch_image_3);
+        switchImage4 = (ImageView) findViewById(R.id.switch_image_4);
+        switchImage5 = (ImageView) findViewById(R.id.switch_image_5);
+
+        popupContainer = (LinearLayout) findViewById(R.id.popup_container_signup);
+
+        /*mNextButton = (Button) findViewById(R.id.button_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
-        });
+        });*///TODO implement moving to next screen on done key
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +138,94 @@ public class SignUpActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Common.showHelpInfo(SignUpActivity.this, "Info", "Business directory info");
+            }
+        });
+
+        mWithdrawalPinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if ( actionId == EditorInfo.IME_ACTION_DONE){
+                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mUsernameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if(mUsernameEditText.getText().toString().length() < 4){
+                    redRingDummy.setVisibility(View.VISIBLE);
+                }else{
+                    redRingDummy.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mPasswordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                String password = mPasswordEditText.getText().toString();
+
+                if(password.length() >= 10){
+                    switchImage5.setImageResource(R.drawable.green_check);
+                }else{
+                    switchImage5.setImageResource(R.drawable.red_x);
+                }
+                if(password.matches(".*[A-Z].*")){
+                    switchImage1.setImageResource(R.drawable.green_check);
+                }else{
+                    switchImage1.setImageResource(R.drawable.red_x);
+                }
+                if(password.matches(".*[a-z].*")){
+                    switchImage2.setImageResource(R.drawable.green_check);
+                }else{
+                    switchImage2.setImageResource(R.drawable.red_x);
+                }
+                if(password.matches(".*\\d.*")){
+                    switchImage3.setImageResource(R.drawable.green_check);
+                }else{
+                    switchImage3.setImageResource(R.drawable.red_x);
+                }
+                if(password.matches(passwordPattern)){
+                    switchImage4.setImageResource(R.drawable.green_check);
+                }else{
+                    switchImage4.setImageResource(R.drawable.red_x);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    popupContainer.setVisibility(View.VISIBLE);
+                }else{
+                    popupContainer.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -176,6 +291,7 @@ public class SignUpActivity extends Activity {
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
                 mIntent.putExtra(KEY_WITHDRAWAL, mPin);
                 startActivity(mIntent);
+                finish();
             } else {
                 showProgress(false);
                 showErrorDialog();
@@ -283,14 +399,14 @@ public class SignUpActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            /*mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
-            });
+            });*/
 
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
@@ -304,7 +420,7 @@ public class SignUpActivity extends Activity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            //mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

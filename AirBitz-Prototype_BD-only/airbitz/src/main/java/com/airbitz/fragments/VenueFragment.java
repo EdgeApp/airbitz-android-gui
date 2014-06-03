@@ -492,6 +492,9 @@ public class VenueFragment extends Fragment implements
     }
 
     private float getStateFromSharedPreferences(String key) {
+        if(getActivity() == null){
+            System.out.println("WTF MY ACTIVITY KILLED ITSELF");
+        }
         SharedPreferences pref = getActivity().getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
                                                                     Context.MODE_PRIVATE);
         return pref.getFloat(key, -1);

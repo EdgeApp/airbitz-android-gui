@@ -12,6 +12,7 @@ import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Wallet;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,13 +20,30 @@ import java.util.List;
  */
 public class WalletAdapter extends ArrayAdapter<Wallet> {
 
+    final int INVALID_ID = -1;
+
     private Context mContext;
     private List<Wallet> mWalletList;
+    private int selectedViewPos = -1;
+
+    HashMap<Wallet, Integer> mIdMap = new HashMap<Wallet, Integer>();
 
     public WalletAdapter(Context context, List<Wallet> walletList){
         super(context, R.layout.item_listview_wallets, walletList);
         mContext = context;
         mWalletList = walletList;
+        for (int i = 0; i < walletList.size(); ++i) {
+            mIdMap.put(walletList.get(i), i);
+        }
+    }
+
+    public void setSelectedViewPos(int position){
+        selectedViewPos = position;
+    }
+
+    public void addWallet(Wallet wallet){
+        mIdMap.put(wallet,mIdMap.size());
+        //mWalletList.add(wallet);
     }
 
     @Override
@@ -49,7 +67,25 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         titleTextView.setText(mWalletList.get(position).getName());
         amountTextView.setText(mWalletList.get(position).getAmount()
                 + mContext.getResources().getString(R.string.no_break_space_character));
+        if(selectedViewPos == position){
+            convertView.setVisibility(View.INVISIBLE);
+        }else{
+            convertView.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (position < 0 || position >= mIdMap.size()) {
+            return INVALID_ID;
+        }
+        Wallet item = getItem(position);
+        return mIdMap.get(item);
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
 }

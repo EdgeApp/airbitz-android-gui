@@ -3,76 +3,115 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_balance"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="0dp"
-    android:background="@drawable/rounded_edge_black_transparent_30"
-    android:orientation="vertical">
+    android:layout_height="12mm"
+    android:background="@drawable/rounded_edge_black_transparent_30">
 
-    <Button
-        android:id="@+id/back_button_top"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ico_coin_btc_dark"
-        android:drawableRight="@drawable/ico_btc_dark"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="5dp"
-        android:text="110.015"
-        android:textColor="@android:color/black"
-        android:textSize="22sp" />
+        android:layout_height="6mm"
+        android:id="@+id/top_switch">
 
-    <Button
-        android:id="@+id/back_button_bottom"
+        <ImageView
+            android:id="@+id/top_coin"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:src="@drawable/ico_coin_btc_dark"/>
+        <Button
+            android:id="@+id/back_button_top"
+            android:layout_width="match_parent"
+            android:layout_height="6mm"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="110.015"
+            android:textColor="#222222"
+            android:textSize="14dp" />
+        <TextView
+            android:id="@+id/top_type"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:layout_alignParentRight="true"
+            android:text="BTC"
+            android:textSize="9dp"
+            android:gravity="center"
+            android:textColor="#222222"/>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/back_button_top"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ico_coin_usd_dark"
-        android:drawableRight="@drawable/ico_usd_dark"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="5dp"
-        android:text="1050.67"
-        android:textColor="@android:color/black"
-        android:textSize="22sp" />
+        android:layout_height="6mm"
+        android:id="@+id/bottom_switch"
+        android:layout_below="@id/top_switch">
+        <ImageView
+            android:id="@+id/bottom_coin"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:src="@drawable/ico_coin_usd_dark"/>
+        <Button
+            android:id="@+id/back_button_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="6mm"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="1050.67"
+            android:textColor="#222222"
+            android:textSize="14dp" />
+        <ImageView
+            android:id="@+id/bottom_type"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ico_usd_dark"/>
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/button_mover"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/btn_green"
-        android:drawableLeft="@drawable/ico_coin_usd_white"
-        android:drawableRight="@drawable/ico_usd_white"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="5dp"
-        android:text="1050.67"
-        android:shadowColor="#000000"
-        android:shadowDx="-1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="6mm"
+        android:layout_above="@id/bottom_switch"
+        android:id="@+id/switchable">
 
-    <com.airbitz.widgets.VerticalSeekBar
+        <Button
+            android:id="@+id/button_mover"
+            android:layout_width="match_parent"
+            android:layout_height="6mm"
+            android:background="@drawable/btn_green"
+            android:gravity="center"
+            android:text="110.015"
+            android:shadowColor="#000000"
+            android:shadowDx="-1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/button_mover_coin"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:src="@drawable/ico_coin_btc_white"/>
+        <ImageView
+            android:id="@+id/button_mover_type"
+            android:layout_width="6mm"
+            android:layout_height="6mm"
+            android:padding="1.5mm"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ico_btc_white"/>
+    </RelativeLayout>
+
+
+    <!--<com.airbitz.widgets.VerticalSeekBar
         android:id="@+id/seekbar_slider"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/back_button_bottom"
+        android:layout_alignBottom="@id/bottom_switch"
         android:max="100"
         android:progress="100"
         android:progressDrawable="@android:color/transparent"
-        android:thumb="@null" />
+        android:thumb="@null" />-->
 
 </RelativeLayout>

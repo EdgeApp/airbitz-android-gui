@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -88,6 +90,7 @@ public class BusinessDirectoryFragment extends Fragment implements
     private LinearLayout mNearYouContainer;
 
     private boolean mLoadingVisible = true;
+    private boolean mSearchVisible = true;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -162,6 +165,8 @@ public class BusinessDirectoryFragment extends Fragment implements
     public interface BusinessScrollListener {
         void onScrollEnded();
     }
+
+    public boolean getSearchVisible(){ return mSearchVisible; }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -339,6 +344,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
 //                finish();
+                onBackPressed();
             }
         });
 
@@ -363,6 +369,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mVenueFragmentLayout.setVisibility(View.GONE);
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
+                    mBackButton.setVisibility(View.VISIBLE);
+                    mSearchVisible=true;
+
 
                     if(mSearchField.getText().toString().isEmpty()) {
                         mSearchField.setText(" ");
@@ -406,6 +415,10 @@ public class BusinessDirectoryFragment extends Fragment implements
                     }
 
                 }else{
+                    if(!mLocationField.hasFocus()){
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
                         mSearchField.setText(mSearchField.getText().toString().substring(1));
                     }
@@ -435,6 +448,8 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
                 mLocationField.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
+                mSearchVisible=true;
+                mBackButton.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
                 mViewGroupLoading.setVisibility(View.GONE);
@@ -496,6 +511,8 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mViewGroupLoading.setVisibility(View.GONE);
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
+                    mBackButton.setVisibility(View.VISIBLE);
+                    mSearchVisible=true;
 
                     if(mLocationField.getText().toString().isEmpty()) {
                         mLocationField.setText(" ");
@@ -526,9 +543,12 @@ public class BusinessDirectoryFragment extends Fragment implements
                     // }
 
                 } else {
-
+                    if(!mSearchField.hasFocus()){
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     mDummyFocusLayout.requestFocus();
-                    mBusinessLayout.setVisibility(View.VISIBLE);
+                    mBusinessLayout.setVisibility(View.VISIBLE);//TODO do we really need this?
                     mNearYouContainer.setVisibility(View.VISIBLE);
                     if(mLoadingVisible){
                         mViewGroupLoading.setVisibility(View.VISIBLE);
@@ -570,6 +590,8 @@ public class BusinessDirectoryFragment extends Fragment implements
                                         mDummyFocusLayout.requestFocus();
                                         mLocationField.setVisibility(View.GONE);
                                         mSearchListView.setVisibility(View.GONE);
+                                        mSearchVisible=false;
+                                        mBackButton.setVisibility(View.GONE);
                                         mBusinessLayout.setVisibility(View.VISIBLE);
                                         mNearYouContainer.setVisibility(View.VISIBLE);
                                         if(mLoadingVisible){
@@ -607,6 +629,8 @@ public class BusinessDirectoryFragment extends Fragment implements
                 // if (editable.toString().length() > 0) {
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
+                mBackButton.setVisibility(View.VISIBLE);
+                mSearchVisible=true;
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
                 mViewGroupLoading.setVisibility(View.GONE);
@@ -741,18 +765,23 @@ public class BusinessDirectoryFragment extends Fragment implements
 
 //    @Override
     public void onBackPressed() {
+        System.out.println("Back Pressed");
         mLocationWords = "";
         if (mBusinessLayout.getVisibility() == View.GONE) {
+            System.out.println("Backing out of Search");
             mDummyFocusLayout.requestFocus();
             mLocationField.setVisibility(View.GONE);
             mSearchListView.setVisibility(View.GONE);
+            mSearchVisible=false;
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
+            mBackButton.setVisibility(View.GONE);
             if(mLoadingVisible){
                 mViewGroupLoading.setVisibility(View.VISIBLE);
             }
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
         } else {
+            System.out.println("Backing out of App");
 //            super.onBackPressed();
         }
     }

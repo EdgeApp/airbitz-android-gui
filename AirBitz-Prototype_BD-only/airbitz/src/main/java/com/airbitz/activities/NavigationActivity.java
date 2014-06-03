@@ -1,5 +1,6 @@
 package com.airbitz.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.inputmethodservice.KeyboardView;
@@ -8,9 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -55,6 +58,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     private RelativeLayout mCalculatorLayout;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
+
+    private LinearLayout mNormalNavBarLayout;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -127,6 +132,11 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             public void onPageSelected(int position) {
                 // Disappear if transparent page shows
                 if(position==0 || position==2) {
+                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                    if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     mViewPager.setVisibility(View.GONE);
                 }
             }
@@ -167,8 +177,12 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         if(getUserLoggedIn()) {
             switchFragmentThread(position);
         } else {
-            mNavBarFragment.unselectTab(position); // just needed for resetting mLastTab
-            setLoginView(true);
+            if(position != 0) {
+                mNavBarFragment.unselectTab(position);
+                mNavBarFragment.setLastTab(0);
+                mNavBarFragment.selectTab(0);
+                setLoginView(true);
+            }
         }
     }
 
@@ -178,8 +192,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         mNavBarFragment.selectTab(id);
         mNavFragmentId = id;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
-        transaction.commit();
+        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();//.addToBackStack(null).commit();
     }
 
     public void pushFragment(Fragment fragment) {
@@ -222,10 +235,11 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     @Override
     public void onBackPressed() {
-        if(mNavStacks[mNavFragmentId].size() == 1)
+        if(mNavStacks[mNavFragmentId].size() == 1) {
             super.onBackPressed();
-        else
+        }else {
             popFragment();
+        }
     }
 
     private boolean getUserLoggedIn() {
