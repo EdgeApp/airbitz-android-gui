@@ -77,6 +77,8 @@ public class DynamicListView extends ListView {
     private int mDownY = -1;
     private int mDownX = -1;
 
+    private boolean flag = false;
+
     private int mTotalOffset = 0;
 
     private boolean mCellIsMobile = false;
@@ -127,22 +129,25 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    mTotalOffset = 0;
+                    if(mWalletList.get(pos).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && mWalletList.get(pos).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
+                        mTotalOffset = 0;
 
-                    int position = pointToPosition(mDownX, mDownY);
-                    int itemNum = position - getFirstVisiblePosition();
+                        int position = pointToPosition(mDownX, mDownY);
+                        int itemNum = position - getFirstVisiblePosition();
 
-                    View selectedView = getChildAt(itemNum);
-                    mMobileItemId = getAdapter().getItemId(position);
-                    mHoverCell = getAndAddHoverView(selectedView);
-                    selectedView.setVisibility(INVISIBLE);
-                    ((WalletAdapter)getAdapter()).setSelectedViewPos(itemNum);
+                        View selectedView = getChildAt(itemNum);
+                        mMobileItemId = getAdapter().getItemId(position);
+                        mHoverCell = getAndAddHoverView(selectedView);
+                        selectedView.setVisibility(INVISIBLE);
+                        ((WalletAdapter) getAdapter()).setSelectedViewPos(itemNum);
 
-                    mCellIsMobile = true;
+                        mCellIsMobile = true;
 
-                    updateNeighborViewsForID(mMobileItemId);
+                        updateNeighborViewsForID(mMobileItemId);
 
-                    return true;
+                        return true;
+                    }
+                    return false;
                 }
             };
 
@@ -534,6 +539,9 @@ public class DynamicListView extends ListView {
 
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                              int totalItemCount) {
+            if(true){
+                //TODO
+            }
             mCurrentFirstVisibleItem = firstVisibleItem;
             mCurrentVisibleItemCount = visibleItemCount;
 
