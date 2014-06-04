@@ -42,6 +42,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     public void addWallet(Wallet wallet){
+
         mIdMap.put(wallet,mIdMap.size());
         //mWalletList.add(wallet);
     }
@@ -58,15 +59,25 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.textview_title);
-        TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
-        titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
-        titleTextView.setText(mWalletList.get(position).getName());
-        amountTextView.setText(mWalletList.get(position).getAmount()
-                + mContext.getResources().getString(R.string.no_break_space_character));
+        if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" || mWalletList.get(position).getName()=="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL"){//TODO ALERT
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
+            if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
+                ((TextView) convertView).setText("ARCHIVE");
+            }else{
+                ((TextView) convertView).setText("WALLETS");
+            }
+        }else {
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
+            TextView titleTextView = (TextView) convertView.findViewById(R.id.textview_title);
+            TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
+            titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
+            titleTextView.setText(mWalletList.get(position).getName());
+            amountTextView.setText(mWalletList.get(position).getAmount()
+                    + mContext.getResources().getString(R.string.no_break_space_character));
+        }
         if(selectedViewPos == position){
             convertView.setVisibility(View.INVISIBLE);
         }else{
@@ -74,6 +85,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
         return convertView;
     }
+
+    public int getMapSize(){ return mIdMap.size();}
 
     @Override
     public long getItemId(int position) {

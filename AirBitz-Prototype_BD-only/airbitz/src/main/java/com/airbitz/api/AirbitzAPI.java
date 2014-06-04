@@ -487,12 +487,14 @@ public class AirbitzAPI {
     public static List<Wallet> getWallets() {
         // TODO replace with API call
         List<Wallet> list = new ArrayList<Wallet>();
+        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL","Hello"));//TODO ALERT FIRST HEADER
         list.add(new Wallet("Baseball Team", "B15.000"));
         list.add(new Wallet("Fantasy Football", "B10.000"));
         list.add(new Wallet("Shared", "B0.000"));
         list.add(new Wallet("Mexico", "B0.000"));
         list.add(new Wallet("Alpha Centauri", "B0.000"));
         list.add(new Wallet("Other", "B0.000"));
+        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd","Goodbye")); //TODO ALERT SECOND HEADER
         return list;
     }
 

@@ -2,6 +2,8 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -154,6 +156,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         mLatestWalletListView.setWalletList(mLatestWalletList);
         mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -165,7 +168,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                }
             }
         });
         /*RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams((int)getActivity().getResources().getDimension(R.dimen.spinner_width_password),(int)getActivity().getResources().getDimension(R.dimen.drop_down_height));
@@ -187,13 +192,15 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             moverType.setImageResource(R.drawable.ico_btc_white);
             double conv = 8.7544;
             for(Wallet trans: mLatestWalletList){
-                try{
-                    double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                    String amount = String.format("B%.3f", item);
-                    trans.setAmount(amount);
-                } catch (Exception e){
-                    trans.setAmount("0");
-                    e.printStackTrace();
+                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    try {
+                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
+                        String amount = String.format("B%.3f", item);
+                        trans.setAmount(amount);
+                    } catch (Exception e) {
+                        trans.setAmount("0");
+                        e.printStackTrace();
+                    }
                 }
             }
             mLatestWalletAdapter.notifyDataSetChanged();
@@ -205,13 +212,15 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             moverType.setImageResource(R.drawable.ico_usd_white);
             double conv = 0.1145;
             for(Wallet trans: mLatestWalletList){
-                try{
-                    double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                    String amount = String.format("$%.3f", item);
-                    trans.setAmount(amount);
-                } catch (Exception e){
-                    trans.setAmount("0");
-                    e.printStackTrace();
+                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    try {
+                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
+                        String amount = String.format("$%.3f", item);
+                        trans.setAmount(amount);
+                    } catch (Exception e) {
+                        trans.setAmount("0");
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -304,7 +313,15 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         //TODO make sure that everyone knows its been added
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         Wallet tempWallet = new Wallet(name, amount);
-        mTransactionList.add(tempWallet);
+        int counter = 0;
+        int pos = -1;
+        while(counter !=2){
+            pos++;
+            if(mTransactionList.get(pos).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" ){//TODO ALERT
+                counter = 2;
+            }
+        }
+        mTransactionList.add(pos,tempWallet);
         //mLatestWalletListView.addWalletToList(tempWallet);
         mLatestWalletAdapter.addWallet(tempWallet);
         mLatestWalletAdapter.notifyDataSetChanged();

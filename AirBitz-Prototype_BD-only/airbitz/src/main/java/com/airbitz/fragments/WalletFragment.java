@@ -93,8 +93,10 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         mAccountTransactions = mAPI.getTransactions(mWalletName);
         mWallet = null;
         for(Wallet w: mAPI.getWallets()) {
-            if(w.getName().contains(mWalletName))
-                mWallet = w;
+            if (w != null) {
+                if (w.getName().contains(mWalletName))
+                    mWallet = w;
+            }
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
