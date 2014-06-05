@@ -87,6 +87,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         return mWalletList;
     }
 
+    public int getArchivePos(){ return archivePos; }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

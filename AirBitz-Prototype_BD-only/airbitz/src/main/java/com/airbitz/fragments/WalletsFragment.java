@@ -170,6 +170,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
         mLatestWalletListView.setArchivedList(archivedWalletList);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
@@ -177,6 +178,34 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mBitCoinBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonMover.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+
+        archiveHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pos = mLatestWalletAdapter.getArchivePos();
+                //a.switchCloseAfterArchive(pos);
+                System.out.println("Map Sizes before: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
+                if(archiveClosed){
+                    while(!archivedWalletList.isEmpty()){
+                        mLatestWalletList.add(archivedWalletList.get(0));
+                        mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
+                        archivedWalletList.remove(0);
+                    }
+                }else {
+                    pos++;
+                    while(pos<mLatestWalletList.size()){
+                        archivedWalletList.add(mLatestWalletList.get(pos));
+                        mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
+                        mLatestWalletList.remove(pos);
+                    }
+                }
+                System.out.println("Map Sizes after: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
+                mLatestWalletAdapter.notifyDataSetChanged();
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                archiveClosed = !archiveClosed;
+                mLatestWalletListView.setArchiveClosed(archiveClosed);
+            }
+        });
 
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -206,6 +235,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                     mLatestWalletAdapter.notifyDataSetChanged();
                     ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
                     archiveClosed = !archiveClosed;
+                    mLatestWalletListView.setArchiveClosed(archiveClosed);
                 }
             }
         });
@@ -399,4 +429,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         alertDialog.show();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        mLatestWalletListView.setHeaderVisibilityOnReturn();
+    }
 }

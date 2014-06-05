@@ -75,34 +75,38 @@
 
     </LinearLayout>
 
-    <com.airbitz.objects.DynamicListView
-        android:id="@+id/layout_listview"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginRight="2mm"
-        android:layout_marginLeft="2mm"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_data"
-        android:layout_above="@id/bottom_padding"
-        android:layout_marginTop="2mm"
-        android:background="@android:color/transparent" />
+        android:layout_marginTop="2mm">
 
-    <include layout="@layout/item_listview_wallets_header"
-        android:layout_below="@id/layout_data"
-        android:layout_height="6mm"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_marginRight="2mm"
-        android:layout_marginLeft="2mm"
-        android:layout_marginTop="2mm"
-        android:id="@+id/wallets_header"/>
-    <include layout="@layout/item_listview_wallets_header"
-        android:layout_below="@id/wallets_header"
-        android:id="@+id/archive_header"
-        android:layout_height="6mm"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_marginRight="2mm"
-        android:layout_marginLeft="2mm"/>
+        <com.airbitz.objects.DynamicListView
+            android:id="@+id/layout_listview"
+            android:layout_width="match_parent"
+            android:layout_marginRight="2mm"
+            android:layout_marginLeft="2mm"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent" />
+
+        <include layout="@layout/item_listview_wallets_header"
+            android:layout_alignParentTop="true"
+            android:layout_height="6mm"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginRight="2mm"
+            android:layout_marginLeft="2mm"
+            android:id="@+id/wallets_header"/>
+        <include layout="@layout/item_listview_wallets_header"
+            android:layout_below="@id/wallets_header"
+            android:id="@+id/archive_header"
+            android:layout_height="6mm"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginRight="2mm"
+            android:layout_marginLeft="2mm"/>
+    </RelativeLayout>
 
 </RelativeLayout>
