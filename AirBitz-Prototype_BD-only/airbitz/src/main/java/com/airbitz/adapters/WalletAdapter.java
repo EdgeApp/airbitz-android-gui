@@ -25,26 +25,57 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private Context mContext;
     private List<Wallet> mWalletList;
     private int selectedViewPos = -1;
+    private boolean hoverFirstHeader = false;
+    private boolean hoverSecondHeader = false;
+    private int nextId = 0;
+
+    private boolean closeAfterArchive = false;
+    private int  archivePos;
+
 
     HashMap<Wallet, Integer> mIdMap = new HashMap<Wallet, Integer>();
+    HashMap<Wallet, Integer> mArchivedIdMap = new HashMap<Wallet, Integer>();
 
     public WalletAdapter(Context context, List<Wallet> walletList){
         super(context, R.layout.item_listview_wallets, walletList);
         mContext = context;
         mWalletList = walletList;
         for (int i = 0; i < walletList.size(); ++i) {
+            if(walletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
+                archivePos = i;
+            }
             mIdMap.put(walletList.get(i), i);
+            nextId++;
         }
     }
+
+    public void setFirstHeaderHover(boolean status){ hoverFirstHeader = status;}
+
+    public void setSecondHeaderHover(boolean status){ hoverSecondHeader = status;}
 
     public void setSelectedViewPos(int position){
         selectedViewPos = position;
     }
 
     public void addWallet(Wallet wallet){
-
-        mIdMap.put(wallet,mIdMap.size());
+        if(mArchivedIdMap.containsKey(wallet)){
+            mIdMap.put(wallet,mArchivedIdMap.get(wallet));
+            mArchivedIdMap.remove(wallet);
+        }else {
+            mIdMap.put(wallet, nextId);
+            nextId++;
+        }
         //mWalletList.add(wallet);
+    }
+
+    public void removeWallet(Wallet wallet){
+        mArchivedIdMap.put(wallet,mIdMap.get(wallet));
+        mIdMap.remove(wallet);
+    }
+
+    public void switchCloseAfterArchive(int pos){
+        archivePos = pos;
+        closeAfterArchive = !closeAfterArchive;
     }
 
     @Override
@@ -64,8 +95,19 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
             if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
                 ((TextView) convertView).setText("ARCHIVE");
+                archivePos = position;
+                if(hoverSecondHeader){
+                    convertView.setVisibility(View.INVISIBLE);
+                }else {
+                    convertView.setVisibility(View.VISIBLE);
+                }
             }else{
                 ((TextView) convertView).setText("WALLETS");
+                if(hoverFirstHeader){
+                    convertView.setVisibility(View.INVISIBLE);
+                }else {
+                    convertView.setVisibility(View.VISIBLE);
+                }
             }
         }else {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -78,11 +120,14 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             amountTextView.setText(mWalletList.get(position).getAmount()
                     + mContext.getResources().getString(R.string.no_break_space_character));
         }
-        if(selectedViewPos == position){
+        if(archivePos < position && closeAfterArchive){
+            //convertView.setVisibility(View.GONE);
+        }else if(selectedViewPos == position){
             convertView.setVisibility(View.INVISIBLE);
         }else{
             convertView.setVisibility(View.VISIBLE);
         }
+
         return convertView;
     }
 
