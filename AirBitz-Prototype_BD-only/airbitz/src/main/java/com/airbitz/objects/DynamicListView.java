@@ -20,6 +20,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -40,6 +41,7 @@ import android.widget.TextView;
 
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +76,14 @@ public class DynamicListView extends ListView {
     public List<Wallet> mWalletList;
     public List<Wallet> archivedWallets;
 
+    final DynamicListView dLV = this;
+
     private int mLastEventY = -1;
 
     private int mDownY = -1;
     private int mDownX = -1;
 
-    private boolean flag = false;
+    private Boolean archiveClosed = false;
 
     private int mTotalOffset = 0;
 
@@ -448,10 +452,19 @@ public class DynamicListView extends ListView {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    mobileView.setVisibility(VISIBLE);
+                    int pos = getPositionForID(mMobileItemId);
+                    System.out.println("Is archived closed: "+archiveClosed);
+                    if(pos > ((WalletAdapter)getAdapter()).getArchivePos() && archiveClosed == true){
+                        archivedWallets.add(mWalletList.get(pos));
+                        ((WalletAdapter)getAdapter()).removeWallet(mWalletList.get(pos));
+                        mWalletList.remove(pos);
+                        ((WalletAdapter)getAdapter()).notifyDataSetChanged();
+                        ListViewUtility.setWalletListViewHeightBasedOnChildren(dLV, mWalletList.size(), (Activity)getContext());
+                    }
                     mAboveItemId = INVALID_ID;
                     mMobileItemId = INVALID_ID;
                     mBelowItemId = INVALID_ID;
-                    mobileView.setVisibility(VISIBLE);
                     ((WalletAdapter)getAdapter()).setSelectedViewPos(-1);
                     mHoverCell = null;
                     setEnabled(true);
@@ -546,6 +559,26 @@ public class DynamicListView extends ListView {
     @Override
     public float getY(){ return super.getY();}
 
+    public void setHeaderVisibilityOnReturn(){
+        if(getAdapter() != null) {
+            listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
+            if (listWalletsHeader == null) {
+                walletsHeader.setVisibility(GONE);
+                walletsHeader.setVisibility(VISIBLE);
+            }
+            listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
+            int firstPosition = getFirstVisiblePosition();
+            if(listArchiveHeader==null && firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
+                archiveHeader.setVisibility(GONE);
+                archiveHeader.setVisibility(VISIBLE);
+            }
+        }
+    }
+
+    public void setArchiveClosed(Boolean bool ){
+        archiveClosed = bool;
+    }
+
     /**
      * This scroll listener is added to the listview in order to handle cell swapping
      * when the cell is either at the top or bottom edge of the listview. If the hover
@@ -574,6 +607,25 @@ public class DynamicListView extends ListView {
                     listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
                     if (listWalletsHeader == null) {
                         walletsHeader.setVisibility(VISIBLE);
+                    }
+                }
+            }
+            if(getAdapter() != null) {
+                listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
+            }
+            if(listArchiveHeader != null) {
+                if (listArchiveHeader.getY() < (walletsHeader.getY()+walletsHeader.getHeight())) {
+                    archiveHeader.setVisibility(VISIBLE);
+                } else {
+                    archiveHeader.setVisibility(GONE);
+                }
+            }else{
+                if(getAdapter() != null) {
+                    listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter)getAdapter()).getArchivePos()));
+                    int firstPosition = getFirstVisiblePosition();
+                    if(listArchiveHeader==null && firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
+                        archiveHeader.setVisibility(GONE);
+                        archiveHeader.setVisibility(VISIBLE);
                     }
                 }
             }
