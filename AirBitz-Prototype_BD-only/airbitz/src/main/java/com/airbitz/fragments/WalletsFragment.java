@@ -30,6 +30,8 @@ import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +47,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private Button mDollarBalanceButton;
     private Button mButtonMover;
     //private SeekBar mSeekBar;
+
+    private TextView walletsHeader;
+    private TextView archiveHeader;
+
+    private boolean archiveClosed = false;
 
     private RelativeLayout topSwitch;
     private RelativeLayout bottomSwitch;
@@ -68,6 +75,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
+    private List<Wallet> archivedWalletList;
     private AirbitzAPI mAPI;
 
     @Override
@@ -82,6 +90,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mLatestWalletList = mAPI.getWallets();
+        archivedWalletList = new ArrayList<Wallet>();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -101,6 +110,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
         moverType = (ImageView) view.findViewById(R.id.button_mover_type);
+
+        walletsHeader = (TextView) view.findViewById(R.id.wallets_header);
+        archiveHeader = (TextView) view.findViewById(R.id.archive_header);
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +168,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         mLatestWalletListView.setWalletList(mLatestWalletList);
         mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
+        mLatestWalletListView.setArchivedList(archivedWalletList);
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
@@ -170,6 +184,28 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
                     showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                }else if(a.getList().get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                    int pos = a.getPosition(a.getList().get(i));
+                    //a.switchCloseAfterArchive(pos);
+                    System.out.println("Map Sizes before: " +a.getMapSize()+" vs " + mLatestWalletList.size());
+                    if(archiveClosed){
+                        while(!archivedWalletList.isEmpty()){
+                            mLatestWalletList.add(archivedWalletList.get(0));
+                            mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
+                            archivedWalletList.remove(0);
+                        }
+                    }else {
+                        pos++;
+                        while(pos<mLatestWalletList.size()){
+                            archivedWalletList.add(mLatestWalletList.get(pos));
+                            mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
+                            mLatestWalletList.remove(pos);
+                        }
+                    }
+                    System.out.println("Map Sizes after: " +a.getMapSize()+" vs " + mLatestWalletList.size());
+                    mLatestWalletAdapter.notifyDataSetChanged();
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                    archiveClosed = !archiveClosed;
                 }
             }
         });

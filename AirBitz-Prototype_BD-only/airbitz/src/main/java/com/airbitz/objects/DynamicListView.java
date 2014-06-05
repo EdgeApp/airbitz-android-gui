@@ -36,6 +36,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
@@ -71,6 +72,7 @@ public class DynamicListView extends ListView {
     private final int LINE_THICKNESS = 15;
 
     public List<Wallet> mWalletList;
+    public List<Wallet> archivedWallets;
 
     private int mLastEventY = -1;
 
@@ -89,6 +91,12 @@ public class DynamicListView extends ListView {
     private long mAboveItemId = INVALID_ID;
     private long mMobileItemId = INVALID_ID;
     private long mBelowItemId = INVALID_ID;
+
+    private TextView walletsHeader;
+    private TextView archiveHeader;
+
+    private TextView listWalletsHeader;
+    private TextView listArchiveHeader;
 
     private BitmapDrawable mHoverCell;
     private Rect mHoverCellCurrentBounds;
@@ -120,6 +128,15 @@ public class DynamicListView extends ListView {
         setOnScrollListener(mScrollListener);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
+    }
+
+    public void setHeaders(TextView wallets, TextView archive){
+        walletsHeader = wallets;
+        walletsHeader.setText("WALLETS");
+        archiveHeader = archive;
+        archiveHeader.setText("ARCHIVE");
+        //listArchiveHeader = (TextView)getAdapter().getView(0, listArchiveHeader, this);
+        //listWalletsHeader = (TextView)getChildAt(0);
     }
 
     /**
@@ -310,6 +327,10 @@ public class DynamicListView extends ListView {
         return super.onTouchEvent(event);
     }
 
+    public void setArchivedList(List<Wallet> wallets){
+        archivedWallets = wallets;
+    }
+
     /**
      * This method determines whether the hover cell has been shifted far enough
      * to invoke a cell swap. If so, then the respective cell swap candidate is
@@ -330,7 +351,7 @@ public class DynamicListView extends ListView {
         boolean isBelow = (belowView != null) && (deltaYTotal > belowView.getTop());
         boolean isAbove = (aboveView != null) && (deltaYTotal < aboveView.getTop());
 
-        if (isBelow || isAbove) {
+        if (isBelow || (isAbove && getPositionForID(mAboveItemId)!=0)) {
 
             final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
             View switchView = isBelow ? belowView : aboveView;
@@ -352,7 +373,7 @@ public class DynamicListView extends ListView {
             mobileView.setVisibility(View.VISIBLE);
             switchView.setVisibility(View.INVISIBLE);
 
-            ((WalletAdapter)getAdapter()).setSelectedViewPos(getPositionForView(switchView));
+            ((WalletAdapter) getAdapter()).setSelectedViewPos(getPositionForView(switchView));
 
 
             updateNeighborViewsForID(mMobileItemId);
@@ -522,6 +543,9 @@ public class DynamicListView extends ListView {
         mWalletList.add(wallet);
     }
 
+    @Override
+    public float getY(){ return super.getY();}
+
     /**
      * This scroll listener is added to the listview in order to handle cell swapping
      * when the cell is either at the top or bottom edge of the listview. If the hover
@@ -539,8 +563,19 @@ public class DynamicListView extends ListView {
 
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                              int totalItemCount) {
-            if(true){
-                //TODO
+            if(listWalletsHeader != null) {
+                if (listWalletsHeader.getY() < getY()) {
+                    walletsHeader.setVisibility(VISIBLE);
+                } else {
+                    walletsHeader.setVisibility(GONE);
+                }
+            }else{
+                if(getAdapter() != null) {
+                    listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
+                    if (listWalletsHeader == null) {
+                        walletsHeader.setVisibility(VISIBLE);
+                    }
+                }
             }
             mCurrentFirstVisibleItem = firstVisibleItem;
             mCurrentVisibleItemCount = visibleItemCount;
