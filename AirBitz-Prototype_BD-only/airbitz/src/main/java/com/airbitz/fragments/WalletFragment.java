@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,9 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -35,7 +40,7 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChangeListener {
+public class WalletFragment extends Fragment {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -47,10 +52,18 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     private ImageButton mHelpButton;
     private ImageButton mBackButton;
 
+    private boolean searchPage = false;
+
     private ResizableImageView mRequestButton;
     private ResizableImageView mSendButton;
 
     private TextView mTitleTextView;
+
+    private ImageView moverCoin;
+    private ImageView moverType;
+
+    private RelativeLayout exportLayout;
+    private LinearLayout sendRequestLayout;
 
     private RelativeLayout mParentLayout;
 
@@ -59,9 +72,14 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
     private Button mButtonBitcoinBalance;
     private Button mButtonDollarBalance;
     private Button mButtonMover;
+
+    private RelativeLayout switchable;
+    private RelativeLayout switchContainer;
     //private SeekBar mSeekBar;
 
-    private Button mWalletNameButton;
+    private boolean mOnBitcoinMode = true;
+
+    private EditText mWalletNameButton;
 
     private ListView mListTransaction;
 
@@ -110,13 +128,23 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
 
         mSendButton = (ResizableImageView) view.findViewById(R.id.button_send);
         mRequestButton = (ResizableImageView) view.findViewById(R.id.button_request);
-        mWalletNameButton = (Button) view.findViewById(R.id.button_balance);
+        mWalletNameButton = (EditText) view.findViewById(R.id.button_balance);
 
         mExportButton = (ImageButton) view.findViewById(R.id.button_export);
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
        // mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
         //mSeekBar.setOnSeekBarChangeListener(this);
+
+        exportLayout = (RelativeLayout) view.findViewById(R.id.layout_export);
+        sendRequestLayout = (LinearLayout) view.findViewById(R.id.layout_send_request);
+
+
+        switchable = (RelativeLayout) view.findViewById(R.id.switchable);
+        switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
+
+        moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        moverType = (ImageView) view.findViewById(R.id.button_mover_type);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
@@ -139,6 +167,52 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
 //                mIntent.putExtra(RequestActivity.CLASSNAME, "TransactionActivity");
 //                startActivity(mIntent);
                 // TODO this should show a Wallet name picker?
+            }
+        });
+        mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus){
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }else{
+                    switchContainer.setVisibility(View.GONE);
+                    exportLayout.setVisibility(View.GONE);
+                    sendRequestLayout.setVisibility(View.GONE);
+                    searchPage = true;
+                    mTransactionAdapter.setSearch(searchPage);
+                    mTransactionAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchBarInfo(true);
+                mListTransaction.setAdapter(mTransactionAdapter);
+                mOnBitcoinMode = true;
+            }
+        });
+        mButtonDollarBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchBarInfo(false);
+                mListTransaction.setAdapter(mTransactionAdapter);
+                mOnBitcoinMode = false;
+            }
+        });
+        mButtonMover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListTransaction.setAdapter(mTransactionAdapter);
+                if(mOnBitcoinMode){
+                    switchBarInfo(false);
+                    mOnBitcoinMode = false;
+                }else{
+                    switchBarInfo(true);
+                    mOnBitcoinMode = true;
+                }
             }
         });
 
@@ -178,7 +252,16 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                if(searchPage){
+                    switchContainer.setVisibility(View.VISIBLE);
+                    exportLayout.setVisibility(View.VISIBLE);
+                    sendRequestLayout.setVisibility(View.VISIBLE);
+                    searchPage = false;
+                    mTransactionAdapter.setSearch(searchPage);
+                    mSearchField.clearFocus();
+                }else{
+                    getActivity().onBackPressed();
+                }
             }
         });
 
@@ -197,55 +280,49 @@ public class WalletFragment extends Fragment  implements SeekBar.OnSeekBarChange
         return mWallet.getAmount();
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress,
-                                  boolean fromUser) {
-        float heightDiff = mButtonBitcoinBalance.getHeight();
-        float moveX = heightDiff*(seekBar.getMax()-progress)/seekBar.getMax();
-        RelativeLayout.LayoutParams absParams =
-                (RelativeLayout.LayoutParams)mButtonMover.getLayoutParams();
-
-        absParams.leftMargin = 0;
-        absParams.topMargin = (int) moveX;
-
-        mButtonMover.setLayoutParams(absParams);
-    }
-
-    public void onStartTrackingTouch(SeekBar seekBar) { }
-
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        if(seekBar.getProgress() > seekBar.getMax()/2) {
-            seekBar.setProgress(seekBar.getMax());
-            setSwitchSelection(BTC);
-        } else {
-            seekBar.setProgress(0);
-            setSwitchSelection(CURRENCY);
-        }
-        onProgressChanged(seekBar, seekBar.getProgress(), true);
-    }
-
-    private void setSwitchSelection(int selection) {
-
-        switch(selection) {
-            case BTC:
-                //onProgressChanged(mSeekBar, 100, true);
-                mButtonMover.setText(mButtonBitcoinBalance.getText());
-                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_coin_btc_white), null,
-                        getResources().getDrawable(R.drawable.ico_btc_white), null);
-                break;
-            case CURRENCY:
-                //onProgressChanged(mSeekBar, 0, true);
-                mButtonMover.setText(mButtonDollarBalance.getText());
-                String left = "ico_coin_"+mCurrencyResourceString+"_white";
-                String right = "ico_"+mCurrencyResourceString+"_white";
-                int leftID = getResources().getIdentifier(left,"drawable",getActivity().getPackageName());
-                int rightID = getResources().getIdentifier(right,"drawable",getActivity().getPackageName());
-                Drawable leftD = getResources().getDrawable(leftID);
-                Drawable rightD = getResources().getDrawable(rightID);
-                mButtonMover.setCompoundDrawablesWithIntrinsicBounds(leftD, null, rightD, null);
-                break;
-            default:
-                break;
+    private void switchBarInfo(boolean isBitcoin){
+        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(switchContainer.getWidth(), switchContainer.getHeight()/2);
+        if(isBitcoin) {
+            rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
+            switchable.setLayoutParams(rLP);
+            mButtonMover.setText(mButtonBitcoinBalance.getText());
+            moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            moverType.setImageResource(R.drawable.ico_btc_white);
+            double conv = 8.7544;
+            for(AccountTransaction trans: mAccountTransactions){
+                try {
+                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
+                    String amount = String.format("B%.3f", item);
+                    trans.setDebitAmount(amount);
+                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
+                    String amount2 = String.format("B%.3f", item2);
+                    trans.setCreditAmount(amount2);
+                } catch (Exception e) {
+                    trans.setCreditAmount("0");
+                    e.printStackTrace();
+                }
+            }
+            mTransactionAdapter.notifyDataSetChanged();
+        }else{
+            rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
+            switchable.setLayoutParams(rLP);
+            mButtonMover.setText(mButtonDollarBalance.getText());
+            moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
+            moverType.setImageResource(R.drawable.ico_usd_white);
+            double conv = 0.1145;
+            for(AccountTransaction trans: mAccountTransactions){
+                try {
+                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
+                    String amount = String.format("$%.3f", item);
+                    trans.setDebitAmount(amount);
+                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
+                    String amount2 = String.format("$%.3f", item2);
+                    trans.setCreditAmount(amount2);
+                } catch (Exception e) {
+                    trans.setCreditAmount("0");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
