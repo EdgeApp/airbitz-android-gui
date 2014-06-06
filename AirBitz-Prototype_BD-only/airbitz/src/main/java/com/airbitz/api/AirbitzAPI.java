@@ -504,13 +504,12 @@ public class AirbitzAPI {
     public static List<AccountTransaction> getTransactions(String walletName) {
         // TODO replace with API call
         List<AccountTransaction> list = new ArrayList<AccountTransaction>();
-        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "-B5.000"));
-        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "-B65.000"));
-        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "-B95.000"));
+        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "B-5.000"));
+        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "B-65.000"));
+        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "B95.000"));
 
         return list;
     }
-
 
 
     /***********************************************************************************************
