@@ -596,16 +596,22 @@ public class DynamicListView extends ListView {
 
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                              int totalItemCount) {
+            if(getAdapter() != null) {
+                listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
+            }
             if(listWalletsHeader != null) {
                 if (listWalletsHeader.getY() < getY()) {
+                    System.out.println("List isnt null Header is visible");
+                    System.out.println();
                     walletsHeader.setVisibility(VISIBLE);
                 } else {
+                    System.out.println("List isnt null Header is GONE");
                     walletsHeader.setVisibility(GONE);
                 }
             }else{
                 if(getAdapter() != null) {
-                    listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
                     if (listWalletsHeader == null) {
+                        System.out.println("List is null Header is Visisble");
                         walletsHeader.setVisibility(VISIBLE);
                     }
                 }
@@ -621,7 +627,6 @@ public class DynamicListView extends ListView {
                 }
             }else{
                 if(getAdapter() != null) {
-                    listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter)getAdapter()).getArchivePos()));
                     int firstPosition = getFirstVisiblePosition();
                     if(listArchiveHeader==null && firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
                         archiveHeader.setVisibility(GONE);

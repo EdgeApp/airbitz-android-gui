@@ -94,7 +94,7 @@
 
         <include layout="@layout/item_listview_wallets_header"
             android:layout_alignParentTop="true"
-            android:layout_height="6mm"
+            android:layout_height="7mm"
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_marginRight="2mm"
@@ -103,7 +103,7 @@
         <include layout="@layout/item_listview_wallets_header"
             android:layout_below="@id/wallets_header"
             android:id="@+id/archive_header"
-            android:layout_height="6mm"
+            android:layout_height="7mm"
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_marginRight="2mm"

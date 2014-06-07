@@ -390,6 +390,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mTransactionList.add(pos,tempWallet);
         //mLatestWalletListView.addWalletToList(tempWallet);
         mLatestWalletAdapter.addWallet(tempWallet);
+        mLatestWalletAdapter.incArchivePos();
         mLatestWalletAdapter.notifyDataSetChanged();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
 

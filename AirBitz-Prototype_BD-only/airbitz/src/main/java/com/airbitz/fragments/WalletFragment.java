@@ -159,7 +159,9 @@ public class WalletFragment extends Fragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mWalletNameButton.setText(mWalletName);
-        mButtonDollarBalance.setText(getWalletBalance());
+        mButtonBitcoinBalance.setText(getWalletBalance());
+        mButtonMover.setText(mButtonDollarBalance.getText());
+        mButtonDollarBalance.setText("$"+(Double.parseDouble(getWalletBalance().substring(1))*0.1145));
         mWalletNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
