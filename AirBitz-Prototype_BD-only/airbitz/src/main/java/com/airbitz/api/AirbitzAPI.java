@@ -1,5 +1,6 @@
 package com.airbitz.api;
 
+import android.os.Build;
 import android.util.Log;
 
 import com.airbitz.models.AccountTransaction;
@@ -15,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreProtocolPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +77,10 @@ public class AirbitzAPI {
         Log.d(TAG, url + params.toString());
         try {
             HttpClient httpClient = new DefaultHttpClient();
+            String s="Airbitz-Android v 1.0.11";
+            s += " API Level: " + android.os.Build.VERSION.SDK;
+            s += " Model: " + Build.BRAND + " " +android.os.Build.MODEL;
+            httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,s);
             HttpGet httpGet = new HttpGet();
 
             URI uri = new URI(url+params);
@@ -504,8 +510,8 @@ public class AirbitzAPI {
     public static List<AccountTransaction> getTransactions(String walletName) {
         // TODO replace with API call
         List<AccountTransaction> list = new ArrayList<AccountTransaction>();
-        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "B-5.000"));
-        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "B-65.000"));
+        list.add(new AccountTransaction("Matt Kemp","DEC 10","B25.000", "-B5.000"));
+        list.add(new AccountTransaction("John Madden","DEC 15","B30.000", "-B65.000"));
         list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "B95.000"));
 
         return list;

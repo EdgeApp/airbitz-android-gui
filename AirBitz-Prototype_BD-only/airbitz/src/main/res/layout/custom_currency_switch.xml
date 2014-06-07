@@ -23,9 +23,9 @@
             android:layout_height="6mm"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="110.015"
+            android:text="B110.015"
             android:textColor="#222222"
-            android:textSize="14dp" />
+            android:textSize="18dp" />
         <TextView
             android:id="@+id/top_type"
             android:layout_width="6mm"
@@ -55,9 +55,9 @@
             android:layout_height="6mm"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="1050.67"
+            android:text="$1050.67"
             android:textColor="#222222"
-            android:textSize="14dp" />
+            android:textSize="18dp" />
         <ImageView
             android:id="@+id/bottom_type"
             android:layout_width="6mm"
@@ -79,13 +79,13 @@
             android:layout_height="6mm"
             android:background="@drawable/btn_green"
             android:gravity="center"
-            android:text="110.015"
+            android:text="B110.015"
             android:shadowColor="#000000"
             android:shadowDx="-1"
             android:shadowDy="1"
             android:shadowRadius="2"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
+            android:textSize="18dp"
             android:textStyle="bold"/>
 
         <ImageView

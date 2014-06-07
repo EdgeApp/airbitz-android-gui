@@ -57,7 +57,7 @@ public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
         nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         debitAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
+        creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         return convertView;
     }
 }

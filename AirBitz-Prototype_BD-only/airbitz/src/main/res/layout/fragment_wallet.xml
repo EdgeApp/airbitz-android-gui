@@ -28,7 +28,7 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/activity_signup_title"
+            android:text="Transactions"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -134,7 +134,7 @@
         <RelativeLayout
             android:id="@+id/layout_export"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="10mm"
             android:layout_marginLeft="-2mm"
             android:layout_marginRight="-2mm"
             android:layout_alignParentTop="true">
@@ -165,17 +165,17 @@
             <EditText
                 android:id="@+id/button_balance"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="6mm"
                 android:layout_centerVertical="true"
                 android:imeOptions="actionDone"
+                android:text="Wallet"
                 android:inputType="textVisiblePassword|textNoSuggestions"
                 android:layout_toLeftOf="@id/button_export_padding"
                 android:layout_toRightOf="@id/button_export"
                 android:background="@drawable/bg_textfield"
                 android:gravity="center"
-                android:padding="1mm"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="18dp" />
 
         </RelativeLayout>
 
