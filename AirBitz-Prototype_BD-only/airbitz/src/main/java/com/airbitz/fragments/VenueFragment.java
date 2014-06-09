@@ -1,6 +1,7 @@
 
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -41,7 +42,6 @@ import java.util.List;
  * Created on 2/12/14.
  */
 public class VenueFragment extends Fragment implements
-                                           GestureDetector.OnGestureListener,
                                            BusinessDirectoryFragment.BusinessScrollListener {
 
     public static final String TAG = VenueFragment.class.getSimpleName();
@@ -54,6 +54,7 @@ public class VenueFragment extends Fragment implements
     private boolean isFirstLoad = true;
     private VenueAdapter mVenueAdapter;
     private TextView mNoResultView;
+    private Activity mActivity;
 //    private View mLoadingFooterView;
 
     private String mLocationName;
@@ -64,7 +65,7 @@ public class VenueFragment extends Fragment implements
     private int venueAmount = 0;
 
     private GetVenuesTask mGetVenuesTask;
-    private GestureDetector mGestureDetector;
+//    private GestureDetector mGestureDetector;
 
     private boolean mIsInBusinessDirectory = false;
     private boolean mIsInMapBusinessDirectory = false;
@@ -88,10 +89,14 @@ public class VenueFragment extends Fragment implements
         mVenues = venues;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActivity = getActivity();
+    }
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
-        mGestureDetector = new GestureDetector(this);
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
@@ -107,7 +112,7 @@ public class VenueFragment extends Fragment implements
                 String latLon = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
 
                 mIsInBusinessDirectory = true;
-                mGetVenuesTask = new GetVenuesTask(getActivity());
+                mGetVenuesTask = new GetVenuesTask(mActivity);
                 mGetVenuesTask.execute(latLon);
                 ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
 
@@ -117,10 +122,10 @@ public class VenueFragment extends Fragment implements
                 mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
                 mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
 
-                mGetVenuesTask = new GetVenuesTask(getActivity());
+                mGetVenuesTask = new GetVenuesTask(mActivity);
                 mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
             } else {
-                mGetVenuesTask = new GetVenuesTask(getActivity());
+                mGetVenuesTask = new GetVenuesTask(mActivity);
                 String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
                 mGetVenuesTask.execute(latlong);
             }
@@ -137,12 +142,6 @@ public class VenueFragment extends Fragment implements
         } else {
             setListView(mVenues);
         }
-
-        mVenueListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
 
         if (mIsInBusinessDirectory) {
             ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
@@ -161,7 +160,7 @@ public class VenueFragment extends Fragment implements
     @Override public void onScrollEnded() {
         if (isFirstLoad) {
             isFirstLoad = false;
-            GetRemainingFirstVenuesTask getRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(getActivity());
+            GetRemainingFirstVenuesTask getRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(mActivity);
             getRemainingFirstVenuesTask.execute("");
             venueAmount = 20;
         } else {
@@ -169,7 +168,7 @@ public class VenueFragment extends Fragment implements
                 if (isGettingMoreVenueFinished) {
                     isGettingMoreVenueFinished = false;
 
-                    GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(getActivity());
+                    GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(mActivity);
                     getMoreVenuesTask.execute(mNextUrl);
                     venueAmount += 20;
                 }
@@ -202,9 +201,13 @@ public class VenueFragment extends Fragment implements
                 result = mApi.getSearchByLatLong(params[0], "", "", "1");
 
             } else if (mIsInMapBusinessDirectory) {
-                String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
-                result = mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "",
-                                                                       "1", params[2], latlong);
+                double lat = getLatFromSharedPreference();
+                double lon = getLonFromSharedPreference();
+                if(lat!=-1) {
+                    String latlong = "" + lat + "," + lon;
+                    result = mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "",
+                            "1", params[2], latlong);
+                }
             }
 
             return result;
@@ -252,7 +255,7 @@ public class VenueFragment extends Fragment implements
         bundle.putString("", distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
+        ((NavigationActivity) mActivity).pushFragment(fragment);
     }
 
 
@@ -275,7 +278,7 @@ public class VenueFragment extends Fragment implements
 
     private void setListView(List<BusinessSearchResult> venues) {
         mVenueListView.setVisibility(View.VISIBLE);
-        mVenueAdapter = new VenueAdapter(getActivity(), venues);
+        mVenueAdapter = new VenueAdapter(mActivity, venues);
         mVenueListView.setAdapter(mVenueAdapter);
         preloadVenueImages();
 
@@ -303,7 +306,7 @@ public class VenueFragment extends Fragment implements
                             mLoadFlag = true;
                             if (!mIsInBusinessDirectory) {
 
-                                GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(getActivity());
+                                GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(mActivity);
                                 getMoreVenuesTask.execute(mNextUrl);
                             }
                         }
@@ -361,7 +364,7 @@ public class VenueFragment extends Fragment implements
     private void preloadVenueImages() {
         if (mVenues != null) {
             for (BusinessSearchResult venue : mVenues) {
-                Picasso.with(getActivity()).load(venue.getProfileImage().getImageThumbnail()).into(new Target() {
+                Picasso.with(mActivity).load(venue.getProfileImage().getImageThumbnail()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         Log.d(TAG, "Loaded from: " + from.toString());
@@ -492,12 +495,16 @@ public class VenueFragment extends Fragment implements
     }
 
     private float getStateFromSharedPreferences(String key) {
-        if(getActivity() == null){
+        if(mActivity == null){
             System.out.println("WTF MY ACTIVITY KILLED ITSELF");
         }
-        SharedPreferences pref = getActivity().getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
-                                                                    Context.MODE_PRIVATE);
-        return pref.getFloat(key, -1);
+        Activity a = mActivity;
+        if(a!=null) {
+            SharedPreferences pref = a.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
+                    Context.MODE_PRIVATE);
+            return pref.getFloat(key, -1);
+        }
+        return -1;
     }
 
     private double getLatFromSharedPreference() {
@@ -508,44 +515,6 @@ public class VenueFragment extends Fragment implements
     private double getLonFromSharedPreference() {
         double lon = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
         return lon;
-    }
-
-    @Override public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if (start != null & finish != null) {
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if (xDistance > 100) {
-                    getActivity().finish();
-                    return true;
-                }
-            }
-
-        }
-        return false;
     }
 
 }
