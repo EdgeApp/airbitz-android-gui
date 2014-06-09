@@ -89,6 +89,7 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         try 
         {
         	mCamera.setPreviewDisplay(holder);
+            mCamera.setDisplayOrientation(90);
             mCamera.startPreview();                
         } 
         catch (IOException e)
