@@ -2,15 +2,20 @@ package com.airbitz.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -47,12 +53,19 @@ public class PasswordRecoveryActivity extends Activity {
 
     private TextView mTitleTextView;
 
+    private ArrayList<View> mItemsList;
+
     private String mUsername;
     private String mPassword;
     private String mWithdrawal;
 
+    private View dummy;
+
+    private int spinnerCount = 1;
+
     private Intent mIntent;
 
+    private LinearLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
     private List<String> mQuestions;
@@ -68,8 +81,10 @@ public class PasswordRecoveryActivity extends Activity {
 
         mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
 
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
+        mLayoutRecovery = (LinearLayout) findViewById(R.id.layout_pass_recovery);
+
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
         mSkipStepButton = (ImageButton) findViewById(R.id.button_skip_step);
@@ -78,12 +93,8 @@ public class PasswordRecoveryActivity extends Activity {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        dummy = findViewById(R.id.password_dummy);
+
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +115,7 @@ public class PasswordRecoveryActivity extends Activity {
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveQuestionsAndAnswers();
+                //saveQuestionsAndAnswers();
                 startActivity(mIntent);
                 finish();
             }
@@ -112,11 +123,16 @@ public class PasswordRecoveryActivity extends Activity {
 
         mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.password_recovery_listview);
         mQuestionViews = new ArrayList<View>();
-        mQuestions = getQuestionList(null);
-        mQuestionViews.add(getQuestionView());
-
-        mFetchQuestionsTask = new FetchQuestionsTask(mUsername, mPassword, mWithdrawal);
-        mFetchQuestionsTask.execute((Void) null);
+        while(spinnerCount !=7) {
+            mQuestions = getQuestionList(null);
+            mQuestionViews.add(getQuestionView());
+            spinnerCount++;
+        }
+        populateQuestionViews();
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        dummy.requestFocus();
+        //mFetchQuestionsTask = new FetchQuestionsTask(mUsername, mPassword, mWithdrawal);
+        //mFetchQuestionsTask.execute((Void) null);
 
     }
 
@@ -136,6 +152,8 @@ public class PasswordRecoveryActivity extends Activity {
         //TODO save questions and answers to server here from saveList in some async way
 
     }
+
+
 
     private void populateQuestionViews() {
         mPasswordRecoveryListView.removeAllViews();
@@ -229,22 +247,46 @@ public class PasswordRecoveryActivity extends Activity {
         //TODO replace with server questions
 
         List<String> out = new ArrayList<String>();
-        for(int i=0; i<5; i++) {
-            out.add("Question "+i);
+
+
+        if(spinnerCount == 1 || spinnerCount == 2) {
+            for (String quest : getResources().getStringArray(R.array.password_recovery_1)) {
+                out.add(quest);
+            }
+        }else if(spinnerCount == 3 || spinnerCount == 4){
+            for (String quest : getResources().getStringArray(R.array.password_recovery_2)) {
+                out.add(quest);
+            }
+        }else if(spinnerCount == 5 || spinnerCount == 6){
+            for (String quest : getResources().getStringArray(R.array.password_recovery_3)) {
+                out.add(quest);
+            }
         }
+        out.add("Question");
         return out;
     }
 
     private View getQuestionView() {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.item_password_recovery, null);
-        Spinner mySpinner = (Spinner)view.findViewById(R.id.item_password_recovery_spinner);
+        final Spinner mySpinner = (Spinner)view.findViewById(R.id.item_password_recovery_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mQuestions);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mItemsList = new ArrayList<View>();
+        for(String question: mQuestions) {
+            TextView b = (TextView) inflater.inflate(R.layout.item_password_recovery_spinner, null);
+            b.setText(question);
+            mItemsList.add(b);
+        }
+
+        final PasswordRecoveryAdapter adapter = new PasswordRecoveryAdapter(this, mItemsList, mQuestions);
+        adapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
+
         mySpinner.setAdapter(adapter);
+        mySpinner.setDropDownWidth((int)getResources().getDimension(R.dimen.spinner_width_password));
 
         final EditText edittext = (EditText) view.findViewById(R.id.item_password_recovery_answer);
+        final View redRing = view.findViewById(R.id.red_ring);
+        edittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
         edittext.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -261,6 +303,51 @@ public class PasswordRecoveryActivity extends Activity {
             }
         });
 
+        edittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                try{
+                    if(!edittext.getText().toString().isEmpty() && edittext.getText().toString().length() <10){
+                        redRing.setVisibility(View.VISIBLE);
+                    }else{
+                        redRing.setVisibility(View.GONE);
+                    }
+                }catch(Exception e ){
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mySpinner.getSelectedItemPosition() != adapter.getCount()) {
+                    edittext.setFocusableInTouchMode(true);  //if this is not already set
+                    edittext.requestFocus();  //to move the cursor
+                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(edittext, InputMethodManager.SHOW_FORCED);
+                    edittext.setCursorVisible(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        mySpinner.setSelection(adapter.getCount());
+        edittext.clearFocus();
+        edittext.setCursorVisible(false);
         return view;
     }
 
