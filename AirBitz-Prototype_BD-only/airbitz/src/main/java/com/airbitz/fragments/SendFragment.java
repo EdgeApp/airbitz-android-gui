@@ -252,6 +252,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         super.onResume();
         if(mHandler==null)
             mHandler = new Handler();
+        mHandler.postDelayed(cameraDelayRunner, 500);
     }
 
     @Override
