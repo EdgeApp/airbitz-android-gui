@@ -45,10 +45,13 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_credentials">The username or password is invalid</string>
 
-    <string name="activity_landing_swipe_text">Swipe to View Business Directory only</string>
+    <string name="activity_landing_swipe_text">Swipe to View Business Directory</string>
     <string name="activity_landing_button_signin">Sign In</string>
     <string name="activity_landing_button_signup">Sign Up</string>
     <string name="activity_landing_forgot_label">Forgot Password</string>
+
+    <string name="activity_forgot_no_username">No Username</string>
+    <string name="activity_forgot_no_username_details">Please enter a Username first</string>
 
     <!-- Strings for Signup -->
     <string name="activity_signup_title">Sign Up</string>
@@ -64,7 +67,30 @@
     <string name="activity_recovery_complete_button">Complete Sign Up</string>
     <string name="activity_recovery_prompt_title">Warning</string>
     <string name="activity_recovery_prompt_skip">Are you sure you want to skip?</string>
-
+    <string-array name="password_recovery_1">
+        <item>Who is your favorite superhero?</item>
+        <item>What were your team colors in high school?</item>
+        <item>What [city,country] would you most like to visit?</item>
+        <item>What are the names of your first two pets?</item>
+        <item>What was the make and model of your first car?</item>
+        <item>What is your mother\'s maiden and current last name?</item>
+        <item>What were the first two companies you worked for?</item>
+        <item>What is your favorite ice cream brand and flavor?</item>
+        <item>In what city or town was your first job?</item>
+        <item>What is the name of your favorite childhood friend?</item>
+        <item>In what city does your nearest sibling live?</item>
+    </string-array>
+    <string-array name="password_recovery_2">
+        <item>What is your father\'s birthdate?</item>
+        <item>What is your mother\'s birthdate?</item>
+        <item>What is your oldest sibling\'s birthdate?</item>
+        <item>What is the birthdate of your first child?</item>
+    </string-array>
+    <string-array name="password_recovery_3">
+        <item>What is the first street address you remember living in?</item>
+        <item>What is the address of your home in college?</item>
+        <item>What is the street address of your house during high school</item>
+    </string-array>
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
     <string name="activity_forgot_submit">Submit</string>
@@ -160,4 +186,7 @@
     <string name="received_success_title">Send Bitcoin</string>
     <string name="received_success_sending_title">Sending...</string>
     <string name="received_success_received_title">Received!</string>
+
+
+    <string name="question">Question</string>
 </resources>

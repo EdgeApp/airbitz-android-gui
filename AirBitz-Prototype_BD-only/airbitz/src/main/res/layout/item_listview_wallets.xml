@@ -14,49 +14,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/wallet_list_view_height"
-    android:background="@android:color/transparent"
-    android:paddingLeft="13dp"
-    android:paddingRight="15dp"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
+    android:layout_height="7mm"
+    android:background="#addff1"
+    android:paddingLeft="2mm"
     >
 
     <ImageView
         android:id="@+id/imageview_dots"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="6mm"
+        android:layout_height="6mm"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:padding="2dp"
+        android:padding="2mm"
         android:src="@drawable/ico_dots"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/textview_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/imageview_dots"
+        android:layout_height="7mm"
+        android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/textview_amount"
         android:text="item"
-        android:textSize="15dp"
+        android:textSize="14dp"
         android:gravity="center_vertical"
-        android:layout_margin="10dp"
-        android:layout_centerVertical="true"
         android:singleLine="true"
         android:textColor="#4c4c4c"/>
 
     <ImageView
         android:id="@+id/imageview_icon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="6mm"
+        android:layout_height="6mm"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
+        android:paddingTop="1.5mm"
+        android:paddingLeft="1.5mm"
+        android:paddingBottom="1.5mm"
+        android:paddingRight="1.5mm"
         android:src="@drawable/arrow_right"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
+        android:layout_toLeftOf="@id/imageview_dots"
         android:layout_centerVertical="true"/>
 
     <TextView
@@ -64,9 +61,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/imageview_icon"
+        android:layout_marginRight="1mm"
         android:text="amount"
         android:textColor="#005f96"
-        android:textStyle="italic"
+        android:textSize="12dp"
         android:layout_centerVertical="true"/>
+
+
 
 </RelativeLayout>

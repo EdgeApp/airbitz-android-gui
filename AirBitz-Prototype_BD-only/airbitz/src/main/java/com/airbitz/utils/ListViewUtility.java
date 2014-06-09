@@ -94,6 +94,7 @@ public class ListViewUtility {
         listView.setLayoutParams(params);
     }
 
+
     public static void setWalletListViewHeightBasedOnChildren(ListView listView, int size, Context context) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

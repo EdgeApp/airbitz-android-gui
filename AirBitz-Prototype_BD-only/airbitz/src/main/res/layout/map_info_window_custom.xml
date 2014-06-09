@@ -12,19 +12,20 @@
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
+        android:paddingBottom="5dp"
         android:id="@+id/balloon_layout"
-        android:background="@drawable/bg_balloon_shadow">
+        android:background="@drawable/bg_balloon_info_shadow">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_width="180dp"
+            android:layout_height="95dp"
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingBottom="21dp"
+            android:paddingBottom="28dp"
             android:id="@+id/balloon_layout_inner"
-            android:background="@drawable/bg_balloon_info">
+            android:background="@drawable/bg_balloon_info_no_shadow">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -32,7 +33,7 @@
                 <ImageView
                     android:id="@+id/background_image"
                     android:layout_width="164dp"
-                    android:layout_height="70dp"
+                    android:layout_height="67dp"
                     android:scaleType="centerCrop"/>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -64,7 +65,7 @@
                     android:layout_width="170dp"
                     android:layout_height="90dp"
                     android:paddingTop="5dp"
-                    android:paddingBottom="25dp"
+                    android:paddingBottom="32dp"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:orientation="vertical"

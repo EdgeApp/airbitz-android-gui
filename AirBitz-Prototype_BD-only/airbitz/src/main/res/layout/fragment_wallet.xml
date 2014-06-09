@@ -7,151 +7,144 @@
     android:background="@drawable/bg_app">
 
     <RelativeLayout
-        android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:layout_height="7mm"
+        android:id="@+id/layout_header"
+        android:background="#40000000">
 
         <ImageButton
-            android:id="@+id/button_back"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
+            android:layout_width="7mm"
+            android:layout_height="7mm"
             android:scaleType="centerCrop"
-            android:src="@drawable/btn_back" />
+            android:adjustViewBounds="true"
+            android:id="@+id/button_back"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_back"
+            android:padding="2mm"/>
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Transactions"
+            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:text="@string/wallet_title"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:textSize="20dp"/>
 
 
         <ImageButton
+            android:layout_width="7mm"
+            android:layout_height="7mm"
             android:id="@+id/button_help"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="5dp"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_help" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:padding="2mm"/>
 
     </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:id="@+id/separator_header"
         android:layout_width="match_parent"
-        android:layout_height="0.8dp"
+        android:layout_height="1px"
         android:layout_below="@id/layout_header"
         android:background="@android:color/black"
         android:orientation="vertical" />
 
-    <LinearLayout
+    <View
         android:id="@+id/separator_header_search"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:layout_below="@id/separator_header"
-        android:background="@android:color/holo_blue_light"
+        android:background="#57b7dd"
         android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="7mm"
         android:layout_below="@id/separator_header_search"
-        android:background="#28007bbe"
+        android:background="@drawable/search_bar"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/layout_edit_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
 
             <com.airbitz.objects.ClearableEditText
                 android:id="@+id/edittext_search"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="5mm"
+                android:layout_gravity="center_vertical"
                 android:background="@drawable/rounded_edge"
                 android:drawableLeft="@drawable/ico_search"
-                android:drawablePadding="10dp"
+                android:drawablePadding="1.5mm"
                 android:drawableRight="@drawable/btn_x"
-                android:hint="@string/string_search"
-                android:inputType="text"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
+                android:hint="Search"
+                android:selectAllOnFocus="true"
+                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:imeOptions="actionSearch"
+                android:textCursorDrawable="@drawable/bold_cursor"
+                android:layout_marginTop="1mm"
+                android:layout_marginBottom="1mm"
+                android:layout_marginRight="2mm"
+                android:layout_marginLeft="2mm"
+                android:paddingLeft="1mm"
+                android:textSize="16dp"
                 android:textColor="#000000"
-                android:textColorHint="#b4b3b4" />
-
-
+                android:textColorHint="#44000000" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#50000000"
+            android:orientation="vertical" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#00225a" />
+
     </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/separator_search_1"
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_below="@id/layout_search"
-        android:background="#50000000"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/separator_search"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/separator_search_1"
-        android:background="@android:color/black"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/separator_search_3"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/separator_search"
-        android:background="#30000000"
-        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/separator_search_3">
+        android:layout_below="@id/layout_search"
+        android:layout_marginRight="2mm"
+        android:layout_marginLeft="2mm"
+        android:paddingBottom="2mm">
 
         <RelativeLayout
             android:id="@+id/layout_export"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="5dp">
+            android:layout_height="10mm"
+            android:layout_marginLeft="-2mm"
+            android:layout_marginRight="-2mm"
+            android:layout_alignParentTop="true">
 
             <ImageButton
                 android:id="@+id/button_export"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="10mm"
+                android:layout_height="10mm"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:padding="2.5mm"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
@@ -159,85 +152,79 @@
 
             <ImageButton
                 android:id="@+id/button_export_padding"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="10mm"
+                android:layout_height="10mm"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="10dp"
+                android:padding="2.5mm"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/btn_export"
                 android:visibility="invisible" />
 
-
-            <Button
+            <EditText
                 android:id="@+id/button_balance"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:layout_height="6mm"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="10dp"
+                android:imeOptions="actionDone"
+                android:text="Wallet"
+                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:layout_toLeftOf="@id/button_export_padding"
                 android:layout_toRightOf="@id/button_export"
-                android:background="@drawable/btn_trans_rounded"
+                android:background="@drawable/bg_textfield"
                 android:gravity="center"
-                android:padding="5dp"
                 android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="18dp" />
 
         </RelativeLayout>
 
         <include
-            layout="@layout/custom_currency_switch" />
+            layout="@layout/custom_currency_switch"/>
 
-        <LinearLayout
-            android:id="@+id/layout_send_request"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <com.airbitz.objects.ResizableImageView
-                android:id="@+id/button_request"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3mm">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/btn_request_green" />
+                android:orientation="vertical">
 
-            <com.airbitz.objects.ResizableImageView
-                android:id="@+id/button_send"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/btn_send_orange" />
+                <LinearLayout
+                    android:id="@+id/layout_send_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="1.5mm"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-        </LinearLayout>
+                    <com.airbitz.objects.ResizableImageView
+                        android:id="@+id/button_request"
+                        android:layout_width="22mm"
+                        android:layout_height="6mm"
+                        android:layout_marginRight="1mm"
+                        android:src="@drawable/btn_request_green" />
 
-        <ListView
-            android:id="@+id/listview_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_send_request"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/rounded_edge_blue">
+                    <com.airbitz.objects.ResizableImageView
+                        android:id="@+id/button_send"
+                        android:layout_width="22mm"
+                        android:layout_height="6mm"
+                        android:layout_marginLeft="1mm"
+                        android:src="@drawable/btn_send_orange" />
 
-        </ListView>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/listview_transaction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_send_request"
+                    android:background="@drawable/rounded_edge_blue">
+
+                </ListView>
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 </RelativeLayout>

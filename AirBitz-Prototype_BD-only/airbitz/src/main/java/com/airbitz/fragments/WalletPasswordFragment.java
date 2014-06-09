@@ -67,6 +67,8 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
             public void onFocusChange(View view, boolean hasFocus) {
 
                 if(!hasFocus){
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                    if(((EditText) view).getText().length() != 0){
 
                    }

@@ -7,6 +7,7 @@
 
     <RelativeLayout
         android:orientation="horizontal"
+        android:id="@+id/popup_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <ImageView
@@ -66,13 +67,12 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="9mm"
         android:id="@+id/normal_navigation_bar"
         android:weightSum="5">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_tab_bar"
@@ -89,7 +89,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_tab_bar"
@@ -105,7 +104,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_tab_bar"
@@ -121,7 +119,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_tab_bar"
@@ -137,7 +134,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_tab_bar"

@@ -2,9 +2,12 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -22,9 +26,12 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,13 +46,26 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private Button mBitCoinBalanceButton;
     private Button mDollarBalanceButton;
     private Button mButtonMover;
-    private SeekBar mSeekBar;
+    //private SeekBar mSeekBar;
 
+    private TextView walletsHeader;
+    private TextView archiveHeader;
 
-    private ListView mLatestWalletListView;
+    private boolean archiveClosed = false;
+
+    private RelativeLayout topSwitch;
+    private RelativeLayout bottomSwitch;
+    private RelativeLayout switchable;
+    private RelativeLayout switchContainer;
+
+    private DynamicListView mLatestWalletListView;
 
     private ImageButton mHelpButton;
     private ImageButton mAddButton;
+
+    private ImageView moverCoin;
+    private ImageView moverType;
+
 
     private TextView mTitleTextView;
 
@@ -55,6 +75,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
+    private List<Wallet> archivedWalletList;
     private AirbitzAPI mAPI;
 
     @Override
@@ -69,6 +90,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mLatestWalletList = mAPI.getWallets();
+        archivedWalletList = new ArrayList<Wallet>();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -78,8 +100,19 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mDollarBalanceButton = (Button) view.findViewById(R.id.back_button_bottom);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
 
+        topSwitch = (RelativeLayout) view.findViewById(R.id.top_switch);
+        bottomSwitch = (RelativeLayout) view.findViewById(R.id.bottom_switch);
+        switchable = (RelativeLayout) view.findViewById(R.id.switchable);
+        switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
+
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mAddButton = (ImageButton) view.findViewById(R.id.button_add);
+
+        moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        moverType = (ImageView) view.findViewById(R.id.button_mover_type);
+
+        walletsHeader = (TextView) view.findViewById(R.id.wallets_header);
+        archiveHeader = (TextView) view.findViewById(R.id.archive_header);
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,108 +131,47 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mBitCoinBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
-                mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
-
-                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_white, 0, R.drawable.ico_btc_white, 0);
-                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_dark, 0, R.drawable.ico_usd_dark, 0);
-
-                mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
-                mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
-
-                mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
-                mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-
-                mBitCoinBalanceButton.setPadding(15,10,15,10);
-                mDollarBalanceButton.setPadding(15,10,15,10);
-
-
+                switchBarInfo(true);
                 mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-
-                if(!mOnBitcoinMode){
-
-                    double conv = 8.7544;
-                    for(Wallet trans: mLatestWalletList){
-                        try{
-                            double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                            String amount = String.format("B%.3f", item);
-                            trans.setAmount(amount);
-                        } catch (Exception e){
-                            trans.setAmount("0");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    mLatestWalletAdapter.notifyDataSetChanged();
-                }
                 mOnBitcoinMode = true;
-
             }
         });
         mDollarBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                mBitCoinBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
-                mDollarBalanceButton.setBackgroundResource(R.drawable.btn_green);
-
-                mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_dark, 0, R.drawable.ico_btc_white, 0);
-                mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_white, 0, R.drawable.ico_usd_white, 0);
-
-                mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
-                mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
-
-                mBitCoinBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-                mDollarBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
-
-                mBitCoinBalanceButton.setPadding(15,10,15,10);
-                mDollarBalanceButton.setPadding(15,10,15,10);
-
+                switchBarInfo(false);
                 mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-
-                if(mOnBitcoinMode){
-
-                    double conv = 0.1145;
-                    for(Wallet trans: mLatestWalletList){
-                        try{
-                            double item = Double.parseDouble(trans.getAmount().substring(1))*conv;
-                            String amount = String.format("$%.3f", item);
-                            trans.setAmount(amount);
-                        } catch (Exception e){
-                            trans.setAmount("0");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    mLatestWalletAdapter.notifyDataSetChanged();
-                }
                 mOnBitcoinMode = false;
-
+            }
+        });
+        mButtonMover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+                if(mOnBitcoinMode){
+                    switchBarInfo(false);
+                    mOnBitcoinMode = false;
+                }else{
+                    switchBarInfo(true);
+                    mOnBitcoinMode = true;
+                }
             }
         });
 
         mOnBitcoinMode = true;
-
-//        mBitCoinBalanceButton.setBackgroundResource(R.drawable.btn_green);
-//        mDollarBalanceButton.setBackgroundResource(getResources().getColor(android.R.color.transparent));
-//
-//        mBitCoinBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_btc_white, 0, R.drawable.ico_btc_white, 0);
-//        mDollarBalanceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ico_coin_usd_dark, 0, R.drawable.ico_usd_dark, 0);
-//
-//        mBitCoinBalanceButton.setTextColor(getResources().getColor(android.R.color.white));
-//        mDollarBalanceButton.setTextColor(getResources().getColor(android.R.color.black));
-//        mBitCoinBalanceButton.setPadding(15, 10, 15, 10);
-//        mDollarBalanceButton.setPadding(15, 10, 15, 10);
-//
-//        mBitCoinBalanceButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
-//        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-//
+        //switchBarInfo(true);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mLatestWalletListView = (ListView) view.findViewById(R.id.layout_listview);
+        mLatestWalletListView = (DynamicListView) view.findViewById(R.id.layout_listview);
 
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+        mLatestWalletListView.setWalletList(mLatestWalletList);
+        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
+        mLatestWalletListView.setArchivedList(archivedWalletList);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
+
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -207,18 +179,117 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonMover.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
+        archiveHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pos = mLatestWalletAdapter.getArchivePos();
+                //a.switchCloseAfterArchive(pos);
+                System.out.println("Map Sizes before: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
+                if(archiveClosed){
+                    while(!archivedWalletList.isEmpty()){
+                        mLatestWalletList.add(archivedWalletList.get(0));
+                        mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
+                        archivedWalletList.remove(0);
+                    }
+                }else {
+                    pos++;
+                    while(pos<mLatestWalletList.size()){
+                        archivedWalletList.add(mLatestWalletList.get(pos));
+                        mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
+                        mLatestWalletList.remove(pos);
+                    }
+                }
+                System.out.println("Map Sizes after: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
+                mLatestWalletAdapter.notifyDataSetChanged();
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                archiveClosed = !archiveClosed;
+                mLatestWalletListView.setArchiveClosed(archiveClosed);
+            }
+        });
+
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                }else if(a.getList().get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                    int pos = a.getPosition(a.getList().get(i));
+                    //a.switchCloseAfterArchive(pos);
+                    System.out.println("Map Sizes before: " +a.getMapSize()+" vs " + mLatestWalletList.size());
+                    if(archiveClosed){
+                        while(!archivedWalletList.isEmpty()){
+                            mLatestWalletList.add(archivedWalletList.get(0));
+                            mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
+                            archivedWalletList.remove(0);
+                        }
+                    }else {
+                        pos++;
+                        while(pos<mLatestWalletList.size()){
+                            archivedWalletList.add(mLatestWalletList.get(pos));
+                            mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
+                            mLatestWalletList.remove(pos);
+                        }
+                    }
+                    System.out.println("Map Sizes after: " +a.getMapSize()+" vs " + mLatestWalletList.size());
+                    mLatestWalletAdapter.notifyDataSetChanged();
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                    archiveClosed = !archiveClosed;
+                    mLatestWalletListView.setArchiveClosed(archiveClosed);
+                }
             }
         });
-
-        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
-        mSeekBar.setOnSeekBarChangeListener(this);
-
+        /*RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams((int)getActivity().getResources().getDimension(R.dimen.spinner_width_password),(int)getActivity().getResources().getDimension(R.dimen.drop_down_height));
+        rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
+        switchable.setLayoutParams(rLP);*/
+        /*if(switchable.getVisibility()==View.VISIBLE){
+            System.out.println("I Should be visible, Height: "+switchable.getHeight() +", Width: "+switchable.getWidth());
+        }*/
         return view;
+    }
+
+    private void switchBarInfo(boolean isBitcoin){
+        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(switchContainer.getWidth(), switchContainer.getHeight()/2);
+        if(isBitcoin) {
+            rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
+            switchable.setLayoutParams(rLP);
+            mButtonMover.setText(mBitCoinBalanceButton.getText());
+            moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            moverType.setImageResource(R.drawable.ico_btc_white);
+            double conv = 8.7544;
+            for(Wallet trans: mLatestWalletList){
+                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    try {
+                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
+                        String amount = String.format("B%.3f", item);
+                        trans.setAmount(amount);
+                    } catch (Exception e) {
+                        trans.setAmount("0");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            mLatestWalletAdapter.notifyDataSetChanged();
+        }else{
+            rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
+            switchable.setLayoutParams(rLP);
+            mButtonMover.setText(mDollarBalanceButton.getText());
+            moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
+            moverType.setImageResource(R.drawable.ico_usd_white);
+            double conv = 0.1145;
+            for(Wallet trans: mLatestWalletList){
+                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                    try {
+                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
+                        String amount = String.format("$%.3f", item);
+                        trans.setAmount(amount);
+                    } catch (Exception e) {
+                        trans.setAmount("0");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private void showWalletFragment(String name, String amount) {
@@ -272,13 +343,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         switch(selection) {
             case BTC:
-                onProgressChanged(mSeekBar, 100, true);
+                //onProgressChanged(mSeekBar, 100, true);
                 mButtonMover.setText(mBitCoinBalanceButton.getText());
                 mButtonMover.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_coin_btc_white), null,
                         getResources().getDrawable(R.drawable.ico_btc_white), null);
                break;
             case CURRENCY:
-                onProgressChanged(mSeekBar, 0, true);
+                //onProgressChanged(mSeekBar, 0, true);
                 mButtonMover.setText(mDollarBalanceButton.getText());
                 String left = "ico_coin_"+mCurrencyResourceString+"_white";
                 String right = "ico_"+mCurrencyResourceString+"_white";
@@ -296,18 +367,30 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void addItemToLatestTransactionList(String name, String amount, List<Wallet> mTransactionList){
 
         if(mOnBitcoinMode){
-            double conv = 8.7544;
-            double item = Double.parseDouble(amount.substring(1))*conv;
-            amount = String.format("B%.3f", item);
+            //double conv = 8.7544;
+            //double item = Double.parseDouble(amount.substring(1))*conv;
+            //amount = String.format("B%.3f", item);
         }
         else{
             double conv = 0.1145;
             double item = Double.parseDouble(amount.substring(1))*conv;
             amount = String.format("$%.3f", item);
         }
-
+        //TODO make sure that everyone knows its been added
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        mTransactionList.add(new Wallet(name, amount));
+        Wallet tempWallet = new Wallet(name, amount);
+        int counter = 0;
+        int pos = -1;
+        while(counter !=2){
+            pos++;
+            if(mTransactionList.get(pos).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" ){//TODO ALERT
+                counter = 2;
+            }
+        }
+        mTransactionList.add(pos,tempWallet);
+        //mLatestWalletListView.addWalletToList(tempWallet);
+        mLatestWalletAdapter.addWallet(tempWallet);
+        mLatestWalletAdapter.incArchivePos();
         mLatestWalletAdapter.notifyDataSetChanged();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
 
@@ -347,4 +430,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         alertDialog.show();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        mLatestWalletListView.setHeaderVisibilityOnReturn();
+    }
 }

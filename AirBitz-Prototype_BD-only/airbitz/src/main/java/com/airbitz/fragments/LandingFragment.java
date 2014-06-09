@@ -20,14 +20,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,6 +67,10 @@ public class LandingFragment extends Fragment {
     private Location mLocation;
     private View mProgressView;
 
+
+    private TextView mDetailTextView;
+    private LinearLayout mSwipeLayout;
+
     private LocationManager mLocationManager;
 
     private RelativeLayout mLandingLayout;
@@ -91,6 +99,8 @@ public class LandingFragment extends Fragment {
         mForgotImageView = (ImageView) view.findViewById(R.id.forgotPassImage);
         mLogoImageView = (ImageView) view.findViewById(R.id.imageView);
         mForgotPasswordTextView = (TextView) view.findViewById(R.id.forgotPassText);
+        mSwipeLayout = (LinearLayout) view.findViewById(R.id.swipeLayout);
+        mDetailTextView = (TextView) view.findViewById(R.id.detail_text);
 
         mUserNameField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mPasswordField.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -107,26 +117,51 @@ public class LandingFragment extends Fragment {
         display.getSize(size);
         mDisplayWidth = size.x;
 
+        final View activityRootView = view.findViewById(R.id.container);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    mDetailTextView.setVisibility(View.GONE);
+                    mSwipeLayout.setVisibility(View.GONE);
+                } else {
+                    mDetailTextView.setVisibility(View.VISIBLE);
+                    mSwipeLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 //        mLogoImageView.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
 //                return mGestureDetector.onTouchEvent(motionEvent);
 //            }
-//        });
+//        });'
+
 
         mForgotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-                startActivity(intent);
+                if(mUserNameField.getText().toString().isEmpty()){
+                    showAlertDialog();
+                }else {
+                    System.out.println("THis is me: "+mUserNameField.getText().toString());
+                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
         mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-                startActivity(intent);
+                if(mUserNameField.getText().toString().isEmpty()){
+                    showAlertDialog();
+                }else {
+                    //System.out.println("THis is me: "+mUserNameField.getText().toString());
+                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -134,8 +169,10 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
-                mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
+                if(!mPasswordField.getText().toString().isEmpty() && !mUserNameField.getText().toString().isEmpty()){
+                    mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
+                    mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
+                }
                 attemptLogin();
             }
         });
@@ -143,6 +180,9 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
                 Intent intent = new Intent(getActivity(), SignUpActivity.class);
                 startActivity(intent);
             }
@@ -187,6 +227,13 @@ public class LandingFragment extends Fragment {
                 ((NavigationActivity) getActivity()).setUserLoggedIn(true);
                 ((NavigationActivity) getActivity()).setLoginView(false);
                 ((NavigationActivity) getActivity()).onNavBarSelected(0);
+                final View activityRootView = getActivity().findViewById(R.id.container);
+                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                } else {
+                }
             } else {
                 showProgress(false);
                 showErrorDialog();
@@ -312,6 +359,22 @@ public class LandingFragment extends Fragment {
         alert.show();
     }
 
+
+    public void showAlertDialog(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage(getResources().getString(R.string.activity_forgot_no_username_details))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -346,6 +409,7 @@ public class LandingFragment extends Fragment {
         }
 
     }
+
 
     private final LocationListener listener = new LocationListener() {
 
