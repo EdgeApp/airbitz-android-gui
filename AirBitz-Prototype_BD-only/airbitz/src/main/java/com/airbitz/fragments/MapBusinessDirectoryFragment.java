@@ -1031,6 +1031,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onPostExecute(List<LocationSearchResult> result) {
+            if(getActivity()==null)
+                return;
 
             mLocation.clear();
 
