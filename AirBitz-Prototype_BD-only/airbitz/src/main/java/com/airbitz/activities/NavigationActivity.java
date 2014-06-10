@@ -51,6 +51,7 @@ public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
 
     static {
+        System.loadLibrary("abc");
         System.loadLibrary("airbitz");
     }
 
