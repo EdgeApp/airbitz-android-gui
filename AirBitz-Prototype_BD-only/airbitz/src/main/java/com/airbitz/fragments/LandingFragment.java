@@ -160,6 +160,7 @@ public class LandingFragment extends Fragment {
                 }else {
                     //System.out.println("THis is me: "+mUserNameField.getText().toString());
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
+                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameField.getText().toString());
                     startActivity(intent);
                 }
             }
