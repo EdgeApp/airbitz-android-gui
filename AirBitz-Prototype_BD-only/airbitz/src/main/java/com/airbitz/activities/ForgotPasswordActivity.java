@@ -2,6 +2,7 @@ package com.airbitz.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_QuestionChoices;
+import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -34,9 +40,17 @@ public class ForgotPasswordActivity extends Activity {
 
     private Map mRecoveryQA;
 
+    private String mUsername;
+    private FetchQuestionsTask mFetchQuestionsTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if(intent !=null) {
+            mUsername = intent.getStringExtra(SignUpActivity.KEY_USERNAME);
+        }
+
         setContentView(R.layout.activity_forgot_password);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
@@ -79,6 +93,10 @@ public class ForgotPasswordActivity extends Activity {
         mItemsLayout = (LinearLayout) findViewById(R.id.forgot_questions_layout);
 
         populateQuestions(mRecoveryQA);
+
+        mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
+        mFetchQuestionsTask.execute((Void) null);
+
     }
 
     private boolean answersCorrect(Map<String, String> map) {
@@ -129,4 +147,60 @@ public class ForgotPasswordActivity extends Activity {
 
         return view;
     }
+
+    /**
+     * An asynchronous question fetch task
+     */
+    public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUsername;
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pData = new tABC_RequestResults();
+
+        FetchQuestionsTask(String username) {
+            mUsername = username;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            tABC_Error pError = new tABC_Error();
+            tABC_RequestResults pData = new tABC_RequestResults();
+            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
+//            tABC_QuestionChoices pQuestions = new tABC_QuestionChoices();
+//            pQuestions.swigCPtr = (pData.getPRetData()).swigCPtr;
+//            long num = pQuestions.getNumChoices();
+
+            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mFetchQuestionsTask = null;
+//                if (pResults->requestType == ABC_RequestType_GetQuestionChoices)
+//                {
+//                    //NSLog(@"GetQuestionChoices completed with cc: %ld (%s)", (unsigned long) pResults->errorInfo.code, pResults->errorInfo.szDescription);
+//                    if (pResults->bSuccess)
+//                    {
+//                        tABC_QuestionChoices *pQuestionChoices = (tABC_QuestionChoices *)pResults->pRetData;
+//                        [controller categorizeQuestionChoices:pQuestionChoices];
+//                        ABC_FreeQuestionChoices(pQuestionChoices);
+//                    }
+//                    [controller performSelectorOnMainThread:@selector(getPasswordRecoveryQuestionsComplete) withObject:nil waitUntilDone:FALSE];
+
+            if (success) {
+//                populateQuestionViews();
+            } else {
+//                showProgress(false);
+//                showErrorDialog();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mFetchQuestionsTask = null;
+        }
+    }
+
 }
