@@ -213,10 +213,10 @@ public class LandingFragment extends Fragment {
             tABC_Error pError = new tABC_Error();
             tABC_RequestResults pResults = new tABC_RequestResults();
 
-            tABC_CC code = core.ABC_SignIn(mUsername, mPassword, null, pResults, pError);
+            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pResults, pError);
             tABC_RequestType type = pResults.getRequestType();
 
-            boolean success = type == tABC_RequestType.ABC_RequestType_AccountSignIn? true: false;
+            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
             return success;
         }
 
