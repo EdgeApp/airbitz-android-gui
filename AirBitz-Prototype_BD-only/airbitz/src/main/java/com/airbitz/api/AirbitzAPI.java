@@ -21,14 +21,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URL;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * Created on 2/13/14.
@@ -74,24 +81,47 @@ public class AirbitzAPI {
     public static String getRequest(String url, String params) {
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
+        HttpsURLConnection urlConnection = null;
         Log.d(TAG, url + params.toString());
         try {
-            HttpClient httpClient = new DefaultHttpClient();
-            String s="Airbitz-Android v 1.0.11";
+
+            /*KeyStore keyStore = KeyStore.getInstance("JLS");
+            String algorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
+            tmf.init(keyStore);
+
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+
+            //HttpsURLConnection httpsURLConnection = new
+
+            //HttpClient httpClient = new DefaultHttpClient();
+
+            /*String s="Airbitz-Android v 1.0.11";
             s += " API Level: " + android.os.Build.VERSION.SDK;
             s += " Model: " + Build.BRAND + " " +android.os.Build.MODEL;
             httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,s);
-            HttpGet httpGet = new HttpGet();
+            HttpGet httpGet = new HttpGet();*/
 
-            URI uri = new URI(url+params);
+            /*URI uri = new URI(url+params);
             httpGet.setURI(uri);
             String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
-            httpGet.addHeader("Authorization", "Token " + token + "");
+            httpGet.addHeader("Authorization", "Token " + token + "");*/
 
+
+
+            /*System.out.println("Before "+System.currentTimeMillis());
             HttpResponse httpResponse = httpClient.execute(httpGet);
+            System.out.println("After "+System.currentTimeMillis());
             InputStream inputStream = httpResponse.getEntity().getContent();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));*/
 
+            URL sendUrl = new URL(url + params);
+            urlConnection = (HttpsURLConnection) sendUrl.openConnection();
+            String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
+            urlConnection.setRequestProperty("Authorization", "Token " + token + "");
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            bufferedReader = new BufferedReader(new InputStreamReader(in));
             String readLine = bufferedReader.readLine();
             while (readLine != null) {
                 stringBuffer.append(readLine);
@@ -101,6 +131,9 @@ public class AirbitzAPI {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            if(urlConnection != null) {
+                urlConnection.disconnect();
+            }
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
@@ -220,8 +253,9 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public String getSearchByRadius(String radius, String page_size, String page, String sort){
+    public String getSearchByRadius(String radius, String page_size, String ll, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
+        params.add(new BasicNameValuePair("ll",ll));
         params.add(new BasicNameValuePair("radius", radius));
 
         if(page_size.length() != 0){

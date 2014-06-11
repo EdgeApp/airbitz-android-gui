@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="6mm"
+    android:id="@+id/transaction_detail_item"
+    android:background="#FFFFFF"
+    android:textColor="#000000">
+
+</TextView>

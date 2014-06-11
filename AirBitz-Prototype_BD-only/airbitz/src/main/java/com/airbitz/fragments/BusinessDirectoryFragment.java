@@ -996,11 +996,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         return -1;
     }
 
-    private double getLatFromSharedPreference() {
+    public double getLatFromSharedPreference() {
         return (double) getStateFromSharedPreferences(this.LAT_KEY);
     }
 
-    private double getLonFromSharedPreference() {
+    public double getLonFromSharedPreference() {
         return (double) getStateFromSharedPreferences(this.LON_KEY);
     }
 
