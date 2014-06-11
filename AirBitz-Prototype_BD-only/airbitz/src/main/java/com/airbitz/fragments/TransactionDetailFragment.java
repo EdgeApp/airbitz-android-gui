@@ -1,80 +1,93 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.adapters.NoteCategoryAdapter;
+import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.models.Business;
+import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
+import com.airbitz.models.SearchResult;
+import com.airbitz.utils.CacheUtil;
+import com.airbitz.utils.ListViewUtility;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements GestureDetector.OnGestureListener{
-//    private Button mCheckingButton;
+public class TransactionDetailFragment extends Fragment{
+
     private Button mDoneButton;
-//    private Button mSerialButton;
+    private Button mAdvanceDetailsButton;
 
     private TextView mDateTextView;
     private TextView mTitleTextView;
-    private TextView mNameTextView;
-    private TextView mSentFromTextView;
+    private EditText mNameEditText;
     private TextView mBitcoinValueTextview;
-//    private TextView mCategoryTextView;
     private TextView mNoteTextView;
 
-//    private Spinner mCategorySpinner;
+    private int businessCount;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
-//    private RelativeLayout mParentLayout;
-//    private LinearLayout mPaddingLayout;
-
-//    private ScrollView mScrollView;
+    private RelativeLayout mSentDetailLayout;
+    private RelativeLayout mNoteDetailLayout;
 
     private EditText mDollarValueEdittext;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
-    private String mNextUrl = "";
+    private List<BusinessSearchResult> mBusinesses;
+    private List<String> mContactNames;
+    private List<Object> mCombined;
 
-    private Categories mCategories = null;
-
-    private MoreCategoryAdapter mMoreCategoryAdapter;
-
+    private ListView mSearchListView;
+    private TransactionDetailSearchAdapter mSearchAdapter;
     private AirbitzAPI api = AirbitzAPI.getApi();
-
-    private Boolean firstLoad = true;
-
-    private ClipboardManager clipboard;
-
-    private NoteCategoryAdapter mNoteCategoryAdapter;
-
-    private GestureDetector mGestureDetector;
-
-    private Intent mIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -86,17 +99,13 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
-
-        mGestureDetector = new GestureDetector(this);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mDoneButton = (Button) view.findViewById(R.id.transaction_detail_button_done);
-//        mSerialButton = (Button) view.findViewById(R.id.button_serial);
+        mAdvanceDetailsButton = (Button) view.findViewById(R.id.transaction_detail_button_advanced);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
-        mNameTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_name);
-        mSentFromTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_to);
-//        mCategoryTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_category);
+        mNameEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
         mNoteTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_notes);
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
@@ -108,123 +117,84 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
         mBackButton = (ImageButton) view.findViewById(R.id.transaction_detail_button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.transaction_detail_button_help);
 
-//        mCategorySpinner = (Spinner) view.findViewById(R.id.spinner_categories);
+        mSentDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_sent_detail);
+        mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
+
+        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
+        mBusinesses = new ArrayList<BusinessSearchResult>();
+        mContactNames = new ArrayList<String>();
+        mCombined = new ArrayList<Object>();
+        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined);
+        mSearchListView.setAdapter(mSearchAdapter);
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#eef2f7"),Color.parseColor("#a9bfd6")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mDateTextView.getPaint().setShader(textShader);
 
-        mCategoryEdittext.setKeyListener(null);
+        //mCategoryEdittext.setKeyListener(null);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
-        mNameTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-//        mSerialButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-        mSentFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-//        mCheckingButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mCategoryEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mDollarValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
 
-//        mCategoryTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mNoteTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
-//        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-//                if (heightDiff > 100) {
-////                    mNavigationLayout.setVisibility(View.GONE);
-//                    mPaddingLayout.setVisibility(View.GONE);
-//                }
-//                else
-//                {
-////                    mNavigationLayout.setVisibility(View.VISIBLE);
-//                    mPaddingLayout.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
+        getContactsList();
+        System.out.println(mContactNames);
 
-//        mCheckingButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mIntent = new Intent(getActivity(), WalletActivity.class);
-//                mIntent.putExtra(RequestActivity.CLASSNAME, "RequestActivity");
-//                startActivity(mIntent);
-//            }
-//        });
-
-//        mSerialButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                ClipData clip = ClipData.newPlainText("address key",((Button) view).getText().toString());
-//                clipboard.setPrimaryClip(clip);
-//            }
-//        });
-
-//        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                int heightDiff = mParentLayout.getRootView().getHeight() - mParentLayout.getHeight();
-//                if (heightDiff > 100) {
-//                    mNavigationLayout.setVisibility(View.GONE);
-//                }
-//                else
-//                {
-//                    mNavigationLayout.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
+        mNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    mDateTextView.setVisibility(View.GONE);
+                    mAdvanceDetailsButton.setVisibility(View.GONE);
+                    mSentDetailLayout.setVisibility(View.GONE);
+                    mNoteDetailLayout.setVisibility(View.GONE);
+                    //mSearchListView.setVisibility(View.VISIBLE);
 
 
-//        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });
-//
-//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });
+                    try {
+                        Activity activity = getActivity();
+                        SharedPreferences pref = activity.getSharedPreferences("PREF_NAME", Activity.MODE_PRIVATE);
+                        String latLong = String.valueOf(pref.getFloat("LAT_KEY", -1));
+                        latLong += "," + String.valueOf(pref.getFloat("LON_KEY", -1));
 
-//        mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
-//                if(hasFocus){
-//                    mCategorySpinner.performClick();
-//                }
-//            }
-//        });
+                        new BusinessSearchAysncTask().execute(latLong);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
+                }else{
+                    mDateTextView.setVisibility(View.VISIBLE);
+                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                    mSentDetailLayout.setVisibility(View.VISIBLE);
+                    mNoteDetailLayout.setVisibility(View.VISIBLE);
+                    mSearchListView.setVisibility(View.GONE);
+                    mCategoryEdittext.requestFocus();
+                }
+            }
+        });
 
-//        mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                if(firstLoad){
-//                    firstLoad = false;
-//                }
-//                else{
-//                    String name = ((MoreCategoryAdapter) adapterView.getAdapter()).getListItemName(position).getCategoryName();
-//                    mCategoryEdittext.setText(name);
-//                    mNoteEdittext.requestFocus();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
+        mNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    mNameEditText.clearFocus();
+                    mCategoryEdittext.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,60 +221,40 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
         return view;
     }
 
-//
-//    class BusinessCategoryAsyncTask extends AsyncTask<String, Integer, Categories>{
-//
-//        private AirbitzAPI api = AirbitzAPI.getApi();
-//        private ProgressDialog progressDialog;
-//
-//        @Override
-//        protected Categories doInBackground(String... strings) {
-//            Categories jsonParsingResult = null;
-//            try{
-//                jsonParsingResult = api.getHttpCategories(strings[0]);
-//                mNextUrl = jsonParsingResult.getNextLink();
-//                mCategories = jsonParsingResult;
-//                getMoreBusinessCategory(mCategories,mNextUrl);
-//            } catch (Exception e){
-//
-//            }
-//
-//            return jsonParsingResult;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            progressDialog.setIndeterminate(true);
-//            progressDialog.setCancelable(false);
-//            progressDialog.show();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Categories categories) {
-//
-//            progressDialog.dismiss();
-//            mCategorySpinner.setVisibility(View.INVISIBLE);
-//
-//            ArrayList<Category> catArrayList= new ArrayList<Category>();
-//
-//            if(categories != null){
-//
-//            for(Category cat: categories.getBusinessCategoryArray()){
-//                if(!cat.getCategoryLevel().equalsIgnoreCase("1") && !cat.getCategoryLevel().equalsIgnoreCase("2") && !cat.getCategoryLevel().equalsIgnoreCase("3") && !cat.getCategoryLevel().equalsIgnoreCase("null")){
-//                    catArrayList.add(cat);
-//                }
-//            }
-//
-//            categories.removeBusinessCategoryArray();
-//            categories.setBusinessCategoryArray(catArrayList);
-//
-//            mMoreCategoryAdapter = new MoreCategoryAdapter(getActivity(), mCategories);
-//            mCategorySpinner.setAdapter(mMoreCategoryAdapter);
-//            }
-//        }
-//    }
+    class BusinessSearchAysncTask extends AsyncTask<String, Integer, String>{
+        private AirbitzAPI api = AirbitzAPI.getApi();
+
+        public BusinessSearchAysncTask() {
+        }
+
+        @Override protected String doInBackground(String... strings) {
+            String jsonParsingResult = api.getSearchByRadius("16093", "", strings[0], "", "1");
+            return jsonParsingResult;
+        }
+
+        @Override protected void onPostExecute(String searchResult) {
+            try {
+                mBusinesses.clear();
+                mCombined.clear();
+                SearchResult results = new SearchResult(new JSONObject(searchResult));
+                businessCount = results.getCountValue();
+                mBusinesses.addAll(results.getBusinessSearchObjectArray());
+                mCombined.addAll(mBusinesses);
+            }catch (JSONException e) {
+                e.printStackTrace();
+                this.cancel(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.cancel(true);
+            }
+            mSearchAdapter.notifyDataSetChanged();
+            System.out.println("list size: "+mCombined.size());
+            ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
+            mSearchListView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
     @Override
     public void onResume() {
@@ -320,6 +270,19 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    public void getContactsList(){
+        ContentResolver cr = getActivity().getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                mContactNames.add(name);
+            }
+        }
+        cur.close();
     }
 
 
@@ -340,51 +303,4 @@ public class TransactionDetailFragment extends Fragment implements GestureDetect
 
         return initial;
     }
-
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    getActivity().onBackPressed();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
-
 }

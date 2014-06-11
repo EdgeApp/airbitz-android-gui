@@ -189,4 +189,9 @@
 
 
     <string name="question">Question</string>
+
+    <string-array name="currency_selection">
+        <item>CAD</item>
+        <item>USD</item>
+    </string-array>
 </resources>

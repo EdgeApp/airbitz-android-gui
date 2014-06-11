@@ -601,17 +601,14 @@ public class DynamicListView extends ListView {
             }
             if(listWalletsHeader != null) {
                 if (listWalletsHeader.getY() < getY()) {
-                    System.out.println("List isnt null Header is visible");
                     System.out.println();
                     walletsHeader.setVisibility(VISIBLE);
                 } else {
-                    System.out.println("List isnt null Header is GONE");
                     walletsHeader.setVisibility(GONE);
                 }
             }else{
                 if(getAdapter() != null) {
                     if (listWalletsHeader == null) {
-                        System.out.println("List is null Header is Visisble");
                         walletsHeader.setVisibility(VISIBLE);
                     }
                 }
