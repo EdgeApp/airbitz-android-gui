@@ -6,8 +6,8 @@ Here is the basic procedure:
 
 * Obtain the core library .so file and the ABC.h file
 * Modify certain parts of the ABC.h file and rename to ABC_android.h. Particularly tABC_RequestResults instead of void * for pData expected in return functions, such as SignIn, CreateAccount, etc.
-* Create an ABC.i file for swig. It just references the ABC.h file
-* build the bridge JNI using swig in a terminal
+* Create an ABC.i file for swig. It just references the ABC.h file mostly.
+* build the bridge JNI using swig in a terminal - see the example command. It also creates many classes in the api directory.
 * Perform ndk-build in a terminal at the jni directory (note at this time tempEventA and tempEventB are not in the core .so file, so comment those out in ABC_android.h)
 * Place the core library libabc.so file in the appropriate jniLibs/XXX directory
 * use the obj directory of the ndk-build, not the libs directory, of libairbitz.so, and place next to the libabc.so library in jniLibs folder.
