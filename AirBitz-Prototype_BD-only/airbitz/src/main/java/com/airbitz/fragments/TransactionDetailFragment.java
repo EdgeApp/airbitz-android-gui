@@ -337,8 +337,24 @@ public class TransactionDetailFragment extends Fragment{
         mBusinesses.clear();
         for(int i=0; i < mOriginalBusinesses.size();i++) {
             if(mOriginalBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())){
-                mBusinesses.add(mOriginalBusinesses.get(i));
+                int j = 0;
+                boolean flag = false;
+                while(!flag && j !=mBusinesses.size()){
+                    System.out.println("Before: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
+                    if(mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase())>0){
+                        mBusinesses.add(j,mOriginalBusinesses.get(i));
+                        System.out.println("After: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
+                        flag = true;
+                    }
+                    j++;
+                }
+                if(j == mBusinesses.size() && !flag){
+                    mBusinesses.add(mOriginalBusinesses.get(i));
+                }
             }
+        }
+        for(BusinessSearchResult bSR:mBusinesses){
+            System.out.println(bSR.getName());
         }
     }
 
@@ -350,7 +366,7 @@ public class TransactionDetailFragment extends Fragment{
             }else if(mContactNames.isEmpty()){
                 mCombined.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
-            }else if(mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase())==1){
+            }else if(mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase())<0){
                 mCombined.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
             }else{
