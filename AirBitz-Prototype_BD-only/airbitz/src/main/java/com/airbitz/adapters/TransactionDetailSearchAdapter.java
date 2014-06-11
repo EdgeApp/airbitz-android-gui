@@ -28,9 +28,6 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
     private List<String> mContactNames;
     private List<Object> mCombined;
 
-    private static int sGrayText;
-    private static int sGreenText;
-
     public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<String> contactNames, List<Object> combined){
         super(context, R.layout.item_listview_transaction_detail, combined);
         mContext = context;
@@ -52,13 +49,22 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
 
-        final BusinessSearchResult business = (BusinessSearchResult)mCombined.get(position);
+        if(mCombined.get(position) instanceof BusinessSearchResult) {
+            final BusinessSearchResult business = (BusinessSearchResult) mCombined.get(position);
+            convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
+            TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item);
+            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            textView.setText(business.getName());
+        }else if(mCombined.get(position) instanceof String){
+            final String contactName = (String) mCombined.get(position);
+            convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
+            TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item);
+            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            textView.setText(contactName);
+        }
 
-        TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item);
-        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        textView.setText(business.getName());
+
 
         return convertView;
     }
