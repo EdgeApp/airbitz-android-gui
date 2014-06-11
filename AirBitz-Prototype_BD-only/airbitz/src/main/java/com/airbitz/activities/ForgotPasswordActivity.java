@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -124,9 +125,8 @@ public class ForgotPasswordActivity extends Activity {
         super.onResume();
     }
 
+    //TODO remove when server QA finished
     private Map getRecoveryQA() {
-        //TODO replace with server received Q & A
-
         Map map = new HashMap<String, String>();
         ArrayList<String> questions = new ArrayList<String>();
         map.put("What is your father\'s birthdate?", "fbday");
@@ -167,11 +167,13 @@ public class ForgotPasswordActivity extends Activity {
             tABC_Error pError = new tABC_Error();
             tABC_RequestResults pData = new tABC_RequestResults();
             tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
-//            tABC_QuestionChoices pQuestions = new tABC_QuestionChoices();
-//            pQuestions.swigCPtr = (pData.getPRetData()).swigCPtr;
-//            long num = pQuestions.getNumChoices();
-
             boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
+
+            if(success) {
+                QuestionChoices qc = new QuestionChoices(pData.getPRetData());
+                long num = qc.getNumChoices();
+                //TODO setup the map of questions and answers
+            }
             return success;
         }
 
@@ -201,6 +203,42 @@ public class ForgotPasswordActivity extends Activity {
         protected void onCancelled() {
             mFetchQuestionsTask = null;
         }
+    }
+
+
+    private class QuestionChoices extends tABC_QuestionChoices {
+        private boolean ok=true;
+        public QuestionChoices(SWIGTYPE_p_void pv) {
+            super(PVoid.getPtr(pv), false);
+            if(PVoid.getPtr(pv)==0) {
+                ok = false;
+            }
+        }
+        public long getNumChoices() {
+            if(ok)
+                return super.getNumChoices();
+            else
+                return 0;
+        }
+
+        public Map getQuestionsMap() {
+            //TODO replace with server received Q & A
+
+            Map map = new HashMap<String, String>();
+            ArrayList<String> questions = new ArrayList<String>();
+            map.put("What is your father\'s birthdate?", "fbday");
+            map.put("What is your mother\'s maiden and current last name?", "mname");
+            map.put("What is your oldest sibling\'s birthdate?", "sbday");
+            map.put("Who is your favorite superhero?", "superhero");
+            map.put("What is the first street address you remember living in?", "firstaddress");
+            map.put("What was the address of your home in college?", "collegehome");
+
+            return map;
+        }
+    }
+
+    private static class PVoid extends SWIGTYPE_p_void {
+        public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
     }
 
 }
