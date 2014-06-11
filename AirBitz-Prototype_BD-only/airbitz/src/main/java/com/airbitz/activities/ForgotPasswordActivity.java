@@ -1,6 +1,8 @@
 package com.airbitz.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -154,6 +156,8 @@ public class ForgotPasswordActivity extends Activity {
     public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
+        Map<String, String> questionMap = new HashMap<String, String>();
+
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pData = new tABC_RequestResults();
 
@@ -164,15 +168,19 @@ public class ForgotPasswordActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pData = new tABC_RequestResults();
             tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
             boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
 
             if(success) {
                 QuestionChoices qc = new QuestionChoices(pData.getPRetData());
                 long num = qc.getNumChoices();
-                //TODO setup the map of questions and answers
+
+                if(num>0) {
+                    //TODO setup the map of questions and answers.
+
+                } else {
+                    success = false;
+                }
             }
             return success;
         }
@@ -180,22 +188,11 @@ public class ForgotPasswordActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mFetchQuestionsTask = null;
-//                if (pResults->requestType == ABC_RequestType_GetQuestionChoices)
-//                {
-//                    //NSLog(@"GetQuestionChoices completed with cc: %ld (%s)", (unsigned long) pResults->errorInfo.code, pResults->errorInfo.szDescription);
-//                    if (pResults->bSuccess)
-//                    {
-//                        tABC_QuestionChoices *pQuestionChoices = (tABC_QuestionChoices *)pResults->pRetData;
-//                        [controller categorizeQuestionChoices:pQuestionChoices];
-//                        ABC_FreeQuestionChoices(pQuestionChoices);
-//                    }
-//                    [controller performSelectorOnMainThread:@selector(getPasswordRecoveryQuestionsComplete) withObject:nil waitUntilDone:FALSE];
 
             if (success) {
-//                populateQuestionViews();
+                populateQuestions(questionMap);
             } else {
-//                showProgress(false);
-//                showErrorDialog();
+                showNoQuestionsDialog();
             }
         }
 
@@ -239,6 +236,21 @@ public class ForgotPasswordActivity extends Activity {
 
     private static class PVoid extends SWIGTYPE_p_void {
         public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
+    }
+
+    private void showNoQuestionsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.activity_forgot_no_questions))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                ForgotPasswordActivity.this.finish();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
