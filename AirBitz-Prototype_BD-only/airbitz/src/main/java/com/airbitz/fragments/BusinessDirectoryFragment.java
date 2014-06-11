@@ -740,6 +740,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         @Override protected void onPostExecute(List<Business> businesses) {
+            if(getActivity()==null)
+                return;
 
             mBusinessList.clear();
             if (businesses == null) {
