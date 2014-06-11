@@ -10,6 +10,7 @@ package com.airbitz.api;
 
 public class coreJNI {
   public final static native int ABC_MAX_STRING_LENGTH_get();
+  public final static native int ABC_BITCOIN_DECIMAL_PLACES_get();
   public final static native int ABC_CC_Ok_get();
   public final static native int ABC_CC_Error_get();
   public final static native int ABC_CC_NULLPtr_get();
@@ -253,6 +254,8 @@ public class coreJNI {
   public final static native long ABC_BitcoinToSatoshi(double jarg1);
   public final static native int ABC_SatoshiToCurrency(long jarg1, long jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_CurrencyToSatoshi(double jarg1, int jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_ParseAmount(String jarg1, long jarg2, long jarg3);
+  public final static native int ABC_FormatAmount(long jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_CreateReceiveRequest(String jarg1, String jarg2, String jarg3, long jarg4, tABC_TxDetails jarg4_, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_ModifyReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_FinalizeReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
@@ -261,7 +264,6 @@ public class coreJNI {
   public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, tABC_RequestResults jarg7_, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native void ABC_FreeTransaction(long jarg1, tABC_TxInfo jarg1_);
   public final static native void ABC_FreeTransactions(long jarg1, long jarg2);
   public final static native int ABC_SetTransactionDetails(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, tABC_Error jarg6_);

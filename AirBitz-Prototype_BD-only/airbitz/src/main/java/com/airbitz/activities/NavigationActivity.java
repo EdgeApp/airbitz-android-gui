@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.inputmethodservice.KeyboardView;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.UUID;
 
 /**
  * The main Navigation activity holding fragments for anything controlled with
@@ -48,6 +51,7 @@ public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
 
     static {
+        System.loadLibrary("abc");
         System.loadLibrary("airbitz");
     }
 
@@ -255,25 +259,9 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     {
         String strSeed = new String();
 
-//        // add the advertiser identifier
-//        if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
-//        {
-//            [strSeed appendString:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
-//        }
-//
-//        // add the UUID
-//        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-//        CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-//        CFRelease(theUUID);
-//        [strSeed appendString:[[NSString alloc] initWithString:(__bridge NSString *)string]];
-//        CFRelease(string);
-//
-//        // add the device name
-//        [strSeed appendString:[[UIDevice currentDevice] name]];
-//
-//        // add the string to the data
-//        //NSLog(@"seed string: %@", strSeed);
-//        [data appendData:[strSeed dataUsingEncoding:NSUTF8StringEncoding]];
+        strSeed += Build.MANUFACTURER;
+        strSeed += Build.DEVICE;
+        strSeed += Build.SERIAL;
 
         long time = System.nanoTime();
         ByteBuffer bb1 = ByteBuffer.allocate(8);
