@@ -16,21 +16,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
+import com.airbitz.api.SWIGTYPE_p_p_sABC_QuestionChoice;
+import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_QuestionChoice;
 import com.airbitz.api.tABC_QuestionChoices;
 import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
@@ -42,12 +43,15 @@ import java.util.Map;
 
 /**
  * Created on 2/10/14.
+ * 6/11/14 twb: iPhone implements 6 questions, or skip this step. Two are String,
+ * two are Numeric, and two are Address, in that order. See PasswordRecoveryViewcontroller.m.
+ * Also, following questions in the same category don't repeat earlier questions.
  */
 public class PasswordRecoveryActivity extends Activity {
 
     private Button mDoneSignUpButton;
 
-    private ImageButton mBackButton;
+//    private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private ImageButton mSkipStepButton;
 
@@ -71,6 +75,9 @@ public class PasswordRecoveryActivity extends Activity {
     private List<String> mQuestions;
 
     private FetchQuestionsTask mFetchQuestionsTask;
+    private Map<String, Integer> mStringCategory = new HashMap<String, Integer>();
+    private Map<String, Integer> mNumberCategory = new HashMap<String, Integer>();
+    private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,9 +138,9 @@ public class PasswordRecoveryActivity extends Activity {
         populateQuestionViews();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         dummy.requestFocus();
-        //mFetchQuestionsTask = new FetchQuestionsTask(mUsername, mPassword, mWithdrawal);
-        //mFetchQuestionsTask.execute((Void) null);
 
+        mFetchQuestionsTask = new FetchQuestionsTask("junktest5");
+        mFetchQuestionsTask.execute((Void) null);
     }
 
     private void saveQuestionsAndAnswers() {
@@ -190,50 +197,45 @@ public class PasswordRecoveryActivity extends Activity {
     public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
-        private final String mPassword;
-        private final String mPin;
-        tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pData = new tABC_RequestResults();
 
-        FetchQuestionsTask(String username, String password, String pin) {
+        tABC_Error pError = new tABC_Error();
+        QuestionResults pData = new QuestionResults();
+
+        FetchQuestionsTask(String username) {
+//            // next for lines for testing only
+//            String seed = "adlkjaljblkajsf";
+//            tABC_CC code = core.ABC_Initialize(getApplication().getFilesDir().toString(), null, null, seed, seed.length(), pError);
+
             mUsername = username;
-            mPassword = password;
-            mPin = pin;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pData = new tABC_RequestResults();
-            tABC_CC result = core.ABC_GetQuestionChoices("junktest3", null, pData, pError);
-//            tABC_QuestionChoices pQuestions = new tABC_QuestionChoices();
-//            pQuestions.swigCPtr = (pData.getPRetData()).swigCPtr;
-//            long num = pQuestions.getNumChoices();
+            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
+            if(result == tABC_CC.ABC_CC_Ok) { // && pData.getBSuccess()) {
+                QuestionChoices qc = new QuestionChoices(pData.getPtrPtr());
+                long num = qc.getNumChoices();
+                QuestionChoice[] choices = qc.getChoices();
 
-            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-            return success;
+                if(num>0) {
+                    //TODO setup the map of questions and answers.
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mFetchQuestionsTask = null;
-//                if (pResults->requestType == ABC_RequestType_GetQuestionChoices)
-//                {
-//                    //NSLog(@"GetQuestionChoices completed with cc: %ld (%s)", (unsigned long) pResults->errorInfo.code, pResults->errorInfo.szDescription);
-//                    if (pResults->bSuccess)
-//                    {
-//                        tABC_QuestionChoices *pQuestionChoices = (tABC_QuestionChoices *)pResults->pRetData;
-//                        [controller categorizeQuestionChoices:pQuestionChoices];
-//                        ABC_FreeQuestionChoices(pQuestionChoices);
-//                    }
-//                    [controller performSelectorOnMainThread:@selector(getPasswordRecoveryQuestionsComplete) withObject:nil waitUntilDone:FALSE];
 
             if (success) {
-                populateQuestionViews();
+//                populateQuestions(questionMap);
             } else {
-//                showProgress(false);
-//                showErrorDialog();
+//                showNoQuestionsDialog();
             }
         }
 
@@ -241,10 +243,12 @@ public class PasswordRecoveryActivity extends Activity {
         protected void onCancelled() {
             mFetchQuestionsTask = null;
         }
+
     }
 
     private List<String> getQuestionList(tABC_QuestionChoices questionChoices) {
         //TODO replace with server questions
+
 
         List<String> out = new ArrayList<String>();
 
@@ -265,6 +269,78 @@ public class PasswordRecoveryActivity extends Activity {
         out.add("Question");
         return out;
     }
+
+    private class QuestionResults extends tABC_RequestResults {
+        public long getPtrPtr() {
+           QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
+           return fake.getNumChoices();
+        }
+    }
+
+    private class QuestionChoices extends tABC_QuestionChoices {
+        long mNumChoices = 0;
+        long mChoiceStart = 0;
+        QuestionChoice[] choices;
+
+        public QuestionChoices (long pv) {
+           super(pv, false);
+           if(pv!=0) {
+                mNumChoices = super.getNumChoices();
+            }
+        }
+
+        public long getNumChoices() { return mNumChoices; }
+
+        public QuestionChoice[] getChoices() {
+            choices = new QuestionChoice[(int) mNumChoices];
+            SWIGTYPE_p_p_sABC_QuestionChoice start = super.getAChoices();
+            for(int i=0; i<mNumChoices; i++) {
+                QuestionChoices fake = new QuestionChoices(PPVoid.getPtr(start, i*4));
+                mChoiceStart = fake.getNumChoices();
+                choices[i] = new QuestionChoice(new PVOID(mChoiceStart));
+            }
+            return choices;
+        }
+    }
+
+    private class QuestionChoice extends tABC_QuestionChoice {
+        String mQuestion = null;
+        String mCategory = null;
+        long mMinLength = -1;
+
+        public QuestionChoice(SWIGTYPE_p_void pv) {
+            super(PVoidStatic.getPtr(pv), false);
+            if(PVoidStatic.getPtr(pv)!=0) {
+                mQuestion = super.getSzQuestion();
+                mCategory = super.getSzCategory();
+                mMinLength = super.getMinAnswerLength();
+            }
+        }
+
+        public String getQuestion() { return mQuestion; }
+
+        public long getMinLength() { return mMinLength; }
+
+        public String getCategory() { return mCategory; }
+
+    }
+
+    private class PVOID extends SWIGTYPE_p_void {
+        public PVOID(long p) {
+            super(p, false);
+        }
+    }
+
+    private static class PVoidStatic extends SWIGTYPE_p_void {
+        public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
+    }
+
+    private static class PPVoid extends SWIGTYPE_p_p_sABC_QuestionChoice {
+        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p) { return getCPtr(p); }
+        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p, long i) { return getCPtr(p)+i; }
+    }
+
+
 
     private View getQuestionView() {
         LayoutInflater inflater = getLayoutInflater();
