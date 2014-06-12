@@ -70,16 +70,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/transaction_detail_textview_date"
-                android:paddingLeft="6mm"
-                android:paddingRight="6mm"
                 android:background="@android:color/transparent" >
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/transaction_detail_edittext_name"
                     android:layout_width="match_parent"
                     android:layout_height="5mm"
                     android:paddingLeft="2mm"
                     android:textSize="14dp"
+                    android:layout_marginLeft="6mm"
+                    android:layout_marginRight="6mm"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:inputType="textVisiblePassword|textNoSuggestions"
