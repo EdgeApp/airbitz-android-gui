@@ -15,7 +15,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -82,6 +84,7 @@ public class TransactionDetailFragment extends Fragment{
     private EditText mCategoryEdittext;
 
     private List<BusinessSearchResult> mBusinesses;
+    private List<BusinessSearchResult> mOriginalBusinesses;
     private List<String> mContactNames;
     private List<Object> mCombined;
 
@@ -122,6 +125,7 @@ public class TransactionDetailFragment extends Fragment{
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
+        mOriginalBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
         mCombined = new ArrayList<Object>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined);
@@ -182,7 +186,7 @@ public class TransactionDetailFragment extends Fragment{
             }
         });
 
-        mNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mNameEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
@@ -193,6 +197,32 @@ public class TransactionDetailFragment extends Fragment{
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mNameEditText.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mCombined.clear();
+                if(editable.toString().isEmpty()){
+                    mCombined.addAll(mOriginalBusinesses);
+                }else{
+                    getMatchedContactsList(editable.toString());
+                    getMatchedBusinessList(editable.toString());
+                    combineMatchLists();
+                }
+                mSearchAdapter.notifyDataSetChanged();
+                ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
             }
         });
 
@@ -239,6 +269,7 @@ public class TransactionDetailFragment extends Fragment{
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 businessCount = results.getCountValue();
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
+                mOriginalBusinesses.addAll(mBusinesses);
                 mCombined.addAll(mBusinesses);
             }catch (JSONException e) {
                 e.printStackTrace();
@@ -274,8 +305,9 @@ public class TransactionDetailFragment extends Fragment{
 
     public void getContactsList(){
         ContentResolver cr = getActivity().getContentResolver();
+        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
+                columns, null, null, null);
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -283,6 +315,65 @@ public class TransactionDetailFragment extends Fragment{
             }
         }
         cur.close();
+    }
+
+    public void getMatchedContactsList(String searchTerm){
+        ContentResolver cr = getActivity().getContentResolver();
+        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME};
+        System.out.println("Query: "+ContactsContract.Contacts.DISPLAY_NAME+" LIKE \'%"+searchTerm+"%\'");
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                columns, ContactsContract.Contacts.DISPLAY_NAME+" LIKE \'%"+searchTerm+"%\'", null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        if (cur.getCount() > 0) {
+            mContactNames.clear();
+            while (cur.moveToNext()) {
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                mContactNames.add(name);
+            }
+        }
+        cur.close();
+    }
+
+    public void getMatchedBusinessList(String searchTerm){
+        mBusinesses.clear();
+        for(int i=0; i < mOriginalBusinesses.size();i++) {
+            if(mOriginalBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())){
+                int j = 0;
+                boolean flag = false;
+                while(!flag && j !=mBusinesses.size()){
+                    System.out.println("Before: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
+                    if(mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase())>0){
+                        mBusinesses.add(j,mOriginalBusinesses.get(i));
+                        System.out.println("After: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
+                        flag = true;
+                    }
+                    j++;
+                }
+                if(j == mBusinesses.size() && !flag){
+                    mBusinesses.add(mOriginalBusinesses.get(i));
+                }
+            }
+        }
+        for(BusinessSearchResult bSR:mBusinesses){
+            System.out.println(bSR.getName());
+        }
+    }
+
+    public void combineMatchLists(){
+        while(!mBusinesses.isEmpty() | !mContactNames.isEmpty()){
+            if(mBusinesses.isEmpty()){
+                mCombined.add(mContactNames.get(0));
+                mContactNames.remove(0);
+            }else if(mContactNames.isEmpty()){
+                mCombined.add(mBusinesses.get(0));
+                mBusinesses.remove(0);
+            }else if(mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase())<0){
+                mCombined.add(mBusinesses.get(0));
+                mBusinesses.remove(0);
+            }else{
+                mCombined.add(mContactNames.get(0));
+                mContactNames.remove(0);
+            }
+        }
     }
 
 
