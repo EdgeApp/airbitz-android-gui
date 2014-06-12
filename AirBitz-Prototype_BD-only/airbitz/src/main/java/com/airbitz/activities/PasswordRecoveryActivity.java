@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,17 +50,13 @@ public class PasswordRecoveryActivity extends Activity {
 
     private Button mDoneSignUpButton;
 
-//    private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private ImageButton mSkipStepButton;
 
     private TextView mTitleTextView;
 
-    private ArrayList<View> mItemsList;
 
     private String mUsername;
-    private String mPassword;
-    private String mWithdrawal;
 
     private View dummy;
 
@@ -75,9 +70,14 @@ public class PasswordRecoveryActivity extends Activity {
     private List<String> mQuestions;
 
     private FetchQuestionsTask mFetchQuestionsTask;
-    private Map<String, Integer> mStringCategory = new HashMap<String, Integer>();
-    private Map<String, Integer> mNumberCategory = new HashMap<String, Integer>();
-    private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>();
+    private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> mStringChosen = new ArrayList<String>();
+    private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> mNumericChosen = new ArrayList<String>();
+    private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> mAddressChosen = new ArrayList<String>();
+    private View mQuestionViewString1;
+    private View mQuestionViewString2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +87,6 @@ public class PasswordRecoveryActivity extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
-
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mLayoutRecovery = (LinearLayout) findViewById(R.id.layout_pass_recovery);
 
@@ -110,8 +108,6 @@ public class PasswordRecoveryActivity extends Activity {
         });
 
         mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
-        mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
-        mWithdrawal = getIntent().getStringExtra(SignUpActivity.KEY_WITHDRAWAL);
 
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,45 +118,42 @@ public class PasswordRecoveryActivity extends Activity {
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //saveQuestionsAndAnswers();
+                saveQuestionsAndAnswers();
                 startActivity(mIntent);
                 finish();
             }
         });
 
         mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.password_recovery_listview);
-        mQuestionViews = new ArrayList<View>();
-        while(spinnerCount !=7) {
-            mQuestions = getQuestionList(null);
-            mQuestionViews.add(getQuestionView());
-            spinnerCount++;
-        }
-        populateQuestionViews();
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         dummy.requestFocus();
 
-        mFetchQuestionsTask = new FetchQuestionsTask("junktest5");
+        mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
         mFetchQuestionsTask.execute((Void) null);
     }
 
     private void saveQuestionsAndAnswers() {
-        //blank Answers should not be saved even if question is selected?
         Map saveList = new HashMap<String, String>();
         for(View v: mQuestionViews) {
-            Spinner spinner = (Spinner) ((RelativeLayout) ((ViewGroup)v).getChildAt(0)).getChildAt(0);
-            EditText text = (EditText)  ((ViewGroup)v).getChildAt(1);
-            String question = ((TextView) spinner.getChildAt(0)).getText().toString();
-            String answer = text.getText().toString();
-            if(answer!="") {
-                saveList.put(question, answer);
-            }
+            QuestionView qv = (QuestionView) v;
+            String q = qv.getQuestion();
+            String t = qv.getText();
         }
 
-        //TODO save questions and answers to server here from saveList in some async way
+        //TODO save questions and answers to server here from saveList
 
     }
 
+    private void InitializeQuestionViews() {
+        mQuestionViews = new ArrayList<View>();
+        mQuestionViewString1 = new QuestionView(this, new ArrayList(mStringCategory.keySet()), "string", 10);
+        mQuestionViewString2 = new QuestionView(this, new ArrayList(mStringCategory.keySet()), "string", 10);
 
+        mQuestionViews.add(mQuestionViewString1);
+        mQuestionViews.add(mQuestionViewString2);
+        populateQuestionViews();
+    }
 
     private void populateQuestionViews() {
         mPasswordRecoveryListView.removeAllViews();
@@ -197,12 +190,12 @@ public class PasswordRecoveryActivity extends Activity {
     public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
-
+        QuestionChoice[] mChoices;
         tABC_Error pError = new tABC_Error();
         QuestionResults pData = new QuestionResults();
 
         FetchQuestionsTask(String username) {
-//            // next for lines for testing only
+            // next for lines for testing only
 //            String seed = "adlkjaljblkajsf";
 //            tABC_CC code = core.ABC_Initialize(getApplication().getFilesDir().toString(), null, null, seed, seed.length(), pError);
 
@@ -213,19 +206,28 @@ public class PasswordRecoveryActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
-            if(result == tABC_CC.ABC_CC_Ok) { // && pData.getBSuccess()) {
-                QuestionChoices qc = new QuestionChoices(pData.getPtrPtr());
-                long num = qc.getNumChoices();
-                QuestionChoice[] choices = qc.getChoices();
+            if(result == tABC_CC.ABC_CC_Ok) {
+                QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
+                long num = qcs.getNumChoices();
+                mChoices = qcs.getChoices();
 
                 if(num>0) {
-                    //TODO setup the map of questions and answers.
+                    for(QuestionChoice choice : mChoices) {
+                        if(choice.mCategory.equals("string")) {
+                            mStringCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                        } else if(choice.mCategory.equals("numeric")) {
+                            mNumericCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                        } else if(choice.mCategory.equals("address")) {
+                            mAddressCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                        }
+                    }
                     return true;
                 } else {
                     return false;
                 }
+            } else {
+                return false;
             }
-            return false;
         }
 
         @Override
@@ -233,9 +235,7 @@ public class PasswordRecoveryActivity extends Activity {
             mFetchQuestionsTask = null;
 
             if (success) {
-//                populateQuestions(questionMap);
-            } else {
-//                showNoQuestionsDialog();
+                InitializeQuestionViews();
             }
         }
 
@@ -244,30 +244,6 @@ public class PasswordRecoveryActivity extends Activity {
             mFetchQuestionsTask = null;
         }
 
-    }
-
-    private List<String> getQuestionList(tABC_QuestionChoices questionChoices) {
-        //TODO replace with server questions
-
-
-        List<String> out = new ArrayList<String>();
-
-
-        if(spinnerCount == 1 || spinnerCount == 2) {
-            for (String quest : getResources().getStringArray(R.array.password_recovery_1)) {
-                out.add(quest);
-            }
-        }else if(spinnerCount == 3 || spinnerCount == 4){
-            for (String quest : getResources().getStringArray(R.array.password_recovery_2)) {
-                out.add(quest);
-            }
-        }else if(spinnerCount == 5 || spinnerCount == 6){
-            for (String quest : getResources().getStringArray(R.array.password_recovery_3)) {
-                out.add(quest);
-            }
-        }
-        out.add("Question");
-        return out;
     }
 
     private class QuestionResults extends tABC_RequestResults {
@@ -340,91 +316,115 @@ public class PasswordRecoveryActivity extends Activity {
         public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p, long i) { return getCPtr(p)+i; }
     }
 
+    private class QuestionView extends LinearLayout {
+        Context mContext;
+        private String mType;
+        private int mCharLimit;
+        private Spinner mSpinner;
+        private EditText mText;
+        private PasswordRecoveryAdapter mAdapter;
+        private ArrayList<View> mItemsList;
 
+        public QuestionView(Context context, List<String> questions, String type, int limit) {
+            super(context);
+            mContext = context;
+            this.mType = type;
+            mCharLimit = limit;
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.item_password_recovery, this);
+            mSpinner = (Spinner)findViewById(R.id.item_password_recovery_spinner);
 
-    private View getQuestionView() {
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.item_password_recovery, null);
-        final Spinner mySpinner = (Spinner)view.findViewById(R.id.item_password_recovery_spinner);
+            mItemsList = new ArrayList<View>();
+            for(String question: questions) {
+                TextView b = (TextView) inflater.inflate(R.layout.item_password_recovery_spinner, null);
+                b.setText(question);
+                mItemsList.add(b);
+            }
 
-        mItemsList = new ArrayList<View>();
-        for(String question: mQuestions) {
-            TextView b = (TextView) inflater.inflate(R.layout.item_password_recovery_spinner, null);
-            b.setText(question);
-            mItemsList.add(b);
+            mAdapter = new PasswordRecoveryAdapter(context, mItemsList, questions);
+            mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
+
+            mSpinner.setAdapter(mAdapter);
+            mSpinner.setDropDownWidth((int)getResources().getDimension(R.dimen.spinner_width_password));
+
+            mText = (EditText) findViewById(R.id.item_password_recovery_answer);
+            final View redRing = findViewById(R.id.red_ring);
+            mText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+//        edittext.setOnKeyListener(new View.OnKeyListener() {
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                // If the event is a key-down event on the "enter" button
+//                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+//                    // Perform action on key press
+////                    View newQuestion = getQuestionView();
+////                    mQuestionViews.add(newQuestion);
+////                    populateQuestionViews();
+////                    newQuestion.requestFocus();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
+            mText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                    try{
+                        if(!mText.getText().toString().isEmpty() && mText.getText().toString().length() < mCharLimit){
+                            redRing.setVisibility(View.VISIBLE);
+                        }else{
+                            redRing.setVisibility(View.GONE);
+                        }
+                    }catch(Exception e ){
+
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+            mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                        mText.setFocusableInTouchMode(true);  //if this is not already set
+                        mText.requestFocus();  //to move the cursor
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
+                        mText.setCursorVisible(true);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+            mSpinner.setSelection(mAdapter.getCount());
+            mText.clearFocus();
+            mText.setCursorVisible(false);
         }
 
-        final PasswordRecoveryAdapter adapter = new PasswordRecoveryAdapter(this, mItemsList, mQuestions);
-        adapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
+        public void setQuestions(List<String> questions) {
 
-        mySpinner.setAdapter(adapter);
-        mySpinner.setDropDownWidth((int)getResources().getDimension(R.dimen.spinner_width_password));
+        }
 
-        final EditText edittext = (EditText) view.findViewById(R.id.item_password_recovery_answer);
-        final View redRing = view.findViewById(R.id.red_ring);
-        edittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        edittext.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    View newQuestion = getQuestionView();
-                    mQuestionViews.add(newQuestion);
-                    populateQuestionViews();
-                    newQuestion.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
+        public String getQuestion() {
+            return ((TextView) mSpinner.getSelectedView()).getText().toString();
+        }
 
-        edittext.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                try{
-                    if(!edittext.getText().toString().isEmpty() && edittext.getText().toString().length() <10){
-                        redRing.setVisibility(View.VISIBLE);
-                    }else{
-                        redRing.setVisibility(View.GONE);
-                    }
-                }catch(Exception e ){
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mySpinner.getSelectedItemPosition() != adapter.getCount()) {
-                    edittext.setFocusableInTouchMode(true);  //if this is not already set
-                    edittext.requestFocus();  //to move the cursor
-                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.showSoftInput(edittext, InputMethodManager.SHOW_FORCED);
-                    edittext.setCursorVisible(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        mySpinner.setSelection(adapter.getCount());
-        edittext.clearFocus();
-        edittext.setCursorVisible(false);
-        return view;
+        public String getText() {
+            return mText.getText().toString();
+        }
     }
 
 }
