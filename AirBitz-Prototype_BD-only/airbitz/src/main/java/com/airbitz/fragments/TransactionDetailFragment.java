@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -27,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,6 +41,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.adapters.NoteCategoryAdapter;
+import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
@@ -73,6 +76,9 @@ public class TransactionDetailFragment extends Fragment{
 
     private int businessCount;
 
+    private String currentType = "";
+    private boolean doEdit = false;
+
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
@@ -88,8 +94,12 @@ public class TransactionDetailFragment extends Fragment{
     private List<String> mContactNames;
     private List<Object> mCombined;
 
+    private List<String> mCategories;
+
     private ListView mSearchListView;
+    private ListView mCategoryListView;
     private TransactionDetailSearchAdapter mSearchAdapter;
+    private TransactionDetailCategoryAdapter mCategoryAdapter;
     private AirbitzAPI api = AirbitzAPI.getApi();
 
     @Override
@@ -131,6 +141,14 @@ public class TransactionDetailFragment extends Fragment{
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined);
         mSearchListView.setAdapter(mSearchAdapter);
 
+        mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
+        mCategories = new ArrayList<String>();//TODO put different string order depending upon type of transaction
+        for(String cat :getActivity().getResources().getStringArray(R.array.transaction_categories_list)){
+            mCategories.add(cat);
+        }
+        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(),mCategories);
+        mCategoryListView.setAdapter(mCategoryAdapter);
+
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#eef2f7"),Color.parseColor("#a9bfd6")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
@@ -161,18 +179,21 @@ public class TransactionDetailFragment extends Fragment{
                     mAdvanceDetailsButton.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mNoteDetailLayout.setVisibility(View.GONE);
-                    //mSearchListView.setVisibility(View.VISIBLE);
+                    mSearchListView.setVisibility(View.VISIBLE);
 
-
-                    try {
-                        Activity activity = getActivity();
-                        SharedPreferences pref = activity.getSharedPreferences("PREF_NAME", Activity.MODE_PRIVATE);
-                        String latLong = String.valueOf(pref.getFloat("LAT_KEY", -1));
-                        latLong += "," + String.valueOf(pref.getFloat("LON_KEY", -1));
-
-                        new BusinessSearchAysncTask().execute(latLong);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if(mNameEditText.getText().toString().isEmpty()) {
+                        try {
+                            Activity activity = getActivity();
+                            SharedPreferences pref = activity.getSharedPreferences("PREF_NAME", Activity.MODE_PRIVATE);
+                            String latLong = String.valueOf(pref.getFloat("LAT_KEY", -1));
+                            latLong += "," + String.valueOf(pref.getFloat("LON_KEY", -1));
+                            mCombined.clear();
+                            mOriginalBusinesses.clear();
+                            mBusinesses.clear();
+                            new BusinessSearchAysncTask().execute(latLong);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }else{
@@ -186,12 +207,48 @@ public class TransactionDetailFragment extends Fragment{
             }
         });
 
+        mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    mDateTextView.setVisibility(View.GONE);
+                    mNameEditText.setVisibility(View.GONE);
+                    mAdvanceDetailsButton.setVisibility(View.GONE);
+                    mSentDetailLayout.setVisibility(View.GONE);
+                    mDoneButton.setVisibility(View.GONE);
+                    mCategoryListView.setVisibility(View.VISIBLE);
+                }else{
+                    mDateTextView.setVisibility(View.VISIBLE);
+                    mNameEditText.setVisibility(View.VISIBLE);
+                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                    mSentDetailLayout.setVisibility(View.VISIBLE);
+                    mDoneButton.setVisibility(View.VISIBLE);
+                    mCategoryListView.setVisibility(View.GONE);
+                    mNoteEdittext.requestFocus();
+                }
+            }
+        });
+
         mNameEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     mNameEditText.clearFocus();
                     mCategoryEdittext.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mCategoryEdittext.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    mCategoryEdittext.clearFocus();
+                    mNoteEdittext.requestFocus();
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     return true;
@@ -223,6 +280,116 @@ public class TransactionDetailFragment extends Fragment{
                 }
                 mSearchAdapter.notifyDataSetChanged();
                 ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
+            }
+        });
+
+        mCategoryEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(doEdit == false) {
+                    System.out.println("Gonna Change Some Text");
+                    if (currentType.charAt(0) == 'I') {
+                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7) != "Income:") {
+                            if (editable.toString().length() > 7) {
+                                String temp = editable.toString().substring(7);
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Income:" + temp);
+                                doEdit = false;
+                            } else {
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Income:");
+                                doEdit = false;
+                            }
+                        }
+                        if (mCategoryEdittext.getSelectionStart() < 7) {
+                            mCategoryEdittext.setSelection(7, 7);
+                        }
+                    } else if (currentType.charAt(0) == 'E') {
+                        if ( editable.toString().length() < 8 || editable.toString().substring(0, 8) != "Expense:") {
+                            if (editable.toString().length() > 8) {
+                                String temp = editable.toString().substring(8);
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Expense:" + temp);
+                                doEdit = false;
+                            } else {
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Expense:");
+                                doEdit = false;
+                            }
+                        }
+                        if (mCategoryEdittext.getSelectionStart() < 8) {
+                            mCategoryEdittext.setSelection(8, 8);
+                        }
+                    } else if (currentType.charAt(0) == 'T') {
+                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9) != "Transfer:") {
+                            if (editable.toString().length() > 9) {
+                                String temp = editable.toString().substring(9);
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Transfer:" + temp);
+                                doEdit = false;
+                            } else {
+                                doEdit = true;
+                                editable.clear();
+                                editable.append("Transfer:");
+                                doEdit = false;
+                            }
+                        }
+                        if (mCategoryEdittext.getSelectionStart() < 9) {
+                            mCategoryEdittext.setSelection(9, 9);
+                        }
+                    } else {
+                        System.out.println("OODODODODOOODDODODODODODODOD I FAILED");
+                    }
+                }
+            }
+        });
+
+        mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mSearchAdapter.getItem(i) instanceof BusinessSearchResult){
+                    mNameEditText.setText(((BusinessSearchResult)mSearchAdapter.getItem(i)).getName());
+                }else{
+                    mNameEditText.setText((String)mSearchAdapter.getItem(i));
+                }
+                mDateTextView.setVisibility(View.VISIBLE);
+                mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                mSentDetailLayout.setVisibility(View.VISIBLE);
+                mNoteDetailLayout.setVisibility(View.VISIBLE);
+                mSearchListView.setVisibility(View.GONE);
+                mCategoryEdittext.requestFocus();
+            }
+        });
+
+        mCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mCategoryAdapter.getItem(i).charAt(0) == 'I'){
+                    currentType = "Income:";
+                }else if(mCategoryAdapter.getItem(i).charAt(0) == 'E'){
+                    currentType = "Expense:";
+                }else if(mCategoryAdapter.getItem(i).charAt(0) == 'T'){
+                    currentType = "Transfer:";
+                }
+                doEdit = true;
+                mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
+                doEdit = false;
+                mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
             }
         });
 
@@ -266,6 +433,7 @@ public class TransactionDetailFragment extends Fragment{
             try {
                 mBusinesses.clear();
                 mCombined.clear();
+                mOriginalBusinesses.clear();
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 businessCount = results.getCountValue();
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
@@ -320,9 +488,9 @@ public class TransactionDetailFragment extends Fragment{
     public void getMatchedContactsList(String searchTerm){
         ContentResolver cr = getActivity().getContentResolver();
         String columns[] ={ContactsContract.Contacts.DISPLAY_NAME};
-        System.out.println("Query: "+ContactsContract.Contacts.DISPLAY_NAME+" LIKE \'%"+searchTerm+"%\'");
+        System.out.println("Query: "+ContactsContract.Contacts.DISPLAY_NAME+" LIKE "+DatabaseUtils.sqlEscapeString("%"+searchTerm+"%"));
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                columns, ContactsContract.Contacts.DISPLAY_NAME+" LIKE \'%"+searchTerm+"%\'", null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+                columns, ContactsContract.Contacts.DISPLAY_NAME+" LIKE "+DatabaseUtils.sqlEscapeString("%"+searchTerm+"%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
         if (cur.getCount() > 0) {
             mContactNames.clear();
             while (cur.moveToNext()) {
