@@ -194,4 +194,10 @@
         <item>CAD</item>
         <item>USD</item>
     </string-array>
+
+    <string-array name="transaction_categories_list">
+        <item>Income:</item>
+        <item>Expense:</item>
+        <item>Transfer:</item>
+    </string-array>
 </resources>

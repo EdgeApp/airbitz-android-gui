@@ -28,6 +28,7 @@ public class BusinessSearchResult {
     private List<Category> mCategoryArray;
     private List<Social> mSocialArray;
     private ProfileImage mProfileImage;
+    private ProfileImage mSquareProfileImage;
     private Location mLocation;
     private String mBizDiscount;
     private String mDistance;
@@ -35,7 +36,7 @@ public class BusinessSearchResult {
     public BusinessSearchResult(String bizId, String bizName, String bizWebsite, String bizPhone, String bizAddress,
                                 String bizCity, String bizCounty, String bizState, String bizPostalCode,
                                 String bizCountry, ArrayList<Category> categoryArray,
-                                ArrayList<Social> socialArray, ProfileImage profileImage, Location location,
+                                ArrayList<Social> socialArray, ProfileImage profileImage, ProfileImage squareProfileImage, Location location,
                                 String discount, String distance) {
         mBizId = bizId;
         mBizName = bizName;
@@ -50,6 +51,7 @@ public class BusinessSearchResult {
         mCategoryArray = categoryArray;
         mSocialArray = socialArray;
         mProfileImage = profileImage;
+        mSquareProfileImage = squareProfileImage;
         mLocation = location;
         setBizDiscount(discount);
         mDistance = distance;
@@ -72,6 +74,7 @@ public class BusinessSearchResult {
             mCategoryArray = Category.generateCategoryListFromJSONObject(jsonResponse.getJSONArray("categories"));
             mSocialArray = Social.generateSocialListFromJSONObject(jsonResponse.getJSONArray("social"));
             mProfileImage = new ProfileImage(jsonResponse.getJSONObject("profile_image"));
+            mSquareProfileImage = new ProfileImage(jsonResponse.getJSONObject("square_image"));
             mLocation = new Location(jsonResponse.getJSONObject("location"));
             mBizDiscount = jsonResponse.getString("has_bitcoin_discount");
             mDistance = jsonResponse.getString("distance");
@@ -145,6 +148,8 @@ public class BusinessSearchResult {
     public ProfileImage getProfileImage(){
         return mProfileImage;
     }
+
+    public ProfileImage getSquareProfileImage() { return mSquareProfileImage; }
 
     public void setWebsite(String website){
         mBizWebsite = website;

@@ -82,7 +82,7 @@
                     android:layout_marginRight="6mm"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
-                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:inputType="textAutoComplete"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_edge_black_transparent_30"
@@ -219,20 +219,17 @@
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="4mm"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="@string/transaction_details_category_title"
                     android:textStyle="bold"
                     android:background="@android:color/transparent"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:layout_marginLeft="3mm"
                     android:layout_marginRight="3mm"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingLeft="2dp"
                     android:textSize="12dp"/>
 
 
@@ -246,7 +243,8 @@
                     android:layout_marginLeft="3mm"
                     android:layout_marginRight="3mm"
                     android:gravity="center_vertical"
-                    android:hint="@string/transaction_details_category_hint"
+                    android:hint=""
+                    android:imeOptions="actionDone"
                     android:textSize="11dp"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
@@ -281,7 +279,7 @@
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColorHint="@android:color/white"
-                    android:inputType="text|textCapSentences|textMultiLine"
+                    android:inputType="textVisiblePassword|textNoSuggestions|textMultiLine"
                     android:singleLine="false"
                     android:paddingLeft="1mm"
                     android:paddingTop="1mm"
@@ -306,6 +304,16 @@
                     android:background="@drawable/btn_green"/>
 
             </RelativeLayout>
+
+            <ListView
+                android:id="@+id/listview_category"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9mm"
+                android:layout_alignTop="@id/transaction_detail_layout_note"
+                android:divider="@color/gray_border"
+                android:dividerHeight="1px"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
