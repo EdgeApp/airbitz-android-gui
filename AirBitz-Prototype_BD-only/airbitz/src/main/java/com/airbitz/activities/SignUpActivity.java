@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpActivity extends Activity {
+    private static final int DOLLAR_CURRENCY_NUMBER = 840;
 
     static {
         System.loadLibrary("airbitz");
@@ -72,6 +73,8 @@ public class SignUpActivity extends Activity {
 
 
     private Intent mIntent;
+
+    private CreateFirstWalletTask mCreateFirstWalletTask;
 
 //    private GestureDetector mGestureDetector;
 
@@ -275,8 +278,7 @@ public class SignUpActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pData, pError);
-            boolean success = code == tABC_CC.ABC_CC_Ok? true: false;
-            return success;
+            return code == tABC_CC.ABC_CC_Ok;
         }
 
         @Override
@@ -284,17 +286,11 @@ public class SignUpActivity extends Activity {
             mAuthTask = null;
 
             if (success) {
-                //TODO set global account created success, login timeout stuff, etc
-
-                mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
-                mIntent.putExtra(KEY_USERNAME, mUsername);
-                mIntent.putExtra(KEY_PASSWORD, mPassword);
-                mIntent.putExtra(KEY_WITHDRAWAL, mPin);
-                startActivity(mIntent);
-                finish();
+                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
+                mCreateFirstWalletTask.execute((Void) null);
             } else {
                 showProgress(false);
-                showErrorDialog();
+                ShowReasonAlert(getResources().getString(R.string.error_invalid_credentials));
             }
         }
 
@@ -305,9 +301,59 @@ public class SignUpActivity extends Activity {
         }
     }
 
-    private void showErrorDialog() {
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUsername, mPassword, mPin;
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pResults = new tABC_RequestResults();
+
+        CreateFirstWalletTask(String username, String password, String pin) {
+            mUsername = username;
+            mPassword = password;
+            mPin = pin;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
+            tABC_CC result = core.ABC_CreateWallet(mUsername, mPassword, walletName, DOLLAR_CURRENCY_NUMBER, 0, null, pResults, pError);
+            return result == tABC_CC.ABC_CC_Ok;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mCreateFirstWalletTask = null;
+            showProgress(false);
+            if (!success) {
+                ShowReasonAlert(pError.getSzDescription());
+            } else {
+                mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
+                mIntent.putExtra(KEY_USERNAME, mUsername);
+                mIntent.putExtra(KEY_PASSWORD, mPassword);
+                mIntent.putExtra(KEY_WITHDRAWAL, mPin);
+                startActivity(mIntent);
+                finish();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mCreateFirstWalletTask = null;
+        }
+    }
+
+    private void ShowReasonAlert(String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getResources().getString(R.string.error_invalid_credentials))
+        builder.setMessage(reason)
+                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -386,7 +432,6 @@ public class SignUpActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
             mAuthTask = new CreateAccountTask(username, password, pin);
             mAuthTask.execute((Void) null);
         }

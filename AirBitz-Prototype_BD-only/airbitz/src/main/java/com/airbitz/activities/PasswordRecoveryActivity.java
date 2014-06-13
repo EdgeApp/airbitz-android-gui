@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -56,11 +54,9 @@ public class PasswordRecoveryActivity extends Activity {
     private TextView mTitleTextView;
 
 
-    private String mUsername;
+    private String mUsername, mPassword;
 
     private View dummy;
-
-    private int spinnerCount = 1;
 
     private Intent mIntent;
 
@@ -79,9 +75,16 @@ public class PasswordRecoveryActivity extends Activity {
     private View mQuestionViewString1;
     private View mQuestionViewString2;
 
+    private SaveQuestionsTask mSaveQuestionsTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
+        mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
+//        mUsername="junktest5"; // for testing
+//        mPassword="Aaaaaaaa1@"; // for testing
+
         setContentView(R.layout.activity_password_recovery);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -107,20 +110,16 @@ public class PasswordRecoveryActivity extends Activity {
             }
         });
 
-        mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
-
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialog();
+                ShowSkipQuestionsAlert();
             }
         });
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveQuestionsAndAnswers();
-                startActivity(mIntent);
-                finish();
+                CompleteSignup();
             }
         });
 
@@ -133,16 +132,44 @@ public class PasswordRecoveryActivity extends Activity {
         mFetchQuestionsTask.execute((Void) null);
     }
 
-    private void saveQuestionsAndAnswers() {
-        Map saveList = new HashMap<String, String>();
-        for(View v: mQuestionViews) {
-            QuestionView qv = (QuestionView) v;
-            String q = qv.getQuestion();
-            String t = qv.getText();
+    private void CompleteSignup() {
+        //verify that all six questions have been selected
+        boolean allQuestionsSelected = true;
+        boolean allAnswersValid = true;
+        String questions = "";
+        String answers = "";
+
+        int count = 0;
+        for (View view : mQuestionViews) {
+            QuestionView qaView = (QuestionView) view;
+            if (qaView.getQuestion().isEmpty()) {
+                allQuestionsSelected = false;
+                break;
+            }
+            //verify that all six answers have achieved their minimum character limit
+            if (qaView.getText().length() < qaView.getMinimumCharacters()) {
+                allAnswersValid = false;
+            } else {
+                //add question and answer to arrays
+                if (count != 0) {
+                    questions += "\n";
+                    answers += "\n";
+                }
+                questions += qaView.getQuestion();
+                answers += qaView.getText();
+            }
+            count++;
         }
-
-        //TODO save questions and answers to server here from saveList
-
+        if (allQuestionsSelected) {
+            if (allAnswersValid) {
+                mSaveQuestionsTask = new SaveQuestionsTask(mUsername, mPassword, questions, answers);
+                mSaveQuestionsTask.execute((Void) null);
+            } else {
+                ShowAnswerAllQuestionsAlert();
+            }
+        } else {
+            ShowPickAllQuestionsAlert();
+        }
     }
 
     private void InitializeQuestionViews() {
@@ -163,7 +190,7 @@ public class PasswordRecoveryActivity extends Activity {
         mPasswordRecoveryListView.invalidate();
     }
 
-    public void showAlertDialog(){
+    public void ShowSkipQuestionsAlert(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
                 .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
@@ -182,6 +209,51 @@ public class PasswordRecoveryActivity extends Activity {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void ShowAnswerAllQuestionsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.activity_recovery_answer_questions_alert))
+                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void ShowPickAllQuestionsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.activity_recovery_pick_questions_alert))
+                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void ShowSaveFailAlert(String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(reason)
+                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**
@@ -242,6 +314,43 @@ public class PasswordRecoveryActivity extends Activity {
         @Override
         protected void onCancelled() {
             mFetchQuestionsTask = null;
+        }
+
+    }
+
+    /**
+     * Represents an asynchronous question save task
+     */
+    public class SaveQuestionsTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUsername, mPassword, mQuestions, mAnswers;
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pResults = new tABC_RequestResults();
+
+        SaveQuestionsTask(String username, String password, String questions, String answers) {
+            mUsername = username;
+            mPassword = password;
+            mQuestions = questions;
+            mAnswers = answers;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            tABC_CC result = core.ABC_SetAccountRecoveryQuestions(mUsername, mPassword, mQuestions, mAnswers, null, pResults, pError);
+            return result == tABC_CC.ABC_CC_Ok;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mSaveQuestionsTask = null;
+            if (!success) {
+                ShowSaveFailAlert(pError.getSzDescription());
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mSaveQuestionsTask = null;
         }
 
     }
@@ -424,6 +533,10 @@ public class PasswordRecoveryActivity extends Activity {
 
         public String getText() {
             return mText.getText().toString();
+        }
+
+        public int getMinimumCharacters() {
+            return mCharLimit;
         }
     }
 
