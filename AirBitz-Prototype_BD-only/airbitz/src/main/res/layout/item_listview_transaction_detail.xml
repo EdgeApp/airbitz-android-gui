@@ -3,8 +3,11 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="6mm"
-    android:id="@+id/transaction_detail_item"
-    android:background="#FFFFFF"
+    android:id="@+id/transaction_detail_item_name"
+    android:background="#addff1"
+    android:gravity="center_vertical"
+    android:textSize="14dp"
+    android:paddingLeft="8mm"
     android:textColor="#000000">
 
 </TextView>
