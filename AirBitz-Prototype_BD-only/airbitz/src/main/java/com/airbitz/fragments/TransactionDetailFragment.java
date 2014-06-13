@@ -6,12 +6,16 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -32,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,17 +53,23 @@ import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.SearchResult;
+import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.ListViewUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Created on 2/20/14.
@@ -74,16 +85,27 @@ public class TransactionDetailFragment extends Fragment{
     private TextView mBitcoinValueTextview;
     private TextView mNoteTextView;
 
+    private LinearLayout mDummyFocus;
+
     private int businessCount;
 
     private String currentType = "";
     private boolean doEdit = false;
+    private boolean catSelected = false;
+    private defaultCategoryEnum defaultCat = defaultCategoryEnum.Income;//TODO set this based on type of transaction
+
+
+    private int baseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int baseExpensePosition = 1;
+    private int baseTransferPosition = 2;
+
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
     private RelativeLayout mSentDetailLayout;
     private RelativeLayout mNoteDetailLayout;
+    private RelativeLayout mNameDetailLayout;
 
     private EditText mDollarValueEdittext;
     private EditText mNoteEdittext;
@@ -93,6 +115,7 @@ public class TransactionDetailFragment extends Fragment{
     private List<BusinessSearchResult> mOriginalBusinesses;
     private List<String> mContactNames;
     private List<Object> mCombined;
+    private Map<String, Uri> mContactPhotos;
 
     private List<String> mCategories;
 
@@ -132,13 +155,17 @@ public class TransactionDetailFragment extends Fragment{
 
         mSentDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_sent_detail);
         mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
+        mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
+
+        mDummyFocus = (LinearLayout) view.findViewById(R.id.dummy_focus);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
         mOriginalBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
         mCombined = new ArrayList<Object>();
-        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined);
+        mContactPhotos = new HashMap<String, Uri>();
+        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined,mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
 
         mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
@@ -154,8 +181,6 @@ public class TransactionDetailFragment extends Fragment{
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mDateTextView.getPaint().setShader(textShader);
 
-        //mCategoryEdittext.setKeyListener(null);
-
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
         mNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
@@ -169,18 +194,15 @@ public class TransactionDetailFragment extends Fragment{
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
         getContactsList();
-        System.out.println(mContactNames);
 
         mNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    mDateTextView.setVisibility(View.GONE);
                     mAdvanceDetailsButton.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mNoteDetailLayout.setVisibility(View.GONE);
                     mSearchListView.setVisibility(View.VISIBLE);
-
                     if(mNameEditText.getText().toString().isEmpty()) {
                         try {
                             Activity activity = getActivity();
@@ -190,14 +212,13 @@ public class TransactionDetailFragment extends Fragment{
                             mCombined.clear();
                             mOriginalBusinesses.clear();
                             mBusinesses.clear();
-                            new BusinessSearchAysncTask().execute(latLong);
+                            new BusinessSearchAsyncTask().execute(latLong);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
 
                 }else{
-                    mDateTextView.setVisibility(View.VISIBLE);
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mNoteDetailLayout.setVisibility(View.VISIBLE);
@@ -212,14 +233,17 @@ public class TransactionDetailFragment extends Fragment{
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
                     mDateTextView.setVisibility(View.GONE);
-                    mNameEditText.setVisibility(View.GONE);
+                    mNameDetailLayout.setVisibility(View.GONE);
                     mAdvanceDetailsButton.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mDoneButton.setVisibility(View.GONE);
                     mCategoryListView.setVisibility(View.VISIBLE);
+                    if(!mCategoryEdittext.getText().toString().isEmpty()) {
+                        mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
+                    }
                 }else{
                     mDateTextView.setVisibility(View.VISIBLE);
-                    mNameEditText.setVisibility(View.VISIBLE);
+                    mNameDetailLayout.setVisibility(View.VISIBLE);
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mDoneButton.setVisibility(View.VISIBLE);
@@ -229,14 +253,34 @@ public class TransactionDetailFragment extends Fragment{
             }
         });
 
+        mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    mAdvanceDetailsButton.setVisibility(View.GONE);
+                    mSentDetailLayout.setVisibility(View.GONE);
+                    mDoneButton.setVisibility(View.GONE);
+                }else{
+                    System.out.println("Note loses focus");
+                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                    mAdvanceDetailsButton.setVisibility(View.VISIBLE); 
+                    mSentDetailLayout.setVisibility(View.VISIBLE);
+                    mDoneButton.setVisibility(View.VISIBLE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    mDummyFocus.requestFocus();
+                }
+            }
+        });
+        mNoteEdittext.setHorizontallyScrolling(false);
+        mNoteEdittext.setMaxLines(Integer.MAX_VALUE);
+
         mNameEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    mNameEditText.clearFocus();
+                    //mNameEditText.clearFocus();
                     mCategoryEdittext.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     return true;
                 }
                 return false;
@@ -247,10 +291,20 @@ public class TransactionDetailFragment extends Fragment{
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    mCategoryEdittext.clearFocus();
+                    //mCategoryEdittext.clearFocus();
                     mNoteEdittext.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    System.out.println("Action Done");
+                    mDummyFocus.requestFocus();
                     return true;
                 }
                 return false;
@@ -296,10 +350,17 @@ public class TransactionDetailFragment extends Fragment{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(doEdit == false) {
-                    System.out.println("Gonna Change Some Text");
+                if(false == doEdit) {
+                    if(false == catSelected){
+                        String temp = editable.toString();
+                        doEdit = true;
+                        editable.clear();
+                        editable.append(defaultCat.toString()+":"+temp);
+                        doEdit = false;
+                        catSelected = true;
+                    }
                     if (currentType.charAt(0) == 'I') {
-                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7) != "Income:") {
+                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:")!=0) {
                             if (editable.toString().length() > 7) {
                                 String temp = editable.toString().substring(7);
                                 doEdit = true;
@@ -312,12 +373,20 @@ public class TransactionDetailFragment extends Fragment{
                                 editable.append("Income:");
                                 doEdit = false;
                             }
+                        }else if(editable.toString().length() >= 7){
+                            mCategories.remove(baseIncomePosition);
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(7));
+                            mCategories.remove(baseExpensePosition);
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(7));
+                            mCategories.remove(baseTransferPosition);
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(7));
+                            mCategoryAdapter.notifyDataSetChanged();
                         }
                         if (mCategoryEdittext.getSelectionStart() < 7) {
                             mCategoryEdittext.setSelection(7, 7);
                         }
                     } else if (currentType.charAt(0) == 'E') {
-                        if ( editable.toString().length() < 8 || editable.toString().substring(0, 8) != "Expense:") {
+                        if ( editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:")!=0) {
                             if (editable.toString().length() > 8) {
                                 String temp = editable.toString().substring(8);
                                 doEdit = true;
@@ -330,12 +399,20 @@ public class TransactionDetailFragment extends Fragment{
                                 editable.append("Expense:");
                                 doEdit = false;
                             }
+                        }else if(editable.toString().length() >= 8){
+                            mCategories.remove(baseIncomePosition);
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(8));
+                            mCategories.remove(baseExpensePosition);
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(8));
+                            mCategories.remove(baseTransferPosition);
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(8));
+                            mCategoryAdapter.notifyDataSetChanged();
                         }
                         if (mCategoryEdittext.getSelectionStart() < 8) {
                             mCategoryEdittext.setSelection(8, 8);
                         }
                     } else if (currentType.charAt(0) == 'T') {
-                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9) != "Transfer:") {
+                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:")!=0) {
                             if (editable.toString().length() > 9) {
                                 String temp = editable.toString().substring(9);
                                 doEdit = true;
@@ -348,12 +425,20 @@ public class TransactionDetailFragment extends Fragment{
                                 editable.append("Transfer:");
                                 doEdit = false;
                             }
+                        }else if(editable.toString().length() >= 9){
+                            mCategories.remove(baseIncomePosition);
+                            mCategories.add(baseIncomePosition,"Income:"+editable.toString().substring(9));
+                            mCategories.remove(baseExpensePosition);
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(9));
+                            mCategories.remove(baseTransferPosition);
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(9));
+                            mCategoryAdapter.notifyDataSetChanged();
                         }
                         if (mCategoryEdittext.getSelectionStart() < 9) {
                             mCategoryEdittext.setSelection(9, 9);
                         }
                     } else {
-                        System.out.println("OODODODODOOODDODODODODODODOD I FAILED");
+                        System.err.println("currentType was something other than Income, Expense or Transfer: "+currentType);
                     }
                 }
             }
@@ -379,17 +464,27 @@ public class TransactionDetailFragment extends Fragment{
         mCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mCategoryAdapter.getItem(i).charAt(0) == 'I'){
+                catSelected = true;
+                if(mCategories.get(i).charAt(0) == 'I'){
                     currentType = "Income:";
-                }else if(mCategoryAdapter.getItem(i).charAt(0) == 'E'){
+                }else if(mCategories.get(i).charAt(0) == 'E'){
                     currentType = "Expense:";
-                }else if(mCategoryAdapter.getItem(i).charAt(0) == 'T'){
+                }else if(mCategories.get(i).charAt(0) == 'T'){
                     currentType = "Transfer:";
                 }
+                //TODO move the strings around depending on negative/positive value
                 doEdit = true;
                 mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
                 doEdit = false;
-                mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
+                if(i==baseIncomePosition){
+                    mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
+                }else if(i==baseExpensePosition){
+                    mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
+                }else if(i==baseTransferPosition){
+                    mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
+                }else {
+                    mNoteEdittext.requestFocus();
+                }
             }
         });
 
@@ -411,17 +506,20 @@ public class TransactionDetailFragment extends Fragment{
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mCategories.add(0,mCategoryEdittext.getText().toString());
                 getActivity().onBackPressed();
             }
         });
 
+        currentType = defaultCat.toString()+":";
+
         return view;
     }
 
-    class BusinessSearchAysncTask extends AsyncTask<String, Integer, String>{
+    class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String>{
         private AirbitzAPI api = AirbitzAPI.getApi();
 
-        public BusinessSearchAysncTask() {
+        public BusinessSearchAsyncTask() {
         }
 
         @Override protected String doInBackground(String... strings) {
@@ -447,7 +545,6 @@ public class TransactionDetailFragment extends Fragment{
                 this.cancel(true);
             }
             mSearchAdapter.notifyDataSetChanged();
-            System.out.println("list size: "+mCombined.size());
             ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
             mSearchListView.setVisibility(View.VISIBLE);
         }
@@ -487,15 +584,18 @@ public class TransactionDetailFragment extends Fragment{
 
     public void getMatchedContactsList(String searchTerm){
         ContentResolver cr = getActivity().getContentResolver();
-        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME};
-        System.out.println("Query: "+ContactsContract.Contacts.DISPLAY_NAME+" LIKE "+DatabaseUtils.sqlEscapeString("%"+searchTerm+"%"));
+        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 columns, ContactsContract.Contacts.DISPLAY_NAME+" LIKE "+DatabaseUtils.sqlEscapeString("%"+searchTerm+"%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
         if (cur.getCount() > 0) {
             mContactNames.clear();
+            mContactPhotos.clear();
             while (cur.moveToNext()) {
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 mContactNames.add(name);
+                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                Uri thumbUri = Uri.parse(photoURI);
+                mContactPhotos.put(name, thumbUri);
             }
         }
         cur.close();
@@ -508,10 +608,8 @@ public class TransactionDetailFragment extends Fragment{
                 int j = 0;
                 boolean flag = false;
                 while(!flag && j !=mBusinesses.size()){
-                    System.out.println("Before: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
                     if(mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase())>0){
-                        mBusinesses.add(j,mOriginalBusinesses.get(i));
-                        System.out.println("After: mBusinesses: "+mBusinesses.get(j).getName()+" mOriginalBusinesses: "+mOriginalBusinesses.get(i).getName());
+                        mBusinesses.add(j, mOriginalBusinesses.get(i));
                         flag = true;
                     }
                     j++;
@@ -520,9 +618,6 @@ public class TransactionDetailFragment extends Fragment{
                     mBusinesses.add(mOriginalBusinesses.get(i));
                 }
             }
-        }
-        for(BusinessSearchResult bSR:mBusinesses){
-            System.out.println(bSR.getName());
         }
     }
 

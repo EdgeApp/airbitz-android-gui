@@ -94,6 +94,7 @@
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
     <string name="activity_forgot_submit">Submit</string>
+    <string name="activity_forgot_no_questions">No Questions</string>
 
     <!-- Strings for Settings fragment -->
     <string name="settings_title">Settings</string>
