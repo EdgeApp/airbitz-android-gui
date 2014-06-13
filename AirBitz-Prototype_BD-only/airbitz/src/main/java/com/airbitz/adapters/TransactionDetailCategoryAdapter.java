@@ -39,14 +39,11 @@ public class TransactionDetailCategoryAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final String category = (String) mCategories.get(position);
+        final String category = mCategories.get(position);
         convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
         textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         textView.setText(category);
-
-
-
         return convertView;
     }
 }

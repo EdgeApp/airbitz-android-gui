@@ -96,7 +96,7 @@ public class ListViewUtility {
 
     public static void setTransactionDetailListViewHeightBasedOnChildren(ListView listView, int size, Context context) {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
+        if (listAdapter == null || context == null) {
             return;
         }
 

@@ -1,6 +1,8 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -30,14 +33,16 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
     private Context mContext;
     private List<BusinessSearchResult> mBusinesses;
     private List<String> mContactNames;
+    private Map<String,Uri> mContactPhotos;
     private List<Object> mCombined;
     private final Picasso p;
 
-    public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<String> contactNames, List<Object> combined){
+    public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<String> contactNames, List<Object> combined, Map<String, Uri> contactPhotos){
         super(context, R.layout.item_listview_transaction_detail, combined);
         mContext = context;
         mBusinesses = businesses;
         mContactNames = contactNames;
+        mContactPhotos = contactPhotos;
         mCombined = combined;
         p =  new Picasso.Builder(context).build();
     }
@@ -80,14 +85,13 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         }else if(mCombined.get(position) instanceof String){
             final String contactName = (String) mCombined.get(position);
-            convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
+            convertView = inflater.inflate(R.layout.item_listview_transaction_detail_contact, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
             textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             textView.setText(contactName);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
+            p.load(mContactPhotos.get(contactName)).noFade().into(imageView);
         }
-
-
-
         return convertView;
     }
 
