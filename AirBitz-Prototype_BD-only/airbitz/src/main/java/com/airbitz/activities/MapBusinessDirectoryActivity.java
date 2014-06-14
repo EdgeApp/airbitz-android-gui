@@ -626,8 +626,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
             Criteria cri = new Criteria();
-            String provider = locationManager.getBestProvider(cri, true);
-            mCurrentLocation = locationManager.getLastKnownLocation(provider);
+            final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if(gpsEnabled) {
+                String provider = locationManager.getBestProvider(cri, true);
+                mCurrentLocation = locationManager.getLastKnownLocation(provider);
+            }
 
             LatLng currentLatLng;
 

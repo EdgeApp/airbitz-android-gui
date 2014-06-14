@@ -42,6 +42,10 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
                 <com.airbitz.objects.ClearableEditText
                     android:id="@+id/edittext_search"
                     android:layout_width="match_parent"
@@ -53,7 +57,7 @@
                     android:drawableLeft="@drawable/ico_search"
                     android:drawablePadding="10dp"
                     android:drawableRight="@drawable/btn_x"
-                    android:hint="@string/category_or_business_name"
+                    android:hint="Business Name or Category"
                     android:selectAllOnFocus="true"
                     android:inputType="text|textNoSuggestions"
                     android:imeOptions="actionSearch"
@@ -66,6 +70,24 @@
                     android:textColor="#000000"
                     android:textColorHint="#44000000" />
 
+                <TextView
+                    android:id="@+id/business_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="35dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="Business Name or Category"
+                    android:textColor="#44000000"
+                    android:textSize="16dp"
+                    android:visibility="invisible"/>
 
                 <com.airbitz.objects.ClearableEditText
                     android:id="@+id/edittext_location"
@@ -78,7 +100,7 @@
                     android:drawableLeft="@drawable/ico_loc"
                     android:drawablePadding="13dp"
                     android:drawableRight="@drawable/btn_x"
-                    android:hint="Current Location"
+                    android:hint="City, State, or Country"
                     android:selectAllOnFocus="true"
                     android:inputType="text|textNoSuggestions"
                     android:imeOptions="actionSearch"
@@ -91,6 +113,27 @@
                     android:textColor="#000000"
                     android:textColorHint="#44000000"
                     android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/location_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edittext_search"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="7dp"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="34dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="City, State, or Country"
+                    android:textColor="#44000000"
+                    android:textSize="16dp"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

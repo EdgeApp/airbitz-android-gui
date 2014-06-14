@@ -1,65 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_header"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="7mm"
     android:background="#40000000"
     android:padding="@dimen/content_padding_half">
 
     <ImageButton
-        android:id="@+id/button_back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:padding="10dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
+        android:layout_width="7mm"
+        android:layout_height="7mm"
         android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:id="@+id/button_back"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
         android:src="@drawable/btn_back"
-        android:visibility="gone" />
+        android:padding="2mm"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="7mm"
         android:layout_centerInParent="true"
         android:src="@drawable/logo" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_toRightOf="@+id/button_back"
-        android:layout_toLeftOf="@+id/button_help"
-        android:layout_height="wrap_content" >
-
         <!-- NOTE: this needs to be in a ViewGroup since gravity doesn't work properly on AutofitTextView. -->
 
-        <me.grantland.widget.AutofitTextView
-            android:id="@+id/textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_padding"
-            android:gravity="center"
-            android:layout_centerInParent="true"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_h1"
-            android:visibility="visible" />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="7mm"
+        android:gravity="center"
+        android:singleLine="true"
+        android:layout_toLeftOf="@+id/button_help"
+        android:layout_toRightOf="@+id/button_back"
+        android:textColor="@android:color/white"
+        android:textSize="16dp"
+        android:visibility="visible" />
 
     <ImageButton
+        android:layout_width="7mm"
+        android:layout_height="7mm"
         android:id="@+id/button_help"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="5dp"
+        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
-        android:scaleType="centerCrop"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/btn_help"
-        android:visibility="invisible" />
+        android:padding="2mm"
+        android:visibility="invisible"/>
+
 
 </RelativeLayout>

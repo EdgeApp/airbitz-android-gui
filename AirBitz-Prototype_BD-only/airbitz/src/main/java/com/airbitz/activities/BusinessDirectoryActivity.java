@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -138,6 +139,9 @@ public class BusinessDirectoryActivity extends Activity implements
 
     private Location mCurrentLocation;
 
+    private TextView businessHint;
+    private TextView locationHint;
+
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
@@ -184,6 +188,11 @@ public class BusinessDirectoryActivity extends Activity implements
 
         mBusinessList = new ArrayList<Business>();
         mLocationList = new ArrayList<LocationSearchResult>();
+
+        businessHint = (TextView) findViewById(R.id.business_hint);
+        businessHint.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        locationHint = (TextView) findViewById(R.id.location_hint);
+        locationHint.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         Log.d("TAG_LOC", "CUR LOC: ");
 
@@ -454,6 +463,12 @@ public class BusinessDirectoryActivity extends Activity implements
                 // mCurrentLayoutSeparator.setVisibility(View.GONE);
                 // mOnTheWebSeparator.setVisibility(View.GONE);
                 // }
+                if( ( editable.toString().compareTo(" ")==0)){
+                    businessHint.setVisibility(View.VISIBLE);
+                    mSearchField.setSelection(0);
+                }else{
+                    businessHint.setVisibility(View.INVISIBLE);
+                }
 
             }
         });
@@ -608,6 +623,13 @@ public class BusinessDirectoryActivity extends Activity implements
                 if(editable.toString().isEmpty() && mLocationField.hasFocus()){
                     editable.append(' ');
                 }
+
+                if( editable.toString().compareTo(" ")==0){
+                    locationHint.setVisibility(View.VISIBLE);
+                    mLocationField.setSelection(0);
+                }else{
+                    locationHint.setVisibility(View.INVISIBLE);
+                }
                 //
                 // } else {
                 //
@@ -741,7 +763,6 @@ public class BusinessDirectoryActivity extends Activity implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
-
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
     }
@@ -939,24 +960,19 @@ public class BusinessDirectoryActivity extends Activity implements
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
         Criteria cri = new Criteria();
-        String provider = mLocationManager.getBestProvider(cri, true);
-        mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
-        if (mCurrentLocation != null) {
-            clearSharedPreference();
-            writeLatLonToSharedPreference();
-        }
+
 
         final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("GPS is disabled. Go to Settings and turned on your GPS.")
+            builder.setMessage("GPS is disabled. Please Enable GPS to find business near your location.")
                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                        @Override public void onClick(DialogInterface dialog, int which) {
                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                        }
                    })
-                   .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                   .setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
                        @Override public void onClick(DialogInterface dialog, int which) {
                            dialog.dismiss();
                        }
@@ -972,6 +988,12 @@ public class BusinessDirectoryActivity extends Activity implements
                 mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
+            }
+            String provider = mLocationManager.getBestProvider(cri, true);
+            mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
+            if (mCurrentLocation != null) {
+                clearSharedPreference();
+                writeLatLonToSharedPreference();
             }
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
         }
