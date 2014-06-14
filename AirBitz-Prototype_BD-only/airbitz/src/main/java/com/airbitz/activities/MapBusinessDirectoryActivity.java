@@ -119,6 +119,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
     private String mBusinessName;
     private String mBusinessType;
 
+    private TextView businessHint;
+    private TextView locationHint;
+
     private GestureDetector mGestureDetector;
 
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
@@ -161,6 +164,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         llListContainer = (RelativeLayout) findViewById(R.id.list_view_container);
         flMapContainer = (FrameLayout) findViewById(R.id.map_container);
         mViewAnimator = (ViewAnimator) findViewById(R.id.ViewAnimator);
+
+        businessHint = (TextView) findViewById(R.id.business_hint);
+        businessHint.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        locationHint = (TextView) findViewById(R.id.location_hint);
+        locationHint.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
 
         // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
 
@@ -283,6 +291,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
                     editable.append(' ');
                 }
+                if( ( editable.toString().compareTo(" ")==0)){
+                    businessHint.setVisibility(View.VISIBLE);
+                    mSearchEdittext.setSelection(0);
+                }else{
+                    businessHint.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
@@ -400,6 +414,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     }
                     if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
                         editable.append(' ');
+                    }
+                    if( editable.toString().compareTo(" ")==0){
+                        locationHint.setVisibility(View.VISIBLE);
+                        mLocationEdittext.setSelection(0);
+                    }else{
+                        locationHint.setVisibility(View.GONE);
                     }
             }
         });

@@ -628,7 +628,7 @@ public class BusinessDirectoryActivity extends Activity implements
                     locationHint.setVisibility(View.VISIBLE);
                     mLocationField.setSelection(0);
                 }else{
-                    locationHint.setVisibility(View.INVISIBLE);
+                    locationHint.setVisibility(View.GONE);
                 }
                 //
                 // } else {
