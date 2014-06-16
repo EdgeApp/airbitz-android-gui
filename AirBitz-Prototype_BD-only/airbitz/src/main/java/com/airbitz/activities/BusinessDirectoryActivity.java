@@ -353,6 +353,12 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     if(mSearchField.getText().toString().isEmpty()) {
                         mSearchField.setText(" ");
+                        mSearchField.setSelection(mSearchField.getText().toString().length());
+                    }else{
+                        if(mSearchField.getText().toString().charAt(0)!=' '){
+                            mSearchField.setText(" " + mSearchField.getText().toString());
+                        }
+                        mSearchField.setSelection(1,mSearchField.getText().toString().length());
                     }
                     // mBusinessList.clear();
                     // mBusinessSearchAdapter.notifyDataSetChanged();
@@ -392,9 +398,9 @@ public class BusinessDirectoryActivity extends Activity implements
                     }
 
                 }else{
-                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                    /*if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
                         mSearchField.setText(mSearchField.getText().toString().substring(1));
-                    }
+                    }*/
                 }
 
             }
@@ -448,9 +454,12 @@ public class BusinessDirectoryActivity extends Activity implements
                     e.printStackTrace();
                 }
 
-                if(editable.toString().isEmpty() && mSearchField.hasFocus()){
+                if(editable.toString().isEmpty()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mSearchField.setText(" "+editable.toString());
                 }
+
                 // } else {
                 // mDummyFocusLayout.requestFocus();
                 // if (mSearchField.getText().toString().length() <= 0) {
@@ -467,13 +476,14 @@ public class BusinessDirectoryActivity extends Activity implements
                 // }
                 if( ( editable.toString().compareTo(" ")==0)){
                     businessHint.setVisibility(View.VISIBLE);
-                    mSearchField.setSelection(0);
+                    mSearchField.setSelection(1);
                 }else{
                     businessHint.setVisibility(View.INVISIBLE);
                 }
 
             }
         });
+
 
         mLocationAdapter = new LocationAdapter(BusinessDirectoryActivity.this, mLocationList);
         mSearchListView.setAdapter(mLocationAdapter);
@@ -492,6 +502,12 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     if(mLocationField.getText().toString().isEmpty()) {
                         mLocationField.setText(" ");
+                        mLocationField.setSelection(mLocationField.getText().toString().length());
+                    }else{
+                        if(mLocationField.getText().toString().charAt(0)!=' '){
+                            mLocationField.setText(" " + mLocationField.getText().toString());
+                        }
+                        mLocationField.setSelection(1,mLocationField.getText().toString().length());
                     }
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
@@ -526,9 +542,9 @@ public class BusinessDirectoryActivity extends Activity implements
                         mViewGroupLoading.setVisibility(View.VISIBLE);
                     }
                     mVenueFragmentLayout.setVisibility(View.VISIBLE);
-                    if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' ') {
+                    /*if(!mLocationField.getText().toString().isEmpty() && mLocationField.getText().toString().charAt(0)==' ') {
                         mLocationField.setText(mLocationField.getText().toString().substring(1));
-                    }
+                    }*/
                 }
 
             }
@@ -560,6 +576,7 @@ public class BusinessDirectoryActivity extends Activity implements
                                     if (mBusinessLayout.getVisibility() == View.GONE) {
                                         mDummyFocusLayout.requestFocus();
                                         mLocationField.setVisibility(View.GONE);
+                                        locationHint.setVisibility(View.GONE);
                                         mSearchListView.setVisibility(View.GONE);
                                         mBusinessLayout.setVisibility(View.VISIBLE);
                                         mNearYouContainer.setVisibility(View.VISIBLE);
@@ -624,11 +641,13 @@ public class BusinessDirectoryActivity extends Activity implements
 
                 if(editable.toString().isEmpty() && mLocationField.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mLocationField.setText(" "+editable.toString());
                 }
 
                 if( editable.toString().compareTo(" ")==0){
                     locationHint.setVisibility(View.VISIBLE);
-                    mLocationField.setSelection(0);
+                    mLocationField.setSelection(1);
                 }else{
                     locationHint.setVisibility(View.GONE);
                 }
@@ -658,7 +677,7 @@ public class BusinessDirectoryActivity extends Activity implements
 
                     final Business business = businessSearchAdapter.getItem(position);
 
-                    mSearchField.setText(business.getName());
+                    mSearchField.setText( business.getName());
                     mBusinessType = business.getType();
 
                     if ("business".equalsIgnoreCase(mBusinessType)) {
@@ -683,11 +702,11 @@ public class BusinessDirectoryActivity extends Activity implements
 
                 if (locationFieldShouldFocus) {
                     mLocationField.requestFocus();
-                    mLocationField.setSelection(mLocationField.length());
+                    mLocationField.setSelection(1,mLocationField.length());
                     mLocationField.setSelected(false);
                 } else {
                     mSearchField.requestFocus();
-                    mSearchField.setSelection(mSearchField.length());
+                    mSearchField.setSelection(1,mSearchField.length());
                     mSearchField.setSelected(false);
                 }
             }
@@ -752,6 +771,7 @@ public class BusinessDirectoryActivity extends Activity implements
             mSearchListView.setVisibility(View.GONE);
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
+            locationHint.setVisibility(View.GONE);
             if(mLoadingVisible){
                 mViewGroupLoading.setVisibility(View.VISIBLE);
             }

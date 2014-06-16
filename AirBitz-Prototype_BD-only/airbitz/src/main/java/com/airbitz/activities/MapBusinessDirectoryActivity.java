@@ -226,6 +226,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     mViewAnimator.setDisplayedChild(1);
                     if(mSearchEdittext.getText().toString().isEmpty()) {
                         mSearchEdittext.setText(" ");
+                        mSearchEdittext.setSelection(mSearchEdittext.getText().toString().length());
+                    }else{
+                        if(mSearchEdittext.getText().toString().charAt(0)!=' '){
+                            mSearchEdittext.setText(" " + mSearchEdittext.getText().toString());
+                        }
+                        mSearchEdittext.setSelection(1,mSearchEdittext.getText().toString().length());
                     }
                     // Start search
                     try {
@@ -247,9 +253,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                         e.printStackTrace();
                     }
                 }else{
-                    if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
+                    /*if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
                         mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
-                    }
+                    }*/
                 }
             }
         });
@@ -290,10 +296,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 }
                 if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mSearchEdittext.setText(" "+editable.toString());
                 }
                 if( ( editable.toString().compareTo(" ")==0)){
                     businessHint.setVisibility(View.VISIBLE);
-                    mSearchEdittext.setSelection(0);
+                    mSearchEdittext.setSelection(1);
                 }else{
                     businessHint.setVisibility(View.INVISIBLE);
                 }
@@ -311,6 +319,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                     if(mLocationEdittext.getText().toString().isEmpty()) {
                         mLocationEdittext.setText(" ");
+                        mLocationEdittext.setSelection(mLocationEdittext.getText().toString().length());
+                    }else{
+                        if(mLocationEdittext.getText().toString().charAt(0)!=' '){
+                            mLocationEdittext.setText(" " + mLocationEdittext.getText().toString());
+                        }
+                        mLocationEdittext.setSelection(1,mLocationEdittext.getText().toString().length());
                     }
                     // Search
                     String latLong = String.valueOf(getLatFromSharedPreference());
@@ -325,9 +339,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     }
 
                 }else{
-                    if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
+                    /*if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
                         mLocationEdittext.setText(mLocationEdittext.getText().toString().substring(1));
-                    }
+                    }*/
                 }
 
             }
@@ -414,10 +428,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                     }
                     if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
                         editable.append(' ');
+                    }else if(editable.toString().charAt(0)!=' '){
+                        mLocationEdittext.setText(" "+editable.toString());
                     }
                     if( editable.toString().compareTo(" ")==0){
                         locationHint.setVisibility(View.VISIBLE);
-                        mLocationEdittext.setSelection(0);
+                        mLocationEdittext.setSelection(1);
                     }else{
                         locationHint.setVisibility(View.GONE);
                     }
@@ -493,11 +509,11 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                 if (locationFieldShouldFocus) {
                     mLocationEdittext.requestFocus();
-                    mLocationEdittext.setSelection(mLocationEdittext.length());
+                    mLocationEdittext.setSelection(1,mLocationEdittext.length());
                     mLocationEdittext.setSelected(false);
                 } else {
                     mSearchEdittext.requestFocus();
-                    mSearchEdittext.setSelection(mSearchEdittext.length());
+                    mSearchEdittext.setSelection(1,mSearchEdittext.length());
                     mSearchEdittext.setSelected(false);
                 }
 

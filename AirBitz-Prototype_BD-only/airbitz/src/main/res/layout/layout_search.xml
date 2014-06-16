@@ -84,7 +84,7 @@
                     android:paddingLeft="35dp"
                     android:paddingRight="10dp"
                     android:paddingTop="5dp"
-                    android:text="Business Name or Category"
+                    android:text=" Business Name or Category"
                     android:textColor="#44000000"
                     android:textSize="16dp"
                     android:visibility="invisible"/>
@@ -100,7 +100,7 @@
                     android:drawableLeft="@drawable/ico_loc"
                     android:drawablePadding="13dp"
                     android:drawableRight="@drawable/btn_x"
-                    android:hint="City, State, or Country"
+                    android:hint=" City, State, or Country"
                     android:selectAllOnFocus="true"
                     android:inputType="text|textNoSuggestions"
                     android:imeOptions="actionSearch"
@@ -128,7 +128,7 @@
                     android:paddingLeft="34dp"
                     android:paddingRight="10dp"
                     android:paddingTop="5dp"
-                    android:text="City, State, or Country"
+                    android:text=" City, State, or Country"
                     android:textColor="#44000000"
                     android:textSize="16dp"
                     android:visibility="gone"/>
