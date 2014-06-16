@@ -589,7 +589,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
 
                         int padding = (mapHeight - param.height) / 2;
                         Log.d(TAG, "map padding: " + String.valueOf(padding));
-                        mGoogleMap.setPadding(0, padding, 0, padding);
+                        if(mGoogleMap != null) {
+                            mGoogleMap.setPadding(0, padding, 0, padding);
+                        }
 
                         return true;
                     default:
@@ -625,8 +627,9 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             mGoogleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
             if (mGoogleMap == null) {
-                Toast.makeText(getApplicationContext(), "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                Toast.makeText(getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
                      .show();
+                return;
             }
 
             mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
@@ -759,12 +762,17 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         } else {
             currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
-        mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                      .position(currentPosition)
-                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
-                                                                      .snippet("")
-                                                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-                                        );
+
+        if(mGoogleMap == null){
+            initializeMap();
+        }
+        if(mGoogleMap != null) {
+            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                    .position(currentPosition)
+                    .title(ResHelper.getStringByResId(R.string.your_location))
+                    .snippet("")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc)));
+        }
     }
 
     private void drawCurrentLocationMarker(LatLng location) {
@@ -774,12 +782,17 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
         if (location == null) {
             location = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
-        mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                      .position(location)
-                                                                      .title(ResHelper.getStringByResId(R.string.your_location))
-                                                                      .snippet("")
-                                                                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-                                        );
+        if(mGoogleMap == null){
+            initializeMap();
+        }
+        if(mGoogleMap != null){
+            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                                                          .position(location)
+                                                                          .title(ResHelper.getStringByResId(R.string.your_location))
+                                                                          .snippet("")
+                                                                          .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc)));
+        }
+
     }
 
     protected void initializeMarker() {
@@ -791,13 +804,18 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             for (BusinessVenue businessVenue : mBusinessVenueList) {
                 mMarkersLatLngList.add(businessVenue.getLocation());
                 currentLatLng = businessVenue.getLocation();
-                mGoogleMap.addMarker(new MarkerOptions()
-                                                        .position(businessVenue.getLocation())
-                                                        .title(businessVenue.getName())
-                                                        .snippet(businessVenue.getAddress())
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                          )
-                          .showInfoWindow();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(businessVenue.getLocation())
+                                    .title(businessVenue.getName())
+                                    .snippet(businessVenue.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    )
+                            .showInfoWindow();
+                }
             }
         }
 
@@ -816,8 +834,12 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             for (LatLng item : mMarkersLatLngList) {
                 bc.include(item);
             }
-
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
+            if(mGoogleMap == null){
+                initializeMap();
+            }
+            if(mGoogleMap != null) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
+            }
         }
     }
 
@@ -844,21 +866,26 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                                                    businessSearchResult.getLocationObject().getLongitude());
                 mMarkersLatLngList.add(locationLatLng);
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                        .position(locationLatLng)
-                                                                        .title(businessSearchResult.getName())
-                                                                        .snippet(businessSearchResult.getAddress())
-                                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                                          );
-
-                if (first) {
-                    first = false;
-                    currentLatLng = locationLatLng;
-                    firstMarker = marker;
+                if(mGoogleMap == null){
+                    initializeMap();
                 }
-                mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                if(mGoogleMap != null) {
+                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(locationLatLng)
+                                    .title(businessSearchResult.getName())
+                                    .snippet(businessSearchResult.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    );
+
+                    if (first) {
+                        first = false;
+                        currentLatLng = locationLatLng;
+                        firstMarker = marker;
+                    }
+                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
+                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
+                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                }
             }
 
             zoomToContainAllMarkers();
@@ -895,22 +922,26 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             for (BusinessSearchResult businessSearchResult : mVenues) {
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                                                    businessSearchResult.getLocationObject().getLongitude());
-
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                                                        .position(locationLatLng)
-                                                                        .title(businessSearchResult.getName())
-                                                                        .snippet(businessSearchResult.getAddress())
-                                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                                          );
-
-                if (first) {
-                    first = false;
-                    currentLatLng = locationLatLng;
-                    firstMarker = marker;
+                if(mGoogleMap == null){
+                    initializeMap();
                 }
-                mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                if(mGoogleMap != null) {
+                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(locationLatLng)
+                                    .title(businessSearchResult.getName())
+                                    .snippet(businessSearchResult.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    );
+
+                    if (first) {
+                        first = false;
+                        currentLatLng = locationLatLng;
+                        firstMarker = marker;
+                    }
+                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
+                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
+                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                }
             }
 
             if (firstMarker == null) {
@@ -1052,8 +1083,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     mVenues = results.getBusinessSearchObjectArray();
-                    mGoogleMap.clear();
-                    initializeMarkerWithBoundSearchResult();
+                    if(mGoogleMap == null){
+                        initializeMap();
+                    }
+                    if(mGoogleMap != null) {
+                        mGoogleMap.clear();
+                        initializeMarkerWithBoundSearchResult();
+                    }
                     fragmentVenue.setListView(searchResult);
                 }
             } catch (JSONException e) {
@@ -1110,8 +1146,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 mVenues = results.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1155,8 +1196,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1201,8 +1247,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1246,8 +1297,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1295,8 +1351,13 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {

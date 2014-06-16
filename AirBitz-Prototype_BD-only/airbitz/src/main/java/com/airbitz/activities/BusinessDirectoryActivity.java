@@ -82,6 +82,8 @@ public class BusinessDirectoryActivity extends Activity implements
     private TextView mNearYouTextView;
     private TextView mNearYouTextViewSticky;
 
+    private boolean wentSettings = false;
+
     private LinearLayout mBusinessLayout;
     private LinearLayout mNearYouContainer;
 
@@ -763,6 +765,10 @@ public class BusinessDirectoryActivity extends Activity implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
+        if(wentSettings){
+            wentSettings = false;
+            checkLocationManager();
+        }
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
     }
@@ -964,11 +970,21 @@ public class BusinessDirectoryActivity extends Activity implements
 
         final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
+        if(!gpsEnabled){
+            String provider = mLocationManager.getBestProvider(cri, true);
+            mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
+        }
+        if (mCurrentLocation != null) {
+            clearSharedPreference();
+            writeLatLonToSharedPreference();
+        }
+
         if (!gpsEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("GPS is disabled. Please Enable GPS to find business near your location.")
                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                        @Override public void onClick(DialogInterface dialog, int which) {
+                           wentSettings = true;
                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                        }
                    })
@@ -988,12 +1004,6 @@ public class BusinessDirectoryActivity extends Activity implements
                 mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
-            }
-            String provider = mLocationManager.getBestProvider(cri, true);
-            mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
-            if (mCurrentLocation != null) {
-                clearSharedPreference();
-                writeLatLonToSharedPreference();
             }
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
         }
