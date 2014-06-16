@@ -355,6 +355,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                 if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
+                            mBusinessType = "business";
                             if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
                                 mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString().substring(1));
                             }else{
@@ -370,6 +371,7 @@ public class MapBusinessDirectoryActivity extends Activity implements GestureDet
                             finish();
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
+                            mBusinessType = "business";
                             if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
                                 mIntent.putExtra(BusinessDirectoryActivity.BUSINESS, mSearchEdittext.getText().toString().substring(1));
                             }else{
