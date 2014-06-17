@@ -94,6 +94,7 @@
         <item>What is the address of your home in college?</item>
         <item>What is the street address of your house during high school</item>
     </string-array>
+    <string name="activity_recovery_first_wallet_name">My Wallet</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>

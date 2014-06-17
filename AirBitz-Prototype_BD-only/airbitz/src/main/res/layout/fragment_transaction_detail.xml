@@ -330,4 +330,48 @@
         android:focusable="true"
         android:id="@+id/dummy_focus"/>
 
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5mm"
+        android:layout_marginRight="3mm"
+        android:layout_marginLeft="3mm"
+        android:layout_marginBottom="5mm"
+        android:background="@drawable/advanced_details_bg"
+        android:layout_below="@id/layout_header"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="10mm"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/logo" />
+
+        <Button
+            android:layout_width="5mm"
+            android:layout_height="5mm"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2mm"
+            android:layout_marginTop="1.5mm"
+            android:background="@drawable/btn_x_rnd"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/logo"
+            android:background="@drawable/advanced_details_box"
+            android:layout_marginRight="2mm"
+            android:layout_marginLeft="2mm"
+            android:layout_marginBottom="3mm">
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
 </RelativeLayout>
