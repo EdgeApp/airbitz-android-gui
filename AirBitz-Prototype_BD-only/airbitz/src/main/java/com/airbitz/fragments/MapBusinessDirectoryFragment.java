@@ -381,6 +381,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
                             showViewAnimatorChild(0);
+                            mBusinessType = "business";
                             if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
                                 mBusinessName = mSearchEdittext.getText().toString().substring(1);
                             }else{
@@ -394,6 +395,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                             search();
                             return true;
                         case KeyEvent.FLAG_EDITOR_ACTION:
+                            mBusinessType = "business";
                             if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
                                 mBusinessName = mSearchEdittext.getText().toString().substring(1);
                             }else{
