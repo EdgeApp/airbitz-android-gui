@@ -67,6 +67,7 @@
     <string name="activity_recovery_complete_button">Complete Sign Up</string>
     <string name="activity_recovery_prompt_title">Skip this step</string>
     <string name="activity_recovery_prompt_skip">Warning: You will never be able to recover your password if it is forgotten.</string>
+    <string name="activity_recovery_first_wallet_name">My Wallet</string>
     <string name="activity_recovery_alert_title">Alert</string>
     <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
     <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>

@@ -14,7 +14,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -25,12 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.api.tABC_WalletInfo;
 import com.airbitz.utils.Common;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 
 import java.util.regex.Pattern;
 
@@ -308,7 +308,7 @@ public class SignUpActivity extends Activity {
 
         private final String mUsername, mPassword, mPin;
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
+        Results pResults = new Results();
 
         CreateFirstWalletTask(String username, String password, String pin) {
             mUsername = username;
@@ -348,6 +348,9 @@ public class SignUpActivity extends Activity {
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
         }
+    }
+
+    private class Results extends tABC_RequestResults {
     }
 
     private void ShowReasonAlert(String reason) {
