@@ -14,7 +14,7 @@
         android:id="@+id/layout_header"
         layout="@layout/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="7mm" />
+        android:layout_height="44.1dp" />
 
     <RelativeLayout
         android:id="@+id/layout_banner"

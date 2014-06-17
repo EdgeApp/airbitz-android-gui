@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_header"
     android:layout_width="match_parent"
-    android:layout_height="7mm"
+    android:layout_height="44.1dp"
     android:background="#40000000"
-    android:padding="@dimen/content_padding_half">
+    android:padding="6.3dp">
 
     <ImageButton
-        android:layout_width="7mm"
-        android:layout_height="7mm"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:id="@+id/button_back"
@@ -15,13 +15,13 @@
         android:layout_alignParentLeft="true"
         android:background="@android:color/transparent"
         android:src="@drawable/btn_back"
-        android:padding="2mm"
+        android:padding="12.6dp"
         android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="7mm"
+        android:layout_height="44.1dp"
         android:layout_centerInParent="true"
         android:src="@drawable/logo" />
 
@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/textview_title"
         android:layout_width="match_parent"
-        android:layout_height="7mm"
+        android:layout_height="44.1dp"
         android:gravity="center"
         android:singleLine="true"
         android:layout_toLeftOf="@+id/button_help"
@@ -40,8 +40,8 @@
         android:visibility="visible" />
 
     <ImageButton
-        android:layout_width="7mm"
-        android:layout_height="7mm"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
         android:id="@+id/button_help"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
@@ -49,7 +49,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/btn_help"
-        android:padding="2mm"
+        android:padding="12.6dp"
         android:visibility="invisible"/>
 
 
