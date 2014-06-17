@@ -17,8 +17,12 @@ public class AirbitzApplication extends Application {
         airbitzLogin.setUsername(uname);
         airbitzLogin.setPassword(password);
 
-        //TODO setup auto logout based on Settings. App being killed automatically forgets login
+        //TODO setup auto logout based on Settings. App being killed automatically forgets login,
+        // like on reboot or force close.
     }
+
+    public static String getUsername() {return airbitzLogin.getUsername(); }
+    public static String getPassword() {return airbitzLogin.getPassword(); }
 
     private static class Login {
         private String mUsername = null;
