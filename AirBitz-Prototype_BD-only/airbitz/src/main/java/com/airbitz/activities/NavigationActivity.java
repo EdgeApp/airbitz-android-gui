@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.core;
@@ -75,8 +76,6 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
-
-    private boolean mUserLoggedIn = false;
 
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
@@ -145,7 +144,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
                 }
             }
         });
-        setLoginView(!mUserLoggedIn);
+        setLoginView(!AirbitzApplication.isLoggedIn());
 
         tABC_Error pError = new tABC_Error();
 
@@ -178,7 +177,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-        if(getUserLoggedIn()) {
+        if(AirbitzApplication.isLoggedIn()) {
             switchFragmentThread(position);
         } else {
             if(position != 0) {
@@ -244,15 +243,6 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         }else {
             popFragment();
         }
-    }
-
-    private boolean getUserLoggedIn() {
-//        return true;  // uncomment only for debugging
-        return mUserLoggedIn;
-    }
-
-    public void setUserLoggedIn(boolean state) {
-        mUserLoggedIn = state;
     }
 
     private String getSeedData()
