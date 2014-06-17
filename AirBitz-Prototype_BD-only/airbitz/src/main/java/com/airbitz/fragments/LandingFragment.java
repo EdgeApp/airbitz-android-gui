@@ -35,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.ForgotPasswordActivity;
 import com.airbitz.activities.NavigationActivity;
@@ -79,6 +80,7 @@ public class LandingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if(AirbitzApplication.isLoggedIn()) { gotoBusinessDirectoryLoggedIn(); }
     }
 
     @Override
@@ -224,19 +226,11 @@ public class LandingFragment extends Fragment {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
 
-            if (true){// todo success) {
-                ((NavigationActivity) getActivity()).setUserLoggedIn(true);
-                ((NavigationActivity) getActivity()).setLoginView(false);
-                ((NavigationActivity) getActivity()).onNavBarSelected(0);
-                final View activityRootView = getActivity().findViewById(R.id.container);
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                } else {
-                }
+            showProgress(false);
+            if (success){
+                AirbitzApplication.Login(mUsername, mPassword);
+                gotoBusinessDirectoryLoggedIn();
             } else {
-                showProgress(false);
                 showErrorDialog();
             }
         }
@@ -246,6 +240,11 @@ public class LandingFragment extends Fragment {
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void gotoBusinessDirectoryLoggedIn() {
+        ((NavigationActivity) getActivity()).setLoginView(false);
+        ((NavigationActivity) getActivity()).onNavBarSelected(0);
     }
 
     /**
