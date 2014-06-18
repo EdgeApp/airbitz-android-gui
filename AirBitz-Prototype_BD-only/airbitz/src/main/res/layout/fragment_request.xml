@@ -8,14 +8,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44.1dp"
         android:id="@+id/layout_header"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:background="#40000000">
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:id="@+id/button_back"
@@ -23,24 +22,22 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:layout_margin="5dp"
-            android:visibility="invisible"/>
+            android:padding="12.6dp"/>
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/request_title"
+            android:text="Request Bitcoin"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
             android:textSize="20dp"/>
 
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:id="@+id/button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
@@ -48,7 +45,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
+            android:padding="12.6dp"/>
 
     </RelativeLayout>
 
@@ -74,174 +71,159 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_edge_black_transparent_30"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="12.6dp"
+                android:layout_marginRight="12.6dp"
+                android:layout_marginTop="12.6dp"
                 android:gravity="center_horizontal"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp">
+                android:paddingTop="9.45dp"
+                android:paddingBottom="9.45dp"
+                android:paddingRight="15.75dp"
+                android:paddingLeft="15.75dp">
 
                 <LinearLayout
                     android:id="@+id/layout_wallet"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22.05dp"
                     android:orientation="horizontal"
-                    android:weightSum="2"
+                    android:weightSum="10"
                     android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_marginBottom="9.45dp">
 
                     <TextView
                         android:id="@+id/textview_wallet"
-                        android:layout_width="200dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/request_wallet_title"
                         android:gravity="center_vertical|right"
                         android:textColor="@android:color/white"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="18sp"
-                        android:layout_weight="1"
-                        android:textStyle="bold"/>
-
-                    <Button
-                        android:id="@+id/button_wallet"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:textSize="16sp"
+                        android:layout_weight="6"
                         android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:background="@drawable/btn_trans_rounded"
+                        android:layout_marginRight="12.6dp"/>
+
+                    <Spinner
+                        android:id="@+id/new_wallet_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:background="@drawable/btn_trans_rounded_stretch"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
-                        android:paddingBottom="2dp"
-                        android:paddingTop="2dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="10dp"/>
+                        android:textColor="@android:color/white"/>
 
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/button_expand"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="15.75dp"
+                    android:background="@drawable/btn_expand"
+                    android:layout_below="@id/layout_wallet"/>
 
                 <EditText
                     android:id="@+id/edittext_btc"
                     android:layout_below="@id/layout_wallet"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textview_account"
+                    android:layout_height="25.2dp"
+                    android:layout_toLeftOf="@id/button_expand"
                     android:hint="0.00000"
                     android:textColorHint="#DDDDDD"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textSize="20sp"
+                    android:paddingLeft="9.45dp"
+                    android:paddingRight="9.45dp"
+                    android:layout_marginBottom="9.45dp"
+                    android:textSize="14dp"
                     android:drawableRight="@drawable/ico_btc_white"/>
                 <EditText
                     android:id="@+id/edittext_dollar"
                     android:layout_below="@id/edittext_btc"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textview_account"
+                    android:layout_height="25.2dp"
+                    android:layout_toLeftOf="@id/button_expand"
                     android:hint="0.00"
                     android:textColorHint="#DDDDDD"
                     android:background="@drawable/rounded_edge_black_transparent_30"
                     android:textColor="@android:color/white"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:textSize="20sp"
+                    android:paddingLeft="9.45dp"
+                    android:paddingRight="9.45dp"
+                    android:gravity="center_vertical"
+                    android:textSize="14dp"
                     android:drawableRight="@drawable/ico_usd_white"/>
+
+                <TextView
+                    android:id="@+id/textview_converter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1.00 BTC = $600.00 USD"
+                    android:textColor="@android:color/white"
+                    android:layout_below="@id/edittext_dollar"
+                    android:gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:textSize="12dp"/>
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/textview_converter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1 BTC = $600.00"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                android:textSize="20sp"/>
-
-            <LinearLayout
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/layout_menu"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="5dp">
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:scaleType="fitXY"
-                    android:id="@+id/button_importwallet"
-                    android:src="@drawable/btn_import"
-                    android:background="@android:color/transparent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"/>
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:id="@+id/button_email"
-                    android:src="@drawable/btn_email"
-                    android:background="@android:color/transparent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:scaleType="fitXY"/>
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:scaleType="fitXY"
-                    android:id="@+id/button_sms"
-                    android:src="@drawable/sms"
-                    android:background="@android:color/transparent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"/>
-
-                <ImageButton
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/button_qrcode"
-                    android:src="@drawable/btn_qr"
-                    android:background="@android:color/transparent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"/>
-
-            </LinearLayout>
 
 
         </LinearLayout>
 
     </ScrollView>
+    
+    <RelativeLayout
+        android:id="@+id/button_group"
+        android:layout_width="180dp"
+        android:layout_height="120dp"
+        android:layout_alignTop="@id/layout_amount"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="53.54dp"
+        android:background="@drawable/btn_group"
+        android:layout_alignParentRight="true"
+        android:visibility="gone">
+        
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_import_wallet"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"/>
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_sms"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/button_import_wallet"/>
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_unexpand"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/button_sms"/>
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_ble"
+            android:background="@android:color/transparent"
+            android:layout_alignParentBottom="true"/>
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_email"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/button_ble"/>
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button_qr_code"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/button_email"/>
+        
+    </RelativeLayout>
 
     <!--<android.inputmethodservice.KeyboardView-->
         <!--android:id="@+id/layout_calculator"-->
