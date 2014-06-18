@@ -331,16 +331,20 @@
         android:id="@+id/dummy_focus"/>
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        android:id="@+id/advanced_details_popup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5mm"
         android:layout_marginRight="3mm"
         android:layout_marginLeft="3mm"
         android:layout_marginBottom="5mm"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:background="@drawable/advanced_details_bg"
         android:layout_below="@id/layout_header"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/logo"
@@ -351,6 +355,7 @@
             android:src="@drawable/logo" />
 
         <Button
+            android:id="@+id/x_button"
             android:layout_width="5mm"
             android:layout_height="5mm"
             android:layout_alignParentTop="true"

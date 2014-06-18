@@ -132,7 +132,7 @@ public class NavigationBarFragment extends Fragment {
                 mWalletButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             case 4:
-                mSettingButton.setImageResource(R.drawable.tab_popup_wallet_btm);
+                mSettingButton.setImageResource(R.drawable.tab_popup_settings_btm);
                 mSettingButton.setBackgroundResource(R.drawable.bg_selected_tab);
                 break;
             default:
