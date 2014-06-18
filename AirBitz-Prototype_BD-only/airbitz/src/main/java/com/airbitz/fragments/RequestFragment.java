@@ -36,6 +36,7 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -219,12 +220,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mQRCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showQRCodePopUpDialog();
+                Fragment frag = new WalletQRCodeFragment();
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
 
 
-        mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
+        /*mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -233,7 +235,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                 return true;
             }
-        });
+        });*/
 
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -424,7 +426,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     public void showQRCodePopUpDialog() {
-        final Dialog dialog = new Dialog(getActivity());
+        /*final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_qrcode);
         ImageView imageviewQRCode = (ImageView) dialog.findViewById(R.id.imageview_qrcode);
         imageviewQRCode.setImageResource(R.drawable.img_qr_code);
@@ -437,7 +439,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        dialog.show();
+        dialog.show();*/
+
     }
 
     public void addWalletNamesToList(){
