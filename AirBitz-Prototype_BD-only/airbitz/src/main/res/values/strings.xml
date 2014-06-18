@@ -40,16 +40,13 @@
     <string name="error_invalid_password">This password  is invalid - it must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
     <string name="error_invalid_confirmation">The two passwords do not match</string>
     <string name="error_invalid_pin">The withdrawal pin is invalid - it must be one or more numbers</string>
-
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_credentials">The username or password is invalid</string>
-
     <string name="activity_landing_swipe_text">Swipe to View Business Directory</string>
     <string name="activity_landing_button_signin">Sign In</string>
     <string name="activity_landing_button_signup">Sign Up</string>
     <string name="activity_landing_forgot_label">Forgot Password</string>
-
     <string name="activity_forgot_no_username">No Username</string>
     <string name="activity_forgot_no_username_details">Please enter a Username first</string>
 
@@ -71,6 +68,7 @@
     <string name="activity_recovery_alert_title">Alert</string>
     <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
     <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>
+
     <string-array name="password_recovery_1">
         <item>Who is your favorite superhero?</item>
         <item>What were your team colors in high school?</item>
@@ -192,18 +190,18 @@
     <string name="received_success_title">Send Bitcoin</string>
     <string name="received_success_sending_title">Sending...</string>
     <string name="received_success_received_title">Received!</string>
-
-
     <string name="question">Question</string>
 
     <string-array name="currency_selection">
         <item>CAD</item>
         <item>USD</item>
     </string-array>
-
     <string-array name="transaction_categories_list">
         <item>Income:</item>
         <item>Expense:</item>
         <item>Transfer:</item>
     </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

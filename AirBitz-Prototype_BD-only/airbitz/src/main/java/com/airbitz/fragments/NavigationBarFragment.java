@@ -7,9 +7,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+
+import javax.net.ssl.HandshakeCompletedEvent;
 
 /**
  * Created by Thomas Baker on 4/22/14.
@@ -29,6 +35,8 @@ public class NavigationBarFragment extends Fragment {
     private static ImageView mCurrentActivityButton;
     private View mView, mButtons;
     private int selectedTab = 0;
+
+    private LinearLayout mContainerLayout;
 
     public int getCurrentTab(){ return selectedTab; }
     public int getLastTab(){ return mLastTab; }
@@ -51,6 +59,8 @@ public class NavigationBarFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_navigation_bar, container, false);
 
         mButtons = (View) mView.findViewById(R.id.normal_navigation_bar);
+
+        mContainerLayout = (LinearLayout) mView.findViewById(R.id.nav_bar_container);
 
         mDirectoryButton = (ImageView) mView.findViewById(R.id.directory_button);
         mSendButton = (ImageView) mView.findViewById(R.id.send_button);
@@ -243,5 +253,14 @@ public class NavigationBarFragment extends Fragment {
         super.onResume();
         initializeElements();
         selectTab(selectedTab);
+    }
+
+    public void hideNavBarFragment(){
+        mContainerLayout.setVisibility(View.GONE);
+        mContainerLayout.invalidate();
+    }
+    public void showNavBarFragment(){
+        mContainerLayout.setVisibility(View.VISIBLE);
+        mContainerLayout.invalidate();
     }
 }

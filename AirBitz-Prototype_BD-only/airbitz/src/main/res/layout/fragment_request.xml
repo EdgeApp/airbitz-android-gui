@@ -22,7 +22,8 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:padding="12.6dp"/>
+            android:padding="12.6dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/textview_title"
