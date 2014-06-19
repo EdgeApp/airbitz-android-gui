@@ -57,6 +57,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         System.loadLibrary("airbitz");
     }
 
+    private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
+
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
@@ -145,7 +147,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
                 }
             }
         });
-        setLoginView(!AirbitzApplication.isLoggedIn());
+        setLoginView(false);//!AirbitzApplication.isLoggedIn());
 
         tABC_Error pError = new tABC_Error();
 
@@ -154,6 +156,18 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         tABC_RequestResults pData = new tABC_RequestResults();
 
         tABC_CC code = core.ABC_Initialize(this.getApplicationContext().getFilesDir().toString(), null, null, seed, seed.length(), pError);
+
+        if(bdonly){
+            System.out.println("BD ONLY");
+            mNavBarFragmentLayout.setVisibility(View.GONE);
+            mNavBarFragment.hideNavBarFragment();
+            mNavBarFragmentLayout.invalidate();
+            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(0,0);
+            mNavBarFragmentLayout.setLayoutParams(rLP);
+            RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+            lLP.setMargins(0,0,0,0);
+            mFragmentLayout.setLayoutParams(lLP);
+        }
     }
 
 
