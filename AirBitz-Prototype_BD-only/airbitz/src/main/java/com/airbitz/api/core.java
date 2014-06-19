@@ -9,6 +9,55 @@
 package com.airbitz.api;
 
 public class core implements coreConstants {
+  public static SWIGTYPE_p_int new_intp() {
+    long cPtr = coreJNI.new_intp();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_int(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_int copy_intp(int value) {
+    long cPtr = coreJNI.copy_intp(value);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_int(cPtr, false);
+  }
+
+  public static void delete_intp(SWIGTYPE_p_int obj) {
+    coreJNI.delete_intp(SWIGTYPE_p_int.getCPtr(obj));
+  }
+
+  public static void intp_assign(SWIGTYPE_p_int obj, int value) {
+    coreJNI.intp_assign(SWIGTYPE_p_int.getCPtr(obj), value);
+  }
+
+  public static int intp_value(SWIGTYPE_p_int obj) {
+    return coreJNI.intp_value(SWIGTYPE_p_int.getCPtr(obj));
+  }
+
+  public static SWIGTYPE_p_unsigned_int int_to_uint(SWIGTYPE_p_int x) {
+    long cPtr = coreJNI.int_to_uint(SWIGTYPE_p_int.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_long new_longp() {
+    long cPtr = coreJNI.new_longp();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_long copy_longp(int value) {
+    long cPtr = coreJNI.copy_longp(value);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
+  }
+
+  public static void delete_longp(SWIGTYPE_p_long obj) {
+    coreJNI.delete_longp(SWIGTYPE_p_long.getCPtr(obj));
+  }
+
+  public static void longp_assign(SWIGTYPE_p_long obj, int value) {
+    coreJNI.longp_assign(SWIGTYPE_p_long.getCPtr(obj), value);
+  }
+
+  public static int longp_value(SWIGTYPE_p_long obj) {
+    return coreJNI.longp_value(SWIGTYPE_p_long.getCPtr(obj));
+  }
+
   public static tABC_CC ABC_Initialize(String szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void fAsyncBitCoinEventCallback, SWIGTYPE_p_void pData, String pSeedData, long seedLength, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Initialize(szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void.getCPtr(fAsyncBitCoinEventCallback), SWIGTYPE_p_void.getCPtr(pData), pSeedData, seedLength, tABC_Error.getCPtr(pError), pError));
   }
@@ -231,6 +280,11 @@ public class core implements coreConstants {
 
   public static void ABC_FreeAccountSettings(tABC_AccountSettings pSettings) {
     coreJNI.ABC_FreeAccountSettings(tABC_AccountSettings.getCPtr(pSettings), pSettings);
+  }
+
+  public static SWIGTYPE_p_p_p_sABC_WalletInfo longPtr_to_walletinfoPtr(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longPtr_to_walletinfoPtr(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_WalletInfo(cPtr, false);
   }
 
 }
