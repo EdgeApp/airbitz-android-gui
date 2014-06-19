@@ -11,41 +11,67 @@ public class Wallet {
     public static final String WALLET_AMOUNT = "amount";
 
     private String mName;
-    private String mAmount;
-    private List<AccountTransaction> mList;
+    private String mUsername;
+    private String mUUID;
+    private int mCurrencyNum;
+    private int mAttributes;
+    private double mBalance;
+    private List<AccountTransaction> mTransactions;
 
-    public Wallet(String name, String amount){
+    private String mAmount;
+
+    public Wallet(String name, double bal){
         mName = name;
-        mAmount = amount;
+        mBalance = bal;
     }
 
-    public Wallet(String name, String amount, List<AccountTransaction> list){
+    public Wallet(String name, double balance, List<AccountTransaction> list){
         mName = name;
-        mAmount = amount;
-        mList = list;
+        mBalance = balance;
+        mTransactions = list;
     }
 
     public void setName(String name){
         mName = name;
     }
-
     public String getName(){
         return mName;
     }
 
+    public void setUsermame(String name){
+        mUsername = name;
+    }
+    public String getUsermame(){
+        return mUsername;
+    }
+
+    public void setUUID(String uuid){
+        mUUID = uuid;
+    }
+    public String getUUID(){
+        return mUUID;
+    }
+
+    public void setmCurrencyNum(int num) { mCurrencyNum = num; }
+    public int getmCurrencyNum() {return mCurrencyNum; }
+
+    public void setAttributes(int attr) { mAttributes = attr; }
+    public int getAttributes() {return mAttributes; }
+
+    public void setBalance(double bal) { mBalance = bal; }
+    public double getBalance() {return mBalance; }
+
     public void setAmount(String amount){
         mAmount = amount;
     }
-
     public String getAmount(){
         return mAmount;
     }
 
     public void setList(List<AccountTransaction> list) {
-        mList = list;
+        mTransactions = list;
     }
-
     public List<AccountTransaction> getList() {
-        return mList;
+        return mTransactions;
     }
 }
