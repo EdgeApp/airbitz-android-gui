@@ -221,6 +221,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 Fragment frag = new WalletQRCodeFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("wallet_name",(String)pickWalletSpinner.getSelectedItem());
+                bundle.putString("bitcoin_value",mBitcoinField.getText().toString());
+                bundle.putString("fiat_value",mDollarField.getText().toString());
+                frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
@@ -447,6 +452,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         AirbitzAPI api = AirbitzAPI.getApi();
         List<Wallet> tempWallets = api.getWallets();
         for(Wallet wallet: tempWallets){
+            if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
             mWalletList.add(wallet.getName());
         }
     }
