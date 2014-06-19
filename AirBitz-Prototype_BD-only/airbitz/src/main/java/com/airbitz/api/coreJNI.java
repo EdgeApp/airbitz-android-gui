@@ -9,6 +9,17 @@
 package com.airbitz.api;
 
 public class coreJNI {
+  public final static native long new_intp();
+  public final static native long copy_intp(int jarg1);
+  public final static native void delete_intp(long jarg1);
+  public final static native void intp_assign(long jarg1, int jarg2);
+  public final static native int intp_value(long jarg1);
+  public final static native long int_to_uint(long jarg1);
+  public final static native long new_longp();
+  public final static native long copy_longp(int jarg1);
+  public final static native void delete_longp(long jarg1);
+  public final static native void longp_assign(long jarg1, int jarg2);
+  public final static native int longp_value(long jarg1);
   public final static native int ABC_MAX_STRING_LENGTH_get();
   public final static native int ABC_BITCOIN_DECIMAL_PLACES_get();
   public final static native int ABC_CC_Ok_get();
@@ -278,4 +289,5 @@ public class coreJNI {
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native long longPtr_to_walletinfoPtr(long jarg1);
 }
