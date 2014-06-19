@@ -14,7 +14,6 @@ public class coreJNI {
   public final static native void delete_intp(long jarg1);
   public final static native void intp_assign(long jarg1, int jarg2);
   public final static native int intp_value(long jarg1);
-  public final static native long int_to_uint(long jarg1);
   public final static native long new_longp();
   public final static native long copy_longp(int jarg1);
   public final static native void delete_longp(long jarg1);
@@ -291,4 +290,6 @@ public class coreJNI {
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long longPtr_to_walletinfoPtr(long jarg1);
   public final static native long p64_t_to_long_ptr(long jarg1);
+  public final static native long int_to_uint(long jarg1);
+  public final static native long longPtr_to_walletinfoPtrPtr(long jarg1);
 }
