@@ -631,16 +631,17 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
 
         int ptrToInfo = core.longp_value(lp);
-        Log.d("Java out", "Java out: " + ptrToInfo); // ptrToInfo is tABC_WalletInfo **
-
+        int count = core.intp_value(pCount);
         ppWalletInfo base = new ppWalletInfo(ptrToInfo);
-        for(int i=0; i<core.intp_value(pCount); i++) {
+
+        for(int i=0; i<count; i++) {
             pLong temp = new pLong(base.getPtr(base, i*4));
             long start = core.longp_value(temp);
             WalletInfo wi = new WalletInfo(start);
-//            mWallets.add(new Wallet());
+            Wallet in = new Wallet(wi.getName(), wi.mBalance);
+            mWallets.add(in);
         }
-
+        core.ABC_FreeWalletInfoArray(core.longPtr_to_walletinfoPtrPtr(new pLong(ptrToInfo)), count);
         return mWallets;
     }
 
@@ -649,6 +650,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             super(ptr, false);
         }
         public long getPtr(SWIGTYPE_p_p_sABC_WalletInfo p, long i) { return getCPtr(p)+i; }
+
     }
 
     private class WalletInfo extends tABC_WalletInfo {
@@ -664,7 +666,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi();
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mBalance = core.longp_value(p);
-                //TODO finish others
+                //TODO finish others?
             }
         }
 

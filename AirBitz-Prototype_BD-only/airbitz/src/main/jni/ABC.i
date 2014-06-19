@@ -7,7 +7,6 @@
 
 /* Create some functions for working with "int *" */
 %pointer_functions(int, intp);
-%pointer_cast(int *, unsigned int *, int_to_uint);
 %pointer_functions(long, longp);
 
 %include typemaps.i
@@ -22,3 +21,5 @@
 
 %pointer_cast(long *, tABC_WalletInfo ***, longPtr_to_walletinfoPtr);
 %pointer_cast(int64_t *, long *, p64_t_to_long_ptr);
+%pointer_cast(int *, unsigned int *, int_to_uint);
+%pointer_cast(long *, tABC_WalletInfo **, longPtr_to_walletinfoPtrPtr);

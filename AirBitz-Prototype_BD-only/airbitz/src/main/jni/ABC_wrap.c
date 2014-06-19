@@ -210,11 +210,6 @@ static int intp_value(int *obj) {
 }
 
 
-unsigned int * int_to_uint(int * x) {
-   return (unsigned int *) x;
-}
-
-
 static long *new_longp() { 
   return (long *) calloc(1,sizeof(long)); 
 }
@@ -248,6 +243,16 @@ tABC_WalletInfo *** longPtr_to_walletinfoPtr(long * x) {
 
 long * p64_t_to_long_ptr(int64_t * x) {
    return (long *) x;
+}
+
+
+unsigned int * int_to_uint(int * x) {
+   return (unsigned int *) x;
+}
+
+
+tABC_WalletInfo ** longPtr_to_walletinfoPtrPtr(long * x) {
+   return (tABC_WalletInfo **) x;
 }
 
 
@@ -313,20 +318,6 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_intp_1value(JNIEnv *jenv, j
   arg1 = *(int **)&jarg1; 
   result = (int)intp_value(arg1);
   jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_int_1to_1uint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  jlong jresult = 0 ;
-  int *arg1 = (int *) 0 ;
-  unsigned int *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(int **)&jarg1; 
-  result = (unsigned int *)int_to_uint(arg1);
-  *(unsigned int **)&jresult = result; 
   return jresult;
 }
 
@@ -5365,6 +5356,34 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_p64_1t_1to_1long_1ptr(JNIE
   arg1 = *(int64_t **)&jarg1; 
   result = (long *)p64_t_to_long_ptr(arg1);
   *(long **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_int_1to_1uint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  int *arg1 = (int *) 0 ;
+  unsigned int *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(int **)&jarg1; 
+  result = (unsigned int *)int_to_uint(arg1);
+  *(unsigned int **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1walletinfoPtrPtr(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_WalletInfo **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_WalletInfo **)longPtr_to_walletinfoPtrPtr(arg1);
+  *(tABC_WalletInfo ***)&jresult = result; 
   return jresult;
 }
 

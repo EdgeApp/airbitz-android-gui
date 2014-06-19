@@ -31,11 +31,6 @@ public class core implements coreConstants {
     return coreJNI.intp_value(SWIGTYPE_p_int.getCPtr(obj));
   }
 
-  public static SWIGTYPE_p_unsigned_int int_to_uint(SWIGTYPE_p_int x) {
-    long cPtr = coreJNI.int_to_uint(SWIGTYPE_p_int.getCPtr(x));
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
-  }
-
   public static SWIGTYPE_p_long new_longp() {
     long cPtr = coreJNI.new_longp();
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
@@ -290,6 +285,16 @@ public class core implements coreConstants {
   public static SWIGTYPE_p_long p64_t_to_long_ptr(SWIGTYPE_p_int64_t x) {
     long cPtr = coreJNI.p64_t_to_long_ptr(SWIGTYPE_p_int64_t.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_unsigned_int int_to_uint(SWIGTYPE_p_int x) {
+    long cPtr = coreJNI.int_to_uint(SWIGTYPE_p_int.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_sABC_WalletInfo longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_WalletInfo(cPtr, false);
   }
 
 }
