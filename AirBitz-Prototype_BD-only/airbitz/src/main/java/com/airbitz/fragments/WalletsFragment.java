@@ -38,6 +38,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.models.Business;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -97,17 +98,26 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private boolean mSwitchWordOne = true;
     private boolean mOnBitcoinMode = true;
 
+    private Bundle bundle;
+
     private List<Wallet> mLatestWalletList;
     private List<Wallet> archivedWalletList;
 
     private List<String> currencyList;
     private AirbitzAPI mAPI;
 
+    private String walletName;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mAPI = AirbitzAPI.getApi();
+        bundle = this.getArguments();
+        if(bundle != null){
+            System.out.println("Wallets Fragment Is Being Created");
+            buildFragments();
+        }
     }
 
     @Override
@@ -116,6 +126,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         mLatestWalletList = mAPI.getWallets();
         archivedWalletList = new ArrayList<Wallet>();
+
+        System.out.println("Wallets Fragment Is Talking");
+        if(bundle != null){
+            System.out.println(bundle.getString("wallet_name"));
+        }
 
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
@@ -597,6 +612,18 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
+        }
+    }
+
+    public void buildFragments(){
+        if(bundle.getString("source")=="REQUEST"){
+            Fragment frag = new WalletFragment();
+            bundle.putString(Wallet.WALLET_NAME, bundle.getString("wallet_name"));
+            frag.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag);
+            Fragment frag2 = new TransactionDetailFragment();
+            frag2.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag2);
         }
     }
 

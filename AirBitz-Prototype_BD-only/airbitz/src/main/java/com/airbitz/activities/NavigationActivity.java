@@ -34,6 +34,7 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.models.FragmentSourceEnum;
 import com.crashlytics.android.Crashlytics;
 
 import java.nio.ByteBuffer;
@@ -246,6 +247,25 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             super.onBackPressed();
         }else {
             popFragment();
+        }
+    }
+
+    public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
+        if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
+            while(mNavStacks[mNavFragmentId].size() > 1){
+                mNavStacks[mNavFragmentId].pop();
+            }
+            switchFragmentThread(3);
+            mNavFragmentId = 3;
+            while (!mNavStacks[mNavFragmentId].isEmpty()){
+                mNavStacks[mNavFragmentId].pop();
+            }
+            Fragment frag = new WalletsFragment();
+            bundle.putString("source", "REQUEST");
+            frag.setArguments(bundle);
+            System.out.println("Before");
+            pushFragment(frag);
+            System.out.println("After");
         }
     }
 

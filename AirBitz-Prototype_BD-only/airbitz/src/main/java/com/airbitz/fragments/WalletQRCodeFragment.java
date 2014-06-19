@@ -32,9 +32,12 @@ public class WalletQRCodeFragment extends Fragment {
     private ImageButton mHelpButton;
     private Button mCancelButton;
 
+    private Bundle bundle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle = this.getArguments();
     }
 
     @Override
@@ -123,6 +126,8 @@ public class WalletQRCodeFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             Fragment frag = new SuccessFragment();
+            bundle.putString("transaction_id","123131312314141567535684");
+            frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag);
         }
     }
