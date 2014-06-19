@@ -100,6 +100,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private boolean catSelected = false;
     private defaultCategoryEnum defaultCat = defaultCategoryEnum.Income;//TODO set this based on type of transaction
 
+    private Bundle bundle;
 
     private int baseIncomePosition = 0;//TODO set these three from categories retrieved
     private int baseExpensePosition = 1;
@@ -127,6 +128,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     private List<String> mCategories;
 
+    private boolean fromSendRequest = false;
+
     private ListView mSearchListView;
     private ListView mCategoryListView;
     private TransactionDetailSearchAdapter mSearchAdapter;
@@ -144,6 +147,10 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        bundle = getArguments();
+        if(bundle != null){
+            fromSendRequest = true;
+        }
     }
 
     @Override
@@ -566,6 +573,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         });
 
         currentType = defaultCat.toString()+":";
+
+        if(fromSendRequest){
+            mNameEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
 
         return view;
     }
