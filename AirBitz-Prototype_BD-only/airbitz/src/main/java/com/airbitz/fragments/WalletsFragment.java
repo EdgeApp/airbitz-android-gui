@@ -1,14 +1,10 @@
 package com.airbitz.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.DragEvent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +14,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -28,21 +23,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.SWIGTYPE_p_int;
+import com.airbitz.api.SWIGTYPE_p_long;
+import com.airbitz.api.SWIGTYPE_p_p_p_sABC_WalletInfo;
+import com.airbitz.api.SWIGTYPE_p_p_sABC_WalletInfo;
+import com.airbitz.api.SWIGTYPE_p_unsigned_int;
+import com.airbitz.api.SWIGTYPE_p_void;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_WalletInfo;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,14 +111,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     {
         super.onCreate(savedInstanceState);
         mAPI = AirbitzAPI.getApi();
+        mLatestWalletList = getWallets();
+        archivedWalletList = new ArrayList<Wallet>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
-
-        mLatestWalletList = mAPI.getWallets();
-        archivedWalletList = new ArrayList<Wallet>();
 
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
@@ -605,4 +607,66 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         super.onResume();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
     }
+
+    /*
+    Get Wallets from the core for the logged in user
+     */
+    private List<Wallet> getWallets() {
+        List<Wallet> mWallets = new ArrayList<Wallet>();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_WalletInfo test = core.longPtr_to_walletinfoPtr(lp);
+
+        tABC_Error pError = new tABC_Error();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+
+        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                test, pUCount, pError);
+
+        boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
+
+        int ptrToInfo = core.longp_value(lp);
+        Log.d("Java out", "Java out: " + ptrToInfo); // ptrToInfo is tABC_WalletInfo **
+
+        ppWalletInfo base = new ppWalletInfo(ptrToInfo);
+        for(int i=0; i<core.intp_value(pCount); i++) {
+            pLong temp = new pLong(base.getPtr(base, i*4));
+            long start = core.longp_value(temp);
+            WalletInfo wi = new WalletInfo(start);
+//            mWallets.add(new Wallet());
+        }
+
+        return mWallets;
+    }
+
+    private class ppWalletInfo extends SWIGTYPE_p_p_sABC_WalletInfo {
+        public ppWalletInfo(long ptr) {
+            super(ptr, false);
+        }
+        public long getPtr(SWIGTYPE_p_p_sABC_WalletInfo p, long i) { return getCPtr(p)+i; }
+    }
+
+    private class WalletInfo extends tABC_WalletInfo {
+        String mName;
+        String mUUID;
+
+        public WalletInfo(long pv) {
+            super(pv, false);
+            if(pv!=0) {
+                mName = super.getSzName();
+                mUUID = super.getSzUUID();
+            }
+        }
+
+        public String getName() { return mName; }
+        public String getUUID() { return mUUID; }
+
+    }
+
+    private class pLong extends SWIGTYPE_p_long {
+        public pLong(long ptr) { super(ptr, false); }
+    }
+
 }
