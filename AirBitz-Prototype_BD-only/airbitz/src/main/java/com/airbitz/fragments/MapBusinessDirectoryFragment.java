@@ -130,6 +130,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private String mBusinessType;
     private Bundle mVenueBundle;
 
+    private TextView businessHint;
+    private TextView locationHint;
+
     //private GestureDetector mGestureDetector;
 
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
@@ -205,6 +208,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
 
+        businessHint = (TextView) view.findViewById(R.id.business_hint);
+        businessHint.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        locationHint = (TextView) view.findViewById(R.id.location_hint);
+        locationHint.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<LocationSearchResult>();
 
@@ -263,6 +271,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                     if(mSearchEdittext.getText().toString().isEmpty()) {
                         mSearchEdittext.setText(" ");
+                        mSearchEdittext.setSelection(mSearchEdittext.getText().toString().length());
+                    }else{
+                        if(mSearchEdittext.getText().toString().charAt(0)!=' '){
+                            mSearchEdittext.setText(" " + mSearchEdittext.getText().toString());
+                        }
+                        mSearchEdittext.setSelection(1,mSearchEdittext.getText().toString().length());
                     }
                     // Start search
                     try {
@@ -288,9 +302,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
-                    if (!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0) == ' ') {
+                    /*if (!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0) == ' ') {
                         mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
-                    }
+                    }*/
                 }
             }
         });
@@ -332,6 +346,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
                 if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mSearchEdittext.setText(" "+editable.toString());
+                }
+                if( ( editable.toString().compareTo(" ")==0)){
+                    businessHint.setVisibility(View.VISIBLE);
+                    mSearchEdittext.setSelection(1);
+                }else{
+                    businessHint.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -347,6 +369,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                     if(mLocationEdittext.getText().toString().isEmpty()) {
                         mLocationEdittext.setText(" ");
+                        mLocationEdittext.setSelection(mLocationEdittext.getText().toString().length());
+                    }else{
+                        if(mLocationEdittext.getText().toString().charAt(0)!=' '){
+                            mLocationEdittext.setText(" " + mLocationEdittext.getText().toString());
+                        }
+                        mLocationEdittext.setSelection(1,mLocationEdittext.getText().toString().length());
                     }
 
                     // Search
@@ -365,9 +393,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
-                    if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
+                    /*if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
                         mLocationEdittext.setText(mLocationEdittext.getText().toString().substring(1));
-                    }
+                    }*/
                 }
             }
         });
@@ -460,6 +488,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
                 if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mLocationEdittext.setText(" "+editable.toString());
+                }
+                if( editable.toString().compareTo(" ")==0){
+                    locationHint.setVisibility(View.VISIBLE);
+                    mLocationEdittext.setSelection(1);
+                }else{
+                    locationHint.setVisibility(View.GONE);
                 }
             }
         });
@@ -500,11 +536,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                 if (locationFieldShouldFocus) {
                     mLocationEdittext.requestFocus();
-                    mLocationEdittext.setSelection(mLocationEdittext.length());
+                    mLocationEdittext.setSelection(1,mLocationEdittext.length());
                     mLocationEdittext.setSelected(false);
                 } else {
                     mSearchEdittext.requestFocus();
-                    mSearchEdittext.setSelection(mSearchEdittext.length());
+                    mSearchEdittext.setSelection(1,mSearchEdittext.length());
                     mSearchEdittext.setSelected(false);
                 }
 
@@ -596,7 +632,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                         int padding = (mapHeight - param.height) / 2;
                         Log.d(TAG, "map padding: " + String.valueOf(padding));
-                        mGoogleMap.setPadding(0, padding, 0, padding);
+                        if(mGoogleMap == null){
+                            initializeMap();
+                        }
+                        if(mGoogleMap != null) {
+                            mGoogleMap.setPadding(0, padding, 0, padding);
+                        }
 
                         return true;
                     default:
@@ -698,13 +739,18 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private void initializeMap(){//MapView mapView) {
-        //if (mGoogleMap == null) {
+        if (mGoogleMap == null) {
             //mapView.onCreate(null);
 
             // Gets to GoogleMap from the MapView and does initialization stuff
             //mGoogleMap = mapView.getMap();
 
             mGoogleMap = mapFragment.getMap();
+            if (mGoogleMap == null) {
+                Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
             mGoogleMap.setMyLocationEnabled(true);
 
@@ -741,8 +787,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
             Criteria cri = new Criteria();
-            String provider = locationManager.getBestProvider(cri, true);
-            mCurrentLocation = locationManager.getLastKnownLocation(provider);
+            final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if(gpsEnabled) {
+                String provider = locationManager.getBestProvider(cri, true);
+                mCurrentLocation = locationManager.getLastKnownLocation(provider);
+            }
 
             LatLng currentLatLng;
 
@@ -830,8 +879,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             });
             mGoogleMap.setMyLocationEnabled(false);
-        showViewAnimatorChild(0);
-        //}
+            showViewAnimatorChild(0);
+        }
     }
 
     private void drawCurrentLocationMarker(Location location) {
@@ -845,12 +894,17 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         } else {
             currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
-        mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                        .position(currentPosition)
-                        .title(ResHelper.getStringByResId(R.string.your_location))
-                        .snippet("")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-        );
+        if(mGoogleMap == null){
+            initializeMap();
+        }
+        if(mGoogleMap != null) {
+            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .position(currentPosition)
+                            .title(ResHelper.getStringByResId(R.string.your_location))
+                            .snippet("")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
+            );
+        }
     }
 
     private void drawCurrentLocationMarker(LatLng location) {
@@ -860,12 +914,17 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         if (location == null) {
             location = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
         }
-        mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                        .position(location)
-                        .title(ResHelper.getStringByResId(R.string.your_location))
-                        .snippet("")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-        );
+        if(mGoogleMap == null){
+            initializeMap();
+        }
+        if(mGoogleMap != null) {
+            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .title(ResHelper.getStringByResId(R.string.your_location))
+                            .snippet("")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
+            );
+        }
     }
 
     protected void initializeMarker() {
@@ -877,13 +936,18 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             for (BusinessVenue businessVenue : mBusinessVenueList) {
                 mMarkersLatLngList.add(businessVenue.getLocation());
                 currentLatLng = businessVenue.getLocation();
-                mGoogleMap.addMarker(new MarkerOptions()
-                                .position(businessVenue.getLocation())
-                                .title(businessVenue.getName())
-                                .snippet(businessVenue.getAddress())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                )
-                        .showInfoWindow();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(businessVenue.getLocation())
+                                    .title(businessVenue.getName())
+                                    .snippet(businessVenue.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    )
+                            .showInfoWindow();
+                }
             }
         }
 
@@ -902,8 +966,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             for (LatLng item : mMarkersLatLngList) {
                 bc.include(item);
             }
-
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
+            if(mGoogleMap == null){
+                initializeMap();
+            }
+            if(mGoogleMap != null) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
+            }
         }
     }
 
@@ -930,22 +998,26 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                         businessSearchResult.getLocationObject().getLongitude());
                 mMarkersLatLngList.add(locationLatLng);
-
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                .position(locationLatLng)
-                                .title(businessSearchResult.getName())
-                                .snippet(businessSearchResult.getAddress())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                );
-
-                if (first) {
-                    first = false;
-                    currentLatLng = locationLatLng;
-                    firstMarker = marker;
+                if(mGoogleMap == null){
+                    initializeMap();
                 }
-                mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                if(mGoogleMap != null) {
+                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(locationLatLng)
+                                    .title(businessSearchResult.getName())
+                                    .snippet(businessSearchResult.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    );
+
+                    if (first) {
+                        first = false;
+                        currentLatLng = locationLatLng;
+                        firstMarker = marker;
+                    }
+                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
+                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
+                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                }
             }
 
             zoomToContainAllMarkers();
@@ -982,22 +1054,26 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             for (BusinessSearchResult businessSearchResult : mVenues) {
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                         businessSearchResult.getLocationObject().getLongitude());
-
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                .position(locationLatLng)
-                                .title(businessSearchResult.getName())
-                                .snippet(businessSearchResult.getAddress())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                );
-
-                if (first) {
-                    first = false;
-                    currentLatLng = locationLatLng;
-                    firstMarker = marker;
+                if(mGoogleMap == null){
+                    initializeMap();
                 }
-                mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                if(mGoogleMap != null) {
+                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(locationLatLng)
+                                    .title(businessSearchResult.getName())
+                                    .snippet(businessSearchResult.getAddress())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+                    );
+
+                    if (first) {
+                        first = false;
+                        currentLatLng = locationLatLng;
+                        firstMarker = marker;
+                    }
+                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
+                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
+                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+                }
             }
 
             if (firstMarker == null) {
@@ -1142,8 +1218,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     mVenues = results.getBusinessSearchObjectArray();
-                    mGoogleMap.clear();
-                    initializeMarkerWithBoundSearchResult();
+                    if(mGoogleMap == null){
+                        initializeMap();
+                    }
+                    if(mGoogleMap != null) {
+                        mGoogleMap.clear();
+                        initializeMarkerWithBoundSearchResult();
+                    }
                     mFragmentVenue.setListView(searchResult);
                 }
             } catch (JSONException e) {
@@ -1200,8 +1281,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 mVenues = results.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1245,8 +1331,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1291,8 +1382,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1336,8 +1432,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1385,8 +1486,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
+                if(mGoogleMap == null){
+                    initializeMap();
+                }
+                if(mGoogleMap != null) {
+                    mGoogleMap.clear();
+                    initializeMarkerWithBusinessSearchResult();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {

@@ -86,6 +86,8 @@ public class BusinessDirectoryFragment extends Fragment implements
     private TextView mNearYouTextView;
     private TextView mNearYouTextViewSticky;
 
+    private boolean wentSettings = false;
+
     private LinearLayout mBusinessLayout;
     private LinearLayout mNearYouContainer;
 
@@ -148,6 +150,9 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private Location mCurrentLocation;
 
+    private TextView businessHint;
+    private TextView locationHint;
+
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
@@ -199,6 +204,11 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mBusinessList = new ArrayList<Business>();
         mLocationList = new ArrayList<LocationSearchResult>();
+
+        businessHint = (TextView) view.findViewById(R.id.business_hint);
+        businessHint.setTypeface(montserratRegularTypeFace);
+        locationHint = (TextView) view.findViewById(R.id.location_hint);
+        locationHint.setTypeface(montserratRegularTypeFace);
 
         Log.d("TAG_LOC", "CUR LOC: ");
 
@@ -375,6 +385,12 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                     if(mSearchField.getText().toString().isEmpty()) {
                         mSearchField.setText(" ");
+                        mSearchField.setSelection(mSearchField.getText().toString().length());
+                    }else{
+                        if(mSearchField.getText().toString().charAt(0)!=' '){
+                            mSearchField.setText(" " + mSearchField.getText().toString());
+                        }
+                        mSearchField.setSelection(1,mSearchField.getText().toString().length());
                     }
 
                     // mBusinessList.clear();
@@ -419,9 +435,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
-                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+                    /*if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
                         mSearchField.setText(mSearchField.getText().toString().substring(1));
-                    }
+                    }*/
                 }
 
 
@@ -478,6 +494,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                 if(editable.toString().isEmpty() && mSearchField.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mSearchField.setText(" "+editable.toString());
                 }
 
                 // } else {
@@ -494,6 +512,13 @@ public class BusinessDirectoryFragment extends Fragment implements
                 // mCurrentLayoutSeparator.setVisibility(View.GONE);
                 // mOnTheWebSeparator.setVisibility(View.GONE);
                 // }
+
+                if( ( editable.toString().compareTo(" ")==0)){
+                    businessHint.setVisibility(View.VISIBLE);
+                    mSearchField.setSelection(1);
+                }else{
+                    businessHint.setVisibility(View.INVISIBLE);
+                }
 
             }
         });
@@ -516,6 +541,12 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                     if(mLocationField.getText().toString().isEmpty()) {
                         mLocationField.setText(" ");
+                        mLocationField.setSelection(mLocationField.getText().toString().length());
+                    }else{
+                        if(mLocationField.getText().toString().charAt(0)!=' '){
+                            mLocationField.setText(" " + mLocationField.getText().toString());
+                        }
+                        mLocationField.setSelection(1,mLocationField.getText().toString().length());
                     }
 
                     // Search
@@ -655,6 +686,15 @@ public class BusinessDirectoryFragment extends Fragment implements
                 }
                 if(editable.toString().isEmpty() && mLocationField.hasFocus()){
                     editable.append(' ');
+                }else if(editable.toString().charAt(0)!=' '){
+                    mLocationField.setText(" "+editable.toString());
+                }
+
+                if( editable.toString().compareTo(" ")==0){
+                    locationHint.setVisibility(View.VISIBLE);
+                    mLocationField.setSelection(1);
+                }else{
+                    locationHint.setVisibility(View.GONE);
                 }
             }
         });
@@ -696,11 +736,11 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                 if (locationFieldShouldFocus) {
                     mLocationField.requestFocus();
-                    mLocationField.setSelection(mLocationField.length());
+                    mLocationField.setSelection(1,mLocationField.length());
                     mLocationField.setSelected(false);
                 } else {
                     mSearchField.requestFocus();
-                    mSearchField.setSelection(mSearchField.length());
+                    mSearchField.setSelection(1,mSearchField.length());
                     mSearchField.setSelected(false);
                 }
             }
@@ -778,6 +818,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
             mBackButton.setVisibility(View.GONE);
+            locationHint.setVisibility(View.GONE);
             if(mLoadingVisible){
                 mViewGroupLoading.setVisibility(View.VISIBLE);
             }
@@ -792,7 +833,10 @@ public class BusinessDirectoryFragment extends Fragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
-
+        if(wentSettings){
+            wentSettings = false;
+            checkLocationManager();
+        }
         super.onResume();
     }
 
@@ -1011,24 +1055,28 @@ public class BusinessDirectoryFragment extends Fragment implements
         mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
 
         Criteria cri = new Criteria();
-        String provider = mLocationManager.getBestProvider(cri, true);
-        mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
+
+        final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if(!gpsEnabled){
+            String provider = mLocationManager.getBestProvider(cri, true);
+            mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
+        }
         if (mCurrentLocation != null) {
             clearSharedPreference();
             writeLatLonToSharedPreference();
         }
 
-        final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
         if (!gpsEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("GPS is disabled. Go to Settings and turned on your GPS.")
+            builder.setMessage("GPS is disabled. Please Enable GPS to find business near your location.")
                     .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                         @Override public void onClick(DialogInterface dialog, int which) {
+                            wentSettings = true;
                             startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
                         @Override public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
