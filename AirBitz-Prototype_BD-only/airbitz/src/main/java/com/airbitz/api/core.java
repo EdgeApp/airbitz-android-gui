@@ -287,4 +287,9 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_WalletInfo(cPtr, false);
   }
 
+  public static SWIGTYPE_p_long p64_t_to_long_ptr(SWIGTYPE_p_int64_t x) {
+    long cPtr = coreJNI.p64_t_to_long_ptr(SWIGTYPE_p_int64_t.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
+  }
+
 }

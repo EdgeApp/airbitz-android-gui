@@ -33,6 +33,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.SWIGTYPE_p_int;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
 import com.airbitz.api.SWIGTYPE_p_p_p_sABC_WalletInfo;
 import com.airbitz.api.SWIGTYPE_p_p_sABC_WalletInfo;
@@ -473,20 +474,22 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
     public void addItemToLatestTransactionList(String name, String amount, List<Wallet> mTransactionList){
+        double conv=0;
+        double item=0;
 
         if(mOnBitcoinMode){
-            //double conv = 8.7544;
-            //double item = Double.parseDouble(amount.substring(1))*conv;
+            //conv = 8.7544;
+            //item = Double.parseDouble(amount.substring(1))*conv;
             //amount = String.format("B%.3f", item);
         }
         else{
-            double conv = 0.1145;
-            double item = Double.parseDouble(amount.substring(1))*conv;
+            conv = 0.1145;
+            item = Double.parseDouble(amount.substring(1))*conv;
             amount = String.format("$%.3f", item);
         }
         //TODO make sure that everyone knows its been added
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        Wallet tempWallet = new Wallet(name, amount);
+        Wallet tempWallet = new Wallet(name, item);
         int counter = 0;
         int pos = -1;
         while(counter !=2){
@@ -651,22 +654,33 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private class WalletInfo extends tABC_WalletInfo {
         String mName;
         String mUUID;
+        long mBalance;
 
         public WalletInfo(long pv) {
             super(pv, false);
             if(pv!=0) {
                 mName = super.getSzName();
                 mUUID = super.getSzUUID();
+                SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi();
+                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+                mBalance = core.longp_value(p);
+                //TODO finish others
             }
         }
 
         public String getName() { return mName; }
         public String getUUID() { return mUUID; }
-
     }
 
     private class pLong extends SWIGTYPE_p_long {
         public pLong(long ptr) { super(ptr, false); }
     }
 
+    private class p64t extends SWIGTYPE_p_int64_t {
+        public p64t(long ptr) {super(ptr, false);}
+        public long getValue() {
+            pLong pl = new pLong(getCPtr(this));
+            return core.longp_value(pl);
+        }
+    }
 }
