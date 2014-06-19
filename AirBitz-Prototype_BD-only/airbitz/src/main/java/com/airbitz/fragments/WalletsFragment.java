@@ -33,6 +33,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.SWIGTYPE_p_int;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
 import com.airbitz.api.SWIGTYPE_p_p_p_sABC_WalletInfo;
 import com.airbitz.api.SWIGTYPE_p_p_sABC_WalletInfo;
@@ -42,6 +43,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_WalletInfo;
+import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -474,19 +476,22 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     public void addItemToLatestTransactionList(String name, String amount, List<Wallet> mTransactionList){
 
+        double conv=0;
+        double item=0;
+
         if(mOnBitcoinMode){
             //double conv = 8.7544;
             //double item = Double.parseDouble(amount.substring(1))*conv;
             //amount = String.format("B%.3f", item);
         }
         else{
-            double conv = 0.1145;
-            double item = Double.parseDouble(amount.substring(1))*conv;
+            conv = 0.1145;
+            item = Double.parseDouble(amount.substring(1))*conv;
             amount = String.format("$%.3f", item);
         }
         //TODO make sure that everyone knows its been added
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        Wallet tempWallet = new Wallet(name, amount);
+        Wallet tempWallet = new Wallet(name, item);
         int counter = 0;
         int pos = -1;
         while(counter !=2){
@@ -627,15 +632,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
 
-        int ptrToInfo = core.longp_value(lp);
-        Log.d("Java out", "Java out: " + ptrToInfo); // ptrToInfo is tABC_WalletInfo **
+        int walletArrayPtr = core.longp_value(lp);
 
-        ppWalletInfo base = new ppWalletInfo(ptrToInfo);
+        ppWalletInfo base = new ppWalletInfo(walletArrayPtr);
         for(int i=0; i<core.intp_value(pCount); i++) {
-            pLong temp = new pLong(base.getPtr(base, i*4));
-            long start = core.longp_value(temp);
-            WalletInfo wi = new WalletInfo(start);
-//            mWallets.add(new Wallet());
+            pLong next = new pLong(base.getPtr(base, i*4));
+            WalletInfo wi = new WalletInfo(core.longp_value(next));
+//            mWallets.add(new Wallet(wi.getName(), wi.getUUID()));
         }
 
         return mWallets;
@@ -650,13 +653,22 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private class WalletInfo extends tABC_WalletInfo {
         String mName;
-        String mUUID;
+        private String mUsername;
+        private String mUUID;
+        private int mCurrencyNum;
+        private long mAttributes;
+        private long mBalance;
+        private List<AccountTransaction> mTransactions;
 
         public WalletInfo(long pv) {
             super(pv, false);
             if(pv!=0) {
                 mName = super.getSzName();
+                mUsername = super.getSzUserName();
                 mUUID = super.getSzUUID();
+                mCurrencyNum = super.getCurrencyNum();
+                mAttributes = super.getAttributes();
+//                p64t p = super.getBalanceSatoshi();
             }
         }
 
@@ -667,6 +679,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private class pLong extends SWIGTYPE_p_long {
         public pLong(long ptr) { super(ptr, false); }
+    }
+
+    private class p64t extends SWIGTYPE_p_int64_t {
+        public p64t(long ptr) { super(ptr, false); }
+        public long get() {
+            pLong pl = new pLong(getCPtr(this));
+            return core.longp_value(pl);
+        }
     }
 
 }
