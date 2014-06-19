@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.utils.Common;
 
 /**
@@ -22,12 +23,15 @@ public class SuccessFragment extends Fragment {
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
 
+    private Bundle bundle;
+
     private TextView mFiatTextView;
     private TextView mBitcoinTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle = this.getArguments();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +42,9 @@ public class SuccessFragment extends Fragment {
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mFiatTextView = (TextView) view.findViewById(R.id.textview_fiat);
         mBitcoinTextView = (TextView) view.findViewById(R.id.textview_bitcoin);
+
+        mBitcoinTextView.setText(bundle.getString("bitcoin_value"));
+        mFiatTextView.setText(bundle.getString("fiat_value"));
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +80,9 @@ public class SuccessFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            Fragment frag = new TransactionDetailFragment();
-            ((NavigationActivity) getActivity()).pushFragment(frag);
+            //Fragment frag = new TransactionDetailFragment();
+            ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+            //((NavigationActivity) getActivity()).pushFragment(frag);
         }
     }
 
