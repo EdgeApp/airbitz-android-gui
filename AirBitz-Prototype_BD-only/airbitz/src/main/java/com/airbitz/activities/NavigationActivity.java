@@ -214,10 +214,14 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     public void hideNavBar() {
         mNavBarFragmentLayout.setVisibility(View.GONE);
+        mNavBarFragment.hideNavBarFragment();
+        mNavBarFragmentLayout.invalidate();
     }
 
     public void showNavBar() {
         mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+        mNavBarFragment.showNavBarFragment();
+        mNavBarFragmentLayout.invalidate();
     }
 
     public LinearLayout getCalculatorView() {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
@@ -16,11 +17,13 @@ import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
@@ -55,6 +58,7 @@ import com.airbitz.models.Categories;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CacheUtil;
+import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.ListViewUtility;
 
 import org.json.JSONException;
@@ -62,6 +66,7 @@ import org.json.JSONObject;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,10 +79,11 @@ import java.util.ResourceBundle;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment{
+public class TransactionDetailFragment extends Fragment implements View.OnClickListener {
 
     private Button mDoneButton;
     private Button mAdvanceDetailsButton;
+    private Button mXButton;
 
     private TextView mDateTextView;
     private TextView mTitleTextView;
@@ -111,6 +117,8 @@ public class TransactionDetailFragment extends Fragment{
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
+    private RelativeLayout mAdvancedDetailsPopup;
+
     private List<BusinessSearchResult> mBusinesses;
     private List<BusinessSearchResult> mOriginalBusinesses;
     private List<String> mContactNames;
@@ -125,6 +133,13 @@ public class TransactionDetailFragment extends Fragment{
     private TransactionDetailCategoryAdapter mCategoryAdapter;
     private AirbitzAPI api = AirbitzAPI.getApi();
 
+    DecimalFormat mDF = new DecimalFormat("@###########");
+    private Boolean userIsInTheMiddleOfTypingANumber = false;
+    private CalculatorBrain mCalculatorBrain;
+    private static final String DIGITS = "0123456789.";
+    private ClipboardManager clipboard;
+    private float mBTCtoUSDConversion = 450.0f;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -137,8 +152,18 @@ public class TransactionDetailFragment extends Fragment{
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+
+        mCalculatorBrain = new CalculatorBrain();
+        mDF.setMinimumFractionDigits(0);
+        mDF.setMaximumFractionDigits(6);
+        mDF.setMinimumIntegerDigits(1);
+        mDF.setMaximumIntegerDigits(8);
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+
+
         mDoneButton = (Button) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (Button) view.findViewById(R.id.transaction_detail_button_advanced);
+        mXButton = (Button) view.findViewById(R.id.x_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
         mNameEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
@@ -147,6 +172,8 @@ public class TransactionDetailFragment extends Fragment{
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mDollarValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
+        mDollarValueEdittext.setInputType(InputType.TYPE_NULL);
+
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
         mCategoryEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_category);
 
@@ -158,6 +185,8 @@ public class TransactionDetailFragment extends Fragment{
         mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
 
         mDummyFocus = (LinearLayout) view.findViewById(R.id.dummy_focus);
+
+        mAdvancedDetailsPopup = (RelativeLayout) view.findViewById(R.id.advanced_details_popup);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
@@ -194,6 +223,20 @@ public class TransactionDetailFragment extends Fragment{
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
         getContactsList();
+
+        mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mXButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAdvancedDetailsPopup.setVisibility(View.GONE);
+            }
+        });
 
         mNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -488,6 +531,17 @@ public class TransactionDetailFragment extends Fragment{
             }
         });
 
+        mDollarValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    showCustomKeyboard(view);
+                } else {
+                    hideCustomKeyboard();
+                }
+            }
+        });
+
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -514,6 +568,69 @@ public class TransactionDetailFragment extends Fragment{
         currentType = defaultCat.toString()+":";
 
         return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        View focusCurrent = getActivity().getWindow().getCurrentFocus();
+        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
+        EditText display = (EditText) focusCurrent;
+        Editable editable = display.getText();
+        int start = display.getSelectionStart();
+        // delete the selection, if chars are selected:
+        int end = display.getSelectionEnd();
+        if (end > start) {
+            editable.delete(start, end);
+        }
+        String buttonTag = v.getTag().toString();
+
+        if(buttonTag.equals("done")) {
+            hideCustomKeyboard();
+            mDummyFocus.requestFocus();
+        } else if(buttonTag.equals("back")) {
+            String s = display.getText().toString();
+            if(s.length() == 1) { // 1 character, just set to 0
+                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
+                display.setText("0");
+            } else if (s.length() > 1) {
+                display.setText(s.substring(0, s.length()-1));
+            }
+
+        } else if (DIGITS.contains(buttonTag)) {
+
+            // digit was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
+                    // ERROR PREVENTION
+                    // Eliminate entering multiple decimals
+                } else {
+                    display.append(buttonTag);
+                }
+            } else {
+                if (buttonTag.equals(".")) {
+                    // ERROR PREVENTION
+                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                    // before the decimal
+                    display.setText(0 + buttonTag);
+                } else {
+                    display.setText(buttonTag);
+                }
+                userIsInTheMiddleOfTypingANumber = true;
+            }
+
+        } else {
+            // operation was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+
+                mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                userIsInTheMiddleOfTypingANumber = false;
+            }
+
+            mCalculatorBrain.performOperation(buttonTag);
+            display.setText(mDF.format(mCalculatorBrain.getResult()));
+        }
+
     }
 
     class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String>{
@@ -637,6 +754,38 @@ public class TransactionDetailFragment extends Fragment{
                 mContactNames.remove(0);
             }
         }
+    }
+
+    public void hideCustomKeyboard() {
+        ((NavigationActivity) getActivity()).hideCalculator();
+    }
+
+    public void showCustomKeyboard(View v) {
+        ((NavigationActivity) getActivity()).showCalculator();
+    }
+
+    private void setupCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
 
