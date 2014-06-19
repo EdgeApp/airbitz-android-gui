@@ -17,21 +17,30 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.RequestDropDownAdapter;
+import com.airbitz.api.AirbitzAPI;
+import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2/13/14.
@@ -42,14 +51,23 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private EditText mBitcoinField;
     private EditText mDollarField;
 
-    private Button mWalletButton;
-
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private ImageButton mImportWalletButton;
-    private ImageButton mEmailButton;
-    private ImageButton mSmsButton;
-    private ImageButton mQRCodeButton;
+    private Button mImportWalletButton;
+    private Button mEmailButton;
+    private Button mSmsButton;
+    private Button mQRCodeButton;
+    private Button mBLEButton;
+
+    private ListView mDropDownListView;
+    private RequestDropDownAdapter mDropDownAdapter;
+    private List<String> mWalletList;
+
+    private Spinner pickWalletSpinner;
+
+    private RelativeLayout mButtonGroup;
+    private Button mExpandButton;
+    private Button mUnExpandButton;
 
     private TextView mTitleTextView;
     private TextView mWalletTextView;
@@ -83,7 +101,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public final static int CodeConv = 55011; // Conversions like round or degrees
     public final static int CodeTrig = 55012;
 
-    private float mBTCtoUSDConversion = 450.0f;
+    private float mBTCtoUSDConversion = 600.0f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,6 +114,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mView = view;
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        mWalletList = new ArrayList<String>();
+        addWalletNamesToList();
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
@@ -124,14 +145,24 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         mBitcoinField = (EditText) view.findViewById(R.id.edittext_btc);
         mDollarField = (EditText) view.findViewById(R.id.edittext_dollar);
-        mWalletButton = (Button) view.findViewById(R.id.button_wallet);
 
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mImportWalletButton = (ImageButton) view.findViewById(R.id.button_importwallet);
-        mEmailButton = (ImageButton) view.findViewById(R.id.button_email);
-        mSmsButton = (ImageButton) view.findViewById(R.id.button_sms);
-        mQRCodeButton = (ImageButton) view.findViewById(R.id.button_qrcode);
+        mImportWalletButton = (Button) view.findViewById(R.id.button_import_wallet);
+        mEmailButton = (Button) view.findViewById(R.id.button_email);
+        mSmsButton = (Button) view.findViewById(R.id.button_sms);
+        mQRCodeButton = (Button) view.findViewById(R.id.button_qr_code);
+        mBLEButton = (Button) view.findViewById(R.id.button_ble);
+
+        mButtonGroup = (RelativeLayout) view.findViewById(R.id.button_group);
+
+        mExpandButton = (Button) view.findViewById(R.id.button_expand);
+        mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
+
+        pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
+        pickWalletSpinner.setAdapter(dataAdapter);
+
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
@@ -139,15 +170,21 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mWalletButton.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mDollarField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mWalletButton.setOnClickListener(new View.OnClickListener() {
+        mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).switchFragmentThread(3);
+                mButtonGroup.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mUnExpandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mButtonGroup.setVisibility(View.GONE);
             }
         });
 
@@ -183,12 +220,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mQRCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showQRCodePopUpDialog();
+                Fragment frag = new WalletQRCodeFragment();
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
 
 
-        mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
+        /*mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -197,7 +235,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                 return true;
             }
-        });
+        });*/
 
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -339,6 +377,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             String s = display.getText().toString();
             if(s.length() == 1) { // 1 character, just set to 0
                 mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
+                display.setText("0");
             } else if (s.length() > 1) {
                 display.setText(s.substring(0, s.length()-1));
             }
@@ -387,7 +426,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     public void showQRCodePopUpDialog() {
-        final Dialog dialog = new Dialog(getActivity());
+        /*final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_qrcode);
         ImageView imageviewQRCode = (ImageView) dialog.findViewById(R.id.imageview_qrcode);
         imageviewQRCode.setImageResource(R.drawable.img_qr_code);
@@ -400,7 +439,16 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        dialog.show();
+        dialog.show();*/
+
+    }
+
+    public void addWalletNamesToList(){
+        AirbitzAPI api = AirbitzAPI.getApi();
+        List<Wallet> tempWallets = api.getWallets();
+        for(Wallet wallet: tempWallets){
+            mWalletList.add(wallet.getName());
+        }
     }
 
 //    @Override public void onBackPressed() {

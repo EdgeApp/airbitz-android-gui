@@ -117,6 +117,8 @@
         android:layout_below="@id/layout_header"
         android:background="#000099"
         android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/layout_new_wallet"
         android:visibility="gone">
         

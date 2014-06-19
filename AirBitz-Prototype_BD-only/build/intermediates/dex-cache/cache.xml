@@ -20,6 +20,12 @@
         revision="19.1.0"
         sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
     <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/core-3.0.1-0e91d2f774c9e8d914bd45d9d4acb763a56ee364.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.0.1/9ebf6cd580d67601fbf88fd007aab4703b19e4c2/core-3.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9ebf6cd580d67601fbf88fd007aab4703b19e4c2"/>
+    <item
         dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-baa6c1089f7b6cebac07722d7010cffbc5f64740.jar"
         jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
         jumboMode="false"
@@ -49,5 +55,11 @@
         jumboMode="false"
         revision="19.1.0"
         sha1="587da9a481ffd341d2fa091704489b89845ddacd"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-2a9b41ad18a85f0d3916970213d15aec636d3fe9.jar"
+        jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/build/intermediates/exploded-aar/com.embarkmobile/zxing-android-minimal/2.0.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="cb9bbd4a4737c5d1720f03efe7de98df3a924ef1"/>
 
 </pre-dex-items>
