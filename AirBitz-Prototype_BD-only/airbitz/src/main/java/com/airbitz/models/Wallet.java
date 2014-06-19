@@ -20,6 +20,10 @@ public class Wallet {
 
     private String mAmount;
 
+    public Wallet(String name, String amount) {
+        mName = name;
+    }
+
     public Wallet(String name, double bal){
         mName = name;
         mBalance = bal;

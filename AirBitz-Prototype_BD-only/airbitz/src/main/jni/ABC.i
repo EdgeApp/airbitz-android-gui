@@ -21,3 +21,4 @@
 %include "ABC_android.h"
 
 %pointer_cast(long *, tABC_WalletInfo ***, longPtr_to_walletinfoPtr);
+%pointer_cast(int64_t *, long *, p64_t_to_long_ptr);

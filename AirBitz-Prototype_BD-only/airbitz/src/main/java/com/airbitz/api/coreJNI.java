@@ -290,4 +290,5 @@ public class coreJNI {
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long longPtr_to_walletinfoPtr(long jarg1);
+  public final static native long p64_t_to_long_ptr(long jarg1);
 }

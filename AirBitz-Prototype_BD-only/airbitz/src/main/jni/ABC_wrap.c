@@ -246,6 +246,11 @@ tABC_WalletInfo *** longPtr_to_walletinfoPtr(long * x) {
 }
 
 
+long * p64_t_to_long_ptr(int64_t * x) {
+   return (long *) x;
+}
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -5346,6 +5351,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1walletinfoPtr
   arg1 = *(long **)&jarg1; 
   result = (tABC_WalletInfo ***)longPtr_to_walletinfoPtr(arg1);
   *(tABC_WalletInfo ****)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_p64_1t_1to_1long_1ptr(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  int64_t *arg1 = (int64_t *) 0 ;
+  long *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(int64_t **)&jarg1; 
+  result = (long *)p64_t_to_long_ptr(arg1);
+  *(long **)&jresult = result; 
   return jresult;
 }
 
