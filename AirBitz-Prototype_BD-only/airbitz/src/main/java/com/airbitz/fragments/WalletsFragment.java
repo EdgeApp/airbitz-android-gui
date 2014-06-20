@@ -535,8 +535,10 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if (!success) {
                 Log.d("WalletsFragment", "AddWalletTask failed");
             } else {
-                mLatestWalletList = mAPI.loadWallets();
-                mLatestWalletAdapter.swapWallets(mLatestWalletList);
+                mLatestWalletList.clear();
+                mLatestWalletList.addAll(mAPI.loadWallets());
+                mLatestWalletAdapter.swapWallets();
+                mLatestWalletAdapter.notifyDataSetChanged();
                 ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
             }
         }
