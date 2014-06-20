@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
@@ -20,13 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
@@ -35,7 +32,6 @@ import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,7 +107,7 @@ public class WalletFragment extends Fragment {
 
         mAccountTransactions = mAPI.getTransactions(mWalletName);
         mWallet = null;
-        for(Wallet w: mAPI.getWallets()) {
+        for(Wallet w: mAPI.loadWallets()) {
             if (w != null) {
                 if (w.getName().contains(mWalletName))
                     mWallet = w;

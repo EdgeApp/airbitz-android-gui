@@ -1,7 +1,9 @@
 package com.airbitz.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,20 +32,10 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.activities.PasswordRecoveryActivity;
+import com.airbitz.activities.SignUpActivity;
 import com.airbitz.adapters.WalletAdapter;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.SWIGTYPE_p_long;
-import com.airbitz.api.SWIGTYPE_p_p_p_sABC_WalletInfo;
-import com.airbitz.api.SWIGTYPE_p_p_sABC_WalletInfo;
-import com.airbitz.api.SWIGTYPE_p_unsigned_int;
-import com.airbitz.api.SWIGTYPE_p_void;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_WalletInfo;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -107,13 +99,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private List<String> currencyList;
     private CoreAPI mAPI;
+    private AddWalletTask mAddWalletTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mAPI = CoreAPI.getApi();
-        mLatestWalletList = mAPI.getWallets();
+        mLatestWalletList = mAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
     }
 
@@ -474,38 +467,84 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
     }
 
-    public void addItemToLatestTransactionList(String name, String amount, List<Wallet> mTransactionList){
-        double conv=0;
-        double item=0;
+    public void addNewWallet(String name, String amount){
+        if(AirbitzApplication.isLoggedIn()) {
+            mAddWalletTask = new AddWalletTask(name, AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+            mAddWalletTask.execute((Void) null);
+        } else {
+            Log.d("WalletsFragment", "not logged in");
+        }
 
-        if(mOnBitcoinMode){
-            //conv = 8.7544;
-            //item = Double.parseDouble(amount.substring(1))*conv;
-            //amount = String.format("B%.3f", item);
+//        double conv=0;
+//        double item=0;
+//
+//        if(mOnBitcoinMode){
+//            //conv = 8.7544;
+//            //item = Double.parseDouble(amount.substring(1))*conv;
+//            //amount = String.format("B%.3f", item);
+//        }
+//        else{
+//            conv = 0.1145;
+//            item = Double.parseDouble(amount.substring(1))*conv;
+//            amount = String.format("$%.3f", item);
+//        }
+//        //TODO make sure that everyone knows its been added
+//        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+//        Wallet tempWallet = new Wallet(name, item);
+//        int counter = 0;
+//        int pos = -1;
+//        while(counter !=2){
+//            pos++;
+//            if(wallets.get(pos).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" ){//TODO ALERT
+//                counter = 2;
+//            }
+//        }
+//        wallets.add(pos, tempWallet);
+        //mLatestWalletListView.addWalletToList(tempWallet);
+//        mLatestWalletAdapter.addWallet(tempWallet);
+//        mLatestWalletAdapter.incArchivePos();
+    }
+
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mWalletName, mUsername, mPassword;
+
+        AddWalletTask(String walletName, String username, String password) {
+            mWalletName = walletName;
+            mUsername = username;
+            mPassword = password;
         }
-        else{
-            conv = 0.1145;
-            item = Double.parseDouble(amount.substring(1))*conv;
-            amount = String.format("$%.3f", item);
+
+        @Override
+        protected void onPreExecute() {
+//            showProgress(true);
         }
-        //TODO make sure that everyone knows its been added
-        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        Wallet tempWallet = new Wallet(name, item);
-        int counter = 0;
-        int pos = -1;
-        while(counter !=2){
-            pos++;
-            if(mTransactionList.get(pos).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" ){//TODO ALERT
-                counter = 2;
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mAPI.createWallet(mWalletName, mUsername, mPassword, SignUpActivity.DOLLAR_CURRENCY_NUMBER);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAddWalletTask = null;
+//            showProgress(false);
+            if (!success) {
+                Log.d("WalletsFragment", "AddWalletTask failed");
+            } else {
+                mLatestWalletList = mAPI.loadWallets();
+                mLatestWalletAdapter.swapWallets(mLatestWalletList);
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
             }
         }
-        mTransactionList.add(pos,tempWallet);
-        //mLatestWalletListView.addWalletToList(tempWallet);
-        mLatestWalletAdapter.addWallet(tempWallet);
-        mLatestWalletAdapter.incArchivePos();
-        mLatestWalletAdapter.notifyDataSetChanged();
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
 
+        @Override
+        protected void onCancelled() {
+            mAddWalletTask = null;
+        }
     }
 
 
@@ -550,9 +589,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if(!nameEditText.getText().toString().isEmpty()) {
                 if (!newWalletSwitch.isChecked()) {
                     if (mOnBitcoinMode) {
-                        addItemToLatestTransactionList(nameEditText.getText().toString(), "B0.000", mLatestWalletList);
+                        addNewWallet(nameEditText.getText().toString(), "B0.000");
                     } else {
-                        addItemToLatestTransactionList(nameEditText.getText().toString(), "$0.00", mLatestWalletList);
+                        addNewWallet(nameEditText.getText().toString(), "$0.00");
                     }
                 } else {
                     ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment());
