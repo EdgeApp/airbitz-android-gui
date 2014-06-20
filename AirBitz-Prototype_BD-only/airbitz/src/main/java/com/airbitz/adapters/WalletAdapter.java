@@ -41,6 +41,9 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         mContext = context;
         mWalletList = walletList;
         for(Wallet wallet: mWalletList){
+            if(wallet.getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                archivePos = mWalletList.indexOf(wallet);
+            }
             addWallet(wallet);
         }
     }
@@ -67,6 +70,9 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void swapWallets() {
         archivePos++;
         for (int i = 0; i < mWalletList.size(); ++i) {
+            if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                archivePos = i;
+            }
             if(!mIdMap.containsKey(mWalletList.get(i).getName())){
                 mIdMap.put(mWalletList.get(i).getName(), nextId);
                 nextId++;
@@ -107,6 +113,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
                 ((TextView) convertView).setText("ARCHIVE");
                 archivePos = position;
+                System.out.println("Archive Pos: "+archivePos);
                 if(hoverSecondHeader){
                     convertView.setVisibility(View.INVISIBLE);
                 }else {
