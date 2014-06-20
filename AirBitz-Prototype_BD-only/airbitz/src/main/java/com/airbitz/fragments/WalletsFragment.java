@@ -32,6 +32,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
@@ -105,14 +106,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private List<Wallet> archivedWalletList;
 
     private List<String> currencyList;
-    private AirbitzAPI mAPI;
+    private CoreAPI mAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mAPI = AirbitzAPI.getApi();
-        mLatestWalletList = getWallets();
+        mAPI = CoreAPI.getApi();
+        mLatestWalletList = mAPI.getWallets();
         archivedWalletList = new ArrayList<Wallet>();
     }
 
@@ -611,78 +612,5 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setHeaderVisibilityOnReturn();
     }
 
-    /*
-    Get Wallets from the core for the logged in user
-     */
-    private List<Wallet> getWallets() {
-        List<Wallet> mWallets = new ArrayList<Wallet>();
 
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo test = core.longPtr_to_walletinfoPtr(lp);
-
-        tABC_Error pError = new tABC_Error();
-
-        SWIGTYPE_p_int pCount = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
-
-        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                test, pUCount, pError);
-
-        boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-
-        int ptrToInfo = core.longp_value(lp);
-        int count = core.intp_value(pCount);
-        ppWalletInfo base = new ppWalletInfo(ptrToInfo);
-
-        for(int i=0; i<count; i++) {
-            pLong temp = new pLong(base.getPtr(base, i*4));
-            long start = core.longp_value(temp);
-            WalletInfo wi = new WalletInfo(start);
-            Wallet in = new Wallet(wi.getName(), wi.mBalance);
-            mWallets.add(in);
-        }
-        core.ABC_FreeWalletInfoArray(core.longPtr_to_walletinfoPtrPtr(new pLong(ptrToInfo)), count);
-        return mWallets;
-    }
-
-    private class ppWalletInfo extends SWIGTYPE_p_p_sABC_WalletInfo {
-        public ppWalletInfo(long ptr) {
-            super(ptr, false);
-        }
-        public long getPtr(SWIGTYPE_p_p_sABC_WalletInfo p, long i) { return getCPtr(p)+i; }
-
-    }
-
-    private class WalletInfo extends tABC_WalletInfo {
-        String mName;
-        String mUUID;
-        long mBalance;
-
-        public WalletInfo(long pv) {
-            super(pv, false);
-            if(pv!=0) {
-                mName = super.getSzName();
-                mUUID = super.getSzUUID();
-                SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi();
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                mBalance = core.longp_value(p);
-                //TODO finish others?
-            }
-        }
-
-        public String getName() { return mName; }
-        public String getUUID() { return mUUID; }
-    }
-
-    private class pLong extends SWIGTYPE_p_long {
-        public pLong(long ptr) { super(ptr, false); }
-    }
-
-    private class p64t extends SWIGTYPE_p_int64_t {
-        public p64t(long ptr) {super(ptr, false);}
-        public long getValue() {
-            pLong pl = new pLong(getCPtr(this));
-            return core.longp_value(pl);
-        }
-    }
 }
