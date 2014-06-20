@@ -101,7 +101,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        walletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
+        walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
         final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
         walletSpinner.setAdapter(dataAdapter);
 
@@ -117,13 +117,17 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
                     mFlashOn = true;
-                    //TODO Turn Flash On
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
                     mFlashOn = false;
-                    //TODO Turn Flash Off
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
                 }
             }
         });
@@ -135,13 +139,17 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
                     mFlashOn = false;
-                    //TODO Turn Flash Off
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
                     mFlashOn = true;
-                    //TODO Turn Flash On
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
                 }
             }
         });

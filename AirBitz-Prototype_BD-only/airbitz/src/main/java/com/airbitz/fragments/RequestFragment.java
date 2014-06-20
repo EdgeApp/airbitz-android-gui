@@ -152,7 +152,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mExpandButton = (Button) view.findViewById(R.id.button_expand);
         mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
 
-        pickWalletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
+        pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
         final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
         pickWalletSpinner.setAdapter(dataAdapter);
 
