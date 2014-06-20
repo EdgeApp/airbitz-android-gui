@@ -1,9 +1,6 @@
 package com.airbitz.fragments;
 
-import android.app.Dialog;
-import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -21,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -32,12 +28,10 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.RequestDropDownAdapter;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
-import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -451,7 +445,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     public void addWalletNamesToList(){
         CoreAPI api = CoreAPI.getApi();
-        List<Wallet> tempWallets = api.getWallets();
+        List<Wallet> tempWallets = api.loadWallets();
         for(Wallet wallet: tempWallets){
             if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
             mWalletList.add(wallet.getName());
