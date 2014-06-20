@@ -33,6 +33,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.RequestDropDownAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
@@ -449,7 +450,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addWalletNamesToList(){
-        AirbitzAPI api = AirbitzAPI.getApi();
+        CoreAPI api = CoreAPI.getApi();
         List<Wallet> tempWallets = api.getWallets();
         for(Wallet wallet: tempWallets){
             if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
