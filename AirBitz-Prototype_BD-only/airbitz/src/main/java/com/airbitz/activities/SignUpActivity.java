@@ -24,12 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.api.SWIGTYPE_p_void;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.api.tABC_WalletInfo;
 import com.airbitz.utils.Common;
 
 import java.util.regex.Pattern;
@@ -38,7 +37,7 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpActivity extends Activity {
-    private static final int DOLLAR_CURRENCY_NUMBER = 840;
+    public static final int DOLLAR_CURRENCY_NUMBER = 840;
 
     static {
         System.loadLibrary("airbitz");
@@ -75,6 +74,7 @@ public class SignUpActivity extends Activity {
     private Intent mIntent;
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
+    private CoreAPI mAPI;
 
 //    private GestureDetector mGestureDetector;
 
@@ -87,6 +87,7 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        mAPI = CoreAPI.getApi();
 
         mLoginView = (View) findViewById(R.id.layout_signup);
         mProgressView = (View) findViewById(R.id.layout_progress);
@@ -307,8 +308,6 @@ public class SignUpActivity extends Activity {
     public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername, mPassword, mPin;
-        tABC_Error pError = new tABC_Error();
-        Results pResults = new Results();
 
         CreateFirstWalletTask(String username, String password, String pin) {
             mUsername = username;
@@ -324,8 +323,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            tABC_CC result = core.ABC_CreateWallet(mUsername, mPassword, walletName, DOLLAR_CURRENCY_NUMBER, 0, null, pResults, pError);
-            return result == tABC_CC.ABC_CC_Ok;
+            return mAPI.createWallet(walletName, mUsername, mPassword, DOLLAR_CURRENCY_NUMBER);
         }
 
         @Override
@@ -333,7 +331,7 @@ public class SignUpActivity extends Activity {
             mCreateFirstWalletTask = null;
             showProgress(false);
             if (!success) {
-                ShowReasonAlert(pError.getSzDescription());
+                ShowReasonAlert("Create wallet failed");
             } else {
                 mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
                 mIntent.putExtra(KEY_USERNAME, mUsername);
@@ -348,9 +346,6 @@ public class SignUpActivity extends Activity {
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
         }
-    }
-
-    private class Results extends tABC_RequestResults {
     }
 
     private void ShowReasonAlert(String reason) {
