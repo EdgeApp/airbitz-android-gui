@@ -27,6 +27,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
@@ -52,6 +53,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private ImageButton mFlashOnButton;
     private ImageButton mFlashOffButton;
+    private ImageButton mGalleryButton;
 
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -62,9 +64,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private List<String> mWalletList;
 
     private int BACK_CAMERA_INDEX = 0;
-
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mNavigationLayout;
 
 //    private ScrollView mScrollView;
 
@@ -85,11 +84,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mWalletList = new ArrayList<String>();
         addWalletNamesToList();
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
-
         mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
         mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
+        mGalleryButton = (ImageButton) view.findViewById(R.id.button_gallery);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mFromTextView = (TextView) view.findViewById(R.id.textview_from);
@@ -262,8 +259,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     };
 
     public void addWalletNamesToList(){
-        AirbitzAPI api = AirbitzAPI.getApi();
-        List<Wallet> tempWallets = api.getWallets();
+        CoreAPI api = CoreAPI.getApi();
+        List<Wallet> tempWallets = api.loadWallets();
         for(Wallet wallet: tempWallets){
             if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
                 mWalletList.add(wallet.getName());
