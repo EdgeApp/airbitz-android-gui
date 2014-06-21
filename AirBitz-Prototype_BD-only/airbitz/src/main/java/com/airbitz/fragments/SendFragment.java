@@ -8,12 +8,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -151,6 +155,38 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                     mCamera.setParameters(parameters);
                 }
+            }
+        });
+
+        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    Fragment frag = new SendConfirmationFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
+                    bundle.putString("to_name",mToEdittext.getText().toString());
+                    ((NavigationActivity)getActivity()).pushFragment(frag);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mToEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //TODO from wallet etc?
             }
         });
 

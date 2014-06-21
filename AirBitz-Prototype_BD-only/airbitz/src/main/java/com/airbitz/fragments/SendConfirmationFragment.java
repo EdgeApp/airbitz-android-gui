@@ -37,8 +37,8 @@ import com.airbitz.utils.Common;
  */
 public class SendConfirmationFragment extends Fragment implements GestureDetector.OnGestureListener {
 
-    private EditText mFromEdittext;
-    private EditText mToEdittext;
+    private TextView mFromEdittext;
+    private TextView mToEdittext;
     private EditText mPinEdittext;
 
     private TextView mTitleTextView;
@@ -51,14 +51,14 @@ public class SendConfirmationFragment extends Fragment implements GestureDetecto
 
     private boolean mConfirmChecked = false;
 
-    private Button mDollarValueButton;
-    private Button mBitcoinValueButton;
+    private EditText mDollarValueField;
+    private EditText mBitcoinValueField;
 
     private ImageButton mHelpButton;
     private ImageButton mBackButton;
     private ImageButton mConfirmSwipeButton;
 
-    private LinearLayout mSlideLayout;
+    private RelativeLayout mSlideLayout;
 
     private ImageView mConfirmImageView;
 
@@ -116,19 +116,19 @@ public class SendConfirmationFragment extends Fragment implements GestureDetecto
 
         mFromTextView = (TextView) view.findViewById(R.id.textview_from);
         mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mValueTextView = (TextView) view.findViewById(R.id.edittext_from);
-        mSlideTextView = (TextView) view.findViewById(R.id.edittext_from);
-        mConfirmTextView = (TextView) view.findViewById(R.id.edittext_from);
+        mValueTextView = (TextView) view.findViewById(R.id.textview_value);
+        mSlideTextView = (TextView) view.findViewById(R.id.textview_slide);
+        mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
         mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
 
-        mFromEdittext = (EditText) view.findViewById(R.id.edittext_from);
-        mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
+        mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
+        mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
 
-        mDollarValueButton = (Button) view.findViewById(R.id.button_bitcoin_balance);
-        mBitcoinValueButton = (Button) view.findViewById(R.id.button_dollar_balance);
+        mDollarValueField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
+        mBitcoinValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
 
-        mSlideLayout = (LinearLayout) view.findViewById(R.id.layout_slide);
+        mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
 
         mConfirmImageView = (ImageView) view.findViewById(R.id.imageview_confirm);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
@@ -483,14 +483,14 @@ public class SendConfirmationFragment extends Fragment implements GestureDetecto
             }
         });
 
-        mDollarValueButton.setOnClickListener(new View.OnClickListener() {
+        mDollarValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
 
-        mBitcoinValueButton.setOnClickListener(new View.OnClickListener() {
+        mBitcoinValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
