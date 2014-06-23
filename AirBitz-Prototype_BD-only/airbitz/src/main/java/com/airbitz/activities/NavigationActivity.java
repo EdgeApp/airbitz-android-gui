@@ -277,9 +277,20 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             Fragment frag = new WalletsFragment();
             bundle.putString("source", "REQUEST");
             frag.setArguments(bundle);
-            System.out.println("Before");
             pushFragment(frag);
-            System.out.println("After");
+        }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
+            while(mNavStacks[mNavFragmentId].size() > 1){
+                mNavStacks[mNavFragmentId].pop();
+            }
+            switchFragmentThread(3);
+            mNavFragmentId = 3;
+            while (!mNavStacks[mNavFragmentId].isEmpty()){
+                mNavStacks[mNavFragmentId].pop();
+            }
+            Fragment frag = new WalletsFragment();
+            bundle.putString("source", "SEND");
+            frag.setArguments(bundle);
+            pushFragment(frag);
         }
     }
 

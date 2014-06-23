@@ -64,6 +64,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private FrameLayout mPreviewFrame;
 
+    private View dummyFocus;
+
     private Spinner walletSpinner;
     private List<String> mWalletList;
 
@@ -98,6 +100,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mQRCodeTextView = (TextView) view.findViewById(R.id.textview_scan_qrcode);
 
         mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
+
+        dummyFocus = view.findViewById(R.id.dummy_focus);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -162,10 +166,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
+                    dummyFocus.requestFocus();
                     Fragment frag = new SendConfirmationFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
                     bundle.putString("to_name",mToEdittext.getText().toString());
+                    frag.setArguments(bundle);
                     ((NavigationActivity)getActivity()).pushFragment(frag);
                     return true;
                 }

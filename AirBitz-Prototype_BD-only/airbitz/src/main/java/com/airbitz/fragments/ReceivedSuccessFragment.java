@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.utils.Common;
 
 /**
@@ -26,9 +27,6 @@ import com.airbitz.utils.Common;
 public class ReceivedSuccessFragment extends Fragment implements GestureDetector.OnGestureListener{
 
     private TextView mSendingTextView;
-    private TextView mBitcoinAmountTextView;
-    private TextView mDollarAmountTextView;
-    private TextView mReceivedTextView;
     private TextView mTitleTextView;
 
     private ImageButton mBackButton;
@@ -41,12 +39,18 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
     private Intent mIntent;
 
+    private Bundle bundle;
+
     private GestureDetector mGestureDetector;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        bundle = this.getArguments();
+        if(bundle == null){
+            System.out.println("Send success bundle is null");
+        }
     }
 
     @Override
@@ -55,12 +59,7 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mGestureDetector = new GestureDetector(this);
-
         mSendingTextView = (TextView) view.findViewById(R.id.textview_sending);
-        mBitcoinAmountTextView = (TextView) view.findViewById(R.id.textview_bitcoin_amount);
-        mDollarAmountTextView = (TextView) view.findViewById(R.id.textview_dollar_amount);
-        mReceivedTextView = (TextView) view.findViewById(R.id.textview_received);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mLogoImageView = (ImageView) view.findViewById(R.id.imageview_logo);
@@ -69,14 +68,9 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
 
         mSendingLayout = (RelativeLayout) view.findViewById(R.id.layout_sending);
-        mSuccessLayout = (RelativeLayout) view.findViewById(R.id.layout_success);
 
         mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mBitcoinAmountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mDollarAmountTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mReceivedTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,35 +127,7 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         @Override
         protected void onPostExecute(Boolean result) {
-
-            ReceivedSuccessFragment.this.mSendingLayout.setVisibility(View.GONE);
-            ReceivedSuccessFragment.this.mSuccessLayout.setVisibility(View.VISIBLE);
-            if(result == true){
-                mReceivedTextView.setText("Received!!");
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run() {
-//                        mIntent = new Intent(ReceivedSuccessActivity.this, TransactionDetailActivity.class);
-//                        startActivity(mIntent);
-//                        finish();
-                    }
-                }, 2000 );
-            }
-            else{
-                mReceivedTextView.setText("Failed!");
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable()
-//                {
-//                    @Override
-//                    public void run() {
-//                        mIntent = new Intent(ReceivedSuccessActivity.this, TransactionDetailActivity.class);
-//                        startActivity(mIntent);
-//                        finish();
-//                    }
-//                }, 3000 );
-            }
+            ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.SEND, bundle);
         }
     }
 
