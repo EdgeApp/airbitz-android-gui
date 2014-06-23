@@ -302,7 +302,8 @@ public class coreJNI {
   public final static native long p64_t_to_long_ptr(long jarg1);
   public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);
-  public final static native long longPtr_to_walletinfoPtrPtr(long jarg1);
+  public final static native long longp_to_ppWalletinfo(long jarg1);
+  public final static native long longp_to_pWalletinfo(long jarg1);
   public final static native long longPtr_to_charPtrPtr(long jarg1);
   public final static native long charpp_to_longp(long jarg1);
 }

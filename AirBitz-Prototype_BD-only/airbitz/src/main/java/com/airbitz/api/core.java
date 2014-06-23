@@ -341,9 +341,14 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
   }
 
-  public static SWIGTYPE_p_p_sABC_WalletInfo longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long.getCPtr(x));
+  public static SWIGTYPE_p_p_sABC_WalletInfo longp_to_ppWalletinfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_ppWalletinfo(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_WalletInfo(cPtr, false);
+  }
+
+  public static tABC_WalletInfo longp_to_pWalletinfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pWalletinfo(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new tABC_WalletInfo(cPtr, false);
   }
 
   public static SWIGTYPE_p_p_char longPtr_to_charPtrPtr(SWIGTYPE_p_long x) {
