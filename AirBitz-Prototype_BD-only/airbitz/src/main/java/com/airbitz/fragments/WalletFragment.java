@@ -107,12 +107,16 @@ public class WalletFragment extends Fragment {
 
         mAccountTransactions = mAPI.getTransactions(mWalletName);
         mWallet = null;
-        for(Wallet w: mAPI.loadWallets()) {
+        List<Wallet> wallets = mAPI.loadWallets();
+        for(Wallet w: wallets) {
             if (w != null) {
                 if (w.getName().contains(mWalletName))
                     mWallet = w;
             }
         }
+        Wallet test = null;
+        if(mWallet!=null)
+            test = mAPI.getWallet(mWallet.getUUID());
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

@@ -11,11 +11,10 @@ public class Wallet {
     public static final String WALLET_AMOUNT = "amount";
 
     private String mName;
-    private String mUsername;
     private String mUUID;
     private int mCurrencyNum;
-    private int mAttributes;
-    private double mBalance;
+    private long mAttributes;
+    private long mBalance;
     private List<AccountTransaction> mTransactions;
 
     private String mAmount = "";
@@ -24,12 +23,12 @@ public class Wallet {
         mName = name;
     }
 
-    public Wallet(String name, double bal){
+    public Wallet(String name, long balanceSatoshi){
         mName = name;
-        mBalance = bal;
+        mBalance = balanceSatoshi;
     }
 
-    public Wallet(String name, double balance, List<AccountTransaction> list){
+    public Wallet(String name, long balance, List<AccountTransaction> list){
         mName = name;
         mBalance = balance;
         mTransactions = list;
@@ -42,13 +41,6 @@ public class Wallet {
         return mName;
     }
 
-    public void setUsermame(String name){
-        mUsername = name;
-    }
-    public String getUsermame(){
-        return mUsername;
-    }
-
     public void setUUID(String uuid){
         mUUID = uuid;
     }
@@ -56,14 +48,14 @@ public class Wallet {
         return mUUID;
     }
 
-    public void setmCurrencyNum(int num) { mCurrencyNum = num; }
-    public int getmCurrencyNum() {return mCurrencyNum; }
+    public void setCurrencyNum(int num) { mCurrencyNum = num; }
+    public int getCurrencyNum() {return mCurrencyNum; }
 
-    public void setAttributes(int attr) { mAttributes = attr; }
-    public int getAttributes() {return mAttributes; }
+    public void setAttributes(long attr) { mAttributes = attr; }
+    public long getAttributes() {return mAttributes; }
 
-    public void setBalance(double bal) { mBalance = bal; }
-    public double getBalance() {return mBalance; }
+    public void setBalance(long bal) { mBalance = bal; }
+    public long getBalance() {return mBalance; }
 
     public void setAmount(String amount){
         mAmount = amount;
@@ -72,10 +64,10 @@ public class Wallet {
         return mAmount;
     }
 
-    public void setList(List<AccountTransaction> list) {
+    public void setTransactions(List<AccountTransaction> list) {
         mTransactions = list;
     }
-    public List<AccountTransaction> getList() {
+    public List<AccountTransaction> getTransactions() {
         return mTransactions;
     }
 }

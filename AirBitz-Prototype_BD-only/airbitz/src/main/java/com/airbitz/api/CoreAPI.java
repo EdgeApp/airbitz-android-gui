@@ -1,10 +1,8 @@
 package com.airbitz.api;
 
-import android.app.Application;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
 import com.airbitz.activities.SignUpActivity;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
@@ -36,7 +34,7 @@ public class CoreAPI {
     public final static native String getStringAtPtr(long jarg1);
 
 
-    //*****************8 Wallet handling
+    //***************** Wallet handling
     private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x1; // BIT0 is the archive bit
 
     public List<Wallet> loadWallets() {
@@ -68,7 +66,42 @@ public class CoreAPI {
     }
 
     public void reloadWallet(Wallet wallet) {
-        //TODO
+        Wallet info = getWallet(wallet.getUUID());
+        wallet.setName(info.getName());
+        wallet.setUUID(info.getUUID());
+        wallet.setAttributes(info.getAttributes());
+        wallet.setBalance(info.getBalance());
+        wallet.setCurrencyNum(info.getCurrencyNum());
+    }
+
+    public Wallet getWallet(String uuid) {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_WalletInfo walletInfo = core.longp_to_ppWalletinfo(lp);
+
+        tABC_CC result = core.ABC_GetWalletInfo(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, walletInfo, Error);
+
+        int ptrToInfo = core.longp_value(lp);
+        WalletInfo info = new WalletInfo(ptrToInfo);
+
+        if (result ==tABC_CC.ABC_CC_Ok)
+        {
+            Wallet wallet = new Wallet(info.getName(), "");
+            wallet.setName(info.getName());
+            wallet.setUUID(info.getUUID());
+            wallet.setAttributes(info.getAttributes());
+            wallet.setBalance(info.getBalance());
+            wallet.setCurrencyNum(info.getCurrencyNum());
+            //TODO load transactions
+
+            return wallet;
+        }
+        else
+        {
+            Log.d("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
+            return null;
+        }
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -193,9 +226,11 @@ public class CoreAPI {
         return core.longp_value(l);
     }
 
-    public String conversionString(int num) {
-        //TODO
-        return null;
+    public String SatoshiToCurrencyString(long satoshi) {
+        String currency = conversion(satoshi, false);
+        String denominationLabel = "BTC"; //[User Singleton].denominationLabel;
+        String currencyLabel = "USD";
+        return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
 
     //TODO SWIG uses int for long assigns, but should be long. May have to hand code
@@ -233,21 +268,29 @@ public class CoreAPI {
         tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 paWalletInfo, pUCount, pError);
 
-        boolean success = result == tABC_CC.ABC_CC_Ok ? true : false;
+        if(result == tABC_CC.ABC_CC_Ok) {
+            int ptrToInfo = core.longp_value(lp);
+            int count = core.intp_value(pCount);
+            ppWalletInfo base = new ppWalletInfo(ptrToInfo);
 
-        int ptrToInfo = core.longp_value(lp);
-        int count = core.intp_value(pCount);
-        ppWalletInfo base = new ppWalletInfo(ptrToInfo);
-
-        for (int i = 0; i < count; i++) {
-            pLong temp = new pLong(base.getPtr(base, i * 4));
-            long start = core.longp_value(temp);
-            WalletInfo wi = new WalletInfo(start);
-            Wallet in = new Wallet(wi.getName(), wi.mBalance);
-            mWallets.add(in);
+            for (int i = 0; i < count; i++) {
+                pLong temp = new pLong(base.getPtr(base, i * 4));
+                long start = core.longp_value(temp);
+                WalletInfo wi = new WalletInfo(start);
+                Wallet in = new Wallet(wi.getName(), "");
+                in.setBalance(wi.getBalance());
+                in.setUUID(wi.getUUID());
+                in.setAttributes(wi.getAttributes());
+                in.setCurrencyNum(wi.getCurrencyNum());
+                in.setTransactions(wi.getTransactions());
+                mWallets.add(in);
+            }
+            core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
+            return mWallets;
+        } else {
+            Log.d("CoreAPI", "getCoreWallets failed.");
         }
-        core.ABC_FreeWalletInfoArray(core.longPtr_to_walletinfoPtrPtr(new pLong(ptrToInfo)), count);
-        return mWallets;
+        return null;
     }
 
     private class ppWalletInfo extends SWIGTYPE_p_p_sABC_WalletInfo {
@@ -265,6 +308,9 @@ public class CoreAPI {
         String mName;
         String mUUID;
         long mBalance;
+        private int mCurrencyNum;
+        private long mAttributes;
+        private List<AccountTransaction> mTransactions = null;
 
         public WalletInfo(long pv) {
             super(pv, false);
@@ -274,7 +320,9 @@ public class CoreAPI {
                 SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi();
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mBalance = core.longp_value(p);
-                //TODO finish others?
+                mCurrencyNum = super.getCurrencyNum();
+                mAttributes = super.getAttributes();
+                //TODO transactions here?
             }
         }
 
@@ -285,6 +333,14 @@ public class CoreAPI {
         public String getUUID() {
             return mUUID;
         }
+
+        public long getBalance() {return mBalance; }
+
+        public long getAttributes() {return mAttributes; }
+
+        public int getCurrencyNum() {return mCurrencyNum; }
+
+        public List<AccountTransaction> getTransactions() {return mTransactions; }
     }
 
     private class pLong extends SWIGTYPE_p_long {
