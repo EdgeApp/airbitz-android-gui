@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.activities.SignUpActivity;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 
@@ -32,6 +33,7 @@ public class CoreAPI {
         }
         return mInstance;
     }
+    public final static native String getStringAtPtr(long jarg1);
 
 
     //*****************8 Wallet handling
@@ -48,7 +50,7 @@ public class CoreAPI {
                 list.add(wallet);
         }
         list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd", "Goodbye")); //Archive HEADER
-        // Loop through and find non-archived wallets first
+        // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & WALLET_ATTRIBUTE_ARCHIVE_BIT) == 1)
                 list.add(wallet);
@@ -115,23 +117,33 @@ public class CoreAPI {
     }
 
     public String formatCurrency(double in, boolean withSymbol) {
-        //TODO
-        return null;
+        String pre = "";
+        if (withSymbol)
+            pre = "$ ";
+        return pre+Double.toString(in);
     }
 
     public int currencyDecimalPlaces(String label) {
-        //TODO
-        return 0;
+        int decimalPlaces = 5;
+        if (label.contains("uBTC"))
+            decimalPlaces = 2;
+        else if (label.contains("mBTC"))
+            decimalPlaces = 3;
+        return decimalPlaces;
     }
 
     public int maxDecimalPlaces(String label) {
-        //TODO
-        return 0;
+        int decimalPlaces = 8;
+        if (label.contains("uBTC"))
+            decimalPlaces = 2;
+        else if (label.contains("mBTC"))
+            decimalPlaces = 5;
+        return decimalPlaces;
     }
 
-    public long cleanNumberString(String label) {
-        //TODO
-        return 0;
+    public long cleanNumberString(String value) {
+        String out = value.replaceAll("[^a-zA-Z0-9]","");
+        return Long.valueOf(out);
     }
 
     public String formatSatoshi(long amount) {
@@ -139,17 +151,46 @@ public class CoreAPI {
     }
 
     public String formatSatoshi(long amount, boolean withSymbol) {
-        return formatSatoshi(amount, withSymbol, -1);
+        return formatSatoshi(amount, withSymbol, 3);
     }
 
     public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
-        //TODO
-        return null;
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longPtr_to_charPtrPtr(lp);
+
+        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) amount);
+
+        boolean negative = amount < 0;
+        tABC_CC result = core.ABC_FormatAmount(amt, ppChar, decimals, error);
+        if ( result != tABC_CC.ABC_CC_Ok)
+        {
+            return null;
+        }
+        else {
+            String pFormatted = getStringAtPtr(core.longp_value(lp));
+
+            if (negative) {
+                pFormatted = "(" + pFormatted + ")";
+            }
+            return pFormatted;
+        }
     }
 
-    public long denominationToSatoshi(String amount) {
-        //TODO
-        return 0;
+
+    public long denominationToSatoshi(String amount, int decimalPlaces) {
+        long parsedAmount;
+        SWIGTYPE_p_int64_t out = core.new_int64_tp();
+        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(out);
+
+        String cleanAmount = amount.replaceAll(",", "");
+        tABC_CC result = core.ABC_ParseAmount(cleanAmount, out, decimalPlaces);
+        if (result != tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "denomination to Satoshi error");
+        }
+        return core.longp_value(l);
     }
 
     public String conversionString(int num) {
@@ -157,12 +198,32 @@ public class CoreAPI {
         return null;
     }
 
+    //TODO SWIG uses int for long assigns, but should be long. May have to hand code
+    //Values returned are good up until max int value of 2147483647
+    public String conversion(long satoshi, boolean btc)
+    {
+        if (!btc)
+        {
+            tABC_Error error = new tABC_Error();
+            SWIGTYPE_p_double currency = core.new_doublep();
+            SWIGTYPE_p_int64_t sat = core.new_int64_tp();
+            SWIGTYPE_p_long l = core.p64_t_to_long_ptr(sat);
+            core.longp_assign(l, (int) satoshi);
+
+            core.ABC_SatoshiToCurrency(sat, currency, SignUpActivity.DOLLAR_CURRENCY_NUMBER, error);
+            return formatCurrency(core.doublep_value(currency));
+        }
+        else // currency
+        {
+            return formatSatoshi(satoshi);
+        }
+    }
 
     private List<Wallet> getCoreWallets() {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo test = core.longPtr_to_walletinfoPtr(lp);
+        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longPtr_to_walletinfoPtr(lp);
 
         tABC_Error pError = new tABC_Error();
 
@@ -170,7 +231,7 @@ public class CoreAPI {
         SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
         tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                test, pUCount, pError);
+                paWalletInfo, pUCount, pError);
 
         boolean success = result == tABC_CC.ABC_CC_Ok ? true : false;
 

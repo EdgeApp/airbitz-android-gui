@@ -19,6 +19,16 @@ public class coreJNI {
   public final static native void delete_longp(long jarg1);
   public final static native void longp_assign(long jarg1, int jarg2);
   public final static native int longp_value(long jarg1);
+  public final static native long new_int64_tp();
+  public final static native long copy_int64_tp(long jarg1);
+  public final static native void delete_int64_tp(long jarg1);
+  public final static native void int64_tp_assign(long jarg1, long jarg2);
+  public final static native long int64_tp_value(long jarg1);
+  public final static native long new_doublep();
+  public final static native long copy_doublep(double jarg1);
+  public final static native void delete_doublep(long jarg1);
+  public final static native void doublep_assign(long jarg1, double jarg2);
+  public final static native double doublep_value(long jarg1);
   public final static native int ABC_MAX_STRING_LENGTH_get();
   public final static native int ABC_BITCOIN_DECIMAL_PLACES_get();
   public final static native int ABC_CC_Ok_get();
@@ -290,6 +300,9 @@ public class coreJNI {
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long longPtr_to_walletinfoPtr(long jarg1);
   public final static native long p64_t_to_long_ptr(long jarg1);
+  public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);
   public final static native long longPtr_to_walletinfoPtrPtr(long jarg1);
+  public final static native long longPtr_to_charPtrPtr(long jarg1);
+  public final static native long charpp_to_longp(long jarg1);
 }

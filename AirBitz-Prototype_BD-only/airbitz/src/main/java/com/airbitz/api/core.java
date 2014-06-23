@@ -53,6 +53,50 @@ public class core implements coreConstants {
     return coreJNI.longp_value(SWIGTYPE_p_long.getCPtr(obj));
   }
 
+  public static SWIGTYPE_p_int64_t new_int64_tp() {
+    long cPtr = coreJNI.new_int64_tp();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_int64_t(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_int64_t copy_int64_tp(SWIGTYPE_p_int64_t value) {
+    long cPtr = coreJNI.copy_int64_tp(SWIGTYPE_p_int64_t.getCPtr(value));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_int64_t(cPtr, false);
+  }
+
+  public static void delete_int64_tp(SWIGTYPE_p_int64_t obj) {
+    coreJNI.delete_int64_tp(SWIGTYPE_p_int64_t.getCPtr(obj));
+  }
+
+  public static void int64_tp_assign(SWIGTYPE_p_int64_t obj, SWIGTYPE_p_int64_t value) {
+    coreJNI.int64_tp_assign(SWIGTYPE_p_int64_t.getCPtr(obj), SWIGTYPE_p_int64_t.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_int64_t int64_tp_value(SWIGTYPE_p_int64_t obj) {
+    return new SWIGTYPE_p_int64_t(coreJNI.int64_tp_value(SWIGTYPE_p_int64_t.getCPtr(obj)), true);
+  }
+
+  public static SWIGTYPE_p_double new_doublep() {
+    long cPtr = coreJNI.new_doublep();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_double copy_doublep(double value) {
+    long cPtr = coreJNI.copy_doublep(value);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
+  }
+
+  public static void delete_doublep(SWIGTYPE_p_double obj) {
+    coreJNI.delete_doublep(SWIGTYPE_p_double.getCPtr(obj));
+  }
+
+  public static void doublep_assign(SWIGTYPE_p_double obj, double value) {
+    coreJNI.doublep_assign(SWIGTYPE_p_double.getCPtr(obj), value);
+  }
+
+  public static double doublep_value(SWIGTYPE_p_double obj) {
+    return coreJNI.doublep_value(SWIGTYPE_p_double.getCPtr(obj));
+  }
+
   public static tABC_CC ABC_Initialize(String szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void fAsyncBitCoinEventCallback, SWIGTYPE_p_void pData, String pSeedData, long seedLength, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Initialize(szRootDir, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void.getCPtr(fAsyncBitCoinEventCallback), SWIGTYPE_p_void.getCPtr(pData), pSeedData, seedLength, tABC_Error.getCPtr(pError), pError));
   }
@@ -287,6 +331,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
   }
 
+  public static SWIGTYPE_p_double p64_t_to_double_ptr(SWIGTYPE_p_int64_t x) {
+    long cPtr = coreJNI.p64_t_to_double_ptr(SWIGTYPE_p_int64_t.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
+  }
+
   public static SWIGTYPE_p_unsigned_int int_to_uint(SWIGTYPE_p_int x) {
     long cPtr = coreJNI.int_to_uint(SWIGTYPE_p_int.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
@@ -295,6 +344,16 @@ public class core implements coreConstants {
   public static SWIGTYPE_p_p_sABC_WalletInfo longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longPtr_to_walletinfoPtrPtr(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_WalletInfo(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_char longPtr_to_charPtrPtr(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longPtr_to_charPtrPtr(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_char(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_long charpp_to_longp(SWIGTYPE_p_p_char x) {
+    long cPtr = coreJNI.charpp_to_longp(SWIGTYPE_p_p_char.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
   }
 
 }

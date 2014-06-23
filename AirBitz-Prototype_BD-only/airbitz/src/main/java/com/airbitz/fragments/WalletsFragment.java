@@ -114,6 +114,15 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
+//        String temp = mAPI.conversion(100000000, false);
+//        temp = mAPI.conversion(2147483647, false);
+//        double big = 2147483647*10.0;
+//        temp = mAPI.conversion((long) big, false);
+//        temp = mAPI.conversion(1073741823, false);
+//        String other = temp+"";
+
+        String temp = mAPI.formatSatoshi(2147483647, false, 3);
+
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
         currencyList.add("USD");
@@ -380,14 +389,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
             moverType.setImageResource(R.drawable.ico_usd_white);
             double conv = 0.1145;
-            for(Wallet trans: mLatestWalletList){
-                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+            for(Wallet wallet: mLatestWalletList){
+                if(wallet.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
                     try {
-                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
+                        double item = wallet.getBalance(); //Double.parseDouble(wallet.getAmount().substring(1)) * conv;
                         String amount = String.format("$%.3f", item);
-                        trans.setAmount(amount);
+                        wallet.setAmount(amount);
                     } catch (Exception e) {
-                        trans.setAmount("0");
+                        wallet.setAmount("0");
                         e.printStackTrace();
                     }
                 }
@@ -467,42 +476,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
     }
 
-    public void addNewWallet(String name, String amount){
+    public void addNewWallet(String name){
         if(AirbitzApplication.isLoggedIn()) {
             mAddWalletTask = new AddWalletTask(name, AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
             mAddWalletTask.execute((Void) null);
         } else {
             Log.d("WalletsFragment", "not logged in");
         }
-
-//        double conv=0;
-//        double item=0;
-//
-//        if(mOnBitcoinMode){
-//            //conv = 8.7544;
-//            //item = Double.parseDouble(amount.substring(1))*conv;
-//            //amount = String.format("B%.3f", item);
-//        }
-//        else{
-//            conv = 0.1145;
-//            item = Double.parseDouble(amount.substring(1))*conv;
-//            amount = String.format("$%.3f", item);
-//        }
-//        //TODO make sure that everyone knows its been added
-//        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-//        Wallet tempWallet = new Wallet(name, item);
-//        int counter = 0;
-//        int pos = -1;
-//        while(counter !=2){
-//            pos++;
-//            if(wallets.get(pos).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd" ){//TODO ALERT
-//                counter = 2;
-//            }
-//        }
-//        wallets.add(pos, tempWallet);
-        //mLatestWalletListView.addWalletToList(tempWallet);
-//        mLatestWalletAdapter.addWallet(tempWallet);
-//        mLatestWalletAdapter.incArchivePos();
     }
 
     /**
@@ -538,6 +518,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 mLatestWalletList = mAPI.loadWallets();
                 mLatestWalletAdapter.swapWallets(mLatestWalletList);
                 ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+
             }
         }
 
@@ -589,9 +570,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if(!nameEditText.getText().toString().isEmpty()) {
                 if (!newWalletSwitch.isChecked()) {
                     if (mOnBitcoinMode) {
-                        addNewWallet(nameEditText.getText().toString(), "B0.000");
+                        addNewWallet(nameEditText.getText().toString());
                     } else {
-                        addNewWallet(nameEditText.getText().toString(), "$0.00");
+                        addNewWallet(nameEditText.getText().toString());
                     }
                 } else {
                     ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment());
