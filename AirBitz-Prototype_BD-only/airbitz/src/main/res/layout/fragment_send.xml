@@ -10,14 +10,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44.1dp"
         android:id="@+id/layout_header"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:background="#40000000">
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:id="@+id/button_back"
@@ -25,24 +24,23 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:visibility="invisible"
-            android:layout_margin="5dp"/>
+            android:padding="12.6dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send_title"
+            android:text="Send Bitcoin"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20dp"/>
 
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:id="@+id/button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
@@ -50,7 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
+            android:padding="12.6dp"/>
 
     </RelativeLayout>
 
@@ -58,65 +56,54 @@
     <LinearLayout
         android:id="@+id/layout_data"
         android:layout_below="@id/layout_header"
-        android:layout_above="@id/bottom_padding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="126dp"
         android:orientation="vertical">
 
                 <RelativeLayout
                     android:id="@+id/layout_send"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="85.05dp"
                     android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15.75dp"
+                    android:layout_marginRight="15.75dp"
+                    android:layout_marginTop="15.75dp"
                     android:layout_marginBottom="5dp"
                     android:gravity="center_horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp">
+                    android:paddingTop="9.45dp"
+                    android:paddingRight="6.3dp"
+                    android:paddingLeft="6.3dp">
 
                     <LinearLayout
                         android:id="@+id/layout_from"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="25.2dp"
                         android:orientation="horizontal"
                         android:weightSum="3"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp">
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginBottom="9.45dp">
 
                         <TextView
                             android:id="@+id/textview_from"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/send_from_title"
-                            android:gravity="right|center_vertical"
+                            android:text="Send From:"
+                            android:gravity="center_vertical|right"
                             android:textColor="@android:color/white"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="15sp"
+                            android:textSize="14dp"
                             android:layout_weight="2"
-                            android:layout_gravity="right"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:paddingRight="6.3dp"/>
 
-                        <Button
-                            android:id="@+id/button_from"
+                        <Spinner
+                            android:id="@+id/from_wallet_spinner"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/btn_trans_rounded"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:textSize="14dp"
+                            android:background="@drawable/btn_trans_rounded_stretch"
                             android:gravity="center"
-                            android:textColor="@android:color/white"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:paddingBottom="5dp"
-                            android:paddingTop="5dp"
-                            android:textSize="18sp"
-                            android:layout_weight="1"/>
+                            android:textColor="@android:color/white"/>
 
                     </LinearLayout>
 
@@ -124,13 +111,11 @@
                     <LinearLayout
                         android:id="@+id/layout_to"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="28.35dp"
                         android:orientation="horizontal"
                         android:layout_below="@id/layout_from"
                         android:weightSum="3"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="0dp">
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:id="@+id/textview_to"
@@ -139,106 +124,37 @@
                             android:text="@string/send_to_title"
                             android:gravity="right"
                             android:textColor="@android:color/white"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="15sp"
+                            android:textSize="14dp"
+                            android:paddingRight="6.3dp"
                             android:layout_weight="2"
                             android:textStyle="bold"/>
 
                         <EditText
                             android:id="@+id/edittext_to"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:background="@drawable/rounded_edge_black_transparent_30"
-                            android:gravity="center"
+                            android:gravity="left|center_vertical"
+                            android:inputType="textVisiblePassword|textNoSuggestions"
+                            android:paddingLeft="6.3dp"
+                            android:singleLine="true"
                             android:textColor="@android:color/white"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:paddingBottom="5dp"
-                            android:paddingTop="5dp"
-                            android:textSize="15sp"
+                            android:textSize="14dp"
+                            android:imeOptions="actionDone"
                             android:layout_weight="1"/>
                     </LinearLayout>
 
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textview_scan_qrcode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send_scan_text"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"/>
+
 
 
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/layout_action"
-        android:layout_alignParentBottom="true">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/bg_camera">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_edge_white_transparent_30"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/button_flash_on"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ico_flash_on_off"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="1"/>
-                <ImageButton
-                    android:id="@+id/button_flash_auto"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ico_flash_auto_on"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="1"/>
-                <ImageButton
-                    android:id="@+id/button_flash_off"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ico_flash_off_off"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/layout_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/layout_action"
         android:layout_below="@id/layout_data">
 
         <FrameLayout
@@ -249,6 +165,72 @@
             android:layout_centerHorizontal="true">
 
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/textview_scan_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_scan_text"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rounded_edge_white_transparent_30"
+            android:weightSum="3">
+
+            <ImageButton
+                android:id="@+id/button_flash_on"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:src="@drawable/ico_flash_on_off"
+                android:background="@android:color/transparent"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/button_flash_off"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ico_flash_off_on"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/button_gallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerInside"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/gallery_button"
+            android:layout_weight="1"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_margin="12.6dp"
+            android:background="@drawable/camera_frame"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

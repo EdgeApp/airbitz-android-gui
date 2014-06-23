@@ -33,13 +33,19 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private int  archivePos;
 
 
-    HashMap<Wallet, Integer> mIdMap = new HashMap<Wallet, Integer>();
-    HashMap<Wallet, Integer> mArchivedIdMap = new HashMap<Wallet, Integer>();
+    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+    HashMap<String, Integer> mArchivedIdMap = new HashMap<String, Integer>();
 
     public WalletAdapter(Context context, List<Wallet> walletList){
         super(context, R.layout.item_listview_wallets, walletList);
         mContext = context;
-        swapWallets(walletList);
+        mWalletList = walletList;
+        for(Wallet wallet: mWalletList){
+            if(wallet.getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                archivePos = mWalletList.indexOf(wallet);
+            }
+            addWallet(wallet);
+        }
     }
 
     public void setFirstHeaderHover(boolean status){ hoverFirstHeader = status;}
@@ -51,34 +57,33 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     public void addWallet(Wallet wallet){
-        if(mArchivedIdMap.containsKey(wallet)){
-            mIdMap.put(wallet,mArchivedIdMap.get(wallet));
-            mArchivedIdMap.remove(wallet);
+        if(mArchivedIdMap.containsKey(wallet.getName())){
+            mIdMap.put(wallet.getName(),mArchivedIdMap.get(wallet));
+            mArchivedIdMap.remove(wallet.getName());
         }else {
-            mIdMap.put(wallet, nextId);
+            mIdMap.put(wallet.getName(), nextId);
             nextId++;
         }
         //mWalletList.add(wallet);
     }
 
-    public void swapWallets(List<Wallet> walletList) {
-        mIdMap.clear();
-        nextId=0;
-        this.mWalletList = walletList;
-        for (int i = 0; i < walletList.size(); ++i) {
-            if(walletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
+    public void swapWallets() {
+        archivePos++;
+        for (int i = 0; i < mWalletList.size(); ++i) {
+            if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
                 archivePos = i;
             }
-            mIdMap.put(walletList.get(i), i);
-            nextId++;
+            if(!mIdMap.containsKey(mWalletList.get(i).getName())){
+                mIdMap.put(mWalletList.get(i).getName(), nextId);
+                nextId++;
+            }
         }
-        notifyDataSetChanged();
     }
 
 
     public void removeWallet(Wallet wallet){
-        mArchivedIdMap.put(wallet,mIdMap.get(wallet));
-        mIdMap.remove(wallet);
+        mArchivedIdMap.put(wallet.getName(),mIdMap.get(wallet));
+        mIdMap.remove(wallet.getName());
     }
 
     public void switchCloseAfterArchive(int pos){
@@ -108,6 +113,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
                 ((TextView) convertView).setText("ARCHIVE");
                 archivePos = position;
+                System.out.println("Archive Pos: "+archivePos);
                 if(hoverSecondHeader){
                     convertView.setVisibility(View.INVISIBLE);
                 }else {
@@ -151,7 +157,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             return INVALID_ID;
         }
         Wallet item = mWalletList.get(position);
-        return mIdMap.get(item);
+        return mIdMap.get(item.getName());
     }
 
     @Override

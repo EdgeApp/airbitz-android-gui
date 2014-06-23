@@ -568,7 +568,7 @@ public class DynamicListView extends ListView {
             }
             listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
             int firstPosition = getFirstVisiblePosition();
-            if(listArchiveHeader==null && firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
+            if(listArchiveHeader==null && firstPosition > ((WalletAdapter)getAdapter()).getArchivePos()){
                 archiveHeader.setVisibility(GONE);
                 archiveHeader.setVisibility(VISIBLE);
             }

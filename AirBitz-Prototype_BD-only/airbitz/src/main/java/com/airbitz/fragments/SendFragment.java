@@ -8,24 +8,36 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2/22/14.
@@ -36,7 +48,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private EditText mToEdittext;
 
     private View mView;
-    private Button mFromButton;
+    //private Button mFromButton;
 
     private TextView mFromTextView;
     private TextView mToTextView;
@@ -45,23 +57,21 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private ImageButton mFlashOnButton;
     private ImageButton mFlashOffButton;
-    private ImageButton mAutoFlashButton;
+    private ImageButton mGalleryButton;
 
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
 
     private FrameLayout mPreviewFrame;
 
-    private int BACK_CAMERA_INDEX = 0;
+    private Spinner walletSpinner;
+    private List<String> mWalletList;
 
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mNavigationLayout;
+    private int BACK_CAMERA_INDEX = 0;
 
 //    private ScrollView mScrollView;
 
-    private boolean mFlashAutoActive = true;
-    private boolean mFlashOffInActive = false;
-    private boolean mFlashOnInActive = false;
+    private boolean mFlashOn = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -75,55 +85,53 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mWalletList = new ArrayList<String>();
+        addWalletNamesToList();
 
         mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
         mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
-        mAutoFlashButton = (ImageButton) view.findViewById(R.id.button_flash_auto);
+        mGalleryButton = (ImageButton) view.findViewById(R.id.button_gallery);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mFromTextView = (TextView) view.findViewById(R.id.textview_from);
         mToTextView = (TextView) view.findViewById(R.id.textview_to);
         mQRCodeTextView = (TextView) view.findViewById(R.id.textview_scan_qrcode);
 
-        mFromButton = (Button) view.findViewById(R.id.button_from);
         mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mFromButton.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+
+        walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
+        walletSpinner.setAdapter(dataAdapter);
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mQRCodeTextView.getPaint().setShader(textShader);
 
-        mFromButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).switchFragmentThread(1);
-            }
-        });
-
         mFlashOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mFlashOffInActive){
+                if(!mFlashOn){
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-
-                    mFlashOffInActive = true;
+                    mFlashOn = true;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashOffInActive = false;
+                    mFlashOn = false;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
                 }
             }
         });
@@ -131,33 +139,54 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mFlashOnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mFlashOnInActive){
+                if(mFlashOn){
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashOnInActive = true;
+                    mFlashOn = false;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
                 }
                 else{
                     mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
                     mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashOnInActive = false;
+                    mFlashOn = true;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
                 }
             }
         });
 
-        mAutoFlashButton.setOnClickListener(new View.OnClickListener() {
+        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                if(mFlashAutoActive){
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    Fragment frag = new SendConfirmationFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
+                    bundle.putString("to_name",mToEdittext.getText().toString());
+                    ((NavigationActivity)getActivity()).pushFragment(frag);
+                    return true;
+                }
+                return false;
+            }
+        });
 
-                }
-                else{
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_on);
-                    mFlashAutoActive = true;
-                }
+        mToEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //TODO from wallet etc?
             }
         });
 
@@ -272,6 +301,15 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         @Override
         public void run() { startCamera(BACK_CAMERA_INDEX); }
     };
+
+    public void addWalletNamesToList(){
+        CoreAPI api = CoreAPI.getApi();
+        List<Wallet> tempWallets = api.loadWallets();
+        for(Wallet wallet: tempWallets){
+            if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
+                mWalletList.add(wallet.getName());
+        }
+    }
 
     @Override
     public void onPause() {

@@ -473,15 +473,19 @@ public class LandingFragment extends Fragment {
     }
 
     private void clearSharedPreference(String key) {
-        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-        editor.remove(key);
-        editor.commit();
+        if(getActivity() != null) {
+            SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
+            editor.remove(key);
+            editor.commit();
+        }
     }
 
     private void clearSharedPreference() {
-        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-        editor.remove(LAT_KEY);
-        editor.remove(LON_KEY);
-        editor.commit();
+        if(getActivity() != null) {
+            SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
+            editor.remove(LAT_KEY);
+            editor.remove(LON_KEY);
+            editor.commit();
+        }
     }
 }

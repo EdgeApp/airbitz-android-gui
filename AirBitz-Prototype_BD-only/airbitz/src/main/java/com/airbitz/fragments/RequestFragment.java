@@ -54,8 +54,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private Button mQRCodeButton;
     private Button mBLEButton;
 
-    private ListView mDropDownListView;
-    private RequestDropDownAdapter mDropDownAdapter;
     private List<String> mWalletList;
 
     private Spinner pickWalletSpinner;
