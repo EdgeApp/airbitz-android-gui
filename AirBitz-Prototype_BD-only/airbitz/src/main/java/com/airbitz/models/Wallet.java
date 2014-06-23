@@ -18,7 +18,7 @@ public class Wallet {
     private double mBalance;
     private List<AccountTransaction> mTransactions;
 
-    private String mAmount;
+    private String mAmount = "";
 
     public Wallet(String name, String amount) {
         mName = name;

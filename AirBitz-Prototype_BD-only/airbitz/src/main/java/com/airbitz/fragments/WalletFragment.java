@@ -156,9 +156,9 @@ public class WalletFragment extends Fragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mWalletNameButton.setText(mWalletName);
-        mButtonBitcoinBalance.setText(getWalletBalance());
+        mButtonBitcoinBalance.setText(Double.toString(getWalletBalance()));
         mButtonMover.setText(mButtonDollarBalance.getText());
-        mButtonDollarBalance.setText("$"+(Double.parseDouble(getWalletBalance().substring(1))*0.1145));
+        mButtonDollarBalance.setText("$"+(Double.parseDouble(Double.toString(getWalletBalance()))));
         mWalletNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -275,8 +275,8 @@ public class WalletFragment extends Fragment {
     }
 
     // AirbitzAPI calls here
-    private String getWalletBalance() {
-        return mWallet.getAmount();
+    private double getWalletBalance() {
+        return mWallet.getBalance();
     }
 
     private void switchBarInfo(boolean isBitcoin){
