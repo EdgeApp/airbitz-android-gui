@@ -121,7 +121,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 //        temp = mAPI.conversion(1073741823, false);
 //        String other = temp+"";
 
-        String temp = mAPI.formatSatoshi(2147483647, false, 3);
+//        String temp = mAPI.formatSatoshi(2147483647, false, 3);
+//        String temp2 = mAPI.SatoshiToCurrencyString((long) 1E8);
+
 
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
@@ -486,7 +488,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
     /**
-     * Represents an asynchronous creation of the first wallet
+     * Represents an asynchronous creation of a new wallet
      */
     public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
 
