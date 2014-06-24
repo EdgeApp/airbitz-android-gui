@@ -59,6 +59,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
 
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
 
+    private boolean keyBoardUp = false;
+
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
@@ -115,8 +117,12 @@ implements NavigationBarFragment.OnScreenSelectedListener {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     hideNavBar();
+                    keyBoardUp = true;
                 } else {
-                    showNavBar();
+                    if(keyBoardUp) {
+                        showNavBar();
+                        keyBoardUp = false;
+                    }
                 }
             }
         });
@@ -162,10 +168,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             mNavBarFragmentLayout.setVisibility(View.GONE);
             mNavBarFragment.hideNavBarFragment();
             mNavBarFragmentLayout.invalidate();
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(0,0);
-            mNavBarFragmentLayout.setLayoutParams(rLP);
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
-            lLP.setMargins(0,0,0,0);
             mFragmentLayout.setLayoutParams(lLP);
         }
     }
@@ -231,12 +234,19 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         mNavBarFragmentLayout.setVisibility(View.GONE);
         mNavBarFragment.hideNavBarFragment();
         mNavBarFragmentLayout.invalidate();
+        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mFragmentLayout.setLayoutParams(rLP);
+        mFragmentLayout.invalidate();
     }
 
     public void showNavBar() {
         mNavBarFragmentLayout.setVisibility(View.VISIBLE);
         mNavBarFragment.showNavBarFragment();
         mNavBarFragmentLayout.invalidate();
+        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        rLP.setMargins(0,0,0,(int)getResources().getDimension(R.dimen.nav_bar_height));
+        mFragmentLayout.setLayoutParams(rLP);
+        mFragmentLayout.invalidate();
     }
 
     public LinearLayout getCalculatorView() {

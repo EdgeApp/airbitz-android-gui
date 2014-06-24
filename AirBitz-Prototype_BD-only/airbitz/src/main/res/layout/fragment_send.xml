@@ -135,7 +135,7 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/rounded_edge_black_transparent_30"
                             android:gravity="left|center_vertical"
-                            android:inputType="textVisiblePassword|textNoSuggestions"
+                            android:inputType="textAutoComplete"
                             android:paddingLeft="6.3dp"
                             android:singleLine="true"
                             android:textColor="@android:color/white"
