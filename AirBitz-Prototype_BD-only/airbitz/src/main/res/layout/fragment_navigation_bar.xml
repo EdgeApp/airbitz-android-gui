@@ -68,7 +68,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="9mm"
+        android:layout_height="56.7dp"
         android:id="@+id/normal_navigation_bar"
         android:weightSum="5">
         <ImageView

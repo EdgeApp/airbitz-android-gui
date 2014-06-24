@@ -37,4 +37,8 @@
     <dimen name="spinner_width_password">39mm</dimen>
     <dimen name="drop_down_height">6mm</dimen>
 
+    <dimen name="negative_margin_popup">-27dp</dimen>
+
+    <dimen name="nav_bar_height">56.7dp</dimen>
+
     </resources>

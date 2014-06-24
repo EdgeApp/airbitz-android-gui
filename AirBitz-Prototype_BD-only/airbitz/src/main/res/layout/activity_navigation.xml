@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="9mm"
+            android:layout_marginBottom="56.7dp"
             android:orientation="vertical">
 
         </LinearLayout>

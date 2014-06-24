@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -230,6 +231,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
+                    View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    float heightPop = activityRootView.getHeight() - mListviewContainer.getX();
+                    RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)heightPop);
+                    lLP.addRule(RelativeLayout.BELOW,R.id.layout_data);
+                    lLP.setMargins(0,(int)getActivity().getResources().getDimension(R.dimen.negative_margin_popup),0,0);
+                    mListviewContainer.setLayoutParams(lLP);
                     goAutoCompleteListing();
                 }else{
                     mListviewContainer.setVisibility(View.GONE);
