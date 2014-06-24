@@ -101,6 +101,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private List<String> currencyList;
     private CoreAPI mAPI;
     private AddWalletTask mAddWalletTask;
+    private boolean fragmentsCreated = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -110,8 +111,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletList = mAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
         bundle = this.getArguments();
-        if(bundle != null){
-            System.out.println("Wallets Fragment Is Being Created");
+        if(bundle != null && bundle.getBoolean("create")){
+            bundle.remove("create");
+            bundle.putBoolean("create", false);
             buildFragments();
         }
     }

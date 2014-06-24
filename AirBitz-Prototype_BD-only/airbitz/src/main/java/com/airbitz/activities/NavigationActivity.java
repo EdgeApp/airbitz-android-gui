@@ -286,6 +286,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             }
             Fragment frag = new WalletsFragment();
             bundle.putString("source", "REQUEST");
+            bundle.putBoolean("create", true);
             frag.setArguments(bundle);
             pushFragment(frag);
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
@@ -299,6 +300,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
             }
             Fragment frag = new WalletsFragment();
             bundle.putString("source", "SEND");
+            bundle.putBoolean("create", true);
             frag.setArguments(bundle);
             pushFragment(frag);
         }
