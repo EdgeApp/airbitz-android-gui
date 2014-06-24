@@ -86,6 +86,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private ImageView moverCoin;
     private ImageView moverType;
 
+    private Bundle bundle;
 
     private TextView mTitleTextView;
 
@@ -108,6 +109,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mAPI = CoreAPI.getApi();
         mLatestWalletList = mAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
+        bundle = this.getArguments();
+        if(bundle != null){
+            System.out.println("Wallets Fragment Is Being Created");
+            buildFragments();
+        }
     }
 
     @Override
@@ -634,5 +640,16 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setHeaderVisibilityOnReturn();
     }
 
+    public void buildFragments(){
+        bundle.putString(Wallet.WALLET_NAME, bundle.getString("wallet_name"));
+        if(bundle.getString("source")=="REQUEST" || bundle.getString("source")=="SEND"){
+            Fragment frag = new WalletFragment();
+            frag.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag);
+            Fragment frag2 = new TransactionDetailFragment();
+            frag2.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag2);
+        }
+    }
 
 }
