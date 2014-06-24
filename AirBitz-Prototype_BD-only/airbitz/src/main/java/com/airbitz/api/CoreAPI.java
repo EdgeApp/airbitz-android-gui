@@ -32,6 +32,7 @@ public class CoreAPI {
         return mInstance;
     }
     public final static native String getStringAtPtr(long jarg1);
+    public final static native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
 
 
     //***************** Wallet handling
@@ -105,7 +106,23 @@ public class CoreAPI {
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
-        //TODO
+        String[] uuids = new String[wallets.size()-2]; // 2 extras for headers
+        int i=0;
+        for(Wallet wallet : wallets) {
+            if(wallet.isRealWallet())
+                uuids[i++] = wallet.getUUID();
+        }
+
+        tABC_Error Error = new tABC_Error();
+
+        int walletCount = uuids.length;
+        int result = setWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            uuids, Error);
+
+        if(tABC_CC.swigToEnum(result) != tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
+        }
     }
 
     public boolean setWalletAttributes(Wallet wallet) {
