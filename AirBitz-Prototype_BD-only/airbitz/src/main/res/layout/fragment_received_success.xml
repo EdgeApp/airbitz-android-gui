@@ -11,71 +11,68 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44.1dp"
         android:id="@+id/layout_header"
-        android:background="#40000000"
-        android:padding="4dp">
+        android:background="#40000000">
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:id="@+id/button_back"
-            android:contentDescription="@string/string_back_button"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:layout_margin="5dp"/>
+            android:padding="12.6dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/received_success_title"
+            android:text="Send Status"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20dp"/>
 
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:id="@+id/button_help"
-            android:contentDescription="@string/string_help_button"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
+            android:padding="12.6dp"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-    android:id="@+id/layout_sending"
-    android:layout_below="@id/layout_header"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+        android:id="@+id/layout_sending"
+        android:layout_below="@id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
 
-    <TextView
-        android:id="@+id/textview_sending"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/received_success_sending_title"
-        android:textColor="@android:color/white"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/textview_sending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/received_success_sending_title"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
         <ImageView
             android:layout_above="@id/textview_sending"
             android:id="@+id/imageview_logo"
@@ -84,66 +81,6 @@
             android:src="@drawable/ico_sending_3"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_centerHorizontal="true"/>
-
-</RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/layout_success"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="20dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/textview_received"
-            android:layout_width="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_height="wrap_content"
-            android:text="@string/received_success_received_title"
-            android:textColor="@android:color/white"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:id="@+id/textview_bitcoin_amount"
-            android:layout_below="@id/textview_received"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="B25.000"
-            android:textColor="@android:color/white"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"/>
-
-        <LinearLayout
-            android:id="@+id/separator"
-            android:orientation="vertical"
-            android:layout_below="@id/textview_bitcoin_amount"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/white"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:id="@+id/textview_dollar_amount"
-            android:layout_below="@id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$2.000.00"
-            android:textColor="@android:color/white"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
             android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>

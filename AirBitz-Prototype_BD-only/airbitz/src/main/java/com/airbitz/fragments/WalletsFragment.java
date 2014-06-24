@@ -107,10 +107,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         super.onCreate(savedInstanceState);
         mAPI = CoreAPI.getApi();
         mLatestWalletList = mAPI.loadWallets();
+        archivedWalletList = new ArrayList<Wallet>();
+    }
 
-//        //*******************TESTING
-//        mAPI.setWalletOrder(mLatestWalletList);
-//
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_wallets, container, false);
+
 //        String temp = mAPI.conversion(100000000, false);
 //        temp = mAPI.conversion(2147483647, false);
 //        double big = 2147483647*10.0;
@@ -118,15 +121,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 //        temp = mAPI.conversion(1073741823, false);
 //        String other = temp+"";
 
-//        String temp = mAPI.formatSatoshi(2147483647, false, 3);
-//        String temp2 = mAPI.SatoshiToCurrencyString((long) 1E8);
-
-        archivedWalletList = new ArrayList<Wallet>();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wallets, container, false);
+        String temp = mAPI.formatSatoshi(2147483647, false, 3);
 
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
@@ -395,7 +390,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             moverType.setImageResource(R.drawable.ico_usd_white);
             double conv = 0.1145;
             for(Wallet wallet: mLatestWalletList){
-                if(wallet.isRealWallet()) {//TODO ALERT
+                if(wallet.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
                     try {
                         double item = wallet.getBalance(); //Double.parseDouble(wallet.getAmount().substring(1)) * conv;
                         String amount = String.format("$%.3f", item);
@@ -491,7 +486,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
     /**
-     * Represents an asynchronous creation of a new wallet
+     * Represents an asynchronous creation of the first wallet
      */
     public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
 
