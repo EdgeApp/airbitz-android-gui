@@ -1,5 +1,6 @@
 package com.airbitz.api;
 
+import android.accounts.Account;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -75,6 +76,20 @@ public class CoreAPI {
         wallet.setCurrencyNum(info.getCurrencyNum());
     }
 
+    public Wallet getWalletFromName(String walletName) {
+        Wallet wallet = null;
+        List<Wallet> wallets = loadWallets();
+        for(Wallet w: wallets) {
+            if (w != null && w.getName().contains(walletName)) {
+                    wallet = w;
+            }
+        }
+        if(wallet!=null) {
+            wallet = getWallet(wallet.getUUID());
+        }
+        return wallet;
+    }
+
     public Wallet getWallet(String uuid) {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
@@ -94,7 +109,7 @@ public class CoreAPI {
             wallet.setAttributes(info.getAttributes());
             wallet.setBalance(info.getBalance());
             wallet.setCurrencyNum(info.getCurrencyNum());
-            //TODO load transactions
+            wallet.setTransactions(getTransactions(wallet.getName()));
 
             return wallet;
         }
@@ -115,7 +130,6 @@ public class CoreAPI {
 
         tABC_Error Error = new tABC_Error();
 
-        int walletCount = uuids.length;
         int result = setWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
             uuids, Error);
 
@@ -143,22 +157,244 @@ public class CoreAPI {
 
     //************ Transaction handling
     public List<AccountTransaction> loadTransactions(Wallet wallet) {
-        //TODO
-        return null;
+        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int puCount = core.int_to_uint(pCount);
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_TxInfo paTxInfo = core.longp_to_pppTxInfo(lp);
+
+        tABC_CC result = core.ABC_GetTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), paTxInfo, puCount, Error);
+
+        if (result==tABC_CC.ABC_CC_Ok)
+        {
+            int ptrToInfo = core.longp_value(lp);
+            int count = core.intp_value(pCount);
+            ppTxInfo base = new ppTxInfo(ptrToInfo);
+
+            for (int i = count -1; i >0 ; --i) {
+                pLong temp = new pLong(base.getPtr(base, i * 4));
+                long start = core.longp_value(temp);
+                TxInfo txi = new TxInfo(start);
+
+                AccountTransaction in = new AccountTransaction(); //TODO add all info from TxInfo
+
+                listTransactions.add(in);
+            }
+            long bal = 0;
+            for (AccountTransaction at : listTransactions)
+            {
+                bal += at.getAmountSatoshi();
+                at.setBalance(bal);
+            }
+
+
+            core.ABC_FreeTransactions(new SWIGTYPE_p_p_sABC_TxInfo(ptrToInfo, false), count);
+            wallet.setTransactions(listTransactions);
+        }
+        else
+        {
+            Log.d("CoreAPI", "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+        }
+//        core.ABC_FreeTransactions(aTransactions, tCount);
+        return listTransactions;
     }
 
-    public void setTransaction(Wallet wallet, AccountTransaction transaction, tABC_TxInfo txInfo) {
-        //TODO
+    private class ppTxInfo extends SWIGTYPE_p_p_sABC_TxInfo {
+        public ppTxInfo(long ptr) {
+            super(ptr, false);
+        }
+        public long getPtr(SWIGTYPE_p_p_sABC_TxInfo p, long i) {
+            return getCPtr(p) + i;
+        }
     }
 
-    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText) {
-        //TODO
-        return null;
+    private class TxInfo extends tABC_TxInfo {
+        String mID;
+        long mCountAddresses;
+        long mCreationTime;
+        private TxDetails mDetails;
+        private String[] mAddresses;
+
+        public TxInfo(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+                mID = super.getSzID();
+                mCountAddresses = super.getCountAddresses();
+                SWIGTYPE_p_int64_t temp = super.getTimeCreation();
+                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+                mCreationTime = core.longp_value(p);
+
+                tABC_TxDetails txd = super.getPDetails();
+                mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
+                SWIGTYPE_p_p_char a = super.getAAddresses();
+
+                mAddresses = new String[(int) mCountAddresses];
+                long base = a.getCPtr(a);
+                for (int i = 0; i < mCountAddresses; ++i)
+                {
+                    mAddresses[i] = getStringAtPtr(base + i*4);
+                }
+            }
+        }
+
+        public String getID() { return mID; }
+        public long getCount() { return mCountAddresses; }
+        public long getCreationTime() { return mCreationTime; }
+        public TxDetails getDetails() {return mDetails; }
+        public String[] getAddresses() {return mAddresses; }
+    }
+
+    private class TxDetails extends tABC_TxDetails {
+        long mAmountSatoshi; /** amount of bitcoins in satoshi (including fees if any) */
+        long mAmountFeesAirbitzSatoshi;   /** airbitz fees in satoshi */
+        long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
+        double mAmountCurrency;  /** amount in currency */
+        String mName;   /** payer or payee */
+        int mBizId; /** payee business-directory id (0 otherwise) */
+        String mCategory;   /** category for the transaction */
+        String mNotes;  /** notes for the transaction */
+        int mAttributes;    /** attributes for the transaction */
+
+        public TxDetails(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+                mAmountSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountSatoshi()));
+                mAmountFeesAirbitzSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountFeesAirbitzSatoshi()));
+                mAmountFeesMinersSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountFeesMinersSatoshi()));
+                mAmountCurrency = super.getAmountCurrency();
+                mName = super.getSzName();
+                mBizId = (int) super.getBizId();
+                mCategory = super.getSzCategory();
+                mNotes = super.getSzNotes();
+                mAttributes = (int) super.getAttributes();
+            }
+        }
+
+
+        public long getmAmountSatoshi() { return mAmountSatoshi; }
+        public void setmAmountSatoshi(long mAmountSatoshi) { this.mAmountSatoshi = mAmountSatoshi; }
+
+        public long getmAmountFeesAirbitzSatoshi() { return mAmountFeesAirbitzSatoshi; }
+        public void setmAmountFeesAirbitzSatoshi(long mAmountFeesAirbitzSatoshi) { this.mAmountFeesAirbitzSatoshi = mAmountFeesAirbitzSatoshi; }
+
+        public long getmAmountFeesMinersSatoshi() { return mAmountFeesMinersSatoshi; }
+        public void setmAmountFeesMinersSatoshi(long mAmountFeesMinersSatoshi) { this.mAmountFeesMinersSatoshi = mAmountFeesMinersSatoshi; }
+
+        public double getmAmountCurrency() { return mAmountCurrency; }
+        public void setmAmountCurrency(double mAmountCurrency) { this.mAmountCurrency = mAmountCurrency; }
+
+        public String getmName() { return mName; }
+        public void setmName(String mName) { this.mName = mName; }
+
+        public int getmBizId() { return mBizId; }
+        public void setmBizId(int mBizId) { this.mBizId = mBizId; }
+
+        public String getmCategory() { return mCategory; }
+        public void setmCategory(String mCategory) { this.mCategory = mCategory; }
+
+        public String getmNotes() { return mNotes; }
+        public void setmNotes(String mNotes) { this.mNotes = mNotes; }
+
+        public int getmAttributes() { return mAttributes; }
+        public void setmAttributes(int mAttributes) { this.mAttributes = mAttributes; }
+    }
+
+
+    public void setTransaction(Wallet wallet, AccountTransaction transaction, TxInfo txInfo) {
+        transaction.setID(txInfo.getID());
+        transaction.setName(txInfo.getDetails().getSzName());
+        transaction.setNotes(txInfo.getDetails().getSzNotes());
+        transaction.setCategory(txInfo.getDetails().getSzCategory());
+        transaction.setDate(txInfo.getCreationTime());
+        transaction.setAmountSatoshi(txInfo.getDetails().getmAmountSatoshi());
+        transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
+        transaction.setABFees(txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
+        transaction.setMinerFees(txInfo.getDetails().getmAmountFeesMinersSatoshi());
+        transaction.setWalletName(wallet.getName());
+        transaction.setWalletUUID(wallet.getUUID());
+        transaction.setConfirmations(3);
+        transaction.setConfirmed(false);
+
+        if (!transaction.getName().isEmpty()) {
+            transaction.setAddress(transaction.getName());
+        } else {
+            transaction.setAddress("1zf76dh4TG");
+        }
+        transaction.setBTCAddresses(txInfo.getAddresses());
+
+    }
+
+    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText, List<AccountTransaction> existing) {
+        List<AccountTransaction> listTransactions = existing;
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int puCount = core.int_to_uint(pCount);
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_TxInfo paTxInfo = core.longp_to_pppTxInfo(lp);
+
+        tABC_CC result = core.ABC_SearchTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), searchText, paTxInfo, puCount, Error);
+        if (result!=tABC_CC.ABC_CC_Ok)
+        {
+            int ptrToInfo = core.longp_value(lp);
+            int count = core.intp_value(pCount);
+            ppTxInfo base = new ppTxInfo(ptrToInfo);
+
+            for (int i = count - 1; i >= 0; --i) {
+                pLong temp = new pLong(base.getPtr(base, i * 4));
+                long start = core.longp_value(temp);
+                TxInfo txi = new TxInfo(start);
+
+                AccountTransaction transaction = new AccountTransaction();
+                setTransaction(wallet, transaction, txi);
+                listTransactions.add(transaction);
+            }
+        }
+        else
+        {
+            Log.i("CoreAPI", "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
+        }
+//        ABC_FreeTransactions(aTransactions, tCount);
+        return listTransactions;
     }
 
     public boolean storeTransaction(AccountTransaction transaction) {
-        //TODO
-        return false;
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_TxDetails pDetails = core.longp_to_ppTxDetails(lp);
+
+        tABC_CC result = core.ABC_GetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                transaction.getWalletUUID(), transaction.getID(), pDetails, Error);
+        if (result!=tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
+            return false;
+        }
+
+        tABC_TxDetails details = new TxDetails(core.longp_value(lp));
+
+        details.setSzName(transaction.getName());
+        details.setSzCategory(transaction.getCategory());
+        details.setSzNotes(transaction.getNotes());
+        details.setAmountCurrency(transaction.getAmountFiat());
+
+        result = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                transaction.getWalletUUID(), transaction.getID(), details, Error);
+
+        if (result!=tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "Error: CoreBridge.storeTransaction:  " + Error.getSzDescription());
+            return false;
+        }
+
+        return true;
     }
 
     //************************* Currency formatting
@@ -275,7 +511,7 @@ public class CoreAPI {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longPtr_to_walletinfoPtr(lp);
+        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
 
         tABC_Error pError = new tABC_Error();
 
@@ -366,26 +602,15 @@ public class CoreAPI {
         }
     }
 
-    private class p64t extends SWIGTYPE_p_int64_t {
-        public p64t(long ptr) {
-            super(ptr, false);
-        }
-
-        public long getValue() {
-            pLong pl = new pLong(getCPtr(this));
-            return core.longp_value(pl);
-        }
-    }
-
     /*
      * Account Transaction handling
      */
     public static List<AccountTransaction> getTransactions(String walletName) {
         // TODO replace with API call
         List<AccountTransaction> list = new ArrayList<AccountTransaction>();
-        list.add(new AccountTransaction("Matt Kemp", "DEC 10", "B25.000", "-B5.000"));
-        list.add(new AccountTransaction("John Madden", "DEC 15", "B30.000", "-B65.000"));
-        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "B95.000"));
+//        list.add(new AccountTransaction("Matt Kemp", "DEC 10", "B25.000", "-B5.000"));
+//        list.add(new AccountTransaction("John Madden", "DEC 15", "B30.000", "-B65.000"));
+//        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "B95.000"));
 
         return list;
     }

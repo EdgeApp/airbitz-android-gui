@@ -282,11 +282,6 @@ static double doublep_value(double *obj) {
 #include "ABC_android.h"
 
 
-tABC_WalletInfo *** longPtr_to_walletinfoPtr(long * x) {
-   return (tABC_WalletInfo ***) x;
-}
-
-
 long * p64_t_to_long_ptr(int64_t * x) {
    return (long *) x;
 }
@@ -309,6 +304,21 @@ tABC_WalletInfo ** longp_to_ppWalletinfo(long * x) {
 
 tABC_WalletInfo * longp_to_pWalletinfo(long * x) {
    return (tABC_WalletInfo *) x;
+}
+
+
+tABC_WalletInfo *** longp_to_pppWalletInfo(long * x) {
+   return (tABC_WalletInfo ***) x;
+}
+
+
+tABC_TxInfo *** longp_to_pppTxInfo(long * x) {
+   return (tABC_TxInfo ***) x;
+}
+
+
+tABC_TxDetails ** longp_to_ppTxDetails(long * x) {
+   return (tABC_TxDetails **) x;
 }
 
 
@@ -5182,6 +5192,53 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GetTransactions(JNIEnv
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SearchTransactions(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  tABC_TxInfo ***arg5 = (tABC_TxInfo ***) 0 ;
+  unsigned int *arg6 = (unsigned int *) 0 ;
+  tABC_Error *arg7 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg7_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = 0;
+  if (jarg4) {
+    arg4 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg4, 0);
+    if (!arg4) return 0;
+  }
+  arg5 = *(tABC_TxInfo ****)&jarg5; 
+  arg6 = *(unsigned int **)&jarg6; 
+  arg7 = *(tABC_Error **)&jarg7; 
+  result = (tABC_CC)ABC_SearchTransactions((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  if (arg4) (*jenv)->ReleaseStringUTFChars(jenv, jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_ABC_1FreeTransaction(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   tABC_TxInfo *arg1 = (tABC_TxInfo *) 0 ;
   
@@ -5538,20 +5595,6 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_ABC_1FreeAccountSettings(JN
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1walletinfoPtr(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  jlong jresult = 0 ;
-  long *arg1 = (long *) 0 ;
-  tABC_WalletInfo ***result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(long **)&jarg1; 
-  result = (tABC_WalletInfo ***)longPtr_to_walletinfoPtr(arg1);
-  *(tABC_WalletInfo ****)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_p64_1t_1to_1long_1ptr(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jlong jresult = 0 ;
   int64_t *arg1 = (int64_t *) 0 ;
@@ -5618,6 +5661,48 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1pWalletinfo(JNI
   arg1 = *(long **)&jarg1; 
   result = (tABC_WalletInfo *)longp_to_pWalletinfo(arg1);
   *(tABC_WalletInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1pppWalletInfo(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_WalletInfo ***result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_WalletInfo ***)longp_to_pppWalletInfo(arg1);
+  *(tABC_WalletInfo ****)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1pppTxInfo(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_TxInfo ***result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_TxInfo ***)longp_to_pppTxInfo(arg1);
+  *(tABC_TxInfo ****)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppTxDetails(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_TxDetails **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_TxDetails **)longp_to_ppTxDetails(arg1);
+  *(tABC_TxDetails ***)&jresult = result; 
   return jresult;
 }
 
