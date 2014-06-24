@@ -141,6 +141,9 @@ public class SendConfirmationFragment extends Fragment{
 
         mConfirmCenter = mConfirmSwipeButton.getWidth()/2;
 
+        mFromEdittext.setText(bundle.getString("wallet_name"));
+        mToEdittext.setText(bundle.getString("to_name"));
+
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
@@ -272,7 +275,8 @@ public class SendConfirmationFragment extends Fragment{
 
     public void touchEventsEnded(){
         int successThreshold = mLeftThreshold + (mSlideLayout.getWidth()/4);
-        if(mConfirmSwipeButton.getX() <= successThreshold){
+        boolean pinGood = true;//TODO check pin number, and pop up if not
+        if(mConfirmSwipeButton.getX() <= successThreshold && pinGood){
             Fragment frag = new ReceivedSuccessFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag);
