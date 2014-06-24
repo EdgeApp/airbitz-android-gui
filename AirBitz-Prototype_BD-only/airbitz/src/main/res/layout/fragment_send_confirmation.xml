@@ -76,7 +76,7 @@
             <RelativeLayout
                 android:id="@+id/layout_send_confirmation"
                 android:layout_width="match_parent"
-                android:layout_height="201.6dp"
+                android:layout_height="195.3dp"
                 android:paddingTop="18.9dp"
                 android:background="@drawable/rounded_edge_black_transparent_30"
                 android:gravity="center_horizontal">
@@ -163,7 +163,7 @@
                     android:id="@+id/button_bitcoin_balance"
                     android:layout_below="@id/layout_to"
                     android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
+                    android:layout_height="34.65dp"
                     android:text="120.015"
                     android:gravity="center"
                     android:textSize="20dp"
@@ -180,7 +180,7 @@
                     android:id="@+id/button_dollar_balance"
                     android:layout_below="@id/button_bitcoin_balance"
                     android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
+                    android:layout_height="34.65dp"
                     android:text="1050.67"
                     android:textSize="20dp"
                     android:layout_marginRight="12.6dp"
@@ -268,7 +268,6 @@
                 android:layout_height="44.1dp"
                 android:background="@drawable/bg_textfield"
                 android:orientation="vertical"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
                 android:gravity="center">
@@ -282,23 +281,24 @@
                     android:textColor="@android:color/white"
                     android:textSize="15dp"/>
 
-                <ImageButton
-                    android:id="@+id/button_confirm_swipe"
-                    android:layout_gravity="right"
-                    android:layout_width="63dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/left_arrow"/>
-
             </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/button_confirm_swipe"
+                android:layout_gravity="right"
+                android:layout_width="63dp"
+                android:layout_height="44.1dp"
+                android:layout_alignRight="@id/layout_slide"
+                android:layout_alignTop="@id/layout_slide"
+                android:background="@drawable/left_arrow"/>
 
             <ImageView
                 android:id="@+id/imageview_confirm"
                 android:layout_below="@id/layout_slide"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="31.5dp"
+                android:layout_height="31.5dp"
                 android:src="@drawable/btn_confirm_off"/>
 
             <TextView
@@ -313,10 +313,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_centerHorizontal="true"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_below="@+id/textview_confirm"></LinearLayout>
 
         </RelativeLayout>
 
