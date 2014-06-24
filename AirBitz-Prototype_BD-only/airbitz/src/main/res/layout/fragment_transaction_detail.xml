@@ -80,6 +80,8 @@
                     android:textSize="14dp"
                     android:layout_marginLeft="6mm"
                     android:layout_marginRight="6mm"
+                    android:hint="Payee or Business Name"
+                    android:textColorHint="#99DDDDDD"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:imeOptions="actionDone"

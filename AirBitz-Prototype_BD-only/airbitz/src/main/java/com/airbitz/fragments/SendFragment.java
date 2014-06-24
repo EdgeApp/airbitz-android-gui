@@ -18,11 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -59,6 +62,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private ImageButton mFlashOffButton;
     private ImageButton mGalleryButton;
 
+    private ListView mListingListView;
+    private LinearLayout mListviewContainer;
+
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
 
@@ -68,6 +74,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private Spinner walletSpinner;
     private List<String> mWalletList;
+    private String currentWallet;
+    private List<String> mCurrentListing;
+
+    private ArrayAdapter<String> listingAdapter;
 
     private int BACK_CAMERA_INDEX = 0;
 
@@ -101,6 +111,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
 
+        mListviewContainer = (LinearLayout) view.findViewById(R.id.listview_container);
+        mListingListView = (ListView) view.findViewById(R.id.listing_listview);
+
+        mCurrentListing = new ArrayList<String>();
+        listingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mCurrentListing);
+        mListingListView.setAdapter(listingAdapter);
+
         dummyFocus = view.findViewById(R.id.dummy_focus);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -112,6 +129,19 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
         final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
         walletSpinner.setAdapter(dataAdapter);
+
+        walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                currentWallet = mWalletList.get(i);
+                goAutoCompleteListing();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
@@ -192,7 +222,31 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
             @Override
             public void afterTextChanged(Editable editable) {
-                //TODO from wallet etc?
+                goAutoCompleteListing();
+            }
+        });
+
+        mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    goAutoCompleteListing();
+                }else{
+                    mListviewContainer.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mListingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                dummyFocus.requestFocus();
+                Fragment frag = new SendConfirmationFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
+                bundle.putString("to_name",mCurrentListing.get(i));
+                frag.setArguments(bundle);
+                ((NavigationActivity)getActivity()).pushFragment(frag);
             }
         });
 
@@ -315,6 +369,30 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
                 mWalletList.add(wallet.getName());
         }
+    }
+
+    public void goAutoCompleteListing(){
+        String text = mToEdittext.getText().toString();
+        mCurrentListing.clear();
+        if(text.isEmpty()){
+            for(String name : mWalletList){
+                if(name != currentWallet){
+                    mCurrentListing.add(name);
+                }
+            }
+        }else {
+            for (String name : mWalletList) {
+                if (name != currentWallet && name.toLowerCase().contains(text.toLowerCase())) {
+                    mCurrentListing.add(name);
+                }
+            }
+        }
+        if(mCurrentListing.isEmpty() || !mToEdittext.hasFocus()){
+            mListviewContainer.setVisibility(View.GONE);
+        }else{
+            mListviewContainer.setVisibility(View.VISIBLE);
+        }
+        listingAdapter.notifyDataSetChanged();
     }
 
     @Override

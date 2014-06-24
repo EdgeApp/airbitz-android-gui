@@ -2,10 +2,58 @@
 <pre-dex-items>
 
     <item
-        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android-master/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/core-3.0.1-e575777188e1ef7b79f6094ce8bb29ccdb0de296.jar"
-        jar="/home/tom/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.0.1/9ebf6cd580d67601fbf88fd007aab4703b19e4c2/core-3.0.1.jar"
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/commons-io-2.4-37a2dfc1e67e8b175034d3fecb12420c2e6bc834.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-b71d8f1724b8a4c7b1c139cf4e7e8d4b72532eeb.jar"
+        jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/build/intermediates/exploded-aar/me.grantland/autofittextview/0.1.1/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="920802528981dd0dc30bacefc1add1a3e8f6913e"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/retrofit-1.4.1-2f7388c2fb10e25689ca8d86c8e56179b13deaac.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.4.1/23de973a4908bc6f5ac6524af3251a19ad81a7b1/retrofit-1.4.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="23de973a4908bc6f5ac6524af3251a19ad81a7b1"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/crashlytics-1.1.11-4bff0c60dd3b01a509342a7997a5e3e810b78f7d.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.crashlytics.android/crashlytics/1.1.11/b8189e9eef2f07fae743e05d7fe7e69daebe98d1/crashlytics-1.1.11.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="b8189e9eef2f07fae743e05d7fe7e69daebe98d1"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/picasso-2.2.0-d473e617c612dbfe6568e1157dfff90c57634d50.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.2.0/74137f8d9aac26dd9463efe32271f2be8d41cda9/picasso-2.2.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="74137f8d9aac26dd9463efe32271f2be8d41cda9"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/gson-2.2.4-7239cba8806826d279dc685d96b23bcfc27fff1f.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/core-3.0.1-0e91d2f774c9e8d914bd45d9d4acb763a56ee364.jar"
+        jar="/Users/matt/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.0.1/9ebf6cd580d67601fbf88fd007aab4703b19e4c2/core-3.0.1.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="9ebf6cd580d67601fbf88fd007aab4703b19e4c2"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-baa6c1089f7b6cebac07722d7010cffbc5f64740.jar"
+        jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
+    <item
+        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/support-v4-19.0.1-3bf117e59e2e0f41bbf9219f2be90cdcf1dd583d.jar"
+        jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/19.0.1/support-v4-19.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="587da9a481ffd341d2fa091704489b89845ddacd"/>
 
 </pre-dex-items>
