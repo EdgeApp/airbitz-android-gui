@@ -188,6 +188,8 @@
                 android:gravity="center"
                 android:textOff=""
                 android:textOn=""
+                android:thumb="@drawable/btn_toggle_thumb"
+                android:track="@drawable/toggle_selector"
                 android:layout_weight="1"/>
 
             <TextView
