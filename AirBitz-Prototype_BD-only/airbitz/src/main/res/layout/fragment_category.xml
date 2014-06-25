@@ -89,6 +89,7 @@
                 android:textSize="16dp"
                 android:paddingLeft="12.6dp"
                 android:textColor="#000000"
+                android:imeOptions="actionDone"
                 android:textColorHint="#44000000"
                 android:textCursorDrawable="@drawable/bold_cursor"
                 android:layout_toLeftOf="@+id/button_add"
@@ -114,6 +115,8 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="#DD000000"
+            android:dividerHeight="1px"
             android:id="@+id/category_list_view"/>
         
     </LinearLayout>
