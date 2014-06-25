@@ -624,6 +624,30 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1BITCOIN_1DECIMAL_1PLAC
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1EXCHANGE_1RATE_1REFRESH_1INTERVAL_1SECONDS_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (int)(60);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_NETWORK_1FAKE_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (int)(1);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1Ok_1get(JNIEnv *jenv, jclass jcls) {
   jint jresult = 0 ;
   enum eABC_CC result;
@@ -1008,6 +1032,18 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1NoRequest_1get(JNI
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1InsufficientFunds_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  enum eABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (enum eABC_CC)ABC_CC_InsufficientFunds;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1RequestType_1AccountSignIn_1get(JNIEnv *jenv, jclass jcls) {
   jint jresult = 0 ;
   enum eABC_RequestType result;
@@ -1345,6 +1381,47 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1eve
   arg1 = *(struct sABC_AsyncBitCoinInfo **)&jarg1; 
   result = (tABC_AsyncEventType) ((arg1)->eventType);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1szWalletUUID_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_AsyncBitCoinInfo *arg1 = (struct sABC_AsyncBitCoinInfo *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AsyncBitCoinInfo **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szWalletUUID);
+    if (arg2) {
+      arg1->szWalletUUID = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szWalletUUID, (const char *)arg2);
+    } else {
+      arg1->szWalletUUID = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1szWalletUUID_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_AsyncBitCoinInfo *arg1 = (struct sABC_AsyncBitCoinInfo *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AsyncBitCoinInfo **)&jarg1; 
+  result = (char *) ((arg1)->szWalletUUID);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
   return jresult;
 }
 
@@ -2764,6 +2841,214 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1TxDetails(JNI
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1input_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->input = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1input_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  result = (bool) ((arg1)->input);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1value_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  int64_t arg2 ;
+  int64_t *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  argp2 = *(int64_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null int64_t");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->value = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1value_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  int64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  result =  ((arg1)->value);
+  {
+    int64_t * resultptr = (int64_t *) malloc(sizeof(int64_t));
+    memmove(resultptr, &result, sizeof(int64_t));
+    *(int64_t **)&jresult = resultptr;
+  }
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1szAddress_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szAddress);
+    if (arg2) {
+      arg1->szAddress = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szAddress, (const char *)arg2);
+    } else {
+      arg1->szAddress = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1szAddress_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  result = (char *) ((arg1)->szAddress);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1szTxId_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szTxId);
+    if (arg2) {
+      arg1->szTxId = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szTxId, (const char *)arg2);
+    } else {
+      arg1->szTxId = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1szTxId_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  result = (char *) ((arg1)->szTxId);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1index_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  int64_t arg2 ;
+  int64_t *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  argp2 = *(int64_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null int64_t");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->index = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxOutput_1index_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  int64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  result =  ((arg1)->index);
+  {
+    int64_t * resultptr = (int64_t *) malloc(sizeof(int64_t));
+    memmove(resultptr, &result, sizeof(int64_t));
+    *(int64_t **)&jresult = resultptr;
+  }
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1TxOutput(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  struct sABC_TxOutput *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (struct sABC_TxOutput *)calloc(1, sizeof(struct sABC_TxOutput));
+  *(struct sABC_TxOutput **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1TxOutput(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  struct sABC_TxOutput *arg1 = (struct sABC_TxOutput *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(struct sABC_TxOutput **)&jarg1; 
+  free((char *) arg1);
+}
+
+
 SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1szID_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2800,6 +3085,47 @@ SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1szID_1get(
   (void)jarg1_;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
   result = (char *) ((arg1)->szID);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1szMalleableTxId_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxInfo **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szMalleableTxId);
+    if (arg2) {
+      arg1->szMalleableTxId = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szMalleableTxId, (const char *)arg2);
+    } else {
+      arg1->szMalleableTxId = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1szMalleableTxId_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_TxInfo **)&jarg1; 
+  result = (char *) ((arg1)->szMalleableTxId);
   if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
   return jresult;
 }
@@ -2843,7 +3169,7 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1timeCreation
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countAddresses_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countOutputs_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
   unsigned int arg2 ;
   
@@ -2852,11 +3178,11 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countAddresse
   (void)jarg1_;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
   arg2 = (unsigned int)jarg2; 
-  if (arg1) (arg1)->countAddresses = arg2;
+  if (arg1) (arg1)->countOutputs = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countAddresses_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countOutputs_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
   unsigned int result;
@@ -2865,36 +3191,36 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1countAddress
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
-  result = (unsigned int) ((arg1)->countAddresses);
+  result = (unsigned int) ((arg1)->countOutputs);
   jresult = (jlong)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1aAddresses_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1aOutputs_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
-  char **arg2 = (char **) 0 ;
+  tABC_TxOutput **arg2 = (tABC_TxOutput **) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
-  arg2 = *(char ***)&jarg2; 
-  if (arg1) (arg1)->aAddresses = arg2;
+  arg2 = *(tABC_TxOutput ***)&jarg2; 
+  if (arg1) (arg1)->aOutputs = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1aAddresses_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1TxInfo_1aOutputs_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   struct sABC_TxInfo *arg1 = (struct sABC_TxInfo *) 0 ;
-  char **result = 0 ;
+  tABC_TxOutput **result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
-  result = (char **) ((arg1)->aAddresses);
-  *(char ***)&jresult = result; 
+  result = (tABC_TxOutput **) ((arg1)->aOutputs);
+  *(tABC_TxOutput ***)&jresult = result; 
   return jresult;
 }
 
@@ -2946,6 +3272,232 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1TxInfo(JNIEnv
   (void)jenv;
   (void)jcls;
   arg1 = *(struct sABC_TxInfo **)&jarg1; 
+  free((char *) arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1data_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  void *arg2 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  arg2 = *(void **)&jarg2; 
+  if (arg1) (arg1)->data = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1data_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result = (void *) ((arg1)->data);
+  *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1szTxId_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szTxId);
+    if (arg2) {
+      arg1->szTxId = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szTxId, (const char *)arg2);
+    } else {
+      arg1->szTxId = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1szTxId_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result = (char *) ((arg1)->szTxId);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1szTxMalleableId_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szTxMalleableId);
+    if (arg2) {
+      arg1->szTxMalleableId = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szTxMalleableId, (const char *)arg2);
+    } else {
+      arg1->szTxMalleableId = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1szTxMalleableId_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result = (char *) ((arg1)->szTxMalleableId);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1fees_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  uint64_t arg2 ;
+  uint64_t *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  argp2 = *(uint64_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null uint64_t");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->fees = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1fees_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  uint64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result =  ((arg1)->fees);
+  {
+    uint64_t * resultptr = (uint64_t *) malloc(sizeof(uint64_t));
+    memmove(resultptr, &result, sizeof(uint64_t));
+    *(uint64_t **)&jresult = resultptr;
+  }
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1countOutputs_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  unsigned int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  if (arg1) (arg1)->countOutputs = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1countOutputs_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result = (unsigned int) ((arg1)->countOutputs);
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1aOutputs_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  tABC_TxOutput **arg2 = (tABC_TxOutput **) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  arg2 = *(tABC_TxOutput ***)&jarg2; 
+  if (arg1) (arg1)->aOutputs = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1UnsignedTx_1aOutputs_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  tABC_TxOutput **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
+  result = (tABC_TxOutput **) ((arg1)->aOutputs);
+  *(tABC_TxOutput ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1UnsignedTx(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  struct sABC_UnsignedTx *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (struct sABC_UnsignedTx *)calloc(1, sizeof(struct sABC_UnsignedTx));
+  *(struct sABC_UnsignedTx **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1UnsignedTx(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  struct sABC_UnsignedTx *arg1 = (struct sABC_UnsignedTx *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(struct sABC_UnsignedTx **)&jarg1; 
   free((char *) arg1);
 }
 
@@ -3930,18 +4482,17 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ClearKeyCache(JNIEnv *
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SignIn(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jlong jarg4, jobject jarg4_, jlong jarg5, jobject jarg5_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SignIn(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jlong jarg4, jlong jarg5, jobject jarg5_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   tABC_Request_Callback arg3 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg4 = (tABC_RequestResults *) 0 ;
+  void *arg4 = (void *) 0 ;
   tABC_Error *arg5 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg4_;
   (void)jarg5_;
   arg1 = 0;
   if (jarg1) {
@@ -3954,7 +4505,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SignIn(JNIEnv *jenv, j
     if (!arg2) return 0;
   }
   arg3 = *(tABC_Request_Callback *)&jarg3; 
-  arg4 = *(tABC_RequestResults **)&jarg4; 
+  arg4 = *(void **)&jarg4; 
   arg5 = *(tABC_Error **)&jarg5; 
   result = (tABC_CC)ABC_SignIn((char const *)arg1,(char const *)arg2,arg3,arg4,arg5);
   jresult = (jint)result; 
@@ -3964,19 +4515,18 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SignIn(JNIEnv *jenv, j
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateAccount(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jlong jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jobject jarg6_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateAccount(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jlong jarg4, jlong jarg5, jlong jarg6, jobject jarg6_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   tABC_Request_Callback arg4 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg5 = (tABC_RequestResults *) 0 ;
+  void *arg5 = (void *) 0 ;
   tABC_Error *arg6 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg5_;
   (void)jarg6_;
   arg1 = 0;
   if (jarg1) {
@@ -3994,7 +4544,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateAccount(JNIEnv *
     if (!arg3) return 0;
   }
   arg4 = *(tABC_Request_Callback *)&jarg4; 
-  arg5 = *(tABC_RequestResults **)&jarg5; 
+  arg5 = *(void **)&jarg5; 
   arg6 = *(tABC_Error **)&jarg6; 
   result = (tABC_CC)ABC_CreateAccount((char const *)arg1,(char const *)arg2,(char const *)arg3,arg4,arg5,arg6);
   jresult = (jint)result; 
@@ -4005,20 +4555,19 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateAccount(JNIEnv *
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SetAccountRecoveryQuestions(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jobject jarg6_, jlong jarg7, jobject jarg7_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SetAccountRecoveryQuestions(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
   tABC_Request_Callback arg5 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg6 = (tABC_RequestResults *) 0 ;
+  void *arg6 = (void *) 0 ;
   tABC_Error *arg7 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg6_;
   (void)jarg7_;
   arg1 = 0;
   if (jarg1) {
@@ -4041,7 +4590,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SetAccountRecoveryQues
     if (!arg4) return 0;
   }
   arg5 = *(tABC_Request_Callback *)&jarg5; 
-  arg6 = *(tABC_RequestResults **)&jarg6; 
+  arg6 = *(void **)&jarg6; 
   arg7 = *(tABC_Error **)&jarg7; 
   result = (tABC_CC)ABC_SetAccountRecoveryQuestions((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
   jresult = (jint)result; 
@@ -4053,7 +4602,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SetAccountRecoveryQues
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateWallet(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jint jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_, jlong jarg8, jobject jarg8_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateWallet(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jint jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jlong jarg8, jobject jarg8_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -4061,13 +4610,12 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateWallet(JNIEnv *j
   int arg4 ;
   unsigned int arg5 ;
   tABC_Request_Callback arg6 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg7 = (tABC_RequestResults *) 0 ;
+  void *arg7 = (void *) 0 ;
   tABC_Error *arg8 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg7_;
   (void)jarg8_;
   arg1 = 0;
   if (jarg1) {
@@ -4087,7 +4635,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CreateWallet(JNIEnv *j
   arg4 = (int)jarg4; 
   arg5 = (unsigned int)jarg5; 
   arg6 = *(tABC_Request_Callback *)&jarg6; 
-  arg7 = *(tABC_RequestResults **)&jarg7; 
+  arg7 = *(void **)&jarg7; 
   arg8 = *(tABC_Error **)&jarg8; 
   result = (tABC_CC)ABC_CreateWallet((char const *)arg1,(char const *)arg2,(char const *)arg3,arg4,arg5,arg6,arg7,arg8);
   jresult = (jint)result; 
@@ -4507,17 +5055,16 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SetWalletOrder(JNIEnv 
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GetQuestionChoices(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GetQuestionChoices(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   tABC_Request_Callback arg2 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg3 = (tABC_RequestResults *) 0 ;
+  void *arg3 = (void *) 0 ;
   tABC_Error *arg4 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg3_;
   (void)jarg4_;
   arg1 = 0;
   if (jarg1) {
@@ -4525,7 +5072,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GetQuestionChoices(JNI
     if (!arg1) return 0;
   }
   arg2 = *(tABC_Request_Callback *)&jarg2; 
-  arg3 = *(tABC_RequestResults **)&jarg3; 
+  arg3 = *(void **)&jarg3; 
   arg4 = *(tABC_Error **)&jarg4; 
   result = (tABC_CC)ABC_GetQuestionChoices((char const *)arg1,arg2,arg3,arg4);
   jresult = (jint)result; 
@@ -4569,20 +5116,19 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GetRecoveryQuestions(J
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePassword(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jobject jarg6_, jlong jarg7, jobject jarg7_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePassword(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
   tABC_Request_Callback arg5 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg6 = (tABC_RequestResults *) 0 ;
+  void *arg6 = (void *) 0 ;
   tABC_Error *arg7 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg6_;
   (void)jarg7_;
   arg1 = 0;
   if (jarg1) {
@@ -4605,7 +5151,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePassword(JNIEnv 
     if (!arg4) return 0;
   }
   arg5 = *(tABC_Request_Callback *)&jarg5; 
-  arg6 = *(tABC_RequestResults **)&jarg6; 
+  arg6 = *(void **)&jarg6; 
   arg7 = *(tABC_Error **)&jarg7; 
   result = (tABC_CC)ABC_ChangePassword((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
   jresult = (jint)result; 
@@ -4617,20 +5163,19 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePassword(JNIEnv 
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePasswordWithRecoveryAnswers(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jobject jarg6_, jlong jarg7, jobject jarg7_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePasswordWithRecoveryAnswers(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
   tABC_Request_Callback arg5 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg6 = (tABC_RequestResults *) 0 ;
+  void *arg6 = (void *) 0 ;
   tABC_Error *arg7 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg6_;
   (void)jarg7_;
   arg1 = 0;
   if (jarg1) {
@@ -4653,7 +5198,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ChangePasswordWithReco
     if (!arg4) return 0;
   }
   arg5 = *(tABC_Request_Callback *)&jarg5; 
-  arg6 = *(tABC_RequestResults **)&jarg6; 
+  arg6 = *(void **)&jarg6; 
   arg7 = *(tABC_Error **)&jarg7; 
   result = (tABC_CC)ABC_ChangePasswordWithRecoveryAnswers((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
   jresult = (jint)result; 
@@ -4738,50 +5283,78 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_ABC_1BitcoinToSatoshi(JNIE
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SatoshiToCurrency(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jint jarg3, jlong jarg4, jobject jarg4_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SatoshiToCurrency(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jlong jarg4, jint jarg5, jlong jarg6, jobject jarg6_) {
   jint jresult = 0 ;
-  int64_t arg1 ;
-  double *arg2 = (double *) 0 ;
-  int arg3 ;
-  tABC_Error *arg4 = (tABC_Error *) 0 ;
-  int64_t *argp1 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int64_t arg3 ;
+  double *arg4 = (double *) 0 ;
+  int arg5 ;
+  tABC_Error *arg6 = (tABC_Error *) 0 ;
+  int64_t *argp3 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg4_;
-  argp1 = *(int64_t **)&jarg1; 
-  if (!argp1) {
+  (void)jarg6_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  argp3 = *(int64_t **)&jarg3; 
+  if (!argp3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null int64_t");
     return 0;
   }
-  arg1 = *argp1; 
-  arg2 = *(double **)&jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = *(tABC_Error **)&jarg4; 
-  result = (tABC_CC)ABC_SatoshiToCurrency(arg1,arg2,arg3,arg4);
+  arg3 = *argp3; 
+  arg4 = *(double **)&jarg4; 
+  arg5 = (int)jarg5; 
+  arg6 = *(tABC_Error **)&jarg6; 
+  result = (tABC_CC)ABC_SatoshiToCurrency((char const *)arg1,(char const *)arg2,arg3,arg4,arg5,arg6);
   jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CurrencyToSatoshi(JNIEnv *jenv, jclass jcls, jdouble jarg1, jint jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CurrencyToSatoshi(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jdouble jarg3, jint jarg4, jlong jarg5, jlong jarg6, jobject jarg6_) {
   jint jresult = 0 ;
-  double arg1 ;
-  int arg2 ;
-  int64_t *arg3 = (int64_t *) 0 ;
-  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  double arg3 ;
+  int arg4 ;
+  int64_t *arg5 = (int64_t *) 0 ;
+  tABC_Error *arg6 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg4_;
-  arg1 = (double)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = *(int64_t **)&jarg3; 
-  arg4 = *(tABC_Error **)&jarg4; 
-  result = (tABC_CC)ABC_CurrencyToSatoshi(arg1,arg2,arg3,arg4);
+  (void)jarg6_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = (double)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = *(int64_t **)&jarg5; 
+  arg6 = *(tABC_Error **)&jarg6; 
+  result = (tABC_CC)ABC_CurrencyToSatoshi((char const *)arg1,(char const *)arg2,arg3,arg4,arg5,arg6);
   jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
   return jresult;
 }
 
@@ -5056,7 +5629,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GenerateRequestQRCode(
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jlong jarg7, jobject jarg7_, jlong jarg8, jobject jarg8_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jlong jarg7, jlong jarg8, jobject jarg8_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -5064,14 +5637,13 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JN
   char *arg4 = (char *) 0 ;
   tABC_TxDetails *arg5 = (tABC_TxDetails *) 0 ;
   tABC_Request_Callback arg6 = (tABC_Request_Callback) 0 ;
-  tABC_RequestResults *arg7 = (tABC_RequestResults *) 0 ;
+  void *arg7 = (void *) 0 ;
   tABC_Error *arg8 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg5_;
-  (void)jarg7_;
   (void)jarg8_;
   arg1 = 0;
   if (jarg1) {
@@ -5095,9 +5667,57 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JN
   }
   arg5 = *(tABC_TxDetails **)&jarg5; 
   arg6 = *(tABC_Request_Callback *)&jarg6; 
-  arg7 = *(tABC_RequestResults **)&jarg7; 
+  arg7 = *(void **)&jarg7; 
   arg8 = *(tABC_Error **)&jarg8; 
   result = (tABC_CC)ABC_InitiateSendRequest((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7,arg8);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  if (arg4) (*jenv)->ReleaseStringUTFChars(jenv, jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CalcSendFees(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jlong jarg7, jobject jarg7_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  tABC_TxDetails *arg5 = (tABC_TxDetails *) 0 ;
+  int64_t *arg6 = (int64_t *) 0 ;
+  tABC_Error *arg7 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg5_;
+  (void)jarg7_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = 0;
+  if (jarg4) {
+    arg4 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg4, 0);
+    if (!arg4) return 0;
+  }
+  arg5 = *(tABC_TxDetails **)&jarg5; 
+  arg6 = *(int64_t **)&jarg6; 
+  arg7 = *(tABC_Error **)&jarg7; 
+  result = (tABC_CC)ABC_CalcSendFees((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
   jresult = (jint)result; 
   if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
@@ -5592,6 +6212,224 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_ABC_1FreeAccountSettings(JN
   (void)jarg1_;
   arg1 = *(tABC_AccountSettings **)&jarg1; 
   ABC_FreeAccountSettings(arg1);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherStart(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = *(tABC_Error **)&jarg4; 
+  result = (tABC_CC)ABC_WatcherStart((char const *)arg1,(char const *)arg2,(char const *)arg3,arg4);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatchAddresses(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = *(tABC_Error **)&jarg4; 
+  result = (tABC_CC)ABC_WatchAddresses((char const *)arg1,(char const *)arg2,(char const *)arg3,arg4);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherStop(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  tABC_Error *arg2 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg2_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = *(tABC_Error **)&jarg2; 
+  result = (tABC_CC)ABC_WatcherStop((char const *)arg1,arg2);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherRestart(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jboolean jarg4, jlong jarg5, jobject jarg5_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  tABC_Error *arg5 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg5_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = jarg4 ? true : false; 
+  arg5 = *(tABC_Error **)&jarg5; 
+  result = (tABC_CC)ABC_WatcherRestart((char const *)arg1,(char const *)arg2,(char const *)arg3,arg4,arg5);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1TxHeight(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int *arg3 = (unsigned int *) 0 ;
+  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = *(unsigned int **)&jarg3; 
+  arg4 = *(tABC_Error **)&jarg4; 
+  result = (tABC_CC)ABC_TxHeight((char const *)arg1,(char const *)arg2,arg3,arg4);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1BlockHeight(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3, jobject jarg3_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  unsigned int *arg2 = (unsigned int *) 0 ;
+  tABC_Error *arg3 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg3_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = *(unsigned int **)&jarg2; 
+  arg3 = *(tABC_Error **)&jarg3; 
+  result = (tABC_CC)ABC_BlockHeight((char const *)arg1,arg2,arg3);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1RequestExchangeRateUpdate(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jint jarg3, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int arg3 ;
+  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = (int)jarg3; 
+  arg4 = *(tABC_Error **)&jarg4; 
+  result = (tABC_CC)ABC_RequestExchangeRateUpdate((char const *)arg1,(char const *)arg2,arg3,arg4);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  return jresult;
 }
 
 
