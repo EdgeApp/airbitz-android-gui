@@ -40,6 +40,7 @@ import com.airbitz.R;
 import com.airbitz.activities.ForgotPasswordActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.SignUpActivity;
+import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -214,8 +215,9 @@ public class LandingFragment extends Fragment {
         protected Boolean doInBackground(Void... params) {
             tABC_Error pError = new tABC_Error();
             tABC_RequestResults pResults = new tABC_RequestResults();
+            SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pResults, pError);
+            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pVoid, pError);
 
             boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
             return success;

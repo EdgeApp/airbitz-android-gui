@@ -332,6 +332,11 @@ long * charpp_to_longp(char ** x) {
 }
 
 
+void * requestResultsp_to_voidp(tABC_RequestResults * x) {
+   return (void *) x;
+}
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -6569,6 +6574,21 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_charpp_1to_1longp(JNIEnv *
   arg1 = *(char ***)&jarg1; 
   result = (long *)charpp_to_longp(arg1);
   *(long **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_requestResultsp_1to_1voidp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  tABC_RequestResults *arg1 = (tABC_RequestResults *) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(tABC_RequestResults **)&jarg1; 
+  result = (void *)requestResultsp_to_voidp(arg1);
+  *(void **)&jresult = result; 
   return jresult;
 }
 

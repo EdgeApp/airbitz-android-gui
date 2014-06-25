@@ -407,4 +407,9 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
   }
 
+  public static SWIGTYPE_p_void requestResultsp_to_voidp(tABC_RequestResults x) {
+    long cPtr = coreJNI.requestResultsp_to_voidp(tABC_RequestResults.getCPtr(x), x);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  }
+
 }

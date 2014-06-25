@@ -31,3 +31,4 @@
 %pointer_cast(long *, tABC_TxDetails **, longp_to_ppTxDetails);
 %pointer_cast(long *, char **, longPtr_to_charPtrPtr);
 %pointer_cast(char **, long *, charpp_to_longp);
+%pointer_cast(tABC_RequestResults *, void *, requestResultsp_to_voidp);

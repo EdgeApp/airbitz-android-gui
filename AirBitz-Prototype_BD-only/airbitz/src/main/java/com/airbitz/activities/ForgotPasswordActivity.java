@@ -160,6 +160,7 @@ public class ForgotPasswordActivity extends Activity {
 
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pData = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
 
         FetchQuestionsTask(String username) {
             mUsername = username;
@@ -168,7 +169,7 @@ public class ForgotPasswordActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
+            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
             boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
 
             if(success) {
