@@ -16,6 +16,50 @@ Java_com_airbitz_api_CoreAPI_getStringAtPtr( JNIEnv *env, jobject obj, jlong ptr
 }
 
 /*
+ * Proper conversion to currency without SWIG problems
+*/
+JNIEXPORT jint JNICALL
+Java_com_airbitz_api_CoreAPI_satoshiToCurrency( JNIEnv *jenv, jobject obj,
+    jstring jarg1, jstring jarg2, jlong satoshi, jlong currencyp, jint currencyNumber, jlong error )
+{
+    tABC_CC result;
+    double *arg4;
+    arg4 = *(double **)&currencyp;
+    int number = (int) currencyNumber;
+    int64_t sat = satoshi;
+    tABC_Error *argError = (tABC_Error *) 0 ;
+    argError = *(tABC_Error **)&error;
+
+      char *username = (char *) 0 ;
+      char *password = (char *) 0 ;
+
+      username = 0;
+      if (jarg1) {
+        username = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+        if (!username) return 0;
+      }
+      password = 0;
+      if (jarg2) {
+        password = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+        if (!password) return 0;
+      }
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "username=%s", username);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "password=%s", password);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "unsigned satoshi=%llu", sat);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "hex satoshi=%llx", sat);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "signed satoshi=%lld", sat);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "currencyNumber=%d", currencyNumber);
+
+    result = ABC_SatoshiToCurrency(username, password, sat, arg4, currencyNumber, argError);
+
+//    if(result==0) {
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "hex currency=%llx", *currencyp);
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "float currency=%f", *currencyp);
+//    }
+    return result;
+}
+
+/*
  * Set Wallet order
  */
 JNIEXPORT jint JNICALL

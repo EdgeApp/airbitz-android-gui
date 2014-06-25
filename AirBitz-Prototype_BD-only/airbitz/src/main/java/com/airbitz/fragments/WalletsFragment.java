@@ -116,20 +116,27 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             bundle.putBoolean("create", false);
             buildFragments();
         }
+
+        //TESTING
+//        String temp = mAPI.conversion(100000000, false);
+//        Log.i("CoreAPI", "conversion out 1E8 satoshi="+temp);
+//        temp = mAPI.conversion(2147483647, false);
+//        Log.i("CoreAPI", "conversion out 2147483647="+temp);
+//        temp = mAPI.conversion(1073741823, false);
+//        Log.i("CoreAPI", "conversion out 1073741823="+temp);
+
+//        double big = ((double)2147483647);
+//        String temp = mAPI.conversion((long) big, false);
+//        Log.i("CoreAPI", "conversion out 214748364700="+temp);
+//        big = ((double)2147483647)*32897654;
+//        temp = mAPI.conversion((long) big, false);
+//        Log.i("CoreAPI", "conversion out 214748364700="+temp);
+//        temp += "";
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
-
-//        String temp = mAPI.conversion(100000000, false);
-//        temp = mAPI.conversion(2147483647, false);
-//        double big = 2147483647*10.0;
-//        temp = mAPI.conversion((long) big, false);
-//        temp = mAPI.conversion(1073741823, false);
-//        String other = temp+"";
-
-        String temp = mAPI.formatSatoshi(2147483647, false, 3);
 
         currencyList = new ArrayList<String>();
         currencyList.add("CAD");
