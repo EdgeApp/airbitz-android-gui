@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -43,6 +44,8 @@ public class SettingFragment extends Fragment {
     public static final String EURO_EXCHANGE = "EURO_EXCHANGE";
     public static final String PESO_EXCHANGE = "PESO_EXCHANGE";
     public static final String YUAN_EXCHANGE = "YUAN_EXCHANGE";
+
+    private RelativeLayout mCategoryContainer;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -108,6 +111,8 @@ public class SettingFragment extends Fragment {
         mTitleTextView = (TextView) view.findViewById(R.id.settings_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
+        mCategoryContainer = (RelativeLayout) view.findViewById(R.id.category_container);
+
         mDenominationGroup = (RadioGroup) view.findViewById(R.id.settings_denomination_denomination_group);
         mBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
         mmBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
@@ -131,6 +136,14 @@ public class SettingFragment extends Fragment {
         mEuroButton = (Button) view.findViewById(R.id.settings_button_euro);
         mPesoButton = (Button) view.findViewById(R.id.settings_button_peso);
         mYuanButton = (Button) view.findViewById(R.id.settings_button_yuan);
+
+        mCategoryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new CategoryFragment();
+                ((NavigationActivity)getActivity()).pushFragment(fragment);
+            }
+        });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
