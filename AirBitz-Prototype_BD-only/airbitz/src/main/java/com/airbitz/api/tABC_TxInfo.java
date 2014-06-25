@@ -43,6 +43,14 @@ public class tABC_TxInfo {
     return coreJNI.tABC_TxInfo_szID_get(swigCPtr, this);
   }
 
+  public void setSzMalleableTxId(String value) {
+    coreJNI.tABC_TxInfo_szMalleableTxId_set(swigCPtr, this, value);
+  }
+
+  public String getSzMalleableTxId() {
+    return coreJNI.tABC_TxInfo_szMalleableTxId_get(swigCPtr, this);
+  }
+
   public void setTimeCreation(SWIGTYPE_p_int64_t value) {
     coreJNI.tABC_TxInfo_timeCreation_set(swigCPtr, this, SWIGTYPE_p_int64_t.getCPtr(value));
   }
@@ -51,21 +59,21 @@ public class tABC_TxInfo {
     return new SWIGTYPE_p_int64_t(coreJNI.tABC_TxInfo_timeCreation_get(swigCPtr, this), true);
   }
 
-  public void setCountAddresses(long value) {
-    coreJNI.tABC_TxInfo_countAddresses_set(swigCPtr, this, value);
+  public void setCountOutputs(long value) {
+    coreJNI.tABC_TxInfo_countOutputs_set(swigCPtr, this, value);
   }
 
-  public long getCountAddresses() {
-    return coreJNI.tABC_TxInfo_countAddresses_get(swigCPtr, this);
+  public long getCountOutputs() {
+    return coreJNI.tABC_TxInfo_countOutputs_get(swigCPtr, this);
   }
 
-  public void setAAddresses(SWIGTYPE_p_p_char value) {
-    coreJNI.tABC_TxInfo_aAddresses_set(swigCPtr, this, SWIGTYPE_p_p_char.getCPtr(value));
+  public void setAOutputs(SWIGTYPE_p_p_sABC_TxOutput value) {
+    coreJNI.tABC_TxInfo_aOutputs_set(swigCPtr, this, SWIGTYPE_p_p_sABC_TxOutput.getCPtr(value));
   }
 
-  public SWIGTYPE_p_p_char getAAddresses() {
-    long cPtr = coreJNI.tABC_TxInfo_aAddresses_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_char(cPtr, false);
+  public SWIGTYPE_p_p_sABC_TxOutput getAOutputs() {
+    long cPtr = coreJNI.tABC_TxInfo_aOutputs_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxOutput(cPtr, false);
   }
 
   public void setPDetails(tABC_TxDetails value) {

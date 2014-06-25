@@ -52,6 +52,14 @@ public class tABC_AsyncBitCoinInfo {
     return tABC_AsyncEventType.swigToEnum(coreJNI.tABC_AsyncBitCoinInfo_eventType_get(swigCPtr, this));
   }
 
+  public void setSzWalletUUID(String value) {
+    coreJNI.tABC_AsyncBitCoinInfo_szWalletUUID_set(swigCPtr, this, value);
+  }
+
+  public String getSzWalletUUID() {
+    return coreJNI.tABC_AsyncBitCoinInfo_szWalletUUID_get(swigCPtr, this);
+  }
+
   public void setSzTxID(String value) {
     coreJNI.tABC_AsyncBitCoinInfo_szTxID_set(swigCPtr, this, value);
   }
