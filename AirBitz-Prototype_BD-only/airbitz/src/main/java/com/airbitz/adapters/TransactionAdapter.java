@@ -43,15 +43,14 @@ public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
         TextView debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
         TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
         TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
-        dateTextView.setText(mListAccountTransaction.get(position).getDate());
+        dateTextView.setText("Date text"); //mListAccountTransaction.get(position).getDate());
         nameTextView.setText(mListAccountTransaction.get(position).getName());
-        creditAmountTextView.setText(mListAccountTransaction.get(position).getCreditAmount());
+        creditAmountTextView.setText("Credit amount"); //mListAccountTransaction.get(position).getCreditAmount());
         if(search){
             debitAmountTextView.setText("$0.00");
             confirmationsTextView.setText("None");
         }else {
-            debitAmountTextView.setText(mListAccountTransaction.get(position).getDebitAmount()
-                    + mContext.getResources().getString(R.string.no_break_space_character));
+            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
             confirmationsTextView.setText("2 confirmations");
         }
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);

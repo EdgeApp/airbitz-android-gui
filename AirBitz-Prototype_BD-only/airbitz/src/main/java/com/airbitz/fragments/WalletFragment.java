@@ -105,18 +105,10 @@ public class WalletFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        mAccountTransactions = mAPI.getTransactions(mWalletName);
-        mWallet = null;
-        List<Wallet> wallets = mAPI.loadWallets();
-        for(Wallet w: wallets) {
-            if (w != null) {
-                if (w.getName().contains(mWalletName))
-                    mWallet = w;
-            }
+        mWallet = mAPI.getWalletFromName(mWalletName);
+        if(mWallet!=null) {
+            mAccountTransactions = mAPI.loadTransactions(mWallet);
         }
-        Wallet test = null;
-        if(mWallet!=null)
-            test = mAPI.getWallet(mWallet.getUUID());
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -294,15 +286,15 @@ public class WalletFragment extends Fragment {
             double conv = 8.7544;
             for(AccountTransaction trans: mAccountTransactions){
                 try {
-                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
-                    String amount = String.format("B%.3f", item);
-                    trans.setDebitAmount(amount);
-                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
-                    String amount2 = String.format("B%.3f", item2);
-                    trans.setCreditAmount(amount2);
+//                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
+//                    String amount = String.format("B%.3f", item);
+//                    trans.setDebitAmount(amount);
+//                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
+//                    String amount2 = String.format("B%.3f", item2);
+//                    trans.setCreditAmount(amount2);
                 } catch (Exception e) {
-                    trans.setCreditAmount("0");
-                    e.printStackTrace();
+//                    trans.setCreditAmount("0");
+//                    e.printStackTrace();
                 }
             }
             mTransactionAdapter.notifyDataSetChanged();
@@ -315,15 +307,15 @@ public class WalletFragment extends Fragment {
             double conv = 0.1145;
             for(AccountTransaction trans: mAccountTransactions){
                 try {
-                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
-                    String amount = String.format("$%.3f", item);
-                    trans.setDebitAmount(amount);
-                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
-                    String amount2 = String.format("$%.3f", item2);
-                    trans.setCreditAmount(amount2);
+//                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
+//                    String amount = String.format("$%.3f", item);
+//                    trans.setDebitAmount(amount);
+//                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
+//                    String amount2 = String.format("$%.3f", item2);
+//                    trans.setCreditAmount(amount2);
                 } catch (Exception e) {
-                    trans.setCreditAmount("0");
-                    e.printStackTrace();
+//                    trans.setCreditAmount("0");
+//                    e.printStackTrace();
                 }
             }
         }
