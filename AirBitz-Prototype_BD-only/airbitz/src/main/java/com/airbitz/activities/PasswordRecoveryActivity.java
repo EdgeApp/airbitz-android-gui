@@ -265,6 +265,7 @@ public class PasswordRecoveryActivity extends Activity {
         QuestionChoice[] mChoices;
         tABC_Error pError = new tABC_Error();
         QuestionResults pData = new QuestionResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
 
         FetchQuestionsTask(String username) {
             // next for lines for testing only
@@ -277,7 +278,7 @@ public class PasswordRecoveryActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pData, pError);
+            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
             if(result == tABC_CC.ABC_CC_Ok) {
                 QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
                 long num = qcs.getNumChoices();
@@ -326,6 +327,7 @@ public class PasswordRecoveryActivity extends Activity {
         private final String mUsername, mPassword, mQuestions, mAnswers;
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         SaveQuestionsTask(String username, String password, String questions, String answers) {
             mUsername = username;
@@ -336,7 +338,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC result = core.ABC_SetAccountRecoveryQuestions(mUsername, mPassword, mQuestions, mAnswers, null, pResults, pError);
+            tABC_CC result = core.ABC_SetAccountRecoveryQuestions(mUsername, mPassword, mQuestions, mAnswers, null, pVoid, pError);
             return result == tABC_CC.ABC_CC_Ok;
         }
 

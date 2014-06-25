@@ -62,8 +62,9 @@ public class CoreAPI {
     public boolean createWallet(String walletName, String username, String password, int dollarNum) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-        tABC_CC result = core.ABC_CreateWallet(username, password, walletName, dollarNum, 0, null, pResults, pError);
+        tABC_CC result = core.ABC_CreateWallet(username, password, walletName, dollarNum, 0, null, pVoid, pError);
         return result == tABC_CC.ABC_CC_Ok;
     }
 
@@ -223,14 +224,14 @@ public class CoreAPI {
             super(pv, false);
             if (pv != 0) {
                 mID = super.getSzID();
-                mCountAddresses = super.getCountAddresses();
+                mCountAddresses = super.getCountOutputs();
                 SWIGTYPE_p_int64_t temp = super.getTimeCreation();
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mCreationTime = core.longp_value(p);
 
                 tABC_TxDetails txd = super.getPDetails();
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
-                SWIGTYPE_p_p_char a = super.getAAddresses();
+                SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
 
                 mAddresses = new String[(int) mCountAddresses];
                 long base = a.getCPtr(a);
@@ -498,7 +499,8 @@ public class CoreAPI {
             SWIGTYPE_p_long l = core.p64_t_to_long_ptr(sat);
             core.longp_assign(l, (int) satoshi);
 
-            core.ABC_SatoshiToCurrency(sat, currency, SignUpActivity.DOLLAR_CURRENCY_NUMBER, error);
+            core.ABC_SatoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    sat, currency, SignUpActivity.DOLLAR_CURRENCY_NUMBER, error);
             return formatCurrency(core.doublep_value(currency));
         }
         else // currency

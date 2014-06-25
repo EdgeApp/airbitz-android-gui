@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -268,6 +269,7 @@ public class SignUpActivity extends Activity {
         private final String mPin;
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pData = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
 
         CreateAccountTask(String email, String password, String pin) {
             mUsername = email;
@@ -278,7 +280,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pData, pError);
+            tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
             return code == tABC_CC.ABC_CC_Ok;
         }
 
