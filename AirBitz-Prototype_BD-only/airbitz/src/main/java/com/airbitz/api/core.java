@@ -265,6 +265,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetTransactions(szUserName, szPassword, szWalletUUID, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(paTransactions), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_SearchTransactions(String szUserName, String szPassword, String szWalletUUID, String szQuery, SWIGTYPE_p_p_p_sABC_TxInfo paTransactions, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SearchTransactions(szUserName, szPassword, szWalletUUID, szQuery, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(paTransactions), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static void ABC_FreeTransaction(tABC_TxInfo pTransaction) {
     coreJNI.ABC_FreeTransaction(tABC_TxInfo.getCPtr(pTransaction), pTransaction);
   }
@@ -321,11 +325,6 @@ public class core implements coreConstants {
     coreJNI.ABC_FreeAccountSettings(tABC_AccountSettings.getCPtr(pSettings), pSettings);
   }
 
-  public static SWIGTYPE_p_p_p_sABC_WalletInfo longPtr_to_walletinfoPtr(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longPtr_to_walletinfoPtr(SWIGTYPE_p_long.getCPtr(x));
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_WalletInfo(cPtr, false);
-  }
-
   public static SWIGTYPE_p_long p64_t_to_long_ptr(SWIGTYPE_p_int64_t x) {
     long cPtr = coreJNI.p64_t_to_long_ptr(SWIGTYPE_p_int64_t.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
@@ -349,6 +348,21 @@ public class core implements coreConstants {
   public static tABC_WalletInfo longp_to_pWalletinfo(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_pWalletinfo(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new tABC_WalletInfo(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_p_sABC_WalletInfo longp_to_pppWalletInfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pppWalletInfo(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_WalletInfo(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_p_sABC_TxInfo longp_to_pppTxInfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pppTxInfo(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_TxInfo(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_sABC_TxDetails longp_to_ppTxDetails(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_ppTxDetails(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);
   }
 
   public static SWIGTYPE_p_p_char longPtr_to_charPtrPtr(SWIGTYPE_p_long x) {
