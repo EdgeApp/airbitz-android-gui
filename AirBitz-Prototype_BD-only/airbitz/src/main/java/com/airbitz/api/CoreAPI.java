@@ -33,6 +33,7 @@ public class CoreAPI {
         return mInstance;
     }
     public final static native String getStringAtPtr(long jarg1);
+    public final static native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public final static native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
 
 
@@ -487,20 +488,16 @@ public class CoreAPI {
         return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
 
-    //TODO SWIG uses int for long assigns, but should be long. May have to hand code
-    //Values returned are good up until max int value of 2147483647
     public String conversion(long satoshi, boolean btc)
     {
         if (!btc)
         {
             tABC_Error error = new tABC_Error();
             SWIGTYPE_p_double currency = core.new_doublep();
-            SWIGTYPE_p_int64_t sat = core.new_int64_tp();
-            SWIGTYPE_p_long l = core.p64_t_to_long_ptr(sat);
-            core.longp_assign(l, (int) satoshi);
 
-            core.ABC_SatoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    sat, currency, SignUpActivity.DOLLAR_CURRENCY_NUMBER, error);
+            long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    satoshi, SWIGTYPE_p_double.getCPtr(currency), SignUpActivity.DOLLAR_CURRENCY_NUMBER, tABC_Error.getCPtr(error));
+
             return formatCurrency(core.doublep_value(currency));
         }
         else // currency
