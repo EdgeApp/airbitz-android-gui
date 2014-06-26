@@ -374,16 +374,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             }
         }
         if(rawResult!=null) {
-            if(mHandler != null)
-                mHandler.removeCallbacks(cameraDelayRunner);
-            stopCamera();
-            String resultStr = rawResult.getText();
-
-//            if(CheckQRResults(resultStr)) {
-//                Log.d("SendFragment", "QR result is good");
-//            } else {
-//                Log.d("SendFragment", "QR result is bad");
-//            }
+            if(CheckQRResults(rawResult.getText())) {
+                Log.d("SendFragment", "QR result is good");
+            } else {
+                Log.d("SendFragment", "QR result is bad");
+            }
         }
     }
 
@@ -399,7 +394,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         BitcoinURIInfo uri = new BitcoinURIInfo(core.longp_value(lp));
 
-        if (uri != null)
+        if (uri.getPtr(uri) != 0)
             {
                 String uriAddress = uri.getSzAddress();
                 SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi();
@@ -427,6 +422,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                         Log.i("SendFragment", "    message: "+message);
                     }
                     bSuccess = true;
+
+                    if(mHandler != null)
+                        mHandler.removeCallbacks(cameraDelayRunner);
+                    stopCamera();
+
                     Fragment fragment = new SendConfirmationFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(QR_RESULT, uriAddress);
@@ -470,8 +470,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 message = super.getSzMessage();
             }
         }
-        public long getPtr(tABC_BitcoinURIInfo p, long i) {
-            return getCPtr(p) + i;
+        public long getPtr(tABC_BitcoinURIInfo p) {
+            return getCPtr(p);
         }
     }
 
