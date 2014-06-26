@@ -475,6 +475,18 @@ public class DynamicListView extends ListView {
         } else {
             touchEventsCancelled();
         }
+        // send the callback that the list was reordered
+        if(mOnListReordered!=null)
+            mOnListReordered.onListReordered();
+    }
+
+    // Callback interface when the list has been reordered
+    private OnListReordered mOnListReordered;
+    public interface OnListReordered {
+        public void onListReordered();
+    }
+    public void setOnListReorderedListener(OnListReordered listener) {
+        mOnListReordered = listener;
     }
 
     /**
