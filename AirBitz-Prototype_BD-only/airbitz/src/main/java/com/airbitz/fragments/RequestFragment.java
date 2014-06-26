@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.RequestDropDownAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
@@ -41,6 +39,10 @@ import java.util.List;
  * Created on 2/13/14.
  */
 public class RequestFragment extends Fragment implements View.OnClickListener {
+
+    public static final String WALLET_NAME = "com.airbitz.request.wallet_name";
+    public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
+    public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
 
     private View mView;
     private EditText mBitcoinField;
@@ -215,9 +217,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 Fragment frag = new WalletQRCodeFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("wallet_name",(String)pickWalletSpinner.getSelectedItem());
-                bundle.putString("bitcoin_value",mBitcoinField.getText().toString());
-                bundle.putString("fiat_value",mDollarField.getText().toString());
+                bundle.putString(WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
+                bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+                bundle.putString(FIAT_VALUE, mDollarField.getText().toString());
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(frag);
             }
