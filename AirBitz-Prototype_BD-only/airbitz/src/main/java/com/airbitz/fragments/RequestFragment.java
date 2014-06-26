@@ -40,7 +40,6 @@ import java.util.List;
  */
 public class RequestFragment extends Fragment implements View.OnClickListener {
 
-    public static final String WALLET_NAME = "com.airbitz.request.wallet_name";
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
 
@@ -217,7 +216,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 Fragment frag = new WalletQRCodeFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
+                bundle.putString(Wallet.WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
                 bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                 bundle.putString(FIAT_VALUE, mDollarField.getText().toString());
                 frag.setArguments(bundle);

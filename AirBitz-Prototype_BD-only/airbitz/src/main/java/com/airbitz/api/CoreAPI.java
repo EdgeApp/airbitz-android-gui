@@ -19,6 +19,7 @@ public class CoreAPI {
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
     static {
+        System.loadLibrary("abc");
         System.loadLibrary("airbitz");
     }
 
@@ -33,6 +34,7 @@ public class CoreAPI {
         return mInstance;
     }
     public final static native String getStringAtPtr(long jarg1);
+    public final static native void int64_tp_assign(long jarg1, long jarg2);
     public final static native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public final static native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
 
@@ -120,6 +122,10 @@ public class CoreAPI {
             Log.d("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
             return null;
         }
+    }
+
+    public void setPint64_t(SWIGTYPE_p_int64_t p, long value) {
+        int64_tp_assign(SWIGTYPE_p_int64_t.getCPtr(p), value);
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -504,6 +510,16 @@ public class CoreAPI {
         {
             return formatSatoshi(satoshi);
         }
+    }
+
+    public double SatoshiToCurrency(long satoshi, int currencyNum) {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_double currency = core.new_doublep();
+
+        long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                satoshi, SWIGTYPE_p_double.getCPtr(currency), currencyNum, tABC_Error.getCPtr(error));
+
+        return core.doublep_value(currency);
     }
 
     private List<Wallet> getCoreWallets() {
