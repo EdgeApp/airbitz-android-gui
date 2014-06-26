@@ -16,6 +16,16 @@ Java_com_airbitz_api_CoreAPI_getStringAtPtr( JNIEnv *env, jobject obj, jlong ptr
 }
 
 /*
+ * SWIG problem so custom call here
+ */
+JNIEXPORT void JNICALL
+Java_com_airbitz_api_CoreAPI_int64_tp_assign(jlong obj, jlong value) {
+    int64_t *ptr;
+    ptr = (int64_t *) obj; //*(int64_t **)&obj;
+    *ptr = value;
+}
+
+/*
  * Proper conversion to currency without SWIG problems
 */
 JNIEXPORT jint JNICALL
