@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, DynamicListView.OnListReordered {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -298,6 +298,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
         mLatestWalletListView.setArchivedList(archivedWalletList);
         mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletListView.setOnListReorderedListener(this);
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
@@ -498,6 +499,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         } else {
             Log.d("WalletsFragment", "not logged in");
         }
+    }
+
+    // Callback when the listview was reordered by the user
+    @Override
+    public void onListReordered() {
+        List<Wallet> list = mLatestWalletListView.mWalletList;
+        int a = 2 + 2;
     }
 
     /**
