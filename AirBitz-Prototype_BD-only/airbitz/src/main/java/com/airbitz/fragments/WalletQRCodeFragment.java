@@ -48,7 +48,7 @@ public class WalletQRCodeFragment extends Fragment {
 
         mQRView = (ImageView) view.findViewById(R.id.qr_code_view);
 
-        artificialDelay = new ArtificialDelay();
+        artificialDelay = new ArtificialDelay(bundle.getString(RequestFragment.BITCOIN_VALUE), bundle.getString(RequestFragment.FIAT_VALUE));
 
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
@@ -109,7 +109,7 @@ public class WalletQRCodeFragment extends Fragment {
     }
 
     class ArtificialDelay extends AsyncTask<Void, Integer, Boolean> {
-        public ArtificialDelay(){
+        public ArtificialDelay(String btcValue, String fiatValue){
 
         }
 
