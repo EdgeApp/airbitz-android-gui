@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,7 +20,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -33,20 +31,28 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
+    public static final String QR_RESULT = "com.airbitz.sendfragment_QR_RESULT";
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -334,13 +340,42 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         if(mCamera!=null)
             mCamera.setPreviewCallback(SendFragment.this);
         Log.d("TAG", "end setPreviewCallback");
+        Camera.Parameters params = mCamera.getParameters();
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        mCamera.setParameters(params);
 
 //        new FakeCapturePhoto().execute();
     }
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        Result rawResult = null;
+        Reader reader = new QRCodeReader();
+        int w = camera.getParameters().getPreviewSize().width;
+        int h = camera.getParameters().getPreviewSize().height;
+        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = reader.decode(bitmap);
+            } catch (ReaderException re) {
+                // nothing to do here
+            } finally {
+                reader.reset();
+            }
+        }
+        if(rawResult!=null) {
+            if(mHandler != null)
+                mHandler.removeCallbacks(cameraDelayRunner);
+            stopCamera();
 
+            String resultStr = rawResult.getText();
+            Fragment fragment = new SendConfirmationFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(QR_RESULT, resultStr);
+            fragment.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(fragment);
+        }
     }
 
     @Override
