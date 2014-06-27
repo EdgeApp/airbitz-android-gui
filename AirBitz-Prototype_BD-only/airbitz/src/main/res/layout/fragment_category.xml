@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/category_page"
     android:background="@drawable/bg_app">
 
     <RelativeLayout
@@ -68,6 +69,8 @@
             android:textSize="16dp"
             android:textColor="#000000"
             android:textColorHint="#44000000"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoComplete"
             android:drawableLeft="@drawable/ico_search"
             android:drawablePadding="12.6dp"
             android:textCursorDrawable="@drawable/bold_cursor"
@@ -90,14 +93,15 @@
                 android:paddingLeft="12.6dp"
                 android:textColor="#000000"
                 android:imeOptions="actionDone"
+                android:inputType="textAutoComplete"
                 android:textColorHint="#44000000"
                 android:textCursorDrawable="@drawable/bold_cursor"
-                android:layout_toLeftOf="@+id/button_add"
+                android:layout_toLeftOf="@+id/settings_category_button_add"
                 android:layout_marginRight="12.6dp"
                 android:background="@drawable/rounded_edge"/>
 
             <Button
-                android:id="@+id/button_add"
+                android:id="@+id/settings_category_button_add"
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
@@ -150,4 +154,61 @@
             android:textColor="#FFFFFF"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/settings_category_dummy_focus"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:orientation="horizontal"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+    
+    <LinearLayout
+        android:id="@+id/add_popup_container"
+        android:layout_width="match_parent"
+        android:layout_height="144.9dp"
+        android:orientation="vertical"
+        android:padding="6.3dp"
+        android:background="#0000FF"
+        android:visibility="gone"
+        android:layout_below="@+id/layout_search_container">
+
+        <TextView
+            android:id="@+id/add_popup_expense"
+            android:layout_width="match_parent"
+            android:layout_height="44.1dp"
+            android:text="Expense:"
+            android:background="#FFFFFF"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:paddingLeft="12.6dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#DD000000"/>
+        <TextView
+            android:id="@+id/add_popup_income"
+            android:layout_width="match_parent"
+            android:layout_height="44.1dp"
+            android:background="#FFFFFF"
+            android:text="Income:"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:paddingLeft="12.6dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#DD000000"/>
+        <TextView
+            android:id="@+id/add_popup_transfer"
+            android:layout_width="match_parent"
+            android:layout_height="44.1dp"
+            android:background="#FFFFFF"
+            android:textColor="#000000"
+            android:text="Transfer:"
+            android:gravity="center_vertical"
+            android:paddingLeft="12.6dp"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

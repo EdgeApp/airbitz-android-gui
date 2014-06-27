@@ -27,6 +27,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.RequestFragment;
@@ -118,10 +119,16 @@ implements NavigationBarFragment.OnScreenSelectedListener {
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     hideNavBar();
                     keyBoardUp = true;
+                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment){
+                        ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).hideDoneCancel();
+                    }
                 } else {
                     if(keyBoardUp) {
                         showNavBar();
                         keyBoardUp = false;
+                    }
+                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment){
+                        ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).showDoneCancel();
                     }
                 }
             }
