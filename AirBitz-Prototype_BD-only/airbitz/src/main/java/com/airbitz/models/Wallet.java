@@ -34,8 +34,12 @@ public class Wallet {
         mTransactions = list;
     }
 
-    public boolean isRealWallet() {
-        return !getName().equals("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL") && !getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
+    public boolean isHeader() {
+        return getName().equals("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
+    }
+
+    public boolean isArchiveHeader() {
+        return getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
     }
 
     public void setName(String name){
