@@ -10,46 +10,49 @@
 // cached refs for later callbacks
 JavaVM * g_vm;
 jobject g_obj;
-jmethodID g_mid;
+jmethodID g_mid_callback;
 void *bitcoinInfo;
 
-void bitcoinCallback(char *walletUUID, char *txId) {
+void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 	JNIEnv * g_env;
 	// double check it's all ok
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Entering bitcoinCallback");
 	int getEnvStat = (*g_vm)->GetEnv(g_vm, (void **)&g_env, JNI_VERSION_1_6);
 	if (getEnvStat == JNI_EDETACHED) {
-        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: not attached");
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: not attached");
 		if ((*g_vm)->AttachCurrentThread(g_vm, (struct JNINativeInterface const ***) &g_env, NULL) != 0) {
-            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Failed to attach");
+//            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Failed to attach");
 		}
 	} else if (getEnvStat == JNI_OK) {
-		//
 	} else if (getEnvStat == JNI_EVERSION) {
-        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: version not supported");
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: version not supported");
 	}
 
-	(*g_env)->CallVoidMethod(g_env, g_obj, g_mid, 0); //walletUUID, txId);
+    (*g_env)->CallVoidMethod(g_env, g_obj, g_mid_callback, (void *) pInfo); //walletUUID, txId);
 
-	if ((*g_env)->ExceptionCheck(g_env)) {
-		(*g_env)->ExceptionDescribe(g_env);
-	}
+//
+//	if ((*g_env)->ExceptionCheck(g_env)) {
+//		(*g_env)->ExceptionDescribe(g_env);
+//	}
 
 	(*g_vm)->DetachCurrentThread(g_vm);
 }
 
 void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
 {
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "callback received");
+    bitcoinCallback(pInfo);
 //    if (pInfo->eventType == ABC_AsyncEventType_IncomingBitCoin)
 //    {
 ////        NSString *walletUUID = [NSString stringWithUTF8String:pInfo->szWalletUUID];
 ////        NSString *txId = [NSString stringWithUTF8String:pInfo->szTxID];
 ////        NSArray *params = [NSArray arrayWithObjects: walletUUID, txId, nil];
 ////        [mainId performSelectorOnMainThread:@selector(launchReceiving:) withObject:params waitUntilDone:NO];
-//        bitcoinCallback(pInfo->szWalletUUID, pInfo->szTxID);
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "incoming bitcoin received");
 //    } else if (pInfo->eventType == ABC_AsyncEventType_BlockHeightChange) {
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Block Height change received");
 ////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_BLOCK_HEIGHT_CHANGE object:mainId];
 //    } else if (pInfo->eventType == ABC_AsyncEventType_ExchangeRateUpdate) {
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Exchange Rate Update received");
 ////        NSLog(@"Exchange rate change fired!!!!!!!!!!!");
 ////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXCHANGE_RATE_CHANGE object:mainId];
 //    }
@@ -99,14 +102,20 @@ Java_com_airbitz_api_CoreAPI_RegisterAsyncCallback (JNIEnv * env, jobject obj)
         // (local will die after this method call)
 		g_obj = (*env)->NewGlobalRef(env, obj);
 
+		// Save global vm
+        int status = (*env)->GetJavaVM(env, &g_vm);
+        if(status != 0) {
+            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback global vm fail");
+        }
+
 		// save refs for callback
 		jclass g_clazz = (*env)->GetObjectClass(env, g_obj);
 		if (g_clazz == NULL) {
             __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback failed to find class");
 		}
 
-		g_mid = (*env)->GetMethodID(env, g_clazz, "callback", "(I)V");
-		if (g_mid == NULL) {
+		g_mid_callback = (*env)->GetMethodID(env, g_clazz, "callbackAsyncBitcoinInfo", "(J)V");
+		if (g_mid_callback == NULL) {
             __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback unable to get method ref");
 		}
 

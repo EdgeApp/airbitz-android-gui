@@ -46,12 +46,18 @@ public class CoreAPI {
         coreInitialize(file, seed, seedLength, error.getCPtr(error));
     }
 
-    public void callback(int val) {
-        // do stuff
-        int a = val - 0;
-        Log.d("CoreAPI", "async callback received");
-    }
 
+    public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
+        tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
+        tABC_AsyncEventType type = info.getEventType();
+        if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
+            Log.d("CoreAPI", "incoming bitcoin event");
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
+            Log.d("CoreAPI", "block height change event");
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
+            Log.d("CoreAPI", "exchange rate update event");
+        }
+    }
 
     //***************** Wallet handling
     private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x0; // BIT0 is the archive bit

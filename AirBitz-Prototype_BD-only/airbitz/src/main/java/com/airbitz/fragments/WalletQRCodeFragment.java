@@ -35,8 +35,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 public class WalletQRCodeFragment extends Fragment {
 
-    private ArtificialDelay artificialDelay;
-
     private ImageView mQRView;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -81,7 +79,7 @@ public class WalletQRCodeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ((NavigationActivity)getActivity()).showNavBar();
-                artificialDelay.cancel(true);
+//                artificialDelay.cancel(true);
                 getActivity().onBackPressed();
             }
         });
@@ -90,7 +88,7 @@ public class WalletQRCodeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ((NavigationActivity)getActivity()).showNavBar();
-                artificialDelay.cancel(true);
+//                artificialDelay.cancel(true);
                 getActivity().onBackPressed();
             }
         });
@@ -102,9 +100,16 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        artificialDelay = new ArtificialDelay(bundle.getString(Wallet.WALLET_NAME),
+        String id = createReceiveRequestFor(bundle.getString(Wallet.WALLET_NAME),
                 bundle.getString(RequestFragment.BITCOIN_VALUE), bundle.getString(RequestFragment.FIAT_VALUE));
-        artificialDelay.execute();
+
+//        mBitcoinAddress.setText(id); //TODO where does address come from?
+
+        try{
+            generateQRCode_general(id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         return view;
     }
@@ -120,9 +125,7 @@ public class WalletQRCodeFragment extends Fragment {
 
         double value = mCore.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
 
-//        details.setAmountSatoshi();
-
-        //the true fee values will be set by the core
+       //the true fee values will be set by the core
         details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
         details.setAmountFeesMinersSatoshi(core.new_int64_tp());
 
@@ -167,38 +170,4 @@ public class WalletQRCodeFragment extends Fragment {
             mQRView.setImageBitmap(ImageBitmap);
         }
     }
-
-    class ArtificialDelay extends AsyncTask<Void, Integer, Boolean> {
-        public ArtificialDelay(String name, String btcValue, String fiatValue){
-            String id = createReceiveRequestFor(name, btcValue, fiatValue);
-            mBitcoinAddress.setText(id);
-            try{
-                generateQRCode_general(id);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            Fragment frag = new SuccessFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(Wallet.WALLET_NAME, mWallet.getName());
-            bundle.putString("transaction_id","123131312314141567535684");
-            frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag);
-        }
-    }
-
 }
