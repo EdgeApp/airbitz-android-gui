@@ -2,12 +2,14 @@ package com.airbitz.activities;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -326,8 +328,8 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
     @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
 
-        Wallet wallet = mCore.getWallet(walletUUID);
-        AccountTransaction transaction = mCore.getTransaction(walletUUID, txId);
+        mShowIncomingBitcoinSuccess = new ShowIncomingBitcoinSuccess(walletUUID, txId);
+        mShowIncomingBitcoinSuccess.execute();
 
 //        NSLog(@("launchReceiving: %@ %@ %@\n"), walletUUID, txId, transaction);
 //    /* If we aren't on the selector view, then just notify the user */
@@ -342,16 +344,47 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
 //        }
 //        else
 //        {
-        launchTransactionDetails(walletUUID, txId);
+
 //        }
     }
 
-    private void launchTransactionDetails(String walletUUID, String txId)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
-        bundle.putString(WalletsFragment.UUID, walletUUID);
-        bundle.putString(WalletsFragment.TXID, txId);
-        switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+    ShowIncomingBitcoinSuccess mShowIncomingBitcoinSuccess=null;
+    public class ShowIncomingBitcoinSuccess extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUUID, mTXID;
+
+        ShowIncomingBitcoinSuccess(String walletUUID, String txId) {
+            mUUID = walletUUID;
+            mTXID = txId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+            bundle.putString(WalletsFragment.UUID, mUUID);
+            bundle.putString(WalletsFragment.TXID, mTXID);
+            switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mShowIncomingBitcoinSuccess = null;
+        }
     }
+
 }
