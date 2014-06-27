@@ -33,10 +33,24 @@ public class CoreAPI {
         }
         return mInstance;
     }
-    public final static native String getStringAtPtr(long jarg1);
-    public final static native void int64_tp_assign(long jarg1, long jarg2);
-    public final static native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
-    public final static native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
+    public native String getStringAtPtr(long jarg1);
+    public native void int64_tp_assign(long jarg1, long jarg2);
+    public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
+    public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
+    public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
+    public native void RegisterAsyncCallback ();
+
+    public void Initialize(String file, String seed, long seedLength){
+        tABC_Error error = new tABC_Error();
+        RegisterAsyncCallback();
+        coreInitialize(file, seed, seedLength, error.getCPtr(error));
+    }
+
+    public void callback(int val) {
+        // do stuff
+        int a = val - 0;
+        Log.d("CoreAPI", "async callback received");
+    }
 
 
     //***************** Wallet handling

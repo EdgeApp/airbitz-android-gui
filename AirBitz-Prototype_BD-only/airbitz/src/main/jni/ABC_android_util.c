@@ -5,6 +5,116 @@
 #include <android/log.h>
 
 /*
+ * Asynchronous callback for Transactions
+*/
+// cached refs for later callbacks
+JavaVM * g_vm;
+jobject g_obj;
+jmethodID g_mid;
+void *bitcoinInfo;
+
+void bitcoinCallback(char *walletUUID, char *txId) {
+	JNIEnv * g_env;
+	// double check it's all ok
+	int getEnvStat = (*g_vm)->GetEnv(g_vm, (void **)&g_env, JNI_VERSION_1_6);
+	if (getEnvStat == JNI_EDETACHED) {
+        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: not attached");
+		if ((*g_vm)->AttachCurrentThread(g_vm, (struct JNINativeInterface const ***) &g_env, NULL) != 0) {
+            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Failed to attach");
+		}
+	} else if (getEnvStat == JNI_OK) {
+		//
+	} else if (getEnvStat == JNI_EVERSION) {
+        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: version not supported");
+	}
+
+	(*g_env)->CallVoidMethod(g_env, g_obj, g_mid, 0); //walletUUID, txId);
+
+	if ((*g_env)->ExceptionCheck(g_env)) {
+		(*g_env)->ExceptionDescribe(g_env);
+	}
+
+	(*g_vm)->DetachCurrentThread(g_vm);
+}
+
+void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
+{
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "callback received");
+//    if (pInfo->eventType == ABC_AsyncEventType_IncomingBitCoin)
+//    {
+////        NSString *walletUUID = [NSString stringWithUTF8String:pInfo->szWalletUUID];
+////        NSString *txId = [NSString stringWithUTF8String:pInfo->szTxID];
+////        NSArray *params = [NSArray arrayWithObjects: walletUUID, txId, nil];
+////        [mainId performSelectorOnMainThread:@selector(launchReceiving:) withObject:params waitUntilDone:NO];
+//        bitcoinCallback(pInfo->szWalletUUID, pInfo->szTxID);
+//    } else if (pInfo->eventType == ABC_AsyncEventType_BlockHeightChange) {
+////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_BLOCK_HEIGHT_CHANGE object:mainId];
+//    } else if (pInfo->eventType == ABC_AsyncEventType_ExchangeRateUpdate) {
+////        NSLog(@"Exchange rate change fired!!!!!!!!!!!");
+////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXCHANGE_RATE_CHANGE object:mainId];
+//    }
+}
+
+// Custom initialization to handle callbacks
+JNIEXPORT jint JNICALL
+Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jfile, jstring jseed, jlong jseedLength, jlong jerrorp) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  tABC_BitCoin_Event_Callback arg2 = (tABC_BitCoin_Event_Callback) 0 ;
+  void *arg3 = (void *) 0 ;
+  unsigned char *seed = (unsigned char *) 0 ;
+  unsigned int seedLength ;
+  tABC_Error *errorp = (tABC_Error *) 0 ;
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+  arg1 = 0;
+  if (jfile) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jfile, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jarg2;
+  arg3 = *(void **)&bitcoinInfo;    // holds bitcoinInfo
+  seed = 0;
+  if (jseed) {
+    seed = (unsigned char *)(*jenv)->GetStringUTFChars(jenv, jseed, 0);
+    if (!seed) return 0;
+  }
+  seedLength = (unsigned int)jseedLength;
+  errorp = *(tABC_Error **)&jerrorp;
+  result = (tABC_CC)ABC_Initialize((char const *)arg1,arg2,arg3,(unsigned char const *)seed,seedLength,errorp);
+  jresult = (jint)result;
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jfile, (const char *)arg1);
+  if (seed) (*jenv)->ReleaseStringUTFChars(jenv, jseed, (const char *)seed);
+  return jresult;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_airbitz_api_CoreAPI_RegisterAsyncCallback (JNIEnv * env, jobject obj)
+{
+        bool returnValue = true;
+		// convert local to global reference
+        // (local will die after this method call)
+		g_obj = (*env)->NewGlobalRef(env, obj);
+
+		// save refs for callback
+		jclass g_clazz = (*env)->GetObjectClass(env, g_obj);
+		if (g_clazz == NULL) {
+            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback failed to find class");
+		}
+
+		g_mid = (*env)->GetMethodID(env, g_clazz, "callback", "(I)V");
+		if (g_mid == NULL) {
+            __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback unable to get method ref");
+		}
+
+		return (jboolean)returnValue;
+}
+
+
+/*
  * Return String from ptr to string
  */
 JNIEXPORT jstring JNICALL
