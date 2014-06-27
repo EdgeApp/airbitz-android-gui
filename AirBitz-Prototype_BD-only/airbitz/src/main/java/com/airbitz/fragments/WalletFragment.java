@@ -33,6 +33,7 @@ import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -102,7 +103,8 @@ public class WalletFragment extends Fragment {
                 if(walletUUID.isEmpty()) {
                     Log.d("TransactionDetailFragement", "no detail info");
                 } else {
-                    mWallet = mCoreAPI.getWallet(walletUUID);
+                    //TEMPORARY HACK because of crash getting bad wallet UUID
+                    mWallet = mCoreAPI.getWalletFromName("My Wallet");
                     mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
                 }
             }
