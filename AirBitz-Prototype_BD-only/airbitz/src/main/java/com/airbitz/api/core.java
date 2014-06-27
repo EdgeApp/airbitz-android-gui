@@ -392,6 +392,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_TxInfo(cPtr, false);
   }
 
+  public static SWIGTYPE_p_p_sABC_TxInfo longp_to_ppTxInfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_ppTxInfo(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxInfo(cPtr, false);
+  }
+
   public static SWIGTYPE_p_p_sABC_TxDetails longp_to_ppTxDetails(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_ppTxDetails(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);

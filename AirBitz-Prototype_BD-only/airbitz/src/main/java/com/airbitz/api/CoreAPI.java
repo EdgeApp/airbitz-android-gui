@@ -234,6 +234,36 @@ public class CoreAPI {
     }
 
     //************ Transaction handling
+    public AccountTransaction getTransaction(String walletUUID, String szTxId)
+    {
+        tABC_Error Error = new tABC_Error();
+        AccountTransaction transaction = null;
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_TxInfo pTxInfo = core.longp_to_ppTxInfo(lp);
+
+        Wallet wallet = getWallet(walletUUID);
+        if (wallet == null)
+        {
+            Log.d("CoreAPI", "Could not find wallet for "+ walletUUID);
+            return null;
+        }
+        tABC_CC result = core.ABC_GetTransaction(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            walletUUID, szTxId, pTxInfo, Error);
+        if (result==tABC_CC.ABC_CC_Ok)
+        {
+            TxInfo txInfo = new TxInfo(core.longp_value(lp));
+            transaction = new AccountTransaction();
+            setTransaction(wallet, transaction, txInfo);
+            core.ABC_FreeTransaction(txInfo);
+        }
+        else
+        {
+            Log.d("CoreAPI", "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+        }
+        return transaction;
+    }
+
     public List<AccountTransaction> loadTransactions(Wallet wallet) {
         List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
         tABC_Error Error = new tABC_Error();
