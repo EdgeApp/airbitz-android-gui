@@ -19,6 +19,7 @@ public class CoreAPI {
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
     static {
+        System.loadLibrary("abc");
         System.loadLibrary("airbitz");
     }
 
@@ -33,12 +34,13 @@ public class CoreAPI {
         return mInstance;
     }
     public final static native String getStringAtPtr(long jarg1);
+    public final static native void int64_tp_assign(long jarg1, long jarg2);
     public final static native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public final static native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
 
 
     //***************** Wallet handling
-    private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x1; // BIT0 is the archive bit
+    private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x0; // BIT0 is the archive bit
 
     public List<Wallet> loadWallets() {
         List<Wallet> list = new ArrayList<Wallet>();
@@ -47,13 +49,13 @@ public class CoreAPI {
         list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL", "Hello"));//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & WALLET_ATTRIBUTE_ARCHIVE_BIT) != 1)
+            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1)
                 list.add(wallet);
         }
         list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd", "Goodbye")); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & WALLET_ATTRIBUTE_ARCHIVE_BIT) == 1)
+            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1)
                 list.add(wallet);
         }
         return list;
@@ -122,12 +124,29 @@ public class CoreAPI {
         }
     }
 
+    public void setPint64_t(SWIGTYPE_p_int64_t p, long value) {
+        int64_tp_assign(SWIGTYPE_p_int64_t.getCPtr(p), value);
+    }
+
     public void setWalletOrder(List<Wallet> wallets) {
         String[] uuids = new String[wallets.size()-2]; // 2 extras for headers
-        int i=0;
+        int count=0;
+        boolean archived=false; // non-archive
         for(Wallet wallet : wallets) {
-            if(wallet.isRealWallet())
-                uuids[i++] = wallet.getUUID();
+            if(wallet.isArchiveHeader()) {
+                archived=true;
+            } else if(wallet.isHeader()) {
+                archived=false;
+            } else { // wallet is real
+                uuids[count++] = wallet.getUUID();
+                long attr = wallet.getAttributes();
+                if(archived) {
+                    wallet.setAttributes(1); //attr & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT));
+                } else {
+                    wallet.setAttributes(0); //attr & ~(1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT));
+                }
+                setWalletAttributes(wallet);
+            }
         }
 
         tABC_Error Error = new tABC_Error();
@@ -504,6 +523,16 @@ public class CoreAPI {
         {
             return formatSatoshi(satoshi);
         }
+    }
+
+    public double SatoshiToCurrency(long satoshi, int currencyNum) {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_double currency = core.new_doublep();
+
+        long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                satoshi, SWIGTYPE_p_double.getCPtr(currency), currencyNum, tABC_Error.getCPtr(error));
+
+        return core.doublep_value(currency);
     }
 
     private List<Wallet> getCoreWallets() {
