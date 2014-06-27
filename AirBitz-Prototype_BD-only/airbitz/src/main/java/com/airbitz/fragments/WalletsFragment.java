@@ -505,7 +505,16 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     @Override
     public void onListReordered() {
         List<Wallet> list = mLatestWalletListView.mWalletList;
-        int a = 2 + 2;
+        mAPI.setWalletOrder(list);
+        refreshWalletList(list);
+    }
+
+    private void refreshWalletList(List<Wallet> list) {
+        mLatestWalletList.clear();
+        mLatestWalletList.addAll(list);
+        mLatestWalletAdapter.swapWallets();
+        mLatestWalletAdapter.notifyDataSetChanged();
+        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
 
     /**
@@ -538,12 +547,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if (!success) {
                 Log.d("WalletsFragment", "AddWalletTask failed");
             } else {
-                mLatestWalletList.clear();
-                mLatestWalletList.addAll(mAPI.loadWallets());
-                mLatestWalletAdapter.swapWallets();
-                mLatestWalletAdapter.notifyDataSetChanged();
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
-
+                refreshWalletList(mAPI.loadWallets());
             }
         }
 
