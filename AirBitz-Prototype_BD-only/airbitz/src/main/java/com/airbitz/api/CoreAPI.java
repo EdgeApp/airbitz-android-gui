@@ -46,17 +46,54 @@ public class CoreAPI {
         coreInitialize(file, seed, seedLength, error.getCPtr(error));
     }
 
-
+    //***************** Callback handling
     public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
-            Log.d("CoreAPI", "incoming bitcoin event");
+            if(mOnIncomingBitcoin!=null)
+                mOnIncomingBitcoin.onIncomingBitcoin(info.getSzWalletUUID(), info.getSzTxID());
+            else
+                Log.d("CoreAPI", "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
-            Log.d("CoreAPI", "block height change event");
+            if(mOnBlockHeightChange!=null)
+                mOnBlockHeightChange.onBlockHeightChange();
+            else
+                Log.d("CoreAPI", "block exchange event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
             Log.d("CoreAPI", "exchange rate update event");
+            if(mOnExchangeRateUpdate!=null)
+                mOnExchangeRateUpdate.onExchangeRateUpdate();
+            else
+                Log.d("CoreAPI", "exchange rate event has no listener");
         }
+    }
+
+    // Callback interface when an incoming bitcoin is received
+    private OnIncomingBitcoin mOnIncomingBitcoin;
+    public interface OnIncomingBitcoin {
+        public void onIncomingBitcoin(String walletUUID, String txId);
+    }
+    public void setOnIncomingBitcoinListener(OnIncomingBitcoin listener) {
+        mOnIncomingBitcoin = listener;
+    }
+
+    // Callback interface when a block height change is received
+    private OnBlockHeightChange mOnBlockHeightChange;
+    public interface OnBlockHeightChange {
+        public void onBlockHeightChange();
+    }
+    public void setOnBlockHeightChangeListener(OnBlockHeightChange listener) {
+        mOnBlockHeightChange = listener;
+    }
+
+    // Callback interface when an exchange rate update is received
+    private OnExchangeRateUpdate mOnExchangeRateUpdate;
+    public interface OnExchangeRateUpdate {
+        public void onExchangeRateUpdate();
+    }
+    public void setOnExchangeRateUpdateListener(OnExchangeRateUpdate listener) {
+        mOnExchangeRateUpdate = listener;
     }
 
     //***************** Wallet handling
