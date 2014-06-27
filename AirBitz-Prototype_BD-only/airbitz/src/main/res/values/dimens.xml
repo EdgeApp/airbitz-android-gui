@@ -41,4 +41,8 @@
 
     <dimen name="nav_bar_height">56.7dp</dimen>
 
+    <dimen name="nexus_5_width">1080px</dimen>
+    <dimen name="pop_up_height">144.9dp</dimen>
+    <dimen name="pop_up_offset">25.2dp</dimen>
+
     </resources>
