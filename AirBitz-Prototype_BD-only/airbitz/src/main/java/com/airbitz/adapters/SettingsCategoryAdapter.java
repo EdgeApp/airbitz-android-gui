@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -31,16 +32,19 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
 
     private List<String> mCurrentCategories;
     private List<String> mCategories;
+    private List<TextView> mPopUpViews; //0-edittext, 1-Expense, 2-Income, 3-Transfer, 4-currentItemEdittext
+    private List<Integer> mCurrentPosPopUp; //0- currentPos in currentCategories, 1- currentPos in Categories
+    private RelativeLayout mPopUpContainer;
     private Context mContext;
 
-    private boolean needFocus = false;
-    private int needFocusPosition = -1;
-
-    public SettingsCategoryAdapter(Context context, List<String> currentCategories, List<String> categories) {
+    public SettingsCategoryAdapter(Context context, List<String> currentCategories, List<String> categories, List<TextView> popUpViews, RelativeLayout popUpContainer, List<Integer> currentPosPopUp) {
         super(context, R.layout.item_listview_settings_categories,currentCategories);
         mCurrentCategories = currentCategories;
         mCategories = categories;
         mContext = context;
+        mPopUpViews = popUpViews;
+        mPopUpContainer = popUpContainer;
+        mCurrentPosPopUp = currentPosPopUp;
     }
 
     @Override
@@ -53,33 +57,29 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
 
         final int pos = position;
 
-        if(pos == needFocusPosition && needFocus){
+        /*if(pos == needFocusPosition && needFocus){
             mCategoryName.requestFocus();
-        }
+        }*/
 
         mCategoryName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    needFocus = true;
-                    needFocusPosition = pos;
+                    //needFocus = true;
+                    //needFocusPosition = pos;
                     System.out.println("Cat name has focus");
+                    mPopUpViews.get(0).setText(mCurrentCategories.get(pos));
+                    mPopUpViews.get(0).requestFocus();
+                    mPopUpContainer.setVisibility(View.VISIBLE);
+                    mCurrentPosPopUp.add(pos);
+                    for(String s :mCategories){
+                        if(s.compareTo(mCurrentCategories.get(pos))==0){
+                            mCurrentPosPopUp.add(mCategories.indexOf(s));
+                        }
+                    }
                 }else{
 
                 }
-            }
-        });
-        mCategoryName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
-                    needFocus = false;
-                    needFocusPosition = -1;
-                    InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    return true;
-                }
-                return false;
             }
         });
 

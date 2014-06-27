@@ -45,20 +45,31 @@ public class CategoryFragment extends Fragment {
 
     private LinearLayout mDoneCancelContainer;
 
-    private RelativeLayout mCategoryPage;
+    private RelativeLayout mItemPopUpContainer;
+    private EditText mItemPopUpEdittext;
+    private TextView mItemPopUpExpenseTextView;
+    private TextView mItemPopUpIncomeTextView;
+    private TextView mItemPopUpTransferTextView;
+    private Button mItemPopUpDelete;
+
+    private List<TextView> popUpViews;
 
     private Button mAddButton;
     private Button mCancelButton;
     private Button mDoneButton;
 
     private boolean doEdit = false;
+    private boolean popupDoEdit = false;
+
 
     private CategoryTypeEnum currentType = CategoryTypeEnum.Expense;
+    private CategoryTypeEnum mPopUpCurrentType;
 
     private ListView mCategoryListView;
     private SettingsCategoryAdapter mCategoryAdapter;
     private List<String> mCategories;
     private List<String> mCurrentCategories;
+    private List<Integer> currentPosPopUp;//O - currentpos
     Activity activity;
 
     @Override
@@ -85,16 +96,29 @@ public class CategoryFragment extends Fragment {
         mAddIncomePopUpTextView = (TextView) view.findViewById(R.id.add_popup_income);
         mAddTransferPopUpTextView = (TextView) view.findViewById(R.id.add_popup_transfer);
 
+        mItemPopUpContainer = (RelativeLayout) view.findViewById(R.id.popup_container);
+        mItemPopUpEdittext = (EditText) view.findViewById(R.id.item_popup_edittext);            //0
+        mItemPopUpExpenseTextView = (TextView) view.findViewById(R.id.item_popup_expense);      //1
+        mItemPopUpIncomeTextView = (TextView) view.findViewById(R.id.item_popup_income);        //2
+        mItemPopUpTransferTextView = (TextView) view.findViewById(R.id.item_popup_transfer);    //3
+        mItemPopUpDelete = (Button) view.findViewById(R.id.item_popup_delete);
+
+        popUpViews = new ArrayList<TextView>();
+        popUpViews.add(mItemPopUpEdittext);
+        popUpViews.add(mItemPopUpExpenseTextView);
+        popUpViews.add(mItemPopUpIncomeTextView);
+        popUpViews.add(mItemPopUpTransferTextView);
+        currentPosPopUp = new ArrayList<Integer>();
+
         dummyFocus = view.findViewById(R.id.settings_category_dummy_focus);
 
         mCategoryListView = (ListView) view.findViewById(R.id.category_list_view);
         mCategories = new ArrayList<String>();
         mCurrentCategories = new ArrayList<String>();
         goAddCategories();
-        mCategoryAdapter = new SettingsCategoryAdapter(getActivity(),mCurrentCategories, mCategories);
+        mCategoryAdapter = new SettingsCategoryAdapter(getActivity(),mCurrentCategories, mCategories, popUpViews, mItemPopUpContainer, currentPosPopUp);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
-        mCategoryPage = (RelativeLayout) view.findViewById(R.id.category_page);
         mDoneCancelContainer = (LinearLayout) view.findViewById(R.id.done_cancel_container);
 
         //  EditTexts
@@ -304,6 +328,191 @@ public class CategoryFragment extends Fragment {
             public void onClick(View view) {
                 //TODO Save to core (mCategories)
                 getActivity().onBackPressed();
+            }
+        });
+
+        //Pop UP
+        mItemPopUpEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    if(mItemPopUpEdittext.getText().toString().charAt(0)=='I'){
+                        System.out.println("PopUp Income");
+                        mPopUpCurrentType = CategoryTypeEnum.Income;
+                        mItemPopUpEdittext.setSelection(7,mItemPopUpEdittext.getText().toString().length());
+                        mItemPopUpExpenseTextView.setText("Expense:" + mItemPopUpEdittext.getText().toString().substring(7));
+                        mItemPopUpIncomeTextView.setText("Income:" + mItemPopUpEdittext.getText().toString().substring(7));
+                        mItemPopUpTransferTextView.setText("Transfer:" + mItemPopUpEdittext.getText().toString().substring(7));
+                    }else if(mItemPopUpEdittext.getText().toString().charAt(0)=='E'){
+                        System.out.println("PopUp Expense");
+                        mPopUpCurrentType = CategoryTypeEnum.Expense;
+                        mItemPopUpEdittext.setSelection(8,mItemPopUpEdittext.getText().toString().length());
+                        mItemPopUpExpenseTextView.setText("Expense:" + mItemPopUpEdittext.getText().toString().substring(8));
+                        mItemPopUpIncomeTextView.setText("Income:" + mItemPopUpEdittext.getText().toString().substring(8));
+                        mItemPopUpTransferTextView.setText("Transfer:" + mItemPopUpEdittext.getText().toString().substring(8));
+                    }else if(mItemPopUpEdittext.getText().toString().charAt(0)=='T'){
+                        System.out.println("PopUp Transfer");
+                        mPopUpCurrentType = CategoryTypeEnum.Transfer;
+                        mItemPopUpEdittext.setSelection(9,mItemPopUpEdittext.getText().toString().length());
+                        mItemPopUpExpenseTextView.setText("Expense:" + mItemPopUpEdittext.getText().toString().substring(9));
+                        mItemPopUpIncomeTextView.setText("Income:" + mItemPopUpEdittext.getText().toString().substring(9));
+                        mItemPopUpTransferTextView.setText("Transfer:" + mItemPopUpEdittext.getText().toString().substring(9));
+                    }
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }
+            }
+        });
+
+        mItemPopUpEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    mCurrentCategories.set(currentPosPopUp.get(0),mItemPopUpEdittext.getText().toString());
+                    mCategories.set(currentPosPopUp.get(1),mItemPopUpEdittext.getText().toString());
+                    currentPosPopUp.clear();
+                    mCategoryAdapter.notifyDataSetChanged();
+                    mItemPopUpContainer.setVisibility(View.GONE);
+                    dummyFocus.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mItemPopUpEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(false == popupDoEdit) {
+                    if ('I' == editable.toString().charAt(0)) {
+                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:") != 0) {
+                            if (editable.toString().length() > 7) {
+                                String temp = editable.toString().substring(7);
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Income:" + temp);
+                                popupDoEdit = false;
+                            } else {
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Income:");
+                                popupDoEdit = false;
+                            }
+                        } else if (editable.toString().length() >= 7) {
+                            mItemPopUpExpenseTextView.setText("Expense:" + editable.toString().substring(7));
+                            mItemPopUpIncomeTextView.setText("Income:" + editable.toString().substring(7));
+                            mItemPopUpTransferTextView.setText("Transfer:" + editable.toString().substring(7));
+                        }
+                        if (mItemPopUpEdittext.getSelectionStart() < 7) {
+                            mItemPopUpEdittext.setSelection(7, 7);
+                        }
+                    } else if ('E' == editable.toString().charAt(0)) {
+                        if (editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:") != 0) {
+                            if (editable.toString().length() > 8) {
+                                String temp = editable.toString().substring(8);
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Expense:" + temp);
+                                popupDoEdit = false;
+                            } else {
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Expense:");
+                                popupDoEdit = false;
+                            }
+                        } else if (editable.toString().length() >= 8) {
+                            mItemPopUpExpenseTextView.setText("Expense:" + editable.toString().substring(8));
+                            mItemPopUpIncomeTextView.setText("Income:" + editable.toString().substring(8));
+                            mItemPopUpTransferTextView.setText("Transfer:" + editable.toString().substring(8));
+                        }
+                        if (mItemPopUpEdittext.getSelectionStart() < 8) {
+                            mItemPopUpEdittext.setSelection(8, 8);
+                        }
+                    } else if ('T' == editable.toString().charAt(0)) {
+                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:") != 0) {
+                            if (editable.toString().length() > 9) {
+                                String temp = editable.toString().substring(9);
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Transfer:" + temp);
+                                popupDoEdit = false;
+                            } else {
+                                popupDoEdit = true;
+                                editable.clear();
+                                editable.append("Transfer:");
+                                popupDoEdit = false;
+                            }
+                        } else if (editable.toString().length() >= 9) {
+                            mItemPopUpExpenseTextView.setText("Expense:" + editable.toString().substring(9));
+                            mItemPopUpIncomeTextView.setText("Income:" + editable.toString().substring(9));
+                            mItemPopUpTransferTextView.setText("Transfer:" + editable.toString().substring(9));
+                        }
+                        if (mItemPopUpEdittext.getSelectionStart() < 9) {
+                            mItemPopUpEdittext.setSelection(9, 9);
+                        }
+                    } else {
+                        System.err.println("mPopUpCurrentType was something other than Income, Expense or Transfer: " + mPopUpCurrentType);
+                    }
+                }
+            }
+        });
+
+        mItemPopUpExpenseTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupDoEdit = true;
+                mItemPopUpEdittext.setText(mItemPopUpExpenseTextView.getText());
+                mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
+                mPopUpCurrentType = CategoryTypeEnum.Expense;
+                popupDoEdit = false;
+            }
+        });
+
+        mItemPopUpIncomeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupDoEdit = true;
+                mItemPopUpEdittext.setText(mItemPopUpIncomeTextView.getText());
+                mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
+                mPopUpCurrentType = CategoryTypeEnum.Income;
+                popupDoEdit = false;
+            }
+        });
+
+        mItemPopUpTransferTextView.setOnClickListener(new View.OnClickListener() {
+        @Override
+            public void onClick(View view) {
+                popupDoEdit = true;
+                mItemPopUpEdittext.setText(mItemPopUpTransferTextView.getText());
+                mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
+                mPopUpCurrentType = CategoryTypeEnum.Transfer;
+                popupDoEdit = false;
+            }
+        });
+
+        mItemPopUpDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCurrentCategories.remove(currentPosPopUp.get(0).intValue());
+                mCategories.remove(currentPosPopUp.get(1).intValue());
+                currentPosPopUp.clear();
+                mCategoryAdapter.notifyDataSetChanged();
+                mItemPopUpContainer.setVisibility(View.GONE);
+                dummyFocus.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
         });
 
