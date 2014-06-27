@@ -83,6 +83,8 @@ public class SendConfirmationFragment extends Fragment{
 
     private boolean mSuccess = false;
 
+    private String mQRResult;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -91,6 +93,7 @@ public class SendConfirmationFragment extends Fragment{
         if(bundle == null){
             System.out.println("Send confirmation bundle is null");
         }
+        mQRResult = bundle.getString(SendFragment.QR_RESULT);
     }
 
     @Override

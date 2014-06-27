@@ -407,6 +407,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);
   }
 
+  public static SWIGTYPE_p_p_sABC_BitcoinURIInfo longPtr_to_ppBitcoinURIInfo(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longPtr_to_ppBitcoinURIInfo(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_BitcoinURIInfo(cPtr, false);
+  }
+
   public static SWIGTYPE_p_void requestResultsp_to_voidp(tABC_RequestResults x) {
     long cPtr = coreJNI.requestResultsp_to_voidp(tABC_RequestResults.getCPtr(x), x);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);

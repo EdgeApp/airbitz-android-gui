@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,7 +20,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -33,20 +31,37 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
+import com.airbitz.api.SWIGTYPE_p_long;
+import com.airbitz.api.SWIGTYPE_p_p_sABC_BitcoinURIInfo;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_BitcoinURIInfo;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
+    public static final String QR_RESULT = "com.airbitz.sendfragment_QR_RESULT";
+    public static final String AMOUNT_SATOSHI = "com.airbitz.sendfragment_AMOUNT_SATOSHI";
+    public static final String LABEL = "com.airbitz.sendfragment_LABEL";
+    public static final String UUID = "com.airbitz.sendfragment_UUID";
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -325,22 +340,139 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
         SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
-        Log.d("TAG", "removeView");
+//        Log.d("TAG", "removeView");
         mPreviewFrame.removeView(mPreview);
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
-        Log.d("TAG", "addView");
+//        Log.d("TAG", "addView");
         mPreviewFrame.addView(mPreview);
-        Log.d("TAG", "setPreviewCallback");
+//        Log.d("TAG", "setPreviewCallback");
         if(mCamera!=null)
             mCamera.setPreviewCallback(SendFragment.this);
-        Log.d("TAG", "end setPreviewCallback");
+//        Log.d("TAG", "end setPreviewCallback");
+        Camera.Parameters params = mCamera.getParameters();
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        mCamera.setParameters(params);
 
 //        new FakeCapturePhoto().execute();
     }
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        Result rawResult = null;
+        Reader reader = new QRCodeReader();
+        int w = camera.getParameters().getPreviewSize().width;
+        int h = camera.getParameters().getPreviewSize().height;
+        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = reader.decode(bitmap);
+            } catch (ReaderException re) {
+                // nothing to do here
+            } finally {
+                reader.reset();
+            }
+        }
+        if(rawResult!=null) {
+            if(CheckQRResults(rawResult.getText())) {
+                Log.d("SendFragment", "QR result is good");
+            } else {
+                Log.d("SendFragment", "QR result is bad");
+            }
+        }
+    }
 
+    private boolean CheckQRResults(String results)
+    {
+        boolean bSuccess = false;
+
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_BitcoinURIInfo pUri = core.longPtr_to_ppBitcoinURIInfo(lp);
+
+        core.ABC_ParseBitcoinURI(results, pUri, Error);
+
+        BitcoinURIInfo uri = new BitcoinURIInfo(core.longp_value(lp));
+
+        if (uri.getPtr(uri) != 0)
+            {
+                String uriAddress = uri.getSzAddress();
+                SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi();
+                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+                long amountSatoshi = core.longp_value(p);
+
+                if (!uriAddress.isEmpty())
+                {
+                    Log.i("SendFragment", "    address: "+uriAddress);
+                    Log.i("SendFragment", "    amount: "+amountSatoshi);
+
+                    String label = uri.getSzLabel();
+                    if (!label.isEmpty())
+                    {
+                        Log.i("SendFragment", "    label: "+label);
+                    }
+                    else
+                    {
+                        label = "Anonymous"; //TODO localize
+                    }
+
+                    String message = uri.getSzMessage();
+                    if (!message.isEmpty())
+                    {
+                        Log.i("SendFragment", "    message: "+message);
+                    }
+                    bSuccess = true;
+
+                    if(mHandler != null)
+                        mHandler.removeCallbacks(cameraDelayRunner);
+                    stopCamera();
+
+                    Fragment fragment = new SendConfirmationFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(QR_RESULT, uriAddress);
+                    bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
+                    bundle.putString(LABEL, label);
+                    bundle.putBoolean(UUID, false);
+                    fragment.setArguments(bundle);
+                    ((NavigationActivity) getActivity()).pushFragment(fragment);
+
+                }
+                else
+                {
+                    Log.i("SendFragment", "no address: ");
+                    bSuccess = false;
+                }
+            }
+            else
+            {
+                Log.i("SendFragment", "URI parse failed!");
+                bSuccess = false;
+            }
+
+//            ABC_FreeURIInfo(uri);
+
+        return bSuccess;
+    }
+
+    private class BitcoinURIInfo extends tABC_BitcoinURIInfo {
+        public String address;
+        public String label;
+        public String message;
+        public long amountSatoshi;
+        public BitcoinURIInfo(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+                address = super.getSzAddress();
+                label = super.getSzLabel();
+                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
+                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+                amountSatoshi = core.longp_value(p);
+                message = super.getSzMessage();
+            }
+        }
+        public long getPtr(tABC_BitcoinURIInfo p) {
+            return getCPtr(p);
+        }
     }
 
     @Override

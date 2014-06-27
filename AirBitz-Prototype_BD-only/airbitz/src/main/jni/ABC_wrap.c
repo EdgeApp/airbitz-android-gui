@@ -332,6 +332,11 @@ long * charpp_to_longp(char ** x) {
 }
 
 
+tABC_BitcoinURIInfo ** longPtr_to_ppBitcoinURIInfo(long * x) {
+   return (tABC_BitcoinURIInfo **) x;
+}
+
+
 void * requestResultsp_to_voidp(tABC_RequestResults * x) {
    return (void *) x;
 }
@@ -6574,6 +6579,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_charpp_1to_1longp(JNIEnv *
   arg1 = *(char ***)&jarg1; 
   result = (long *)charpp_to_longp(arg1);
   *(long **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1ppBitcoinURIInfo(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_BitcoinURIInfo **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_BitcoinURIInfo **)longPtr_to_ppBitcoinURIInfo(arg1);
+  *(tABC_BitcoinURIInfo ***)&jresult = result; 
   return jresult;
 }
 

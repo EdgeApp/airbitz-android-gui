@@ -153,7 +153,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     @Override
     public long getItemId(int position) {
-        if (position < 0 || position >= mIdMap.size()) {
+        if (position < 0 || position >= mIdMap.size() || mWalletList.size()==0) {
             return INVALID_ID;
         }
         Wallet item = mWalletList.get(position);

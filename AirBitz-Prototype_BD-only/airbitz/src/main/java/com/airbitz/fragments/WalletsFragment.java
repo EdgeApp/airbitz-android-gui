@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, DynamicListView.OnListReordered {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -298,6 +298,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
         mLatestWalletListView.setArchivedList(archivedWalletList);
         mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletListView.setOnListReorderedListener(this);
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
@@ -500,6 +501,22 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
     }
 
+    // Callback when the listview was reordered by the user
+    @Override
+    public void onListReordered() {
+        List<Wallet> list = mLatestWalletListView.mWalletList;
+        mAPI.setWalletOrder(list);
+        refreshWalletList(list);
+    }
+
+    private void refreshWalletList(List<Wallet> list) {
+        mLatestWalletList.clear();
+        mLatestWalletList.addAll(list);
+        mLatestWalletAdapter.swapWallets();
+        mLatestWalletAdapter.notifyDataSetChanged();
+        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+    }
+
     /**
      * Represents an asynchronous creation of the first wallet
      */
@@ -530,12 +547,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if (!success) {
                 Log.d("WalletsFragment", "AddWalletTask failed");
             } else {
-                mLatestWalletList.clear();
-                mLatestWalletList.addAll(mAPI.loadWallets());
-                mLatestWalletAdapter.swapWallets();
-                mLatestWalletAdapter.notifyDataSetChanged();
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
-
+                refreshWalletList(mAPI.loadWallets());
             }
         }
 
