@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -53,11 +54,7 @@ import java.util.UUID;
 public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener {
 
-    static {
-        System.loadLibrary("abc");
-        System.loadLibrary("airbitz");
-    }
-
+    private CoreAPI mCore;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
 
     private boolean keyBoardUp = false;
@@ -94,6 +91,8 @@ implements NavigationBarFragment.OnScreenSelectedListener {
     {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
+
+        mCore = CoreAPI.getApi();
 
         setContentView(R.layout.activity_navigation);
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
@@ -162,13 +161,9 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         });
         setLoginView(false);//!AirbitzApplication.isLoggedIn());
 
-        tABC_Error pError = new tABC_Error();
-
         String seed = getSeedData();
 
-        tABC_RequestResults pData = new tABC_RequestResults();
-
-        tABC_CC code = core.ABC_Initialize(this.getApplicationContext().getFilesDir().toString(), null, null, seed, seed.length(), pError);
+        mCore.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
 
         if(bdonly){
             System.out.println("BD ONLY");
