@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,10 +83,6 @@ public class WalletFragment extends Fragment {
 
     private TransactionAdapter mTransactionAdapter;
 
-    private GestureDetector mGestureDetector;
-
-    private Intent mIntent;
-
     private List<AccountTransaction> mAccountTransactions;
 
     private String mWalletName;
@@ -97,18 +94,24 @@ public class WalletFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mWalletName = getArguments().getString(Wallet.WALLET_NAME);
         mCoreAPI = CoreAPI.getApi();
+        Bundle bundle = getArguments();
+        if(bundle != null){
+           if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
+                String walletUUID = bundle.getString(WalletsFragment.UUID);
+                if(walletUUID.isEmpty()) {
+                    Log.d("TransactionDetailFragement", "no detail info");
+                } else {
+                    mWallet = mCoreAPI.getWallet(walletUUID);
+                    mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
+                }
+            }
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
-
-        mWallet = mCoreAPI.getWalletFromName(mWalletName);
-        if(mWallet!=null) {
-            mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
-        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

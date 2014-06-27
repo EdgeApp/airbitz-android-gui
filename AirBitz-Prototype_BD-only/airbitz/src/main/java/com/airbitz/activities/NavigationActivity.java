@@ -281,8 +281,8 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
                 mNavStacks[mNavFragmentId].pop();
             }
             Fragment frag = new WalletsFragment();
-            bundle.putString("source", "REQUEST");
-            bundle.putBoolean("create", true);
+            bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
+            bundle.putBoolean(WalletsFragment.CREATE, true);
             frag.setArguments(bundle);
             pushFragment(frag);
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
@@ -295,8 +295,8 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
                 mNavStacks[mNavFragmentId].pop();
             }
             Fragment frag = new WalletsFragment();
-            bundle.putString("source", "SEND");
-            bundle.putBoolean("create", true);
+            bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
+            bundle.putBoolean(WalletsFragment.CREATE, true);
             frag.setArguments(bundle);
             pushFragment(frag);
         }
@@ -348,6 +348,10 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
 
     private void launchTransactionDetails(String walletUUID, String txId)
     {
-
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+        bundle.putString(WalletsFragment.UUID, walletUUID);
+        bundle.putString(WalletsFragment.TXID, txId);
+        switchToWallets(FragmentSourceEnum.REQUEST, bundle);
     }
 }
