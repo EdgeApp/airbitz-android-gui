@@ -51,6 +51,12 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
+    public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
+    public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
+    public static final String UUID = "com.airbitz.WalletsFragment.UUID";
+    public static final String TXID = "com.airbitz.WalletsFragment.UUID";
+
+
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private Button mBitCoinBalanceButton;
@@ -111,9 +117,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletList = mAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
         bundle = this.getArguments();
-        if(bundle != null && bundle.getBoolean("create")){
-            bundle.remove("create");
-            bundle.putBoolean("create", false);
+        if(bundle != null && bundle.getBoolean(CREATE)){
+            bundle.remove(CREATE);
+            bundle.putBoolean(CREATE, false);
             buildFragments();
         }
 
@@ -340,7 +346,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
-                    showWalletFragment(a.getList().get(i).getName(), a.getList().get(i).getAmount());
+                    showWalletFragment(a.getList().get(i).getName());
                 }else if(a.getList().get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
                     int pos = a.getPosition(a.getList().get(i));
                     //a.switchCloseAfterArchive(pos);
@@ -420,10 +426,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
     }
 
-    private void showWalletFragment(String name, String amount) {
+    private void showWalletFragment(String name) {
         Bundle bundle = new Bundle();
-        bundle.putString(Wallet.WALLET_NAME, name);
-        bundle.putString(Wallet.WALLET_AMOUNT, amount);
+        bundle.putString(FROM_SOURCE, "");
+        Wallet w = mAPI.getWalletFromName(name);
+        bundle.putString(UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
@@ -661,8 +668,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
     public void buildFragments(){
-        bundle.putString(Wallet.WALLET_NAME, bundle.getString("wallet_name"));
-        if(bundle.getString("source")=="REQUEST" || bundle.getString("source")=="SEND"){
+        if(bundle.getString(FROM_SOURCE).equals("REQUEST") || bundle.getString(FROM_SOURCE).equals("SEND")){
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag);
@@ -671,5 +677,4 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             ((NavigationActivity) getActivity()).pushFragment(frag2);
         }
     }
-
 }

@@ -26,6 +26,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,10 +53,13 @@ import com.airbitz.adapters.NoteCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.SearchResult;
+import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.CalculatorBrain;
@@ -143,13 +147,26 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private ClipboardManager clipboard;
     private float mBTCtoUSDConversion = 450.0f;
 
+    private AccountTransaction mTransaction;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
-        if(bundle != null){
+        if(bundle!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")) {
             fromSendRequest = true;
+        } else {
+            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
+                    String walletUUID = bundle.getString(WalletsFragment.UUID);
+                    String txId = bundle.getString(WalletsFragment.TXID);
+                    if(walletUUID.isEmpty() || txId.isEmpty()) {
+                        Log.d("TransactionDetailFragement", "no detail info");
+                    } else {
+                        CoreAPI mCoreAPI = CoreAPI.getApi();
+                        mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
+                    }
+            }
         }
     }
 
