@@ -90,7 +90,7 @@ public class WalletFragment extends Fragment {
 
     private String mWalletName;
     private Wallet mWallet;
-    private CoreAPI mAPI;
+    private CoreAPI mCoreAPI;
 
 
     @Override
@@ -98,16 +98,16 @@ public class WalletFragment extends Fragment {
     {
         super.onCreate(savedInstanceState);
         mWalletName = getArguments().getString(Wallet.WALLET_NAME);
-        mAPI = CoreAPI.getApi();
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        mWallet = mAPI.getWalletFromName(mWalletName);
+        mWallet = mCoreAPI.getWalletFromName(mWalletName);
         if(mWallet!=null) {
-            mAccountTransactions = mAPI.loadTransactions(mWallet);
+            mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

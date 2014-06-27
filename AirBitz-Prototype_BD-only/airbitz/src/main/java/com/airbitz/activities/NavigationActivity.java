@@ -1,17 +1,13 @@
 package com.airbitz.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.inputmethodservice.KeyboardView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.telephony.TelephonyManager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -23,10 +19,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
@@ -46,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
-import java.util.UUID;
 
 /**
  * The main Navigation activity holding fragments for anything controlled with
@@ -351,61 +342,12 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
 //        }
 //        else
 //        {
-//            NSLog(@"Launching Receiving page\n");
-//            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
-//            _sendStatusController = [mainStoryboard instantiateViewControllerWithIdentifier:@"SendStatusViewController"];
-//
-//            CGRect frame = self.view.bounds;
-//            _sendStatusController.view.frame = frame;
-//            [self.view insertSubview:_sendStatusController.view belowSubview:self.tabBar];
-//            _sendStatusController.view.alpha = 0.0;
-//            _sendStatusController.messageLabel.text = NSLocalizedString(@"Receiving...", @"status message");
-//            _sendStatusController.titleLabel.text = NSLocalizedString(@"Receive Status", @"status title");
-//            [UIView animateWithDuration:0.35
-//            delay:0.0
-//            options:UIViewAnimationOptionCurveEaseInOut
-//            animations:^
-//            {
-//                _sendStatusController.view.alpha = 1.0;
-//            }
-//            completion:^(BOOL finished)
-//            {
-//                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
-//                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//                        [self launchTransactionDetails:wallet withTx:transaction];
-//                [_sendStatusController.view removeFromSuperview];
-//                _sendStatusController = nil;
-//                [_requestViewController resetViews];
-//                });
-//            }];
+        launchTransactionDetails(walletUUID, txId);
 //        }
     }
 
-//    -(void) launchTransactionDetails: (Wallet *)wallet withTx:(Transaction *)transaction
-//    {
-//        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
-//        _txDetailsController = [mainStoryboard instantiateViewControllerWithIdentifier:@"TransactionDetailsViewController"];
-//        _txDetailsController.wallet = wallet;
-//        _txDetailsController.transaction = transaction;
-//        _txDetailsController.delegate = self;
-//        _txDetailsController.bOldTransaction = NO;
-//        _txDetailsController.transactionDetailsMode = TD_MODE_RECEIVED;
-//
-//        CGRect frame = self.view.bounds;
-//        frame.origin.x = frame.size.width;
-//        _txDetailsController.view.frame = frame;
-//        [self.view insertSubview:_txDetailsController.view belowSubview:self.tabBar];
-//        [UIView animateWithDuration:0.35
-//        delay:0.0
-//        options:UIViewAnimationOptionCurveEaseInOut
-//        animations:^
-//        {
-//            _txDetailsController.view.frame = self.view.bounds;
-//        }
-//        completion:^(BOOL finished)
-//        {
-//            [self showTabBarAnimated:YES];
-//        }];
-//    }
+    private void launchTransactionDetails(String walletUUID, String txId)
+    {
 
+    }
 }
