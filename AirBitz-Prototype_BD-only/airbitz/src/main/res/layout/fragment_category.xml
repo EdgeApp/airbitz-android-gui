@@ -210,5 +210,100 @@
             android:paddingLeft="12.6dp"/>
 
     </LinearLayout>
+    
+    <RelativeLayout
+        android:id="@+id/popup_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_header"
+        android:background="#0000FF"
+        android:visibility="gone">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="#FFFFFF"
+            android:layout_margin="6.3dp"
+            android:layout_above="@+id/item_popup_edittext_container">
+            <LinearLayout
+                android:id="@+id/item_popup_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="12.6dp"
+                android:paddingRight="12.6dp">
 
+                <TextView
+                    android:id="@+id/item_popup_expense"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Expense:"
+                    android:background="@android:color/transparent"
+                    android:textColor="#000000"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#DD000000"/>
+                <TextView
+                    android:id="@+id/item_popup_income"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:text="Income:"
+                    android:textColor="#000000"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#DD000000"/>
+                <TextView
+                    android:id="@+id/item_popup_transfer"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="#000000"
+                    android:text="Transfer:"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#DD000000"/>
+
+            </LinearLayout>
+        </ScrollView>
+        <RelativeLayout
+            android:id="@+id/item_popup_edittext_container"
+            android:layout_width="match_parent"
+            android:layout_height="44.1dp"
+            android:paddingTop="9.45dp"
+            android:paddingBottom="9.45dp"
+            android:paddingLeft="9.45dp"
+            android:paddingRight="9.45dp"
+            android:layout_alignParentBottom="true"
+            android:background="#addff1">
+
+            <EditText
+                android:id="@+id/item_popup_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="12.6dp"
+                android:textSize="12dp"
+                android:imeOptions="actionDone"
+                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:layout_toLeftOf="@+id/item_popup_delete"
+                android:background="@drawable/rounded_edge"/>
+            <Button
+                android:id="@+id/item_popup_delete"
+                android:layout_width="37.8dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="9.45dp"
+                android:background="#FF0000"/>
+            <View
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:id="@+id/settings_category_list_item_dummy_focus" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>
