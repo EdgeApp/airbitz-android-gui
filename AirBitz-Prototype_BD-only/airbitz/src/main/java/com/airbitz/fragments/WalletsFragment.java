@@ -506,7 +506,6 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void onListReordered() {
         List<Wallet> list = mLatestWalletListView.mWalletList;
         mAPI.setWalletOrder(list);
-        refreshWalletList(list);
     }
 
     private void refreshWalletList(List<Wallet> list) {
