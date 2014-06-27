@@ -36,7 +36,9 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.FragmentSourceEnum;
+import com.airbitz.models.Wallet;
 import com.crashlytics.android.Crashlytics;
 
 import java.nio.ByteBuffer;
@@ -52,7 +54,7 @@ import java.util.UUID;
  * Created by Thomas Baker on 4/22/14.
  */
 public class NavigationActivity extends FragmentActivity
-implements NavigationBarFragment.OnScreenSelectedListener {
+implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBitcoin {
 
     private CoreAPI mCore;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
@@ -93,6 +95,7 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         Crashlytics.start(this);
 
         mCore = CoreAPI.getApi();
+        mCore.setOnIncomingBitcoinListener(this);
 
         setContentView(R.layout.activity_navigation);
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
@@ -329,5 +332,80 @@ implements NavigationBarFragment.OnScreenSelectedListener {
         return strSeed;
     }
 
+    @Override
+    public void onIncomingBitcoin(String walletUUID, String txId) {
+
+        Wallet wallet = mCore.getWallet(walletUUID);
+        AccountTransaction transaction = mCore.getTransaction(walletUUID, txId);
+
+//        NSLog(@("launchReceiving: %@ %@ %@\n"), walletUUID, txId, transaction);
+//    /* If we aren't on the selector view, then just notify the user */
+//        if (_selectedViewController != _requestViewController || _txDetailsController != nil)
+//        {
+//            NSLog(@"Showing Notification\n");
+//            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//            localNotification.alertBody = [NSString stringWithFormat:@"Received funds"];
+//            localNotification.soundName = UILocalNotificationDefaultSoundName;
+//            localNotification.applicationIconBadgeNumber = 1;
+//            [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+//        }
+//        else
+//        {
+//            NSLog(@"Launching Receiving page\n");
+//            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
+//            _sendStatusController = [mainStoryboard instantiateViewControllerWithIdentifier:@"SendStatusViewController"];
+//
+//            CGRect frame = self.view.bounds;
+//            _sendStatusController.view.frame = frame;
+//            [self.view insertSubview:_sendStatusController.view belowSubview:self.tabBar];
+//            _sendStatusController.view.alpha = 0.0;
+//            _sendStatusController.messageLabel.text = NSLocalizedString(@"Receiving...", @"status message");
+//            _sendStatusController.titleLabel.text = NSLocalizedString(@"Receive Status", @"status title");
+//            [UIView animateWithDuration:0.35
+//            delay:0.0
+//            options:UIViewAnimationOptionCurveEaseInOut
+//            animations:^
+//            {
+//                _sendStatusController.view.alpha = 1.0;
+//            }
+//            completion:^(BOOL finished)
+//            {
+//                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+//                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//                        [self launchTransactionDetails:wallet withTx:transaction];
+//                [_sendStatusController.view removeFromSuperview];
+//                _sendStatusController = nil;
+//                [_requestViewController resetViews];
+//                });
+//            }];
+//        }
+    }
+
+//    -(void) launchTransactionDetails: (Wallet *)wallet withTx:(Transaction *)transaction
+//    {
+//        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
+//        _txDetailsController = [mainStoryboard instantiateViewControllerWithIdentifier:@"TransactionDetailsViewController"];
+//        _txDetailsController.wallet = wallet;
+//        _txDetailsController.transaction = transaction;
+//        _txDetailsController.delegate = self;
+//        _txDetailsController.bOldTransaction = NO;
+//        _txDetailsController.transactionDetailsMode = TD_MODE_RECEIVED;
+//
+//        CGRect frame = self.view.bounds;
+//        frame.origin.x = frame.size.width;
+//        _txDetailsController.view.frame = frame;
+//        [self.view insertSubview:_txDetailsController.view belowSubview:self.tabBar];
+//        [UIView animateWithDuration:0.35
+//        delay:0.0
+//        options:UIViewAnimationOptionCurveEaseInOut
+//        animations:^
+//        {
+//            _txDetailsController.view.frame = self.view.bounds;
+//        }
+//        completion:^(BOOL finished)
+//        {
+//            [self showTabBarAnimated:YES];
+//        }];
+//    }
 
 }

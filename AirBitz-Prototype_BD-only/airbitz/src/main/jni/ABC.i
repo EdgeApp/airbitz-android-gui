@@ -28,6 +28,7 @@
 %pointer_cast(long *, tABC_WalletInfo *, longp_to_pWalletinfo);
 %pointer_cast(long *, tABC_WalletInfo ***, longp_to_pppWalletInfo);
 %pointer_cast(long *, tABC_TxInfo ***, longp_to_pppTxInfo);
+%pointer_cast(long *, tABC_TxInfo **, longp_to_ppTxInfo);
 %pointer_cast(long *, tABC_TxDetails **, longp_to_ppTxDetails);
 %pointer_cast(long *, char **, longPtr_to_charPtrPtr);
 %pointer_cast(char **, long *, charpp_to_longp);
