@@ -288,7 +288,12 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-                AccountTransaction in = new AccountTransaction(); //TODO add all info from TxInfo
+                AccountTransaction in = new AccountTransaction(wallet.getUUID(), txi.getID(),
+                        txi.getCreationTime(), wallet.getName(),
+                        wallet.getAmount(), // need address?
+                        wallet.getAmount(), // need category?
+                        wallet.getAmount(), // need notes?
+                        txi.getAddresses());
 
                 listTransactions.add(in);
             }
