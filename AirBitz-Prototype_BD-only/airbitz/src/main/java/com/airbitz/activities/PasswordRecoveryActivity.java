@@ -67,13 +67,24 @@ public class PasswordRecoveryActivity extends Activity {
 
     private FetchQuestionsTask mFetchQuestionsTask;
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> currentStringCategory1;
+    private List<String> currentStringCategory2;
     private List<String> mStringChosen = new ArrayList<String>();
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> currentNumericCategory1;
+    private List<String> currentNumericCategory2;
     private List<String> mNumericChosen = new ArrayList<String>();
     private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>(); // Question, MinLength
+    private List<String> currentAddressCategory1;
+    private List<String> currentAddressCategory2;
     private List<String> mAddressChosen = new ArrayList<String>();
     private View mQuestionViewString1;
     private View mQuestionViewString2;
+    private View mQuestionViewString3;
+    private View mQuestionViewString4;
+    private View mQuestionViewString5;
+    private View mQuestionViewString6;
+
 
     private SaveQuestionsTask mSaveQuestionsTask;
 
@@ -92,6 +103,13 @@ public class PasswordRecoveryActivity extends Activity {
         mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
 
         mLayoutRecovery = (LinearLayout) findViewById(R.id.layout_pass_recovery);
+
+        currentStringCategory1 = new ArrayList<String>();
+        currentStringCategory2 = new ArrayList<String>();
+        currentNumericCategory1 = new ArrayList<String>();
+        currentNumericCategory2 = new ArrayList<String>();
+        currentAddressCategory1 = new ArrayList<String>();
+        currentAddressCategory2 = new ArrayList<String>();
 
         mHelpButton = (ImageButton) findViewById(R.id.button_help);
 
@@ -126,7 +144,6 @@ public class PasswordRecoveryActivity extends Activity {
         mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.password_recovery_listview);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        dummy.requestFocus();
 
         mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
         mFetchQuestionsTask.execute((Void) null);
@@ -174,11 +191,18 @@ public class PasswordRecoveryActivity extends Activity {
 
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<View>();
-        mQuestionViewString1 = new QuestionView(this, new ArrayList(mStringCategory.keySet()), "string", 10);
-        mQuestionViewString2 = new QuestionView(this, new ArrayList(mStringCategory.keySet()), "string", 10);
-
+        mQuestionViewString1 = new QuestionView(this, currentStringCategory1,currentStringCategory2, "string");
+        mQuestionViewString2 = new QuestionView(this, currentStringCategory2,currentStringCategory1, "string");
+        mQuestionViewString3 = new QuestionView(this, currentNumericCategory1,currentNumericCategory2, "numeric");
+        mQuestionViewString4 = new QuestionView(this, currentNumericCategory2,currentNumericCategory1, "numeric");
+        mQuestionViewString5 = new QuestionView(this, currentAddressCategory1,currentAddressCategory2, "address");
+        mQuestionViewString6 = new QuestionView(this, currentAddressCategory2,currentAddressCategory1, "address");
         mQuestionViews.add(mQuestionViewString1);
         mQuestionViews.add(mQuestionViewString2);
+        mQuestionViews.add(mQuestionViewString3);
+        mQuestionViews.add(mQuestionViewString4);
+        mQuestionViews.add(mQuestionViewString5);
+        mQuestionViews.add(mQuestionViewString6);
         populateQuestionViews();
     }
 
@@ -288,12 +312,24 @@ public class PasswordRecoveryActivity extends Activity {
                     for(QuestionChoice choice : mChoices) {
                         if(choice.mCategory.equals("string")) {
                             mStringCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            currentStringCategory1.add(choice.getQuestion());
+                            currentStringCategory2.add(choice.getQuestion());
                         } else if(choice.mCategory.equals("numeric")) {
                             mNumericCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            currentNumericCategory1.add(choice.getQuestion());
+                            currentNumericCategory2.add(choice.getQuestion());
                         } else if(choice.mCategory.equals("address")) {
                             mAddressCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            currentAddressCategory1.add(choice.getQuestion());
+                            currentAddressCategory2.add(choice.getQuestion());
                         }
                     }
+                    currentStringCategory1.add("Question");
+                    currentStringCategory2.add("Question");
+                    currentNumericCategory1.add("Question");
+                    currentNumericCategory2.add("Question");
+                    currentAddressCategory1.add("Question");
+                    currentAddressCategory2.add("Question");
                     return true;
                 } else {
                     return false;
@@ -310,6 +346,8 @@ public class PasswordRecoveryActivity extends Activity {
             if (success) {
                 InitializeQuestionViews();
             }
+
+            dummy.requestFocus();
         }
 
         @Override
@@ -430,34 +468,121 @@ public class PasswordRecoveryActivity extends Activity {
     private class QuestionView extends LinearLayout {
         Context mContext;
         private String mType;
-        private int mCharLimit;
+        private String chosenQuestion = "";
+        private int mCharLimit = 0;
         private Spinner mSpinner;
         private EditText mText;
         private PasswordRecoveryAdapter mAdapter;
-        private ArrayList<View> mItemsList;
+        private List<String> currentQuestionList;
+        private List<String> otherQuestionList;
 
-        public QuestionView(Context context, List<String> questions, String type, int limit) {
+        public QuestionView(Context context, List<String> questions,List<String> otherQuestions, String type) {
             super(context);
             mContext = context;
             this.mType = type;
-            mCharLimit = limit;
+            currentQuestionList = questions;
+            otherQuestionList = otherQuestions;
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
             mSpinner = (Spinner)findViewById(R.id.item_password_recovery_spinner);
-
-            mItemsList = new ArrayList<View>();
-            for(String question: questions) {
-                TextView b = (TextView) inflater.inflate(R.layout.item_password_recovery_spinner, null);
-                b.setText(question);
-                mItemsList.add(b);
-            }
-
-            mAdapter = new PasswordRecoveryAdapter(context, mItemsList, questions);
+            mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
             mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
-
             mSpinner.setAdapter(mAdapter);
             mSpinner.setDropDownWidth((int)getResources().getDimension(R.dimen.spinner_width_password));
+            mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(mType.compareTo("string")==0){
+                        for(String s: mStringCategory.keySet()){
+                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
+                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                                    mCharLimit = mStringCategory.get(s).intValue();
+                                    if(!chosenQuestion.isEmpty()) {
+                                        otherQuestionList.add(chosenQuestion);
+                                    }
+                                    chosenQuestion = s;
+                                    otherQuestionList.remove(s);
+                                    List<String> tempList = new ArrayList<String>();
+                                    for(String quest: mStringCategory.keySet()){
+                                        if(otherQuestionList.contains(quest)){
+                                            tempList.add(quest);
+                                        }
+                                    }
+                                    tempList.add("Question");
+                                    otherQuestionList.clear();
+                                    otherQuestionList.addAll(tempList);
+                                    //mAdapter.notifyDataSetChanged();
+                                }else{
+                                    mCharLimit = 0;
+                                }
+                            }
+                        }
+                    }else if(mType.compareTo("numeric")==0){
+                        for(String s: mNumericCategory.keySet()){
+                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
+                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                                    mCharLimit = mNumericCategory.get(s).intValue();
+                                    if(!chosenQuestion.isEmpty()) {
+                                        otherQuestionList.add(chosenQuestion);
+                                    }
+                                    chosenQuestion = s;
+                                    otherQuestionList.remove(s);
+                                    List<String> tempList = new ArrayList<String>();
+                                    for(String quest: mNumericCategory.keySet()){
+                                        if(otherQuestionList.contains(quest)){
+                                            tempList.add(quest);
+                                        }
+                                    }
+                                    tempList.add("Question");
+                                    otherQuestionList.clear();
+                                    otherQuestionList.addAll(tempList);
+                                    //mAdapter.notifyDataSetChanged();
+                                }else{
+                                    mCharLimit = 0;
+                                }
+                            }
+                        }
+                    }else if(mType.compareTo("address")==0){
+                        for(String s: mAddressCategory.keySet()){
+                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
+                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                                    mCharLimit = mAddressCategory.get(s).intValue();
+                                    if(!chosenQuestion.isEmpty()) {
+                                        otherQuestionList.add(chosenQuestion);
+                                    }
+                                    chosenQuestion = s;
+                                    otherQuestionList.remove(s);
+                                    List<String> tempList = new ArrayList<String>();
+                                    for(String quest: mAddressCategory.keySet()){
+                                        if(otherQuestionList.contains(quest)){
+                                            tempList.add(quest);
+                                        }
+                                    }
+                                    tempList.add("Question");
+                                    otherQuestionList.clear();
+                                    otherQuestionList.addAll(tempList);
+                                    //mAdapter.notifyDataSetChanged();
+                                }else{
+                                    mCharLimit = 0;
+                                }
+                            }
+                        }
+                    }
+                    if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                        mText.setFocusableInTouchMode(true);  //if this is not already set
+                        mText.requestFocus();  //to move the cursor
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
+                        mText.setCursorVisible(true);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
 
             mText = (EditText) findViewById(R.id.item_password_recovery_answer);
             final View redRing = findViewById(R.id.red_ring);
@@ -499,24 +624,6 @@ public class PasswordRecoveryActivity extends Activity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
-                }
-            });
-
-            mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                        mText.setFocusableInTouchMode(true);  //if this is not already set
-                        mText.requestFocus();  //to move the cursor
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
-                        mText.setCursorVisible(true);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
 
                 }
             });
