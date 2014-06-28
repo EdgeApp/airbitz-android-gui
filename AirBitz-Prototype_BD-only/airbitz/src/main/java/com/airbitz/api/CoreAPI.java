@@ -441,8 +441,8 @@ public class CoreAPI {
 
     }
 
-    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText, List<AccountTransaction> existing) {
-        List<AccountTransaction> listTransactions = existing;
+    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText) {
+        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int pCount = core.new_intp();

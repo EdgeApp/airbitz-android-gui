@@ -280,6 +280,10 @@ public class WalletFragment extends Fragment {
         return mWallet.getBalance();
     }
 
+    private List<AccountTransaction> searchTransactions(String term) {
+        return mCoreAPI.searchTransactionsIn(mWallet, term);
+    }
+
     private void switchBarInfo(boolean isBitcoin){
         RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(switchContainer.getWidth(), switchContainer.getHeight()/2);
         if(isBitcoin) {

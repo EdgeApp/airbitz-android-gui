@@ -58,16 +58,15 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
-    public static final String QR_RESULT = "com.airbitz.sendfragment_QR_RESULT";
-    public static final String AMOUNT_SATOSHI = "com.airbitz.sendfragment_AMOUNT_SATOSHI";
-    public static final String LABEL = "com.airbitz.sendfragment_LABEL";
-    public static final String UUID = "com.airbitz.sendfragment_UUID";
+    public static final String QR_RESULT = "com.airbitz.Sendfragment_QR_RESULT";
+    public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
+    public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
+    public static final String UUID = "com.airbitz.Sendfragment_UUID";
 
     private Handler mHandler;
     private EditText mToEdittext;
 
     private View mView;
-    //private Button mFromButton;
 
     private TextView mFromTextView;
     private TextView mToTextView;
@@ -101,10 +100,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private boolean mFlashOn = false;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -502,10 +504,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     };
 
     public void addWalletNamesToList(){
-        CoreAPI api = CoreAPI.getApi();
-        List<Wallet> tempWallets = api.loadWallets();
+        List<Wallet> tempWallets = mCoreAPI.loadWallets();
         for(Wallet wallet: tempWallets){
-            if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
+            if(!wallet.isHeader() && !wallet.isArchiveHeader())
                 mWalletList.add(wallet.getName());
         }
     }
