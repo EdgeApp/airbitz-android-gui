@@ -30,7 +30,8 @@
 %pointer_cast(long *, tABC_TxInfo ***, longp_to_pppTxInfo);
 %pointer_cast(long *, tABC_TxInfo **, longp_to_ppTxInfo);
 %pointer_cast(long *, tABC_TxDetails **, longp_to_ppTxDetails);
-%pointer_cast(long *, char **, longPtr_to_charPtrPtr);
+%pointer_cast(long *, char **, longp_to_ppChar);
+%pointer_cast(long *, unsigned char **, longp_to_unsigned_ppChar);
 %pointer_cast(char **, long *, charpp_to_longp);
 %pointer_cast(long *, tABC_BitcoinURIInfo **, longPtr_to_ppBitcoinURIInfo);
 %pointer_cast(tABC_RequestResults *, void *, requestResultsp_to_voidp);

@@ -402,9 +402,14 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);
   }
 
-  public static SWIGTYPE_p_p_char longPtr_to_charPtrPtr(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longPtr_to_charPtrPtr(SWIGTYPE_p_long.getCPtr(x));
+  public static SWIGTYPE_p_p_char longp_to_ppChar(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_ppChar(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_char(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_unsigned_char longp_to_unsigned_ppChar(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_unsigned_ppChar(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_unsigned_char(cPtr, false);
   }
 
   public static SWIGTYPE_p_long charpp_to_longp(SWIGTYPE_p_p_char x) {

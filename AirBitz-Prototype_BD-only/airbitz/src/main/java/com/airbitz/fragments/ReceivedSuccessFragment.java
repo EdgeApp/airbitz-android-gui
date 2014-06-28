@@ -127,7 +127,7 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         @Override
         protected void onPostExecute(Boolean result) {
-            ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.SEND, bundle);
+            ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.REQUEST, bundle);
         }
     }
 
