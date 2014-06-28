@@ -54,7 +54,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
     public static final String UUID = "com.airbitz.WalletsFragment.UUID";
-    public static final String TXID = "com.airbitz.WalletsFragment.UUID";
+    public static final String TXID = "com.airbitz.WalletsFragment.TXID";
 
 
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
@@ -669,6 +669,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     public void buildFragments(){
         if(bundle.getString(FROM_SOURCE).equals("REQUEST") || bundle.getString(FROM_SOURCE).equals("SEND")){
+            String walletUUID = bundle.getString(UUID);
+            String txID = bundle.getString(TXID);
+
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag);

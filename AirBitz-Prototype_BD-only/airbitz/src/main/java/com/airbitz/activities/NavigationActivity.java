@@ -379,7 +379,6 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
             bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
             bundle.putString(WalletsFragment.UUID, mUUID);
             bundle.putString(WalletsFragment.TXID, mTXID);
-//            switchToWallets(FragmentSourceEnum.REQUEST, bundle);
 
             Fragment frag = new ReceivedSuccessFragment();
             frag.setArguments(bundle);

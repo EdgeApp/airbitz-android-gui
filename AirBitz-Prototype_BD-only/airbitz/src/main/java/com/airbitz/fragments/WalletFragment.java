@@ -101,10 +101,10 @@ public class WalletFragment extends Fragment {
            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                 String walletUUID = bundle.getString(WalletsFragment.UUID);
                 if(walletUUID.isEmpty()) {
-                    Log.d("TransactionDetailFragement", "no detail info");
+                    Log.d("WalletFragement", "no detail info");
                 } else {
-                    //TEMPORARY HACK because of crash getting bad wallet UUID
-                    mWallet = mCoreAPI.getWalletFromName("My Wallet");
+                    mWallet = mCoreAPI.getWalletFromName(walletUUID);
+                    mWalletName = mWallet.getName();
                     mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
                 }
             }
