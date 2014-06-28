@@ -18,9 +18,12 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_double;
+import com.airbitz.api.SWIGTYPE_p_int;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
 import com.airbitz.api.SWIGTYPE_p_p_char;
+import com.airbitz.api.SWIGTYPE_p_p_unsigned_char;
+import com.airbitz.api.SWIGTYPE_p_unsigned_int;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -100,15 +103,18 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        String id = createReceiveRequestFor(bundle.getString(Wallet.WALLET_NAME),
-                bundle.getString(RequestFragment.BITCOIN_VALUE), bundle.getString(RequestFragment.FIAT_VALUE));
+        //TODO integrate a finder for associating this with someone
+        String fakeUser = "Ender Wiggins";
+        String fakePhone = "555-555-1212";
+        String id = createReceiveRequestFor(fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
 
-//        mBitcoinAddress.setText(id); //TODO where does address come from?
-
-        try{
-            generateQRCode_general(id);
-        }catch (Exception e){
-            e.printStackTrace();
+        if(id!=null) {
+            try{
+                generateQRCode_general(id);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            mBitcoinAddress.setText(getRequestAddress(id));
         }
 
         return view;
@@ -137,7 +143,7 @@ public class WalletQRCodeFragment extends Fragment {
         details.setAttributes(0x0); //for our own use (not used by the core)
 
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_char pRequestID = core.longPtr_to_charPtrPtr(lp);
+        SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
 
         // create the request
         result = core.ABC_CreateReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -153,11 +159,23 @@ public class WalletQRCodeFragment extends Fragment {
         }
     }
 
-    private void generateQRCode_general(String data) throws WriterException {
-        com.google.zxing.Writer writer = new QRCodeWriter();
-//        String finaldata = "ASFASGDFHAsdfsdfagdAsfasfdasdfNFOS3090ofmkslddgasdGAgaSDgASgASg";//= Uri.encode(data, "utf-8");
+    private void generateQRCode_general(String id) throws WriterException {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
 
-        BitMatrix bm = writer.encode(data, BarcodeFormat.QR_CODE,252, 252);
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_unsigned_char ppChar = core.longp_to_unsigned_ppChar(lp);
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+
+        result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                mWallet.getUUID(), id, ppChar, pUCount, error);
+
+        String pData = mCore.getStringAtPtr(core.longp_value(lp));
+
+        com.google.zxing.Writer writer = new QRCodeWriter();
+        BitMatrix bm = writer.encode(pData, BarcodeFormat.QR_CODE,252, 252);
         Bitmap ImageBitmap = Bitmap.createBitmap(252, 252, Bitmap.Config.ARGB_8888);
 
         for (int i = 0; i < 252; i++) {//width
@@ -169,5 +187,24 @@ public class WalletQRCodeFragment extends Fragment {
         if (ImageBitmap != null) {
             mQRView.setImageBitmap(ImageBitmap);
         }
+    }
+
+    private String getRequestAddress(String id)  {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        result = core.ABC_GetRequestAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                mWallet.getUUID(), id, ppChar, error);
+
+        String pAddress = null;
+
+        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+            pAddress = mCore.getStringAtPtr(core.longp_value(lp));
+        }
+
+        return pAddress;
     }
 }

@@ -556,7 +556,7 @@ public class CoreAPI {
     public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_char ppChar = core.longPtr_to_charPtrPtr(lp);
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
         SWIGTYPE_p_int64_t amt = core.new_int64_tp();
         core.longp_assign(core.p64_t_to_long_ptr(amt), (int) amount);

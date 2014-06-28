@@ -327,8 +327,13 @@ tABC_TxDetails ** longp_to_ppTxDetails(long * x) {
 }
 
 
-char ** longPtr_to_charPtrPtr(long * x) {
+char ** longp_to_ppChar(long * x) {
    return (char **) x;
+}
+
+
+unsigned char ** longp_to_unsigned_ppChar(long * x) {
+   return (unsigned char **) x;
 }
 
 
@@ -6574,7 +6579,7 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppTxDetails(JNI
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1charPtrPtr(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppChar(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jlong jresult = 0 ;
   long *arg1 = (long *) 0 ;
   char **result = 0 ;
@@ -6582,8 +6587,22 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longPtr_1to_1charPtrPtr(JN
   (void)jenv;
   (void)jcls;
   arg1 = *(long **)&jarg1; 
-  result = (char **)longPtr_to_charPtrPtr(arg1);
+  result = (char **)longp_to_ppChar(arg1);
   *(char ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1unsigned_1ppChar(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  unsigned char **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (unsigned char **)longp_to_unsigned_ppChar(arg1);
+  *(unsigned char ***)&jresult = result; 
   return jresult;
 }
 

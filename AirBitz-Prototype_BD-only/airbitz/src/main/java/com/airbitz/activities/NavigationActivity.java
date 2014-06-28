@@ -25,6 +25,7 @@ import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
+import com.airbitz.fragments.ReceivedSuccessFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
@@ -365,7 +366,7 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -378,7 +379,11 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
             bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
             bundle.putString(WalletsFragment.UUID, mUUID);
             bundle.putString(WalletsFragment.TXID, mTXID);
-            switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+//            switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+
+            Fragment frag = new ReceivedSuccessFragment();
+            frag.setArguments(bundle);
+            pushFragment(frag);
         }
 
         @Override
