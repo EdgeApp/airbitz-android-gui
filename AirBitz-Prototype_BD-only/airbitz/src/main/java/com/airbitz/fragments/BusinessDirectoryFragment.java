@@ -1,25 +1,17 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
@@ -60,10 +52,6 @@ import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationRequest;
 
 import org.json.JSONObject;
 
@@ -77,9 +65,7 @@ import java.util.List;
 public class BusinessDirectoryFragment extends Fragment implements
         GestureDetector.OnGestureListener,
         ObservableScrollView.ScrollViewListener,
-        GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener{
+        CurrentLocationManager.OnLocationChange {
 
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
@@ -161,9 +147,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
     private boolean mFirstLoad = true;
 
-    private Location mCurrentLocation;
-    LocationRequest mLocationRequest;
-
     private TextView businessHint;
     private TextView locationHint;
 
@@ -198,11 +181,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_business_directory, container, false);
 
         checkLocationManager();
-
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(30000);
-        mLocationRequest.setFastestInterval(60000);
 
         mGestureDetector = new GestureDetector(this);
 
@@ -439,8 +417,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
-                        String latLong = String.valueOf(getLatFromSharedPreference());
-                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        Location currentLoc = mLocationManager.getLocation();
+                        String latLong = String.valueOf(currentLoc.getLatitude());
+                        latLong += "," + String.valueOf(currentLoc.getLongitude());
                         new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text
                                         .toString(),
                                 mLocationWords,
@@ -491,8 +470,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
                 try {
-                    String latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    Location currentLoc = mLocationManager.getLocation();
+                    String latLong = String.valueOf(currentLoc.getLatitude());
+                    latLong += "," + String.valueOf(currentLoc.getLongitude());
 
                     // Only include cached searches if text is empty.
                     final String query;
@@ -569,8 +549,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                     }
 
                     // Search
-                    String latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    Location currentLoc = mLocationManager.getLocation();
+                    String latLong = String.valueOf(currentLoc.getLatitude());
+                    latLong += "," + String.valueOf(currentLoc.getLongitude());
                     mLocationWords = "";
 
                     try {
@@ -686,8 +667,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mViewGroupLoading.setVisibility(View.GONE);
                 mVenueFragmentLayout.setVisibility(View.GONE);
 
-                String latLong = String.valueOf(getLatFromSharedPreference());
-                latLong += "," + String.valueOf(getLonFromSharedPreference());
+                Location currentLoc = mLocationManager.getLocation();
+                String latLong = String.valueOf(currentLoc.getLatitude());
+                latLong += "," + String.valueOf(currentLoc.getLongitude());
                 if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
                     mLocationWords = editable.toString().substring(1);
                 }else{
@@ -770,6 +752,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         return view;
+    }
+
+    @Override
+    public void OnCurrentLocationChange(Location location) {
+        // TODO - update directory?
     }
 
     @Override public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
@@ -862,15 +849,10 @@ public class BusinessDirectoryFragment extends Fragment implements
     @Override public void onStop() {
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
-        }if (mLocationManager.getConnectionStatus()) {
-            /*
-             * Remove location updates for a listener.
-             * The current Activity is the listener, so
-             * the argument is "this".
-             */
-            mLocationManager.removeUpdates(this);
         }
-        mLocationManager.disconnect();
+
+        mLocationManager.removeLocationChangeListener(this);
+
         super.onStop();
     }
 
@@ -1060,27 +1042,26 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    private float getStateFromSharedPreferences(String key) {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-            return pref.getFloat(key, -1);
-        }
-        return -1;
-    }
-
-    public double getLatFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(this.LAT_KEY);
-    }
-
-    public double getLonFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(this.LON_KEY);
-    }
+//    private float getStateFromSharedPreferences(String key) {
+//        Activity activity = getActivity();
+//        if(activity!=null) {
+//            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+//            return pref.getFloat(key, -1);
+//        }
+//        return -1;
+//    }
+//
+//    public double getLatFromSharedPreference() {
+//        return (double) getStateFromSharedPreferences(this.LAT_KEY);
+//    }
+//
+//    public double getLonFromSharedPreference() {
+//        return (double) getStateFromSharedPreferences(this.LON_KEY);
+//    }
 
     private void checkLocationManager() {
 
-        mLocationManager = CurrentLocationManager.getLocationManager(getActivity(), this, this);
-
+        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
 
         //Criteria cri = new Criteria();
 
@@ -1126,84 +1107,36 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     }
 
-    private void writeLatLonToSharedPreference() {
-        writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());
-        writeValueToSharedPreference(LON_KEY, (float) mCurrentLocation.getLongitude());
-    }
-
-    private void writeValueToSharedPreference(String key, float value) {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putFloat(key, value);
-            editor.commit();
-        }
-    }
-
-    private void clearSharedPreference() {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = getActivity().getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.remove(LAT_KEY);
-            editor.remove(LON_KEY);
-            editor.commit();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
-        mCurrentLocation = mLocationManager.getLocation();
-        clearSharedPreference();
-        writeLatLonToSharedPreference();
-        mLocationManager.requestUpdates(mLocationRequest, this);
-    }
-
-    @Override
-    public void onDisconnected() {
-        Toast.makeText(getActivity(), "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if(connectionResult.hasResolution()){
-            try{
-                connectionResult.startResolutionForResult(getActivity(),9000);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        }else{
-            //TODO showErrorDialog(connectionResult.getErrorCode());
-        }
-    }
+//    private void writeLatLonToSharedPreference() {
+//        writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());
+//        writeValueToSharedPreference(LON_KEY, (float) mCurrentLocation.getLongitude());
+//    }
+//
+//    private void writeValueToSharedPreference(String key, float value) {
+//        Activity activity = getActivity();
+//        if(activity!=null) {
+//            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = pref.edit();
+//            editor.putFloat(key, value);
+//            editor.commit();
+//        }
+//    }
+//
+//    private void clearSharedPreference() {
+//        Activity activity = getActivity();
+//        if(activity!=null) {
+//            SharedPreferences pref = getActivity().getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = pref.edit();
+//            editor.remove(LAT_KEY);
+//            editor.remove(LON_KEY);
+//            editor.commit();
+//        }
+//    }
+//
 
     @Override
     public void onStart(){
         super.onStart();
-        mLocationManager.connect();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (mLocationManager != null) {
-
-            mLocationManager.removeUpdates(this);
-        }
-
-        if (location.hasAccuracy()) {
-            if (getLatFromSharedPreference() == -1 && getLonFromSharedPreference() == -1) {
-                if(mProgressDialog != null)
-                    mProgressDialog.dismiss();
-            }
-            mCurrentLocation = location;
-
-            Log.d("TAG_LOC",
-                    "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
-            clearSharedPreference();
-            writeLatLonToSharedPreference();
-        }
     }
 
     // private void clearCacheSharedPreference() {

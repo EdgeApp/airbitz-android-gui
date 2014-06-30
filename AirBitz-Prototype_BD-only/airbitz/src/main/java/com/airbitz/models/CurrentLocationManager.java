@@ -1,40 +1,72 @@
 package com.airbitz.models;
 
 import android.content.Context;
+import android.location.Location;
+import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by matt on 6/30/14.
  */
-public class CurrentLocationManager {
+public class CurrentLocationManager implements
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
 
     private static CurrentLocationManager mInstance = null;
     private LocationClient locationClient;
+    private Location mCurrentLocation;
+    LocationRequest mLocationRequest;
 
-    public CurrentLocationManager(Context context, GooglePlayServicesClient.ConnectionCallbacks callbacks, GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener) {
-        locationClient = new LocationClient(context, callbacks, onConnectionFailedListener);
+    public CurrentLocationManager(Context context) {
+        locationClient = new LocationClient(context, this, this);
+
+        attemptConnection();
     }
 
-    public static CurrentLocationManager getLocationManager(Context context, GooglePlayServicesClient.ConnectionCallbacks callbacks, GooglePlayServicesClient.OnConnectionFailedListener onConnectionFailedListener) {
+    // Callback interface for adding and removing location change listeners
+    private List<OnLocationChange> mOnLocationChange;
+
+    public interface OnLocationChange {
+        public void OnCurrentLocationChange(Location location);
+    }
+
+    public void addLocationChangeListener(OnLocationChange listener) {
+        if(mOnLocationChange==null) {
+            mOnLocationChange = new ArrayList<OnLocationChange>();
+        }
+        if(!mOnLocationChange.contains(listener)) {
+            mOnLocationChange.add(listener);
+        }
+    }
+
+    public void removeLocationChangeListener(OnLocationChange listener) {
+        if(mOnLocationChange.contains(listener)) {
+            mOnLocationChange.remove(listener);
+        }
+    }
+
+    public static CurrentLocationManager getLocationManager(Context context) {
         if (null == mInstance) {
-            mInstance = new CurrentLocationManager(context, callbacks, onConnectionFailedListener);
+            mInstance = new CurrentLocationManager(context);
         }
         return mInstance;
     }
 
-    public android.location.Location getLocation() {
-        return locationClient.getLastLocation();
+    public Location getLocation() {
+        return mCurrentLocation;
     }
 
-    public void disconnect() {
-        locationClient.disconnect();
-    }
-
-    public void connect() {
+    public void attemptConnection() {
         locationClient.connect();
     }
 
@@ -50,4 +82,33 @@ public class CurrentLocationManager {
         locationClient.removeLocationUpdates(listener);
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("CurrentLocationManager", "Connected.");
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(30000);
+        locationClient.requestLocationUpdates(mLocationRequest, this);
+    }
+
+    @Override
+    public void onDisconnected() {
+        Log.d("CurrentLocationManager", "Disconnected. Please re-connect.");
+        attemptConnection();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location.hasAccuracy()) {
+            mCurrentLocation = location;
+            Log.d("TAG_LOC",
+                    "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("TAG_LOC", "Connection to LocationClient failed");
+    }
 }
