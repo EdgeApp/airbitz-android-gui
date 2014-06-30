@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,7 +42,8 @@ import java.util.List;
  * Created on 2/12/14.
  */
 public class VenueFragment extends Fragment implements
-                                           BusinessDirectoryFragment.BusinessScrollListener {
+    BusinessDirectoryFragment.BusinessScrollListener,
+    CurrentLocationManager.OnLocationChange {
 
     public static final String TAG = VenueFragment.class.getSimpleName();
     private ListView mVenueListView;
@@ -99,7 +101,8 @@ public class VenueFragment extends Fragment implements
                                        Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
 
-        mLocationManager = CurrentLocationManager.getLocationManager(null, null, null);
+        mLocationManager = CurrentLocationManager.getLocationManager(null);
+        mLocationManager.addLocationChangeListener(this);
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
@@ -109,29 +112,7 @@ public class VenueFragment extends Fragment implements
             mVenueListView.setVisibility(View.INVISIBLE);
             mVenues = new ArrayList<BusinessSearchResult>();
 
-            mIsInBusinessDirectory = false;
-            mIsInMapBusinessDirectory = false;
-            if (getParentFragment().getClass().toString().equalsIgnoreCase(BusinessDirectoryFragment.class.toString())) {
-                String latLon = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
-
-                mIsInBusinessDirectory = true;
-                mGetVenuesTask = new GetVenuesTask(mActivity);
-                mGetVenuesTask.execute(latLon);
-                ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
-
-            } else if (getParentFragment().getClass().toString().equalsIgnoreCase(MapBusinessDirectoryFragment.class.toString()))  {
-                mIsInMapBusinessDirectory = true;
-                mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
-                mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
-                mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
-
-                mGetVenuesTask = new GetVenuesTask(mActivity);
-                mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
-            } else {
-                mGetVenuesTask = new GetVenuesTask(mActivity);
-                String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
-                mGetVenuesTask.execute(latlong);
-            }
+            updateView(mLocationManager.getLocation());
 
             int timeout = 15000;
             Handler handler = new Handler();
@@ -151,6 +132,34 @@ public class VenueFragment extends Fragment implements
         }
 
         return view;
+    }
+
+    private void updateView(Location location) {
+        mIsInBusinessDirectory = false;
+        mIsInMapBusinessDirectory = false;
+        String latLon = "";
+        if(location!=null)
+            latLon = "" + location.getLatitude() + "," + location.getLongitude();
+
+        if (getParentFragment().getClass().toString().equalsIgnoreCase(BusinessDirectoryFragment.class.toString())) {
+            mIsInBusinessDirectory = true;
+            mGetVenuesTask = new GetVenuesTask(mActivity);
+            mGetVenuesTask.execute(latLon);
+            ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
+
+        } else if (getParentFragment().getClass().toString().equalsIgnoreCase(MapBusinessDirectoryFragment.class.toString()))  {
+            mIsInMapBusinessDirectory = true;
+            mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
+            mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
+            mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
+
+            mGetVenuesTask = new GetVenuesTask(mActivity);
+            mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
+        } else {
+            mGetVenuesTask = new GetVenuesTask(mActivity);
+            mGetVenuesTask.execute(latLon);
+        }
+
     }
 
     private void hideLoadingIndicator() {
@@ -178,6 +187,11 @@ public class VenueFragment extends Fragment implements
             }
 
         }
+    }
+
+    @Override
+    public void OnCurrentLocationChange(Location location) {
+        updateView(mLocationManager.getLocation());
     }
 
     private class GetVenuesTask extends AsyncTask<String, Void, String> {
