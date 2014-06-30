@@ -1,7 +1,6 @@
 package com.airbitz.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.PasswordRecoveryActivity;
 import com.airbitz.activities.SignUpActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;

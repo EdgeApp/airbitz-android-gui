@@ -1,36 +1,25 @@
 package com.airbitz.fragments;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 

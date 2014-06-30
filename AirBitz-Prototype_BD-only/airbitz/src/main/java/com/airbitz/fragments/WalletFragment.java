@@ -1,11 +1,9 @@
 package com.airbitz.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +31,6 @@ import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

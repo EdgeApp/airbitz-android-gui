@@ -18,7 +18,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,7 +34,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewAnimator;
 
 import com.airbitz.App;
 import com.airbitz.R;
@@ -52,12 +50,9 @@ import com.airbitz.objects.BusinessVenue;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.CacheUtil;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -346,7 +341,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
                 if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
                     editable.append(' ');
-                }else if(editable.toString().charAt(0)!=' '){
+                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
                     mSearchEdittext.setText(" "+editable.toString());
                 }
                 if( ( editable.toString().compareTo(" ")==0)){
@@ -488,7 +483,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
                 if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
                     editable.append(' ');
-                }else if(editable.toString().charAt(0)!=' '){
+                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
                     mLocationEdittext.setText(" "+editable.toString());
                 }
                 if( editable.toString().compareTo(" ")==0){

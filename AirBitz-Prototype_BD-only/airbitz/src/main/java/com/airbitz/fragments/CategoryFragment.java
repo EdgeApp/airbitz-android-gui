@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.SettingsCategoryAdapter;
-import com.airbitz.models.Category;
 import com.airbitz.models.CategoryTypeEnum;
 
 import java.util.ArrayList;

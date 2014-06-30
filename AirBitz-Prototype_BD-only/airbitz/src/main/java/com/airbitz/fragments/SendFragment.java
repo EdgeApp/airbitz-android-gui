@@ -42,7 +42,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;

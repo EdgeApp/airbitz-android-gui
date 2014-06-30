@@ -12,11 +12,6 @@ import android.widget.LinearLayout;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-import javax.net.ssl.HandshakeCompletedEvent;
-
 /**
  * Created by Thomas Baker on 4/22/14.
  */
