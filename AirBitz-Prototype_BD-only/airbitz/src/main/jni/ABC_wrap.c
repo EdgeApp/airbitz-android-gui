@@ -322,6 +322,11 @@ tABC_TxInfo ** longp_to_ppTxInfo(long * x) {
 }
 
 
+tABC_Currency ** longp_to_ppCurrency(long * x) {
+   return (tABC_Currency **) x;
+}
+
+
 tABC_TxDetails ** longp_to_ppTxDetails(long * x) {
    return (tABC_TxDetails **) x;
 }
@@ -6561,6 +6566,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppTxInfo(JNIEnv
   arg1 = *(long **)&jarg1; 
   result = (tABC_TxInfo **)longp_to_ppTxInfo(arg1);
   *(tABC_TxInfo ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppCurrency(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_Currency **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_Currency **)longp_to_ppCurrency(arg1);
+  *(tABC_Currency ***)&jresult = result; 
   return jresult;
 }
 
