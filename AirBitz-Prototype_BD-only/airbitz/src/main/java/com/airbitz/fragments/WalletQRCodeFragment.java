@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,9 +16,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_double;
 import com.airbitz.api.SWIGTYPE_p_int;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
 import com.airbitz.api.SWIGTYPE_p_p_char;
 import com.airbitz.api.SWIGTYPE_p_p_unsigned_char;
