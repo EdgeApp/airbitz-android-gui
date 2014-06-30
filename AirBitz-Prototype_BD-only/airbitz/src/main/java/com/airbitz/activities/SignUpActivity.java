@@ -267,6 +267,7 @@ public class SignUpActivity extends Activity {
         private final String mUsername;
         private final String mPassword;
         private final String mPin;
+        private String mFailureReason;
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pData = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
@@ -281,6 +282,7 @@ public class SignUpActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
+            mFailureReason = pError.getSzDescription();
             return code == tABC_CC.ABC_CC_Ok;
         }
 
@@ -293,7 +295,7 @@ public class SignUpActivity extends Activity {
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
                 showProgress(false);
-                ShowReasonAlert(getResources().getString(R.string.error_invalid_credentials));
+                ShowReasonAlert(mFailureReason);
             }
         }
 
