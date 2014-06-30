@@ -276,6 +276,7 @@ public class SignUpActivity extends Activity {
             mUsername = email;
             mPassword = password;
             mPin = pin;
+            showProgress(true);
         }
 
         @Override
