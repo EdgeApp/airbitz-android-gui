@@ -400,6 +400,7 @@ public class PasswordRecoveryActivity extends Activity {
         PasswordRecoveryActivity.this.finish();
     }
 
+    //TODO The following classes should be moved to CoreAPI and a method added to get the questions
     private class QuestionResults extends tABC_RequestResults {
         public long getPtrPtr() {
            QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
