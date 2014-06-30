@@ -299,23 +299,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         protected void onPostExecute(Boolean aBoolean) {
 
             try{
-            mCamera.takePicture(null, null, SendFragment.this);
+//            mCamera.takePicture(null, null, SendFragment.this);
+                GotoSendConfirmation("", 100, "test");
             }
             catch (Exception e){
-
             }
         }
     }
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
-
-        Camera.CameraInfo info = new Camera.CameraInfo();
-
-        new PhotoHandler(getActivity(), data, info);
-
-        Fragment fragment = new SendConfirmationFragment();
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
 
 
@@ -355,7 +348,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         mCamera.setParameters(params);
 
-//        new FakeCapturePhoto().execute();
+        new FakeCapturePhoto().execute();
     }
 
     @Override
@@ -382,6 +375,17 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 Log.d("SendFragment", "QR result is bad");
             }
         }
+    }
+
+    private void GotoSendConfirmation(String address, long satoshi, String label) {
+        Fragment fragment = new SendConfirmationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(QR_RESULT, address);
+        bundle.putLong(AMOUNT_SATOSHI, satoshi);
+        bundle.putString(LABEL, label);
+        bundle.putBoolean(UUID, false);
+        fragment.setArguments(bundle);
+        ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
 
     private boolean CheckQRResults(String results)
@@ -429,15 +433,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                         mHandler.removeCallbacks(cameraDelayRunner);
                     stopCamera();
 
-                    Fragment fragment = new SendConfirmationFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(QR_RESULT, uriAddress);
-                    bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
-                    bundle.putString(LABEL, label);
-                    bundle.putBoolean(UUID, false);
-                    fragment.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(fragment);
-
+                    GotoSendConfirmation(uriAddress, amountSatoshi, label);
                 }
                 else
                 {
