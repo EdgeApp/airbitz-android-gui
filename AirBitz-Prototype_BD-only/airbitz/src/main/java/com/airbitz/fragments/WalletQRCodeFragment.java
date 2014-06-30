@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,7 @@ public class WalletQRCodeFragment extends Fragment {
         String fakeUser = "Ender Wiggins";
         String fakePhone = "555-555-1212";
         String id = createReceiveRequestFor(fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
-
+        Log.d("WalletQRCodeFragment", "generated id: "+id);
         if(id!=null) {
             try{
                 generateQRCode_general(id);
