@@ -103,7 +103,7 @@ public class WalletFragment extends Fragment {
                 if(walletUUID.isEmpty()) {
                     Log.d("WalletFragement", "no detail info");
                 } else {
-                    mWallet = mCoreAPI.getWalletFromName(walletUUID);
+                    mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
                     mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
                 }

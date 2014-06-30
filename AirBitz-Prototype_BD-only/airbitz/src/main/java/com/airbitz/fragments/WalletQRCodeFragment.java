@@ -108,14 +108,14 @@ public class WalletQRCodeFragment extends Fragment {
         String fakeUser = "Ender Wiggins";
         String fakePhone = "555-555-1212";
         String id = createReceiveRequestFor(fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
-        Log.d("WalletQRCodeFragment", "generated id: "+id);
         if(id!=null) {
+            String addr = getRequestAddress(id);
+            mBitcoinAddress.setText(addr);
             try{
                 generateQRCode_general(id);
             }catch (Exception e){
                 e.printStackTrace();
             }
-            mBitcoinAddress.setText(getRequestAddress(id));
         }
 
         return view;
@@ -167,13 +167,23 @@ public class WalletQRCodeFragment extends Fragment {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_unsigned_char ppChar = core.longp_to_unsigned_ppChar(lp);
 
-        SWIGTYPE_p_int pCount = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+        SWIGTYPE_p_int pWidth = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pWidth);
 
         result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 mWallet.getUUID(), id, ppChar, pUCount, error);
 
         String pData = mCore.getStringAtPtr(core.longp_value(lp));
+        int width = core.intp_value(pWidth);
+//        String out = new String();
+//        char[] c = pData.toCharArray();
+//        for(int i=0; i<width; i++) {
+//            if (c[i] == 0)
+//                out += "0";
+//            else
+//                out += "1";
+//        }
+//        Log.d("WalletQRCodeFragment", "generated QR code: "+out);
 
         com.google.zxing.Writer writer = new QRCodeWriter();
         BitMatrix bm = writer.encode(pData, BarcodeFormat.QR_CODE,252, 252);
