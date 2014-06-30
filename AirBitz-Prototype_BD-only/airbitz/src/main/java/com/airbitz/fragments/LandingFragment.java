@@ -17,16 +17,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +42,6 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.api.tABC_RequestType;
 
 public class LandingFragment extends Fragment {
 

@@ -6,14 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.models.FragmentSourceEnum;
-import com.airbitz.utils.Common;
 
 /**
  * Created by matt on 6/18/14.

@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.utils.Common;
 
 /**
