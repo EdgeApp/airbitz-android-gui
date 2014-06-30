@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.utils.Common;
 
 /**
@@ -89,6 +91,8 @@ public class SettingFragment extends Fragment {
     private String[] mPesoExchangeItems;
     private String[] mYuanExchangeItems;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -100,6 +104,9 @@ public class SettingFragment extends Fragment {
         mEuroExchangeItems = getResources().getStringArray(R.array.euro_exchange_array);
         mPesoExchangeItems = getResources().getStringArray(R.array.peso_exchange_array);
         mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
+
+        mCoreAPI = CoreAPI.getApi();
+        mCurrencyItems = mCoreAPI.getCurrencies();
     }
 
     @Override

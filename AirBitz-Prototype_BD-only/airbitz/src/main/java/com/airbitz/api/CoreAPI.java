@@ -233,6 +233,35 @@ public class CoreAPI {
         return false;
     }
 
+    //************ Settings handling
+
+    public String[] getCurrencies() {
+        String[] arrayCurrencies = null;
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
+
+        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
+
+        if (result == tABC_CC.ABC_CC_Ok) {
+            int mCount = core.intp_value(pCount);
+            arrayCurrencies = new String[mCount];
+
+            int ptrToInfo = core.longp_value(lp);
+
+            for (int i = 0; i < mCount; i++)
+            {
+                tABC_Currency txd = new tABC_Currency(ptrToInfo + i*0, false); //TODO 0 should be 4?
+                arrayCurrencies[i] = txd.getSzCode();
+            }
+        }
+        return arrayCurrencies;
+    }
+
+
     //************ Transaction handling
     public AccountTransaction getTransaction(String walletUUID, String szTxId)
     {
