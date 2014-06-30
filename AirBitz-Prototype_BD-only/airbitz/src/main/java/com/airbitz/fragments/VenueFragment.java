@@ -11,9 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -27,6 +25,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessSearchResult;
+import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.ListViewUtility;
 import com.squareup.picasso.Picasso;
@@ -60,6 +59,8 @@ public class VenueFragment extends Fragment implements
     private String mLocationName;
     private String mBusinessName;
     private String mBusinessType;
+
+    private CurrentLocationManager mLocationManager;
 
     private boolean loadingVisible = true;
     private int venueAmount = 0;
@@ -97,6 +98,8 @@ public class VenueFragment extends Fragment implements
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
+
+        mLocationManager = CurrentLocationManager.getLocationManager(null, null, null);
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);

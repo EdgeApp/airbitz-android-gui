@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -289,9 +288,11 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         }
 
         @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
+            if(null != mProgressDialog) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                        Toast.LENGTH_LONG).show();
+            }
             super.onCancelled();
         }
 

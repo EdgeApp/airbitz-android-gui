@@ -43,9 +43,10 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class AirbitzAPI {
 
-    static {
+    /*static {
+        System.loadLibrary("abc");
         System.loadLibrary("airbitz");
-    }
+    }*/
 
     private static AirbitzAPI mInstance = null;
 

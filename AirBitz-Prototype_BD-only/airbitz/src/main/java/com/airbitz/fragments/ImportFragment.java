@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.PhotoHandler;
 
