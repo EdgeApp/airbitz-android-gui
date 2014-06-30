@@ -68,6 +68,7 @@
     <string name="activity_recovery_alert_title">Alert</string>
     <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
     <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>
+    <string name="activity_recovery_question_default">Question</string>
 
     <string-array name="password_recovery_1">
         <item>Who is your favorite superhero?</item>

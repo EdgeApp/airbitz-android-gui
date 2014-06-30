@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_p_sABC_QuestionChoice;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
@@ -93,8 +94,11 @@ public class PasswordRecoveryActivity extends Activity {
         super.onCreate(savedInstanceState);
         mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
         mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
-//        mUsername="junktest5"; // for testing
-//        mPassword="Aaaaaaaa1@"; // for testing
+        mUsername="junktest1"; // for testing
+        mPassword="Aaaaaaaa1@"; // for testing
+        String seed = "This is a 234-023-490 test seed string";
+        CoreAPI.getApi().Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
+        ;
 
         setContentView(R.layout.activity_password_recovery);
 
@@ -159,7 +163,7 @@ public class PasswordRecoveryActivity extends Activity {
         int count = 0;
         for (View view : mQuestionViews) {
             QuestionView qaView = (QuestionView) view;
-            if (qaView.getQuestion().isEmpty()) {
+            if (qaView.getQuestion().equals(getString(R.string.activity_recovery_question_default))) {
                 allQuestionsSelected = false;
                 break;
             }
@@ -221,8 +225,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivity(mIntent);
-                        PasswordRecoveryActivity.this.finish();
+                        SuccessfulSignup();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
@@ -292,10 +295,6 @@ public class PasswordRecoveryActivity extends Activity {
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
 
         FetchQuestionsTask(String username) {
-            // next for lines for testing only
-//            String seed = "adlkjaljblkajsf";
-//            tABC_CC code = core.ABC_Initialize(getApplication().getFilesDir().toString(), null, null, seed, seed.length(), pError);
-
             mUsername = username;
         }
 
@@ -324,12 +323,12 @@ public class PasswordRecoveryActivity extends Activity {
                             currentAddressCategory2.add(choice.getQuestion());
                         }
                     }
-                    currentStringCategory1.add("Question");
-                    currentStringCategory2.add("Question");
-                    currentNumericCategory1.add("Question");
-                    currentNumericCategory2.add("Question");
-                    currentAddressCategory1.add("Question");
-                    currentAddressCategory2.add("Question");
+                    currentStringCategory1.add(getString(R.string.activity_recovery_question_default));
+                    currentStringCategory2.add(getString(R.string.activity_recovery_question_default));
+                    currentNumericCategory1.add(getString(R.string.activity_recovery_question_default));
+                    currentNumericCategory2.add(getString(R.string.activity_recovery_question_default));
+                    currentAddressCategory1.add(getString(R.string.activity_recovery_question_default));
+                    currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
                     return true;
                 } else {
                     return false;
@@ -385,6 +384,8 @@ public class PasswordRecoveryActivity extends Activity {
             mSaveQuestionsTask = null;
             if (!success) {
                 ShowSaveFailAlert(pError.getSzDescription());
+            } else {
+                SuccessfulSignup();
             }
         }
 
@@ -392,7 +393,11 @@ public class PasswordRecoveryActivity extends Activity {
         protected void onCancelled() {
             mSaveQuestionsTask = null;
         }
+    }
 
+    private void SuccessfulSignup() {
+        startActivity(mIntent);
+        PasswordRecoveryActivity.this.finish();
     }
 
     private class QuestionResults extends tABC_RequestResults {
