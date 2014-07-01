@@ -104,6 +104,9 @@ public class CurrentLocationManager implements
             mCurrentLocation = location;
             Log.d("TAG_LOC",
                     "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
+            for(OnLocationChange listener : mOnLocationChange) {
+                listener.OnCurrentLocationChange(mCurrentLocation);
+            }
         }
     }
 
