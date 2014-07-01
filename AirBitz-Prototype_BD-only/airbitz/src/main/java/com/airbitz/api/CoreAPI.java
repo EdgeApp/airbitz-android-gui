@@ -34,6 +34,7 @@ public class CoreAPI {
         return mInstance;
     }
     public native String getStringAtPtr(long jarg1);
+    public native byte[] getBytesAtPtr(long jarg1, int length);
     public native void int64_tp_assign(long jarg1, long jarg2);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
