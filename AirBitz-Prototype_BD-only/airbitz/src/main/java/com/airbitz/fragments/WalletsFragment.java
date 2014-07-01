@@ -51,7 +51,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private static final int CURRENCY = 1;
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
-    public static final String UUID = "com.airbitz.WalletsFragment.UUID";
+
     public static final String TXID = "com.airbitz.WalletsFragment.TXID";
 
 
@@ -103,7 +103,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private List<Wallet> archivedWalletList;
 
     private List<String> currencyList;
-    private CoreAPI mAPI;
+    private CoreAPI mCoreAPI;
     private AddWalletTask mAddWalletTask;
     private boolean fragmentsCreated = false;
 
@@ -111,8 +111,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mAPI = CoreAPI.getApi();
-        mLatestWalletList = mAPI.loadWallets();
+        mCoreAPI = CoreAPI.getApi();
+        mLatestWalletList = mCoreAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
         bundle = this.getArguments();
         if(bundle != null && bundle.getBoolean(CREATE)){
@@ -120,22 +120,6 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             bundle.putBoolean(CREATE, false);
             buildFragments();
         }
-
-        //TESTING
-//        String temp = mAPI.conversion(100000000, false);
-//        Log.i("CoreAPI", "conversion out 1E8 satoshi="+temp);
-//        temp = mAPI.conversion(2147483647, false);
-//        Log.i("CoreAPI", "conversion out 2147483647="+temp);
-//        temp = mAPI.conversion(1073741823, false);
-//        Log.i("CoreAPI", "conversion out 1073741823="+temp);
-
-//        double big = ((double)2147483647);
-//        String temp = mAPI.conversion((long) big, false);
-//        Log.i("CoreAPI", "conversion out 214748364700="+temp);
-//        big = ((double)2147483647)*32897654;
-//        temp = mAPI.conversion((long) big, false);
-//        Log.i("CoreAPI", "conversion out 214748364700="+temp);
-//        temp += "";
     }
 
     @Override
@@ -427,8 +411,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private void showWalletFragment(String name) {
         Bundle bundle = new Bundle();
         bundle.putString(FROM_SOURCE, "");
-        Wallet w = mAPI.getWalletFromName(name);
-        bundle.putString(UUID, w.getUUID());
+        Wallet w = mCoreAPI.getWalletFromName(name);
+        bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
@@ -510,7 +494,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     @Override
     public void onListReordered() {
         List<Wallet> list = mLatestWalletListView.mWalletList;
-        mAPI.setWalletOrder(list);
+        mCoreAPI.setWalletOrder(list);
     }
 
     private void refreshWalletList(List<Wallet> list) {
@@ -541,7 +525,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mAPI.createWallet(mWalletName, mUsername, mPassword, SignUpActivity.DOLLAR_CURRENCY_NUMBER);
+            return mCoreAPI.createWallet(mWalletName, mUsername, mPassword, SignUpActivity.DOLLAR_CURRENCY_NUMBER);
         }
 
         @Override
@@ -551,7 +535,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             if (!success) {
                 Log.d("WalletsFragment", "AddWalletTask failed");
             } else {
-                refreshWalletList(mAPI.loadWallets());
+                refreshWalletList(mCoreAPI.loadWallets());
             }
         }
 
@@ -667,9 +651,6 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     public void buildFragments(){
         if(bundle.getString(FROM_SOURCE).equals("REQUEST") || bundle.getString(FROM_SOURCE).equals("SEND")){
-            String walletUUID = bundle.getString(UUID);
-            String txID = bundle.getString(TXID);
-
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag);

@@ -93,11 +93,12 @@ public class WalletFragment extends Fragment {
     {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
+
         Bundle bundle = getArguments();
         if(bundle != null){
-           if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
-                String walletUUID = bundle.getString(WalletsFragment.UUID);
-                if(walletUUID.isEmpty()) {
+            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
+                String walletUUID = bundle.getString(Wallet.WALLET_UUID);
+                if(walletUUID==null || walletUUID.isEmpty()) {
                     Log.d("WalletFragement", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWallet(walletUUID);

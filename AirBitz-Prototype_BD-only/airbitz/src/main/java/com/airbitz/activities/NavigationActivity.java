@@ -377,8 +377,8 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
         protected void onPostExecute(final Boolean success) {
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
-            bundle.putString(WalletsFragment.UUID, mUUID);
             bundle.putString(WalletsFragment.TXID, mTXID);
+            bundle.putString(Wallet.WALLET_UUID, mUUID);
 
             Fragment frag = new ReceivedSuccessFragment();
             frag.setArguments(bundle);
