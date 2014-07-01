@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -170,31 +171,28 @@ public class WalletQRCodeFragment extends Fragment {
         result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 mWallet.getUUID(), id, ppChar, pUCount, error);
 
-        String pData = mCore.getStringAtPtr(core.longp_value(lp));
         int width = core.intp_value(pWidth);
-//        String out = new String();
-//        char[] c = pData.toCharArray();
-//        for(int i=0; i<width; i++) {
-//            if (c[i] == 0)
-//                out += "0";
-//            else
-//                out += "1";
-//        }
-//        Log.d("WalletQRCodeFragment", "generated QR code: "+out);
+        byte[] byteArray = mCore.getBytesAtPtr(core.longp_value(lp), width*width);
 
-        com.google.zxing.Writer writer = new QRCodeWriter();
-        BitMatrix bm = writer.encode(pData, BarcodeFormat.QR_CODE,252, 252);
-        Bitmap ImageBitmap = Bitmap.createBitmap(252, 252, Bitmap.Config.ARGB_8888);
+        Bitmap bm = FromBinary(byteArray, width, 4);
 
-        for (int i = 0; i < 252; i++) {//width
-            for (int j = 0; j < 252; j++) {//height
-                ImageBitmap.setPixel(i, j, bm.get(i, j) ? Color.BLACK: Color.WHITE);
+        if (bm != null) {
+            mQRView.setImageBitmap(bm);
+        }
+    }
+
+    public Bitmap FromBinary(byte[] bits, int width, int scale) {
+        Bitmap bmpBinary = Bitmap.createBitmap(width*scale, width*scale, Bitmap.Config.ARGB_8888);
+
+        for(int x = 0; x < width; x++) {
+            for (int y = 0; y < width; y++) {
+                bmpBinary.setPixel(x, y, bits[y * width + x] != 0 ? Color.BLACK : Color.WHITE);
             }
         }
-
-        if (ImageBitmap != null) {
-            mQRView.setImageBitmap(ImageBitmap);
-        }
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        Bitmap resizedBitmap = Bitmap.createBitmap(bmpBinary, 0, 0, width, width, matrix, false);
+        return resizedBitmap;
     }
 
     private String getRequestAddress(String id)  {
