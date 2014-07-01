@@ -46,6 +46,7 @@ import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.SearchResult;
+import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.ListViewUtility;
@@ -137,9 +138,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             fromSendRequest = true;
         } else {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
-                    String walletUUID = bundle.getString(WalletsFragment.UUID);
+                    String walletUUID = bundle.getString(Wallet.WALLET_UUID);
                     String txId = bundle.getString(WalletsFragment.TXID);
-                    if(walletUUID.isEmpty() || txId.isEmpty()) {
+                    if(walletUUID.isEmpty()) {
                         Log.d("TransactionDetailFragement", "no detail info");
                     } else {
                         CoreAPI mCoreAPI = CoreAPI.getApi();

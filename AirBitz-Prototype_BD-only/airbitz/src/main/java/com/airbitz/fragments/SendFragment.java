@@ -40,7 +40,6 @@ import com.airbitz.api.tABC_BitcoinURIInfo;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
-import com.airbitz.objects.PhotoHandler;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Reader;
@@ -88,7 +87,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private Spinner walletSpinner;
     private List<String> mWalletList;
-    private String currentWallet;
+    private String mWalletName;
     private List<String> mCurrentListing;
 
     private ArrayAdapter<String> listingAdapter;
@@ -150,7 +149,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                currentWallet = mWalletList.get(i);
+                mWalletName = mWalletList.get(i);
                 goAutoCompleteListing();
             }
 
@@ -380,9 +379,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         Fragment fragment = new SendConfirmationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(QR_RESULT, address);
-        bundle.putLong(AMOUNT_SATOSHI, satoshi);
+        bundle.putLong(RequestFragment.BITCOIN_VALUE, satoshi);
         bundle.putString(LABEL, label);
         bundle.putBoolean(UUID, false);
+        Wallet w = mCoreAPI.getWalletFromName(mWalletName);
+        bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
@@ -511,13 +512,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mCurrentListing.clear();
         if(text.isEmpty()){
             for(String name : mWalletList){
-                if(name != currentWallet){
+                if(name != mWalletName){
                     mCurrentListing.add(name);
                 }
             }
         }else {
             for (String name : mWalletList) {
-                if (name != currentWallet && name.toLowerCase().contains(text.toLowerCase())) {
+                if (name != mWalletName && name.toLowerCase().contains(text.toLowerCase())) {
                     mCurrentListing.add(name);
                 }
             }

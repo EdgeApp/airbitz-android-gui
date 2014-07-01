@@ -7,8 +7,10 @@ import java.util.List;
  */
 public class Wallet {
 
-    public static final String WALLET_NAME = "name";
-    public static final String WALLET_AMOUNT = "amount";
+    // Strings for argument passing in bundles
+    public static final String WALLET_NAME = "com.airbitz.models.wallet.wallet_name";
+    public static final String WALLET_AMOUNT_SATOSHI = "com.airbitz.models.wallet.wallet_amount_satoshi";
+    public static final String WALLET_UUID = "com.airbitz.WalletsFragment.UUID";
 
     private String mName;
     private String mUUID;

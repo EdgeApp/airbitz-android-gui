@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +28,7 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_TxDetails;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 
 public class WalletQRCodeFragment extends Fragment {
@@ -50,14 +46,14 @@ public class WalletQRCodeFragment extends Fragment {
     private String mBitcoin;
     private String mFiat;
 
-    private CoreAPI mCore;
+    private CoreAPI mCoreAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
-        mCore = CoreAPI.getApi();
-        mWallet = mCore.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
+        mCoreAPI = CoreAPI.getApi();
+        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
     }
 
     @Override
@@ -126,9 +122,9 @@ public class WalletQRCodeFragment extends Fragment {
         tABC_Error error = new tABC_Error();
 
         //first need to create a transaction details struct
-        long satoshi = mCore.denominationToSatoshi(btc, 0);
+        long satoshi = mCoreAPI.denominationToSatoshi(btc, 0);
 
-        double value = mCore.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
+        double value = mCoreAPI.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
 
        //the true fee values will be set by the core
         details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
@@ -150,7 +146,7 @@ public class WalletQRCodeFragment extends Fragment {
 
         if (result == tABC_CC.ABC_CC_Ok)
         {
-            return mCore.getStringAtPtr(core.longp_value(lp));
+            return mCoreAPI.getStringAtPtr(core.longp_value(lp));
         }
         else
         {
@@ -172,7 +168,7 @@ public class WalletQRCodeFragment extends Fragment {
                 mWallet.getUUID(), id, ppChar, pUCount, error);
 
         int width = core.intp_value(pWidth);
-        byte[] byteArray = mCore.getBytesAtPtr(core.longp_value(lp), width*width);
+        byte[] byteArray = mCoreAPI.getBytesAtPtr(core.longp_value(lp), width*width);
 
         Bitmap bm = FromBinary(byteArray, width, 4);
 
@@ -208,7 +204,7 @@ public class WalletQRCodeFragment extends Fragment {
         String pAddress = null;
 
         if(result.equals(tABC_CC.ABC_CC_Ok)) {
-            pAddress = mCore.getStringAtPtr(core.longp_value(lp));
+            pAddress = mCoreAPI.getStringAtPtr(core.longp_value(lp));
         }
 
         return pAddress;
