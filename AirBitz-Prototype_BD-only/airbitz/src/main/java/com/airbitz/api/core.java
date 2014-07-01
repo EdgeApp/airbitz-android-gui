@@ -407,6 +407,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);
   }
 
+  public static SWIGTYPE_p_p_sABC_AccountSettings longp_to_ppAccountSettings(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_ppAccountSettings(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_AccountSettings(cPtr, false);
+  }
+
   public static SWIGTYPE_p_p_char longp_to_ppChar(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_ppChar(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_char(cPtr, false);

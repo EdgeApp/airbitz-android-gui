@@ -24,6 +24,9 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.api.tABC_ExchangeRateSource;
 import com.airbitz.utils.Common;
 
 /**
@@ -45,6 +48,8 @@ public class SettingFragment extends Fragment {
     public static final String EURO_EXCHANGE = "EURO_EXCHANGE";
     public static final String PESO_EXCHANGE = "PESO_EXCHANGE";
     public static final String YUAN_EXCHANGE = "YUAN_EXCHANGE";
+
+    private static final int MAX_TIME_VALUE = 60;
 
     private RelativeLayout mCategoryContainer;
 
@@ -84,6 +89,7 @@ public class SettingFragment extends Fragment {
 
     private String[] mLanguageItems;
     private String[] mCurrencyItems;
+    tABC_ExchangeRateSource[] mExchanges;
     private String[] mUSDExchangeItems;
     private String[] mCanadianExchangeItems;
     private String[] mEuroExchangeItems;
@@ -91,6 +97,7 @@ public class SettingFragment extends Fragment {
     private String[] mYuanExchangeItems;
 
     private CoreAPI mCoreAPI;
+    private tABC_AccountSettings mCoreSettings;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -105,7 +112,7 @@ public class SettingFragment extends Fragment {
         mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
 
         mCoreAPI = CoreAPI.getApi();
-        mCurrencyItems = mCoreAPI.getCurrencies();
+        mCoreSettings = mCoreAPI.loadAccountSettings();
     }
 
     @Override
@@ -132,7 +139,6 @@ public class SettingFragment extends Fragment {
         mFirstEditText = (EditText) view.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) view.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
-
         mAutoLogoffButton = (Button) view.findViewById(R.id.settings_button_auto_logoff);
         mLanguageButton = (Button) view.findViewById(R.id.settings_button_language);
         mCurrencyButton = (Button) view.findViewById(R.id.settings_button_currency);
@@ -242,8 +248,74 @@ public class SettingFragment extends Fragment {
         });
 
         //TODO populate from PREFS
-
+        loadIntoView(mCoreSettings);
         return view;
+    }
+
+    private void loadIntoView(tABC_AccountSettings settings) {
+        //Bitcoin denomination
+        tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
+        if(denomination != null) {
+            if(denomination.equals("BTC")) {
+                mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
+            } else if(denomination.equals("mBTC")) {
+                mDenominationGroup.check(R.id.settings_denomination_buttons_mbitcoin);
+            } else if(denomination.equals("uBTC")) {
+                mDenominationGroup.check(R.id.settings_denomination_buttons_ubitcoin);
+           }
+        }
+
+        //Credentials
+        //TODO
+
+        //User Name
+        mSendNameSwitch.setChecked(settings.getBNameOnPayments());
+        mFirstEditText.setText(settings.getSzFirstName());
+        mLastEditText.setText(settings.getSzLastName());
+        mNicknameEditText.setText(settings.getSzNickname());
+
+
+        //Options
+        //Autologoff
+        int minutes = settings.getMinutesAutoLogout();
+        int amount = 0;
+        String strType;
+        Integer maxVal = MAX_TIME_VALUE;
+        if (minutes <= maxVal) {
+            strType = "minute";
+            amount = minutes;
+        }
+        else if (minutes <= 24 * maxVal) {
+            strType = "hour";
+            amount = minutes / 24;
+        }
+        else {
+            strType = "day";
+            amount = minutes / (24*MAX_TIME_VALUE);
+        }
+
+        String timeText = amount + " " + strType;
+        if (amount != 1) {
+            timeText += "s";
+        }
+        mAutoLogoffButton.setText(timeText);
+
+        // Language
+        mLanguageButton.setText(settings.getSzLanguage());
+
+        // Default Currency
+//        mCurrencyItems = mCoreAPI.getCurrencies();
+        int index = settings.getCurrencyNum();
+        if (mCurrencyItems!=null && index >=0 && index <mCurrencyItems.length)
+        {
+            mCurrencyButton.setText(mCurrencyItems[index]);
+        }
+
+        //Default Exchange
+        mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
+        mCurrencyItems = mCoreAPI.getCurrencies();
+        // TODO - develop variable number of views with these exchanges
+        int a = 0+1;
     }
 
     private void setUserNameState(boolean on) {
@@ -274,7 +346,7 @@ public class SettingFragment extends Fragment {
         mTextPicker.setMaxValue(2);
         mTextPicker.setMinValue(0);
         mTextPicker.setDisplayedValues( mAutoLogoffStrings);
-        mNumberPicker.setMaxValue(60);
+        mNumberPicker.setMaxValue(MAX_TIME_VALUE);
         mNumberPicker.setMinValue(0);
 
         String[] current = mAutoLogoffButton.getText().toString().split(" ");
@@ -409,6 +481,4 @@ public class SettingFragment extends Fragment {
             editor.commit();
         }
     }
-
-
 }
