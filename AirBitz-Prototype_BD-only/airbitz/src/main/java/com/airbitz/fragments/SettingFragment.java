@@ -1,10 +1,8 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,7 +23,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.SWIGTYPE_p_uint64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
@@ -260,7 +257,7 @@ public class SettingFragment extends Fragment {
         return view;
     }
 
-    private void loadIntoView(tABC_AccountSettings settings) {
+    private void loadSettings(tABC_AccountSettings settings) {
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if(denomination != null) {
@@ -288,14 +285,13 @@ public class SettingFragment extends Fragment {
         int minutes = settings.getMinutesAutoLogout();
         int amount = 0;
         String strType;
-        Integer maxVal = MAX_TIME_VALUE;
-        if (minutes <= maxVal) {
+        if (minutes < MAX_TIME_VALUE) {
             strType = "minute";
             amount = minutes;
         }
-        else if (minutes <= 24 * maxVal) {
+        else if (minutes < 24 * MAX_TIME_VALUE) {
             strType = "hour";
-            amount = minutes / 24;
+            amount = minutes / 60;
         }
         else {
             strType = "day";
@@ -408,11 +404,11 @@ public class SettingFragment extends Fragment {
                                 mNumberSelection = mNumberPicker.getValue();
                                 mTextSelection = mTextPicker.getValue();
                                 if(mTextSelection==0)
-                                    mAutoLogoffMinutes = mNumberSelection;
+                                    mAutoLogoffMinutes = mNumberSelection * 60 * 24;
                                 else if (mTextSelection==1)
                                     mAutoLogoffMinutes = mNumberSelection * 60;
                                 else if (mTextSelection==2)
-                                    mAutoLogoffMinutes = mNumberSelection * 60 * 24;
+                                    mAutoLogoffMinutes = mNumberSelection;
 
                                 mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[Integer.valueOf(mTextSelection)]);
                             }
@@ -465,14 +461,13 @@ public class SettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadIntoView(mCoreSettings);
+        loadSettings(mCoreSettings);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mCoreSettings = getCurrentSettings();
-        mCoreAPI.saveAccountSettings(mCoreSettings);
+        saveCurrentSettings();
     }
 
 //    private void loadPreferences() {
@@ -508,7 +503,7 @@ public class SettingFragment extends Fragment {
 //        }
 //    }
 
-    private tABC_AccountSettings getCurrentSettings() {
+    private void saveCurrentSettings() {
             tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
             if(denomination != null) {
                 if(mmBitcoinButton.isChecked()) {
@@ -536,11 +531,12 @@ public class SettingFragment extends Fragment {
 
             mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
 
+
             mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
             mCoreSettings.setCurrencyNum(mCurrencyNum);
 
 //            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
 
-            return mCoreSettings;
-        }
+        mCoreAPI.saveAccountSettings(mCoreSettings);
+    }
 }
