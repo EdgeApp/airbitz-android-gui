@@ -303,10 +303,14 @@ public class CoreAPI {
     }
 
     public void saveAccountSettings(tABC_AccountSettings settings) {
+        tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
-        core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 settings, Error);
+        if(result==tABC_CC.ABC_CC_Ok) {
+
+        }
     }
 
     public ExchangeRateSource[] getExchangeRateSources(tABC_ExchangeRateSources sources) {
@@ -341,7 +345,7 @@ public class CoreAPI {
         }
     }
 
-    private class ExchangeRateSource extends tABC_ExchangeRateSource {
+    public class ExchangeRateSource extends tABC_ExchangeRateSource {
             String mSource = null;
             long mCurrencyNum = -1;
 

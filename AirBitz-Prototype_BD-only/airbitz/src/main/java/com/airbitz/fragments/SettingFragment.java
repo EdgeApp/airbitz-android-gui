@@ -24,9 +24,11 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
+import com.airbitz.api.SWIGTYPE_p_uint64_t;
+import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
-import com.airbitz.api.tABC_ExchangeRateSource;
 import com.airbitz.utils.Common;
 
 /**
@@ -73,7 +75,7 @@ public class SettingFragment extends Fragment {
 
     private Button mAutoLogoffButton;
     private Button mLanguageButton;
-    private Button mCurrencyButton;
+    private Button mDefaultCurrencyButton;
 
     private Button mUSDollarButton;
     private Button mCanadianDollarButton;
@@ -85,11 +87,18 @@ public class SettingFragment extends Fragment {
     private NumberPicker mTextPicker;
     private int mNumberSelection;
     private int mTextSelection;
+    private int mAutoLogoffMinutes;
     private String[] mAutoLogoffStrings = { "Day", "Hour", "Minute" };
 
     private String[] mLanguageItems;
     private String[] mCurrencyItems;
-    tABC_ExchangeRateSource[] mExchanges;
+    private int mCurrencyNum;
+    private CoreAPI.ExchangeRateSource[] mExchanges;
+    private static final int[] ARRAY_CURRENCY_NUMS = {840, 124, 978, 484, 156};
+    private static final String[] ARRAY_LANG_CHOICES = {"English", "Spanish", "German", "French", "Italian", "Chinese", "Portuguese", "Japanese"};
+    private static final String[] ARRAY_LANG_CODES = {"en", "es", "de", "fr", "it", "zh", "pt", "ja"};
+
+
     private String[] mUSDExchangeItems;
     private String[] mCanadianExchangeItems;
     private String[] mEuroExchangeItems;
@@ -141,7 +150,7 @@ public class SettingFragment extends Fragment {
         mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
         mAutoLogoffButton = (Button) view.findViewById(R.id.settings_button_auto_logoff);
         mLanguageButton = (Button) view.findViewById(R.id.settings_button_language);
-        mCurrencyButton = (Button) view.findViewById(R.id.settings_button_currency);
+        mDefaultCurrencyButton = (Button) view.findViewById(R.id.settings_button_currency);
 
         mUSDollarButton = (Button) view.findViewById(R.id.settings_button_usd);
         mCanadianDollarButton = (Button) view.findViewById(R.id.settings_button_canadian);
@@ -205,10 +214,10 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mCurrencyButton.setOnClickListener(new View.OnClickListener() {
+        mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mCurrencyButton, mCurrencyItems, "Select an item");
+                showSelectorDialog(mDefaultCurrencyButton, mCurrencyItems, "Select an item");
             }
         });
 
@@ -248,7 +257,6 @@ public class SettingFragment extends Fragment {
         });
 
         //TODO populate from PREFS
-        loadIntoView(mCoreSettings);
         return view;
     }
 
@@ -301,22 +309,53 @@ public class SettingFragment extends Fragment {
         mAutoLogoffButton.setText(timeText);
 
         // Language
-        mLanguageButton.setText(settings.getSzLanguage());
+        String language = settings.getSzLanguage();
+        if(language==null)
+            language = "";
+        mLanguageButton.setText(language);
 
         // Default Currency
-//        mCurrencyItems = mCoreAPI.getCurrencies();
+        mCurrencyItems = mCoreAPI.getCurrencies();
         int index = settings.getCurrencyNum();
         if (mCurrencyItems!=null && index >=0 && index <mCurrencyItems.length)
         {
-            mCurrencyButton.setText(mCurrencyItems[index]);
+            mDefaultCurrencyButton.setText(mCurrencyItems[index]);
+        } else { // error or no setting
+            mDefaultCurrencyButton.setText("USD");
         }
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
-        mCurrencyItems = mCoreAPI.getCurrencies();
-        // TODO - develop variable number of views with these exchanges
-        int a = 0+1;
+        String[] exchangeSources = new String[mExchanges.length];
+        for(int i=0; i<mExchanges.length; i++) {
+            exchangeSources[i] = mExchanges[i].getSource();
+        }
+        mUSDollarButton.setText(ARRAY_LANG_CHOICES[0]);
+        mUSDExchangeItems = exchangeSources;
+        mCanadianDollarButton.setText(ARRAY_LANG_CHOICES[1]);
+        mEuroButton.setText(ARRAY_LANG_CHOICES[2]);
+        mPesoButton.setText(ARRAY_LANG_CHOICES[3]);
+        mYuanButton.setText(ARRAY_LANG_CHOICES[4]);
+
     }
+
+    // searches the exchanges in the settings for the exchange associated with the given currency number
+    // NULL is returned if none can be found
+    private String exchangeForCurrencyNum(int num)
+    {
+        String szRetVal = null;
+
+        for (CoreAPI.ExchangeRateSource source : mExchanges)
+        {
+                if (source.getmCurrencyNum() == num)
+                {
+                    szRetVal = source.getSource();
+                    break;
+                }
+        }
+        return szRetVal;
+    }
+
 
     private void setUserNameState(boolean on) {
         if(on) {
@@ -368,6 +407,13 @@ public class SettingFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 mNumberSelection = mNumberPicker.getValue();
                                 mTextSelection = mTextPicker.getValue();
+                                if(mTextSelection==0)
+                                    mAutoLogoffMinutes = mNumberSelection;
+                                else if (mTextSelection==1)
+                                    mAutoLogoffMinutes = mNumberSelection * 60;
+                                else if (mTextSelection==2)
+                                    mAutoLogoffMinutes = mNumberSelection * 60 * 24;
+
                                 mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[Integer.valueOf(mTextSelection)]);
                             }
                         }
@@ -388,7 +434,7 @@ public class SettingFragment extends Fragment {
         View npView = inflater.inflate(R.layout.dialog_text_selector, null);
         mTextPicker = (NumberPicker) npView.findViewById(R.id.dialog_text_picker);
 
-        mTextPicker.setMaxValue(items.length - 1);
+        mTextPicker.setMaxValue(items.length-1);
         mTextPicker.setMinValue(0);
         mTextPicker.setDisplayedValues(items);
 
@@ -397,8 +443,12 @@ public class SettingFragment extends Fragment {
                 .setView(npView)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
+                            int num = Integer.valueOf(mTextPicker.getValue());
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                button.setText(items[Integer.valueOf(mTextPicker.getValue())]);
+                                button.setText(items[num]);
+                                if(mCurrencyItems.equals(items)) {
+                                    mCurrencyNum = num;
+                                }
                             }
                         }
                 )
@@ -415,70 +465,82 @@ public class SettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadPreferences();
+        loadIntoView(mCoreSettings);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        savePreferences();
+        mCoreSettings = getCurrentSettings();
+        mCoreAPI.saveAccountSettings(mCoreSettings);
     }
 
-    private void loadPreferences() {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
-            int selected = pref.getInt(DENOMINATION, 0);
-            switch(selected) {
-                case 0:
-                    mBitcoinButton.setChecked(true);
-                    break;
-                case 1:
-                    mmBitcoinButton.setChecked(true);
-                    break;
-                case 2:
-                    muBitcoinButton.setChecked(true);
-                    break;
-                default:
-                    break;
+//    private void loadPreferences() {
+//        Activity activity = getActivity();
+//        if(activity!=null) {
+//            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
+//            int selected = pref.getInt(DENOMINATION, 0);
+//            switch(selected) {
+//                case 0:
+//                    mBitcoinButton.setChecked(true);
+//                    break;
+//                case 1:
+//                    mmBitcoinButton.setChecked(true);
+//                    break;
+//                case 2:
+//                    muBitcoinButton.setChecked(true);
+//                    break;
+//                default:
+//                    break;
+//            }
+//            mSendNameSwitch.setChecked(pref.getBoolean(NAME_SWITCH, false));
+//            mFirstEditText.setText(pref.getString(FIRST_NAME, ""));
+//            mLastEditText.setText(pref.getString(LAST_NAME, ""));
+//            mNicknameEditText.setText(pref.getString(NICK_NAME, ""));
+//            mAutoLogoffButton.setText(pref.getString(AUTO_LOGOFF, "1 Hour"));
+//            mLanguageButton.setText(pref.getString(LANGUAGE, mLanguageItems[0]));
+//            mDefaultCurrencyButton.setText(pref.getString(CURRENCY, mCurrencyItems[0]));
+//            mUSDollarButton.setText(pref.getString(USD_EXCHANGE, mUSDExchangeItems[0]));
+//            mCanadianDollarButton.setText(pref.getString(CANADIAN_EXCHANGE, mCanadianExchangeItems[0]));
+//            mEuroButton.setText(pref.getString(EURO_EXCHANGE, mEuroExchangeItems[0]));
+//            mPesoButton.setText(pref.getString(PESO_EXCHANGE, mPesoExchangeItems[0]));
+//            mYuanButton.setText(pref.getString(YUAN_EXCHANGE, mYuanExchangeItems[0]));
+//        }
+//    }
+
+    private tABC_AccountSettings getCurrentSettings() {
+            tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+            if(denomination != null) {
+                if(mmBitcoinButton.isChecked()) {
+                    denomination.setSzLabel("mBTC");
+                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
+                    denomination.setSatoshi(amt);
+                } else if(mmBitcoinButton.isChecked()) {
+                    denomination.setSzLabel("uBTC");
+                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
+                    denomination.setSatoshi(amt);
+                } else {
+                    denomination.setSzLabel("BTC");
+                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
+                    denomination.setSatoshi(amt);
+                }
             }
-            mSendNameSwitch.setChecked(pref.getBoolean(NAME_SWITCH, false));
-            mFirstEditText.setText(pref.getString(FIRST_NAME, ""));
-            mLastEditText.setText(pref.getString(LAST_NAME, ""));
-            mNicknameEditText.setText(pref.getString(NICK_NAME, ""));
-            mAutoLogoffButton.setText(pref.getString(AUTO_LOGOFF, "1 Hour"));
-            mLanguageButton.setText(pref.getString(LANGUAGE, mLanguageItems[0]));
-            mCurrencyButton.setText(pref.getString(CURRENCY, mCurrencyItems[0]));
-            mUSDollarButton.setText(pref.getString(USD_EXCHANGE, mUSDExchangeItems[0]));
-            mCanadianDollarButton.setText(pref.getString(CANADIAN_EXCHANGE, mCanadianExchangeItems[0]));
-            mEuroButton.setText(pref.getString(EURO_EXCHANGE, mEuroExchangeItems[0]));
-            mPesoButton.setText(pref.getString(PESO_EXCHANGE, mPesoExchangeItems[0]));
-            mYuanButton.setText(pref.getString(YUAN_EXCHANGE, mYuanExchangeItems[0]));
-        }
-    }
 
-    private void savePreferences() {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-            int selected = 0;
-            if(mmBitcoinButton.isChecked()) selected=1;
-            else if(muBitcoinButton.isChecked()) selected=2;
-            editor.putInt(DENOMINATION, selected);
-            editor.putBoolean(NAME_SWITCH, mSendNameSwitch.isChecked());
-            editor.putString(FIRST_NAME, mFirstEditText.getText().toString());
-            editor.putString(LAST_NAME, mLastEditText.getText().toString());
-            editor.putString(NICK_NAME, mNicknameEditText.getText().toString());
-            editor.putString(AUTO_LOGOFF, mAutoLogoffButton.getText().toString());
-            editor.putString(LANGUAGE, mLanguageButton.getText().toString());
-            editor.putString(CURRENCY, mCurrencyButton.getText().toString());
-            editor.putString(USD_EXCHANGE, mUSDollarButton.getText().toString());
-            editor.putString(CANADIAN_EXCHANGE, mCanadianDollarButton.getText().toString());
-            editor.putString(EURO_EXCHANGE, mEuroButton.getText().toString());
-            editor.putString(PESO_EXCHANGE, mPesoButton.getText().toString());
-            editor.putString(YUAN_EXCHANGE, mYuanButton.getText().toString());
-            editor.commit();
+            mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
+            mCoreSettings.setSzFirstName(mFirstEditText.getText().toString());
+            mCoreSettings.setSzLastName(mLastEditText.getText().toString());
+            mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
+
+            mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
+
+            mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
+            mCoreSettings.setCurrencyNum(mCurrencyNum);
+
+//            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
+
+            return mCoreSettings;
         }
-    }
 }
