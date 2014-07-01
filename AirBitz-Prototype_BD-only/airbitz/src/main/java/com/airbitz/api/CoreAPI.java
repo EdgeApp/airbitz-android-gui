@@ -1,6 +1,5 @@
 package com.airbitz.api;
 
-import android.accounts.Account;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -251,15 +250,179 @@ public class CoreAPI {
             int mCount = core.intp_value(pCount);
             arrayCurrencies = new String[mCount];
 
-            int ptrToInfo = core.longp_value(lp);
+            long start = core.longp_value(lp);
 
-            for (int i = 0; i < mCount; i++)
+            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
             {
-                tABC_Currency txd = new tABC_Currency(ptrToInfo + i*0, false); //TODO 0 should be 4?
+                tABC_Currency txd = new Currency(start + i * 4);
                 arrayCurrencies[i] = txd.getSzCode();
             }
         }
         return arrayCurrencies;
+    }
+
+    private class Currency extends tABC_Currency {
+        String mCode = null;
+        int mNum = -1;
+        String mCountries;
+        String mDescription;
+
+        public Currency(long pv) {
+            super(pv, false);
+            if(pv!=0) {
+                mCode = super.getSzCode();
+                mNum = super.getNum();
+                mCountries = super.getSzCountries();
+                mDescription = super.getSzDescription();
+            }
+        }
+
+        public String getCode() { return mCode; }
+        public int getmNum() { return mNum; }
+        public String getCountries() { return mCountries; }
+        public String getDescription() { return mDescription; }
+    }
+
+    private static class ppCurrency extends SWIGTYPE_p_p_sABC_Currency {
+        public static long getPtr(SWIGTYPE_p_p_sABC_Currency p) { return getCPtr(p); }
+        public static long getPtr(SWIGTYPE_p_p_sABC_Currency p, long i) { return getCPtr(p)+i; }
+    }
+
+    public tABC_AccountSettings loadAccountSettings() {
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
+        SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
+
+        core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                pAccountSettings, Error);
+
+        tABC_AccountSettings coreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
+        return coreSettings;
+    }
+
+    public void saveAccountSettings(tABC_AccountSettings settings) {
+        tABC_Error Error = new tABC_Error();
+
+        core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                settings, Error);
+    }
+
+    public ExchangeRateSource[] getExchangeRateSources(tABC_ExchangeRateSources sources) {
+        List<tABC_ExchangeRateSource> list = new ArrayList<tABC_ExchangeRateSource>();
+        ExchangeRateSources temp = new ExchangeRateSources(sources.getCPtr(sources));
+        return temp.getSources();
+    }
+
+    private class ExchangeRateSources extends tABC_ExchangeRateSources {
+        long mNumSources = 0;
+        long mChoiceStart = 0;
+        ExchangeRateSource[] sources;
+
+        public ExchangeRateSources (long pv) {
+            super(pv, false);
+            if(pv!=0) {
+                mNumSources = super.getNumSources();
+            }
+        }
+
+        public long getNumSources() { return mNumSources; }
+
+        public ExchangeRateSource[] getSources() {
+            sources = new ExchangeRateSource[(int) mNumSources];
+            SWIGTYPE_p_p_sABC_ExchangeRateSource start = super.getASources();
+            for(int i=0; i< mNumSources; i++) {
+                ExchangeRateSources fake = new ExchangeRateSources(ppExchangeRateSource.getPtr(start, i * 4));
+                mChoiceStart = fake.getNumSources();
+                sources[i] = new ExchangeRateSource(new PVOID(mChoiceStart));
+            }
+            return sources;
+        }
+    }
+
+    private class ExchangeRateSource extends tABC_ExchangeRateSource {
+            String mSource = null;
+            long mCurrencyNum = -1;
+
+            public ExchangeRateSource(SWIGTYPE_p_void pv) {
+                super(PVoidStatic.getPtr(pv), false);
+                if(PVoidStatic.getPtr(pv)!=0) {
+                    mSource = super.getSzSource();
+                    mCurrencyNum = super.getCurrencyNum();
+                }
+            }
+
+            public String getSource() { return mSource; }
+            public long getmCurrencyNum() { return mCurrencyNum; }
+    }
+
+    private static class ppExchangeRateSource extends SWIGTYPE_p_p_sABC_ExchangeRateSource {
+        public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p) { return getCPtr(p); }
+        public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p, long i) { return getCPtr(p)+i; }
+    }
+
+    private class QuestionChoices extends tABC_QuestionChoices {
+        long mNumChoices = 0;
+        long mChoiceStart = 0;
+        QuestionChoice[] choices;
+
+        public QuestionChoices (long pv) {
+            super(pv, false);
+            if(pv!=0) {
+                mNumChoices = super.getNumChoices();
+            }
+        }
+
+        public long getNumChoices() { return mNumChoices; }
+
+        public QuestionChoice[] getChoices() {
+            choices = new QuestionChoice[(int) mNumChoices];
+            SWIGTYPE_p_p_sABC_QuestionChoice start = super.getAChoices();
+            for(int i=0; i<mNumChoices; i++) {
+                QuestionChoices fake = new QuestionChoices(ppQuestionChoice.getPtr(start, i * 4));
+                mChoiceStart = fake.getNumChoices();
+                choices[i] = new QuestionChoice(new PVOID(mChoiceStart));
+            }
+            return choices;
+        }
+    }
+
+    private class PVOID extends SWIGTYPE_p_void {
+        public PVOID(long p) {
+            super(p, false);
+        }
+    }
+
+    private static class PVoidStatic extends SWIGTYPE_p_void {
+        public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
+    }
+
+    private static class ppQuestionChoice extends SWIGTYPE_p_p_sABC_QuestionChoice {
+        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p) { return getCPtr(p); }
+        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p, long i) { return getCPtr(p)+i; }
+    }
+
+    private class QuestionChoice extends tABC_QuestionChoice {
+        String mQuestion = null;
+        String mCategory = null;
+        long mMinLength = -1;
+
+        public QuestionChoice(SWIGTYPE_p_void pv) {
+            super(PVoidStatic.getPtr(pv), false);
+            if(PVoidStatic.getPtr(pv)!=0) {
+                mQuestion = super.getSzQuestion();
+                mCategory = super.getSzCategory();
+                mMinLength = super.getMinAnswerLength();
+            }
+        }
+
+        public String getQuestion() { return mQuestion; }
+
+        public long getMinLength() { return mMinLength; }
+
+        public String getCategory() { return mCategory; }
+
     }
 
 

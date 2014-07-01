@@ -332,6 +332,11 @@ tABC_TxDetails ** longp_to_ppTxDetails(long * x) {
 }
 
 
+tABC_AccountSettings ** longp_to_ppAccountSettings(long * x) {
+   return (tABC_AccountSettings **) x;
+}
+
+
 char ** longp_to_ppChar(long * x) {
    return (char **) x;
 }
@@ -6594,6 +6599,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppTxDetails(JNI
   arg1 = *(long **)&jarg1; 
   result = (tABC_TxDetails **)longp_to_ppTxDetails(arg1);
   *(tABC_TxDetails ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppAccountSettings(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_AccountSettings **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_AccountSettings **)longp_to_ppAccountSettings(arg1);
+  *(tABC_AccountSettings ***)&jresult = result; 
   return jresult;
 }
 
