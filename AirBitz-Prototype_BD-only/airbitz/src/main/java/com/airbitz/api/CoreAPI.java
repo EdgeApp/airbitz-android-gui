@@ -136,12 +136,13 @@ public class CoreAPI {
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
-    public boolean createWallet(String walletName, String username, String password, int dollarNum) {
+    public boolean createWallet(String walletName, int currencyNum) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-        tABC_CC result = core.ABC_CreateWallet(username, password, walletName, dollarNum, 0, null, pVoid, pError);
+        tABC_CC result = core.ABC_CreateWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                walletName, currencyNum, 0, null, pVoid, pError);
         return result == tABC_CC.ABC_CC_Ok;
     }
 
@@ -251,31 +252,40 @@ public class CoreAPI {
     }
 
     //************ Settings handling
+    private String[] mFauxCurrencies = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
+    private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
 
-    public String[] getCurrencies() {
-        String[] arrayCurrencies = null;
-        tABC_Error Error = new tABC_Error();
+    public int[] getCurrencyNumbers() {
+        return mFauxCurrencyNumbers;
+    }
 
-        SWIGTYPE_p_int pCount = core.new_intp();
+    public String[] getCurrencyAbbreviations() {
+        //TEMP fix
+        return mFauxCurrencies;
 
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
-
-        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
-
-        if (result == tABC_CC.ABC_CC_Ok) {
-            int mCount = core.intp_value(pCount);
-            arrayCurrencies = new String[mCount];
-
-            long start = core.longp_value(lp);
-
-            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
-            {
-                tABC_Currency txd = new Currency(start + i * 4);
-                arrayCurrencies[i] = txd.getSzCode();
-            }
-        }
-        return arrayCurrencies;
+//        String[] arrayCurrencies = null;
+//        tABC_Error Error = new tABC_Error();
+//
+//        SWIGTYPE_p_int pCount = core.new_intp();
+//
+//        SWIGTYPE_p_long lp = core.new_longp();
+//        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
+//
+//        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
+//
+//        if (result == tABC_CC.ABC_CC_Ok) {
+//            int mCount = core.intp_value(pCount);
+//            arrayCurrencies = new String[mCount];
+//
+//            long start = core.longp_value(lp);
+//
+//            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
+//            {
+//                tABC_Currency txd = new Currency(start + i * 4);
+//                arrayCurrencies[i] = txd.getSzCode();
+//            }
+//        }
+//        return arrayCurrencies;
     }
 
     private class Currency extends tABC_Currency {
@@ -817,13 +827,16 @@ public class CoreAPI {
     {
         if (!btc)
         {
+            tABC_AccountSettings settings = loadAccountSettings();
+            int currencyNumber = settings.getCurrencyNum();
+
             tABC_Error error = new tABC_Error();
-            SWIGTYPE_p_double currency = core.new_doublep();
+            SWIGTYPE_p_double currencyOut = core.new_doublep();
 
             long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    satoshi, SWIGTYPE_p_double.getCPtr(currency), SignUpActivity.DOLLAR_CURRENCY_NUMBER, tABC_Error.getCPtr(error));
+                    satoshi, SWIGTYPE_p_double.getCPtr(currencyOut), currencyNumber, tABC_Error.getCPtr(error));
 
-            return formatCurrency(core.doublep_value(currency));
+            return formatCurrency(core.doublep_value(currencyOut));
         }
         else // currency
         {
