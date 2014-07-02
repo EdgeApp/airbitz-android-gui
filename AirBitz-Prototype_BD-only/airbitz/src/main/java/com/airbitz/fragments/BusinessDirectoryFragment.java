@@ -850,9 +850,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
-
-        mLocationManager.removeLocationChangeListener(this);
-
         super.onStop();
     }
 
@@ -860,6 +857,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
+        mLocationManager.removeLocationChangeListener(this);
         super.onPause();
     }
 

@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,23 +35,21 @@ public class CurrentLocationManager implements
     }
 
     // Callback interface for adding and removing location change listeners
-    private List<OnLocationChange> mOnLocationChange = new ArrayList<OnLocationChange>();
+    private List<OnLocationChange> mObservers = Collections.synchronizedList(new ArrayList<OnLocationChange>());
+    private List<OnLocationChange> mRemovers = new ArrayList<OnLocationChange>();
 
     public interface OnLocationChange {
         public void OnCurrentLocationChange(Location location);
     }
 
     public void addLocationChangeListener(OnLocationChange listener) {
-
-        if(!mOnLocationChange.contains(listener)) {
-            mOnLocationChange.add(listener);
+        if(!mObservers.contains(listener)) {
+            mObservers.add(listener);
         }
     }
 
     public void removeLocationChangeListener(OnLocationChange listener) {
-        if(mOnLocationChange.contains(listener)) {
-            mOnLocationChange.remove(listener);
-        }
+        mRemovers.add(listener);
     }
 
     public static CurrentLocationManager getLocationManager(Context context) {
@@ -98,11 +97,20 @@ public class CurrentLocationManager implements
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location.hasAccuracy() && !mOnLocationChange.isEmpty()) {
+        if(!mRemovers.isEmpty()) {
+            for(OnLocationChange i : mRemovers) {
+                if(mObservers.contains(i)) {
+                    mObservers.remove(i);
+                }
+            }
+            mRemovers.clear();
+        }
+
+        if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
             Log.d("TAG_LOC",
                     "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
-            for(OnLocationChange listener : mOnLocationChange) {
+            for(OnLocationChange listener : mObservers) {
                 listener.OnCurrentLocationChange(mCurrentLocation);
             }
         }
