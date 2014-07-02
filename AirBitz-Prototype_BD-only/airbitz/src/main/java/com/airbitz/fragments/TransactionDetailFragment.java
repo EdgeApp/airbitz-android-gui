@@ -134,18 +134,18 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
-        if(bundle!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")) {
-            fromSendRequest = true;
-        } else {
-            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
-                    String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-                    String txId = bundle.getString(AccountTransaction.TXID);
-                    if(walletUUID.isEmpty()) {
-                        Log.d("TransactionDetailFragement", "no detail info");
-                    } else {
-                        CoreAPI mCoreAPI = CoreAPI.getApi();
-                        mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
-                    }
+        if(bundle!=null && bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
+            if(bundle.getString(WalletsFragment.FROM_SOURCE)=="SEND") {
+                fromSendRequest = true;
+            }
+
+            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
+            String txId = bundle.getString(AccountTransaction.TXID);
+            if (walletUUID.isEmpty()) {
+                Log.d("TransactionDetailFragement", "no detail info");
+            } else {
+                CoreAPI mCoreAPI = CoreAPI.getApi();
+                mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
             }
         }
     }
