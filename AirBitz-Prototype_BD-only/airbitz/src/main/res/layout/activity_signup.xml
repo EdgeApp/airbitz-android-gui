@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_parent"
+    android:id="@+id/activity_signup_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MergeRootFrame"
@@ -8,7 +8,7 @@
 
     <!-- Login progress -->
     <ProgressBar
-        android:id="@+id/layout_progress"
+        android:id="@+id/activity_signup_progressbar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,182 +17,189 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="7mm"
-        android:id="@+id/layout_signup"
-        android:background="#40000000">
+        android:layout_height="44.1dp"
+        android:id="@+id/activity_signup_header_layout"
+        android:background="@drawable/bg_dark_header">
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:id="@+id/button_back"
+            android:id="@+id/activity_signup_back_button"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:padding="2mm"/>
+            android:padding="12.6dp"
+            android:contentDescription="@string/string_back_button"/>
 
         <TextView
-            android:id="@+id/textview_title"
+            android:id="@+id/activity_signup_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/activity_signup_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="20dp"/>
+            android:textSize="16dp"/>
 
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
-            android:id="@+id/button_help"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
+            android:id="@+id/activity_signup_help_button"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:padding="2mm"/>
+            android:padding="12.6dp"
+            android:contentDescription="@string/string_help_button"/>
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="45mm"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingLeft="3mm"
-        android:paddingRight="3mm"
-        android:layout_marginTop="4mm"
-        android:background="@drawable/bg_trans_dark_lighter"
-        android:layout_below="@id/layout_signup">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="346.5dp"
+        android:layout_below="@id/activity_signup_header_layout">
 
+        <RelativeLayout
+            android:layout_width="283.5dp"
+            android:layout_height="277.2dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="18.9dp"
+            android:paddingRight="18.9dp"
+            android:layout_marginTop="25.2dp"
+            android:background="@drawable/emboss_up_33_stretch">
 
-        <EditText
-            android:id="@+id/edittext_username"
-            android:layout_width="match_parent"
-            android:layout_height="6mm"
-            android:hint="@string/activity_signup_username_hint"
-            android:textColor="@android:color/white"
-            android:background="@drawable/bg_textfield"
-            android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:inputType="textVisiblePassword"
-            android:paddingRight="2mm"
-            android:ems="10"
-            android:textColorHint="#99DDDDDD"
-            android:textSize="11dp"
-            android:paddingLeft="2mm"
-            android:layout_marginTop="4mm"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="6mm"
-            android:layout_marginTop="4mm"
-            android:layout_marginBottom="2mm"
-            android:background="@drawable/edit_text_red_ring"
-            android:focusable="false"
-            android:visibility="gone"
-            android:id="@+id/red_ring"/>
-
-        <TextView
-            android:id="@+id/textview_pass_hint"
-            android:gravity="left|center_vertical"
-            android:textSize="8dp"
-            android:layout_below="@id/edittext_username"
-            android:layout_width="match_parent"
-            android:layout_height="8mm"
-            android:text="@string/activity_signup_password_help"
-            android:textColor="@android:color/white"
-            android:paddingLeft="1mm"
-            android:paddingRight="1mm"/>
-
-        <EditText
-            android:id="@+id/edittext_password"
-            android:layout_below="@id/textview_pass_hint"
-            android:layout_width="match_parent"
-            android:layout_height="6mm"
-            android:hint="@string/activity_signup_password_hint"
-            android:inputType="textPassword"
-            android:paddingRight="2mm"
-            android:background="@drawable/bg_textfield"
-            android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:ems="10"
-            android:textColor="@android:color/white"
-            android:textColorHint="#99DDDDDD"
-            android:textSize="11dp"
-            android:paddingLeft="2mm"
-            android:layout_marginBottom="1mm"/>
-
-        <EditText
-            android:id="@+id/edittext_repassword"
-            android:layout_below="@id/edittext_password"
-            android:layout_width="match_parent"
-            android:layout_height="6mm"
-            android:hint="@string/activity_signup_password_confirm_hint"
-            android:inputType="textPassword"
-            android:paddingRight="2mm"
-            android:background="@drawable/bg_textfield"
-            android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:ems="10"
-            android:textColor="@android:color/white"
-            android:textColorHint="#99DDDDDD"
-            android:textSize="11dp"
-            android:paddingLeft="2mm"
-            android:layout_marginTop="1mm"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/edittext_repassword"
-            android:id="@+id/withdrawal_layout"
-            android:layout_marginTop="3mm"
-            android:layout_marginBottom="5mm"
-            android:weightSum="2">
-            <TextView
-                android:id="@+id/textview_withdrawal"
-                android:layout_alignParentLeft="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/activity_signup_pin_label"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="11dp"
-                android:layout_weight="1"/>
 
             <EditText
-                android:id="@+id/edittext_withdrawalpin"
-                android:layout_toRightOf="@id/textview_withdrawal"
-                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:id="@+id/activity_signup_username_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="6mm"
+                android:layout_height="37.8dp"
+                android:hint="@string/activity_signup_username_hint"
                 android:textColor="@android:color/white"
-                android:paddingRight="2mm"
-                android:password="true"
-                android:inputType="phone"
-                android:maxLength="4"
-                android:background="@drawable/bg_textfield"
-                android:layout_weight="1"
-                android:hint="Create Pin"
+                android:background="@drawable/bg_edittext"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:inputType="textVisiblePassword"
+                android:paddingRight="12.6dp"
+                android:ems="10"
                 android:textColorHint="#99DDDDDD"
-                android:textSize="11dp"
-                android:gravity="center" />
-            </LinearLayout>
+                android:textSize="14dp"
+                android:paddingLeft="12.6dp"
+                android:layout_marginTop="25.4dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="37.8dp"
+                android:layout_marginTop="25.2dp"
+                android:layout_marginBottom="12.6dp"
+                android:background="@drawable/edit_text_red_ring"
+                android:focusable="false"
+                android:visibility="invisible"
+                android:id="@+id/activity_signup_username_redring"/>
 
+            <TextView
+                android:id="@+id/activity_signup_password_help"
+                android:gravity="left|center_vertical"
+                android:textSize="9dp"
+                android:layout_below="@id/activity_signup_username_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="50.4dp"
+                android:text="@string/activity_signup_password_help"
+                android:textColor="@android:color/white"
+                android:paddingLeft="6.3dp"
+                android:paddingRight="6.3dp"/>
 
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/activity_signup_password_edittext"
+                android:layout_below="@id/activity_signup_password_help"
+                android:layout_width="match_parent"
+                android:layout_height="37.8dp"
+                android:hint="@string/activity_signup_password_hint"
+                android:inputType="textPassword"
+                android:paddingRight="12.6dp"
+                android:background="@drawable/bg_edittext"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:ems="10"
+                android:textColor="@android:color/white"
+                android:textColorHint="#99DDDDDD"
+                android:textSize="14dp"
+                android:paddingLeft="12.6dp"
+                android:layout_marginBottom="6.3dp"/>
+
+            <EditText
+                android:id="@+id/activity_signup_repassword_edittext"
+                android:layout_below="@id/activity_signup_password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="37.8dp"
+                android:hint="@string/activity_signup_password_confirm_hint"
+                android:inputType="textPassword"
+                android:paddingRight="12.6dp"
+                android:background="@drawable/bg_edittext"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:ems="10"
+                android:textColor="@android:color/white"
+                android:textColorHint="#99DDDDDD"
+                android:textSize="14dp"
+                android:paddingLeft="12.6dp"
+                android:layout_marginTop="6.3dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/activity_signup_repassword_edittext"
+                android:id="@+id/activity_signup_withdrawal_layout"
+                android:layout_marginTop="18.9dp"
+                android:layout_marginBottom="31.5dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/activity_signup_withdrawal_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/activity_signup_pin_label"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="12dp"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/activity_signup_withdrawal_edittext"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="37.8dp"
+                    android:textColor="@android:color/white"
+                    android:paddingRight="12.6dp"
+                    android:password="true"
+                    android:inputType="phone"
+                    android:maxLength="4"
+                    android:background="@drawable/bg_edittext"
+                    android:layout_weight="1"
+                    android:hint="@string/activity_signup_pin_hint"
+                    android:textColorHint="#99DDDDDD"
+                    android:textSize="14dp"
+                    android:gravity="center" />
+
+                </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 
     <LinearLayout
-        android:id="@+id/popup_container_signup"
-        android:layout_width="46mm"
-        android:layout_height="19mm"
-        android:padding="1mm"
+        android:id="@+id/activity_signup_popup_layout"
+        android:layout_width="289.8dp"
+        android:layout_height="119.7dp"
+        android:padding="6.3dp"
+        android:paddingTop="9.45dp"
         android:orientation="vertical"
-        android:layout_below="@id/layout_signup"
+        android:layout_below="@id/activity_signup_header_layout"
         android:layout_centerHorizontal="true"
         android:background="@drawable/password_popup"
         android:weightSum="6"
@@ -205,17 +212,17 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/switch_image_1"
-                android:layout_width="6mm"
-                android:layout_height="3mm"
-                android:paddingLeft="1.5mm"
-                android:paddingRight="1.5mm"
+                android:id="@+id/activity_signup_switch_image_1"
+                android:layout_width="37.8dp"
+                android:layout_height="18.9dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
                 android:src="@drawable/red_x"/>
             <TextView
-                android:id="@+id/switch_text_1"
+                android:id="@+id/activity_signup_switch_text_1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Must have at least one upper case letter"
+                android:text="@string/activity_signup_popup_uppercase"
                 android:textSize="12dp"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
@@ -227,20 +234,21 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/switch_image_2"
-                android:layout_width="6mm"
-                android:layout_height="3mm"
-                android:paddingLeft="1.5mm"
-                android:paddingRight="1.5mm"
+                android:id="@+id/activity_signup_switch_image_2"
+                android:layout_width="37.8dp"
+                android:layout_height="18.9dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
                 android:src="@drawable/red_x"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/switch_text_2"
-                android:text="Must have at least one lower case letter"
+                android:id="@+id/activity_signup_switch_text_2"
+                android:text="@string/activity_signup_popup_lowercase"
                 android:textSize="12dp"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -248,20 +256,21 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/switch_image_3"
-                android:layout_width="6mm"
-                android:layout_height="3mm"
-                android:paddingLeft="1.5mm"
-                android:paddingRight="1.5mm"
+                android:id="@+id/activity_signup_switch_image_3"
+                android:layout_width="37.8dp"
+                android:layout_height="18.9dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
                 android:src="@drawable/red_x"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/switch_text_3"
-                android:text="Must have at least number"
+                android:id="@+id/activity_signup_switch_text_3"
+                android:text="@string/activity_signup_popup_number"
                 android:textSize="12dp"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -269,20 +278,21 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/switch_image_4"
-                android:layout_width="6mm"
-                android:layout_height="3mm"
-                android:paddingLeft="1.5mm"
-                android:paddingRight="1.5mm"
+                android:id="@+id/activity_signup_switch_image_4"
+                android:layout_width="37.8dp"
+                android:layout_height="18.9dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
                 android:src="@drawable/red_x"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/switch_text_4"
-                android:text="Must have at least one special character"
+                android:id="@+id/activity_signup_switch_text_4"
+                android:text="@string/activity_signup_popup_specialcharacter"
                 android:textSize="12dp"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -290,27 +300,33 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/switch_image_5"
-                android:layout_width="6mm"
-                android:layout_height="3mm"
-                android:paddingLeft="1.5mm"
-                android:paddingRight="1.5mm"
+                android:id="@+id/activity_signup_switch_image_5"
+                android:layout_width="37.8dp"
+                android:layout_height="18.9dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
                 android:src="@drawable/red_x"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/switch_text_5"
-                android:text="Must have at least 10 characters"
+                android:id="@+id/activity_signup_switch_text_5"
+                android:text="@string/activity_signup_popup_length"
                 android:textSize="12dp"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="6mm"
+            android:paddingLeft="37.8dp"
             android:layout_weight="1"
             android:text="Time to crack: -- seconds"
             android:textSize="12dp"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
+
+    <View android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/activity_signup_dummy_focus"/>
 </RelativeLayout>

@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,35 +43,28 @@ public class SignUpActivity extends Activity {
         System.loadLibrary("airbitz");
     }
 
-    private Button mNextButton;
-
-    private EditText mUsernameEditText;
+    private View mProgressView;
+    private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mPasswordConfirmationEditText;
     private EditText mWithdrawalPinEditText;
-    private TextView mTitleTextView;
-    private TextView mHintTextView;
-    private View mProgressView;
-    private View mLoginView;
-    private CreateAccountTask mAuthTask;
 
-    private LinearLayout popupContainer;
-    private ImageView switchImage1;
-    private ImageView switchImage2;
-    private ImageView switchImage3;
-    private ImageView switchImage4;
-    private ImageView switchImage5;
+    private LinearLayout mPopupContainer;
+    private ImageView mSwitchImage1;
+    private ImageView mSwitchImage2;
+    private ImageView mSwitchImage3;
+    private ImageView mSwitchImage4;
+    private ImageView mSwitchImage5;
 
-    private View redRingDummy;
+    private View mUserNameRedRingCover;
+    private View mPinRedRingCover;
+    private View dummyFocus;
 
-    private ImageButton mBackButton;
-    private ImageButton mHelpButton;
 
     private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
     private static final String passwordPattern = ".*[" + Pattern.quote(specialChar) + "].*";
 
-
-    private Intent mIntent;
+    private CreateAccountTask mAuthTask;
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
     private CoreAPI mAPI;
@@ -87,56 +79,48 @@ public class SignUpActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
+
         mAPI = CoreAPI.getApi();
+        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
 
-        mLoginView = (View) findViewById(R.id.layout_signup);
-        mProgressView = (View) findViewById(R.id.layout_progress);
+        mProgressView = findViewById(R.id.activity_signup_progressbar);
 
-        redRingDummy = findViewById(R.id.red_ring);
+        mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
+        dummyFocus = findViewById(R.id.activity_signup_dummy_focus);
 
-        mUsernameEditText = (EditText) findViewById(R.id.edittext_username);
-        mPasswordEditText = (EditText) findViewById(R.id.edittext_password);
-        mPasswordConfirmationEditText = (EditText) findViewById(R.id.edittext_repassword);
-        mWithdrawalPinEditText = (EditText) findViewById(R.id.edittext_withdrawalpin);
+        mUserNameEditText = (EditText) findViewById(R.id.activity_signup_username_edittext);
+        mPasswordEditText = (EditText) findViewById(R.id.activity_signup_password_edittext);
+        mPasswordConfirmationEditText = (EditText) findViewById(R.id.activity_signup_repassword_edittext);
+        mWithdrawalPinEditText = (EditText) findViewById(R.id.activity_signup_withdrawal_edittext);
+        TextView mTitleTextView = (TextView) findViewById(R.id.activity_signup_title_textview);
+        TextView mHintTextView = (TextView) findViewById(R.id.activity_signup_password_help);
+        TextView withdrawalTextView = (TextView) findViewById(R.id.activity_signup_withdrawal_textview);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        mHintTextView = (TextView) findViewById(R.id.textview_pass_hint);
-        TextView withdrawalTextView = (TextView) findViewById(R.id.textview_withdrawal);
+        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        withdrawalTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        withdrawalTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        ImageButton mBackButton = (ImageButton) findViewById(R.id.activity_signup_back_button);
+        ImageButton mHelpButton = (ImageButton) findViewById(R.id.activity_signup_help_button);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mSwitchImage1 = (ImageView) findViewById(R.id.activity_signup_switch_image_1);
+        mSwitchImage2 = (ImageView) findViewById(R.id.activity_signup_switch_image_2);
+        mSwitchImage3 = (ImageView) findViewById(R.id.activity_signup_switch_image_3);
+        mSwitchImage4 = (ImageView) findViewById(R.id.activity_signup_switch_image_4);
+        mSwitchImage5 = (ImageView) findViewById(R.id.activity_signup_switch_image_5);
 
-        mUsernameEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mPasswordConfirmationEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mHintTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mWithdrawalPinEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
-
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
-
-        switchImage1 = (ImageView) findViewById(R.id.switch_image_1);
-        switchImage2 = (ImageView) findViewById(R.id.switch_image_2);
-        switchImage3 = (ImageView) findViewById(R.id.switch_image_3);
-        switchImage4 = (ImageView) findViewById(R.id.switch_image_4);
-        switchImage5 = (ImageView) findViewById(R.id.switch_image_5);
-
-        popupContainer = (LinearLayout) findViewById(R.id.popup_container_signup);
-
-        /*mNextButton = (Button) findViewById(R.id.button_next);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });*///TODO implement moving to next screen on done key
+        mPopupContainer = (LinearLayout) findViewById(R.id.activity_signup_popup_layout);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +133,7 @@ public class SignUpActivity extends Activity {
         mWithdrawalPinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if ( actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     attemptLogin();
@@ -159,7 +143,7 @@ public class SignUpActivity extends Activity {
             }
         });
 
-        mUsernameEditText.addTextChangedListener(new TextWatcher() {
+        mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -167,10 +151,10 @@ public class SignUpActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(mUsernameEditText.getText().toString().length() < 4){
-                    redRingDummy.setVisibility(View.VISIBLE);
-                }else{
-                    redRingDummy.setVisibility(View.GONE);
+                if (mUserNameEditText.getText().toString().length() < 3) {
+                    mUserNameRedRingCover.setVisibility(View.VISIBLE);
+                } else {
+                    mUserNameRedRingCover.setVisibility(View.GONE);
                 }
             }
 
@@ -190,30 +174,31 @@ public class SignUpActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 String password = mPasswordEditText.getText().toString();
 
+                //TODO connect to core
                 if(password.length() >= 10){
-                    switchImage5.setImageResource(R.drawable.green_check);
+                    mSwitchImage5.setImageResource(R.drawable.green_check);
                 }else{
-                    switchImage5.setImageResource(R.drawable.red_x);
+                    mSwitchImage5.setImageResource(R.drawable.red_x);
                 }
                 if(password.matches(".*[A-Z].*")){
-                    switchImage1.setImageResource(R.drawable.green_check);
+                    mSwitchImage1.setImageResource(R.drawable.green_check);
                 }else{
-                    switchImage1.setImageResource(R.drawable.red_x);
+                    mSwitchImage1.setImageResource(R.drawable.red_x);
                 }
                 if(password.matches(".*[a-z].*")){
-                    switchImage2.setImageResource(R.drawable.green_check);
+                    mSwitchImage2.setImageResource(R.drawable.green_check);
                 }else{
-                    switchImage2.setImageResource(R.drawable.red_x);
+                    mSwitchImage2.setImageResource(R.drawable.red_x);
                 }
                 if(password.matches(".*\\d.*")){
-                    switchImage3.setImageResource(R.drawable.green_check);
+                    mSwitchImage3.setImageResource(R.drawable.green_check);
                 }else{
-                    switchImage3.setImageResource(R.drawable.red_x);
+                    mSwitchImage3.setImageResource(R.drawable.red_x);
                 }
                 if(password.matches(passwordPattern)){
-                    switchImage4.setImageResource(R.drawable.green_check);
+                    mSwitchImage4.setImageResource(R.drawable.green_check);
                 }else{
-                    switchImage4.setImageResource(R.drawable.red_x);
+                    mSwitchImage4.setImageResource(R.drawable.red_x);
                 }
             }
 
@@ -227,9 +212,9 @@ public class SignUpActivity extends Activity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    popupContainer.setVisibility(View.VISIBLE);
+                    mPopupContainer.setVisibility(View.VISIBLE);
                 }else{
-                    popupContainer.setVisibility(View.GONE);
+                    mPopupContainer.setVisibility(View.GONE);
                 }
             }
         });
@@ -237,18 +222,15 @@ public class SignUpActivity extends Activity {
     }
 
     private boolean goodUsername(String name) {
-        return name.length() != 0;
+        return name.length() >= 3;
     }
 
     private boolean goodPassword(String password) {
-        if (password.length() >= 10 &&
+        return password.length() >= 10 &&
                 password.matches(".*[A-Z].*") &&
                 password.matches(".*[a-z].*") &&
                 password.matches(".*\\d.*") &&
-                password.matches(passwordPattern)) {
-                return true;
-            }
-        return false;
+                password.matches(passwordPattern);
     }
 
     private boolean goodConfirmation(String password, String confirmation) {
@@ -256,7 +238,7 @@ public class SignUpActivity extends Activity {
     }
 
     private boolean goodPin(String pin) {
-        return pin.matches("[0-9]+");
+        return pin.matches("[0-9]+") && pin.length()==3;
     }
 
     /**
@@ -338,7 +320,7 @@ public class SignUpActivity extends Activity {
             if (!success) {
                 ShowReasonAlert("Create wallet failed");
             } else {
-                mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
+                Intent mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
                 mIntent.putExtra(KEY_USERNAME, mUsername);
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
                 mIntent.putExtra(KEY_WITHDRAWAL, mPin);
@@ -379,14 +361,14 @@ public class SignUpActivity extends Activity {
         }
 
         // Store values at the time of the login attempt.
-        String username = mUsernameEditText.getText().toString();
+        String username = mUserNameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
         String confirmation = mPasswordConfirmationEditText.getText().toString();
         String pin = mWithdrawalPinEditText.getText().toString();
 
         // Reset errors.
         mPasswordEditText.setError(null);
-        mUsernameEditText.setError(null);
+        mUserNameEditText.setError(null);
         mPasswordConfirmationEditText.setError(null);
         mWithdrawalPinEditText.setError(null);
 
@@ -395,28 +377,28 @@ public class SignUpActivity extends Activity {
 
         // Check for a valid username.
         if (!goodUsername(username)) {
-            mUsernameEditText.setError(getString(R.string.error_invalid_username));
-            focusView = mUsernameEditText;
+            showErrorDialog(getResources().getString(R.string.error_invalid_username));
+            focusView = mUserNameEditText;
             cancel = true;
         }
 
         // Check for a valid password.
         else if (!goodPassword(password)) {
-            mPasswordEditText.setError(getString(R.string.error_invalid_password));
+            showErrorDialog(getString(R.string.error_invalid_password));
             focusView = mPasswordEditText;
             cancel = true;
         }
 
         // Check for a valid confirmation.
         else if (!goodConfirmation(password, confirmation)) {
-            mPasswordConfirmationEditText.setError(getString(R.string.error_invalid_confirmation));
+            showErrorDialog(getString(R.string.error_invalid_confirmation));
             focusView = mPasswordConfirmationEditText;
             cancel = true;
         }
 
         // Check for a valid confirmation.
         else if (!goodPin(pin)) {
-            mWithdrawalPinEditText.setError(getString(R.string.error_invalid_pin));
+            showErrorDialog(getString(R.string.error_invalid_pin));
             focusView = mWithdrawalPinEditText;
             cancel = true;
         }
@@ -424,14 +406,7 @@ public class SignUpActivity extends Activity {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus();
-        } else {
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
+            dummyFocus.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -472,5 +447,24 @@ public class SignUpActivity extends Activity {
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
+    }
 
+    private void showErrorDialog(String string) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(string)
+                .setTitle("Error")
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }
