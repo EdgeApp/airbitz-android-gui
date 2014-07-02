@@ -34,16 +34,14 @@ public class CurrentLocationManager implements
     }
 
     // Callback interface for adding and removing location change listeners
-    private List<OnLocationChange> mOnLocationChange;
+    private List<OnLocationChange> mOnLocationChange = new ArrayList<OnLocationChange>();
 
     public interface OnLocationChange {
         public void OnCurrentLocationChange(Location location);
     }
 
     public void addLocationChangeListener(OnLocationChange listener) {
-        if(mOnLocationChange==null) {
-            mOnLocationChange = new ArrayList<OnLocationChange>();
-        }
+
         if(!mOnLocationChange.contains(listener)) {
             mOnLocationChange.add(listener);
         }
@@ -100,7 +98,7 @@ public class CurrentLocationManager implements
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location.hasAccuracy()) {
+        if (location.hasAccuracy() && !mOnLocationChange.isEmpty()) {
             mCurrentLocation = location;
             Log.d("TAG_LOC",
                     "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
