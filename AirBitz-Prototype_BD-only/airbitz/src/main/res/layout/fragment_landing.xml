@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/fragment_landing_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.airbitz.activities.LandingActivity"
@@ -9,7 +9,7 @@
 
     <!-- Login progress -->
     <ProgressBar
-        android:id="@+id/login_progress"
+        android:id="@+id/fragment_landing_login_progressbar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:visibility="gone"/>
 
     <RelativeLayout
-        android:id="@+id/landing_main_layout"
+        android:id="@+id/fragment_landing_main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -28,157 +28,155 @@
             android:layout_height="100.8dp"
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="12.6dp"
+            android:layout_marginTop="6.3dp"
+            android:contentDescription="@string/fragment_landing_logo_description"
             android:src="@drawable/img_logo"
-            android:id="@+id/imageView" />
+            android:id="@+id/fragment_landing_logo_imageview" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_text"
+            android:id="@+id/fragment_landing_detail_textview"
             android:layout_marginTop="31.5dp"
-            android:layout_marginBottom="44.1dp"
+            android:layout_marginBottom="31.5dp"
             android:textSize="15dp"
-            android:layout_below="@id/imageView"
+            android:layout_below="@id/fragment_landing_logo_imageview"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:text="Digital Currency Wallet"/>
+            android:text="@string/fragment_landing_detail_text"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/swipeLayout"
-            android:layout_below="@+id/detail_text">
-            <LinearLayout
+            android:id="@+id/fragment_landing_swipe_layout"
+            android:orientation="horizontal"
+            android:layout_below="@+id/fragment_landing_detail_textview">
+
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ico_arrow_left"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/swipe_text"
-                    android:padding="6.3dp"
-                    android:textSize="13dp"
-                    android:textColor="@android:color/white"
-                    android:text="@string/activity_landing_swipe_text"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ico_arrow_right"/>
-            </LinearLayout>
+                android:src="@drawable/ico_arrow_left"
+                android:contentDescription="@string/fragment_landing_arrow_description"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_landing_swipe_textview"
+                android:padding="6.3dp"
+                android:textSize="12dp"
+                android:textColor="@android:color/white"
+                android:text="@string/fragment_landing_swipe_text"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ico_arrow_right"
+                android:contentDescription="@string/fragment_landing_arrow_description"/>
         </LinearLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/inputLayout"
-            android:layout_width="wrap_content"
+        <ScrollView
+            android:id="@+id/fragment_landing_input_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="6.3dp" >
+            android:layout_marginBottom="6.3dp"
+            android:layout_alignParentBottom="true">
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <EditText
-                    android:layout_width="39mm"
-                    android:layout_height="6mm"
+                    android:layout_width="245.7dp"
+                    android:layout_height="37.8dp"
                     android:inputType="textVisiblePassword|textNoSuggestions"
-                    android:hint="User Name"
+                    android:hint="@string/fragment_landing_username_hint"
                     android:ems="10"
                     android:singleLine="true"
-                    android:nextFocusDown="@+id/passwordField"
+                    android:nextFocusDown="@+id/fragment_landing_password_edittext"
                     android:textColor="@android:color/white"
                     android:textColorHint="#DDDDDDDD"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textSize="14dp"
-                    android:id="@+id/userNameField"
-                    android:paddingLeft="2mm"
-                    android:layout_marginTop="2mm"
-                    android:layout_marginBottom="1mm"
+                    android:id="@+id/fragment_landing_username_edittext"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
+                    android:layout_marginBottom="6.3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_textfield"/>
+                    android:background="@drawable/bg_edittext"/>
 
                 <EditText
-                    android:layout_width="39mm"
-                    android:layout_height="6mm"
+                    android:layout_width="245.7dp"
+                    android:layout_height="37.8dp"
                     android:inputType="textPassword|textNoSuggestions"
-                    android:hint="Password"
+                    android:hint="@string/fragment_landing_password_hint"
                     android:textColor="@android:color/white"
                     android:textColorHint="#DDDDDDDD"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:ems="10"
                     android:textSize="14dp"
-                    android:id="@+id/passwordField"
-                    android:layout_marginBottom="1mm"
-                    android:paddingLeft="2mm"
+                    android:imeOptions="actionDone"
+                    android:id="@+id/fragment_landing_password_edittext"
+                    android:layout_marginBottom="6.3dp"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_textfield"/>
+                    android:background="@drawable/bg_edittext"/>
 
                 <Button
-                    android:layout_width="39mm"
-                    android:layout_height="7mm"
-                    android:text="@string/activity_landing_button_signin"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
+                    android:layout_width="245.7dp"
+                    android:layout_height="44.1dp"
+                    android:text="@string/fragment_landing_signin_button"
+                    android:textSize="15dp"
                     android:textColor="#DDFFFFFF"
-                    android:id="@+id/signinButton"
-                    android:layout_marginTop="1mm"
+                    android:id="@+id/fragment_landing_signin_button"
+                    android:shadowDy="4"
+                    android:shadowColor="#999999"
+                    android:shadowRadius="1"
+                    android:layout_marginTop="6.3dp"
+                    android:layout_marginBottom="6.3dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="1mm"
                     android:background="@drawable/btn_green"/>
 
                 <Button
-                    android:layout_width="39mm"
-                    android:layout_height="7mm"
-                    android:text="@string/activity_landing_button_signup"
-                    android:textSize="16dp"
+                    android:layout_width="245.7dp"
+                    android:layout_height="44.1dp"
+                    android:text="@string/fragment_landing_signup_button"
+                    android:textSize="15dp"
                     android:textColor="#DDFFFFFF"
-                    android:id="@+id/signUpButton"
-                    android:textStyle="bold"
-                    android:layout_marginTop="1mm"
+                    android:id="@+id/fragment_landing_signup_button"
+                    android:shadowDy="4"
+                    android:shadowColor="#999999"
+                    android:shadowRadius="1"
+                    android:layout_marginTop="6.3dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="2mm"
+                    android:layout_marginBottom="6.3dp"
                     android:background="@drawable/btn_blue"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:id="@+id/fragment_landing_forgot_password_layout">
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:id="@+id/forgotPassLayout"
-                        android:layout_above="@+id/inputLayout">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="1mm"
-                                android:textColor="@android:color/white"
-                                android:text="@string/activity_landing_forgot_label"
-                                android:id="@+id/forgotPassText"/>
-                            <ImageView
-                                android:layout_width="2mm"
-                                android:layout_height="2mm"
-                                android:src="@drawable/ico_forgot"
-                                android:id="@+id/forgotPassImage"/>
-                        </LinearLayout>
-                    </LinearLayout>
+                        android:padding="6.3dp"
+                        android:textSize="11dp"
+                        android:textColor="@android:color/white"
+                        android:text="@string/fragment_landing_forgot_text"
+                        android:id="@+id/fragment_landing_forgot_password_textview"/>
+                    <ImageView
+                        android:layout_width="12.6dp"
+                        android:layout_height="12.6dp"
+                        android:src="@drawable/ico_forgot"
+                        android:id="@+id/fragment_landing_forgot_password_imageview"
+                        android:contentDescription="@string/fragment_landing_forgot_image_description"/>
                 </LinearLayout>
-                </ScrollView>
-
-            </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
 
     </RelativeLayout>
 

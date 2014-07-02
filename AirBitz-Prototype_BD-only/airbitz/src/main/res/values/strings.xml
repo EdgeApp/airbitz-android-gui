@@ -33,22 +33,18 @@
     <string name="near_you">Near You</string>
 
     <!-- Strings related to Landing -->
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="error_invalid_username">This username is invalid - it must be one or more characters</string>
-    <string name="error_invalid_password">This password  is invalid - it must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
-    <string name="error_invalid_confirmation">The two passwords do not match</string>
-    <string name="error_invalid_pin">The withdrawal pin is invalid - it must be one or more numbers</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="error_invalid_credentials">The username or password is invalid</string>
-    <string name="activity_landing_swipe_text">Swipe to View Business Directory</string>
-    <string name="activity_landing_button_signin">Sign In</string>
-    <string name="activity_landing_button_signup">Sign Up</string>
-    <string name="activity_landing_forgot_label">Forgot Password</string>
-    <string name="activity_forgot_no_username">No Username</string>
-    <string name="activity_forgot_no_username_details">Please enter a Username first</string>
+    <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>
+    <string name="fragment_landing_detail_text">Digital Currency Wallet</string>
+    <string name="fragment_landing_swipe_text">Swipe to View Business Directory</string>
+    <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
+    <string name="fragment_landing_username_hint">User Name</string>
+    <string name="fragment_landing_password_hint">Password</string>
+    <string name="fragment_landing_signin_button">Sign In</string>
+    <string name="fragment_landing_signup_button">Sign Up</string>
+    <string name="fragment_landing_forgot_text">Forgot Password</string>
+    <string name="fragment_landing_forgot_image_description">Arrow Button</string>
+    <string name="fragment_forgot_no_username">No Username</string>
+    <string name="fragment_forgot_no_username_details">Please enter a Username first</string>
 
     <!-- Strings for Signup -->
     <string name="activity_signup_title">Sign Up</string>
@@ -57,7 +53,13 @@
     <string name="activity_signup_password_hint">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
     <string name="activity_signup_pin_label">Withdrawal Pin</string>
+    <string name="activity_signup_pin_hint">Create Pin</string>
     <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
+    <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
+    <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
+    <string name="activity_signup_popup_number">Must have at least one number</string>
+    <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
+    <string name="activity_signup_popup_length">Must have at least 10 characters</string>
 
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_title">Password Recovery</string>
@@ -189,7 +191,7 @@
 
     <!-- Strings for Received Success fragment -->
     <string name="received_success_title">Send Bitcoin</string>
-    <string name="received_success_sending_title">Sending...</string>
+    <string name="received_success_sending_title">Sending…</string>
     <string name="received_success_received_title">Received!</string>
     <string name="question">Question</string>
 
@@ -204,5 +206,13 @@
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Errors -->
+    <string name="error_invalid_username">Username is invalid - it must be three or more characters</string>
+    <string name="error_invalid_password">Password  is invalid - it must have an upper and lower case letter, a number, and a special character with a minimum 10 characters</string>
+    <string name="error_invalid_confirmation">The two passwords do not match</string>
+    <string name="error_invalid_pin">The withdrawal pin is invalid - it must be four numbers</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_credentials">The username or password is invalid</string>
 
 </resources>
