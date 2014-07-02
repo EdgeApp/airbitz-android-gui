@@ -102,7 +102,7 @@ public class VenueFragment extends Fragment implements
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
 
         mLocationManager = CurrentLocationManager.getLocationManager(null);
-//        mLocationManager.addLocationChangeListener(this);
+        mLocationManager.addLocationChangeListener(this);
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
@@ -112,17 +112,6 @@ public class VenueFragment extends Fragment implements
             mVenueListView.setVisibility(View.INVISIBLE);
             mVenues = new ArrayList<BusinessSearchResult>();
 
-            updateView(mLocationManager.getLocation());
-
-            int timeout = 15000;
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable()
-            {
-                @Override public void run() {
-                    if (mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING)
-                        mGetVenuesTask.cancel(true);
-                }
-            }, timeout);
         } else {
             setListView(mVenues);
         }
@@ -192,6 +181,17 @@ public class VenueFragment extends Fragment implements
     @Override
     public void OnCurrentLocationChange(Location location) {
         updateView(mLocationManager.getLocation());
+        mLocationManager.removeLocationChangeListener(this);
+
+        int timeout = 15000;
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override public void run() {
+                if (mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING)
+                    mGetVenuesTask.cancel(true);
+            }
+        }, timeout);
     }
 
     private class GetVenuesTask extends AsyncTask<String, Void, String> {
