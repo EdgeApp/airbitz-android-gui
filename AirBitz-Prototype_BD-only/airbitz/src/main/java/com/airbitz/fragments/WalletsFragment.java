@@ -52,8 +52,6 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
-    public static final String TXID = "com.airbitz.WalletsFragment.TXID";
-
 
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
@@ -102,7 +100,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private List<Wallet> mLatestWalletList;
     private List<Wallet> archivedWalletList;
 
-    private List<String> currencyList;
+    private String[] currencyList;
     private CoreAPI mCoreAPI;
     private AddWalletTask mAddWalletTask;
     private boolean fragmentsCreated = false;
@@ -126,9 +124,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
-        currencyList = new ArrayList<String>();
-        currencyList.add("CAD");
-        currencyList.add("USD");
+        currencyList = mCoreAPI.getCurrencies();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -361,7 +357,21 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         /*if(switchable.getVisibility()==View.VISIBLE){
             System.out.println("I Should be visible, Height: "+switchable.getHeight() +", Width: "+switchable.getWidth());
         }*/
+
+        UpdateBalances();
         return view;
+    }
+
+    // Sum all wallets except for archived
+    private void UpdateBalances() {
+        long totalSatoshis = 0;
+        for(Wallet wallet : mLatestWalletList) {
+            if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
+                totalSatoshis+=wallet.getBalance();
+        }
+        mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis));
+        mDollarBalanceButton.setText(mCoreAPI.SatoshiToCurrencyString(totalSatoshis));
+        //TODO update icons for currency
     }
 
     private void switchBarInfo(boolean isBitcoin){

@@ -44,6 +44,10 @@ public class Wallet {
         return getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
     }
 
+    public boolean isArchived() {
+        return (getAttributes() & 0x1) == 1;
+    }
+
     public void setName(String name){
         mName = name;
     }
