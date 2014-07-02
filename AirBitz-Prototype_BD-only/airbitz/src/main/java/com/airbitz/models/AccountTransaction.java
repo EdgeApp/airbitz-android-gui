@@ -4,7 +4,7 @@ package com.airbitz.models;
  * Created on 3/14/14.
  */
 public class AccountTransaction {
-
+    public static final String TXID = "com.airbitz.AccountTransaction.TXID";
 
     private String mWalletUUID;
     private String mWalletName;

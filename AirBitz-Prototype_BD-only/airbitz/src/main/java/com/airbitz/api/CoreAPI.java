@@ -808,7 +808,7 @@ public class CoreAPI {
 
     public String SatoshiToCurrencyString(long satoshi) {
         String currency = conversion(satoshi, false);
-        String denominationLabel = "BTC"; //[User Singleton].denominationLabel;
+        String denominationLabel = "BTC";
         String currencyLabel = "USD";
         return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
