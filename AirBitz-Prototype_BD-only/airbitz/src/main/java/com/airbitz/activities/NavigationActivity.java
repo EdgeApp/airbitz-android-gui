@@ -31,6 +31,7 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Wallet;
 import com.crashlytics.android.Crashlytics;
@@ -354,7 +355,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void onIncomingBitcoin(String walletUUID, String txId) {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
-        bundle.putString(WalletsFragment.TXID, txId);
+        bundle.putString(AccountTransaction.TXID, txId);
         bundle.putString(Wallet.WALLET_UUID, walletUUID);
 
         Fragment frag = new ReceivedSuccessFragment();

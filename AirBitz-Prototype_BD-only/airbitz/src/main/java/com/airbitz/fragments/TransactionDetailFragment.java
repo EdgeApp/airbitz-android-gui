@@ -139,7 +139,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         } else {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                     String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-                    String txId = bundle.getString(WalletsFragment.TXID);
+                    String txId = bundle.getString(AccountTransaction.TXID);
                     if(walletUUID.isEmpty()) {
                         Log.d("TransactionDetailFragement", "no detail info");
                     } else {
