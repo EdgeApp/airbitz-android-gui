@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class CurrentLocationManager implements
     }
 
     // Callback interface for adding and removing location change listeners
-    private List<OnLocationChange> mOnLocationChange = new ArrayList<OnLocationChange>();
+    private List<OnLocationChange> mOnLocationChange = Collections.synchronizedList(new ArrayList<OnLocationChange>());
 
     public interface OnLocationChange {
         public void OnCurrentLocationChange(Location location);
