@@ -1,5 +1,6 @@
 package com.airbitz.api;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public class CoreAPI {
     private static String TAG = AirbitzAPI.class.getSimpleName();
+    private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
 
     static {
         System.loadLibrary("abc");
@@ -824,6 +826,46 @@ public class CoreAPI {
         return core.doublep_value(currency);
     }
 
+    //*************** Exchange Rate
+    Handler handler = new Handler();
+    private ExchangeRateSource[] mExchangeRateSources;
+    final Runnable ExchangeRateUpdater = new Runnable() {
+        public void run() {
+            handler.postDelayed(this, 1000*ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS); // rerun every this many millis
+            requestExchangeRateUpdate();
+        }
+    };
+
+    private void stopExchangeRateUpdates() {
+        handler.removeCallbacks(ExchangeRateUpdater);
+    }
+
+    public void startExchangeRateUpdates() {
+        if(AirbitzApplication.isLoggedIn()) {
+            if(mExchangeRateSources==null) {
+                tABC_AccountSettings settings = loadAccountSettings();
+                mExchangeRateSources = getExchangeRateSources(settings.getExchangeRateSources());
+            }
+            handler.post(ExchangeRateUpdater);
+        }
+    }
+
+    // Exchange Rate updates comes in asynchronously
+    public void requestExchangeRateUpdate()
+    {
+        if (AirbitzApplication.isLoggedIn())
+        {
+            tABC_Error error = new tABC_Error();
+            // Check the default currency for updates
+            for(ExchangeRateSource source : mExchangeRateSources) {
+                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                        source.getCurrencyNum(), error);
+            }
+        }
+    }
+
+
+    //**************** Wallet handling
     private List<Wallet> getCoreWallets() {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
@@ -923,12 +965,7 @@ public class CoreAPI {
      * Account Transaction handling
      */
     public static List<AccountTransaction> getTransactions(String walletName) {
-        // TODO replace with API call
         List<AccountTransaction> list = new ArrayList<AccountTransaction>();
-//        list.add(new AccountTransaction("Matt Kemp", "DEC 10", "B25.000", "-B5.000"));
-//        list.add(new AccountTransaction("John Madden", "DEC 15", "B30.000", "-B65.000"));
-//        list.add(new AccountTransaction("kelly@gmail.com", "NOV 1", "B95.000", "B95.000"));
-
         return list;
     }
 

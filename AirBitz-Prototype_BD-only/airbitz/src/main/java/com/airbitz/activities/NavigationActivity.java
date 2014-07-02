@@ -31,7 +31,6 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
-import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Wallet;
 import com.crashlytics.android.Crashlytics;
@@ -48,9 +47,11 @@ import java.util.Stack;
  * Created by Thomas Baker on 4/22/14.
  */
 public class NavigationActivity extends FragmentActivity
-implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBitcoin {
+implements NavigationBarFragment.OnScreenSelectedListener,
+        CoreAPI.OnIncomingBitcoin,
+        CoreAPI.OnExchangeRateUpdate {
 
-    private CoreAPI mCore;
+    private CoreAPI mCoreAPI;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
 
     private boolean keyBoardUp = false;
@@ -88,8 +89,9 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-        mCore = CoreAPI.getApi();
-        mCore.setOnIncomingBitcoinListener(this);
+        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI.setOnIncomingBitcoinListener(this);
+        mCoreAPI.setOnExchangeRateUpdateListener(this);
 
         setContentView(R.layout.activity_navigation);
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
@@ -141,12 +143,15 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
         NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), fragments);
         mViewPager.setAdapter(pageAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {}
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             public void onPageSelected(int position) {
                 // Disappear if transparent page shows
-                if(position==0 || position==2) {
+                if (position == 0 || position == 2) {
                     int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                     if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -156,11 +161,11 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
                 }
             }
         });
-        setLoginView(false);//!AirbitzApplication.isLoggedIn());
+        mViewPager.setCurrentItem(2);
 
         String seed = getSeedData();
 
-        mCore.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
+        mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
 
         if(bdonly){
             System.out.println("BD ONLY");
@@ -173,12 +178,15 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
     }
 
 
-    public void setLoginView(boolean show) {
-        if(show) {
+    public void setLoggedIn(boolean loggedIn) {
+        if(!loggedIn) {
             mViewPager.setVisibility(View.VISIBLE);
             mViewPager.setCurrentItem(1);
         } else {
             mViewPager.setCurrentItem(2);
+            mViewPager.setVisibility(View.INVISIBLE);
+
+            mCoreAPI.startExchangeRateUpdates();
         }
     }
 
@@ -201,7 +209,7 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
                 mNavBarFragment.unselectTab(position);
                 mNavBarFragment.setLastTab(0);
                 mNavBarFragment.selectTab(0);
-                setLoginView(true);
+                setLoggedIn(false);
             }
         }
     }
@@ -324,6 +332,12 @@ implements NavigationBarFragment.OnScreenSelectedListener, CoreAPI.OnIncomingBit
         strSeed += bb2.array();
 
         return strSeed;
+    }
+
+
+    @Override
+    public void onExchangeRateUpdate() {
+        Log.d("NavigationActivity", "Exchange update received");
     }
 
     @Override
