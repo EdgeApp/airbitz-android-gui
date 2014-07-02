@@ -1,10 +1,15 @@
 package com.airbitz.api;
 
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.activities.SignUpActivity;
+import com.airbitz.fragments.ReceivedSuccessFragment;
+import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 
@@ -53,8 +58,11 @@ public class CoreAPI {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
-            if(mOnIncomingBitcoin!=null)
-                mOnIncomingBitcoin.onIncomingBitcoin(info.getSzWalletUUID(), info.getSzTxID());
+            if(mOnIncomingBitcoin!=null) {
+                mIncomingBitcoinUUID = info.getSzWalletUUID();
+                mIncomingBitcoinTxID = info.getSzTxID();
+                handler.post(incomingBitcoinUpdater);
+            }
             else
                 Log.d("CoreAPI", "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
@@ -73,12 +81,19 @@ public class CoreAPI {
 
     // Callback interface when an incoming bitcoin is received
     private OnIncomingBitcoin mOnIncomingBitcoin;
+    private String mIncomingBitcoinUUID, mIncomingBitcoinTxID;
     public interface OnIncomingBitcoin {
         public void onIncomingBitcoin(String walletUUID, String txId);
     }
     public void setOnIncomingBitcoinListener(OnIncomingBitcoin listener) {
         mOnIncomingBitcoin = listener;
     }
+    final Runnable incomingBitcoinUpdater = new Runnable() {
+        public void run() {
+            mOnIncomingBitcoin.onIncomingBitcoin(mIncomingBitcoinUUID, mIncomingBitcoinTxID);
+        }
+    };
+
 
     // Callback interface when a block height change is received
     private OnBlockHeightChange mOnBlockHeightChange;
