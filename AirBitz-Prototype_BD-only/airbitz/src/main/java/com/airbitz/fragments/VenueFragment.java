@@ -102,7 +102,7 @@ public class VenueFragment extends Fragment implements
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
 
         mLocationManager = CurrentLocationManager.getLocationManager(null);
-        mLocationManager.addLocationChangeListener(this);
+//        mLocationManager.addLocationChangeListener(this);
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
