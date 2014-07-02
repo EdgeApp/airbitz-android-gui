@@ -342,67 +342,15 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+        bundle.putString(WalletsFragment.TXID, txId);
+        bundle.putString(Wallet.WALLET_UUID, walletUUID);
 
-        mShowIncomingBitcoinSuccess = new ShowIncomingBitcoinSuccess(walletUUID, txId);
-        mShowIncomingBitcoinSuccess.execute();
-
-//        NSLog(@("launchReceiving: %@ %@ %@\n"), walletUUID, txId, transaction);
-//    /* If we aren't on the selector view, then just notify the user */
-//        if (_selectedViewController != _requestViewController || _txDetailsController != nil)
-//        {
-//            NSLog(@"Showing Notification\n");
-//            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-//            localNotification.alertBody = [NSString stringWithFormat:@"Received funds"];
-//            localNotification.soundName = UILocalNotificationDefaultSoundName;
-//            localNotification.applicationIconBadgeNumber = 1;
-//            [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-//        }
-//        else
-//        {
-
-//        }
+        Fragment frag = new ReceivedSuccessFragment();
+        frag.setArguments(bundle);
+        pushFragment(frag);
     }
 
-    ShowIncomingBitcoinSuccess mShowIncomingBitcoinSuccess=null;
-    public class ShowIncomingBitcoinSuccess extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUUID, mTXID;
-
-        ShowIncomingBitcoinSuccess(String walletUUID, String txId) {
-            mUUID = walletUUID;
-            mTXID = txId;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
-            bundle.putString(WalletsFragment.TXID, mTXID);
-            bundle.putString(Wallet.WALLET_UUID, mUUID);
-
-            Fragment frag = new ReceivedSuccessFragment();
-            frag.setArguments(bundle);
-            pushFragment(frag);
-        }
-
-        @Override
-        protected void onCancelled() {
-            mShowIncomingBitcoinSuccess = null;
-        }
-    }
 
 }
