@@ -240,7 +240,7 @@ public class LandingFragment extends Fragment {
     }
 
     private void gotoBusinessDirectoryLoggedIn() {
-        ((NavigationActivity) getActivity()).setLoginView(false);
+        ((NavigationActivity) getActivity()).setLoggedIn(true);
         ((NavigationActivity) getActivity()).onNavBarSelected(0);
     }
 
