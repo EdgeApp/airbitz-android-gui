@@ -2,23 +2,15 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Point;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,33 +37,23 @@ import com.airbitz.api.tABC_RequestResults;
 
 public class LandingFragment extends Fragment {
 
-    public static final String LAT_KEY = "LATITUDE_KEY";
-    public static final String LON_KEY = "LONGITUDE_KEY";
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
 
-    private EditText mUserNameField;
-    private EditText mPasswordField;
-    private Button mSignInButton;
-    private Button mSignUpButton;
-    private ImageView mForgotImageView;
-    private ImageView mLogoImageView;
-    private GestureDetector mGestureDetector;
-    private TextView mForgotPasswordTextView;
-    private int mDisplayWidth;
-    private Location mLocation;
-    private View mProgressView;
+    private RelativeLayout mLandingLayout;
 
+    private ImageView mLogoImageView;
 
     private TextView mDetailTextView;
-    private LinearLayout mSwipeLayout;
+    private LinearLayout mSwipeTextLayout;
 
-    private LocationManager mLocationManager;
+    private EditText mUserNameEditText;
+    private EditText mPasswordEditText;
 
-    private RelativeLayout mLandingLayout;
+    private View mProgressView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -86,65 +68,58 @@ public class LandingFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mProgressView = view.findViewById(R.id.login_progress);
-        mLandingLayout = (RelativeLayout) view.findViewById(R.id.landing_main_layout);
+        mProgressView = view.findViewById(R.id.fragment_landing_login_progressbar);
+        mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
 
-        mUserNameField = (EditText) view.findViewById(R.id.userNameField);
-        mPasswordField = (EditText) view.findViewById(R.id.passwordField);
-        mSignInButton = (Button) view.findViewById(R.id.signinButton);
-        mSignUpButton = (Button) view.findViewById(R.id.signUpButton);
-        mForgotImageView = (ImageView) view.findViewById(R.id.forgotPassImage);
-        mLogoImageView = (ImageView) view.findViewById(R.id.imageView);
-        mForgotPasswordTextView = (TextView) view.findViewById(R.id.forgotPassText);
-        mSwipeLayout = (LinearLayout) view.findViewById(R.id.swipeLayout);
-        mDetailTextView = (TextView) view.findViewById(R.id.detail_text);
+        mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
+        mSwipeTextLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
+        TextView mSwipeTextView = (TextView) view.findViewById(R.id.fragment_landing_swipe_textview);
 
-        mUserNameField.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mPasswordField.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mSignInButton.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mSignUpButton.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mForgotPasswordTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
+        mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
+        Button mSignInButton = (Button) view.findViewById(R.id.fragment_landing_signin_button);
+        Button mSignUpButton = (Button) view.findViewById(R.id.fragment_landing_signup_button);
+        ImageView mForgotImageView = (ImageView) view.findViewById(R.id.fragment_landing_forgot_password_imageview);
+        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
 
-        TextView swipeText = (TextView) view.findViewById(R.id.swipe_text);
+        mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        swipeText.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        mDisplayWidth = size.x;
-
-        final View activityRootView = view.findViewById(R.id.container);
+        final View activityRootView = view.findViewById(R.id.fragment_landing_container);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     mDetailTextView.setVisibility(View.GONE);
-                    mSwipeLayout.setVisibility(View.GONE);
+                    mSwipeTextLayout.setVisibility(View.GONE);
+                    if(activityRootView.getHeight() < (int)getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)){
+                        mLogoImageView.setVisibility(View.GONE);
+                    }
                 } else {
                     mDetailTextView.setVisibility(View.VISIBLE);
-                    mSwipeLayout.setVisibility(View.VISIBLE);
+                    mSwipeTextLayout.setVisibility(View.VISIBLE);
+                    mLogoImageView.setVisibility(View.VISIBLE);
                 }
             }
         });
-//        mLogoImageView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return mGestureDetector.onTouchEvent(motionEvent);
-//            }
-//        });'
 
 
         mForgotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mUserNameField.getText().toString().isEmpty()){
+                if(mUserNameEditText.getText().toString().isEmpty()){
                     showAlertDialog();
                 }else {
-                    System.out.println("THis is me: "+mUserNameField.getText().toString());
+                    System.out.println("THis is me: "+mUserNameEditText.getText().toString());
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
                     startActivity(intent);
                 }
@@ -154,12 +129,11 @@ public class LandingFragment extends Fragment {
         mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mUserNameField.getText().toString().isEmpty()){
+                if(mUserNameEditText.getText().toString().isEmpty()){
                     showAlertDialog();
                 }else {
-                    //System.out.println("THis is me: "+mUserNameField.getText().toString());
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameField.getText().toString());
+                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameEditText.getText().toString());
                     startActivity(intent);
                 }
             }
@@ -169,9 +143,9 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(!mPasswordField.getText().toString().isEmpty() && !mUserNameField.getText().toString().isEmpty()){
-                    mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
-                    mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
+                if(!mPasswordEditText.getText().toString().isEmpty() && !mUserNameEditText.getText().toString().isEmpty()){
+                    mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
+                    mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
                 }
                 attemptLogin();
             }
@@ -181,14 +155,12 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(mPasswordField.getWindowToken(), 0);
-                mgr.hideSoftInputFromWindow(mUserNameField.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
                 Intent intent = new Intent(getActivity(), SignUpActivity.class);
                 startActivity(intent);
             }
         });
-
-        checkLocationManager();
 
         return view;
     }
@@ -215,8 +187,7 @@ public class LandingFragment extends Fragment {
 
             tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pVoid, pError);
 
-            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-            return success;
+            return result == tABC_CC.ABC_CC_Ok;
         }
 
         @Override
@@ -255,36 +226,40 @@ public class LandingFragment extends Fragment {
         }
 
         // Reset errors.
-        mPasswordField.setError(null);
-        mUserNameField.setError(null);
+        mPasswordEditText.setError(null);
+        mUserNameEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUserNameField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        String username = mUserNameEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid username.
         if (TextUtils.isEmpty(username)) {
-            mUserNameField.setError(getString(R.string.error_field_required));
-            focusView = mUserNameField;
+            mUserNameEditText.setError(getString(R.string.error_field_required));
+            focusView = mUserNameEditText;
             cancel = true;
         } else if (!isUsernameValid(username)) {
-            mUserNameField.setError(getString(R.string.error_invalid_username));
-            focusView = mUserNameField;
+            mUserNameEditText.setError(getString(R.string.error_invalid_username));
+            focusView = mUserNameEditText;
             cancel = true;
         }
 
         // Check for a valid password.
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError(getString(R.string.error_field_required));
-            focusView = mPasswordField;
-            cancel = true;
+            mPasswordEditText.setError(getString(R.string.error_field_required));
+            if(null == focusView) {
+                focusView = mPasswordEditText;
+                cancel = true;
+            }
         } else if (!isPasswordValid(password)) {
-            mPasswordField.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordField;
-            cancel = true;
+            mPasswordEditText.setError(getString(R.string.error_invalid_password));
+            if(null == focusView) {
+                focusView = mPasswordEditText;
+                cancel = true;
+            }
         }
 
         if (cancel) {
@@ -359,14 +334,15 @@ public class LandingFragment extends Fragment {
 
     public void showAlertDialog(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setMessage(getResources().getString(R.string.activity_forgot_no_username_details))
+        alertDialogBuilder.setMessage(getResources().getString(R.string.fragment_forgot_no_username_details))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
@@ -375,115 +351,5 @@ public class LandingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    private void checkLocationManager() {
-
-        mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
-
-        final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (!gpsEnabled) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("GPS is disabled. Go to Settings and turned on your GPS.")
-                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-        }
-
-    }
-
-
-    private final LocationListener listener = new LocationListener() {
-
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-
-
-        @Override
-        public void onLocationChanged(Location location) {
-
-            if (mLocationManager != null) {
-                mLocationManager.removeUpdates(listener);
-            }
-
-            if (location.hasAccuracy()) {
-                mLocation = location;
-                clearSharedPreference();
-                writeLatLonToSharedPreference();
-            }
-        }
-    };
-
-
-    private void writeValueToSharedPreference(String key, float value) {
-        SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-        editor.putFloat(key, value);
-        editor.commit();
-    }
-
-    private void writeLatLonToSharedPreference(){
-        writeValueToSharedPreference(LAT_KEY, (float)mLocation.getLatitude());
-        writeValueToSharedPreference(LON_KEY, (float)mLocation.getLongitude());
-    }
-
-
-    private float getStateFromSharedPreferences(String key) {
-        SharedPreferences prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
-        return prefs.getFloat(key, -1);
-    }
-
-
-    private void setLatLonFromSharedPreference() {
-        double lat = (double)getStateFromSharedPreferences(LAT_KEY);
-        double lon = (double)getStateFromSharedPreferences(LON_KEY);
-        mLocation.setLatitude(lat);
-        mLocation.setLongitude(lon);
-    }
-
-    private void clearSharedPreference(String key) {
-        if(getActivity() != null) {
-            SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-            editor.remove(key);
-            editor.commit();
-        }
-    }
-
-    private void clearSharedPreference() {
-        if(getActivity() != null) {
-            SharedPreferences.Editor editor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-            editor.remove(LAT_KEY);
-            editor.remove(LON_KEY);
-            editor.commit();
-        }
     }
 }

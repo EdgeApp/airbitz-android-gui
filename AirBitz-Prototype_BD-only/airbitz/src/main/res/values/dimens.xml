@@ -46,4 +46,6 @@
     <dimen name="pop_up_offset">25.2dp</dimen>
     <dimen name="one_point_five_mm">9.45dp</dimen>
 
+    <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
+
     </resources>
