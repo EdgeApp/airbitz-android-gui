@@ -31,9 +31,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.SignUpActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -85,8 +85,10 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private ImageButton mHelpButton;
     private ImageButton mAddButton;
 
-    private ImageView moverCoin;
-    private ImageView moverType;
+    private ImageView mMoverCoin;
+    private ImageView mMoverType;
+    private ImageView mBottomCoin;
+    private ImageView mBottomType;
 
     private Bundle bundle;
 
@@ -102,6 +104,22 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private String[] mCurrencyList;
     private CoreAPI mCoreAPI;
+    private int mFiatCurrency;
+    private int mCurrencyIndex;
+
+    //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
+    //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
+    private int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
+    private int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+            R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+            R.drawable.ico_usd_white, R.drawable.ico_usd_white};
+    private int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
+            R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
+    private int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
+            R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
+
     private AddWalletTask mAddWalletTask;
     private boolean fragmentsCreated = false;
 
@@ -117,6 +135,19 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             bundle.remove(CREATE);
             bundle.putBoolean(CREATE, false);
             buildFragments();
+        }
+
+        tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
+        mFiatCurrency = settings.getCurrencyNum();
+        int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
+        mCurrencyIndex = -1;
+        for(int i=0; i<currencyNumbers.length; i++) {
+            if(currencyNumbers[i] == mFiatCurrency)
+                mCurrencyIndex = i;
+        }
+        if((mCurrencyIndex==-1) || (mCurrencyIndex > mCurrencyCoinDarkDrawables.length)) { // default usd
+            Log.d("WalletsFragment", "currency index out of bounds "+mCurrencyIndex);
+            mCurrencyIndex = currencyNumbers.length - 1;
         }
     }
 
@@ -152,8 +183,10 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mAddButton = (ImageButton) view.findViewById(R.id.button_add);
 
-        moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        moverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        mMoverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
+        mBottomType = (ImageView) view.findViewById(R.id.bottom_type);
 
         walletsHeader = (TextView) view.findViewById(R.id.wallets_header);
         archiveHeader = (TextView) view.findViewById(R.id.archive_header);
@@ -324,10 +357,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                Wallet wallet = a.getList().get(i);
+                if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
                     showWalletFragment(a.getList().get(i).getName());
-                }else if(a.getList().get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
-                    int pos = a.getPosition(a.getList().get(i));
+                }else if(wallet.isArchiveHeader()){
+                    int pos = a.getPosition(wallet);
                     //a.switchCloseAfterArchive(pos);
                     System.out.println("Map Sizes before: " +a.getMapSize()+" vs " + mLatestWalletList.size());
                     if(archiveClosed){
@@ -374,7 +408,8 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mFiatBalanceButton.setText(mCoreAPI.conversion(totalSatoshis, false));
         switchBarInfo(mOnBitcoinMode);
 
-        //TODO update icons for currency
+        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
+        mBottomType.setImageResource(mCurrencyTypeDarkDrawables[mCurrencyIndex]);
     }
 
     private void switchBarInfo(boolean isBitcoin){
@@ -383,15 +418,12 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mBitCoinBalanceButton.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            moverType.setImageResource(R.drawable.ico_btc_white);
-            double conv = 8.7544;
+            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            mMoverType.setImageResource(R.drawable.ico_btc_white);
             for(Wallet wallet: mLatestWalletList){
-                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {//TODO ALERT
+                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        double item = Double.parseDouble(wallet.getAmount().substring(1)) * conv;
-                        String amount = String.format("B%.3f", item);
-                        wallet.setAmount(amount);
+                        wallet.setAmount(mCoreAPI.conversion(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();
@@ -403,15 +435,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mFiatBalanceButton.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
-            moverType.setImageResource(R.drawable.ico_usd_white);
+            mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
+            mMoverType.setImageResource(mCurrencyTypeWhiteDrawables[mCurrencyIndex]);
             double conv = 0.1145;
             for(Wallet wallet: mLatestWalletList){
-                if(wallet.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        double item = wallet.getBalance(); //Double.parseDouble(wallet.getAmount().substring(1)) * conv;
-                        String amount = String.format("$%.3f", item);
-                        wallet.setAmount(amount);
+                        wallet.setAmount(mCoreAPI.conversion(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();
