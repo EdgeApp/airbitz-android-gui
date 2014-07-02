@@ -1,15 +1,10 @@
 package com.airbitz.api;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.activities.SignUpActivity;
-import com.airbitz.fragments.ReceivedSuccessFragment;
-import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 
@@ -61,19 +56,19 @@ public class CoreAPI {
             if(mOnIncomingBitcoin!=null) {
                 mIncomingBitcoinUUID = info.getSzWalletUUID();
                 mIncomingBitcoinTxID = info.getSzTxID();
-                handler.post(incomingBitcoinUpdater);
+                handler.post(IncomingBitcoinUpdater);
             }
             else
                 Log.d("CoreAPI", "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
-                mOnBlockHeightChange.onBlockHeightChange();
+                handler.post(BlockHeightUpdater);
             else
                 Log.d("CoreAPI", "block exchange event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
             Log.d("CoreAPI", "exchange rate update event");
             if(mOnExchangeRateUpdate!=null)
-                mOnExchangeRateUpdate.onExchangeRateUpdate();
+                handler.post(ExchangeUpdater);
             else
                 Log.d("CoreAPI", "exchange rate event has no listener");
         }
@@ -88,10 +83,8 @@ public class CoreAPI {
     public void setOnIncomingBitcoinListener(OnIncomingBitcoin listener) {
         mOnIncomingBitcoin = listener;
     }
-    final Runnable incomingBitcoinUpdater = new Runnable() {
-        public void run() {
-            mOnIncomingBitcoin.onIncomingBitcoin(mIncomingBitcoinUUID, mIncomingBitcoinTxID);
-        }
+    final Runnable IncomingBitcoinUpdater = new Runnable() {
+        public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingBitcoinUUID, mIncomingBitcoinTxID); }
     };
 
 
@@ -103,6 +96,10 @@ public class CoreAPI {
     public void setOnBlockHeightChangeListener(OnBlockHeightChange listener) {
         mOnBlockHeightChange = listener;
     }
+    final Runnable BlockHeightUpdater = new Runnable() {
+        public void run() { mOnBlockHeightChange.onBlockHeightChange(); }
+    };
+
 
     // Callback interface when an exchange rate update is received
     private OnExchangeRateUpdate mOnExchangeRateUpdate;
@@ -112,6 +109,9 @@ public class CoreAPI {
     public void setOnExchangeRateUpdateListener(OnExchangeRateUpdate listener) {
         mOnExchangeRateUpdate = listener;
     }
+    final Runnable ExchangeUpdater = new Runnable() {
+        public void run() { mOnExchangeRateUpdate.onExchangeRateUpdate(); }
+    };
 
     //***************** Wallet handling
     private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x0; // BIT0 is the archive bit
