@@ -47,5 +47,6 @@
     <dimen name="one_point_five_mm">9.45dp</dimen>
 
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
+    <dimen name="activity_signup_popup_height">119.7dp</dimen>
 
     </resources>
