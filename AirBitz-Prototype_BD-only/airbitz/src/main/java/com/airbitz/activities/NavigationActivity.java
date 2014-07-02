@@ -225,6 +225,9 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     public void pushFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(!mNavStacks[mNavFragmentId].empty()){
+            transaction.setCustomAnimations(R.anim.slide_in_from_right,R.anim.nothing);
+        }
         transaction.replace(R.id.activityLayout, fragment);
         mNavStacks[mNavFragmentId].push(fragment);
         transaction.commit();
@@ -233,6 +236,9 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void popFragment() {
         mNavStacks[mNavFragmentId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(mNavStacks[mNavFragmentId].size()!=1){
+            transaction.setCustomAnimations(R.anim.nothing,R.anim.slide_out_right);
+        }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavFragmentId].peek());
         transaction.commit();
     }

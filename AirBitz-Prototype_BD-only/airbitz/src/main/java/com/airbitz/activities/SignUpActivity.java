@@ -2,6 +2,8 @@ package com.airbitz.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -42,6 +45,8 @@ public class SignUpActivity extends Activity {
     static {
         System.loadLibrary("airbitz");
     }
+
+    private RelativeLayout mParentLayout;
 
     private View mProgressView;
     private EditText mUserNameEditText;
@@ -84,6 +89,8 @@ public class SignUpActivity extends Activity {
         mAPI = CoreAPI.getApi();
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
 
+        mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
+
         mProgressView = findViewById(R.id.activity_signup_progressbar);
 
         mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
@@ -113,6 +120,19 @@ public class SignUpActivity extends Activity {
         mSwitchImage3 = (ImageView) findViewById(R.id.activity_signup_switch_image_3);
         mSwitchImage4 = (ImageView) findViewById(R.id.activity_signup_switch_image_4);
         mSwitchImage5 = (ImageView) findViewById(R.id.activity_signup_switch_image_5);
+
+        TextView mSwitchTextView1 = (TextView) findViewById(R.id.activity_signup_switch_text_1);
+        mSwitchTextView1.setTypeface(NavigationActivity.latoRegularTypeFace);
+        TextView mSwitchTextView2 = (TextView) findViewById(R.id.activity_signup_switch_text_2);
+        mSwitchTextView2.setTypeface(NavigationActivity.latoRegularTypeFace);
+        TextView mSwitchTextView3 = (TextView) findViewById(R.id.activity_signup_switch_text_3);
+        mSwitchTextView3.setTypeface(NavigationActivity.latoRegularTypeFace);
+        TextView mSwitchTextView4 = (TextView) findViewById(R.id.activity_signup_switch_text_4);
+        mSwitchTextView4.setTypeface(NavigationActivity.latoRegularTypeFace);
+        TextView mSwitchTextView5 = (TextView) findViewById(R.id.activity_signup_switch_text_5);
+        mSwitchTextView5.setTypeface(NavigationActivity.latoRegularTypeFace);
+        TextView mTimeTextView = (TextView) findViewById(R.id.activity_signup_time_textview);
+        mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) findViewById(R.id.activity_signup_popup_layout);
 
@@ -212,8 +232,23 @@ public class SignUpActivity extends Activity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
+
+                    /*mParentLayout.setLayoutTransition();
+                    mParentLayout.animation*/
+                    LayoutTransition lt = new LayoutTransition();
+                    Animator animator = ObjectAnimator.ofFloat(null,"translationY",-(getResources().getDimension(R.dimen.activity_signup_popup_height)),0);
+                    lt.setAnimator(LayoutTransition.APPEARING,animator);
+                    lt.setStartDelay(LayoutTransition.APPEARING,0);
+                    lt.setDuration(300);
+                    mParentLayout.setLayoutTransition(lt);
                     mPopupContainer.setVisibility(View.VISIBLE);
                 }else{
+                    LayoutTransition lt = new LayoutTransition();
+                    Animator animator = ObjectAnimator.ofFloat(null,"translationY",0,-(getResources().getDimension(R.dimen.activity_signup_popup_height)));
+                    lt.setAnimator(LayoutTransition.DISAPPEARING,animator);
+                    lt.setStartDelay(LayoutTransition.DISAPPEARING,0);
+                    lt.setDuration(300);
+                    mParentLayout.setLayoutTransition(lt);
                     mPopupContainer.setVisibility(View.GONE);
                 }
             }
