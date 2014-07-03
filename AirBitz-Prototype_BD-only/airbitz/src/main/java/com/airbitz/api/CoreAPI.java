@@ -4,8 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.activities.SignUpActivity;
-import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
 import java.util.ArrayList;
@@ -465,10 +464,10 @@ public class CoreAPI {
 
 
     //************ Transaction handling
-    public AccountTransaction getTransaction(String walletUUID, String szTxId)
+    public Transaction getTransaction(String walletUUID, String szTxId)
     {
         tABC_Error Error = new tABC_Error();
-        AccountTransaction transaction = null;
+        Transaction transaction = null;
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_TxInfo pTxInfo = core.longp_to_ppTxInfo(lp);
@@ -484,7 +483,7 @@ public class CoreAPI {
         if (result==tABC_CC.ABC_CC_Ok)
         {
             TxInfo txInfo = new TxInfo(core.longp_value(lp));
-            transaction = new AccountTransaction();
+            transaction = new Transaction();
             setTransaction(wallet, transaction, txInfo);
             core.ABC_FreeTransaction(txInfo);
         }
@@ -495,8 +494,8 @@ public class CoreAPI {
         return transaction;
     }
 
-    public List<AccountTransaction> loadTransactions(Wallet wallet) {
-        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
+    public List<Transaction> loadTransactions(Wallet wallet) {
+        List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int pCount = core.new_intp();
@@ -519,7 +518,7 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-                AccountTransaction in = new AccountTransaction(wallet.getUUID(), txi.getID(),
+                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
                         txi.getCreationTime(), wallet.getName(),
                         wallet.getAmount(), // need address?
                         wallet.getAmount(), // need category?
@@ -529,7 +528,7 @@ public class CoreAPI {
                 listTransactions.add(in);
             }
             long bal = 0;
-            for (AccountTransaction at : listTransactions)
+            for (Transaction at : listTransactions)
             {
                 bal += at.getAmountSatoshi();
                 at.setBalance(bal);
@@ -648,7 +647,7 @@ public class CoreAPI {
     }
 
 
-    public void setTransaction(Wallet wallet, AccountTransaction transaction, TxInfo txInfo) {
+    public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
@@ -672,8 +671,8 @@ public class CoreAPI {
 
     }
 
-    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText) {
-        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
+    public List<Transaction> searchTransactionsIn(Wallet wallet, String searchText) {
+        List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int pCount = core.new_intp();
@@ -695,7 +694,7 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-                AccountTransaction transaction = new AccountTransaction();
+                Transaction transaction = new Transaction();
                 setTransaction(wallet, transaction, txi);
                 listTransactions.add(transaction);
             }
@@ -708,7 +707,7 @@ public class CoreAPI {
         return listTransactions;
     }
 
-    public boolean storeTransaction(AccountTransaction transaction) {
+    public boolean storeTransaction(Transaction transaction) {
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -957,7 +956,7 @@ public class CoreAPI {
         long mBalance;
         private int mCurrencyNum;
         private long mAttributes;
-        private List<AccountTransaction> mTransactions = null;
+        private List<Transaction> mTransactions = null;
 
         public WalletInfo(long pv) {
             super(pv, false);
@@ -987,7 +986,7 @@ public class CoreAPI {
 
         public int getCurrencyNum() {return mCurrencyNum; }
 
-        public List<AccountTransaction> getTransactions() {return mTransactions; }
+        public List<Transaction> getTransactions() {return mTransactions; }
     }
 
     private class pLong extends SWIGTYPE_p_long {
@@ -999,8 +998,8 @@ public class CoreAPI {
     /*
      * Account Transaction handling
      */
-    public static List<AccountTransaction> getTransactions(String walletName) {
-        List<AccountTransaction> list = new ArrayList<AccountTransaction>();
+    public static List<Transaction> getTransactions(String walletName) {
+        List<Transaction> list = new ArrayList<Transaction>();
         return list;
     }
 
