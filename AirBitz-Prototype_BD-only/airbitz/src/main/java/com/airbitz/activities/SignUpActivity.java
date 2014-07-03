@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -300,7 +301,6 @@ public class SignUpActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-
             if (success) {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.execute((Void) null);
@@ -338,7 +338,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);
+            return true;//TODO mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);_________________________________________________________________________
         }
 
         @Override
@@ -364,7 +364,7 @@ public class SignUpActivity extends Activity {
     }
 
     private void ShowReasonAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
                 .setCancelable(false)
@@ -401,33 +401,44 @@ public class SignUpActivity extends Activity {
         mWithdrawalPinEditText.setError(null);
 
         boolean cancel = false;
-        View focusView = null;
 
         // Check for a valid username.
         if (!goodUsername(username)) {
-            showErrorDialog(getResources().getString(R.string.error_invalid_username));
-            focusView = mUserNameEditText;
+            showErrorDialog(getResources().getString(R.string.error_invalid_username_details));
             cancel = true;
         }
 
         // Check for a valid password.
         else if (!goodPassword(password)) {
-            showErrorDialog(getString(R.string.error_invalid_password));
-            focusView = mPasswordEditText;
+            String message = getString(R.string.error_invalid_password_details_start);
+            if(!password.matches(".*[A-Z].*")){
+                message+=getString(R.string.error_invalid_password_details_upper);
+            }
+            if(!password.matches(".*[a-z].*")){
+                message+=getString(R.string.error_invalid_password_details_lower);
+            }
+            if(!password.matches(".*\\d.*")){
+                message+=getString(R.string.error_invalid_password_details_number);
+            }
+            if(!password.matches(passwordPattern)){
+                message+=getString(R.string.error_invalid_password_details_special);
+            }
+            if(password.length() < 10){
+                message+=getString(R.string.error_invalid_password_details_length);
+            }
+            showErrorDialog(message);
             cancel = true;
         }
 
         // Check for a valid confirmation.
         else if (!goodConfirmation(password, confirmation)) {
-            showErrorDialog(getString(R.string.error_invalid_confirmation));
-            focusView = mPasswordConfirmationEditText;
+            showErrorDialog(getString(R.string.error_invalid_confirmation_details));
             cancel = true;
         }
 
         // Check for a valid confirmation.
         else if (!goodPin(pin)) {
-            showErrorDialog(getString(R.string.error_invalid_pin));
-            focusView = mWithdrawalPinEditText;
+            showErrorDialog(getString(R.string.error_invalid_pin_details));
             cancel = true;
         }
 
@@ -479,7 +490,7 @@ public class SignUpActivity extends Activity {
     public void onBackPressed(){
         View activityRootView = findViewById(R.id.activity_signup_container_layout);
         int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-        if(heightDiff >= 100){
+        if(heightDiff > 100){
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
@@ -487,10 +498,10 @@ public class SignUpActivity extends Activity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
     }
 
-    private void showErrorDialog(String string) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(string)
-                .setTitle("Error")
+    private void showErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(getString(R.string.error_invalid_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {

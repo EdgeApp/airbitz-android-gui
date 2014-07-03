@@ -229,7 +229,7 @@ public class LandingFragment extends Fragment {
             focusView = mUserNameEditText;
             cancel = true;
         } else if (!isUsernameValid(username)) {
-            mUserNameEditText.setError(getString(R.string.error_invalid_username));
+            mUserNameEditText.setError(getString(R.string.error_invalid_credentials));
             focusView = mUserNameEditText;
             cancel = true;
         }
@@ -242,7 +242,7 @@ public class LandingFragment extends Fragment {
                 cancel = true;
             }
         } else if (!isPasswordValid(password)) {
-            mPasswordEditText.setError(getString(R.string.error_invalid_password));
+            mPasswordEditText.setError(getString(R.string.error_invalid_credentials));
             if(null == focusView) {
                 focusView = mPasswordEditText;
                 cancel = true;
@@ -315,7 +315,6 @@ public class LandingFragment extends Fragment {
                     }
                 });
         AlertDialog alert = builder.create();
-
         alert.show();
     }
 
@@ -332,8 +331,8 @@ public class LandingFragment extends Fragment {
                             }
                         }
                 );
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
 

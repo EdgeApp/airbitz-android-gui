@@ -9,14 +9,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -46,11 +50,12 @@ public class PasswordRecoveryActivity extends Activity {
 
     private String mUsername, mPassword;
 
-    private View dummy;
+    private View dummyFocus;
+    private View dummyCover;
 
     private Intent mIntent;
 
-    private LinearLayout mLayoutRecovery;
+    private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
 
@@ -81,7 +86,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
 
-        mLayoutRecovery = (LinearLayout) findViewById(R.id.activity_recovery_container_layout);
+        mLayoutRecovery = (RelativeLayout) findViewById(R.id.activity_recovery_container_layout);
 
         currentStringCategory1 = new ArrayList<String>();
         currentStringCategory2 = new ArrayList<String>();
@@ -98,7 +103,8 @@ public class PasswordRecoveryActivity extends Activity {
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        dummy = findViewById(R.id.activity_recovery_dummy_focus);
+        dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
+        dummyCover = findViewById(R.id.activity_recovery_dummy_cover);
 
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +129,7 @@ public class PasswordRecoveryActivity extends Activity {
 
     private void CompleteSignup() {
         //verify that all six questions have been selected
+        dummyCover.setVisibility(View.VISIBLE);
         boolean allQuestionsSelected = true;
         boolean allAnswersValid = true;
         String questions = "";
@@ -151,8 +158,7 @@ public class PasswordRecoveryActivity extends Activity {
         }
         if (allQuestionsSelected) {
             if (allAnswersValid) {
-                mSaveQuestionsTask = new SaveQuestionsTask(mUsername, mPassword, questions, answers);
-                mSaveQuestionsTask.execute((Void) null);
+                ShowCompleteAlert(questions, answers);
             } else {
                 ShowAnswerAllQuestionsAlert();
             }
@@ -187,7 +193,7 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     public void ShowSkipQuestionsAlert(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
                 .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
                 .setCancelable(false)
@@ -207,9 +213,9 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void ShowAnswerAllQuestionsAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.activity_recovery_answer_questions_alert))
-                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setTitle(getResources().getString(R.string.activity_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -222,9 +228,9 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void ShowPickAllQuestionsAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.activity_recovery_pick_questions_alert))
-                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setTitle(getResources().getString(R.string.activity_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -237,9 +243,9 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void ShowSaveFailAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
-                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
+                .setTitle(getResources().getString(R.string.activity_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -247,6 +253,30 @@ public class PasswordRecoveryActivity extends Activity {
                                 dialog.cancel();
                             }
                         });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void ShowCompleteAlert(final String questions, final String answers){
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.activity_recovery_done_details))
+                .setTitle(getResources().getString(R.string.activity_recovery_done_title))
+                .setCancelable(false)
+                .setNegativeButton(getResources().getString(R.string.string_back),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                )
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mSaveQuestionsTask = new SaveQuestionsTask(mUsername, mPassword, questions, answers);
+                                mSaveQuestionsTask.execute((Void) null);
+                            }
+                        }
+                );
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -316,7 +346,7 @@ public class PasswordRecoveryActivity extends Activity {
                 InitializeQuestionViews();
             }
 
-            dummy.requestFocus();
+            dummyFocus.requestFocus();
         }
 
         @Override
@@ -352,6 +382,7 @@ public class PasswordRecoveryActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
+            dummyCover.setVisibility(View.GONE);
             if (!success) {
                 ShowSaveFailAlert(pError.getSzDescription());
             } else {
@@ -451,6 +482,9 @@ public class PasswordRecoveryActivity extends Activity {
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
         private List<String> otherQuestionList;
+        int pos;
+
+        private QuestionView me = this;
 
         public QuestionView(Context context, List<String> questions,List<String> otherQuestions, String type) {
             super(context);
@@ -465,7 +499,9 @@ public class PasswordRecoveryActivity extends Activity {
             mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
             mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
             mSpinner.setAdapter(mAdapter);
-            mSpinner.setDropDownWidth((int)getResources().getDimension(R.dimen.spinner_width_password));
+            mSpinner.setDropDownWidth((int) getResources().getDimension(R.dimen.spinner_width_password));
+            mSpinner.setFocusable(true);
+            mSpinner.setFocusableInTouchMode(true);
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -587,13 +623,13 @@ public class PasswordRecoveryActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                    try{
-                        if(!mText.getText().toString().isEmpty() && mText.getText().toString().length() < mCharLimit){
+                    try {
+                        if (!mText.getText().toString().isEmpty() && mText.getText().toString().length() < mCharLimit) {
                             redRing.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             redRing.setVisibility(View.GONE);
                         }
-                    }catch(Exception e ){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -603,26 +639,57 @@ public class PasswordRecoveryActivity extends Activity {
 
                 }
             });
+
+            mText.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (hasFocus) {
+                        pos = mQuestionViews.indexOf(me);
+                        System.out.println(pos);
+                    }
+                }
+            });
+
+            mText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (pos != mQuestionViews.size() - 1) {
+                            ((QuestionView) mQuestionViews.get(pos + 1)).getSpinner().performClick();
+                            ((QuestionView) mQuestionViews.get(pos + 1)).getSpinner().requestFocus();
+                        }else {
+                            dummyFocus.requestFocus();
+                            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
             mSpinner.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
-                    if(hasFocus){
+                    if(hasFocus) {
                         int height = mLayoutRecovery.getRootView().getHeight() - mLayoutRecovery.getHeight();
-                        if(height>=100){
+                        if (height > 100) {
                             final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
+                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         }
                     }
                 }
             });
 
             mSpinner.setSelection(mAdapter.getCount());
-            mText.clearFocus();
-            mText.setCursorVisible(false);
         }
 
         public String getQuestion() {
             return ((TextView) mSpinner.getSelectedView()).getText().toString();
+        }
+
+        public Spinner getSpinner(){
+            return mSpinner;
         }
 
         public String getText() {
