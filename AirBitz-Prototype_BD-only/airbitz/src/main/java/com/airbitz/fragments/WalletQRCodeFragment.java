@@ -122,7 +122,7 @@ public class WalletQRCodeFragment extends Fragment {
         tABC_Error error = new tABC_Error();
 
         //first need to create a transaction details struct
-        long satoshi = mCoreAPI.denominationToSatoshi(btc, 0);
+        long satoshi = mCoreAPI.denominationToSatoshi(btc);
 
         double value = mCoreAPI.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
 
@@ -134,7 +134,6 @@ public class WalletQRCodeFragment extends Fragment {
 
         details.setSzName(name);
         details.setSzNotes(notes);
-        details.setSzCategory("");
         details.setAttributes(0x0); //for our own use (not used by the core)
 
         SWIGTYPE_p_long lp = core.new_longp();

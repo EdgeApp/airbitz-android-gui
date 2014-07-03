@@ -155,7 +155,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
-        mCurrencyList = mCoreAPI.getCurrencyAbbreviations();
+        mCurrencyList = mCoreAPI.getCurrencyAcronyms();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -405,7 +405,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 totalSatoshis+=wallet.getBalance();
         }
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis));
-        mFiatBalanceButton.setText(mCoreAPI.conversion(totalSatoshis, false));
+        mFiatBalanceButton.setText(mCoreAPI.FormatString(totalSatoshis, false));
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
@@ -423,7 +423,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.conversion(wallet.getBalance(), isBitcoin));
+                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();
@@ -441,7 +441,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.conversion(wallet.getBalance(), isBitcoin));
+                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();

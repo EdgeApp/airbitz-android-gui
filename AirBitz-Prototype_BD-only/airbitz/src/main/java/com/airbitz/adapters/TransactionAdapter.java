@@ -51,7 +51,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
         TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
 
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm:ss").format(new Date(mListTransaction.get(position).getDate()));
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
         dateTextView.setText(dateString);
 
         nameTextView.setText(mListTransaction.get(position).getName());
@@ -59,13 +59,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         if(mIsBitcoin) {
             creditAmountTextView.setText(mCoreAPI.formatSatoshi(transactionSatoshis));
         } else {
-            creditAmountTextView.setText(mCoreAPI.conversion(transactionSatoshis, false));
+            creditAmountTextView.setText(mCoreAPI.FormatString(transactionSatoshis, false));
         }
         if(mSearch){
-            debitAmountTextView.setText("$0.00");
+//            debitAmountTextView.setText("$0.00");
             confirmationsTextView.setText("None");
         }else {
-            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
+//            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
             confirmationsTextView.setText("2 confirmations");
         }
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
