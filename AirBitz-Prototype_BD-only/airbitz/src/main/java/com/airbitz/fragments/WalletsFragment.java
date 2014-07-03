@@ -104,20 +104,20 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     private String[] mCurrencyList;
     private CoreAPI mCoreAPI;
-    private int mFiatCurrency;
+    private int mFiatCurrencyNum;
     private int mCurrencyIndex;
 
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
     //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
-    private int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+    public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
-    private int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+    public static int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
             R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
             R.drawable.ico_usd_white, R.drawable.ico_usd_white};
-    private int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
+    public static int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
             R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
-    private int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
+    public static int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
             R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
 
     private AddWalletTask mAddWalletTask;
@@ -138,11 +138,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
 
         tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
-        mFiatCurrency = settings.getCurrencyNum();
+        mFiatCurrencyNum = settings.getCurrencyNum();
         int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
         mCurrencyIndex = -1;
         for(int i=0; i<currencyNumbers.length; i++) {
-            if(currencyNumbers[i] == mFiatCurrency)
+            if(currencyNumbers[i] == mFiatCurrencyNum)
                 mCurrencyIndex = i;
         }
         if((mCurrencyIndex==-1) || (mCurrencyIndex > mCurrencyCoinDarkDrawables.length)) { // default usd

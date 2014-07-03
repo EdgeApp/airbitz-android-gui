@@ -146,6 +146,13 @@ public class CoreAPI {
         return result == tABC_CC.ABC_CC_Ok;
     }
 
+    public boolean renameWallet(Wallet wallet) {
+        tABC_Error Error = new tABC_Error();
+        tABC_CC result = core.ABC_RenameWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), wallet.getName(), Error);
+        return result == tABC_CC.ABC_CC_Ok;
+    }
+
     public void reloadWallet(Wallet wallet) {
         Wallet info = getWallet(wallet.getUUID());
         wallet.setName(info.getName());
