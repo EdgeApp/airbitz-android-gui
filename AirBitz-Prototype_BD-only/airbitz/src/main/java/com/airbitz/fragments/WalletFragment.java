@@ -239,8 +239,9 @@ public class WalletFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle bundle = new Bundle();
-//                bundle.putString(WALLET_NAME, name);
-//                bundle.putString(WALLET_AMOUNT, amount);
+                bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
+                AccountTransaction trans = mAccountTransactions.get(i);
+                bundle.putString(AccountTransaction.TXID, trans.getID());
                 Fragment fragment = new TransactionDetailFragment();
                 fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment);
@@ -290,18 +291,12 @@ public class WalletFragment extends Fragment {
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             moverType.setImageResource(R.drawable.ico_btc_white);
-            double conv = 8.7544;
             for(AccountTransaction trans: mAccountTransactions){
                 try {
-//                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
-//                    String amount = String.format("B%.3f", item);
-//                    trans.setDebitAmount(amount);
-//                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
-//                    String amount2 = String.format("B%.3f", item2);
-//                    trans.setCreditAmount(amount2);
+                    trans.setAmountFiat(mCoreAPI.SatoshiToCurrency(trans.getBalance(), mWallet.getCurrencyNum()));
                 } catch (Exception e) {
-//                    trans.setCreditAmount("0");
-//                    e.printStackTrace();
+                    trans.setAmountFiat(0);
+                    e.printStackTrace();
                 }
             }
             mTransactionAdapter.notifyDataSetChanged();
@@ -314,15 +309,10 @@ public class WalletFragment extends Fragment {
             double conv = 0.1145;
             for(AccountTransaction trans: mAccountTransactions){
                 try {
-//                    double item = Double.parseDouble(trans.getDebitAmount().substring(1)) * conv;
-//                    String amount = String.format("$%.3f", item);
-//                    trans.setDebitAmount(amount);
-//                    double item2 = Double.parseDouble(trans.getCreditAmount().substring(2)) * conv;
-//                    String amount2 = String.format("$%.3f", item2);
-//                    trans.setCreditAmount(amount2);
+                    trans.setAmountFiat(mCoreAPI.SatoshiToCurrency(trans.getBalance(), mWallet.getCurrencyNum()));
                 } catch (Exception e) {
-//                    trans.setCreditAmount("0");
-//                    e.printStackTrace();
+                    trans.setAmountFiat(0);
+                    e.printStackTrace();
                 }
             }
         }

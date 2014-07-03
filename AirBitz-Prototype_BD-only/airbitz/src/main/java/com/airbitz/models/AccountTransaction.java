@@ -37,7 +37,7 @@ public class AccountTransaction {
     public AccountTransaction(String walletUUID, String id, long date, String name, String address, String category,
                               String notes, String[] addresses) {
         mWalletUUID = walletUUID;
-        mID = name;
+        mID = id;
         mDate = date;
         mName = name;
         mAddress = address;
