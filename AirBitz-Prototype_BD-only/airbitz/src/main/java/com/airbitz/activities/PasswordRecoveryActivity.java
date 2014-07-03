@@ -16,14 +16,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
-import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_p_sABC_QuestionChoice;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
@@ -32,7 +30,6 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_QuestionChoice;
 import com.airbitz.api.tABC_QuestionChoices;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,14 +44,6 @@ import java.util.Map;
  */
 public class PasswordRecoveryActivity extends Activity {
 
-    private Button mDoneSignUpButton;
-
-    private ImageButton mHelpButton;
-    private ImageButton mSkipStepButton;
-
-    private TextView mTitleTextView;
-
-
     private String mUsername, mPassword;
 
     private View dummy;
@@ -64,28 +53,17 @@ public class PasswordRecoveryActivity extends Activity {
     private LinearLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
-    private List<String> mQuestions;
 
     private FetchQuestionsTask mFetchQuestionsTask;
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> currentStringCategory1;
     private List<String> currentStringCategory2;
-    private List<String> mStringChosen = new ArrayList<String>();
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> currentNumericCategory1;
     private List<String> currentNumericCategory2;
-    private List<String> mNumericChosen = new ArrayList<String>();
     private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> currentAddressCategory1;
     private List<String> currentAddressCategory2;
-    private List<String> mAddressChosen = new ArrayList<String>();
-    private View mQuestionViewString1;
-    private View mQuestionViewString2;
-    private View mQuestionViewString3;
-    private View mQuestionViewString4;
-    private View mQuestionViewString5;
-    private View mQuestionViewString6;
-
 
     private SaveQuestionsTask mSaveQuestionsTask;
 
@@ -94,19 +72,16 @@ public class PasswordRecoveryActivity extends Activity {
         super.onCreate(savedInstanceState);
         mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
         mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
-        mUsername="junktest1"; // for testing
-        mPassword="Aaaaaaaa1@"; // for testing
-        String seed = "This is a 234-023-490 test seed string";
-        CoreAPI.getApi().Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
-        ;
 
         setContentView(R.layout.activity_password_recovery);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
+        this.overridePendingTransition(R.anim.nothing, R.anim.slide_in_from_right);
 
         mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
 
-        mLayoutRecovery = (LinearLayout) findViewById(R.id.layout_pass_recovery);
+        mLayoutRecovery = (LinearLayout) findViewById(R.id.activity_recovery_container_layout);
 
         currentStringCategory1 = new ArrayList<String>();
         currentStringCategory2 = new ArrayList<String>();
@@ -115,22 +90,15 @@ public class PasswordRecoveryActivity extends Activity {
         currentAddressCategory1 = new ArrayList<String>();
         currentAddressCategory2 = new ArrayList<String>();
 
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
+        TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
-        mSkipStepButton = (ImageButton) findViewById(R.id.button_skip_step);
-        mDoneSignUpButton = (Button) findViewById(R.id.button_complete_signup);
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-
-        dummy = findViewById(R.id.password_dummy);
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Common.showHelpInfo(PasswordRecoveryActivity.this, "Info", "Business directory info");
-            }
-        });
+        dummy = findViewById(R.id.activity_recovery_dummy_focus);
 
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +113,7 @@ public class PasswordRecoveryActivity extends Activity {
             }
         });
 
-        mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.password_recovery_listview);
+        mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.activity_recovery_question_listview);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -195,12 +163,12 @@ public class PasswordRecoveryActivity extends Activity {
 
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<View>();
-        mQuestionViewString1 = new QuestionView(this, currentStringCategory1,currentStringCategory2, "string");
-        mQuestionViewString2 = new QuestionView(this, currentStringCategory2,currentStringCategory1, "string");
-        mQuestionViewString3 = new QuestionView(this, currentNumericCategory1,currentNumericCategory2, "numeric");
-        mQuestionViewString4 = new QuestionView(this, currentNumericCategory2,currentNumericCategory1, "numeric");
-        mQuestionViewString5 = new QuestionView(this, currentAddressCategory1,currentAddressCategory2, "address");
-        mQuestionViewString6 = new QuestionView(this, currentAddressCategory2,currentAddressCategory1, "address");
+        View mQuestionViewString1 = new QuestionView(this, currentStringCategory1,currentStringCategory2, "string");
+        View mQuestionViewString2 = new QuestionView(this, currentStringCategory2,currentStringCategory1, "string");
+        View mQuestionViewString3 = new QuestionView(this, currentNumericCategory1,currentNumericCategory2, "numeric");
+        View mQuestionViewString4 = new QuestionView(this, currentNumericCategory2,currentNumericCategory1, "numeric");
+        View mQuestionViewString5 = new QuestionView(this, currentAddressCategory1,currentAddressCategory2, "address");
+        View mQuestionViewString6 = new QuestionView(this, currentAddressCategory2,currentAddressCategory1, "address");
         mQuestionViews.add(mQuestionViewString1);
         mQuestionViews.add(mQuestionViewString2);
         mQuestionViews.add(mQuestionViewString3);
@@ -310,15 +278,15 @@ public class PasswordRecoveryActivity extends Activity {
                 if(num>0) {
                     for(QuestionChoice choice : mChoices) {
                         if(choice.mCategory.equals("string")) {
-                            mStringCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentStringCategory1.add(choice.getQuestion());
                             currentStringCategory2.add(choice.getQuestion());
                         } else if(choice.mCategory.equals("numeric")) {
-                            mNumericCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentNumericCategory1.add(choice.getQuestion());
                             currentNumericCategory2.add(choice.getQuestion());
                         } else if(choice.mCategory.equals("address")) {
-                            mAddressCategory.put(choice.getQuestion(), new Integer((int) choice.getMinLength()));
+                            mAddressCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentAddressCategory1.add(choice.getQuestion());
                             currentAddressCategory2.add(choice.getQuestion());
                         }
@@ -331,9 +299,11 @@ public class PasswordRecoveryActivity extends Activity {
                     currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
                     return true;
                 } else {
+                    System.err.println("No Questions");
                     return false;
                 }
             } else {
+                System.err.println("ABC Not Ok");
                 return false;
             }
         }
@@ -491,7 +461,7 @@ public class PasswordRecoveryActivity extends Activity {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
-            mSpinner = (Spinner)findViewById(R.id.item_password_recovery_spinner);
+            mSpinner = (Spinner)findViewById(R.id.item_recovery_question_spinner);
             mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
             mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
             mSpinner.setAdapter(mAdapter);
@@ -503,7 +473,7 @@ public class PasswordRecoveryActivity extends Activity {
                         for(String s: mStringCategory.keySet()){
                             if(s.compareTo((String)mSpinner.getSelectedItem())==0){
                                 if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mStringCategory.get(s).intValue();
+                                    mCharLimit = mStringCategory.get(s);
                                     if(!chosenQuestion.isEmpty()) {
                                         otherQuestionList.add(chosenQuestion);
                                     }
@@ -528,7 +498,7 @@ public class PasswordRecoveryActivity extends Activity {
                         for(String s: mNumericCategory.keySet()){
                             if(s.compareTo((String)mSpinner.getSelectedItem())==0){
                                 if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mNumericCategory.get(s).intValue();
+                                    mCharLimit = mNumericCategory.get(s);
                                     if(!chosenQuestion.isEmpty()) {
                                         otherQuestionList.add(chosenQuestion);
                                     }
@@ -553,7 +523,7 @@ public class PasswordRecoveryActivity extends Activity {
                         for(String s: mAddressCategory.keySet()){
                             if(s.compareTo((String)mSpinner.getSelectedItem())==0){
                                 if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mAddressCategory.get(s).intValue();
+                                    mCharLimit = mAddressCategory.get(s);
                                     if(!chosenQuestion.isEmpty()) {
                                         otherQuestionList.add(chosenQuestion);
                                     }
@@ -590,9 +560,9 @@ public class PasswordRecoveryActivity extends Activity {
                 }
             });
 
-            mText = (EditText) findViewById(R.id.item_password_recovery_answer);
-            final View redRing = findViewById(R.id.red_ring);
-            mText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+            mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
+            final View redRing = findViewById(R.id.item_recovery_answer_redring);
+            mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 //        edittext.setOnKeyListener(new View.OnKeyListener() {
 //            public boolean onKey(View v, int keyCode, KeyEvent event) {
 //                // If the event is a key-down event on the "enter" button
@@ -624,7 +594,7 @@ public class PasswordRecoveryActivity extends Activity {
                             redRing.setVisibility(View.GONE);
                         }
                     }catch(Exception e ){
-
+                        e.printStackTrace();
                     }
                 }
 
@@ -633,13 +603,22 @@ public class PasswordRecoveryActivity extends Activity {
 
                 }
             });
+            mSpinner.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(hasFocus){
+                        int height = mLayoutRecovery.getRootView().getHeight() - mLayoutRecovery.getHeight();
+                        if(height>=100){
+                            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
+                        }
+                    }
+                }
+            });
+
             mSpinner.setSelection(mAdapter.getCount());
             mText.clearFocus();
             mText.setCursorVisible(false);
-        }
-
-        public void setQuestions(List<String> questions) {
-
         }
 
         public String getQuestion() {
@@ -653,6 +632,11 @@ public class PasswordRecoveryActivity extends Activity {
         public int getMinimumCharacters() {
             return mCharLimit;
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+
     }
 
 }

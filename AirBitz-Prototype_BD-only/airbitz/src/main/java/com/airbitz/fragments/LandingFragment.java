@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,8 +82,8 @@ public class LandingFragment extends Fragment {
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         Button mSignInButton = (Button) view.findViewById(R.id.fragment_landing_signin_button);
         Button mSignUpButton = (Button) view.findViewById(R.id.fragment_landing_signup_button);
-        ImageView mForgotImageView = (ImageView) view.findViewById(R.id.fragment_landing_forgot_password_imageview);
         TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
+        LinearLayout mForgotPasswordLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_layout);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -112,21 +113,7 @@ public class LandingFragment extends Fragment {
             }
         });
 
-
-        mForgotImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mUserNameEditText.getText().toString().isEmpty()){
-                    showAlertDialog();
-                }else {
-                    System.out.println("THis is me: "+mUserNameEditText.getText().toString());
-                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
-        mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+        mForgotPasswordLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mUserNameEditText.getText().toString().isEmpty()){
@@ -292,14 +279,14 @@ public class LandingFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            /*mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
             mLandingLayout.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
-            });
+            });*/
 
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
@@ -313,12 +300,12 @@ public class LandingFragment extends Fragment {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            //mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
     private void showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.error_invalid_credentials))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
@@ -328,13 +315,15 @@ public class LandingFragment extends Fragment {
                     }
                 });
         AlertDialog alert = builder.create();
+
         alert.show();
     }
 
 
     public void showAlertDialog(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
         alertDialogBuilder.setMessage(getResources().getString(R.string.fragment_forgot_no_username_details))
+                .setTitle(getResources().getString(R.string.fragment_forgot_no_username_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
