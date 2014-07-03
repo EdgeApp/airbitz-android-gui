@@ -134,8 +134,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
-        if(bundle!=null && bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
-            if(bundle.getString(WalletsFragment.FROM_SOURCE)=="SEND") {
+        if(bundle!=null) {
+            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE)=="SEND") {
                 fromSendRequest = true;
             }
 
