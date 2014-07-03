@@ -135,17 +135,6 @@ Java_com_airbitz_api_CoreAPI_getStringAtPtr( JNIEnv *env, jobject obj, jlong ptr
 }
 
 /*
- * Return byte array from ptr to string
- */
-JNIEXPORT jbyteArray JNICALL
-Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr , jint len)
-{
-    jbyteArray result = (*env)->NewByteArray(env, len);
-    (*env)->SetByteArrayRegion( env, result, 0, len, *(const jbyte **) &ptr );
-    return result;
-}
-
-/*
  * SWIG problem so custom call here
  */
 JNIEXPORT void JNICALL
