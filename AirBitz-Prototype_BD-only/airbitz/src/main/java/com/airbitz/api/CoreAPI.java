@@ -258,16 +258,17 @@ public class CoreAPI {
     }
 
     //************ Settings handling
-    private String[] mFauxCurrencies = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
+    private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
+    private String[] mFauxCurrencyDenomination = {"$", "CNY", "CUP", "EUR", "GBP", "MXN", "$"};
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
 
     public int[] getCurrencyNumbers() {
         return mFauxCurrencyNumbers;
     }
 
-    public String[] getCurrencyAbbreviations() {
+    public String[] getCurrencyAcronyms() {
         //TEMP fix
-        return mFauxCurrencies;
+        return mFauxCurrencyAcronyms;
 
 //        String[] arrayCurrencies = null;
 //        tABC_Error Error = new tABC_Error();
@@ -671,6 +672,13 @@ public class CoreAPI {
 
     }
 
+    public boolean SaveTransaction(Transaction transaction, tABC_TxDetails details) {
+        tABC_Error Error = new tABC_Error();
+        tABC_CC results = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                transaction.getWalletUUID(), transaction.getID(), details, Error);
+        return results==tABC_CC.ABC_CC_Ok;
+    }
+
     public List<Transaction> searchTransactionsIn(Wallet wallet, String searchText) {
         List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
@@ -761,12 +769,17 @@ public class CoreAPI {
         return decimalPlaces;
     }
 
-    public int maxDecimalPlaces(String label) {
+    public int maxDecimalPlaces() {
         int decimalPlaces = 8;
-        if (label.contains("uBTC"))
-            decimalPlaces = 2;
-        else if (label.contains("mBTC"))
-            decimalPlaces = 5;
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination != null) {
+            String label = bitcoinDenomination.getSzLabel();
+            if (label.equals("uBTC"))
+                decimalPlaces = 2;
+            else if (label.contains("mBTC"))
+                decimalPlaces = 5;
+        }
         return decimalPlaces;
     }
 
@@ -807,9 +820,41 @@ public class CoreAPI {
         }
     }
 
+    public int SettingsCurrencyIndex() {
+        int index = -1;
+        tABC_AccountSettings settings = loadAccountSettings();
+        int currencyNum = settings.getCurrencyNum();
+        int[] currencyNumbers = getCurrencyNumbers();
 
-    public long denominationToSatoshi(String amount, int decimalPlaces) {
-        long parsedAmount;
+        for(int i=0; i<currencyNumbers.length; i++) {
+            if(currencyNumbers[i] == currencyNum)
+                index = i;
+        }
+        if((index==-1) || (index >= currencyNumbers.length)) { // default usd
+            Log.d("CoreAPI", "currency index out of bounds "+index);
+            index = currencyNumbers.length-1;
+        }
+        return index;
+    }
+
+    public String BitcoinDenominationLabel() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        return bitcoinDenomination.getSzLabel();
+    }
+
+    public String FiatCurrencySign() {
+        int index = SettingsCurrencyIndex();
+        return mFauxCurrencyDenomination[index];
+    }
+
+    public String FiatCurrencyAcronym() {
+        int index = SettingsCurrencyIndex();
+        return mFauxCurrencyAcronyms[index];
+    }
+
+    public long denominationToSatoshi(String amount) {
+        int decimalPlaces = maxDecimalPlaces();
         SWIGTYPE_p_int64_t out = core.new_int64_tp();
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(out);
 
@@ -822,27 +867,21 @@ public class CoreAPI {
         return core.longp_value(l);
     }
 
-    public String SatoshiToCurrencyString(long satoshi) {
-        String currency = conversion(satoshi, false);
+    public String ConversionString(long satoshi) {
+        String currency = FormatString(satoshi, false);
         String denominationLabel = "BTC";
         String currencyLabel = "USD";
         return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
 
-    public String conversion(long satoshi, boolean btc)
+    public String FormatString(long satoshi, boolean btc)
     {
         if (!btc)
         {
             tABC_AccountSettings settings = loadAccountSettings();
             int currencyNumber = settings.getCurrencyNum();
 
-            tABC_Error error = new tABC_Error();
-            SWIGTYPE_p_double currencyOut = core.new_doublep();
-
-            long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    satoshi, SWIGTYPE_p_double.getCPtr(currencyOut), currencyNumber, tABC_Error.getCPtr(error));
-
-            return formatCurrency(core.doublep_value(currencyOut));
+            return formatCurrency(SatoshiToCurrency(satoshi, currencyNumber));
         }
         else // currency
         {

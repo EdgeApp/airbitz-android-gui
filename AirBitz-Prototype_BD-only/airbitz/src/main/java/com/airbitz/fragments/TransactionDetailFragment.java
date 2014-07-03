@@ -42,6 +42,7 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_TxDetails;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
@@ -55,7 +56,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +101,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private RelativeLayout mNoteDetailLayout;
     private RelativeLayout mNameDetailLayout;
 
-    private EditText mDollarValueEdittext;
+    private EditText mFiatValueEdittext;
+    private TextView mFiatDenominationLabel, mFiatDenominationAcronym;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
@@ -127,7 +131,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private ClipboardManager clipboard;
     private float mBTCtoUSDConversion = 450.0f;
 
+    private CoreAPI mCoreAPI;
     private Transaction mTransaction;
+    private int mCurrencyIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -144,8 +150,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             if (walletUUID.isEmpty()) {
                 Log.d("TransactionDetailFragement", "no detail info");
             } else {
-                CoreAPI mCoreAPI = CoreAPI.getApi();
+                mCoreAPI = CoreAPI.getApi();
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
+                mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
             }
         }
     }
@@ -175,8 +182,10 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
-        mDollarValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mDollarValueEdittext.setInputType(InputType.TYPE_NULL);
+        mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
+        mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
+        mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
+        mFiatDenominationAcronym = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_text);
 
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
         mCategoryEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_category);
@@ -219,7 +228,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mCategoryEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        mDollarValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
 
         mNoteTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
@@ -303,14 +312,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mAdvanceDetailsButton.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mDoneButton.setVisibility(View.GONE);
-                }else{
+                } else {
                     System.out.println("Note loses focus");
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
-                    mAdvanceDetailsButton.setVisibility(View.VISIBLE); 
+                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mDoneButton.setVisibility(View.VISIBLE);
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -349,7 +358,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     System.out.println("Action Done");
                     mDummyFocus.requestFocus();
                     return true;
@@ -397,17 +406,17 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(false == doEdit) {
-                    if(false == catSelected){
+                if (false == doEdit) {
+                    if (false == catSelected) {
                         String temp = editable.toString();
                         doEdit = true;
                         editable.clear();
-                        editable.append(defaultCat.toString()+":"+temp);
+                        editable.append(defaultCat.toString() + ":" + temp);
                         doEdit = false;
                         catSelected = true;
                     }
                     if (currentType.charAt(0) == 'I') {
-                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:")!=0) {
+                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:") != 0) {
                             if (editable.toString().length() > 7) {
                                 String temp = editable.toString().substring(7);
                                 doEdit = true;
@@ -420,7 +429,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                                 editable.append("Income:");
                                 doEdit = false;
                             }
-                        }else if(editable.toString().length() >= 7){
+                        } else if (editable.toString().length() >= 7) {
                             mCategories.remove(baseIncomePosition);
                             mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(7));
                             mCategories.remove(baseExpensePosition);
@@ -433,7 +442,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             mCategoryEdittext.setSelection(7, 7);
                         }
                     } else if (currentType.charAt(0) == 'E') {
-                        if ( editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:")!=0) {
+                        if (editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:") != 0) {
                             if (editable.toString().length() > 8) {
                                 String temp = editable.toString().substring(8);
                                 doEdit = true;
@@ -446,7 +455,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                                 editable.append("Expense:");
                                 doEdit = false;
                             }
-                        }else if(editable.toString().length() >= 8){
+                        } else if (editable.toString().length() >= 8) {
                             mCategories.remove(baseIncomePosition);
                             mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(8));
                             mCategories.remove(baseExpensePosition);
@@ -459,7 +468,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             mCategoryEdittext.setSelection(8, 8);
                         }
                     } else if (currentType.charAt(0) == 'T') {
-                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:")!=0) {
+                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:") != 0) {
                             if (editable.toString().length() > 9) {
                                 String temp = editable.toString().substring(9);
                                 doEdit = true;
@@ -472,9 +481,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                                 editable.append("Transfer:");
                                 doEdit = false;
                             }
-                        }else if(editable.toString().length() >= 9){
+                        } else if (editable.toString().length() >= 9) {
                             mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition,"Income:"+editable.toString().substring(9));
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(9));
                             mCategories.remove(baseExpensePosition);
                             mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(9));
                             mCategories.remove(baseTransferPosition);
@@ -485,7 +494,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             mCategoryEdittext.setSelection(9, 9);
                         }
                     } else {
-                        System.err.println("currentType was something other than Income, Expense or Transfer: "+currentType);
+                        System.err.println("currentType was something other than Income, Expense or Transfer: " + currentType);
                     }
                 }
             }
@@ -535,7 +544,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        mDollarValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -577,7 +586,38 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
 
+        UpdateView(mTransaction);
         return view;
+    }
+
+    private void UpdateView(Transaction transaction) {
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate()*1000);
+        mDateTextView.setText(dateString);
+
+        mNameEditText.setText(transaction.getName());
+        mNoteEdittext.setText(transaction.getNotes());
+        mCategoryEdittext.setText(transaction.getCategory());
+
+        long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
+        mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, true));
+
+        mFiatValueEdittext.setText(mCoreAPI.formatSatoshi(coinValue, false));
+        mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
+        mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
+
+//        String feeFormatted = "";
+//        if (transaction.getAmountSatoshi() < 0)
+//        {
+//            feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
+//        }
+//        labelFee.text = feeFormatted;
+
+    }
+
+    private void SaveTransaction(Transaction transaction) {
+        tABC_TxDetails details = new tABC_TxDetails();
+
+        mCoreAPI.SaveTransaction(transaction, details);
     }
 
     @Override

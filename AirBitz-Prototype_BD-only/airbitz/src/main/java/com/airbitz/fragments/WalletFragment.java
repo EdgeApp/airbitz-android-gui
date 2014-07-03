@@ -24,7 +24,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
@@ -109,18 +108,7 @@ public class WalletFragment extends Fragment {
                     mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
                     mTransactions = mCoreAPI.loadTransactions(mWallet);
-                    tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
-                    mFiatCurrencyNum = settings.getCurrencyNum();
-                    int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
-                    mCurrencyIndex = -1;
-                    for(int i=0; i<currencyNumbers.length; i++) {
-                        if(currencyNumbers[i] == mFiatCurrencyNum)
-                            mCurrencyIndex = i;
-                    }
-                    if((mCurrencyIndex==-1) || (mCurrencyIndex > WalletsFragment.mCurrencyCoinDarkDrawables.length)) { // default usd
-                        Log.d("WalletFragment", "currency index out of bounds "+mCurrencyIndex);
-                        mCurrencyIndex = currencyNumbers.length - 1;
-                    }
+                    mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
                 }
             }
         }
@@ -303,7 +291,7 @@ public class WalletFragment extends Fragment {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
         mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis));
-        mButtonFiatBalance.setText(mCoreAPI.conversion(totalSatoshis, false));
+        mButtonFiatBalance.setText(mCoreAPI.FormatString(totalSatoshis, false));
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
