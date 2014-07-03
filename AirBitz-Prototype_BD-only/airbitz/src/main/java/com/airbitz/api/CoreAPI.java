@@ -4,8 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.activities.SignUpActivity;
-import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
 import java.util.ArrayList;
@@ -136,12 +135,20 @@ public class CoreAPI {
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
-    public boolean createWallet(String walletName, String username, String password, int dollarNum) {
+    public boolean createWallet(String walletName, int currencyNum) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-        tABC_CC result = core.ABC_CreateWallet(username, password, walletName, dollarNum, 0, null, pVoid, pError);
+        tABC_CC result = core.ABC_CreateWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                walletName, currencyNum, 0, null, pVoid, pError);
+        return result == tABC_CC.ABC_CC_Ok;
+    }
+
+    public boolean renameWallet(Wallet wallet) {
+        tABC_Error Error = new tABC_Error();
+        tABC_CC result = core.ABC_RenameWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), wallet.getName(), Error);
         return result == tABC_CC.ABC_CC_Ok;
     }
 
@@ -251,31 +258,41 @@ public class CoreAPI {
     }
 
     //************ Settings handling
+    private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
+    private String[] mFauxCurrencyDenomination = {"$", "CNY", "CUP", "EUR", "GBP", "MXN", "$"};
+    private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
 
-    public String[] getCurrencies() {
-        String[] arrayCurrencies = null;
-        tABC_Error Error = new tABC_Error();
+    public int[] getCurrencyNumbers() {
+        return mFauxCurrencyNumbers;
+    }
 
-        SWIGTYPE_p_int pCount = core.new_intp();
+    public String[] getCurrencyAcronyms() {
+        //TEMP fix
+        return mFauxCurrencyAcronyms;
 
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
-
-        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
-
-        if (result == tABC_CC.ABC_CC_Ok) {
-            int mCount = core.intp_value(pCount);
-            arrayCurrencies = new String[mCount];
-
-            long start = core.longp_value(lp);
-
-            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
-            {
-                tABC_Currency txd = new Currency(start + i * 4);
-                arrayCurrencies[i] = txd.getSzCode();
-            }
-        }
-        return arrayCurrencies;
+//        String[] arrayCurrencies = null;
+//        tABC_Error Error = new tABC_Error();
+//
+//        SWIGTYPE_p_int pCount = core.new_intp();
+//
+//        SWIGTYPE_p_long lp = core.new_longp();
+//        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
+//
+//        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
+//
+//        if (result == tABC_CC.ABC_CC_Ok) {
+//            int mCount = core.intp_value(pCount);
+//            arrayCurrencies = new String[mCount];
+//
+//            long start = core.longp_value(lp);
+//
+//            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
+//            {
+//                tABC_Currency txd = new Currency(start + i * 4);
+//                arrayCurrencies[i] = txd.getSzCode();
+//            }
+//        }
+//        return arrayCurrencies;
     }
 
     private class Currency extends tABC_Currency {
@@ -448,10 +465,10 @@ public class CoreAPI {
 
 
     //************ Transaction handling
-    public AccountTransaction getTransaction(String walletUUID, String szTxId)
+    public Transaction getTransaction(String walletUUID, String szTxId)
     {
         tABC_Error Error = new tABC_Error();
-        AccountTransaction transaction = null;
+        Transaction transaction = null;
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_TxInfo pTxInfo = core.longp_to_ppTxInfo(lp);
@@ -467,7 +484,7 @@ public class CoreAPI {
         if (result==tABC_CC.ABC_CC_Ok)
         {
             TxInfo txInfo = new TxInfo(core.longp_value(lp));
-            transaction = new AccountTransaction();
+            transaction = new Transaction();
             setTransaction(wallet, transaction, txInfo);
             core.ABC_FreeTransaction(txInfo);
         }
@@ -478,8 +495,8 @@ public class CoreAPI {
         return transaction;
     }
 
-    public List<AccountTransaction> loadTransactions(Wallet wallet) {
-        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
+    public List<Transaction> loadTransactions(Wallet wallet) {
+        List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int pCount = core.new_intp();
@@ -502,7 +519,7 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-                AccountTransaction in = new AccountTransaction(wallet.getUUID(), txi.getID(),
+                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
                         txi.getCreationTime(), wallet.getName(),
                         wallet.getAmount(), // need address?
                         wallet.getAmount(), // need category?
@@ -512,7 +529,7 @@ public class CoreAPI {
                 listTransactions.add(in);
             }
             long bal = 0;
-            for (AccountTransaction at : listTransactions)
+            for (Transaction at : listTransactions)
             {
                 bal += at.getAmountSatoshi();
                 at.setBalance(bal);
@@ -631,7 +648,7 @@ public class CoreAPI {
     }
 
 
-    public void setTransaction(Wallet wallet, AccountTransaction transaction, TxInfo txInfo) {
+    public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
@@ -655,8 +672,15 @@ public class CoreAPI {
 
     }
 
-    public List<AccountTransaction> searchTransactionsIn(Wallet wallet, String searchText) {
-        List<AccountTransaction> listTransactions = new ArrayList<AccountTransaction>();
+    public boolean SaveTransaction(Transaction transaction, tABC_TxDetails details) {
+        tABC_Error Error = new tABC_Error();
+        tABC_CC results = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                transaction.getWalletUUID(), transaction.getID(), details, Error);
+        return results==tABC_CC.ABC_CC_Ok;
+    }
+
+    public List<Transaction> searchTransactionsIn(Wallet wallet, String searchText) {
+        List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int pCount = core.new_intp();
@@ -678,7 +702,7 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-                AccountTransaction transaction = new AccountTransaction();
+                Transaction transaction = new Transaction();
                 setTransaction(wallet, transaction, txi);
                 listTransactions.add(transaction);
             }
@@ -691,7 +715,7 @@ public class CoreAPI {
         return listTransactions;
     }
 
-    public boolean storeTransaction(AccountTransaction transaction) {
+    public boolean storeTransaction(Transaction transaction) {
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -745,12 +769,17 @@ public class CoreAPI {
         return decimalPlaces;
     }
 
-    public int maxDecimalPlaces(String label) {
+    public int maxDecimalPlaces() {
         int decimalPlaces = 8;
-        if (label.contains("uBTC"))
-            decimalPlaces = 2;
-        else if (label.contains("mBTC"))
-            decimalPlaces = 5;
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination != null) {
+            String label = bitcoinDenomination.getSzLabel();
+            if (label.equals("uBTC"))
+                decimalPlaces = 2;
+            else if (label.contains("mBTC"))
+                decimalPlaces = 5;
+        }
         return decimalPlaces;
     }
 
@@ -791,9 +820,41 @@ public class CoreAPI {
         }
     }
 
+    public int SettingsCurrencyIndex() {
+        int index = -1;
+        tABC_AccountSettings settings = loadAccountSettings();
+        int currencyNum = settings.getCurrencyNum();
+        int[] currencyNumbers = getCurrencyNumbers();
 
-    public long denominationToSatoshi(String amount, int decimalPlaces) {
-        long parsedAmount;
+        for(int i=0; i<currencyNumbers.length; i++) {
+            if(currencyNumbers[i] == currencyNum)
+                index = i;
+        }
+        if((index==-1) || (index >= currencyNumbers.length)) { // default usd
+            Log.d("CoreAPI", "currency index out of bounds "+index);
+            index = currencyNumbers.length-1;
+        }
+        return index;
+    }
+
+    public String BitcoinDenominationLabel() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        return bitcoinDenomination.getSzLabel();
+    }
+
+    public String FiatCurrencySign() {
+        int index = SettingsCurrencyIndex();
+        return mFauxCurrencyDenomination[index];
+    }
+
+    public String FiatCurrencyAcronym() {
+        int index = SettingsCurrencyIndex();
+        return mFauxCurrencyAcronyms[index];
+    }
+
+    public long denominationToSatoshi(String amount) {
+        int decimalPlaces = maxDecimalPlaces();
         SWIGTYPE_p_int64_t out = core.new_int64_tp();
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(out);
 
@@ -806,24 +867,21 @@ public class CoreAPI {
         return core.longp_value(l);
     }
 
-    public String SatoshiToCurrencyString(long satoshi) {
-        String currency = conversion(satoshi, false);
+    public String ConversionString(long satoshi) {
+        String currency = FormatString(satoshi, false);
         String denominationLabel = "BTC";
         String currencyLabel = "USD";
         return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
 
-    public String conversion(long satoshi, boolean btc)
+    public String FormatString(long satoshi, boolean btc)
     {
         if (!btc)
         {
-            tABC_Error error = new tABC_Error();
-            SWIGTYPE_p_double currency = core.new_doublep();
+            tABC_AccountSettings settings = loadAccountSettings();
+            int currencyNumber = settings.getCurrencyNum();
 
-            long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    satoshi, SWIGTYPE_p_double.getCPtr(currency), SignUpActivity.DOLLAR_CURRENCY_NUMBER, tABC_Error.getCPtr(error));
-
-            return formatCurrency(core.doublep_value(currency));
+            return formatCurrency(SatoshiToCurrency(satoshi, currencyNumber));
         }
         else // currency
         {
@@ -937,7 +995,7 @@ public class CoreAPI {
         long mBalance;
         private int mCurrencyNum;
         private long mAttributes;
-        private List<AccountTransaction> mTransactions = null;
+        private List<Transaction> mTransactions = null;
 
         public WalletInfo(long pv) {
             super(pv, false);
@@ -967,7 +1025,7 @@ public class CoreAPI {
 
         public int getCurrencyNum() {return mCurrencyNum; }
 
-        public List<AccountTransaction> getTransactions() {return mTransactions; }
+        public List<Transaction> getTransactions() {return mTransactions; }
     }
 
     private class pLong extends SWIGTYPE_p_long {
@@ -979,8 +1037,8 @@ public class CoreAPI {
     /*
      * Account Transaction handling
      */
-    public static List<AccountTransaction> getTransactions(String walletName) {
-        List<AccountTransaction> list = new ArrayList<AccountTransaction>();
+    public static List<Transaction> getTransactions(String walletName) {
+        List<Transaction> list = new ArrayList<Transaction>();
         return list;
     }
 

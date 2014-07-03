@@ -1,7 +1,6 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,30 +8,38 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Transaction;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created on 2/13/14.
  */
-public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
+public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private Context mContext;
-    private boolean search;
+    private boolean mSearch;
+    private boolean mIsBitcoin;
+    private CoreAPI mCoreAPI;
 
-    private List<AccountTransaction> mListAccountTransaction;
+    private List<Transaction> mListTransaction;
 
-    public TransactionAdapter(Context context, List<AccountTransaction> listTransaction){
+    public TransactionAdapter(Context context, List<Transaction> listTransaction){
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
-        mListAccountTransaction = listTransaction;
+        mListTransaction = listTransaction;
+        mCoreAPI = CoreAPI.getApi();
     }
 
     public void setSearch(boolean isSearch){
-        search = isSearch;
+        mSearch = isSearch;
     }
+
+    public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -43,14 +50,22 @@ public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
         TextView debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
         TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
         TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
-        dateTextView.setText("Date text"); //mListAccountTransaction.get(position).getDate());
-        nameTextView.setText(mListAccountTransaction.get(position).getName());
-        creditAmountTextView.setText("Credit amount"); //mListAccountTransaction.get(position).getCreditAmount());
-        if(search){
-            debitAmountTextView.setText("$0.00");
+
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
+        dateTextView.setText(dateString);
+
+        nameTextView.setText(mListTransaction.get(position).getName());
+        long transactionSatoshis = mListTransaction.get(position).getAmountSatoshi();
+        if(mIsBitcoin) {
+            creditAmountTextView.setText(mCoreAPI.formatSatoshi(transactionSatoshis));
+        } else {
+            creditAmountTextView.setText(mCoreAPI.FormatString(transactionSatoshis, false));
+        }
+        if(mSearch){
+//            debitAmountTextView.setText("$0.00");
             confirmationsTextView.setText("None");
         }else {
-            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
+//            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
             confirmationsTextView.setText("2 confirmations");
         }
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
