@@ -155,6 +155,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        ((NavigationActivity)getActivity()).showNavBar();
 
 
         mCalculatorBrain = new CalculatorBrain();

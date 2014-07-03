@@ -9,7 +9,7 @@
     <dimen name="venue_list_full_height_275">112dp</dimen>
     <dimen name="venue_list_small_height_175">112dp</dimen>
     <dimen name="wallet_list_view_height">70dp</dimen>
-    <dimen name="transaction_list_view_height">11mm</dimen>
+    <dimen name="transaction_list_view_height">69.3dp</dimen>
 
     <dimen name="offset_height">20dp</dimen>
     <dimen name="new_height">135dp</dimen>
@@ -34,8 +34,8 @@
     <dimen name="text_size_h3">16sp</dimen>
     <dimen name="text_size_h4">14sp</dimen>
 
-    <dimen name="spinner_width_password">39mm</dimen>
-    <dimen name="drop_down_height">6mm</dimen>
+    <dimen name="spinner_width_password">245.7dp</dimen>
+    <dimen name="drop_down_height">38.7dp</dimen>
 
     <dimen name="negative_margin_popup">-27dp</dimen>
 
