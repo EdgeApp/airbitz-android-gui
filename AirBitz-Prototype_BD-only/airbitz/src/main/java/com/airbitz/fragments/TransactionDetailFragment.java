@@ -42,7 +42,7 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.SearchResult;
@@ -127,7 +127,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private ClipboardManager clipboard;
     private float mBTCtoUSDConversion = 450.0f;
 
-    private AccountTransaction mTransaction;
+    private Transaction mTransaction;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -140,7 +140,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-            String txId = bundle.getString(AccountTransaction.TXID);
+            String txId = bundle.getString(Transaction.TXID);
             if (walletUUID.isEmpty()) {
                 Log.d("TransactionDetailFragement", "no detail info");
             } else {

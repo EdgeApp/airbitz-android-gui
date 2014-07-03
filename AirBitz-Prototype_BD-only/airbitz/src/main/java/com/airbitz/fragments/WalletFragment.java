@@ -25,7 +25,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.models.AccountTransaction;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
@@ -84,7 +84,7 @@ public class WalletFragment extends Fragment {
 
     private TransactionAdapter mTransactionAdapter;
 
-    private List<AccountTransaction> mAccountTransactions;
+    private List<Transaction> mTransactions;
 
     private String mWalletName;
     private Wallet mWallet;
@@ -108,7 +108,7 @@ public class WalletFragment extends Fragment {
                 } else {
                     mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
-                    mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
+                    mTransactions = mCoreAPI.loadTransactions(mWallet);
                     tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
                     mFiatCurrencyNum = settings.getCurrencyNum();
                     int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
@@ -135,7 +135,7 @@ public class WalletFragment extends Fragment {
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
 
-        mTransactionAdapter = new TransactionAdapter(getActivity(), mAccountTransactions);
+        mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
 
         mSearchField = (ClearableEditText) view.findViewById(R.id.edittext_search);
 
@@ -169,7 +169,7 @@ public class WalletFragment extends Fragment {
         mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mAccountTransactions.size(), getActivity());
+        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
@@ -260,8 +260,8 @@ public class WalletFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle bundle = new Bundle();
                 bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
-                AccountTransaction trans = mAccountTransactions.get(i);
-                bundle.putString(AccountTransaction.TXID, trans.getID());
+                Transaction trans = mTransactions.get(i);
+                bundle.putString(Transaction.TXID, trans.getID());
                 Fragment fragment = new TransactionDetailFragment();
                 fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment);
@@ -299,7 +299,7 @@ public class WalletFragment extends Fragment {
     // Sum all wallets except for archived and show in total
     private void UpdateWalletTotalBalance() {
         long totalSatoshis = 0;
-        for(AccountTransaction transaction : mAccountTransactions) {
+        for(Transaction transaction : mTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
         mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis));
@@ -311,7 +311,7 @@ public class WalletFragment extends Fragment {
     }
 
 
-    private List<AccountTransaction> searchTransactions(String term) {
+    private List<Transaction> searchTransactions(String term) {
         return mCoreAPI.searchTransactionsIn(mWallet, term);
     }
 
@@ -323,14 +323,8 @@ public class WalletFragment extends Fragment {
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setImageResource(R.drawable.ico_btc_white);
-            for(AccountTransaction trans: mAccountTransactions){
-                try {
-                    trans.setAmountFiat(mCoreAPI.SatoshiToCurrency(trans.getBalance(), mWallet.getCurrencyNum()));
-                } catch (Exception e) {
-                    trans.setAmountFiat(0);
-                    e.printStackTrace();
-                }
-            }
+
+            mTransactionAdapter.setIsBitcoin(isBitcoin);
             mTransactionAdapter.notifyDataSetChanged();
         }else{
             rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
@@ -338,15 +332,9 @@ public class WalletFragment extends Fragment {
             mButtonMover.setText(mButtonFiatBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);
             mMoverType.setImageResource(R.drawable.ico_usd_white);
-            double conv = 0.1145;
-            for(AccountTransaction trans: mAccountTransactions){
-                try {
-                    trans.setAmountFiat(mCoreAPI.SatoshiToCurrency(trans.getBalance(), mWallet.getCurrencyNum()));
-                } catch (Exception e) {
-                    trans.setAmountFiat(0);
-                    e.printStackTrace();
-                }
-            }
+
+            mTransactionAdapter.setIsBitcoin(isBitcoin);
+            mTransactionAdapter.notifyDataSetChanged();
         }
     }
 }

@@ -3,8 +3,8 @@ package com.airbitz.models;
 /**
  * Created on 3/14/14.
  */
-public class AccountTransaction {
-    public static final String TXID = "com.airbitz.AccountTransaction.TXID";
+public class Transaction {
+    public static final String TXID = "com.airbitz.Transaction.TXID";
 
     private String mWalletUUID;
     private String mWalletName;
@@ -23,7 +23,7 @@ public class AccountTransaction {
     private long mABFees;
     private long mBalance;
 
-    public AccountTransaction() {
+    public Transaction() {
         mID = "";
         mWalletUUID = "";
         mWalletName = "";
@@ -34,8 +34,8 @@ public class AccountTransaction {
         mNotes = "";
     }
 
-    public AccountTransaction(String walletUUID, String id, long date, String name, String address, String category,
-                              String notes, String[] addresses) {
+    public Transaction(String walletUUID, String id, long date, String name, String address, String category,
+                       String notes, String[] addresses) {
         mWalletUUID = walletUUID;
         mID = id;
         mDate = date;
