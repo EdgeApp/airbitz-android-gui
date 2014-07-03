@@ -72,7 +72,7 @@ public class SignUpActivity extends Activity {
     private CreateAccountTask mAuthTask;
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
-    private CoreAPI mAPI;
+    private CoreAPI mCoreAPI;
 
 //    private GestureDetector mGestureDetector;
 
@@ -86,7 +86,7 @@ public class SignUpActivity extends Activity {
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
 
-        mAPI = CoreAPI.getApi();
+        mCoreAPI = CoreAPI.getApi();
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
 
         mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
@@ -338,7 +338,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mAPI.createWallet(walletName, mUsername, mPassword, DOLLAR_CURRENCY_NUMBER);
+            return mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);
         }
 
         @Override

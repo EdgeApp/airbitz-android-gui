@@ -17,7 +17,7 @@ public class Wallet {
     private int mCurrencyNum;
     private long mAttributes;
     private long mBalance;
-    private List<AccountTransaction> mTransactions;
+    private List<Transaction> mTransactions;
 
     private String mAmount = "";
 
@@ -30,7 +30,7 @@ public class Wallet {
         mBalance = balanceSatoshi;
     }
 
-    public Wallet(String name, long balance, List<AccountTransaction> list){
+    public Wallet(String name, long balance, List<Transaction> list){
         mName = name;
         mBalance = balance;
         mTransactions = list;
@@ -78,10 +78,10 @@ public class Wallet {
         return mAmount;
     }
 
-    public void setTransactions(List<AccountTransaction> list) {
+    public void setTransactions(List<Transaction> list) {
         mTransactions = list;
     }
-    public List<AccountTransaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return mTransactions;
     }
 }

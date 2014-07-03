@@ -31,9 +31,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.SignUpActivity;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -56,7 +56,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private Button mBitCoinBalanceButton;
-    private Button mDollarBalanceButton;
+    private Button mFiatBalanceButton;
     private Button mButtonMover;
     //private SeekBar mSeekBar;
 
@@ -85,8 +85,10 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private ImageButton mHelpButton;
     private ImageButton mAddButton;
 
-    private ImageView moverCoin;
-    private ImageView moverType;
+    private ImageView mMoverCoin;
+    private ImageView mMoverType;
+    private ImageView mBottomCoin;
+    private ImageView mBottomType;
 
     private Bundle bundle;
 
@@ -100,8 +102,24 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
     private List<Wallet> mLatestWalletList;
     private List<Wallet> archivedWalletList;
 
-    private String[] currencyList;
+    private String[] mCurrencyList;
     private CoreAPI mCoreAPI;
+    private int mFiatCurrencyNum;
+    private int mCurrencyIndex;
+
+    //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
+    //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
+    public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
+    public static int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+            R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+            R.drawable.ico_usd_white, R.drawable.ico_usd_white};
+    public static int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
+            R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
+    public static int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
+            R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
+
     private AddWalletTask mAddWalletTask;
     private boolean fragmentsCreated = false;
 
@@ -118,13 +136,26 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             bundle.putBoolean(CREATE, false);
             buildFragments();
         }
+
+        tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
+        mFiatCurrencyNum = settings.getCurrencyNum();
+        int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
+        mCurrencyIndex = -1;
+        for(int i=0; i<currencyNumbers.length; i++) {
+            if(currencyNumbers[i] == mFiatCurrencyNum)
+                mCurrencyIndex = i;
+        }
+        if((mCurrencyIndex==-1) || (mCurrencyIndex > mCurrencyCoinDarkDrawables.length)) { // default usd
+            Log.d("WalletsFragment", "currency index out of bounds "+mCurrencyIndex);
+            mCurrencyIndex = currencyNumbers.length - 1;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
-        currencyList = mCoreAPI.getCurrencies();
+        mCurrencyList = mCoreAPI.getCurrencyAcronyms();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -141,7 +172,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         spinnerLayout = (LinearLayout) view.findViewById(R.id.spinner_layout);
 
         mBitCoinBalanceButton = (Button) view.findViewById(R.id.back_button_top);
-        mDollarBalanceButton = (Button) view.findViewById(R.id.back_button_bottom);
+        mFiatBalanceButton = (Button) view.findViewById(R.id.back_button_bottom);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
 
         topSwitch = (RelativeLayout) view.findViewById(R.id.top_switch);
@@ -152,8 +183,10 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mAddButton = (ImageButton) view.findViewById(R.id.button_add);
 
-        moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        moverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        mMoverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
+        mBottomType = (ImageView) view.findViewById(R.id.bottom_type);
 
         walletsHeader = (TextView) view.findViewById(R.id.wallets_header);
         archiveHeader = (TextView) view.findViewById(R.id.archive_header);
@@ -170,13 +203,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             public void onClick(View view) {
                 Common.showHelpInfo(getActivity(), "Wallet Info", "Wallet info description");
                 mBitCoinBalanceButton.setEnabled(false);
-                mDollarBalanceButton.setEnabled(false);
+                mFiatBalanceButton.setEnabled(false);
                 mButtonMover.setEnabled(false);
                 mBitCoinBalanceButton.setClickable(false);
-                mDollarBalanceButton.setClickable(false);
+                mFiatBalanceButton.setClickable(false);
                 mButtonMover.setClickable(false);
                 mBitCoinBalanceButton.setFocusable(false);
-                mDollarBalanceButton.setFocusable(false);
+                mFiatBalanceButton.setFocusable(false);
                 mButtonMover.setFocusable(false);
             }
         });
@@ -189,7 +222,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 mOnBitcoinMode = true;
             }
         });
-        mDollarBalanceButton.setOnClickListener(new View.OnClickListener() {
+        mFiatBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switchBarInfo(false);
@@ -228,27 +261,28 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    goDoneCancel(0);
+                    goDone();
                     return true;
                 }
                 return false;
             }
         });
 
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyList);
-        newWalletSpinner.setSelection(1);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mCurrencyList);
+
+//        newWalletSpinner.setSelection(0);
 
         newWalletSpinner.setAdapter(dataAdapter);
 
         newWalletSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     onlineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
                     offlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
                     spinnerLayout.setVisibility(View.INVISIBLE);
                     nameEditText.setVisibility(View.INVISIBLE);
-                }else{
+                } else {
                     onlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
                     offlineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
                     spinnerLayout.setVisibility(View.VISIBLE);
@@ -260,14 +294,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goDoneCancel(0);
+                goDone();
             }
         });
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goDoneCancel(1);
+                goCancel();
             }
         });
 
@@ -279,7 +313,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         mLatestWalletListView.setAdapter(mLatestWalletAdapter);
         mLatestWalletListView.setWalletList(mLatestWalletList);
         mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mLatestWalletListView.setHeaders(walletsHeader,archiveHeader);
+        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
         mLatestWalletListView.setArchivedList(archivedWalletList);
         mLatestWalletListView.setArchiveClosed(archiveClosed);
         mLatestWalletListView.setOnListReorderedListener(this);
@@ -288,7 +322,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mDollarBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mFiatBalanceButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonMover.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         archiveHeader.setOnClickListener(new View.OnClickListener() {
@@ -323,10 +357,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                if(a.getList().get(i).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && a.getList().get(i).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                Wallet wallet = a.getList().get(i);
+                if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
                     showWalletFragment(a.getList().get(i).getName());
-                }else if(a.getList().get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
-                    int pos = a.getPosition(a.getList().get(i));
+                }else if(wallet.isArchiveHeader()){
+                    int pos = a.getPosition(wallet);
                     //a.switchCloseAfterArchive(pos);
                     System.out.println("Map Sizes before: " +a.getMapSize()+" vs " + mLatestWalletList.size());
                     if(archiveClosed){
@@ -362,7 +397,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         return view;
     }
 
-    // Sum all wallets except for archived
+    // Sum all wallets except for archived and show in total
     private void UpdateBalances() {
         long totalSatoshis = 0;
         for(Wallet wallet : mLatestWalletList) {
@@ -370,8 +405,11 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 totalSatoshis+=wallet.getBalance();
         }
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis));
-        mDollarBalanceButton.setText(mCoreAPI.SatoshiToCurrencyString(totalSatoshis));
-        //TODO update icons for currency
+        mFiatBalanceButton.setText(mCoreAPI.FormatString(totalSatoshis, false));
+        switchBarInfo(mOnBitcoinMode);
+
+        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
+        mBottomType.setImageResource(mCurrencyTypeDarkDrawables[mCurrencyIndex]);
     }
 
     private void switchBarInfo(boolean isBitcoin){
@@ -380,17 +418,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
             rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mBitCoinBalanceButton.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            moverType.setImageResource(R.drawable.ico_btc_white);
-            double conv = 8.7544;
-            for(Wallet trans: mLatestWalletList){
-                if(trans.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && trans.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            mMoverType.setImageResource(R.drawable.ico_btc_white);
+            for(Wallet wallet: mLatestWalletList){
+                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        double item = Double.parseDouble(trans.getAmount().substring(1)) * conv;
-                        String amount = String.format("B%.3f", item);
-                        trans.setAmount(amount);
+                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
-                        trans.setAmount("0");
+                        wallet.setAmount("0");
                         e.printStackTrace();
                     }
                 }
@@ -399,16 +434,14 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }else{
             rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
             switchable.setLayoutParams(rLP);
-            mButtonMover.setText(mDollarBalanceButton.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
-            moverType.setImageResource(R.drawable.ico_usd_white);
+            mButtonMover.setText(mFiatBalanceButton.getText());
+            mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
+            mMoverType.setImageResource(mCurrencyTypeWhiteDrawables[mCurrencyIndex]);
             double conv = 0.1145;
             for(Wallet wallet: mLatestWalletList){
-                if(wallet.getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {//TODO ALERT
+                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        double item = wallet.getBalance(); //Double.parseDouble(wallet.getAmount().substring(1)) * conv;
-                        String amount = String.format("$%.3f", item);
-                        wallet.setAmount(amount);
+                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();
@@ -477,7 +510,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                break;
             case CURRENCY:
                 //onProgressChanged(mSeekBar, 0, true);
-                mButtonMover.setText(mDollarBalanceButton.getText());
+                mButtonMover.setText(mFiatBalanceButton.getText());
                 String left = "ico_coin_"+mCurrencyResourceString+"_white";
                 String right = "ico_"+mCurrencyResourceString+"_white";
                 int leftID = getResources().getIdentifier(left,"drawable",getActivity().getPackageName());
@@ -491,9 +524,9 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         }
     }
 
-    public void addNewWallet(String name){
+    public void addNewWallet(String name, int currencyNum){
         if(AirbitzApplication.isLoggedIn()) {
-            mAddWalletTask = new AddWalletTask(name, AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+            mAddWalletTask = new AddWalletTask(name, currencyNum);
             mAddWalletTask.execute((Void) null);
         } else {
             Log.d("WalletsFragment", "not logged in");
@@ -520,12 +553,12 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
      */
     public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mWalletName, mUsername, mPassword;
+        private final String mWalletName;
+        private final int mCurrencyNum;
 
-        AddWalletTask(String walletName, String username, String password) {
+        AddWalletTask(String walletName, int currencyNum) {
             mWalletName = walletName;
-            mUsername = username;
-            mPassword = password;
+            mCurrencyNum = currencyNum;
         }
 
         @Override
@@ -535,7 +568,7 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.createWallet(mWalletName, mUsername, mPassword, SignUpActivity.DOLLAR_CURRENCY_NUMBER);
+            return mCoreAPI.createWallet(mWalletName, mCurrencyNum);
         }
 
         @Override
@@ -592,20 +625,16 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
         alertDialog.show();*/
     }
 
-    private void goDoneCancel(int choice){
-        if(choice == 0){
+    private void goDone(){
             if(!nameEditText.getText().toString().isEmpty()) {
                 if (!newWalletSwitch.isChecked()) {
-                    if (mOnBitcoinMode) {
-                        addNewWallet(nameEditText.getText().toString());
-                    } else {
-                        addNewWallet(nameEditText.getText().toString());
-                    }
+                    int[] nums = mCoreAPI.getCurrencyNumbers();
+                    addNewWallet(nameEditText.getText().toString(), nums[newWalletSpinner.getSelectedItemPosition()]);
                 } else {
                     ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment());
                 }
                 nameEditText.setText("");
-                newWalletSpinner.setSelection(1);
+//                newWalletSpinner.setSelection(1);
                 onlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
                 offlineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
                 nameEditText.setHint("Name your wallet");
@@ -613,13 +642,13 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 newWalletSwitch.setChecked(false);
                 newWalletLayout.setVisibility(View.GONE);
                 mBitCoinBalanceButton.setEnabled(true);
-                mDollarBalanceButton.setEnabled(true);
+                mFiatBalanceButton.setEnabled(true);
                 mButtonMover.setEnabled(true);
                 mBitCoinBalanceButton.setClickable(true);
-                mDollarBalanceButton.setClickable(true);
+                mFiatBalanceButton.setClickable(true);
                 mButtonMover.setClickable(true);
                 mBitCoinBalanceButton.setFocusable(true);
-                mDollarBalanceButton.setFocusable(true);
+                mFiatBalanceButton.setFocusable(true);
                 mButtonMover.setFocusable(true);
                 if(nameEditText.hasFocus()){
                     final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -629,27 +658,28 @@ public class WalletsFragment extends Fragment implements SeekBar.OnSeekBarChange
                 nameEditText.setHint("Wallet Name Required");
                 nameEditText.setHintTextColor(getResources().getColor(R.color.red));
             }
-        }else if(choice == 1){
-            nameEditText.setText("");
-            newWalletSpinner.setSelection(1);
-            onlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
-            offlineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
-            nameEditText.setHint("Name your wallet");
-            newWalletSwitch.setChecked(false);
-            newWalletLayout.setVisibility(View.GONE);
-            mBitCoinBalanceButton.setEnabled(true);
-            mDollarBalanceButton.setEnabled(true);
-            mButtonMover.setEnabled(true);
-            mBitCoinBalanceButton.setClickable(true);
-            mDollarBalanceButton.setClickable(true);
-            mButtonMover.setClickable(true);
-            mBitCoinBalanceButton.setFocusable(true);
-            mDollarBalanceButton.setFocusable(true);
-            mButtonMover.setFocusable(true);
-            if(nameEditText.hasFocus()){
-                final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-            }
+    }
+
+    private void goCancel() { //CANCEL
+        nameEditText.setText("");
+//            newWalletSpinner.setSelection(1);
+        onlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
+        offlineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
+        nameEditText.setHint("Name your wallet");
+        newWalletSwitch.setChecked(false);
+        newWalletLayout.setVisibility(View.GONE);
+        mBitCoinBalanceButton.setEnabled(true);
+        mFiatBalanceButton.setEnabled(true);
+        mButtonMover.setEnabled(true);
+        mBitCoinBalanceButton.setClickable(true);
+        mFiatBalanceButton.setClickable(true);
+        mButtonMover.setClickable(true);
+        mBitCoinBalanceButton.setFocusable(true);
+        mFiatBalanceButton.setFocusable(true);
+        mButtonMover.setFocusable(true);
+        if(nameEditText.hasFocus()){
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
     }
 
