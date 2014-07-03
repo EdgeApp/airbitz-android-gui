@@ -867,11 +867,11 @@ public class CoreAPI {
         return core.longp_value(l);
     }
 
-    public String ConversionString(long satoshi) {
-        String currency = FormatString(satoshi, false);
-        String denominationLabel = "BTC";
-        String currencyLabel = "USD";
-        return "1.00 " + denominationLabel + " = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
+    public String BTCtoFiatStringConversion() {
+        String currency = FormatString(100000000, false);
+        int index = SettingsCurrencyIndex();
+        String currencyLabel = mFauxCurrencyAcronyms[index];
+        return "1.00 BTC = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
     }
 
     public String FormatString(long satoshi, boolean btc)
