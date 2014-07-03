@@ -45,7 +45,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private View mView;
     private EditText mBitcoinField;
-    private EditText mDollarField;
+    private EditText mFiatField;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -97,9 +97,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private float mBTCtoUSDConversion = 600.0f;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -138,7 +141,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
 
         mBitcoinField = (EditText) view.findViewById(R.id.edittext_btc);
-        mDollarField = (EditText) view.findViewById(R.id.edittext_dollar);
+        mFiatField = (EditText) view.findViewById(R.id.edittext_dollar);
 
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
@@ -165,7 +168,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mDollarField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mFiatField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +221,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 Bundle bundle = new Bundle();
                 bundle.putString(Wallet.WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
                 bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
-                bundle.putString(FIAT_VALUE, mDollarField.getText().toString());
+                bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(frag);
             }
@@ -248,7 +251,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         });
 
 
-        mDollarField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -266,8 +269,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
-        mDollarField.setOnClickListener(new View.OnClickListener() {
+        mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCustomKeyboard(view);
@@ -287,7 +289,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         });
 
 
-        mDollarField.setOnTouchListener(new View.OnTouchListener() {
+        mFiatField.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
@@ -312,6 +314,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
+
+        mConverterTextView.setText(mCoreAPI.BTCtoFiatStringConversion());
 
         return view;
     }
@@ -415,7 +419,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             display.setText(mDF.format(mCalculatorBrain.getResult()));
                 if(buttonTag.equals("=")) {
                     if(display.equals(mBitcoinField)) {
-                        mDollarField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
+                        mFiatField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
                     } else {
                         mBitcoinField.setText(mDF.format(getBTCfromUSD(mCalculatorBrain.getResult())));
                     }
@@ -538,7 +542,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 //                display.setText(mDF.format(mCalculatorBrain.getResult()));
 //                if(s.equals("=")) {
 //                    if(display.equals(mBitcoinField)) {
-//                        mDollarField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
+//                        mFiatField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
 //                    } else {
 //                        mBitcoinField.setText(mDF.format(getBTCfromUSD(mCalculatorBrain.getResult())));
 //                    }
