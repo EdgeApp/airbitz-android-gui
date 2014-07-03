@@ -328,17 +328,23 @@ public class CoreAPI {
     }
 
     public tABC_AccountSettings loadAccountSettings() {
+        tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
         SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
 
-        core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        result = core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 pAccountSettings, Error);
 
-        tABC_AccountSettings coreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
-        return coreSettings;
+        if(result==tABC_CC.ABC_CC_Ok) {
+            tABC_AccountSettings coreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
+            return coreSettings;
+        } else {
+            String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
+            Log.d("CoreAPI", "Load settings failed - "+message);
+        }
+        return null;
     }
 
     public void saveAccountSettings(tABC_AccountSettings settings) {
