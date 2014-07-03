@@ -91,7 +91,6 @@ public class SettingFragment extends Fragment {
     private String[] mCurrencyItems;
     private int mCurrencyNum;
     private CoreAPI.ExchangeRateSource[] mExchanges;
-    private static final int[] ARRAY_CURRENCY_NUMS = {840, 124, 978, 484, 156};
     private static final String[] ARRAY_LANG_CHOICES = {"English", "Spanish", "German", "French", "Italian", "Chinese", "Portuguese", "Japanese"};
     private static final String[] ARRAY_LANG_CODES = {"en", "es", "de", "fr", "it", "zh", "pt", "ja"};
 
@@ -311,7 +310,7 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setText(language);
 
         // Default Currency
-        mCurrencyItems = mCoreAPI.getCurrencyAbbreviations();
+        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
         int index = settings.getCurrencyNum();
         if (mCurrencyItems!=null && index >=0 && index <mCurrencyItems.length)
         {
@@ -511,7 +510,7 @@ public class SettingFragment extends Fragment {
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
                     denomination.setSatoshi(amt);
-                } else if(mmBitcoinButton.isChecked()) {
+                } else if(muBitcoinButton.isChecked()) {
                     denomination.setSzLabel("uBTC");
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
