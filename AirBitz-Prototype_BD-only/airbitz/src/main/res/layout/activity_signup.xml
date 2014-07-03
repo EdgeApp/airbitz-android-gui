@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MergeRootFrame"
-    android:animateLayoutChanges="true"
-    android:background="@drawable/bg_app">
+    android:animateLayoutChanges="true">
 
     <!-- Login progress -->
     <ProgressBar
