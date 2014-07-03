@@ -95,8 +95,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public final static int CodeConv = 55011; // Conversions like round or degrees
     public final static int CodeTrig = 55012;
 
-    private float mBTCtoUSDConversion = 600.0f;
-
     private CoreAPI mCoreAPI;
 
     @Override
@@ -419,9 +417,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             display.setText(mDF.format(mCalculatorBrain.getResult()));
                 if(buttonTag.equals("=")) {
                     if(display.equals(mBitcoinField)) {
-                        mFiatField.setText(mDF.format(getUSDfromBTC(mCalculatorBrain.getResult())));
+                        mFiatField.setText(mCoreAPI.formatCurrency(mCalculatorBrain.getResult()));
                     } else {
-                        mBitcoinField.setText(mDF.format(getBTCfromUSD(mCalculatorBrain.getResult())));
+                        mBitcoinField.setText(mCoreAPI.formatSatoshi((long) mCalculatorBrain.getResult(), false));
                     }
                 }
         }
@@ -450,7 +448,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         CoreAPI api = CoreAPI.getApi();
         List<Wallet> tempWallets = api.loadWallets();
         for(Wallet wallet: tempWallets){
-            if(wallet.getName()!="xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && wallet.getName()!="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")
+            if(!wallet.isHeader() && !wallet.isArchiveHeader())
             mWalletList.add(wallet.getName());
         }
     }
@@ -462,14 +460,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 //            this.finish();
 //    }
 
-    private double getUSDfromBTC(double value) {
-        return value*mBTCtoUSDConversion;
-    }
-
-    private double getBTCfromUSD(double value) {
-        return value/mBTCtoUSDConversion;
-    }
-
+//    private double getUSDfromBTC(double value) {
+//        return value*mBTCtoUSDConversion;
+//    }
+//
+//    private double getBTCfromUSD(double value) {
+//        return value/mBTCtoUSDConversion;
+//    }
+//
     public void hideCustomKeyboard() {
         ((NavigationActivity) getActivity()).hideCalculator();
     }

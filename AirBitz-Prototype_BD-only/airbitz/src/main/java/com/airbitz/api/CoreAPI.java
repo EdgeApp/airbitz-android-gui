@@ -142,7 +142,12 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_CreateWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 walletName, currencyNum, 0, null, pVoid, pError);
-        return result == tABC_CC.ABC_CC_Ok;
+        if(result==tABC_CC.ABC_CC_Ok) {
+            return true;
+        } else {
+            Log.d("CoreAPI", "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
+            return result == tABC_CC.ABC_CC_Ok;
+        }
     }
 
     public boolean renameWallet(Wallet wallet) {
