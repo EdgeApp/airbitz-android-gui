@@ -57,8 +57,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     private boolean keyBoardUp = false;
 
-    private Fragment frag;
-
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
@@ -239,7 +237,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void popFragment() {
-        frag = mNavStacks[mNavFragmentId].pop();
+        mNavStacks[mNavFragmentId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(mNavStacks[mNavFragmentId].size()!=0){
             transaction.setCustomAnimations(R.anim.nothing,R.anim.slide_out_right,R.anim.nothing,R.anim.slide_out_right);

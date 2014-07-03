@@ -113,7 +113,6 @@ public class SignUpActivity extends Activity {
         mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         ImageButton mBackButton = (ImageButton) findViewById(R.id.activity_signup_back_button);
-        ImageButton mHelpButton = (ImageButton) findViewById(R.id.activity_signup_help_button);
 
         mSwitchImage1 = (ImageView) findViewById(R.id.activity_signup_switch_image_1);
         mSwitchImage2 = (ImageView) findViewById(R.id.activity_signup_switch_image_2);
@@ -141,12 +140,6 @@ public class SignUpActivity extends Activity {
             public void onClick(View view) {
                 finish();
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
-            }
-        });
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Common.showHelpInfo(SignUpActivity.this, "Info", "Business directory info");
             }
         });
 
@@ -273,7 +266,7 @@ public class SignUpActivity extends Activity {
     }
 
     private boolean goodPin(String pin) {
-        return pin.matches("[0-9]+") && pin.length()==3;
+        return pin.matches("[0-9]+") && pin.length()==4;
     }
 
     /**
@@ -484,6 +477,12 @@ public class SignUpActivity extends Activity {
 
     @Override
     public void onBackPressed(){
+        View activityRootView = findViewById(R.id.activity_signup_container_layout);
+        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+        if(heightDiff >= 100){
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
     }

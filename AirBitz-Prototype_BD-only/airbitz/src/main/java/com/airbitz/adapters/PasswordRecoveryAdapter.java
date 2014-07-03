@@ -49,7 +49,7 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_question);
         textView.setText(mQuestions.get(position));
-        textView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         textView.setSingleLine(false);
         textView.setHeight((int)mContext.getResources().getDimension(R.dimen.drop_down_height));
         return convertView;
@@ -62,7 +62,7 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_question);
         textView.setText(mQuestions.get(position));
-        textView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         textView.setSingleLine(false);
         return convertView;
     }
