@@ -58,7 +58,6 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +75,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TextView mTitleTextView;
     private EditText mNameEditText;
     private TextView mBitcoinValueTextview;
+    private TextView mFeeTextview;
     private TextView mNoteTextView;
 
     private LinearLayout mDummyFocus;
@@ -116,7 +116,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     private List<String> mCategories;
 
-    private boolean fromSendRequest = false;
+    private boolean mFromSend = false;
 
     private ListView mSearchListView;
     private ListView mCategoryListView;
@@ -142,7 +142,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         bundle = getArguments();
         if(bundle!=null) {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE)=="SEND") {
-                fromSendRequest = true;
+                mFromSend = true;
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
@@ -181,6 +181,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNameEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
         mNoteTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_notes);
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
+        mFeeTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_fee_value);
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
@@ -581,7 +582,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         currentType = defaultCat.toString()+":";
 
-        if(fromSendRequest){
+        if(mFromSend){
             mNameEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -606,12 +607,17 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
         mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
 
-//        String feeFormatted = "";
-//        if (transaction.getAmountSatoshi() < 0)
-//        {
-//            feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
-//        }
-//        labelFee.text = feeFormatted;
+        if(mFromSend) {
+            String feeFormatted = "";
+            if (transaction.getAmountSatoshi() < 0)
+            {
+                feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
+            }
+            mFeeTextview.setText(feeFormatted);
+            mFeeTextview.setVisibility(View.VISIBLE);
+        } else {
+            mFeeTextview.setVisibility(View.INVISIBLE);
+        }
 
     }
 
