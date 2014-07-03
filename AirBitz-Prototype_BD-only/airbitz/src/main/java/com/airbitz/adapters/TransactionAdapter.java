@@ -12,6 +12,7 @@ import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.AccountTransaction;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +44,8 @@ public class TransactionAdapter extends ArrayAdapter<AccountTransaction> {
         TextView debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
         TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
         TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
-        dateTextView.setText("Date text"); //mListAccountTransaction.get(position).getDate());
+
+        dateTextView.setText(new Date(mListAccountTransaction.get(position).getDate()).toString());
         nameTextView.setText(mListAccountTransaction.get(position).getName());
         creditAmountTextView.setText("Credit amount"); //mListAccountTransaction.get(position).getCreditAmount());
         if(search){

@@ -24,6 +24,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.AccountTransaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
@@ -55,8 +56,10 @@ public class WalletFragment extends Fragment {
 
     private TextView mTitleTextView;
 
-    private ImageView moverCoin;
-    private ImageView moverType;
+    private ImageView mMoverCoin;
+    private ImageView mMoverType;
+    private ImageView mBottomCoin;
+    private ImageView mBottomType;
 
     private RelativeLayout exportLayout;
     private LinearLayout sendRequestLayout;
@@ -66,7 +69,7 @@ public class WalletFragment extends Fragment {
     private ScrollView mScrollView;
 
     private Button mButtonBitcoinBalance;
-    private Button mButtonDollarBalance;
+    private Button mButtonFiatBalance;
     private Button mButtonMover;
 
     private RelativeLayout switchable;
@@ -86,6 +89,8 @@ public class WalletFragment extends Fragment {
     private String mWalletName;
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
+    private int mFiatCurrencyNum;
+    private int mCurrencyIndex;
 
 
     @Override
@@ -104,6 +109,18 @@ public class WalletFragment extends Fragment {
                     mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
                     mAccountTransactions = mCoreAPI.loadTransactions(mWallet);
+                    tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
+                    mFiatCurrencyNum = settings.getCurrencyNum();
+                    int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
+                    mCurrencyIndex = -1;
+                    for(int i=0; i<currencyNumbers.length; i++) {
+                        if(currencyNumbers[i] == mFiatCurrencyNum)
+                            mCurrencyIndex = i;
+                    }
+                    if((mCurrencyIndex==-1) || (mCurrencyIndex > WalletsFragment.mCurrencyCoinDarkDrawables.length)) { // default usd
+                        Log.d("WalletFragment", "currency index out of bounds "+mCurrencyIndex);
+                        mCurrencyIndex = currencyNumbers.length - 1;
+                    }
                 }
             }
         }
@@ -139,14 +156,16 @@ public class WalletFragment extends Fragment {
         switchable = (RelativeLayout) view.findViewById(R.id.switchable);
         switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
 
-        moverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        moverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        mMoverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
+        mBottomType = (ImageView) view.findViewById(R.id.bottom_type);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mButtonBitcoinBalance = (Button) view.findViewById(R.id.back_button_top);
-        mButtonDollarBalance = (Button) view.findViewById(R.id.back_button_bottom);
+        mButtonFiatBalance = (Button) view.findViewById(R.id.back_button_bottom);
         mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
@@ -155,25 +174,26 @@ public class WalletFragment extends Fragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mWalletNameButton.setText(mWalletName);
-        mButtonBitcoinBalance.setText(Double.toString(getWalletBalance()));
-        mButtonMover.setText(mButtonDollarBalance.getText());
-        mButtonDollarBalance.setText("$"+(Double.parseDouble(Double.toString(getWalletBalance()))));
-        mWalletNameButton.setOnClickListener(new View.OnClickListener() {
+
+        mWalletNameButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-//                mIntent = new Intent(getActivity(), WalletActivity.class);
-//                mIntent.putExtra(RequestActivity.CLASSNAME, "TransactionActivity");
-//                startActivity(mIntent);
-                // TODO this should show a Wallet name picker?
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    mWallet.setName(mWalletNameButton.getText().toString());
+                    mCoreAPI.renameWallet(mWallet);
+                }
             }
         });
+
         mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                }else{
+                } else {
                     switchContainer.setVisibility(View.GONE);
                     exportLayout.setVisibility(View.GONE);
                     sendRequestLayout.setVisibility(View.GONE);
@@ -192,7 +212,7 @@ public class WalletFragment extends Fragment {
                 mOnBitcoinMode = true;
             }
         });
-        mButtonDollarBalance.setOnClickListener(new View.OnClickListener() {
+        mButtonFiatBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switchBarInfo(false);
@@ -271,13 +291,25 @@ public class WalletFragment extends Fragment {
             }
         });
 
+        UpdateWalletTotalBalance();
+
         return view;
     }
 
-    // AirbitzAPI calls here
-    private double getWalletBalance() {
-        return mWallet.getBalance();
+    // Sum all wallets except for archived and show in total
+    private void UpdateWalletTotalBalance() {
+        long totalSatoshis = 0;
+        for(AccountTransaction transaction : mAccountTransactions) {
+                totalSatoshis+=transaction.getAmountSatoshi();
+        }
+        mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis));
+        mButtonFiatBalance.setText(mCoreAPI.conversion(totalSatoshis, false));
+        switchBarInfo(mOnBitcoinMode);
+
+        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
+        mBottomType.setImageResource(WalletsFragment.mCurrencyTypeDarkDrawables[mCurrencyIndex]);
     }
+
 
     private List<AccountTransaction> searchTransactions(String term) {
         return mCoreAPI.searchTransactionsIn(mWallet, term);
@@ -289,8 +321,8 @@ public class WalletFragment extends Fragment {
             rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mButtonBitcoinBalance.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            moverType.setImageResource(R.drawable.ico_btc_white);
+            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            mMoverType.setImageResource(R.drawable.ico_btc_white);
             for(AccountTransaction trans: mAccountTransactions){
                 try {
                     trans.setAmountFiat(mCoreAPI.SatoshiToCurrency(trans.getBalance(), mWallet.getCurrencyNum()));
@@ -303,9 +335,9 @@ public class WalletFragment extends Fragment {
         }else{
             rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
             switchable.setLayoutParams(rLP);
-            mButtonMover.setText(mButtonDollarBalance.getText());
-            moverCoin.setImageResource(R.drawable.ico_coin_usd_white);
-            moverType.setImageResource(R.drawable.ico_usd_white);
+            mButtonMover.setText(mButtonFiatBalance.getText());
+            mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);
+            mMoverType.setImageResource(R.drawable.ico_usd_white);
             double conv = 0.1145;
             for(AccountTransaction trans: mAccountTransactions){
                 try {
