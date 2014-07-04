@@ -27,13 +27,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.utils.Common;
 
 import java.util.regex.Pattern;
 
@@ -64,7 +62,7 @@ public class SignUpActivity extends Activity {
 
     private View mUserNameRedRingCover;
     private View mPinRedRingCover;
-    private View dummyFocus;
+    private View mDummyFocus;
 
 
     private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
@@ -73,7 +71,6 @@ public class SignUpActivity extends Activity {
     private CreateAccountTask mAuthTask;
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
-    private CoreAPI mCoreAPI;
 
 //    private GestureDetector mGestureDetector;
 
@@ -87,7 +84,6 @@ public class SignUpActivity extends Activity {
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
 
-        mCoreAPI = CoreAPI.getApi();
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
 
         mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
@@ -95,7 +91,7 @@ public class SignUpActivity extends Activity {
         mProgressView = findViewById(R.id.activity_signup_progressbar);
 
         mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
-        dummyFocus = findViewById(R.id.activity_signup_dummy_focus);
+        mDummyFocus = findViewById(R.id.activity_signup_dummy_focus);
 
         mUserNameEditText = (EditText) findViewById(R.id.activity_signup_username_edittext);
         mPasswordEditText = (EditText) findViewById(R.id.activity_signup_password_edittext);
@@ -445,7 +441,7 @@ public class SignUpActivity extends Activity {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            dummyFocus.requestFocus();
+            mDummyFocus.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.

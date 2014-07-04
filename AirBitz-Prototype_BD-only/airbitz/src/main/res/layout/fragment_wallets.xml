@@ -1,72 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_parent"
+    android:id="@+id/fragment_wallets_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
-    android:paddingBottom="2mm"
+    android:paddingBottom="12.6dp"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ListViewAnimations">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="7mm"
-        android:id="@+id/layout_header"
-        android:background="#40000000">
+        android:layout_height="44.1dp"
+        android:id="@+id/fragment_wallets_header_layout"
+        android:background="@drawable/bg_dark_header">
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:id="@+id/button_add"
-            android:padding="2mm"
+            android:id="@+id/fragment_wallets_add_button"
+            android:padding="12.6dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_add" />
+            android:src="@drawable/btn_add"
+            android:contentDescription="@string/string_add_button"/>
 
         <TextView
-            android:id="@+id/textview_title"
+            android:id="@+id/fragment_wallets_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wallets_title"
+            android:text="@string/fragment_wallets_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
 
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
-            android:id="@+id/button_help"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
+            android:id="@+id/fragment_wallets_help_button"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:padding="2mm"/>
+            android:padding="12.6dp"
+            android:contentDescription="@string/string_help_button"/>
 
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/layout_data"
+        android:id="@+id/fragment_wallets_data_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="2mm"
-        android:layout_marginLeft="2mm"
-        android:layout_below="@id/layout_header">
+        android:layout_marginRight="12.6dp"
+        android:layout_marginLeft="12.6dp"
+        android:layout_below="@id/fragment_wallets_header_layout">
 
         <TextView
-            android:id="@+id/textview_balance"
+            android:id="@+id/fragment_wallets_balance_textview"
             android:layout_width="wrap_content"
-            android:layout_height="10mm"
-            android:text="@string/wallets_balance_text"
+            android:layout_height="63dp"
+            android:text="@string/fragment_wallets_balance_text"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:textColor="@android:color/white"
@@ -79,14 +81,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_data"
-        android:layout_marginTop="2mm">
+        android:layout_below="@id/fragment_wallets_data_layout"
+        android:layout_marginTop="12.6dp">
 
         <com.airbitz.objects.DynamicListView
-            android:id="@+id/layout_listview"
+            android:id="@+id/fragment_wallets_listview"
             android:layout_width="match_parent"
-            android:layout_marginRight="2mm"
-            android:layout_marginLeft="2mm"
+            android:layout_marginRight="12.6dp"
+            android:layout_marginLeft="12.6dp"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -94,87 +96,89 @@
 
         <include layout="@layout/item_listview_wallets_header"
             android:layout_alignParentTop="true"
-            android:layout_height="7mm"
+            android:layout_height="44.1dp"
             android:layout_width="match_parent"
             android:visibility="gone"
-            android:layout_marginRight="2mm"
-            android:layout_marginLeft="2mm"
-            android:id="@+id/wallets_header"/>
+            android:layout_marginRight="12.6dp"
+            android:layout_marginLeft="12.6dp"
+            android:id="@+id/fragment_wallets_wallets_header"/>
         <include layout="@layout/item_listview_wallets_header"
-            android:layout_below="@id/wallets_header"
-            android:id="@+id/archive_header"
-            android:layout_height="7mm"
+            android:layout_below="@id/fragment_wallets_wallets_header"
+            android:id="@+id/fragment_wallets_archive_header"
+            android:layout_height="44.1dp"
             android:layout_width="match_parent"
             android:visibility="gone"
-            android:layout_marginRight="2mm"
-            android:layout_marginLeft="2mm"/>
+            android:layout_marginRight="12.6dp"
+            android:layout_marginLeft="12.6dp"/>
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30mm"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/layout_header"
-        android:background="#000099"
+        android:layout_below="@id/fragment_wallets_header_layout"
+        android:background="@drawable/bg_add_wallet"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:id="@+id/layout_new_wallet"
-        android:visibility="gone">
+        android:id="@+id/fragments_wallets_addwallet_layout"
+        android:visibility="visible">
         
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="5mm"
-            android:layout_margin="1.5mm"
-            android:id="@+id/name_edittext"
-            android:background="@drawable/bg_textfield"
+            android:layout_height="28.35dp"
+            android:layout_margin="9.45dp"
+            android:id="@+id/fragment_wallets_addwallet_name_edittext"
+            android:background="@drawable/bg_edittext"
             android:textColor="@android:color/white"
             android:textColorHint="#99DDDDDD"
             android:inputType="textVisiblePassword|textNoSuggestions"
-            android:hint="Name your wallet"
+            android:hint="@string/fragment_wallets_addwallet_name_hint"
             android:imeOptions="actionDone"
             android:textCursorDrawable="@drawable/bold_cursor_white"
             android:gravity="center_vertical"
-            android:textSize="11dp"
-            android:paddingLeft="1mm"/>
+            android:textSize="14dp"
+            android:paddingLeft="9.45dp"/>
 
         <LinearLayout
-            android:id="@+id/spinner_layout"
+            android:id="@+id/fragment_wallets_addwallet_currency_layout"
             android:layout_width="match_parent"
-            android:layout_height="4mm"
+            android:layout_height="25.2dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Currency:"
-                android:textSize="14dp"
+                android:text="@string/fragment_wallets_addwallet_currency_textview"
+                android:textSize="16dp"
                 android:gravity="center"
                 android:layout_weight="1"
                 android:textColor="@android:color/white"/>
 
             <Spinner
-                android:id="@+id/new_wallet_spinner"
+                android:id="@+id/fragment_wallets_addwallet_currency_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginRight="1.5mm"
+                android:layout_marginRight="12.6dp"
                 android:gravity="center"
                 android:background="@drawable/btn_trans_rounded_stretch"/>
 
-            </LinearLayout>
+        </LinearLayout>
 
+        <!-- OFFLINE/ONLINE WALLETS -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="10mm"
-            android:padding="3mm"
-            android:orientation="horizontal">
+            android:layout_height="63dp"
+            android:padding="18.9dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
-                android:id="@+id/online_textview"
+                android:id="@+id/fragment_wallets_addwallet_online_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="ONLINE"
+                android:text="@string/fragment_wallets_addwallet_online_textview"
                 android:gravity="center"
                 android:textSize="15dp"
                 android:layout_weight="1"
@@ -182,7 +186,7 @@
 
 
             <Switch
-                android:id="@+id/new_wallet_switch"
+                android:id="@+id/fragment_wallets_addwallet_onoff_switch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -193,10 +197,10 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/offline_textview"
+                android:id="@+id/fragment_wallets_addwallet_offline_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="OFFLINE"
+                android:text="@string/fragment_wallets_addwallet_offline_textview"
                 android:gravity="center"
                 android:textSize="15dp"
                 android:layout_weight="1"
@@ -204,28 +208,35 @@
 
             </LinearLayout>
 
+        <!--  -->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="6mm"
-            android:layout_marginBottom="2mm"
+            android:layout_height="37.8dp"
+            android:layout_marginBottom="12.6dp"
+            android:layout_marginTop="12.6dp"
             android:gravity="center">
 
                 <Button
-                    android:id="@+id/button_cancel"
-                    android:layout_width="22mm"
+                    android:id="@+id/fragment_wallets_addwallet_cancel_button"
+                    android:layout_width="138.6dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="1mm"
+                    android:layout_marginRight="6.3dp"
                     android:background="@drawable/btn_orange"
-                    android:text="Cancel"
+                    android:text="@string/string_cancel"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
                     android:textColor="#FFFFFF"/>
 
                 <Button
-                    android:id="@+id/button_done"
-                    android:layout_width="22mm"
+                    android:id="@+id/fragment_wallets_addwallet_done_button"
+                    android:layout_width="138.6dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="1mm"
+                    android:layout_marginLeft="6.3dp"
                     android:background="@drawable/btn_green"
-                    android:text="Done"
+                    android:text="@string/string_done"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
                     android:textColor="#FFFFFF"/>
 
 
