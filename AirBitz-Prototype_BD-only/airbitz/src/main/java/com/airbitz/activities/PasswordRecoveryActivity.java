@@ -478,6 +478,7 @@ public class PasswordRecoveryActivity extends Activity {
         private String chosenQuestion = "";
         private int mCharLimit = 0;
         private Spinner mSpinner;
+        private Button mCover;
         private EditText mText;
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
