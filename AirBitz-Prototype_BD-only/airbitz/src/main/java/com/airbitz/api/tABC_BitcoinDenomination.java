@@ -35,12 +35,12 @@ public class tABC_BitcoinDenomination {
     }
   }
 
-  public void setSzLabel(String value) {
-    coreJNI.tABC_BitcoinDenomination_szLabel_set(swigCPtr, this, value);
+  public void setDenominationType(int value) {
+    coreJNI.tABC_BitcoinDenomination_denominationType_set(swigCPtr, this, value);
   }
 
-  public String getSzLabel() {
-    return coreJNI.tABC_BitcoinDenomination_szLabel_get(swigCPtr, this);
+  public int getDenominationType() {
+    return coreJNI.tABC_BitcoinDenomination_denominationType_get(swigCPtr, this);
   }
 
   public void setSatoshi(SWIGTYPE_p_int64_t value) {

@@ -32,6 +32,9 @@ public class coreJNI {
   public final static native int ABC_MAX_STRING_LENGTH_get();
   public final static native int ABC_BITCOIN_DECIMAL_PLACES_get();
   public final static native int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS_get();
+  public final static native int ABC_DENOMINATION_BTC_get();
+  public final static native int ABC_DENOMINATION_MBTC_get();
+  public final static native int ABC_DENOMINATION_UBTC_get();
   public final static native int NETWORK_FAKE_get();
   public final static native int ABC_CC_Ok_get();
   public final static native int ABC_CC_Error_get();
@@ -66,6 +69,7 @@ public class coreJNI {
   public final static native int ABC_CC_InvalidWalletID_get();
   public final static native int ABC_CC_NoRequest_get();
   public final static native int ABC_CC_InsufficientFunds_get();
+  public final static native int ABC_CC_Synchronizing_get();
   public final static native int ABC_RequestType_AccountSignIn_get();
   public final static native int ABC_RequestType_CreateAccount_get();
   public final static native int ABC_RequestType_SetAccountRecoveryQuestions_get();
@@ -105,6 +109,8 @@ public class coreJNI {
   public final static native long tABC_RequestResults_pRetData_get(long jarg1, tABC_RequestResults jarg1_);
   public final static native void tABC_RequestResults_bSuccess_set(long jarg1, tABC_RequestResults jarg1_, boolean jarg2);
   public final static native boolean tABC_RequestResults_bSuccess_get(long jarg1, tABC_RequestResults jarg1_);
+  public final static native void tABC_RequestResults_szWalletUUID_set(long jarg1, tABC_RequestResults jarg1_, String jarg2);
+  public final static native String tABC_RequestResults_szWalletUUID_get(long jarg1, tABC_RequestResults jarg1_);
   public final static native void tABC_RequestResults_errorInfo_set(long jarg1, tABC_RequestResults jarg1_, long jarg2, tABC_Error jarg2_);
   public final static native long tABC_RequestResults_errorInfo_get(long jarg1, tABC_RequestResults jarg1_);
   public final static native long new_tABC_RequestResults();
@@ -177,6 +183,20 @@ public class coreJNI {
   public final static native long tABC_TxDetails_attributes_get(long jarg1, tABC_TxDetails jarg1_);
   public final static native long new_tABC_TxDetails();
   public final static native void delete_tABC_TxDetails(long jarg1);
+  public final static native void tABC_TransferDetails_szSrcWalletUUID_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szSrcWalletUUID_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native void tABC_TransferDetails_szSrcName_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szSrcName_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native void tABC_TransferDetails_szSrcCategory_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szSrcCategory_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native void tABC_TransferDetails_szDestWalletUUID_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szDestWalletUUID_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native void tABC_TransferDetails_szDestName_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szDestName_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native void tABC_TransferDetails_szDestCategory_set(long jarg1, tABC_TransferDetails jarg1_, String jarg2);
+  public final static native String tABC_TransferDetails_szDestCategory_get(long jarg1, tABC_TransferDetails jarg1_);
+  public final static native long new_tABC_TransferDetails();
+  public final static native void delete_tABC_TransferDetails(long jarg1);
   public final static native void tABC_TxOutput_input_set(long jarg1, tABC_TxOutput jarg1_, boolean jarg2);
   public final static native boolean tABC_TxOutput_input_get(long jarg1, tABC_TxOutput jarg1_);
   public final static native void tABC_TxOutput_value_set(long jarg1, tABC_TxOutput jarg1_, long jarg2);
@@ -247,8 +267,8 @@ public class coreJNI {
   public final static native long tABC_ExchangeRateSources_aSources_get(long jarg1, tABC_ExchangeRateSources jarg1_);
   public final static native long new_tABC_ExchangeRateSources();
   public final static native void delete_tABC_ExchangeRateSources(long jarg1);
-  public final static native void tABC_BitcoinDenomination_szLabel_set(long jarg1, tABC_BitcoinDenomination jarg1_, String jarg2);
-  public final static native String tABC_BitcoinDenomination_szLabel_get(long jarg1, tABC_BitcoinDenomination jarg1_);
+  public final static native void tABC_BitcoinDenomination_denominationType_set(long jarg1, tABC_BitcoinDenomination jarg1_, int jarg2);
+  public final static native int tABC_BitcoinDenomination_denominationType_get(long jarg1, tABC_BitcoinDenomination jarg1_);
   public final static native void tABC_BitcoinDenomination_satoshi_set(long jarg1, tABC_BitcoinDenomination jarg1_, long jarg2);
   public final static native long tABC_BitcoinDenomination_satoshi_get(long jarg1, tABC_BitcoinDenomination jarg1_);
   public final static native long new_tABC_BitcoinDenomination();
@@ -293,6 +313,7 @@ public class coreJNI {
   public final static native int ABC_CheckRecoveryAnswers(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_GetWalletInfo(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfo(long jarg1, tABC_WalletInfo jarg1_);
+  public final static native int ABC_ExportWalletSeed(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GetWallets(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfoArray(long jarg1, long jarg2);
   public final static native int ABC_SetWalletOrder(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
@@ -315,7 +336,9 @@ public class coreJNI {
   public final static native int ABC_CancelReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GenerateRequestQRCode(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
-  public final static native int ABC_CalcSendFees(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_InitiateTransfer(String jarg1, String jarg2, long jarg3, tABC_TransferDetails jarg3_, long jarg4, tABC_TxDetails jarg4_, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_CalcSendFees(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, tABC_TxDetails jarg6_, long jarg7, long jarg8, tABC_Error jarg8_);
+  public final static native int ABC_MaxSpendable(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
@@ -339,7 +362,8 @@ public class coreJNI {
   public final static native int ABC_WatcherRestart(String jarg1, String jarg2, String jarg3, boolean jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_TxHeight(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_BlockHeight(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
-  public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
+  public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native long p64_t_to_long_ptr(long jarg1);
   public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);

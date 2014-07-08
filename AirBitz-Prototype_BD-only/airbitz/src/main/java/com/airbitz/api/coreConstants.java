@@ -12,5 +12,8 @@ public interface coreConstants {
   public final static int ABC_MAX_STRING_LENGTH = coreJNI.ABC_MAX_STRING_LENGTH_get();
   public final static int ABC_BITCOIN_DECIMAL_PLACES = coreJNI.ABC_BITCOIN_DECIMAL_PLACES_get();
   public final static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = coreJNI.ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS_get();
+  public final static int ABC_DENOMINATION_BTC = coreJNI.ABC_DENOMINATION_BTC_get();
+  public final static int ABC_DENOMINATION_MBTC = coreJNI.ABC_DENOMINATION_MBTC_get();
+  public final static int ABC_DENOMINATION_UBTC = coreJNI.ABC_DENOMINATION_UBTC_get();
   public final static int NETWORK_FAKE = coreJNI.NETWORK_FAKE_get();
 }

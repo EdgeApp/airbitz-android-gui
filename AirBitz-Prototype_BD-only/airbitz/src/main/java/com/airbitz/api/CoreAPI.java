@@ -17,6 +17,9 @@ import java.util.List;
 public class CoreAPI {
     private static String TAG = AirbitzAPI.class.getSimpleName();
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
+    public static int ABC_DENOMINATION_BTC = 0;
+    public static int ABC_DENOMINATION_MBTC = 1;
+    public static int ABC_DENOMINATION_UBTC = 2;
 
     static {
         System.loadLibrary("abc");
@@ -119,6 +122,8 @@ public class CoreAPI {
         List<Wallet> list = new ArrayList<Wallet>();
         List<Wallet> coreList = getCoreWallets();
 
+        if(coreList==null)
+            coreList = new ArrayList<Wallet>();
         list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL", "Hello"));//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
@@ -266,6 +271,17 @@ public class CoreAPI {
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
     private String[] mFauxCurrencyDenomination = {"$", "CNY", "CUP", "EUR", "GBP", "MXN", "$"};
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
+    private String[] mDenominations = {"BTC", "mBTC", "uBTC"};
+
+    public String getUserBTCDenominationSetting() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination == null) {
+            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return mDenominations[bitcoinDenomination.getDenominationType()];
+    }
 
     public int[] getCurrencyNumbers() {
         return mFauxCurrencyNumbers;
@@ -781,14 +797,14 @@ public class CoreAPI {
     }
 
     public int maxDecimalPlaces() {
-        int decimalPlaces = 8;
+        int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination != null) {
-            String label = bitcoinDenomination.getSzLabel();
-            if (label.equals("uBTC"))
+            int label = bitcoinDenomination.getDenominationType();
+            if (label == ABC_DENOMINATION_UBTC)
                 decimalPlaces = 2;
-            else if (label.contains("mBTC"))
+            else if (label == ABC_DENOMINATION_MBTC)
                 decimalPlaces = 5;
         }
         return decimalPlaces;
@@ -848,10 +864,10 @@ public class CoreAPI {
         return index;
     }
 
-    public String BitcoinDenominationLabel() {
+    public int BitcoinDenominationLabel() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        return bitcoinDenomination.getSzLabel();
+        return bitcoinDenomination.getDenominationType();
     }
 
     public String FiatCurrencySign() {
@@ -941,10 +957,10 @@ public class CoreAPI {
         {
             tABC_Error error = new tABC_Error();
             // Check the default currency for updates
-            /*for(ExchangeRateSource source : mExchangeRateSources) {
+            for(ExchangeRateSource source : mExchangeRateSources) {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        source.getCurrencyNum(), error);
-            }*/
+                        source.getCurrencyNum(), null, null, error);
+            }
         }
     }
 

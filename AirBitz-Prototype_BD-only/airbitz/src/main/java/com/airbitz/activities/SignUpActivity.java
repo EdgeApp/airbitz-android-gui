@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
@@ -40,10 +41,6 @@ import java.util.regex.Pattern;
  */
 public class SignUpActivity extends Activity {
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
-
-    static {
-        System.loadLibrary("airbitz");
-    }
 
     private RelativeLayout mParentLayout;
 
@@ -72,15 +69,18 @@ public class SignUpActivity extends Activity {
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
 
-//    private GestureDetector mGestureDetector;
-
     public static String KEY_USERNAME = "KEY_USERNAME";
     public static String KEY_PASSWORD = "KEY_PASSWORD";
     public static String KEY_WITHDRAWAL = "KEY_WITHDRAWAL";
 
+    private CoreAPI mCoreAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mCoreAPI = CoreAPI.getApi();
+
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
 
@@ -334,7 +334,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return true;//TODO mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);_________________________________________________________________________
+            return true; //TODO mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);  ___fails with null
         }
 
         @Override
