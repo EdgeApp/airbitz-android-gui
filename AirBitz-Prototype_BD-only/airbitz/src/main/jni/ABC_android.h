@@ -25,7 +25,12 @@
 /** Frequency of exchange rate updates **/
 #define ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS 60
 
-#define NETWORK_FAKE 1
+/** Denomination Type **/
+#define ABC_DENOMINATION_BTC 0
+#define ABC_DENOMINATION_MBTC 1
+#define ABC_DENOMINATION_UBTC 2
+
+#define NETWORK_FAKE 0
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,7 +111,9 @@ extern "C" {
         /** Request (address) not found */
         ABC_CC_NoRequest = 31,
         /** Not enough money to send transaction */
-        ABC_CC_InsufficientFunds = 32
+        ABC_CC_InsufficientFunds = 32,
+        /** We are still sync-ing */
+        ABC_CC_Synchronizing = 33
     } tABC_CC;
 
     /**
@@ -185,7 +192,7 @@ extern "C" {
         /** type of event that occured */
         tABC_AsyncEventType eventType;
 
-        /** if the event involved a transaction, this is its ID */
+        /** if the event involved a wallet, this is its ID */
         char *szWalletUUID;
 
         /** if the event involved a transaction, this is its ID */
@@ -212,6 +219,8 @@ extern "C" {
         void                *pRetData;
         /** true if successful */
         bool                bSuccess;
+        /** if the event involved a wallet, this is its ID */
+        char                *szWalletUUID;
         /** information the error if there was a failure */
         tABC_Error          errorInfo;
     } tABC_RequestResults;
@@ -335,6 +344,17 @@ extern "C" {
         /** attributes for the transaction */
         unsigned int attributes;
     } tABC_TxDetails;
+
+    typedef struct sABC_TransferDetails
+    {
+        char *szSrcWalletUUID;
+        char *szSrcName;
+        char *szSrcCategory;
+
+        char *szDestWalletUUID;
+        char *szDestName;
+        char *szDestCategory;
+    } tABC_TransferDetails;
 
     /**
      * AirBitz Output Info
@@ -476,7 +496,7 @@ extern "C" {
     typedef struct sABC_BitcoinDenomination
     {
         /** label (e.g., mBTC) */
-        char *szLabel;
+        int denominationType;
         /** number of satoshi per unit (e.g., 100,000) */
         int64_t satoshi;
     } tABC_BitcoinDenomination;
@@ -624,6 +644,12 @@ extern "C" {
 
     void ABC_FreeWalletInfo(tABC_WalletInfo *pWalletInfo);
 
+    tABC_CC ABC_ExportWalletSeed(const char *szUserName,
+                                 const char *szPassword,
+                                 const char *szUUID,
+                                 char **pszWalletSeed,
+                                 tABC_Error *pError);
+
     tABC_CC ABC_GetWallets(const char *szUserName,
                            const char *szPassword,
                            tABC_WalletInfo ***paWalletInfo,
@@ -742,12 +768,29 @@ extern "C" {
                                     void *pData,
                                     tABC_Error *pError);
 
+    tABC_CC ABC_InitiateTransfer(const char *szUserName,
+                                 const char *szPassword,
+                                 tABC_TransferDetails *pTransfer,
+                                 tABC_TxDetails *pDetails,
+                                 tABC_Request_Callback fRequestCallback,
+                                 void *pData,
+                                 tABC_Error *pError);
+
     tABC_CC ABC_CalcSendFees(const char *szUserName,
                              const char *szPassword,
                              const char *szWalletUUID,
                              const char *szDestAddress,
+                             bool bTransfer,
                              tABC_TxDetails *pDetails,
                              int64_t *pTotalFees,
+                             tABC_Error *pError);
+
+    tABC_CC ABC_MaxSpendable(const char *szUsername,
+                             const char *szPassword,
+                             const char *szWalletUUID,
+                             const char *szDestAddress,
+                             bool bTransfer,
+                             uint64_t *pMaxSatoshi,
                              tABC_Error *pError);
 
     tABC_CC ABC_GetTransaction(const char *szUserName,
@@ -856,7 +899,11 @@ extern "C" {
     tABC_CC ABC_BlockHeight(const char *szWalletUUID, unsigned int *height, tABC_Error *pError);
 
     tABC_CC ABC_RequestExchangeRateUpdate(const char *szUserName, const char *szPassword,
-                                          int currencyNum, tABC_Error *pError);
+                                          int currencyNum,
+                                          tABC_Request_Callback fRequestCallback,
+                                          void *pData, tABC_Error *pError);
+
+    tABC_CC ABC_IsTestNet(bool *pResult, tABC_Error *pError);
 
     // temp functions
 //    void tempEventA();

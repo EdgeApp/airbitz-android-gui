@@ -30,7 +30,7 @@
 #define ABC_DENOMINATION_MBTC 1
 #define ABC_DENOMINATION_UBTC 2
 
-#define NETWORK_FAKE 1
+#define NETWORK_FAKE 0
 
 #ifdef __cplusplus
 extern "C" {
@@ -783,6 +783,14 @@ extern "C" {
                              bool bTransfer,
                              tABC_TxDetails *pDetails,
                              int64_t *pTotalFees,
+                             tABC_Error *pError);
+
+    tABC_CC ABC_MaxSpendable(const char *szUsername,
+                             const char *szPassword,
+                             const char *szWalletUUID,
+                             const char *szDestAddress,
+                             bool bTransfer,
+                             uint64_t *pMaxSatoshi,
                              tABC_Error *pError);
 
     tABC_CC ABC_GetTransaction(const char *szUserName,
