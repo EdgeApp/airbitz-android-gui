@@ -81,6 +81,14 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
     }
 
+    public void updateArchive(){
+        for (int i = 0; i < mWalletList.size(); ++i) {
+            if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+                archivePos = i;
+            }
+        }
+    }
+
 
     public void removeWallet(Wallet wallet){
         mArchivedIdMap.put(wallet.getName(),mIdMap.get(wallet));
@@ -163,7 +171,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView.setPadding((int)mContext.getResources().getDimension(R.dimen.two_mm),0,0,0);
         }
         if(archivePos < position && closeAfterArchive){
-            //convertView.setVisibility(View.GONE);
+            convertView.setVisibility(View.GONE);
         }else if(selectedViewPos == position){
             convertView.setVisibility(View.INVISIBLE);
         }else{

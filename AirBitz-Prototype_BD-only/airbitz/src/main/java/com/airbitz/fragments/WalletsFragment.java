@@ -339,21 +339,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
             @Override
             public void onClick(View view) {
                 int pos = mLatestWalletAdapter.getArchivePos();
-                //a.switchCloseAfterArchive(pos);
-                if(archiveClosed){
-                    while(!archivedWalletList.isEmpty()){
-                        mLatestWalletList.add(archivedWalletList.get(0));
-                        mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
-                        archivedWalletList.remove(0);
-                    }
-                }else {
-                    pos++;
-                    while(pos<mLatestWalletList.size()){
-                        archivedWalletList.add(mLatestWalletList.get(pos));
-                        mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
-                        mLatestWalletList.remove(pos);
-                    }
-                }
+                mLatestWalletAdapter.switchCloseAfterArchive(pos);
                 mLatestWalletAdapter.notifyDataSetChanged();
                 ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
                 archiveClosed = !archiveClosed;
@@ -370,21 +356,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
                     showWalletFragment(a.getList().get(i).getName());
                 }else if(wallet.isArchiveHeader()){
                     int pos = a.getPosition(wallet);
-                    //a.switchCloseAfterArchive(pos);
-                    if(archiveClosed){
-                        while(!archivedWalletList.isEmpty()){
-                            mLatestWalletList.add(archivedWalletList.get(0));
-                            mLatestWalletAdapter.addWallet(archivedWalletList.get(0));
-                            archivedWalletList.remove(0);
-                        }
-                    }else {
-                        pos++;
-                        while(pos<mLatestWalletList.size()){
-                            archivedWalletList.add(mLatestWalletList.get(pos));
-                            mLatestWalletAdapter.removeWallet(mLatestWalletList.get(pos));
-                            mLatestWalletList.remove(pos);
-                        }
-                    }
+                    a.switchCloseAfterArchive(pos);
                     mLatestWalletAdapter.notifyDataSetChanged();
                     ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
                     archiveClosed = !archiveClosed;

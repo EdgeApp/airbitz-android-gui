@@ -463,12 +463,9 @@ public class DynamicListView extends ListView {
                 public void onAnimationEnd(Animator animation) {
                     mobileView.setVisibility(VISIBLE);
                     int pos = getPositionForID(mMobileItemId);
-                    if(pos > ((WalletAdapter)getAdapter()).getArchivePos() && archiveClosed == true){
-                        archivedWallets.add(mWalletList.get(pos));
-                        ((WalletAdapter)getAdapter()).removeWallet(mWalletList.get(pos));
-                        mWalletList.remove(pos);
-                        ((WalletAdapter)getAdapter()).notifyDataSetChanged();
-                        ListViewUtility.setWalletListViewHeightBasedOnChildren(dLV, mWalletList.size(), (Activity)getContext());
+                    if(pos > ((WalletAdapter)getAdapter()).getArchivePos() && archiveClosed){
+                        Wallet w = mWalletList.remove(pos);
+                        mWalletList.add(((WalletAdapter)getAdapter()).getArchivePos()+1,w);
                     }
                     mAboveItemId = INVALID_ID;
                     mMobileItemId = INVALID_ID;
@@ -476,6 +473,9 @@ public class DynamicListView extends ListView {
                     ((WalletAdapter)getAdapter()).setSelectedViewPos(-1);
                     mHoverCell = null;
                     setEnabled(true);
+                    ((WalletAdapter)getAdapter()).updateArchive();
+                    ((WalletAdapter)getAdapter()).notifyDataSetChanged();
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(dLV, mWalletList.size(), (Activity)getContext());
                     invalidate();
                 }
             });
