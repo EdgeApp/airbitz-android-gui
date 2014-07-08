@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
@@ -334,7 +335,7 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return true; //TODO mCoreAPI.createWallet(walletName, DOLLAR_CURRENCY_NUMBER);  ___fails with null
+            return mCoreAPI.createWallet(mUsername, mPassword, walletName, DOLLAR_CURRENCY_NUMBER);
         }
 
         @Override
@@ -344,6 +345,7 @@ public class SignUpActivity extends Activity {
             if (!success) {
                 ShowReasonAlert("Create wallet failed");
             } else {
+                AirbitzApplication.Login(mUsername, mPassword);
                 Intent mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
                 mIntent.putExtra(KEY_USERNAME, mUsername);
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
