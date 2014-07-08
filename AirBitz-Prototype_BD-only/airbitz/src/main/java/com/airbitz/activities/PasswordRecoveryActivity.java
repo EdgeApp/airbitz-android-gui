@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -56,6 +57,8 @@ public class PasswordRecoveryActivity extends Activity {
     private View dummyFocus;
     private View dummyCover;
 
+    private ImageButton mBackButton;
+
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
@@ -87,12 +90,15 @@ public class PasswordRecoveryActivity extends Activity {
 
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
+        mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
+
         if(mChangeQuestions) {
             //TODO question changes flow, user already logged in
             mUsername = AirbitzApplication.getUsername();
             mPassword = AirbitzApplication.getPassword();
 
             mSkipStepButton.setVisibility(View.INVISIBLE);
+            mBackButton.setVisibility(View.VISIBLE);
             mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
         } else {
             mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
@@ -132,6 +138,14 @@ public class PasswordRecoveryActivity extends Activity {
             @Override
             public void onClick(View view) {
                 CompleteSignup();
+            }
+        });
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
             }
         });
 
