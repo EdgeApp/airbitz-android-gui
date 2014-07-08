@@ -271,6 +271,17 @@ public class CoreAPI {
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
     private String[] mFauxCurrencyDenomination = {"$", "CNY", "CUP", "EUR", "GBP", "MXN", "$"};
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
+    private String[] mDenominations = {"BTC", "mBTC", "uBTC"};
+
+    public String UserBTCDenominationSetting() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination == null) {
+            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return mDenominations[bitcoinDenomination.getDenominationType()];
+    }
 
     public int[] getCurrencyNumbers() {
         return mFauxCurrencyNumbers;
