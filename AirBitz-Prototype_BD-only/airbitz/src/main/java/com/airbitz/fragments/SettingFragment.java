@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.activities.PasswordRecoveryActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -184,6 +186,9 @@ public class SettingFragment extends Fragment {
         mChangeRecoveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent mIntent = new Intent(getActivity(), PasswordRecoveryActivity.class);
+                mIntent.putExtra(PasswordRecoveryActivity.CHANGE_QUESTIONS, true);
+                startActivity(mIntent);
             }
         });
 
@@ -506,17 +511,17 @@ public class SettingFragment extends Fragment {
             tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
             if(denomination != null) {
                 if(mmBitcoinButton.isChecked()) {
-                    denomination.setSzLabel("mBTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
                     denomination.setSatoshi(amt);
                 } else if(muBitcoinButton.isChecked()) {
-                    denomination.setSzLabel("uBTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
                     denomination.setSatoshi(amt);
                 } else {
-                    denomination.setSzLabel("BTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
                     denomination.setSatoshi(amt);
