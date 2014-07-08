@@ -45,9 +45,13 @@
     <dimen name="pop_up_height">144.9dp</dimen>
     <dimen name="pop_up_offset">25.2dp</dimen>
     <dimen name="one_point_five_mm">9.45dp</dimen>
+    <dimen name="two_point_five_mm">15.75dp</dimen>
+    <dimen name="two_mm">12.6dp</dimen>
+    <dimen name="three_mm">18.9dp</dimen>
 
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
     <dimen name="activity_signup_popup_height">119.7dp</dimen>
+    <dimen name="fragment_wallet_addwallet_height">135.45dp</dimen>
 
     <dimen name="currency_switch_height">37.8dp</dimen>
 
