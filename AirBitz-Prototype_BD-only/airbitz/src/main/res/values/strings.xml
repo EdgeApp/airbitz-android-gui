@@ -67,7 +67,7 @@
     <string name="activity_recovery_title">Password Recovery Setup</string>
     <string name="activity_recovery_skip_button_text">Skip This Step</string>
     <string name="activity_recovery_complete_button">Complete Sign Up</string>
-    <string name="activity_recovery_complete_button_change_questions">Change Questions</string>
+    <string name="activity_recovery_complete_button_change_questions">Done</string>
     <string name="activity_recovery_prompt_title">Skip this step</string>
     <string name="activity_recovery_prompt_skip">Warning: You will never be able to recover your password if it is forgotten.</string>
     <string name="activity_recovery_first_wallet_name">My Wallet</string>

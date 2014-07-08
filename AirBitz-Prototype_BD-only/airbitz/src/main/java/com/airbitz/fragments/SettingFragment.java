@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.PasswordRecoveryActivity;
@@ -34,21 +35,6 @@ import com.airbitz.utils.Common;
  * Created on 2/12/14.
  */
 public class SettingFragment extends Fragment {
-
-    public static final String SETTINGS_NAME = "Settings";
-    public static final String DENOMINATION = "Denomination";
-    public static final String NAME_SWITCH = "SendName";
-    public static final String FIRST_NAME = "FirstName";
-    public static final String LAST_NAME = "LastName";
-    public static final String NICK_NAME = "Nickname";
-    public static final String AUTO_LOGOFF = "Logoff";
-    public static final String LANGUAGE = "Language";
-    public static final String CURRENCY = "Currency";
-    public static final String USD_EXCHANGE = "USD_EXCHANGE";
-    public static final String CANADIAN_EXCHANGE = "CANADIAN_EXCHANGE";
-    public static final String EURO_EXCHANGE = "EURO_EXCHANGE";
-    public static final String PESO_EXCHANGE = "PESO_EXCHANGE";
-    public static final String YUAN_EXCHANGE = "YUAN_EXCHANGE";
 
     private static final int MAX_TIME_VALUE = 60;
 
@@ -81,6 +67,8 @@ public class SettingFragment extends Fragment {
     private Button mEuroButton;
     private Button mPesoButton;
     private Button mYuanButton;
+
+    private Button mLogoutButton;
 
     private NumberPicker mNumberPicker;
     private NumberPicker mTextPicker;
@@ -155,6 +143,8 @@ public class SettingFragment extends Fragment {
         mEuroButton = (Button) view.findViewById(R.id.settings_button_euro);
         mPesoButton = (Button) view.findViewById(R.id.settings_button_peso);
         mYuanButton = (Button) view.findViewById(R.id.settings_button_yuan);
+
+        mLogoutButton = (Button) view.findViewById(R.id.settings_button_logout);
 
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,7 +247,14 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        //TODO populate from PREFS
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AirbitzApplication.Logout();
+                getActivity().startActivity(new Intent(getActivity(), NavigationActivity.class));
+            }
+        });
+
         return view;
     }
 
@@ -265,11 +262,11 @@ public class SettingFragment extends Fragment {
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if(denomination != null) {
-            if(denomination.equals("BTC")) {
+            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
-            } else if(denomination.equals("mBTC")) {
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_mbitcoin);
-            } else if(denomination.equals("uBTC")) {
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_ubitcoin);
            }
         }
@@ -286,20 +283,20 @@ public class SettingFragment extends Fragment {
 
         //Options
         //Autologoff
-        int minutes = settings.getMinutesAutoLogout();
+        mAutoLogoffMinutes = settings.getMinutesAutoLogout();
         int amount = 0;
         String strType;
-        if (minutes < MAX_TIME_VALUE) {
+        if (mAutoLogoffMinutes < MAX_TIME_VALUE) {
             strType = "minute";
-            amount = minutes;
+            amount = mAutoLogoffMinutes;
         }
-        else if (minutes < 24 * MAX_TIME_VALUE) {
+        else if (mAutoLogoffMinutes < 24 * MAX_TIME_VALUE) {
             strType = "hour";
-            amount = minutes / 60;
+            amount = mAutoLogoffMinutes / 60;
         }
         else {
             strType = "day";
-            amount = minutes / (24*MAX_TIME_VALUE);
+            amount = mAutoLogoffMinutes / (24*MAX_TIME_VALUE);
         }
 
         String timeText = amount + " " + strType;

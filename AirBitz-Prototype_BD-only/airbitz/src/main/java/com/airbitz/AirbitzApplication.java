@@ -7,7 +7,7 @@ import android.app.Application;
  * Holds App statics for login info during the app lifecycle
  */
 public class AirbitzApplication extends Application {
-    private static final Login airbitzLogin = new Login();
+    private static Login airbitzLogin = new Login();
 
     public static boolean isLoggedIn() {
         return airbitzLogin.getUsername() != null;
@@ -19,6 +19,10 @@ public class AirbitzApplication extends Application {
 
         //TODO setup auto logout based on Settings. App being killed automatically forgets login,
         // like on reboot or force close.
+    }
+
+    public static void Logout() {
+        airbitzLogin = new Login();
     }
 
     public static String getUsername() {return airbitzLogin.getUsername(); }
