@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.airbitz.R;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
@@ -72,6 +74,8 @@ public class DynamicListView extends ListView {
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
     private final int MOVE_DURATION = 150;
     private final int LINE_THICKNESS = 15;
+
+    private Context mContext;
 
     public List<Wallet> mWalletList;
     public List<Wallet> archivedWallets;
@@ -128,6 +132,7 @@ public class DynamicListView extends ListView {
     }
 
     public void init(Context context) {
+        mContext = context;
         setOnItemLongClickListener(mOnItemLongClickListener);
         setOnScrollListener(mScrollListener);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
@@ -139,6 +144,10 @@ public class DynamicListView extends ListView {
         walletsHeader.setText("WALLETS");
         archiveHeader = archive;
         archiveHeader.setText("ARCHIVE");
+        Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
+        img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
+        archiveHeader.setCompoundDrawables(null, null, img, null);
+        archiveHeader.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
         //listArchiveHeader = (TextView)getAdapter().getView(0, listArchiveHeader, this);
         //listWalletsHeader = (TextView)getChildAt(0);
     }
@@ -454,7 +463,6 @@ public class DynamicListView extends ListView {
                 public void onAnimationEnd(Animator animation) {
                     mobileView.setVisibility(VISIBLE);
                     int pos = getPositionForID(mMobileItemId);
-                    System.out.println("Is archived closed: "+archiveClosed);
                     if(pos > ((WalletAdapter)getAdapter()).getArchivePos() && archiveClosed == true){
                         archivedWallets.add(mWalletList.get(pos));
                         ((WalletAdapter)getAdapter()).removeWallet(mWalletList.get(pos));
@@ -613,31 +621,36 @@ public class DynamicListView extends ListView {
             }
             if(listWalletsHeader != null) {
                 if (listWalletsHeader.getY() < getY()) {
-                    System.out.println();
                     walletsHeader.setVisibility(VISIBLE);
                 } else {
                     walletsHeader.setVisibility(GONE);
                 }
             }else{
                 if(getAdapter() != null) {
-                    if (listWalletsHeader == null) {
-                        walletsHeader.setVisibility(VISIBLE);
-                    }
+                    walletsHeader.setVisibility(VISIBLE);
                 }
             }
             if(getAdapter() != null) {
                 listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
             }
             if(listArchiveHeader != null) {
-                if (listArchiveHeader.getY() < (walletsHeader.getY()+walletsHeader.getHeight())) {
+                if (listArchiveHeader.getY() < (getY()+walletsHeader.getHeight())) {
                     archiveHeader.setVisibility(VISIBLE);
+                    if(listArchiveHeader.getY() >= getY()){
+                        archiveHeader.setY(listArchiveHeader.getY());
+                        walletsHeader.setY(archiveHeader.getY()-walletsHeader.getHeight());
+                    }else{
+                        archiveHeader.setY(getY());
+                        walletsHeader.setY(getY()-walletsHeader.getHeight());
+                    }
                 } else {
+                    walletsHeader.setY(getY());
                     archiveHeader.setVisibility(GONE);
                 }
             }else{
                 if(getAdapter() != null) {
                     int firstPosition = getFirstVisiblePosition();
-                    if(listArchiveHeader==null && firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
+                    if(firstPosition >((WalletAdapter)getAdapter()).getArchivePos()){
                         archiveHeader.setVisibility(GONE);
                         archiveHeader.setVisibility(VISIBLE);
                     }

@@ -58,6 +58,9 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
     private RelativeLayout mParentLayout;
+    private RelativeLayout mContainerLayout;
+
+    private Boolean firstTime = true;
 
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
@@ -95,9 +98,10 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
     private ImageButton mAddButton;
 
     private ImageView mMoverCoin;
-    private ImageView mMoverType;
+    private TextView mMoverType;
     private ImageView mBottomCoin;
-    private ImageView mBottomType;
+    private TextView mBottomType;
+    private TextView mTopType;
 
     private Bundle bundle;
 
@@ -165,6 +169,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mParentLayout = (RelativeLayout) view;
+        mContainerLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallets_container);
 
         mCurrencyList = new ArrayList<String>();
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
@@ -175,7 +180,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
 
         mBalanceLabel = (TextView) view.findViewById(R.id.fragment_wallets_balance_textview);
 
-        mAddWalletLayout = (LinearLayout) view.findViewById(R.id.fragments_wallets_addwallet_layout);
+        mAddWalletLayout = (LinearLayout) view.findViewById(R.id.fragment_wallets_addwallet_layout);
         mAddWalletNameEditText = (EditText) view.findViewById(R.id.fragment_wallets_addwallet_name_edittext);
         mAddWalletOnlineTextView = (TextView) view.findViewById(R.id.fragment_wallets_addwallet_online_textview);
         mAddWalletOfflineTextView = (TextView) view.findViewById(R.id.fragment_wallets_addwallet_offline_textview);
@@ -200,9 +205,10 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
         mAddButton = (ImageButton) view.findViewById(R.id.fragment_wallets_add_button);
 
         mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        mMoverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mMoverType = (TextView) view.findViewById(R.id.button_mover_type);
         mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
-        mBottomType = (ImageView) view.findViewById(R.id.bottom_type);
+        mBottomType = (TextView) view.findViewById(R.id.bottom_type);
+        mTopType = (TextView) view.findViewById(R.id.top_type);
 
         walletsHeader = (TextView) view.findViewById(R.id.fragment_wallets_wallets_header);
         archiveHeader = (TextView) view.findViewById(R.id.fragment_wallets_archive_header);
@@ -259,7 +265,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
                 goCancel();
             }
         });
-
+        mAddWalletLayout.setVisibility(View.GONE);
         mAddWalletNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -334,7 +340,6 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
             public void onClick(View view) {
                 int pos = mLatestWalletAdapter.getArchivePos();
                 //a.switchCloseAfterArchive(pos);
-                System.out.println("Map Sizes before: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
                 if(archiveClosed){
                     while(!archivedWalletList.isEmpty()){
                         mLatestWalletList.add(archivedWalletList.get(0));
@@ -349,7 +354,6 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
                         mLatestWalletList.remove(pos);
                     }
                 }
-                System.out.println("Map Sizes after: " +mLatestWalletAdapter.getMapSize()+" vs " + mLatestWalletList.size());
                 mLatestWalletAdapter.notifyDataSetChanged();
                 ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
                 archiveClosed = !archiveClosed;
@@ -367,7 +371,6 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
                 }else if(wallet.isArchiveHeader()){
                     int pos = a.getPosition(wallet);
                     //a.switchCloseAfterArchive(pos);
-                    System.out.println("Map Sizes before: " +a.getMapSize()+" vs " + mLatestWalletList.size());
                     if(archiveClosed){
                         while(!archivedWalletList.isEmpty()){
                             mLatestWalletList.add(archivedWalletList.get(0));
@@ -382,7 +385,6 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
                             mLatestWalletList.remove(pos);
                         }
                     }
-                    System.out.println("Map Sizes after: " +a.getMapSize()+" vs " + mLatestWalletList.size());
                     mLatestWalletAdapter.notifyDataSetChanged();
                     ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
                     archiveClosed = !archiveClosed;
@@ -403,20 +405,26 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
         }
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis));
         mFiatBalanceButton.setText(mCoreAPI.FormatString(totalSatoshis, false));
+        firstTime = true;
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setImageResource(mCurrencyTypeDarkDrawables[mCurrencyIndex]);
+        mBottomType.setText("USD");//TODO
     }
 
     private void switchBarInfo(boolean isBitcoin){
-        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)getActivity().getResources().getDimension(R.dimen.currency_switch_height));
+        //RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)getActivity().getResources().getDimension(R.dimen.currency_switch_height));
         if(isBitcoin) {
-            rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
-            mBalanceSwitchLayout.setLayoutParams(rLP);
+            if(!firstTime) {
+                Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+                animator.setDuration(250);
+                animator.start();
+            }else{
+                firstTime = false;
+            }
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setImageResource(R.drawable.ico_btc_white);
+            mMoverType.setText("BTC");//TODO
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
@@ -429,11 +437,12 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
             }
             mLatestWalletAdapter.notifyDataSetChanged();
         }else{
-            rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
-            mBalanceSwitchLayout.setLayoutParams(rLP);
+            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            animator.setDuration(250);
+            animator.start();
             mButtonMover.setText(mFiatBalanceButton.getText());
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
-            mMoverType.setImageResource(mCurrencyTypeWhiteDrawables[mCurrencyIndex]);
+            mMoverType.setText("USD");
             double conv = 0.1145;
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
@@ -536,17 +545,21 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
 
 
     public void showDialogWalletType(){
-        LayoutTransition lt = new LayoutTransition();
-        Animator animator = ObjectAnimator.ofFloat(null,"translationY",-(mAddWalletLayout.getHeight()),0);
-        lt.setAnimator(LayoutTransition.APPEARING,animator);
-        lt.setStartDelay(LayoutTransition.APPEARING,0);
-        lt.setDuration(300);
-        mParentLayout.setLayoutTransition(lt);
-        mAddWalletLayout.setVisibility(View.VISIBLE);
-        mInvisibleCover.setVisibility(View.VISIBLE);
-        mAddWalletNameEditText.requestFocus();
-        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        if(mAddWalletLayout.getVisibility() == View.GONE) {
+            LayoutTransition lt = new LayoutTransition();
+            Animator animator = ObjectAnimator.ofFloat(null, "translationY", -(getResources().getDimension(R.dimen.fragment_wallet_addwallet_height)), 0);
+            lt.setAnimator(LayoutTransition.APPEARING, animator);
+            lt.setAnimator(LayoutTransition.CHANGE_APPEARING, animator);
+            lt.setStartDelay(LayoutTransition.APPEARING, 0);
+            lt.setStartDelay(LayoutTransition.CHANGE_APPEARING, 0);
+            lt.setDuration(300);
+            mContainerLayout.setLayoutTransition(lt);
+            mAddWalletLayout.setVisibility(View.VISIBLE);
+            mInvisibleCover.setVisibility(View.VISIBLE);
+            mAddWalletNameEditText.requestFocus();
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     private void goDone(){
@@ -561,15 +574,15 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
 //                mAddWalletCurrencySpinner.setSelection(1);
             mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
             mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
-            mAddWalletNameEditText.setHint("Name your wallet");
+            mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
             mAddWalletNameEditText.setHintTextColor(getResources().getColor(R.color.text_hint));
             mAddWalletOnOffSwitch.setChecked(false);
             LayoutTransition lt = new LayoutTransition();
-            Animator animator = ObjectAnimator.ofFloat(null,"translationY",0,-(mAddWalletLayout.getHeight()));
+            Animator animator = ObjectAnimator.ofFloat(null,"translationY",0,-(getResources().getDimension(R.dimen.fragment_wallet_addwallet_height)));
             lt.setAnimator(LayoutTransition.DISAPPEARING,animator);
             lt.setStartDelay(LayoutTransition.DISAPPEARING,0);
             lt.setDuration(300);
-            mParentLayout.setLayoutTransition(lt);
+            mContainerLayout.setLayoutTransition(lt);
             mAddWalletLayout.setVisibility(View.GONE);
             mInvisibleCover.setVisibility(View.GONE);
             if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>100){
@@ -584,14 +597,14 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
 //            mAddWalletCurrencySpinner.setSelection(1);
         mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
         mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
-        mAddWalletNameEditText.setHint("Name your wallet");
+        mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
         mAddWalletOnOffSwitch.setChecked(false);
         LayoutTransition lt = new LayoutTransition();
-        Animator animator = ObjectAnimator.ofFloat(null,"translationY",0,-(mAddWalletLayout.getHeight()));
+        Animator animator = ObjectAnimator.ofFloat(null,"translationY",0,-(getResources().getDimension(R.dimen.fragment_wallet_addwallet_height)));
         lt.setAnimator(LayoutTransition.DISAPPEARING,animator);
         lt.setStartDelay(LayoutTransition.DISAPPEARING,0);
         lt.setDuration(300);
-        mParentLayout.setLayoutTransition(lt);
+        mContainerLayout.setLayoutTransition(lt);
         mAddWalletLayout.setVisibility(View.GONE);
         mInvisibleCover.setVisibility(View.GONE);
         if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>100){

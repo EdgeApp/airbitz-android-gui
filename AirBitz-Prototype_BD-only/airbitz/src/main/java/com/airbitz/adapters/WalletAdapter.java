@@ -2,6 +2,7 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +114,10 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             if(mWalletList.get(position).getName()=="SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
                 ((TextView) convertView).setText("ARCHIVE");
                 archivePos = position;
-                System.out.println("Archive Pos: "+archivePos);
+                Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
+                img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
+                ((TextView) convertView).setCompoundDrawables(null,null,img,null);
+                convertView.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
                 if(hoverSecondHeader){
                     convertView.setVisibility(View.INVISIBLE);
                 }else {
@@ -137,6 +141,26 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             titleTextView.setText(mWalletList.get(position).getName());
             amountTextView.setText(mWalletList.get(position).getAmount()
                     + mContext.getResources().getString(R.string.no_break_space_character));
+            if(1 == position){
+                if(2 == archivePos){
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+                }else{
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+                }
+            }else if(position == archivePos-1){
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+            }else if(position == archivePos+1){
+                if(position == mWalletList.size()-1){
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+                }else{
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+                }
+            }else if(position == mWalletList.size()-1){
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+            }else{
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
+            }
+            convertView.setPadding((int)mContext.getResources().getDimension(R.dimen.two_mm),0,0,0);
         }
         if(archivePos < position && closeAfterArchive){
             //convertView.setVisibility(View.GONE);

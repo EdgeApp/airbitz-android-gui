@@ -94,6 +94,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mCoreAPI.setOnExchangeRateUpdateListener(this);
 
         setContentView(R.layout.activity_navigation);
+        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
