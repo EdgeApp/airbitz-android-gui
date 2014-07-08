@@ -506,17 +506,17 @@ public class SettingFragment extends Fragment {
             tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
             if(denomination != null) {
                 if(mmBitcoinButton.isChecked()) {
-                    denomination.setSzLabel("mBTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
                     denomination.setSatoshi(amt);
                 } else if(muBitcoinButton.isChecked()) {
-                    denomination.setSzLabel("uBTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
                     denomination.setSatoshi(amt);
                 } else {
-                    denomination.setSzLabel("BTC");
+                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
                     SWIGTYPE_p_int64_t amt = core.new_int64_tp();
                     core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
                     denomination.setSatoshi(amt);
