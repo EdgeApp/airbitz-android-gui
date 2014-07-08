@@ -315,14 +315,7 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setText(language);
 
         // Default Currency
-        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
-        int index = settings.getCurrencyNum();
-        if (mCurrencyItems!=null && index >=0 && index <mCurrencyItems.length)
-        {
-            mDefaultCurrencyButton.setText(mCurrencyItems[index]);
-        } else { // error or no setting
-            mDefaultCurrencyButton.setText("USD");
-        }
+        mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
