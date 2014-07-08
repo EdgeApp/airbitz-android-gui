@@ -63,7 +63,7 @@
                 android:paddingLeft="18.9dp"
                 android:paddingRight="18.9dp"
                 android:layout_marginTop="25.2dp"
-                android:background="@drawable/emboss_up_33_stretch">
+                android:background="@drawable/emboss_up">
 
 
                 <EditText

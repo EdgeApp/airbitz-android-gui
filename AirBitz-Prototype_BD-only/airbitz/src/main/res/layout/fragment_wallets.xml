@@ -4,7 +4,6 @@
     android:id="@+id/fragment_wallets_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app"
     android:animateLayoutChanges="true"
     android:paddingBottom="12.6dp"
     xmlns:tools="http://schemas.android.com/tools"
@@ -56,6 +55,7 @@
         </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/fragment_wallets_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_wallets_header_layout">
@@ -97,6 +97,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:divider="@drawable/wallet_list_divider"
+                android:dividerHeight="0dp"
                 android:background="@android:color/transparent" />
 
             <include layout="@layout/item_listview_wallets_header"
@@ -125,15 +127,15 @@
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:id="@+id/fragments_wallets_addwallet_layout"
-            android:visibility="gone">
+            android:id="@+id/fragment_wallets_addwallet_layout"
+            android:visibility="visible">
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="28.35dp"
+                android:layout_height="31.5dp"
                 android:layout_margin="9.45dp"
                 android:id="@+id/fragment_wallets_addwallet_name_edittext"
-                android:background="@drawable/bg_edittext"
+                android:background="@drawable/emboss_down"
                 android:textColor="@android:color/white"
                 android:textColorHint="#99DDDDDD"
                 android:inputType="textVisiblePassword|textNoSuggestions"
@@ -148,25 +150,24 @@
                 android:id="@+id/fragment_wallets_addwallet_currency_layout"
                 android:layout_width="match_parent"
                 android:layout_height="25.2dp"
+                android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="138.6dp"
                     android:layout_height="match_parent"
                     android:text="@string/fragment_wallets_addwallet_currency_textview"
                     android:textSize="15dp"
                     android:gravity="center"
-                    android:layout_weight="1"
                     android:textColor="@android:color/white"/>
 
                 <Spinner
                     android:id="@+id/fragment_wallets_addwallet_currency_spinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="138.6dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginRight="12.6dp"
                     android:gravity="center"
-                    android:background="@drawable/bg_btn_blue"/>
+                    android:layout_marginLeft="6.3dp"
+                    android:background="@drawable/bg_btn_blue_stretch"/>
 
             </LinearLayout>
 
@@ -226,7 +227,7 @@
                     android:layout_width="138.6dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6.3dp"
-                    android:background="@drawable/btn_orange"
+                    android:background="@drawable/btn_cancel"
                     android:text="@string/string_cancel"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -251,7 +252,7 @@
             android:id="@+id/fragment_wallets_invisible_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/fragments_wallets_addwallet_layout"
+            android:layout_below="@id/fragment_wallets_addwallet_layout"
             android:visibility="gone"
             android:background="@android:color/transparent"/>
     </RelativeLayout>

@@ -941,10 +941,10 @@ public class CoreAPI {
         {
             tABC_Error error = new tABC_Error();
             // Check the default currency for updates
-            for(ExchangeRateSource source : mExchangeRateSources) {
+            /*for(ExchangeRateSource source : mExchangeRateSources) {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         source.getCurrencyNum(), error);
-            }
+            }*/
         }
     }
 
