@@ -324,9 +324,15 @@ public class SettingFragment extends Fragment {
         mUSDollarButton.setText(ARRAY_LANG_CHOICES[0]);
         mUSDExchangeItems = exchangeSources;
         mCanadianDollarButton.setText(ARRAY_LANG_CHOICES[1]);
+        mCanadianExchangeItems = exchangeSources;
         mEuroButton.setText(ARRAY_LANG_CHOICES[2]);
+        mEuroExchangeItems = exchangeSources;
         mPesoButton.setText(ARRAY_LANG_CHOICES[3]);
+        mPesoExchangeItems = exchangeSources;
         mYuanButton.setText(ARRAY_LANG_CHOICES[4]);
+        mYuanExchangeItems = exchangeSources;
+
+        //TODO save each exchange choice???
 
     }
 
