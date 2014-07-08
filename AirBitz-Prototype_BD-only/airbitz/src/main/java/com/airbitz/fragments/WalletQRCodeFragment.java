@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,6 +135,7 @@ public class WalletQRCodeFragment extends Fragment {
 
         details.setSzName(name);
         details.setSzNotes(notes);
+        details.setSzCategory("");
         details.setAttributes(0x0); //for our own use (not used by the core)
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -149,6 +151,9 @@ public class WalletQRCodeFragment extends Fragment {
         }
         else
         {
+            String message = result.toString() + "," + error.getSzDescription() + ", " +
+                    error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+            Log.d("WalletQRCodeFragment", message);
             return null;
         }
     }
