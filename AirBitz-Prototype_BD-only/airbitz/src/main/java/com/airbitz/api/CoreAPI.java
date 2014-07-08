@@ -140,12 +140,12 @@ public class CoreAPI {
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
-    public boolean createWallet(String walletName, int currencyNum) {
+    public boolean createWallet(String username, String password, String walletName, int currencyNum) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-        tABC_CC result = core.ABC_CreateWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_CreateWallet(username, password,
                 walletName, currencyNum, 0, null, pVoid, pError);
         if(result==tABC_CC.ABC_CC_Ok) {
             return true;
