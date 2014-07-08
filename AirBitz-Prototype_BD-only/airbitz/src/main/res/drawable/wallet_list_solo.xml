@@ -10,7 +10,7 @@
     <item android:top="6dp">
         <shape>
             <solid android:color="#999999" />
-            <corners android:radius="6dp"/>
+            <corners android:bottomRightRadius="6dp" android:bottomLeftRadius="6dp"/>
         </shape>
     </item>
     <item android:top="1dp" android:right=".5dp" android:left=".5dp">

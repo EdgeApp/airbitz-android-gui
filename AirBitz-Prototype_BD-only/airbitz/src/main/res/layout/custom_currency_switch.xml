@@ -28,7 +28,7 @@
             android:textSize="20dp" />
         <TextView
             android:id="@+id/top_type"
-            android:layout_width="37.8dp"
+            android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:padding="9.45dp"
             android:layout_alignParentRight="true"
@@ -103,6 +103,7 @@
             android:layout_alignParentRight="true"
             android:text="BTC"
             android:textSize="13dp"
+            android:textColor="@android:color/white"
             android:shadowColor="#000000"
             android:shadowDy="3"
             android:shadowRadius="1"/>
