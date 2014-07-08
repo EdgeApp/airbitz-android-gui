@@ -186,7 +186,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mViewPager.setCurrentItem(2);
             mViewPager.setVisibility(View.INVISIBLE);
 
-            mCoreAPI.startExchangeRateUpdates();
+//            mCoreAPI.startExchangeRateUpdates();
         }
     }
 
