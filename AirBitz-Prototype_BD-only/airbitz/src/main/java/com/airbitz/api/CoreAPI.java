@@ -273,7 +273,7 @@ public class CoreAPI {
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
     private String[] mDenominations = {"BTC", "mBTC", "uBTC"};
 
-    public String UserBTCDenominationSetting() {
+    public String getUserBTCDenominationSetting() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
