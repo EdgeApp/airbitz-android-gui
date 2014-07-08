@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.activities.PasswordRecoveryActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -184,6 +186,9 @@ public class SettingFragment extends Fragment {
         mChangeRecoveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent mIntent = new Intent(getActivity(), PasswordRecoveryActivity.class);
+                mIntent.putExtra(PasswordRecoveryActivity.CHANGE_QUESTIONS, true);
+                startActivity(mIntent);
             }
         });
 
