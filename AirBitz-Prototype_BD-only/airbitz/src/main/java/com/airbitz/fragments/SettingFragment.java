@@ -250,6 +250,7 @@ public class SettingFragment extends Fragment {
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                saveCurrentSettings();
                 AirbitzApplication.Logout();
                 getActivity().startActivity(new Intent(getActivity(), NavigationActivity.class));
             }
