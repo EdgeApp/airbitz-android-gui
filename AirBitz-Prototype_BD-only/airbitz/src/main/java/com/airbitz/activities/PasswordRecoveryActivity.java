@@ -24,8 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_p_sABC_QuestionChoice;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
@@ -47,13 +49,12 @@ import java.util.Map;
  * Also, following questions in the same category don't repeat earlier questions.
  */
 public class PasswordRecoveryActivity extends Activity {
+    public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
 
     private String mUsername, mPassword;
 
     private View dummyFocus;
     private View dummyCover;
-
-    private Intent mIntent;
 
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
@@ -72,19 +73,29 @@ public class PasswordRecoveryActivity extends Activity {
 
     private SaveQuestionsTask mSaveQuestionsTask;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
-        mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
+
+        mCoreAPI = CoreAPI.getApi();
+        boolean change = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
+
+        if(change) {
+            //TODO question changes flow, user already logged in
+            mUsername = AirbitzApplication.getUsername();
+            mPassword = AirbitzApplication.getPassword();
+        } else {
+            mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
+            mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
+        }
 
         setContentView(R.layout.activity_password_recovery);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         this.overridePendingTransition(R.anim.nothing, R.anim.slide_in_from_right);
-
-        mIntent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
 
         mLayoutRecovery = (RelativeLayout) findViewById(R.id.activity_recovery_container_layout);
 
@@ -222,7 +233,8 @@ public class PasswordRecoveryActivity extends Activity {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -373,6 +385,8 @@ public class PasswordRecoveryActivity extends Activity {
             mAnswers = answers;
         }
 
+        //TODO need pre and post execute busy spinner
+
         @Override
         protected Boolean doInBackground(Void... params) {
             tABC_CC result = core.ABC_SetAccountRecoveryQuestions(mUsername, mPassword, mQuestions, mAnswers, null, pVoid, pError);
@@ -397,7 +411,8 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void SuccessfulSignup() {
-        startActivity(mIntent);
+        Intent intent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
+        startActivity(intent);
         PasswordRecoveryActivity.this.finish();
     }
 
