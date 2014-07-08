@@ -56,9 +56,10 @@ public class WalletFragment extends Fragment {
     private TextView mTitleTextView;
 
     private ImageView mMoverCoin;
-    private ImageView mMoverType;
+    private TextView mMoverType;
     private ImageView mBottomCoin;
-    private ImageView mBottomType;
+    private TextView mBottomType;
+    private TextView mTopType;
 
     private RelativeLayout exportLayout;
     private LinearLayout sendRequestLayout;
@@ -145,9 +146,10 @@ public class WalletFragment extends Fragment {
         switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
 
         mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        mMoverType = (ImageView) view.findViewById(R.id.button_mover_type);
+        mMoverType = (TextView) view.findViewById(R.id.button_mover_type);
         mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
-        mBottomType = (ImageView) view.findViewById(R.id.bottom_type);
+        mBottomType = (TextView) view.findViewById(R.id.bottom_type);
+        mTopType = (TextView) view.findViewById(R.id.top_type);//TODO
 
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
@@ -295,7 +297,7 @@ public class WalletFragment extends Fragment {
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setImageResource(WalletsFragment.mCurrencyTypeDarkDrawables[mCurrencyIndex]);
+        mBottomType.setText("USD");//TODO
     }
 
 
@@ -310,7 +312,7 @@ public class WalletFragment extends Fragment {
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setImageResource(R.drawable.ico_btc_white);
+            mMoverType.setText("BTC");//TODO
 
             mTransactionAdapter.setIsBitcoin(isBitcoin);
             mTransactionAdapter.notifyDataSetChanged();
@@ -319,7 +321,7 @@ public class WalletFragment extends Fragment {
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mButtonFiatBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);
-            mMoverType.setImageResource(R.drawable.ico_usd_white);
+            mMoverType.setText("USD");//TODO
 
             mTransactionAdapter.setIsBitcoin(isBitcoin);
             mTransactionAdapter.notifyDataSetChanged();
