@@ -8,9 +8,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tom on 6/20/14.
@@ -271,18 +269,14 @@ public class CoreAPI {
 
     //************ Account Recovery
 
-    private Map<String, String> getAccountRecoveryQuestions() {
-        Map<String, String> map = new HashMap<String, String>();
-        return map;
-    }
-
-
 
     //************ Settings handling
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
-    private String[] mFauxCurrencyDenomination = {"$", "$", "$", "$", "$", "$", "$"};
+    private String[] mFauxCurrencyDenomination = {"$", "¥", "₱", "€", "£", "$", "$"};
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
-    private String[] mDenominations = {"BTC", "mBTC", "uBTC"};
+
+    private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
+    private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
 
     public String getUserBTCDenomination() {
         tABC_AccountSettings settings = loadAccountSettings();
@@ -291,7 +285,17 @@ public class CoreAPI {
             Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
             return "";
         }
-        return mDenominations[bitcoinDenomination.getDenominationType()];
+        return mBTCDenominations[bitcoinDenomination.getDenominationType()];
+    }
+
+    public String getUserBTCSymbol() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination == null) {
+            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return mBTCSymbols[bitcoinDenomination.getDenominationType()];
     }
 
     public String getUserCurrencyAcronym() {
