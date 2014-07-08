@@ -140,12 +140,12 @@ public class CoreAPI {
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
-    public boolean createWallet(String walletName, int currencyNum) {
+    public boolean createWallet(String username, String password, String walletName, int currencyNum) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
-        tABC_CC result = core.ABC_CreateWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_CreateWallet(username, password,
                 walletName, currencyNum, 0, null, pVoid, pError);
         if(result==tABC_CC.ABC_CC_Ok) {
             return true;
@@ -267,20 +267,43 @@ public class CoreAPI {
         return false;
     }
 
+    //************ Account Recovery
+
+
     //************ Settings handling
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
-    private String[] mFauxCurrencyDenomination = {"$", "CNY", "CUP", "EUR", "GBP", "MXN", "$"};
+    private String[] mFauxCurrencyDenomination = {"$", "¥", "₱", "€", "£", "$", "$"};
     private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
-    private String[] mDenominations = {"BTC", "mBTC", "uBTC"};
 
-    public String getUserBTCDenominationSetting() {
+    private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
+    private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
+
+    public String getUserBTCDenomination() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
             return "";
         }
-        return mDenominations[bitcoinDenomination.getDenominationType()];
+        return mBTCDenominations[bitcoinDenomination.getDenominationType()];
+    }
+
+    public String getUserBTCSymbol() {
+        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
+        if(bitcoinDenomination == null) {
+            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return mBTCSymbols[bitcoinDenomination.getDenominationType()];
+    }
+
+    public String getUserCurrencyAcronym() {
+        return mFauxCurrencyAcronyms[SettingsCurrencyIndex()];
+    }
+
+    public String getUserCurrencyDenomination() {
+        return mFauxCurrencyDenomination[SettingsCurrencyIndex()];
     }
 
     public int[] getCurrencyNumbers() {

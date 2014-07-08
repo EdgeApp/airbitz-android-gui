@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -56,6 +57,8 @@ public class PasswordRecoveryActivity extends Activity {
     private View dummyFocus;
     private View dummyCover;
 
+    private ImageButton mBackButton;
+
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
@@ -74,24 +77,41 @@ public class PasswordRecoveryActivity extends Activity {
     private SaveQuestionsTask mSaveQuestionsTask;
 
     private CoreAPI mCoreAPI;
+    private boolean mChangeQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
-        boolean change = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
+        setContentView(R.layout.activity_password_recovery);
 
-        if(change) {
+        mCoreAPI = CoreAPI.getApi();
+        mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
+
+        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
+        mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
+
+        if(mChangeQuestions) {
             //TODO question changes flow, user already logged in
             mUsername = AirbitzApplication.getUsername();
             mPassword = AirbitzApplication.getPassword();
+
+            mSkipStepButton.setVisibility(View.INVISIBLE);
+            mBackButton.setVisibility(View.VISIBLE);
+            mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
         } else {
             mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
             mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
-        }
 
-        setContentView(R.layout.activity_password_recovery);
+            mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+            mSkipStepButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShowSkipQuestionsAlert();
+                }
+            });
+        }
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -106,27 +126,26 @@ public class PasswordRecoveryActivity extends Activity {
         currentAddressCategory1 = new ArrayList<String>();
         currentAddressCategory2 = new ArrayList<String>();
 
-        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
-        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
         dummyCover = findViewById(R.id.activity_recovery_dummy_cover);
 
-        mSkipStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowSkipQuestionsAlert();
-            }
-        });
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CompleteSignup();
+            }
+        });
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
             }
         });
 
@@ -197,7 +216,7 @@ public class PasswordRecoveryActivity extends Activity {
 
     private void populateQuestionViews() {
         mPasswordRecoveryListView.removeAllViews();
-        for(View v: mQuestionViews) {
+        for (View v : mQuestionViews) {
             mPasswordRecoveryListView.addView(v);
         }
         mPasswordRecoveryListView.invalidate();

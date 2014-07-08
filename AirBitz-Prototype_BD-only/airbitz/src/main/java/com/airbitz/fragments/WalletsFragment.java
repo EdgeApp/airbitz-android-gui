@@ -495,7 +495,8 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.createWallet(mWalletName, mCurrencyNum);
+            return mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    mWalletName, mCurrencyNum);
         }
 
         @Override
