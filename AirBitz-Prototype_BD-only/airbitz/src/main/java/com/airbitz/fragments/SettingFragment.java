@@ -98,16 +98,17 @@ public class SettingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mCoreAPI = CoreAPI.getApi();
+        mCoreSettings = mCoreAPI.loadAccountSettings();
+
         mLanguageItems = getResources().getStringArray(R.array.language_array);
-        mCurrencyItems = getResources().getStringArray(R.array.default_currency_array);
+        mCurrencyItems = mCoreAPI.getCurrencyAcronyms(); //getResources().getStringArray(R.array.default_currency_array);
         mUSDExchangeItems = getResources().getStringArray(R.array.usd_exchange_array);
         mCanadianExchangeItems = getResources().getStringArray(R.array.canadian_exchange_array);
         mEuroExchangeItems = getResources().getStringArray(R.array.euro_exchange_array);
         mPesoExchangeItems = getResources().getStringArray(R.array.peso_exchange_array);
         mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
-
-        mCoreAPI = CoreAPI.getApi();
-        mCoreSettings = mCoreAPI.loadAccountSettings();
     }
 
     @Override
@@ -273,7 +274,6 @@ public class SettingFragment extends Fragment {
         }
 
         //Credentials
-        //TODO
 
         //User Name
         mSendNameSwitch.setChecked(settings.getBNameOnPayments());
@@ -334,6 +334,53 @@ public class SettingFragment extends Fragment {
 
         //TODO save each exchange choice???
 
+    }
+
+    private void saveCurrentSettings() {
+        //Bitcoin denomination
+        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        if(denomination != null) {
+            if(mmBitcoinButton.isChecked()) {
+                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
+                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
+                denomination.setSatoshi(amt);
+            } else if(muBitcoinButton.isChecked()) {
+                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
+                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
+                denomination.setSatoshi(amt);
+            } else {
+                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
+                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
+                denomination.setSatoshi(amt);
+            }
+        }
+
+        //Credentials
+
+        //User Name
+        mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
+        mCoreSettings.setSzFirstName(mFirstEditText.getText().toString());
+        mCoreSettings.setSzLastName(mLastEditText.getText().toString());
+        mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
+
+
+        //Options
+        //Autologoff
+        mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
+
+        // Language TODO
+        mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
+
+        // Default Currency TODO
+        mCoreSettings.setCurrencyNum(mCurrencyNum);
+
+        //Default Exchanges
+//            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
+
+        mCoreAPI.saveAccountSettings(mCoreSettings);
     }
 
     // searches the exchanges in the settings for the exchange associated with the given currency number
@@ -434,6 +481,19 @@ public class SettingFragment extends Fragment {
         mTextPicker.setMaxValue(items.length-1);
         mTextPicker.setMinValue(0);
         mTextPicker.setDisplayedValues(items);
+        mTextPicker.setOnValueChangedListener( new NumberPicker.
+                OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int
+                    oldVal, int newVal) {
+                if(mCurrencyItems.equals(items)) {
+                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[newVal];
+                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
+                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
+                }
+            }
+        });
+
 
         AlertDialog frag = new AlertDialog.Builder(getActivity())
                 .setTitle(title)
@@ -442,10 +502,12 @@ public class SettingFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             int num = Integer.valueOf(mTextPicker.getValue());
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                button.setText(items[num]);
-                                if(mCurrencyItems.equals(items)) {
-                                    mCurrencyNum = num;
-                                }
+//                                button.setText(items[num]);
+//                                if(mCurrencyItems.equals(items)) {
+//                                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[num];
+//                                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
+//                                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
+//                                }
                             }
                         }
                 )
@@ -504,40 +566,5 @@ public class SettingFragment extends Fragment {
 //        }
 //    }
 
-    private void saveCurrentSettings() {
-            tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
-            if(denomination != null) {
-                if(mmBitcoinButton.isChecked()) {
-                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
-                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
-                    denomination.setSatoshi(amt);
-                } else if(muBitcoinButton.isChecked()) {
-                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
-                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
-                    denomination.setSatoshi(amt);
-                } else {
-                    denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
-                    SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                    core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
-                    denomination.setSatoshi(amt);
-                }
-            }
 
-            mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
-            mCoreSettings.setSzFirstName(mFirstEditText.getText().toString());
-            mCoreSettings.setSzLastName(mLastEditText.getText().toString());
-            mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
-
-            mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
-
-
-            mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
-            mCoreSettings.setCurrencyNum(mCurrencyNum);
-
-//            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
-
-        mCoreAPI.saveAccountSettings(mCoreSettings);
-    }
 }

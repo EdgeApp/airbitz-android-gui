@@ -366,7 +366,10 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_Currency p, long i) { return getCPtr(p)+i; }
     }
 
+    private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings loadAccountSettings() {
+        if(mCoreSettings!=null)
+            return mCoreSettings;
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -377,8 +380,8 @@ public class CoreAPI {
                 pAccountSettings, Error);
 
         if(result==tABC_CC.ABC_CC_Ok) {
-            tABC_AccountSettings coreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
-            return coreSettings;
+            mCoreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
+            return mCoreSettings;
         } else {
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
             Log.d("CoreAPI", "Load settings failed - "+message);
@@ -885,6 +888,11 @@ public class CoreAPI {
             index = currencyNumbers.length-1;
         }
         return index;
+    }
+
+    public void SaveCurrencyNumber(int currencyNum) {
+        tABC_AccountSettings settings = loadAccountSettings();
+        settings.setCurrencyNum(currencyNum);
     }
 
     public int BitcoinDenominationLabel() {
