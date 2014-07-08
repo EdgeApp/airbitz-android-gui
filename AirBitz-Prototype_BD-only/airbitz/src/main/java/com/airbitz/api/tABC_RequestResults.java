@@ -69,6 +69,14 @@ public class tABC_RequestResults {
     return coreJNI.tABC_RequestResults_bSuccess_get(swigCPtr, this);
   }
 
+  public void setSzWalletUUID(String value) {
+    coreJNI.tABC_RequestResults_szWalletUUID_set(swigCPtr, this, value);
+  }
+
+  public String getSzWalletUUID() {
+    return coreJNI.tABC_RequestResults_szWalletUUID_get(swigCPtr, this);
+  }
+
   public void setErrorInfo(tABC_Error value) {
     coreJNI.tABC_RequestResults_errorInfo_set(swigCPtr, this, tABC_Error.getCPtr(value), value);
   }

@@ -42,6 +42,7 @@ public final class tABC_CC {
   public final static tABC_CC ABC_CC_InvalidWalletID = new tABC_CC("ABC_CC_InvalidWalletID", coreJNI.ABC_CC_InvalidWalletID_get());
   public final static tABC_CC ABC_CC_NoRequest = new tABC_CC("ABC_CC_NoRequest", coreJNI.ABC_CC_NoRequest_get());
   public final static tABC_CC ABC_CC_InsufficientFunds = new tABC_CC("ABC_CC_InsufficientFunds", coreJNI.ABC_CC_InsufficientFunds_get());
+  public final static tABC_CC ABC_CC_Synchronizing = new tABC_CC("ABC_CC_Synchronizing", coreJNI.ABC_CC_Synchronizing_get());
 
   public final int swigValue() {
     return swigValue;
@@ -77,7 +78,7 @@ public final class tABC_CC {
     swigNext = this.swigValue+1;
   }
 
-  private static tABC_CC[] swigValues = { ABC_CC_Ok, ABC_CC_Error, ABC_CC_NULLPtr, ABC_CC_NoAvailAccountSpace, ABC_CC_DirReadError, ABC_CC_FileOpenError, ABC_CC_FileReadError, ABC_CC_FileWriteError, ABC_CC_FileDoesNotExist, ABC_CC_UnknownCryptoType, ABC_CC_InvalidCryptoType, ABC_CC_DecryptError, ABC_CC_DecryptFailure, ABC_CC_EncryptError, ABC_CC_ScryptError, ABC_CC_AccountAlreadyExists, ABC_CC_AccountDoesNotExist, ABC_CC_JSONError, ABC_CC_BadPassword, ABC_CC_WalletAlreadyExists, ABC_CC_URLError, ABC_CC_SysError, ABC_CC_NotInitialized, ABC_CC_Reinitialization, ABC_CC_ServerError, ABC_CC_NoRecoveryQuestions, ABC_CC_NotSupported, ABC_CC_MutexError, ABC_CC_NoTransaction, ABC_CC_ParseError, ABC_CC_InvalidWalletID, ABC_CC_NoRequest, ABC_CC_InsufficientFunds };
+  private static tABC_CC[] swigValues = { ABC_CC_Ok, ABC_CC_Error, ABC_CC_NULLPtr, ABC_CC_NoAvailAccountSpace, ABC_CC_DirReadError, ABC_CC_FileOpenError, ABC_CC_FileReadError, ABC_CC_FileWriteError, ABC_CC_FileDoesNotExist, ABC_CC_UnknownCryptoType, ABC_CC_InvalidCryptoType, ABC_CC_DecryptError, ABC_CC_DecryptFailure, ABC_CC_EncryptError, ABC_CC_ScryptError, ABC_CC_AccountAlreadyExists, ABC_CC_AccountDoesNotExist, ABC_CC_JSONError, ABC_CC_BadPassword, ABC_CC_WalletAlreadyExists, ABC_CC_URLError, ABC_CC_SysError, ABC_CC_NotInitialized, ABC_CC_Reinitialization, ABC_CC_ServerError, ABC_CC_NoRecoveryQuestions, ABC_CC_NotSupported, ABC_CC_MutexError, ABC_CC_NoTransaction, ABC_CC_ParseError, ABC_CC_InvalidWalletID, ABC_CC_NoRequest, ABC_CC_InsufficientFunds, ABC_CC_Synchronizing };
   private static int swigNext = 0;
   private final int swigValue;
   private final String swigName;
