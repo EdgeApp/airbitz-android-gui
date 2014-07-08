@@ -74,24 +74,36 @@ public class PasswordRecoveryActivity extends Activity {
     private SaveQuestionsTask mSaveQuestionsTask;
 
     private CoreAPI mCoreAPI;
+    private boolean mChangeQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        boolean change = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
+        mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
 
-        if(change) {
+        setContentView(R.layout.activity_password_recovery);
+
+        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        if(mChangeQuestions) {
             //TODO question changes flow, user already logged in
             mUsername = AirbitzApplication.getUsername();
             mPassword = AirbitzApplication.getPassword();
+
+            mSkipStepButton.setVisibility(View.INVISIBLE);
         } else {
             mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
             mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
-        }
 
-        setContentView(R.layout.activity_password_recovery);
+            mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+            mSkipStepButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShowSkipQuestionsAlert();
+                }
+            });
+        }
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -106,23 +118,15 @@ public class PasswordRecoveryActivity extends Activity {
         currentAddressCategory1 = new ArrayList<String>();
         currentAddressCategory2 = new ArrayList<String>();
 
-        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
         dummyCover = findViewById(R.id.activity_recovery_dummy_cover);
 
-        mSkipStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowSkipQuestionsAlert();
-            }
-        });
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -196,9 +200,13 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void populateQuestionViews() {
-        mPasswordRecoveryListView.removeAllViews();
-        for(View v: mQuestionViews) {
-            mPasswordRecoveryListView.addView(v);
+        if(mChangeQuestions) {
+
+        } else {
+            mPasswordRecoveryListView.removeAllViews();
+            for (View v : mQuestionViews) {
+                mPasswordRecoveryListView.addView(v);
+            }
         }
         mPasswordRecoveryListView.invalidate();
     }
