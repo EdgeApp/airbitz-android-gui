@@ -219,14 +219,7 @@ public class PasswordRecoveryActivity extends Activity {
         for (View v : mQuestionViews) {
             mPasswordRecoveryListView.addView(v);
         }
-        if(mChangeQuestions) {
-            populateChangeQuestionsAndAnswers();
-        }
         mPasswordRecoveryListView.invalidate();
-    }
-
-    private void populateChangeQuestionsAndAnswers() {
-
     }
 
     public void ShowSkipQuestionsAlert(){
