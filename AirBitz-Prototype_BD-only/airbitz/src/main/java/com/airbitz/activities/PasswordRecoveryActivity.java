@@ -80,18 +80,20 @@ public class PasswordRecoveryActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_password_recovery);
+
         mCoreAPI = CoreAPI.getApi();
         mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
 
-        setContentView(R.layout.activity_password_recovery);
-
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         if(mChangeQuestions) {
             //TODO question changes flow, user already logged in
             mUsername = AirbitzApplication.getUsername();
             mPassword = AirbitzApplication.getPassword();
 
             mSkipStepButton.setVisibility(View.INVISIBLE);
+            mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
         } else {
             mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
             mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
@@ -118,7 +120,6 @@ public class PasswordRecoveryActivity extends Activity {
         currentAddressCategory1 = new ArrayList<String>();
         currentAddressCategory2 = new ArrayList<String>();
 
-        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -200,15 +201,18 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void populateQuestionViews() {
+        mPasswordRecoveryListView.removeAllViews();
+        for (View v : mQuestionViews) {
+            mPasswordRecoveryListView.addView(v);
+        }
         if(mChangeQuestions) {
-
-        } else {
-            mPasswordRecoveryListView.removeAllViews();
-            for (View v : mQuestionViews) {
-                mPasswordRecoveryListView.addView(v);
-            }
+            populateChangeQuestionsAndAnswers();
         }
         mPasswordRecoveryListView.invalidate();
+    }
+
+    private void populateChangeQuestionsAndAnswers() {
+
     }
 
     public void ShowSkipQuestionsAlert(){
