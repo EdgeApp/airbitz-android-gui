@@ -5,7 +5,6 @@
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app"
     android:orientation="vertical"
     tools:context="com.airbitz.activities.BusinessDirectoryActivity"
     tools:ignore="MergeRootFrame">
@@ -24,7 +23,7 @@
         android:id="@+id/layout_header"
         layout="@layout/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="44.1dp" />
 
     <!-- Search Bar -->
 

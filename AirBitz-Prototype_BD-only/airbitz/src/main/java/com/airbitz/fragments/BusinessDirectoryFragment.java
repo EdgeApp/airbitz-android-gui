@@ -750,6 +750,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
+        mBackButton.setVisibility(View.GONE);
 
         return view;
     }
