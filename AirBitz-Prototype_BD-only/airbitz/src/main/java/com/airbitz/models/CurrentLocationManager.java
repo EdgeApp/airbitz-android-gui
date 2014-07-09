@@ -27,11 +27,10 @@ public class CurrentLocationManager implements
     private LocationClient locationClient;
     private Location mCurrentLocation;
     LocationRequest mLocationRequest;
+    private Context mContext;
 
     public CurrentLocationManager(Context context) {
-        locationClient = new LocationClient(context, this, this);
-
-        attemptConnection();
+        mContext = context;
     }
 
     // Callback interface for adding and removing location change listeners
@@ -43,6 +42,10 @@ public class CurrentLocationManager implements
     }
 
     public void addLocationChangeListener(OnLocationChange listener) {
+        if(mObservers.size() == 0) {
+            locationClient = new LocationClient(mContext, this, this);
+            attemptConnection();
+        }
         if(!mObservers.contains(listener)) {
             mObservers.add(listener);
         }
@@ -50,6 +53,9 @@ public class CurrentLocationManager implements
 
     public void removeLocationChangeListener(OnLocationChange listener) {
         mRemovers.add(listener);
+        if(mObservers.size() <= 0) {
+            locationClient.disconnect();
+        }
     }
 
     public static CurrentLocationManager getLocationManager(Context context) {
@@ -67,18 +73,6 @@ public class CurrentLocationManager implements
         locationClient.connect();
     }
 
-    public void requestUpdates(LocationRequest locationRequest, LocationListener listener){
-        locationClient.requestLocationUpdates(locationRequest,listener);
-    }
-
-    public boolean getConnectionStatus(){
-        return locationClient.isConnected();
-    }
-
-    public void removeUpdates(LocationListener listener){
-        locationClient.removeLocationUpdates(listener);
-    }
-
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("CurrentLocationManager", "Connected.");
@@ -92,7 +86,9 @@ public class CurrentLocationManager implements
     @Override
     public void onDisconnected() {
         Log.d("CurrentLocationManager", "Disconnected. Please re-connect.");
-        attemptConnection();
+        if(mObservers.size()!=0) {
+            attemptConnection();
+        }
     }
 
     @Override
