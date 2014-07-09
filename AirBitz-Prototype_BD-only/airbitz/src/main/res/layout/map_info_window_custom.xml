@@ -20,10 +20,10 @@
             android:layout_width="180dp"
             android:layout_height="95dp"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="28dp"
+            android:paddingTop="7dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="27dp"
             android:id="@+id/balloon_layout_inner"
             android:background="@drawable/bg_balloon_info_no_shadow">
 
@@ -40,7 +40,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/infoLayout"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:visibility="visible">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -65,7 +66,7 @@
                     android:layout_width="170dp"
                     android:layout_height="90dp"
                     android:paddingTop="5dp"
-                    android:paddingBottom="32dp"
+                    android:paddingBottom="35dp"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:orientation="vertical"
@@ -82,10 +83,10 @@
                         android:textStyle="bold"
                         android:id="@+id/titleInfo"
                         android:textColor="@android:color/white"
-                        android:shadowColor="#FF000000"
-                        android:shadowDx="0"
-                        android:shadowDy="0"
-                        android:shadowRadius="3"
+                        android:shadowColor="#FF999999"
+                        android:shadowDx="3"
+                        android:shadowDy="3"
+                        android:shadowRadius="1"
                         />
 
                     <TextView
@@ -96,12 +97,20 @@
                         android:inputType="textNoSuggestions"
                         android:id="@+id/addressInfo"
                         android:textColor="@android:color/white"
-                        android:shadowColor="#FF000000"
-                        android:shadowDx="0"
-                        android:shadowDy="0"
-                        android:shadowRadius="3" />
+                        android:shadowColor="#FF999999"
+                        android:shadowDx="3"
+                        android:shadowDy="3"
+                        android:shadowRadius="1" />
                 </LinearLayout>
             </LinearLayout>
+
+                <View
+                    android:layout_width="166dp"
+                    android:layout_height="67dp"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:background="@drawable/inner_round_rectangle"/>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
