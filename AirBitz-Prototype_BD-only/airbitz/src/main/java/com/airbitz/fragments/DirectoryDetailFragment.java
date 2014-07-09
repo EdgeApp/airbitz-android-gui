@@ -29,9 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
+import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
+import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
@@ -60,6 +62,8 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     private Intent mIntent;
 
     private RelativeLayout mParentLayout;
+
+    private CurrentLocationManager mLocationManager;
 
     private TextView mTitleTextView;
     private ImageView mLogo;
@@ -108,6 +112,8 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mGestureDetector = new GestureDetector(this);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+
+        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
 
         Log.d(TAG, "Business ID: " + mBusinessId);
 
@@ -282,8 +288,9 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         }
 
         @Override protected String doInBackground(String... params) {
-            String latLong = String.valueOf(getLatFromSharedPreference())
-                    + "," + String.valueOf(getLonFromSharedPreference());
+            android.location.Location currentLoc = mLocationManager.getLocation();
+            String latLong = String.valueOf(currentLoc.getLatitude());
+            latLong += "," + String.valueOf(currentLoc.getLongitude());
             return mApi.getBusinessByIdAndLatLong(params[0],latLong);
         }
 
