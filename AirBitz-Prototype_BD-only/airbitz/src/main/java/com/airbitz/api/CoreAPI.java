@@ -68,12 +68,6 @@ public class CoreAPI {
                 mExchangeRateHandler.post(BlockHeightUpdater);
             else
                 Log.d("CoreAPI", "block exchange event has no listener");
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
-            Log.d("CoreAPI", "exchange rate update event");
-            if(mOnExchangeRateUpdate!=null)
-                mExchangeRateHandler.post(ExchangeUpdater);
-            else
-                Log.d("CoreAPI", "exchange rate event has no listener");
         }
     }
 
@@ -101,19 +95,6 @@ public class CoreAPI {
     }
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() { mOnBlockHeightChange.onBlockHeightChange(); }
-    };
-
-
-    // Callback interface when an exchange rate update is received
-    private OnExchangeRateUpdate mOnExchangeRateUpdate;
-    public interface OnExchangeRateUpdate {
-        public void onExchangeRateUpdate();
-    }
-    public void setOnExchangeRateUpdateListener(OnExchangeRateUpdate listener) {
-        mOnExchangeRateUpdate = listener;
-    }
-    final Runnable ExchangeUpdater = new Runnable() {
-        public void run() { mOnExchangeRateUpdate.onExchangeRateUpdate(); }
     };
 
     //***************** Wallet handling
@@ -961,12 +942,14 @@ public class CoreAPI {
     //*************** Exchange Rate
     Handler mExchangeRateHandler = new Handler();
     private ExchangeRateSource[] mExchangeRateSources;
-    // Callback interface for adding and removing location change listeners
-    private List<OnExchangeRateChange> mObservers = Collections.synchronizedList(new ArrayList<OnExchangeRateChange>());
-    private List<OnExchangeRateChange> mRemovers = new ArrayList<OnExchangeRateChange>();
+    private double[] mCurrentExchangeRates;
 
-    public interface OnExchangeRateChange {
-        public void OnCurrentLocationChange();
+    // Callback interface for adding and removing location change listeners
+    private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
+    private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
+
+    public interface OnExchangeRatesChange {
+        public void OnExchangeRatesChange();
     }
 
     final Runnable ExchangeRateUpdater = new Runnable() {
@@ -990,51 +973,56 @@ public class CoreAPI {
         }
     }
 
-    // Exchange Rate
+    // Exchange Rate updates may have delay the first call
     public void updateAllExchangeRates()
     {
         if (AirbitzApplication.isLoggedIn())
         {
             tABC_Error error = new tABC_Error();
-            // Check the default currency for updates
-            for(ExchangeRateSource source : mExchangeRateSources) {
+
+
+            for(int i=0; i< mExchangeRateSources.length; i++) {
+                ExchangeRateSource source = mExchangeRateSources[i];
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         source.getCurrencyNum(), null, null, error);
+
+                //TODO if updated rate, change mCurrentExchangeRate[i]
             }
+            onExchangeRatesUpdated();
         }
     }
 
-    public void addExchangeRateChangeListener(OnExchangeRateChange listener) {
-        if(mObservers.size() == 0) {
+    public void addExchangeRateChangeListener(OnExchangeRatesChange listener) {
+        if(mExchangeRateObservers.size() == 0) {
             startExchangeRateUpdates();
         }
-        if(!mObservers.contains(listener)) {
-            mObservers.add(listener);
+        if(!mExchangeRateObservers.contains(listener)) {
+            mExchangeRateObservers.add(listener);
         }
     }
 
-    public void removeExchangeRateChangeListener(OnExchangeRateChange listener) {
-        mRemovers.add(listener);
-        if(mObservers.size() <= 0) {
+    public void removeExchangeRateChangeListener(OnExchangeRatesChange listener) {
+        mExchangeRateRemovers.add(listener);
+        if(mExchangeRateObservers.size() <= 0) {
             stopExchangeRateUpdates();
         }
     }
 
-    public void onExchangeRateChanged() {
-        if(!mRemovers.isEmpty()) {
-            for(OnExchangeRateChange i : mRemovers) {
-                if(mObservers.contains(i)) {
-                    mObservers.remove(i);
+    public void onExchangeRatesUpdated() {
+        if(!mExchangeRateRemovers.isEmpty()) {
+            for(OnExchangeRatesChange i : mExchangeRateRemovers) {
+                if(mExchangeRateObservers.contains(i)) {
+                    mExchangeRateObservers.remove(i);
                 }
             }
-            mRemovers.clear();
+            mExchangeRateRemovers.clear();
         }
 
-        if (!mObservers.isEmpty()) {
+        if (!mExchangeRateObservers.isEmpty()) {
             Log.d("CoreAPI",
                     "Exchange Rate changed");
-            for(OnExchangeRateChange listener : mObservers) {
-                listener.OnCurrentLocationChange();
+            for(OnExchangeRatesChange listener : mExchangeRateObservers) {
+                listener.OnExchangeRatesChange();
             }
         }
     }

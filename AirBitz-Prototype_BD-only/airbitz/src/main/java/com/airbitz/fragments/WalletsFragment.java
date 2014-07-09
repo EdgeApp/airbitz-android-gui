@@ -50,7 +50,9 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletsFragment extends Fragment implements DynamicListView.OnListReordered {
+public class WalletsFragment extends Fragment
+        implements DynamicListView.OnListReordered,
+        CoreAPI.OnExchangeRatesChange {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -150,18 +152,7 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
             buildFragments();
         }
 
-        tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
-        mFiatCurrencyNum = settings.getCurrencyNum();
-        int[] currencyNumbers = mCoreAPI.getCurrencyNumbers();
-        mCurrencyIndex = -1;
-        for(int i=0; i<currencyNumbers.length; i++) {
-            if(currencyNumbers[i] == mFiatCurrencyNum)
-                mCurrencyIndex = i;
-        }
-        if((mCurrencyIndex==-1) || (mCurrencyIndex > mCurrencyCoinDarkDrawables.length)) { // default usd
-            Log.d("WalletsFragment", "currency index out of bounds "+mCurrencyIndex);
-            mCurrencyIndex = currencyNumbers.length - 1;
-        }
+        mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
     }
 
     @Override
@@ -365,7 +356,19 @@ public class WalletsFragment extends Fragment implements DynamicListView.OnListR
             }
         });
         UpdateBalances();
+        mCoreAPI.addExchangeRateChangeListener(this);
+
         return view;
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        mCoreAPI.removeExchangeRateChangeListener(this);
+    }
+
+    @Override
+    public void OnExchangeRatesChange() {
+        UpdateBalances();
     }
 
     // Sum all wallets except for archived and show in total
