@@ -315,6 +315,7 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setText(language);
 
         // Default Currency
+        mCurrencyNum = mCoreSettings.getCurrencyNum();
         mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
 
         //Default Exchange

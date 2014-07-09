@@ -944,6 +944,11 @@ public class CoreAPI {
         }
     }
 
+    public double SatoshiToDefaultCurrency(long satoshi) {
+        int num = mCoreSettings.getCurrencyNum();
+        return SatoshiToCurrency(satoshi, num);
+    }
+
     public double SatoshiToCurrency(long satoshi, int currencyNum) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_double currency = core.new_doublep();
@@ -952,6 +957,22 @@ public class CoreAPI {
                 satoshi, SWIGTYPE_p_double.getCPtr(currency), currencyNum, tABC_Error.getCPtr(error));
 
         return core.doublep_value(currency);
+    }
+
+    public long DefaultCurrencyToSatoshi(double currency) {
+        return CurrencyToSatoshi(currency, mCoreSettings.getCurrencyNum());
+    }
+
+    public long CurrencyToSatoshi(double currency, int currencyNum) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC result;
+        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
+        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
+
+        result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        currency, currencyNum, satoshi, error);
+
+        return core.longp_value(l);
     }
 
     //*************** Exchange Rate
