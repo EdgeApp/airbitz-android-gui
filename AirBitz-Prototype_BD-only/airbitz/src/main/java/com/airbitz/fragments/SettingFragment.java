@@ -204,49 +204,49 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mLanguageButton, mLanguageItems, "Select an item");
+                showSelectorDialog(mLanguageButton, mLanguageItems, "Select an item", 0);
             }
         });
 
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mDefaultCurrencyButton, mCurrencyItems, "Select an item");
+                showSelectorDialog(mDefaultCurrencyButton, mCurrencyItems, "Select an item", mCoreAPI.SettingsCurrencyIndex());
             }
         });
 
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item");
+                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);
             }
         });
 
         mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mCanadianDollarButton, mCanadianExchangeItems, "Select an item");
+                showSelectorDialog(mCanadianDollarButton, mCanadianExchangeItems, "Select an item", 0);
             }
         });
 
         mEuroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mEuroButton, mEuroExchangeItems, "Select an item");
+                showSelectorDialog(mEuroButton, mEuroExchangeItems, "Select an item", 0);
             }
         });
 
         mPesoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mPesoButton, mPesoExchangeItems, "Select an item");
+                showSelectorDialog(mPesoButton, mPesoExchangeItems, "Select an item", 0);
             }
         });
 
         mYuanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mYuanButton, mYuanExchangeItems, "Select an item");
+                showSelectorDialog(mYuanButton, mYuanExchangeItems, "Select an item", 0);
             }
         });
 
@@ -315,6 +315,7 @@ public class SettingFragment extends Fragment {
         mLanguageButton.setText(language);
 
         // Default Currency
+        mCurrencyNum = mCoreSettings.getCurrencyNum();
         mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
 
         //Default Exchange
@@ -455,7 +456,7 @@ public class SettingFragment extends Fragment {
         frag.show();
     }
 
-    private void showSelectorDialog(final Button button, final String[] items, String title) {
+    private void showSelectorDialog(final Button button, final String[] items, String title, int index) {
         LayoutInflater inflater = (LayoutInflater)
                 getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View npView = inflater.inflate(R.layout.dialog_text_selector, null);
@@ -463,6 +464,7 @@ public class SettingFragment extends Fragment {
 
         mTextPicker.setMaxValue(items.length-1);
         mTextPicker.setMinValue(0);
+        mTextPicker.setValue(index);
         mTextPicker.setDisplayedValues(items);
         mTextPicker.setOnValueChangedListener( new NumberPicker.
                 OnValueChangeListener() {

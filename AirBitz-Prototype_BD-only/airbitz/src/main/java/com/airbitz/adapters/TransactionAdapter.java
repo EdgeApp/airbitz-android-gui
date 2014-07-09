@@ -13,7 +13,6 @@ import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +23,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private Context mContext;
     private boolean mSearch;
     private boolean mIsBitcoin;
+    private int mCurrencyNum;
     private CoreAPI mCoreAPI;
 
     private List<Transaction> mListTransaction;
@@ -40,6 +40,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     }
 
     public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
+
+    public void setCurrencyNum(int num) { mCurrencyNum = num; }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -59,7 +61,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         if(mIsBitcoin) {
             creditAmountTextView.setText(mCoreAPI.formatSatoshi(transactionSatoshis));
         } else {
-            creditAmountTextView.setText(mCoreAPI.FormatString(transactionSatoshis, false));
+            creditAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transactionSatoshis, false, true));
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");
