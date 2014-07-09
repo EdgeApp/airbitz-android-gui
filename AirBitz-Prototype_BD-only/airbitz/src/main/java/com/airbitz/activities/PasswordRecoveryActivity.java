@@ -741,7 +741,8 @@ public class PasswordRecoveryActivity extends Activity {
 
     @Override
     public void onBackPressed(){
-
+        if(mChangeQuestions)
+            super.onBackPressed();
     }
 
 }
