@@ -49,6 +49,11 @@ public class CurrentLocationManager implements
         if(!mObservers.contains(listener)) {
             mObservers.add(listener);
         }
+        if(null != listener){
+            if(null != mCurrentLocation) {
+                listener.OnCurrentLocationChange(mCurrentLocation);
+            }
+        }
     }
 
     public void removeLocationChangeListener(OnLocationChange listener) {
@@ -81,6 +86,7 @@ public class CurrentLocationManager implements
         mLocationRequest.setInterval(60000);
         mLocationRequest.setFastestInterval(30000);
         locationClient.requestLocationUpdates(mLocationRequest, this);
+        mCurrentLocation = locationClient.getLastLocation();
     }
 
     @Override
