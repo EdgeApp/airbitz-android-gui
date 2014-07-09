@@ -363,6 +363,10 @@ public class CoreAPI {
 
         if(result==tABC_CC.ABC_CC_Ok) {
             mCoreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
+            if(mCoreSettings.getCurrencyNum() == 0) {
+                mCoreSettings.setCurrencyNum(840); // US DOLLAR DEFAULT
+                saveAccountSettings(mCoreSettings);
+            }
             return mCoreSettings;
         } else {
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
@@ -908,24 +912,35 @@ public class CoreAPI {
     }
 
     public String BTCtoFiatStringConversion() {
-        String currency = FormatString(100000000, false);
+        String currency = FormatDefaultCurrency(100000000, false, true);
         int index = SettingsCurrencyIndex();
         String currencyLabel = mFauxCurrencyAcronyms[index];
-        return "1.00 BTC = " + currency + " " + currencyLabel; //[NSString stringWithFormat:@"1.00 %@ = $%.2f %@", denominationLabel, currency, currencyLabel];
+        return "1.00 BTC = " + currency + " " + currencyLabel;
     }
 
-    public String FormatString(long satoshi, boolean btc)
+    public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
         if (!btc)
         {
-            tABC_AccountSettings settings = loadAccountSettings();
-            int currencyNumber = settings.getCurrencyNum();
+            int currencyNumber = mCoreSettings.getCurrencyNum();
 
-            return formatCurrency(SatoshiToCurrency(satoshi, currencyNumber));
+            return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
         }
-        else // currency
+        else
         {
-            return formatSatoshi(satoshi);
+            return formatSatoshi(satoshi, withSymbol);
+        }
+    }
+
+    public String FormatCurrency(long satoshi, int currencyNum, boolean btc, boolean withSymbol)
+    {
+        if (!btc)
+        {
+            return formatCurrency(SatoshiToCurrency(satoshi, currencyNum), withSymbol);
+        }
+        else
+        {
+            return formatSatoshi(satoshi, withSymbol);
         }
     }
 
@@ -942,7 +957,6 @@ public class CoreAPI {
     //*************** Exchange Rate
     Handler mExchangeRateHandler = new Handler();
     private ExchangeRateSource[] mExchangeRateSources;
-    private double[] mCurrentExchangeRates;
 
     // Callback interface for adding and removing location change listeners
     private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
@@ -985,8 +999,6 @@ public class CoreAPI {
                 ExchangeRateSource source = mExchangeRateSources[i];
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         source.getCurrencyNum(), null, null, error);
-
-                //TODO if updated rate, change mCurrentExchangeRate[i]
             }
             onExchangeRatesUpdated();
         }
