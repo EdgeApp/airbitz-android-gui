@@ -225,10 +225,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void pushFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(mNavStacks[mNavFragmentId].size()!=0){
-            System.out.println("Adding Animation");
             transaction.setCustomAnimations(R.anim.slide_in_from_right,R.anim.slide_out_left,R.anim.slide_in_from_right, R.anim.slide_out_left);
         }
-        System.out.println("After Adding Animation");
         transaction.replace(R.id.activityLayout, fragment);
         mNavStacks[mNavFragmentId].push(fragment);
         transaction.commit();

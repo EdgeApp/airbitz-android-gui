@@ -205,10 +205,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mDragLayout = (LinearLayout) view.findViewById(R.id.dragLayout);
         llListContainer = (RelativeLayout) view.findViewById(R.id.list_view_container);
         flMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
-        //mViewAnimator = (ViewAnimator) view.findViewById(R.id.ViewAnimator);
-
-        // mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
-
         businessHint = (TextView) view.findViewById(R.id.business_hint);
         businessHint.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         locationHint = (TextView) view.findViewById(R.id.location_hint);
@@ -217,9 +213,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<LocationSearchResult>();
 
-        //mGestureDetector = new GestureDetector(this);
-
-        // mTopLayout = (LinearLayout) findViewById(R.id.topLayout);
         mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
@@ -619,11 +612,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         int[] dragBarLocation = new int[2];
                         mDragLayout.getLocationOnScreen(dragBarLocation);
 
-                        Log.d(TAG, "dragLayout location: " + dragBarLocation[1]);
-                        Log.d(TAG, "dragLayout height: " + dragBarHeight);
-                        Log.d(TAG, "display height: " + App.getDisplayHeight());
+                        //Log.d(TAG, "dragLayout location: " + dragBarLocation[1]);
+                        //Log.d(TAG, "dragLayout height: " + dragBarHeight);
+                        //Log.d(TAG, "display height: " + App.getDisplayHeight());
 
-                        Log.d(TAG, String.format("flMapContainer height: %d", param.height));
+                        //Log.d(TAG, String.format("flMapContainer height: %d", param.height));
                         if (param.height <= 0 || (dragBarLocation[1] + dragBarHeight >= App.getDisplayHeight() && yMove > 0)) {
                             Log.d(TAG, "height is out of bounds.");
                             param.height = currentHeight;
@@ -632,7 +625,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         flMapContainer.setLayoutParams(param);
 
                         int padding = (mapHeight - param.height) / 2;
-                        Log.d(TAG, "map padding: " + String.valueOf(padding));
+                        //Log.d(TAG, "map padding: " + String.valueOf(padding));
                         if(mGoogleMap == null){
                             initializeMap();
                         }
@@ -756,18 +749,20 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private void initializeMap(){//MapView mapView) {
-        if (mGoogleMap == null) {
+        //if (mGoogleMap == null) {
             //mapView.onCreate(null);
 
             // Gets to GoogleMap from the MapView and does initialization stuff
             //mGoogleMap = mapView.getMap();
+            System.out.println("GOOGLE MAPS IS NULL!!!!!!!!!!! BOOOOOO!!!!!");
 
-            mGoogleMap = mapFragment.getMap();
+            //mGoogleMap = mapFragment.getMap();
             if (mGoogleMap == null) {
                 Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
+            System.out.println("GOOGLE MAPS IS NOT NULL!!!!!!!!!!! YAAAAAAAYY!!!!!");
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
             mGoogleMap.setMyLocationEnabled(true);
 
@@ -835,8 +830,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
+            System.out.println("Before setting custom");
             MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
             mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
+            System.out.println("After setting custom");
 
             mLocateMeButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
@@ -897,7 +894,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             });
             mGoogleMap.setMyLocationEnabled(false);
             showViewAnimatorChild(0);
-        }
+        //}
     }
 
     private void drawCurrentLocationMarker(Location location) {
