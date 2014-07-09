@@ -48,8 +48,7 @@ import java.util.Stack;
  */
 public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener,
-        CoreAPI.OnIncomingBitcoin,
-        CoreAPI.OnExchangeRateUpdate {
+        CoreAPI.OnIncomingBitcoin {
 
     private CoreAPI mCoreAPI;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
@@ -91,7 +90,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         mCoreAPI = CoreAPI.getApi();
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnExchangeRateUpdateListener(this);
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -345,11 +343,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
 
     @Override
-    public void onExchangeRateUpdate() {
-        Log.d("NavigationActivity", "Exchange update received");
-    }
-
-    @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
@@ -360,6 +353,4 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         frag.setArguments(bundle);
         pushFragment(frag);
     }
-
-
 }
