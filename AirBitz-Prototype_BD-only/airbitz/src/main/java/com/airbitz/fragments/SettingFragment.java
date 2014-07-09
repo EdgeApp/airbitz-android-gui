@@ -81,6 +81,8 @@ public class SettingFragment extends Fragment {
     private String[] mCurrencyItems;
     private int mCurrencyNum;
     private CoreAPI.ExchangeRateSource[] mExchanges;
+
+    //TODO Move to strings.xml as these will depend on translations there
     private static final String[] ARRAY_LANG_CHOICES = {"English", "Spanish", "German", "French", "Italian", "Chinese", "Portuguese", "Japanese"};
     private static final String[] ARRAY_LANG_CODES = {"en", "es", "de", "fr", "it", "zh", "pt", "ja"};
 
@@ -321,19 +323,16 @@ public class SettingFragment extends Fragment {
         for(int i=0; i<mExchanges.length; i++) {
             exchangeSources[i] = mExchanges[i].getSource();
         }
-        mUSDollarButton.setText(ARRAY_LANG_CHOICES[0]);
+        mUSDollarButton.setText(exchangeSources[0]);
         mUSDExchangeItems = exchangeSources;
-        mCanadianDollarButton.setText(ARRAY_LANG_CHOICES[1]);
+        mCanadianDollarButton.setText(exchangeSources[0]);
         mCanadianExchangeItems = exchangeSources;
-        mEuroButton.setText(ARRAY_LANG_CHOICES[2]);
+        mEuroButton.setText(exchangeSources[0]);
         mEuroExchangeItems = exchangeSources;
-        mPesoButton.setText(ARRAY_LANG_CHOICES[3]);
+        mPesoButton.setText(exchangeSources[0]);
         mPesoExchangeItems = exchangeSources;
-        mYuanButton.setText(ARRAY_LANG_CHOICES[4]);
+        mYuanButton.setText(exchangeSources[0]);
         mYuanExchangeItems = exchangeSources;
-
-        //TODO save each exchange choice???
-
     }
 
     private void saveCurrentSettings() {
@@ -358,7 +357,7 @@ public class SettingFragment extends Fragment {
             }
         }
 
-        //Credentials
+        //Credentials - N/A
 
         //User Name
         mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
@@ -366,38 +365,22 @@ public class SettingFragment extends Fragment {
         mCoreSettings.setSzLastName(mLastEditText.getText().toString());
         mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
 
-
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
 
-        // Language TODO
+        // Language
         mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
 
-        // Default Currency TODO
+        // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
-        //Default Exchanges
+        //Default Exchanges TODO
 //            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
 
+        //Advanced Settings TODO
+
         mCoreAPI.saveAccountSettings(mCoreSettings);
-    }
-
-    // searches the exchanges in the settings for the exchange associated with the given currency number
-    // NULL is returned if none can be found
-    private String exchangeForCurrencyNum(int num)
-    {
-        String szRetVal = null;
-
-        for (CoreAPI.ExchangeRateSource source : mExchanges)
-        {
-                if (source.getmCurrencyNum() == num)
-                {
-                    szRetVal = source.getSource();
-                    break;
-                }
-        }
-        return szRetVal;
     }
 
 
@@ -532,39 +515,5 @@ public class SettingFragment extends Fragment {
         super.onPause();
         saveCurrentSettings();
     }
-
-//    private void loadPreferences() {
-//        Activity activity = getActivity();
-//        if(activity!=null) {
-//            SharedPreferences pref = activity.getSharedPreferences(SETTINGS_NAME, Activity.MODE_PRIVATE);
-//            int selected = pref.getInt(DENOMINATION, 0);
-//            switch(selected) {
-//                case 0:
-//                    mBitcoinButton.setChecked(true);
-//                    break;
-//                case 1:
-//                    mmBitcoinButton.setChecked(true);
-//                    break;
-//                case 2:
-//                    muBitcoinButton.setChecked(true);
-//                    break;
-//                default:
-//                    break;
-//            }
-//            mSendNameSwitch.setChecked(pref.getBoolean(NAME_SWITCH, false));
-//            mFirstEditText.setText(pref.getString(FIRST_NAME, ""));
-//            mLastEditText.setText(pref.getString(LAST_NAME, ""));
-//            mNicknameEditText.setText(pref.getString(NICK_NAME, ""));
-//            mAutoLogoffButton.setText(pref.getString(AUTO_LOGOFF, "1 Hour"));
-//            mLanguageButton.setText(pref.getString(LANGUAGE, mLanguageItems[0]));
-//            mDefaultCurrencyButton.setText(pref.getString(CURRENCY, mCurrencyItems[0]));
-//            mUSDollarButton.setText(pref.getString(USD_EXCHANGE, mUSDExchangeItems[0]));
-//            mCanadianDollarButton.setText(pref.getString(CANADIAN_EXCHANGE, mCanadianExchangeItems[0]));
-//            mEuroButton.setText(pref.getString(EURO_EXCHANGE, mEuroExchangeItems[0]));
-//            mPesoButton.setText(pref.getString(PESO_EXCHANGE, mPesoExchangeItems[0]));
-//            mYuanButton.setText(pref.getString(YUAN_EXCHANGE, mYuanExchangeItems[0]));
-//        }
-//    }
-
 
 }
