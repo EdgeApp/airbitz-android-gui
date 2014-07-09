@@ -44,6 +44,7 @@ import com.airbitz.adapters.MapInfoWindowAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
+import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
@@ -72,7 +73,8 @@ import java.util.List;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener {//implements GestureDetector.OnGestureListener {
+public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener,
+        CurrentLocationManager.OnLocationChange {//implements GestureDetector.OnGestureListener {
     private static final String TAG = MapBusinessDirectoryFragment.class.getSimpleName();
 
     private GoogleMap mGoogleMap;
@@ -142,6 +144,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private List<LatLng> mMarkersLatLngList;
     private float mDragBarThreshold;
 
+    private CurrentLocationManager mLocationManager;
+
     private GetVenuesByLocationTask mGetVenuesByLocationTask;
     private GetVenuesByCategoryTask mGetVenuesByCategoryTask;
     private GetVenuesByBusinessTask mGetVenuesByBusinessTask;
@@ -178,6 +182,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         View view = inflater.inflate(R.layout.fragment_map_business_directory_2, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        checkLocationManager();
 
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
         if(mVenueFragmentLayout.getChildCount()<=0) {
@@ -720,6 +726,22 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
+    @Override
+    public void onPause(){
+        mLocationManager.removeLocationChangeListener(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        checkLocationManager();
+        super.onResume();
+    }
+
+    private void checkLocationManager(){
+        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+    }
+
 //    @Override public void onBackPressed() {
 //        if (mViewAnimator.getDisplayedChild() == 1) {
 //            showViewAnimatorChild(0);
@@ -1082,6 +1104,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     }
 
+    @Override
+    public void OnCurrentLocationChange(Location location) {
+        // TODO - update map?
+    }
 
     public HashMap<Marker, String> getMarkerImageLink() {
         return mMarkerImageLink;
@@ -1506,13 +1532,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private double getLatFromSharedPreference() {
-        double lat = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
-        return lat;
+        return mLocationManager.getLocation().getLatitude();
     }
 
     private double getLonFromSharedPreference() {
-        double lon = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
-        return lon;
+        return mLocationManager.getLocation().getLongitude();
     }
 
     /*@Override public boolean onDown(MotionEvent motionEvent) {
