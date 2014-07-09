@@ -8,6 +8,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,19 +59,19 @@ public class CoreAPI {
             if(mOnIncomingBitcoin!=null) {
                 mIncomingBitcoinUUID = info.getSzWalletUUID();
                 mIncomingBitcoinTxID = info.getSzTxID();
-                handler.post(IncomingBitcoinUpdater);
+                mExchangeRateHandler.post(IncomingBitcoinUpdater);
             }
             else
                 Log.d("CoreAPI", "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
-                handler.post(BlockHeightUpdater);
+                mExchangeRateHandler.post(BlockHeightUpdater);
             else
                 Log.d("CoreAPI", "block exchange event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
             Log.d("CoreAPI", "exchange rate update event");
             if(mOnExchangeRateUpdate!=null)
-                handler.post(ExchangeUpdater);
+                mExchangeRateHandler.post(ExchangeUpdater);
             else
                 Log.d("CoreAPI", "exchange rate event has no listener");
         }
@@ -366,7 +367,10 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_Currency p, long i) { return getCPtr(p)+i; }
     }
 
+    private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings loadAccountSettings() {
+        if(mCoreSettings!=null)
+            return mCoreSettings;
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -377,8 +381,8 @@ public class CoreAPI {
                 pAccountSettings, Error);
 
         if(result==tABC_CC.ABC_CC_Ok) {
-            tABC_AccountSettings coreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
-            return coreSettings;
+            mCoreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
+            return mCoreSettings;
         } else {
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
             Log.d("CoreAPI", "Load settings failed - "+message);
@@ -887,6 +891,11 @@ public class CoreAPI {
         return index;
     }
 
+    public void SaveCurrencyNumber(int currencyNum) {
+        tABC_AccountSettings settings = loadAccountSettings();
+        settings.setCurrencyNum(currencyNum);
+    }
+
     public int BitcoinDenominationLabel() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
@@ -950,17 +959,25 @@ public class CoreAPI {
     }
 
     //*************** Exchange Rate
-    Handler handler = new Handler();
+    Handler mExchangeRateHandler = new Handler();
     private ExchangeRateSource[] mExchangeRateSources;
+    // Callback interface for adding and removing location change listeners
+    private List<OnExchangeRateChange> mObservers = Collections.synchronizedList(new ArrayList<OnExchangeRateChange>());
+    private List<OnExchangeRateChange> mRemovers = new ArrayList<OnExchangeRateChange>();
+
+    public interface OnExchangeRateChange {
+        public void OnCurrentLocationChange();
+    }
+
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
-            handler.postDelayed(this, 1000*ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS); // rerun every this many millis
-            requestExchangeRateUpdate();
+            mExchangeRateHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
+            updateAllExchangeRates();
         }
     };
 
     private void stopExchangeRateUpdates() {
-        handler.removeCallbacks(ExchangeRateUpdater);
+        mExchangeRateHandler.removeCallbacks(ExchangeRateUpdater);
     }
 
     public void startExchangeRateUpdates() {
@@ -969,12 +986,12 @@ public class CoreAPI {
                 tABC_AccountSettings settings = loadAccountSettings();
                 mExchangeRateSources = getExchangeRateSources(settings.getExchangeRateSources());
             }
-            handler.post(ExchangeRateUpdater);
+            mExchangeRateHandler.post(ExchangeRateUpdater);
         }
     }
 
-    // Exchange Rate updates comes in asynchronously
-    public void requestExchangeRateUpdate()
+    // Exchange Rate
+    public void updateAllExchangeRates()
     {
         if (AirbitzApplication.isLoggedIn())
         {
@@ -987,6 +1004,40 @@ public class CoreAPI {
         }
     }
 
+    public void addExchangeRateChangeListener(OnExchangeRateChange listener) {
+        if(mObservers.size() == 0) {
+            startExchangeRateUpdates();
+        }
+        if(!mObservers.contains(listener)) {
+            mObservers.add(listener);
+        }
+    }
+
+    public void removeExchangeRateChangeListener(OnExchangeRateChange listener) {
+        mRemovers.add(listener);
+        if(mObservers.size() <= 0) {
+            stopExchangeRateUpdates();
+        }
+    }
+
+    public void onExchangeRateChanged() {
+        if(!mRemovers.isEmpty()) {
+            for(OnExchangeRateChange i : mRemovers) {
+                if(mObservers.contains(i)) {
+                    mObservers.remove(i);
+                }
+            }
+            mRemovers.clear();
+        }
+
+        if (!mObservers.isEmpty()) {
+            Log.d("CoreAPI",
+                    "Exchange Rate changed");
+            for(OnExchangeRateChange listener : mObservers) {
+                listener.OnCurrentLocationChange();
+            }
+        }
+    }
 
     //**************** Wallet handling
     private List<Wallet> getCoreWallets() {
