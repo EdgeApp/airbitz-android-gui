@@ -228,7 +228,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(mNavStacks[mNavFragmentId].size()!=0){
             System.out.println("Adding Animation");
-            transaction.setCustomAnimations(R.anim.slide_in_from_right,R.anim.nothing);
+            transaction.setCustomAnimations(R.anim.slide_in_from_right,R.anim.slide_out_left,R.anim.slide_in_from_right, R.anim.slide_out_left);
         }
         System.out.println("After Adding Animation");
         transaction.replace(R.id.activityLayout, fragment);
@@ -240,7 +240,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mNavStacks[mNavFragmentId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(mNavStacks[mNavFragmentId].size()!=0){
-            transaction.setCustomAnimations(R.anim.nothing,R.anim.slide_out_right,R.anim.nothing,R.anim.slide_out_right);
+            transaction.setCustomAnimations(R.anim.slide_in_from_left,R.anim.slide_out_right,R.anim.slide_in_from_left,R.anim.slide_out_right);
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavFragmentId].peek());
         transaction.commit();
@@ -256,13 +256,15 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void showNavBar() {
-        mNavBarFragmentLayout.setVisibility(View.VISIBLE);
-        mNavBarFragment.showNavBarFragment();
-        mNavBarFragmentLayout.invalidate();
-        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        rLP.setMargins(0,0,0,(int)getResources().getDimension(R.dimen.nav_bar_height));
-        mFragmentLayout.setLayoutParams(rLP);
-        mFragmentLayout.invalidate();
+        if(!bdonly) {
+            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+            mNavBarFragment.showNavBarFragment();
+            mNavBarFragmentLayout.invalidate();
+            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            rLP.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.nav_bar_height));
+            mFragmentLayout.setLayoutParams(rLP);
+            mFragmentLayout.invalidate();
+        }
     }
 
     public LinearLayout getCalculatorView() {
