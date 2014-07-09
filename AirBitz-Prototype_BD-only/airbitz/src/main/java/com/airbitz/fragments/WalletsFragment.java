@@ -384,7 +384,8 @@ public class WalletsFragment extends Fragment
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setText("USD");//TODO
+        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mTopType.setText(mCoreAPI.getUserBTCDenomination());
     }
 
     private void switchBarInfo(boolean isBitcoin){
@@ -399,7 +400,7 @@ public class WalletsFragment extends Fragment
             }
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setText("BTC");//TODO
+            mMoverType.setText(mTopType.getText());
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
@@ -417,7 +418,7 @@ public class WalletsFragment extends Fragment
             animator.start();
             mButtonMover.setText(mFiatBalanceButton.getText());
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
-            mMoverType.setText("USD");
+            mMoverType.setText(mBottomType.getText());
             double conv = 0.1145;
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
