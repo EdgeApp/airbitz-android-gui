@@ -174,7 +174,6 @@ public class VenueFragment extends Fragment implements
                     venueAmount += 20;
                 }
             }
-
         }
     }
 
@@ -525,13 +524,11 @@ public class VenueFragment extends Fragment implements
     }
 
     private double getLatFromSharedPreference() {
-        double lat = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
-        return lat;
+        return mLocationManager.getLocation().getLatitude();
     }
 
     private double getLonFromSharedPreference() {
-        double lon = (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
-        return lon;
+        return mLocationManager.getLocation().getLongitude();
     }
 
 }
