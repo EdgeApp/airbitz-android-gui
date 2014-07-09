@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -26,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,7 +34,6 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.utils.Common;
@@ -378,8 +374,8 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalance();
         }
-        mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis));
-        mFiatBalanceButton.setText(mCoreAPI.FormatString(totalSatoshis, false));
+        mBitCoinBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, true));
+        mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
         firstTime = true;
         switchBarInfo(mOnBitcoinMode);
 
@@ -404,7 +400,7 @@ public class WalletsFragment extends Fragment
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
+                        wallet.setAmount(mCoreAPI.FormatDefaultCurrency(wallet.getBalance(), isBitcoin, true));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();
@@ -423,7 +419,7 @@ public class WalletsFragment extends Fragment
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.FormatString(wallet.getBalance(), isBitcoin));
+                        wallet.setAmount(mCoreAPI.FormatDefaultCurrency(wallet.getBalance(), isBitcoin, true));
                     } catch (Exception e) {
                         wallet.setAmount("0");
                         e.printStackTrace();

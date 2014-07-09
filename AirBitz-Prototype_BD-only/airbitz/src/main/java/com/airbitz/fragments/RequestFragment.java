@@ -393,10 +393,15 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             mCalculatorBrain.performOperation(buttonTag);
             display.setText(mDF.format(mCalculatorBrain.getResult()));
                 if(buttonTag.equals("=")) {
+                    String temp = String.valueOf(mCalculatorBrain.getResult());
                     if(display.equals(mBitcoinField)) {
-                        mFiatField.setText(mCoreAPI.formatCurrency(mCalculatorBrain.getResult()));
+                        long satoshi = mCoreAPI.denominationToSatoshi(temp);
+                        double defaultCurrency = mCoreAPI.SatoshiToDefaultCurrency(satoshi);
+                        mFiatField.setText(mCoreAPI.formatCurrency(defaultCurrency, false));
                     } else {
-                        mBitcoinField.setText(mCoreAPI.formatSatoshi((long) mCalculatorBrain.getResult(), false));
+                        double currency = Double.valueOf(mFiatField.getText().toString());
+                        long satoshi = mCoreAPI.DefaultCurrencyToSatoshi(currency);
+                        mBitcoinField.setText(mCoreAPI.formatSatoshi(satoshi, false));
                     }
                 }
         }
