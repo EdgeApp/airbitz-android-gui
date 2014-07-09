@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class WalletFragment extends Fragment {
+public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -282,8 +282,14 @@ public class WalletFragment extends Fragment {
         });
 
         UpdateWalletTotalBalance();
+        mCoreAPI.addExchangeRateChangeListener(this);
 
         return view;
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
     // Sum all wallets except for archived and show in total
@@ -326,5 +332,10 @@ public class WalletFragment extends Fragment {
             mTransactionAdapter.setIsBitcoin(isBitcoin);
             mTransactionAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void OnExchangeRatesChange() {
+        UpdateWalletTotalBalance();
     }
 }
