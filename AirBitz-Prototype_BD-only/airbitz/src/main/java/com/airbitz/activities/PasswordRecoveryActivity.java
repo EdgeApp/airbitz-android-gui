@@ -250,6 +250,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                dummyCover.setVisibility(View.INVISIBLE);
                                 dialog.cancel();
                             }
                         }
@@ -266,6 +267,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                dummyCover.setVisibility(View.INVISIBLE);
                                 dialog.cancel();
                             }
                         });
@@ -281,6 +283,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                dummyCover.setVisibility(View.INVISIBLE);
                                 dialog.cancel();
                             }
                         });
