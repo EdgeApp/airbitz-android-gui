@@ -127,7 +127,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
         mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
 
-        mSearchField = (ClearableEditText) view.findViewById(R.id.edittext_search);
+        mSearchField = (ClearableEditText) view.findViewById(R.id.fragment_search_edittext);
 
         mSendButton = (ResizableImageView) view.findViewById(R.id.button_send);
         mRequestButton = (ResizableImageView) view.findViewById(R.id.button_request);
@@ -297,7 +297,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         for(Transaction transaction : mTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
-        mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis));
+        mButtonBitcoinBalance.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         mButtonFiatBalance.setText(mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true));
         switchBarInfo(mOnBitcoinMode);
 
