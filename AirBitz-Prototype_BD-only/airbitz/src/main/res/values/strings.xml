@@ -149,6 +149,8 @@
     <string name="transaction_details_notes_title">Notes</string>
     <string name="transaction_details_category_hint">Add category</string>
     <string name="transaction_details_notes_hint">Add transaction note</string>
+    <string name="transaction_details_to">To: </string>
+    <string name="transaction_details_from">From: </string>
 
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
