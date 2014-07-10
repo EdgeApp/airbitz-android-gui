@@ -1,5 +1,7 @@
 package com.airbitz.models;
 
+import com.airbitz.api.CoreAPI;
+
 import java.util.List;
 
 /**
@@ -16,24 +18,26 @@ public class Wallet {
     private String mUUID;
     private int mCurrencyNum;
     private long mAttributes;
-    private long mBalance;
+    private long mBalanceSatoshi = 0;
     private List<Transaction> mTransactions;
 
-    private String mAmount = "";
+    private CoreAPI mCoreAPI;
 
-    public Wallet(String name, String amount) {
-        mName = name;
+    private String mBalanceFormatted;
+
+    public Wallet(String name) {
+        this(name, 0, null);
     }
 
     public Wallet(String name, long balanceSatoshi){
-        mName = name;
-        mBalance = balanceSatoshi;
+        this(name, balanceSatoshi, null);
     }
 
     public Wallet(String name, long balance, List<Transaction> list){
         mName = name;
-        mBalance = balance;
+        mBalanceSatoshi = balance;
         mTransactions = list;
+        mCoreAPI = CoreAPI.getApi();
     }
 
     public boolean isHeader() {
@@ -68,20 +72,31 @@ public class Wallet {
     public void setAttributes(long attr) { mAttributes = attr; }
     public long getAttributes() {return mAttributes; }
 
-    public void setBalance(long bal) { mBalance = bal; }
-    public long getBalance() {return mBalance; }
-
-    public void setAmount(String amount){
-        mAmount = amount;
+    public void setBalanceSatoshi(long bal) { mBalanceSatoshi = bal; }
+    public long getBalanceSatoshi() {
+        List<Transaction> transactions = getTransactions();
+        mBalanceSatoshi = 0;
+        for(Transaction t : transactions) {
+            mBalanceSatoshi += t.getAmountSatoshi();
+        }
+        return mBalanceSatoshi;
     }
-    public String getAmount(){
-        return mAmount;
+
+    public void setBalanceFormatted(String amount){
+        mBalanceFormatted = amount;
+    }
+    public String getBalanceFormatted(){
+        mBalanceFormatted = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(getBalanceSatoshi(), true, false);
+        return mBalanceFormatted;
     }
 
     public void setTransactions(List<Transaction> list) {
         mTransactions = list;
     }
     public List<Transaction> getTransactions() {
+        if(mTransactions==null) {
+            mTransactions = mCoreAPI.loadTransactions(this);
+        }
         return mTransactions;
     }
 }
