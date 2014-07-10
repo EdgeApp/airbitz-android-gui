@@ -1,5 +1,7 @@
 package com.airbitz.models;
 
+import com.airbitz.api.CoreAPI;
+
 import java.util.List;
 
 /**
@@ -16,24 +18,26 @@ public class Wallet {
     private String mUUID;
     private int mCurrencyNum;
     private long mAttributes;
-    private long mBalance;
+    private long mBalanceSatoshi;
     private List<Transaction> mTransactions;
+
+    private CoreAPI mCoreAPI;
 
     private String mAmount = "";
 
-    public Wallet(String name, String amount) {
-        mName = name;
+    public Wallet(String name) {
+        this(name, 0, null);
     }
 
     public Wallet(String name, long balanceSatoshi){
-        mName = name;
-        mBalance = balanceSatoshi;
+        this(name, balanceSatoshi, null);
     }
 
     public Wallet(String name, long balance, List<Transaction> list){
         mName = name;
-        mBalance = balance;
+        mBalanceSatoshi = balance;
         mTransactions = list;
+        mCoreAPI = CoreAPI.getApi();
     }
 
     public boolean isHeader() {
@@ -68,8 +72,15 @@ public class Wallet {
     public void setAttributes(long attr) { mAttributes = attr; }
     public long getAttributes() {return mAttributes; }
 
-    public void setBalance(long bal) { mBalance = bal; }
-    public long getBalance() {return mBalance; }
+    public void setBalance(long bal) { mBalanceSatoshi = bal; }
+    public long getBalance() {
+        List<Transaction> transactions = getTransactions();
+        mBalanceSatoshi = 0;
+        for(Transaction t : transactions) {
+            mBalanceSatoshi += t.getAmountSatoshi();
+        }
+        return mBalanceSatoshi;
+    }
 
     public void setAmount(String amount){
         mAmount = amount;
@@ -82,6 +93,9 @@ public class Wallet {
         mTransactions = list;
     }
     public List<Transaction> getTransactions() {
+        if(mTransactions==null) {
+            mTransactions = mCoreAPI.loadTransactions(this);
+        }
         return mTransactions;
     }
 }
