@@ -128,7 +128,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
