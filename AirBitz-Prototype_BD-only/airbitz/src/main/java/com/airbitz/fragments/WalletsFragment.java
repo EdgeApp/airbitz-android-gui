@@ -465,6 +465,7 @@ public class WalletsFragment extends Fragment
     public void onListReordered() {
         List<Wallet> list = mLatestWalletListView.mWalletList;
         mCoreAPI.setWalletOrder(list);
+        UpdateBalances();
     }
 
     private void refreshWalletList(List<Wallet> list) {
