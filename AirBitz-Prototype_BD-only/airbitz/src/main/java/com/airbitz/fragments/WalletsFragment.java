@@ -316,7 +316,7 @@ public class WalletsFragment extends Fragment
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBalanceLabel.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -374,7 +374,7 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalance();
         }
-        mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, true));
+        mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
         firstTime = true;
         switchBarInfo(mOnBitcoinMode);

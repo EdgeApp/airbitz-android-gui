@@ -110,13 +110,13 @@ public class CoreAPI {
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
-        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL", "Hello"));//Wallet HEADER
+        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL"));//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1)
                 list.add(wallet);
         }
-        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd", "Goodbye")); //Archive HEADER
+        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1)
@@ -184,13 +184,13 @@ public class CoreAPI {
 
         if (result ==tABC_CC.ABC_CC_Ok)
         {
-            Wallet wallet = new Wallet(info.getName(), "");
+            Wallet wallet = new Wallet(info.getName());
             wallet.setName(info.getName());
             wallet.setUUID(info.getUUID());
             wallet.setAttributes(info.getAttributes());
-            wallet.setBalance(info.getBalance());
             wallet.setCurrencyNum(info.getCurrencyNum());
             wallet.setTransactions(getTransactions(wallet.getName()));
+            wallet.setBalance(info.getBalance());
 
             return wallet;
         }
@@ -1109,12 +1109,12 @@ public class CoreAPI {
                 pLong temp = new pLong(base.getPtr(base, i * 4));
                 long start = core.longp_value(temp);
                 WalletInfo wi = new WalletInfo(start);
-                Wallet in = new Wallet(wi.getName(), "");
+                Wallet in = new Wallet(wi.getName());
+                in.setTransactions(wi.getTransactions());
                 in.setBalance(wi.getBalance());
                 in.setUUID(wi.getUUID());
                 in.setAttributes(wi.getAttributes());
                 in.setCurrencyNum(wi.getCurrencyNum());
-                in.setTransactions(wi.getTransactions());
                 mWallets.add(in);
             }
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
