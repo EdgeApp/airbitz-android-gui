@@ -102,7 +102,7 @@ public class SignUpActivity extends Activity {
         TextView mHintTextView = (TextView) findViewById(R.id.activity_signup_password_help);
         TextView withdrawalTextView = (TextView) findViewById(R.id.activity_signup_withdrawal_textview);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);

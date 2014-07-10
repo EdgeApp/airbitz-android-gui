@@ -133,13 +133,10 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mRequestButton = (ResizableImageView) view.findViewById(R.id.button_request);
         mWalletNameButton = (EditText) view.findViewById(R.id.button_balance);
 
-        mExportButton = (ImageButton) view.findViewById(R.id.button_export);
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mExportButton = (ImageButton) view.findViewById(R.id.fragment_wallet_export_button);
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
-       // mSeekBar = (SeekBar) view.findViewById(R.id.seekbar_slider);
-        //mSeekBar.setOnSeekBarChangeListener(this);
-
-        exportLayout = (RelativeLayout) view.findViewById(R.id.layout_export);
+        exportLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_export_layout);
         sendRequestLayout = (LinearLayout) view.findViewById(R.id.layout_send_request);
 
 
@@ -152,8 +149,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mBottomType = (TextView) view.findViewById(R.id.bottom_type);
         mTopType = (TextView) view.findViewById(R.id.top_type);//TODO
 
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_wallet_help_button);
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_wallet_title_textview);
 
         mButtonBitcoinBalance = (Button) view.findViewById(R.id.back_button_top);
         mButtonFiatBalance = (Button) view.findViewById(R.id.back_button_bottom);
@@ -163,6 +160,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mWalletNameButton.setText(mWalletName);
 

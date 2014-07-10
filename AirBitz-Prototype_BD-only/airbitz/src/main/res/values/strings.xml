@@ -134,8 +134,9 @@
     <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
 
     <!-- Strings for Wallet fragment -->
-    <string name="wallet_title">Transactions</string>
+    <string name="fragment_wallet_title">Transactions</string>
     <string name="wallet">xxx</string>
+    <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>

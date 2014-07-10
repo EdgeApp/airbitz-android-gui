@@ -145,6 +145,9 @@ public class BusinessDirectoryFragment extends Fragment implements
     private AirbitzAPI api = AirbitzAPI.getApi();
 
     private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
+    private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
+    private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
+
     private boolean mFirstLoad = true;
 
     private TextView businessHint;
@@ -809,6 +812,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
+        }
+
+        @Override protected void onCancelled(List<Business> jSONResult){
+
         }
     }
 

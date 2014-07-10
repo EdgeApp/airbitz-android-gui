@@ -83,6 +83,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private ImageButton mHelpButton;
     private Marker mUserLocationMarker;
 
+    private LinearLayout mDummyFocus;
+
     private ClearableEditText mSearchEdittext;
     private ClearableEditText mLocationEdittext;
 
@@ -192,6 +194,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.add(R.id.venue_container, mFragmentVenue, "venue").commit();
         }
+
+        mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_mapbusinessdirectory_dummy_focus);
 
         mapView = (LinearLayout) view.findViewById(R.id.map_view);
         if(mapView.getChildCount()<=0) {
@@ -700,6 +704,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             }, timeout);
         }
+        mDummyFocus.requestFocus();
     }
 
     @Override
