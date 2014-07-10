@@ -18,12 +18,12 @@ public class Wallet {
     private String mUUID;
     private int mCurrencyNum;
     private long mAttributes;
-    private long mBalanceSatoshi;
+    private long mBalanceSatoshi = 0;
     private List<Transaction> mTransactions;
 
     private CoreAPI mCoreAPI;
 
-    private String mAmount = "";
+    private String mBalanceFormatted;
 
     public Wallet(String name) {
         this(name, 0, null);
@@ -72,8 +72,8 @@ public class Wallet {
     public void setAttributes(long attr) { mAttributes = attr; }
     public long getAttributes() {return mAttributes; }
 
-    public void setBalance(long bal) { mBalanceSatoshi = bal; }
-    public long getBalance() {
+    public void setBalanceSatoshi(long bal) { mBalanceSatoshi = bal; }
+    public long getBalanceSatoshi() {
         List<Transaction> transactions = getTransactions();
         mBalanceSatoshi = 0;
         for(Transaction t : transactions) {
@@ -82,11 +82,12 @@ public class Wallet {
         return mBalanceSatoshi;
     }
 
-    public void setAmount(String amount){
-        mAmount = amount;
+    public void setBalanceFormatted(String amount){
+        mBalanceFormatted = amount;
     }
-    public String getAmount(){
-        return mAmount;
+    public String getBalanceFormatted(){
+        mBalanceFormatted = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(getBalanceSatoshi(), true, false);
+        return mBalanceFormatted;
     }
 
     public void setTransactions(List<Transaction> list) {

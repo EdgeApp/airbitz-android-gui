@@ -153,7 +153,7 @@ public class CoreAPI {
         wallet.setName(info.getName());
         wallet.setUUID(info.getUUID());
         wallet.setAttributes(info.getAttributes());
-        wallet.setBalance(info.getBalance());
+        wallet.setBalanceSatoshi(info.getBalanceSatoshi());
         wallet.setCurrencyNum(info.getCurrencyNum());
     }
 
@@ -190,7 +190,7 @@ public class CoreAPI {
             wallet.setAttributes(info.getAttributes());
             wallet.setCurrencyNum(info.getCurrencyNum());
             wallet.setTransactions(getTransactions(wallet.getName()));
-            wallet.setBalance(info.getBalance());
+            wallet.setBalanceSatoshi(info.getBalance());
 
             return wallet;
         }
@@ -1111,7 +1111,7 @@ public class CoreAPI {
                 WalletInfo wi = new WalletInfo(start);
                 Wallet in = new Wallet(wi.getName());
                 in.setTransactions(wi.getTransactions());
-                in.setBalance(wi.getBalance());
+                in.setBalanceSatoshi(wi.getBalance());
                 in.setUUID(wi.getUUID());
                 in.setAttributes(wi.getAttributes());
                 in.setCurrencyNum(wi.getCurrencyNum());

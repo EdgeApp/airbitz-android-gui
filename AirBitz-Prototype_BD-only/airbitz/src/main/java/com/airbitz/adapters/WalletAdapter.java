@@ -147,7 +147,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
             titleTextView.setText(mWalletList.get(position).getName());
-            amountTextView.setText(mWalletList.get(position).getAmount()
+            amountTextView.setText(mWalletList.get(position).getBalanceFormatted()
                     + mContext.getResources().getString(R.string.no_break_space_character));
             if(1 == position){
                 if(2 == archivePos){
