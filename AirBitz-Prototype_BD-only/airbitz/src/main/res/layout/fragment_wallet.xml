@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_parent"
+    android:id="@+id/fragment_wallet_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="7mm"
-        android:id="@+id/layout_header"
-        android:background="#40000000">
+        android:layout_height="44.1dp"
+        android:id="@+id/fragment_wallet_header_layout"
+        android:background="@drawable/bg_dark_header">
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:id="@+id/button_back"
@@ -22,7 +22,7 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:padding="2mm"/>
+            android:padding="12.6dp"/>
 
         <TextView
             android:id="@+id/textview_title"
@@ -32,12 +32,11 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="20dp"/>
-
+            android:textSize="16dp"/>
 
         <ImageButton
-            android:layout_width="7mm"
-            android:layout_height="7mm"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:id="@+id/button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
@@ -45,7 +44,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:padding="2mm"/>
+            android:padding="12.6dp"/>
 
     </RelativeLayout>
 
@@ -53,7 +52,7 @@
         android:id="@+id/separator_header"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_below="@id/layout_header"
+        android:layout_below="@id/fragment_wallet_header_layout"
         android:background="@android:color/black"
         android:orientation="vertical" />
 
@@ -68,7 +67,7 @@
     <LinearLayout
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
-        android:layout_height="7mm"
+        android:layout_height="44.1dp"
         android:layout_below="@id/separator_header_search"
         android:background="@drawable/search_bar"
         android:orientation="vertical">
@@ -88,7 +87,7 @@
             <com.airbitz.objects.ClearableEditText
                 android:id="@+id/edittext_search"
                 android:layout_width="match_parent"
-                android:layout_height="5mm"
+                android:layout_height="31.5dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/rounded_edge"
                 android:drawableLeft="@drawable/ico_search"
@@ -99,11 +98,11 @@
                 android:inputType="textVisiblePassword|textNoSuggestions"
                 android:imeOptions="actionSearch"
                 android:textCursorDrawable="@drawable/bold_cursor"
-                android:layout_marginTop="1mm"
-                android:layout_marginBottom="1mm"
-                android:layout_marginRight="2mm"
-                android:layout_marginLeft="2mm"
-                android:paddingLeft="1mm"
+                android:layout_marginTop="6.3dp"
+                android:layout_marginBottom="6.3dp"
+                android:layout_marginRight="12.6dp"
+                android:layout_marginLeft="12.6dp"
+                android:paddingLeft="6.3dp"
                 android:textSize="16dp"
                 android:textColor="#000000"
                 android:textColorHint="#44000000" />
@@ -127,24 +126,23 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_below="@id/layout_search"
-        android:layout_marginRight="2mm"
-        android:layout_marginLeft="2mm"
-        android:paddingBottom="2mm">
+        android:layout_marginRight="12.6dp"
+        android:layout_marginLeft="12.6dp"
+        android:paddingBottom="12.6dp">
 
         <RelativeLayout
             android:id="@+id/layout_export"
             android:layout_width="match_parent"
-            android:layout_height="10mm"
-            android:layout_marginLeft="-2mm"
-            android:layout_marginRight="-2mm"
-            android:layout_alignParentTop="true">
+            android:layout_height="63dp"
+            android:layout_marginLeft="-12.6dp"
+            android:layout_marginRight="-12.6dp">
 
             <ImageButton
                 android:id="@+id/button_export"
-                android:layout_width="10mm"
-                android:layout_height="10mm"
+                android:layout_width="63dp"
+                android:layout_height="63dp"
                 android:layout_alignParentLeft="true"
-                android:padding="2.5mm"
+                android:padding="15.75dp"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
@@ -152,10 +150,10 @@
 
             <ImageButton
                 android:id="@+id/button_export_padding"
-                android:layout_width="10mm"
-                android:layout_height="10mm"
+                android:layout_width="63dp"
+                android:layout_height="63dp"
                 android:layout_alignParentRight="true"
-                android:padding="2.5mm"
+                android:padding="15.75dp"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
@@ -165,14 +163,14 @@
             <EditText
                 android:id="@+id/button_balance"
                 android:layout_width="match_parent"
-                android:layout_height="6mm"
+                android:layout_height="37.8dp"
                 android:layout_centerVertical="true"
                 android:imeOptions="actionDone"
                 android:text="Wallet"
                 android:inputType="textVisiblePassword|textNoSuggestions"
                 android:layout_toLeftOf="@id/button_export_padding"
                 android:layout_toRightOf="@id/button_export"
-                android:background="@drawable/bg_textfield"
+                android:background="@drawable/emboss_down"
                 android:gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="18dp" />
@@ -185,7 +183,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="3mm">
+            android:layout_marginTop="18.9dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -195,22 +193,22 @@
                     android:id="@+id/layout_send_request"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1.5mm"
+                    android:layout_marginBottom="9.45dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
                     <com.airbitz.objects.ResizableImageView
                         android:id="@+id/button_request"
-                        android:layout_width="22mm"
-                        android:layout_height="6mm"
-                        android:layout_marginRight="1mm"
+                        android:layout_width="138.6dp"
+                        android:layout_height="37.8dp"
+                        android:layout_marginRight="6.3dp"
                         android:src="@drawable/btn_request_green" />
 
                     <com.airbitz.objects.ResizableImageView
                         android:id="@+id/button_send"
-                        android:layout_width="22mm"
-                        android:layout_height="6mm"
-                        android:layout_marginLeft="1mm"
+                        android:layout_width="138.6dp"
+                        android:layout_height="37.8dp"
+                        android:layout_marginLeft="6.3dp"
                         android:src="@drawable/btn_send_orange" />
 
                 </LinearLayout>
@@ -219,7 +217,6 @@
                     android:id="@+id/listview_transaction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/layout_send_request"
                     android:background="@drawable/rounded_edge_blue">
 
                 </ListView>

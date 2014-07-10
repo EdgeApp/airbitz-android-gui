@@ -374,7 +374,7 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalance();
         }
-        mBitCoinBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, true));
+        mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, true));
         mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
         firstTime = true;
         switchBarInfo(mOnBitcoinMode);
@@ -557,7 +557,7 @@ public class WalletsFragment extends Fragment
             mContainerLayout.setLayoutTransition(lt);
             mAddWalletLayout.setVisibility(View.GONE);
             mInvisibleCover.setVisibility(View.GONE);
-            if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>100){
+            if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>200){
                 final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
