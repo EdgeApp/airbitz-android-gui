@@ -19,6 +19,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
 import com.airbitz.api.SWIGTYPE_p_p_char;
 import com.airbitz.api.SWIGTYPE_p_p_unsigned_char;
@@ -100,8 +101,8 @@ public class WalletQRCodeFragment extends Fragment {
         });
 
         //TODO integrate a finder for associating this with someone
-        String fakeUser = "Ender Wiggins";
-        String fakePhone = "555-555-1212";
+        String fakeUser = "";
+        String fakePhone = "";
         String id = createReceiveRequestFor(fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
         if(id!=null) {
             String addr = getRequestAddress(id);
@@ -124,6 +125,10 @@ public class WalletQRCodeFragment extends Fragment {
 
         //first need to create a transaction details struct
         long satoshi = mCoreAPI.denominationToSatoshi(btc);
+        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) satoshi);
+//        mCoreAPI.setPint64_t(amt, satoshi); //TODO causes SIGILL
+        details.setAmountSatoshi(amt);
 
         double value = mCoreAPI.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
 
