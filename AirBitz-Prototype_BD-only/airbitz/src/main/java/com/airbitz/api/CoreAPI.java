@@ -562,19 +562,17 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
-
-                //TODO fix for wrong satoshi amounts retrieved in TxDetails
-                long satoshi = CurrencyToSatoshi(txi.getDetails().getmAmountCurrency(), wallet.getCurrencyNum());
-
-                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
-                        txi.getCreationTime(), txi.getDetails().getmName(),
-                        satoshi, //txi.mDetails.getmAmountSatoshi(),
-                        txi.mDetails.getmCategory(),
-                        txi.mDetails.getmNotes(),
-                        txi.getAddresses(),
-                        txi.mDetails.getmBizId(),
-                        100000, //txi.mDetails.getmAmountFeesAirbitzSatoshi(),
-                        100000); //txi.mDetails.getmAmountFeesMinersSatoshi());
+                Transaction in = new Transaction();
+                setTransaction(wallet, in, txi);
+//                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
+//                        txi.getCreationTime(), txi.getDetails().getmName(),
+//                        satoshi, //txi.mDetails.getmAmountSatoshi(),
+//                        txi.mDetails.getmCategory(),
+//                        txi.mDetails.getmNotes(),
+//                        txi.getAddresses(),
+//                        txi.mDetails.getmBizId(),
+//                        100000, //txi.mDetails.getmAmountFeesAirbitzSatoshi(),
+//                        100000); //txi.mDetails.getmAmountFeesMinersSatoshi());
 
                 listTransactions.add(in);
             }
@@ -658,14 +656,6 @@ public class CoreAPI {
                 mAmountSatoshi = TxDetailsGetAmountSatoshi(pv);
                 mAmountFeesAirbitzSatoshi = TxDetailsGetAmountFeesAirbitzSatoshi(pv);
                 mAmountFeesMinersSatoshi = TxDetailsGetAmountFeesMinersSatoshi(pv);
-//                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
-//                long pointer = SWIGTYPE_p_int64_t.getCPtr(temp);
-//                long temp2 = core.longp_value(core.p64_t_to_long_ptr(super.getAmountSatoshi()));
-//                long temp3 = core.longp_value(new SWIGTYPE_p_long(pointer, false));
-//                pointer = SWIGTYPE_p_int64_t.getCPtr(super.getAmountFeesAirbitzSatoshi());
-//                mAmountFeesAirbitzSatoshi = getLongAtPtr(pointer);
-//                pointer = SWIGTYPE_p_int64_t.getCPtr(super.getAmountFeesMinersSatoshi());
-//                mAmountFeesMinersSatoshi = getLongAtPtr(pointer);
                 mAmountCurrency = super.getAmountCurrency();
 
                 mName = super.getSzName();
@@ -707,15 +697,18 @@ public class CoreAPI {
 
 
     public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
+        //TODO fix for wrong satoshi amounts retrieved in TxDetails
+        long satoshi = CurrencyToSatoshi(txInfo.getDetails().getmAmountCurrency(), wallet.getCurrencyNum());
+
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
         transaction.setCategory(txInfo.getDetails().getSzCategory());
         transaction.setDate(txInfo.getCreationTime());
-        transaction.setAmountSatoshi(txInfo.getDetails().getmAmountSatoshi());
+        transaction.setAmountSatoshi(satoshi); //txInfo.getDetails().getmAmountSatoshi());
         transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
-        transaction.setABFees(txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
-        transaction.setMinerFees(txInfo.getDetails().getmAmountFeesMinersSatoshi());
+        transaction.setABFees(10000); //txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
+        transaction.setMinerFees(10000); //txInfo.getDetails().getmAmountFeesMinersSatoshi());
         transaction.setWalletName(wallet.getName());
         transaction.setWalletUUID(wallet.getUUID());
         transaction.setConfirmations(3);
