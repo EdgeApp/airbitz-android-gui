@@ -43,7 +43,7 @@ public class CoreAPI {
     public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
     public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
     public native long TxDetailsGetAmountSatoshi(long txDetails);
-    public native void int64_tp_assign(long jarg1, long jarg2);
+    public native void int64TPAssign(long jarg1, long jarg2);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
@@ -110,13 +110,13 @@ public class CoreAPI {
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
-        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL", "Hello"));//Wallet HEADER
+        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL"));//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1)
                 list.add(wallet);
         }
-        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd", "Goodbye")); //Archive HEADER
+        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1)
@@ -153,7 +153,7 @@ public class CoreAPI {
         wallet.setName(info.getName());
         wallet.setUUID(info.getUUID());
         wallet.setAttributes(info.getAttributes());
-        wallet.setBalance(info.getBalance());
+        wallet.setBalanceSatoshi(info.getBalanceSatoshi());
         wallet.setCurrencyNum(info.getCurrencyNum());
     }
 
@@ -184,13 +184,13 @@ public class CoreAPI {
 
         if (result ==tABC_CC.ABC_CC_Ok)
         {
-            Wallet wallet = new Wallet(info.getName(), "");
+            Wallet wallet = new Wallet(info.getName());
             wallet.setName(info.getName());
             wallet.setUUID(info.getUUID());
             wallet.setAttributes(info.getAttributes());
-            wallet.setBalance(info.getBalance());
             wallet.setCurrencyNum(info.getCurrencyNum());
             wallet.setTransactions(getTransactions(wallet.getName()));
+            wallet.setBalanceSatoshi(info.getBalance());
 
             return wallet;
         }
@@ -202,7 +202,7 @@ public class CoreAPI {
     }
 
     public void setPint64_t(SWIGTYPE_p_int64_t p, long value) {
-        int64_tp_assign(SWIGTYPE_p_int64_t.getCPtr(p), value);
+        int64TPAssign(SWIGTYPE_p_int64_t.getCPtr(p), value);
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -705,10 +705,16 @@ public class CoreAPI {
         transaction.setNotes(txInfo.getDetails().getSzNotes());
         transaction.setCategory(txInfo.getDetails().getSzCategory());
         transaction.setDate(txInfo.getCreationTime());
+
+        long sat = txInfo.getDetails().getmAmountSatoshi();
+        long ABfees = txInfo.getDetails().getmAmountFeesAirbitzSatoshi();
+        long MinerFees = txInfo.getDetails().getmAmountFeesMinersSatoshi();
+
         transaction.setAmountSatoshi(satoshi); //txInfo.getDetails().getmAmountSatoshi());
+        transaction.setABFees(100); //txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
+        transaction.setMinerFees(-100); //txInfo.getDetails().getmAmountFeesMinersSatoshi());
+
         transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
-        transaction.setABFees(10000); //txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
-        transaction.setMinerFees(10000); //txInfo.getDetails().getmAmountFeesMinersSatoshi());
         transaction.setWalletName(wallet.getName());
         transaction.setWalletUUID(wallet.getUUID());
         transaction.setConfirmations(3);
@@ -844,7 +850,7 @@ public class CoreAPI {
     }
 
     public String formatSatoshi(long amount, boolean withSymbol) {
-        return formatSatoshi(amount, withSymbol, 3);
+        return formatSatoshi(amount, withSymbol, -1);
     }
 
     public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
@@ -854,20 +860,27 @@ public class CoreAPI {
 
         SWIGTYPE_p_int64_t amt = core.new_int64_tp();
         core.longp_assign(core.p64_t_to_long_ptr(amt), (int) amount);
+//        setPint64_t(amt, amount); TODO causes SIGILL
+
+        int decimalPlaces = maxDecimalPlaces();
 
         boolean negative = amount < 0;
-        tABC_CC result = core.ABC_FormatAmount(amt, ppChar, decimals, error);
+        tABC_CC result = core.ABC_FormatAmount(amt, ppChar, decimalPlaces, error);
         if ( result != tABC_CC.ABC_CC_Ok)
         {
             return null;
         }
         else {
             String pFormatted = getStringAtPtr(core.longp_value(lp));
-
+            decimalPlaces = decimals > -1 ? decimals : maxDecimalPlaces();
+            String pretext = "";
             if (negative) {
-                pFormatted = "(" + pFormatted + ")";
+                pretext += "-";
             }
-            return pFormatted;
+            if(withSymbol) {
+                pretext += " "+getUserBTCDenomination();
+            }
+            return pretext+pFormatted;
         }
     }
 
@@ -1096,12 +1109,12 @@ public class CoreAPI {
                 pLong temp = new pLong(base.getPtr(base, i * 4));
                 long start = core.longp_value(temp);
                 WalletInfo wi = new WalletInfo(start);
-                Wallet in = new Wallet(wi.getName(), "");
-                in.setBalance(wi.getBalance());
+                Wallet in = new Wallet(wi.getName());
+                in.setTransactions(wi.getTransactions());
+                in.setBalanceSatoshi(wi.getBalance());
                 in.setUUID(wi.getUUID());
                 in.setAttributes(wi.getAttributes());
                 in.setCurrencyNum(wi.getCurrencyNum());
-                in.setTransactions(wi.getTransactions());
                 mWallets.add(in);
             }
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);

@@ -316,7 +316,7 @@ public class WalletsFragment extends Fragment
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBalanceLabel.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -372,9 +372,9 @@ public class WalletsFragment extends Fragment
         long totalSatoshis = 0;
         for(Wallet wallet : mLatestWalletList) {
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
-                totalSatoshis+=wallet.getBalance();
+                totalSatoshis+=wallet.getBalanceSatoshi();
         }
-        mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, true));
+        mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
         firstTime = true;
         switchBarInfo(mOnBitcoinMode);
@@ -400,9 +400,9 @@ public class WalletsFragment extends Fragment
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.FormatDefaultCurrency(wallet.getBalance(), isBitcoin, true));
+                        wallet.setBalanceFormatted(mCoreAPI.FormatDefaultCurrency(wallet.getBalanceSatoshi(), isBitcoin, true));
                     } catch (Exception e) {
-                        wallet.setAmount("0");
+                        wallet.setBalanceFormatted("0");
                         e.printStackTrace();
                     }
                 }
@@ -419,9 +419,9 @@ public class WalletsFragment extends Fragment
             for(Wallet wallet: mLatestWalletList){
                 if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
                     try {
-                        wallet.setAmount(mCoreAPI.FormatDefaultCurrency(wallet.getBalance(), isBitcoin, true));
+                        wallet.setBalanceFormatted(mCoreAPI.FormatDefaultCurrency(wallet.getBalanceSatoshi(), isBitcoin, true));
                     } catch (Exception e) {
-                        wallet.setAmount("0");
+                        wallet.setBalanceFormatted("0");
                         e.printStackTrace();
                     }
                 }

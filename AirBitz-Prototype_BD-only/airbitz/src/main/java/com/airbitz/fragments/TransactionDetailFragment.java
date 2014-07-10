@@ -74,7 +74,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TextView mDateTextView;
     private TextView mTitleTextView;
     private TextView mToFromName;
-    private EditText mWalletEditText;
+    private EditText mPayeeEditText;
     private TextView mBitcoinValueTextview;
     private TextView mFeeTextview;
     private TextView mNoteTextView;
@@ -179,7 +179,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mXButton = (Button) view.findViewById(R.id.x_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
-        mWalletEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
+        mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
         mToFromName = (TextView) view.findViewById(R.id.transaction_detail_textview_to_wallet);
         mNoteTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_notes);
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
@@ -229,7 +229,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
-        mWalletEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mPayeeEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mCategoryEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -255,7 +255,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        mWalletEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPayeeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -263,7 +263,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mSentDetailLayout.setVisibility(View.GONE);
                     mNoteDetailLayout.setVisibility(View.GONE);
                     mSearchListView.setVisibility(View.VISIBLE);
-                    if (mWalletEditText.getText().toString().isEmpty()) {
+                    if (mPayeeEditText.getText().toString().isEmpty()) {
                         try {
                             Activity activity = getActivity();
                             SharedPreferences pref = activity.getSharedPreferences("PREF_NAME", Activity.MODE_PRIVATE);
@@ -291,17 +291,17 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mDateTextView.setVisibility(View.GONE);
                     mNameDetailLayout.setVisibility(View.GONE);
                     mAdvanceDetailsButton.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mDoneButton.setVisibility(View.GONE);
                     mCategoryListView.setVisibility(View.VISIBLE);
-                    if(!mCategoryEdittext.getText().toString().isEmpty()) {
+                    if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
                     }
-                }else{
+                } else {
                     mDateTextView.setVisibility(View.VISIBLE);
                     mNameDetailLayout.setVisibility(View.VISIBLE);
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
@@ -335,11 +335,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setHorizontallyScrolling(false);
         mNoteEdittext.setMaxLines(Integer.MAX_VALUE);
 
-        mWalletEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        mPayeeEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //mWalletEditText.clearFocus();
+                    //mPayeeEditText.clearFocus();
                     mCategoryEdittext.requestFocus();
                     return true;
                 }
@@ -350,7 +350,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mCategoryEdittext.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //mCategoryEdittext.clearFocus();
                     mNoteEdittext.requestFocus();
                     return true;
@@ -371,7 +371,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        mWalletEditText.addTextChangedListener(new TextWatcher() {
+        mPayeeEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -508,9 +508,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(mSearchAdapter.getItem(i) instanceof BusinessSearchResult){
-                    mWalletEditText.setText(((BusinessSearchResult) mSearchAdapter.getItem(i)).getName());
+                    mPayeeEditText.setText(((BusinessSearchResult) mSearchAdapter.getItem(i)).getName());
                 }else{
-                    mWalletEditText.setText((String) mSearchAdapter.getItem(i));
+                    mPayeeEditText.setText((String) mSearchAdapter.getItem(i));
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
                 mAdvanceDetailsButton.setVisibility(View.VISIBLE);
@@ -585,7 +585,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         currentType = defaultCat.toString()+":";
 
         if(mFromSend){
-            mWalletEditText.requestFocus();
+            mPayeeEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
@@ -598,17 +598,18 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate()*1000);
         mDateTextView.setText(dateString);
 
-        String pretext = mFromSend ? "To: " : "From: ";
-        mToFromName.setText(pretext+transaction.getName());
+        String pretext = mFromSend ? getActivity().getResources().getString(R.string.transaction_details_from) :
+                getActivity().getResources().getString(R.string.transaction_details_to);
+        mToFromName.setText(pretext+transaction.getWalletName());
 
-        mWalletEditText.setText(transaction.getWalletName());
+        mPayeeEditText.setText(transaction.getName());
         mNoteEdittext.setText(transaction.getNotes());
         mCategoryEdittext.setText(transaction.getCategory());
 
         long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
-        mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, true));
+        mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
-        mFiatValueEdittext.setText(mCoreAPI.formatCurrency(mCoreAPI.SatoshiToDefaultCurrency(coinValue)));
+        mFiatValueEdittext.setText(mCoreAPI.formatCurrency(mCoreAPI.SatoshiToDefaultCurrency(coinValue), false));
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
         mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
 
