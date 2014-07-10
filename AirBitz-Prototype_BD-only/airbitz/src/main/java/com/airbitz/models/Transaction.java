@@ -22,28 +22,37 @@ public class Transaction {
     private long mMinerFees;
     private long mABFees;
     private long mBalance;
+    long mAmountFeesAirbitzSatoshi;
+    long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
+    long mBizId; /** payee business-directory id (0 otherwise) */
 
     public Transaction() {
         mID = "";
         mWalletUUID = "";
         mWalletName = "";
         mName = "";
-        mAddress = "";
+        mAmountSatoshi = 0;
         mDate = System.currentTimeMillis();
         mCategory = "";
         mNotes = "";
+        mAmountFeesAirbitzSatoshi = 0;
+        mAmountFeesMinersSatoshi = 0;
+        mBizId = 0;
     }
 
-    public Transaction(String walletUUID, String id, long date, String name, String address, String category,
-                       String notes, String[] addresses) {
+    public Transaction(String walletUUID, String id, long date, String name, long satoshi, String category,
+                       String notes, String[] addresses, long bizID, long ABFees, long minersFees) {
         mWalletUUID = walletUUID;
         mID = id;
         mDate = date;
         mName = name;
-        mAddress = address;
+        mAmountSatoshi = satoshi;
         mCategory = category;
         mNotes = notes;
         mBTCAddresses = addresses;
+        mBizId = bizID;
+        mAmountFeesAirbitzSatoshi = ABFees;
+        mAmountFeesMinersSatoshi = minersFees;
     }
 
     public String getWalletUUID() { return mWalletUUID; }
@@ -93,5 +102,15 @@ public class Transaction {
 
     public long getBalance() { return mBalance; }
     public void setBalance(long mBalance) { this.mBalance = mBalance; }
+
+    public long getmAmountFeesAirbitzSatoshi() { return mAmountFeesAirbitzSatoshi; }
+    public void setmAmountFeesAirbitzSatoshi(long mAmountFeesAirbitzSatoshi) { this.mAmountFeesAirbitzSatoshi = mAmountFeesAirbitzSatoshi; }
+
+    public long getmAmountFeesMinersSatoshi() { return mAmountFeesMinersSatoshi; }
+    public void setmAmountFeesMinersSatoshi(long mAmountFeesMinersSatoshi) { this.mAmountFeesMinersSatoshi = mAmountFeesMinersSatoshi; }
+
+    public long getmBizId() { return mBizId; }
+    public void setmBizId(long mBizId) { this.mBizId = mBizId; }
+
 
 }
