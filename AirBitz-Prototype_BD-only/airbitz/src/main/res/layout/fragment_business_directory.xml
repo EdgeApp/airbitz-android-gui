@@ -10,7 +10,7 @@
     tools:ignore="MergeRootFrame">
 
     <LinearLayout
-        android:id="@+id/dummy_focus"
+        android:id="@+id/fragment_businessdirectory_dummy_focus"
         android:layout_width="0px"
         android:layout_height="0px"
         android:focusable="true"
