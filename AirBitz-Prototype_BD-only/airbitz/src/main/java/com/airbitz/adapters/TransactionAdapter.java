@@ -61,8 +61,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         nameTextView.setText(transaction.getName());
         long transactionSatoshis = transaction.getAmountSatoshi();
         if(mIsBitcoin) {
-            creditAmountTextView.setText(mCoreAPI.formatSatoshi(transactionSatoshis));
-            debitAmountTextView.setText(mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees()));
+            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false));
+            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false));
         } else {
             creditAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transactionSatoshis, false, true));
             debitAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), false, true));
