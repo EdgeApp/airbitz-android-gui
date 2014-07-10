@@ -51,7 +51,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin {
 
     private CoreAPI mCoreAPI;
-    private boolean bdonly = true;//TODO SWITCH BETWEEN BD-ONLY and WALLET
+    private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
 
     private boolean keyBoardUp = false;
 

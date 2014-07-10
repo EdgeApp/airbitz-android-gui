@@ -218,7 +218,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mMoreButton = (TextView) view.findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
 
-        mDummyFocusLayout = (LinearLayout) view.findViewById(R.id.dummy_focus);
+        mDummyFocusLayout = (LinearLayout) view.findViewById(R.id.fragment_businessdirectory_dummy_focus);
 
         mStickyLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
 
@@ -423,10 +423,11 @@ public class BusinessDirectoryFragment extends Fragment implements
                         Location currentLoc = mLocationManager.getLocation();
                         String latLong = String.valueOf(currentLoc.getLatitude());
                         latLong += "," + String.valueOf(currentLoc.getLongitude());
-                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text
-                                        .toString(),
-                                mLocationWords,
-                                latLong);
+                        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+                            mBusinessAutoCompleteAsyncTask.cancel(true);
+                        }
+                        mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
+                        mBusinessAutoCompleteAsyncTask.execute(text,mLocationWords,latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -487,9 +488,11 @@ public class BusinessDirectoryFragment extends Fragment implements
                     List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
-                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
-                            mLocationWords,
-                            latLong);
+                    if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+                        mBusinessAutoCompleteAsyncTask.cancel(true);
+                    }
+                    mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusinesses);
+                    mBusinessAutoCompleteAsyncTask.execute(query,mLocationWords,latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -558,8 +561,11 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mLocationWords = "";
 
                     try {
-                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity())).execute(mLocationWords,
-                                latLong);
+                        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+                            mLocationAutoCompleteAsyncTask.cancel(true);
+                        }
+                        mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity()));
+                        mLocationAutoCompleteAsyncTask.execute(mLocationWords,latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -683,8 +689,11 @@ public class BusinessDirectoryFragment extends Fragment implements
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
                             ? CacheUtil.getCachedLocationSearchData(getActivity())
                             : null);
-
-                    new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
+                    if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+                        mLocationAutoCompleteAsyncTask.cancel(true);
+                    }
+                    mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(cachedLocationSearch);
+                    mLocationAutoCompleteAsyncTask.execute(mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -812,10 +821,11 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
+            mBusinessAutoCompleteAsyncTask = null;
         }
 
         @Override protected void onCancelled(List<Business> jSONResult){
-
+            mBusinessAutoCompleteAsyncTask = null;
         }
     }
 
@@ -866,6 +876,12 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         mLocationManager.removeLocationChangeListener(this);
+        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+            mBusinessAutoCompleteAsyncTask.cancel(true);
+        }
+        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
+            mLocationAutoCompleteAsyncTask.cancel(true);
+        }
         super.onPause();
     }
 
@@ -912,6 +928,11 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
             mLocationAdapter.notifyDataSetChanged();
             ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
+            mLocationAutoCompleteAsyncTask = null;
+        }
+
+        @Override protected void onCancelled(List<LocationSearchResult> JSONResult){
+            mLocationAutoCompleteAsyncTask = null;
         }
 
     }
