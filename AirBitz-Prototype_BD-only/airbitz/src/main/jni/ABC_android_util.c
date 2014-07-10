@@ -145,6 +145,59 @@ Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr 
     return result;
 }
 
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountSatoshi(jlong jarg1) {
+  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+  int64_t result;
+  int result2;
+
+  arg1 = *(struct sABC_TxDetails **)&jarg1;
+  result =  ((arg1)->amountSatoshi);
+//  result2 = ((arg1)->amountSatoshi);
+  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi=%lld", result);
+  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi(hex)=%llx", result);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2=%d", result2);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2(hex)=%x", result2);
+
+  return result;
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesAirbitzSatoshi(jlong jarg1) {
+  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+  int64_t result;
+
+  arg1 = *(struct sABC_TxDetails **)&jarg1;
+  result =  ((arg1)->amountFeesAirbitzSatoshi);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi=%lld", result);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi(hex)=%llx", result);
+
+  return (jlong) result;
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesMinersSatoshi(jlong jarg1) {
+  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+  int64_t result;
+
+  arg1 = *(struct sABC_TxDetails **)&jarg1;
+  result =  ((arg1)->amountFeesMinersSatoshi);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi=%lld", result);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi(hex)=%llx", result);
+
+  return (jlong) result;
+}
+
+
+/*
+ * Return 64 bit long from pointer
+ */
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_getLongAtPtr(jlong *obj)
+{
+    return *obj;
+}
+
 /*
  * SWIG problem so custom call here
  */

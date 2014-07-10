@@ -56,19 +56,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
         dateTextView.setText(dateString);
 
-        nameTextView.setText(mListTransaction.get(position).getName());
-        long transactionSatoshis = mListTransaction.get(position).getAmountSatoshi();
+        Transaction transaction = mListTransaction.get(position);
+
+        nameTextView.setText(transaction.getName());
+        long transactionSatoshis = transaction.getAmountSatoshi();
         if(mIsBitcoin) {
             creditAmountTextView.setText(mCoreAPI.formatSatoshi(transactionSatoshis));
+            debitAmountTextView.setText(mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees()));
         } else {
             creditAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transactionSatoshis, false, true));
+            debitAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), false, true));
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");
             confirmationsTextView.setText("None");
         }else {
 //            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
-            confirmationsTextView.setText("2 confirmations");
+            confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
         }
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
         nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);

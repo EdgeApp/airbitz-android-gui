@@ -39,6 +39,10 @@ public class CoreAPI {
     }
     public native String getStringAtPtr(long jarg1);
     public native byte[] getBytesAtPtr(long jarg1, int length);
+    public native long getLongAtPtr(long jarg1);
+    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
+    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
+    public native long TxDetailsGetAmountSatoshi(long txDetails);
     public native void int64_tp_assign(long jarg1, long jarg2);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
@@ -558,12 +562,19 @@ public class CoreAPI {
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
+
+                //TODO fix for wrong satoshi amounts retrieved in TxDetails
+                long satoshi = CurrencyToSatoshi(txi.getDetails().getmAmountCurrency(), wallet.getCurrencyNum());
+
                 Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
-                        txi.getCreationTime(), wallet.getName(),
-                        wallet.getAmount(), // need address?
-                        wallet.getAmount(), // need category?
-                        wallet.getAmount(), // need notes?
-                        txi.getAddresses());
+                        txi.getCreationTime(), txi.getDetails().getmName(),
+                        satoshi, //txi.mDetails.getmAmountSatoshi(),
+                        txi.mDetails.getmCategory(),
+                        txi.mDetails.getmNotes(),
+                        txi.getAddresses(),
+                        txi.mDetails.getmBizId(),
+                        100000, //txi.mDetails.getmAmountFeesAirbitzSatoshi(),
+                        100000); //txi.mDetails.getmAmountFeesMinersSatoshi());
 
                 listTransactions.add(in);
             }
@@ -614,7 +625,6 @@ public class CoreAPI {
                 tABC_TxDetails txd = super.getPDetails();
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
                 SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
-
                 mAddresses = new String[(int) mCountAddresses];
                 long base = a.getCPtr(a);
                 for (int i = 0; i < mCountAddresses; ++i)
@@ -637,7 +647,7 @@ public class CoreAPI {
         long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
         double mAmountCurrency;  /** amount in currency */
         String mName;   /** payer or payee */
-        int mBizId; /** payee business-directory id (0 otherwise) */
+        long mBizId; /** payee business-directory id (0 otherwise) */
         String mCategory;   /** category for the transaction */
         String mNotes;  /** notes for the transaction */
         int mAttributes;    /** attributes for the transaction */
@@ -645,12 +655,21 @@ public class CoreAPI {
         public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
-                mAmountSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountSatoshi()));
-                mAmountFeesAirbitzSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountFeesAirbitzSatoshi()));
-                mAmountFeesMinersSatoshi = core.longp_value(core.p64_t_to_long_ptr(super.getAmountFeesMinersSatoshi()));
+                mAmountSatoshi = TxDetailsGetAmountSatoshi(pv);
+                mAmountFeesAirbitzSatoshi = TxDetailsGetAmountFeesAirbitzSatoshi(pv);
+                mAmountFeesMinersSatoshi = TxDetailsGetAmountFeesMinersSatoshi(pv);
+//                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
+//                long pointer = SWIGTYPE_p_int64_t.getCPtr(temp);
+//                long temp2 = core.longp_value(core.p64_t_to_long_ptr(super.getAmountSatoshi()));
+//                long temp3 = core.longp_value(new SWIGTYPE_p_long(pointer, false));
+//                pointer = SWIGTYPE_p_int64_t.getCPtr(super.getAmountFeesAirbitzSatoshi());
+//                mAmountFeesAirbitzSatoshi = getLongAtPtr(pointer);
+//                pointer = SWIGTYPE_p_int64_t.getCPtr(super.getAmountFeesMinersSatoshi());
+//                mAmountFeesMinersSatoshi = getLongAtPtr(pointer);
                 mAmountCurrency = super.getAmountCurrency();
+
                 mName = super.getSzName();
-                mBizId = (int) super.getBizId();
+                mBizId = (long) super.getBizId();
                 mCategory = super.getSzCategory();
                 mNotes = super.getSzNotes();
                 mAttributes = (int) super.getAttributes();
@@ -673,7 +692,7 @@ public class CoreAPI {
         public String getmName() { return mName; }
         public void setmName(String mName) { this.mName = mName; }
 
-        public int getmBizId() { return mBizId; }
+        public long getmBizId() { return mBizId; }
         public void setmBizId(int mBizId) { this.mBizId = mBizId; }
 
         public String getmCategory() { return mCategory; }
