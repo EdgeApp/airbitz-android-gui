@@ -121,7 +121,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
 
         mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
