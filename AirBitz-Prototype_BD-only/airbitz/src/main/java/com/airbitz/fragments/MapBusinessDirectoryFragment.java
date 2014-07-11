@@ -148,12 +148,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private CurrentLocationManager mLocationManager;
 
-    private GetVenuesByLocationTask mGetVenuesByLocationTask;
-    private GetVenuesByCategoryTask mGetVenuesByCategoryTask;
-    private GetVenuesByBusinessTask mGetVenuesByBusinessTask;
-    private GetVenuesByLatLongTask mGetVenuesByLatLongTask;
-    private GetVenuesByBusinessAndLocation mGetVenuesByBusinessAndLocation;
     private LinearLayout mVenueFragmentLayout;
+
+    private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
+    private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
+    private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
+    private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
+
 
     VenueFragment mFragmentVenue;
 
@@ -289,7 +290,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
                         String latLong = String.valueOf(getLatFromSharedPreference());
                         latLong += "," + String.valueOf(getLonFromSharedPreference());
-                        new BusinessAutoCompleteAsynctask(cachedBusiness).execute(text,
+                        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                            mBusinessAutoCompleteAsyncTask.cancel(true);
+                        }
+                        mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
+                        mBusinessAutoCompleteAsyncTask.execute(text,
                                 mLocationWords,
                                 latLong);
                     } catch (Exception e) {
@@ -336,7 +341,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
-                    new BusinessAutoCompleteAsynctask(cachedBusinesses).execute(query,
+                    if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                        mBusinessAutoCompleteAsyncTask.cancel(true);
+                    }
+                    mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusinesses);
+                    mBusinessAutoCompleteAsyncTask.execute(query,
                             mLocationWords, latLong);
 
                 } catch (Exception e) {
@@ -381,7 +390,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mLocationWords = "";
 
                     try {
-                        new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity())).execute(mLocationWords,
+                        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                            mLocationAutoCompleteAsyncTask.cancel(true);
+                        }
+                        mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity()));
+                        mLocationAutoCompleteAsyncTask.execute(mLocationWords,
                                 latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -479,8 +492,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
                             ? CacheUtil.getCachedLocationSearchData(getActivity())
                             : null);
-
-                    new LocationAutoCompleteAsynctask(cachedLocationSearch).execute(mLocationWords, latLong);
+                    if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                        mLocationAutoCompleteAsyncTask.cancel(true);
+                    }
+                    mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(cachedLocationSearch);
+                    mLocationAutoCompleteAsyncTask.execute(mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -677,30 +693,36 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private void search() {
         int timeout = 15000;
         if (mLocationName.equalsIgnoreCase("Current Location")) {
-            mGetVenuesByLatLongTask = new GetVenuesByLatLongTask(getActivity());
+            if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetVenuesAsyncTask.cancel(true);
+            }
+            mGetVenuesAsyncTask = new GetVenuesByLatLongTask(getActivity());
             String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
             if (mBusinessType.equalsIgnoreCase("business")) {
 
-                mGetVenuesByLatLongTask.execute(latlong, mBusinessName, "");
+                mGetVenuesAsyncTask.execute(latlong, mBusinessName, "");
             } else {
 
-                mGetVenuesByLatLongTask.execute(latlong, "", mBusinessName);
+                mGetVenuesAsyncTask.execute(latlong, "", mBusinessName);
             }
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override public void run() {
-                    if (mGetVenuesByLatLongTask.getStatus() == AsyncTask.Status.RUNNING)
-                        mGetVenuesByLatLongTask.cancel(true);
+                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING)
+                        mGetVenuesAsyncTask.cancel(true);
                 }
             }, timeout);
         } else {
-            mGetVenuesByBusinessAndLocation = new GetVenuesByBusinessAndLocation(getActivity());
-            mGetVenuesByBusinessAndLocation.execute(mBusinessName, mLocationName, mBusinessType);
+            if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetVenuesAsyncTask.cancel(true);
+            }
+            mGetVenuesAsyncTask = new GetVenuesByBusinessAndLocation(getActivity());
+            mGetVenuesAsyncTask.execute(mBusinessName, mLocationName, mBusinessType);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override public void run() {
-                    if (mGetVenuesByBusinessAndLocation.getStatus() == AsyncTask.Status.RUNNING)
-                        mGetVenuesByBusinessAndLocation.cancel(true);
+                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING)
+                        mGetVenuesAsyncTask.cancel(true);
                 }
             }, timeout);
         }
@@ -727,6 +749,18 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     @Override
     public void onPause(){
         mLocationManager.removeLocationChangeListener(this);
+        if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetVenuesAsyncTask.cancel(true);
+        }
+        if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetVenuesByBoundAsyncTask.cancel(true);
+        }
+        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            mBusinessAutoCompleteAsyncTask.cancel(true);
+        }
+        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            mLocationAutoCompleteAsyncTask.cancel(true);
+        }
         super.onPause();
     }
 
@@ -759,7 +793,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
             // Gets to GoogleMap from the MapView and does initialization stuff
             //mGoogleMap = mapView.getMap();
-            System.out.println("GOOGLE MAPS IS NULL!!!!!!!!!!! BOOOOOO!!!!!");
 
             //mGoogleMap = mapFragment.getMap();
             if (mGoogleMap == null) {
@@ -767,7 +800,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         .show();
                 return;
             }
-            System.out.println("GOOGLE MAPS IS NOT NULL!!!!!!!!!!! YAAAAAAAYY!!!!!");
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
             mGoogleMap.setMyLocationEnabled(true);
 
@@ -880,9 +912,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         String userLatLong = "" + mCurrentLocation.getLatitude()
                                 + ","
                                 + mCurrentLocation.getLongitude();
-
-                        GetVenuesByBoundTask getVenuesByBoundTask = new GetVenuesByBoundTask(getActivity());
-                        getVenuesByBoundTask.execute(bound, mBusinessName, userLatLong);
+                        if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                            mGetVenuesByBoundAsyncTask.cancel(true);
+                        }
+                        mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
+                        mGetVenuesByBoundAsyncTask.execute(bound, mBusinessName, userLatLong);
                     } else {
                         mCameraChangeListenerEnabled = true;
                     }
@@ -1162,7 +1196,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             }
             mLocationAdapter.notifyDataSetChanged();
+            mLocationAutoCompleteAsyncTask = null;
+        }
 
+        @Override protected void onCancelled(List<LocationSearchResult> JSONResult){
+            mLocationAutoCompleteAsyncTask = null;
+            super.onCancelled();
         }
     }
 
@@ -1201,6 +1240,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
+            mBusinessAutoCompleteAsyncTask = null;
+        }
+        @Override protected void onCancelled(List<Business> JSONResult){
+            mBusinessAutoCompleteAsyncTask = null;
+            super.onCancelled();
         }
     }
 
@@ -1218,9 +1262,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
+            mGetVenuesByBoundAsyncTask = null;
             super.onCancelled();
         }
 
@@ -1255,6 +1297,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            mGetVenuesByBoundAsyncTask = null;
         }
     }
 
@@ -1448,6 +1491,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mProgressDialog.dismiss();
             Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
                     Toast.LENGTH_LONG).show();
+            mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
@@ -1469,6 +1513,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
 
             mProgressDialog.dismiss();
+            mGetVenuesAsyncTask = null;
         }
     }
 
@@ -1502,6 +1547,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mProgressDialog.dismiss();
             Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
                     Toast.LENGTH_LONG).show();
+            mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
@@ -1523,6 +1569,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
 
             mProgressDialog.dismiss();
+            mGetVenuesAsyncTask = null;
         }
     }
 
