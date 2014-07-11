@@ -558,7 +558,7 @@ public class CoreAPI {
             int count = core.intp_value(pCount);
             ppTxInfo base = new ppTxInfo(ptrToInfo);
 
-            for (int i = count -1; i >0 ; --i) {
+            for (int i = count-1; i >= 0 ; i--) {
                 pLong temp = new pLong(base.getPtr(base, i * 4));
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
@@ -911,7 +911,6 @@ public class CoreAPI {
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = maxDecimalPlaces();
         SWIGTYPE_p_int64_t out = core.new_int64_tp();
-        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(out);
 
         String cleanAmount = amount.replaceAll(",", "");
         tABC_CC result = core.ABC_ParseAmount(cleanAmount, out, decimalPlaces);
@@ -919,7 +918,7 @@ public class CoreAPI {
         {
             Log.d("CoreAPI", "denomination to Satoshi error");
         }
-        return core.longp_value(l);
+        return get64BitLongAtPtr(out.getCPtr(out));
     }
 
     public String BTCtoFiatStringConversion() {
