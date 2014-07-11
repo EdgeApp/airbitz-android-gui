@@ -376,8 +376,15 @@ public class WalletsFragment extends Fragment
         }
         mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
-        firstTime = true;
-        switchBarInfo(mOnBitcoinMode);
+        if(mOnBitcoinMode) {
+            mButtonMover.setText(mBitCoinBalanceButton.getText());
+            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+            mMoverType.setText(mTopType.getText());
+        } else {
+            mButtonMover.setText(mFiatBalanceButton.getText());
+            mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
+            mMoverType.setText(mBottomType.getText());
+        }
 
         mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
@@ -397,17 +404,6 @@ public class WalletsFragment extends Fragment
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());
-            for(Wallet wallet: mLatestWalletList){
-                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
-                    try {
-                        wallet.setBalanceFormatted(mCoreAPI.FormatDefaultCurrency(wallet.getBalanceSatoshi(), isBitcoin, true));
-                    } catch (Exception e) {
-                        wallet.setBalanceFormatted("0");
-                        e.printStackTrace();
-                    }
-                }
-            }
-            mLatestWalletAdapter.notifyDataSetChanged();
         }else{
             Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
             animator.setDuration(250);
@@ -415,18 +411,9 @@ public class WalletsFragment extends Fragment
             mButtonMover.setText(mFiatBalanceButton.getText());
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
             mMoverType.setText(mBottomType.getText());
-            double conv = 0.1145;
-            for(Wallet wallet: mLatestWalletList){
-                if(!wallet.isHeader() && !wallet.isArchiveHeader()) {
-                    try {
-                        wallet.setBalanceFormatted(mCoreAPI.FormatDefaultCurrency(wallet.getBalanceSatoshi(), isBitcoin, true));
-                    } catch (Exception e) {
-                        wallet.setBalanceFormatted("0");
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
+        mLatestWalletAdapter.setIsBitcoin(isBitcoin);
+        mLatestWalletAdapter.notifyDataSetChanged();
     }
 
     private void showWalletFragment(String name) {

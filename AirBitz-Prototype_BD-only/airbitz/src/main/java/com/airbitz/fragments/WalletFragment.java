@@ -318,19 +318,15 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText("BTC");//TODO
-
-            mTransactionAdapter.setIsBitcoin(isBitcoin);
-            mTransactionAdapter.notifyDataSetChanged();
         }else{
             rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
             switchable.setLayoutParams(rLP);
             mButtonMover.setText(mButtonFiatBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);
             mMoverType.setText("USD");//TODO
-
-            mTransactionAdapter.setIsBitcoin(isBitcoin);
-            mTransactionAdapter.notifyDataSetChanged();
         }
+        mTransactionAdapter.setIsBitcoin(isBitcoin);
+        mTransactionAdapter.notifyDataSetChanged();
     }
 
     @Override

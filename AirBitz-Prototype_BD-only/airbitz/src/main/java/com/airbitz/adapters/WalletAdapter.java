@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Wallet;
 
@@ -29,6 +30,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private boolean hoverFirstHeader = false;
     private boolean hoverSecondHeader = false;
     private int nextId = 0;
+    private boolean mIsBitcoin;
+    private CoreAPI mCoreAPI;
 
     private boolean closeAfterArchive = false;
     private int  archivePos;
@@ -47,6 +50,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             }
             addWallet(wallet);
         }
+        mCoreAPI = CoreAPI.getApi();
     }
 
     public void setFirstHeaderHover(boolean status){ hoverFirstHeader = status;}
@@ -56,6 +60,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void setSelectedViewPos(int position){
         selectedViewPos = position;
     }
+
+    public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
 
     public void addWallet(Wallet wallet){
         if(mArchivedIdMap.containsKey(wallet.getName())){
@@ -147,8 +153,15 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
             titleTextView.setText(mWalletList.get(position).getName());
-            amountTextView.setText(mWalletList.get(position).getBalanceFormatted()
-                    + mContext.getResources().getString(R.string.no_break_space_character));
+            if(mIsBitcoin) {
+                amountTextView.setText(mWalletList.get(position).getBalanceFormatted()
+                        + mContext.getResources().getString(R.string.no_break_space_character));
+            } else {
+                long satoshi = mWalletList.get(position).getBalanceSatoshi();
+                amountTextView.setText(mCoreAPI.FormatDefaultCurrency(satoshi, false, true)
+                        + mContext.getResources().getString(R.string.no_break_space_character));
+            }
+
             if(1 == position){
                 if(2 == archivePos){
                     convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
