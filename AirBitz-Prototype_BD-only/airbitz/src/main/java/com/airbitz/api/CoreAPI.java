@@ -37,17 +37,17 @@ public class CoreAPI {
         }
         return mInstance;
     }
-    public native String getStringAtPtr(long jarg1);
-    public native byte[] getBytesAtPtr(long jarg1, int length);
-    public native long getLongAtPtr(long jarg1);
-    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
-    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
-    public native long TxDetailsGetAmountSatoshi(long txDetails);
-    public native void int64TPAssign(long jarg1, long jarg2);
+    public native String getStringAtPtr(long pointer);
+    public native byte[] getBytesAtPtr(long pointer, int length);
+    public native long get64BitLongAtPtr(long pointer);
+    public native void set64BitLongAtPtr(long pointer, long value);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
     public native void RegisterAsyncCallback ();
+//    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
+//    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
+//    public native long TxDetailsGetAmountSatoshi(long txDetails);
 
     public void Initialize(String file, String seed, long seedLength){
         tABC_Error error = new tABC_Error();
@@ -199,10 +199,6 @@ public class CoreAPI {
             Log.d("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
             return null;
         }
-    }
-
-    public void setPint64_t(SWIGTYPE_p_int64_t p, long value) {
-        int64TPAssign(SWIGTYPE_p_int64_t.getCPtr(p), value);
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -557,22 +553,13 @@ public class CoreAPI {
             int count = core.intp_value(pCount);
             ppTxInfo base = new ppTxInfo(ptrToInfo);
 
-            for (int i = count -1; i >0 ; --i) {
+            for (int i = count-1; i >= 0 ; i--) {
                 pLong temp = new pLong(base.getPtr(base, i * 4));
                 long start = core.longp_value(temp);
                 TxInfo txi = new TxInfo(start);
 
                 Transaction in = new Transaction();
                 setTransaction(wallet, in, txi);
-//                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
-//                        txi.getCreationTime(), txi.getDetails().getmName(),
-//                        satoshi, //txi.mDetails.getmAmountSatoshi(),
-//                        txi.mDetails.getmCategory(),
-//                        txi.mDetails.getmNotes(),
-//                        txi.getAddresses(),
-//                        txi.mDetails.getmBizId(),
-//                        100000, //txi.mDetails.getmAmountFeesAirbitzSatoshi(),
-//                        100000); //txi.mDetails.getmAmountFeesMinersSatoshi());
 
                 listTransactions.add(in);
             }
@@ -653,9 +640,10 @@ public class CoreAPI {
         public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
-                mAmountSatoshi = TxDetailsGetAmountSatoshi(pv);
-                mAmountFeesAirbitzSatoshi = TxDetailsGetAmountFeesAirbitzSatoshi(pv);
-                mAmountFeesMinersSatoshi = TxDetailsGetAmountFeesMinersSatoshi(pv);
+                mAmountSatoshi = get64BitLongAtPtr(pv);
+                mAmountFeesAirbitzSatoshi = get64BitLongAtPtr(pv+8);
+                mAmountFeesMinersSatoshi = get64BitLongAtPtr(pv+16);
+
                 mAmountCurrency = super.getAmountCurrency();
 
                 mName = super.getSzName();
@@ -697,22 +685,15 @@ public class CoreAPI {
 
 
     public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
-        //TODO fix for wrong satoshi amounts retrieved in TxDetails
-        long satoshi = CurrencyToSatoshi(txInfo.getDetails().getmAmountCurrency(), wallet.getCurrencyNum());
-
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
         transaction.setCategory(txInfo.getDetails().getSzCategory());
         transaction.setDate(txInfo.getCreationTime());
 
-        long sat = txInfo.getDetails().getmAmountSatoshi();
-        long ABfees = txInfo.getDetails().getmAmountFeesAirbitzSatoshi();
-        long MinerFees = txInfo.getDetails().getmAmountFeesMinersSatoshi();
-
-        transaction.setAmountSatoshi(satoshi); //txInfo.getDetails().getmAmountSatoshi());
-        transaction.setABFees(100); //txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
-        transaction.setMinerFees(-100); //txInfo.getDetails().getmAmountFeesMinersSatoshi());
+        transaction.setAmountSatoshi(txInfo.getDetails().getmAmountSatoshi());
+        transaction.setABFees(txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
+        transaction.setMinerFees(txInfo.getDetails().getmAmountFeesMinersSatoshi());
 
         transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
         transaction.setWalletName(wallet.getName());
@@ -925,7 +906,6 @@ public class CoreAPI {
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = maxDecimalPlaces();
         SWIGTYPE_p_int64_t out = core.new_int64_tp();
-        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(out);
 
         String cleanAmount = amount.replaceAll(",", "");
         tABC_CC result = core.ABC_ParseAmount(cleanAmount, out, decimalPlaces);
@@ -933,7 +913,8 @@ public class CoreAPI {
         {
             Log.d("CoreAPI", "denomination to Satoshi error");
         }
-        return core.longp_value(l);
+        long temp = get64BitLongAtPtr(out.getCPtr(out));
+        return temp;
     }
 
     public String BTCtoFiatStringConversion() {
@@ -997,7 +978,7 @@ public class CoreAPI {
         result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
         currency, currencyNum, satoshi, error);
 
-        return core.longp_value(l);
+        return get64BitLongAtPtr(l.getCPtr(l));
     }
 
     //*************** Exchange Rate
