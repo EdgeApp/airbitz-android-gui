@@ -826,6 +826,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         @Override protected void onCancelled(List<Business> jSONResult){
             mBusinessAutoCompleteAsyncTask = null;
+            super.onCancelled();
         }
     }
 
@@ -933,6 +934,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         @Override protected void onCancelled(List<LocationSearchResult> JSONResult){
             mLocationAutoCompleteAsyncTask = null;
+            super.onCancelled();
         }
 
     }
