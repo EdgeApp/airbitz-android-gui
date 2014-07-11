@@ -135,13 +135,37 @@ Java_com_airbitz_api_CoreAPI_getStringAtPtr( JNIEnv *env, jobject obj, jlong ptr
 }
 
 /*
- * Return byte array from ptr to string
+ * Return byte array from ptr
  */
 JNIEXPORT jbyteArray JNICALL
 Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr , jint len)
 {
     jbyteArray result = (*env)->NewByteArray(env, len);
     (*env)->SetByteArrayRegion( env, result, 0, len, *(const jbyte **) &ptr );
+    return result;
+}
+
+/*
+ * Return 64 bit long from ptr
+ */
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr( JNIEnv *env, jobject obj, jlong ptr)
+{
+    char *base = *(char **) &ptr;
+    int i=0, shift=0;
+    char value=0;
+    jlong result = 0;
+    for(i=0; i<8; i++) {
+//        char value = base[i];
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%x", value);
+//        result = result & (value<<shift);
+        result |= ( (base[i]) << (i*8) );
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
+//        shift+=8;
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "shift=%d", shift);
+//        base++;
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "base=%p", base);
+    }
     return result;
 }
 

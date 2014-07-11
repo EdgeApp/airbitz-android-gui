@@ -40,6 +40,7 @@ public class CoreAPI {
     public native String getStringAtPtr(long jarg1);
     public native byte[] getBytesAtPtr(long jarg1, int length);
     public native long getLongAtPtr(long jarg1);
+    public native long get64BitLongAtPtr(long jarg1);
     public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
     public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
     public native long TxDetailsGetAmountSatoshi(long txDetails);
@@ -564,15 +565,6 @@ public class CoreAPI {
 
                 Transaction in = new Transaction();
                 setTransaction(wallet, in, txi);
-//                Transaction in = new Transaction(wallet.getUUID(), txi.getID(),
-//                        txi.getCreationTime(), txi.getDetails().getmName(),
-//                        satoshi, //txi.mDetails.getmAmountSatoshi(),
-//                        txi.mDetails.getmCategory(),
-//                        txi.mDetails.getmNotes(),
-//                        txi.getAddresses(),
-//                        txi.mDetails.getmBizId(),
-//                        100000, //txi.mDetails.getmAmountFeesAirbitzSatoshi(),
-//                        100000); //txi.mDetails.getmAmountFeesMinersSatoshi());
 
                 listTransactions.add(in);
             }
@@ -653,9 +645,10 @@ public class CoreAPI {
         public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
-                mAmountSatoshi = TxDetailsGetAmountSatoshi(pv);
-                mAmountFeesAirbitzSatoshi = TxDetailsGetAmountFeesAirbitzSatoshi(pv);
-                mAmountFeesMinersSatoshi = TxDetailsGetAmountFeesMinersSatoshi(pv);
+                mAmountSatoshi = get64BitLongAtPtr(pv);
+                mAmountFeesAirbitzSatoshi = get64BitLongAtPtr(pv+8);
+                mAmountFeesMinersSatoshi = get64BitLongAtPtr(pv+16);
+
                 mAmountCurrency = super.getAmountCurrency();
 
                 mName = super.getSzName();
@@ -697,22 +690,15 @@ public class CoreAPI {
 
 
     public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
-        //TODO fix for wrong satoshi amounts retrieved in TxDetails
-        long satoshi = CurrencyToSatoshi(txInfo.getDetails().getmAmountCurrency(), wallet.getCurrencyNum());
-
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
         transaction.setCategory(txInfo.getDetails().getSzCategory());
         transaction.setDate(txInfo.getCreationTime());
 
-        long sat = txInfo.getDetails().getmAmountSatoshi();
-        long ABfees = txInfo.getDetails().getmAmountFeesAirbitzSatoshi();
-        long MinerFees = txInfo.getDetails().getmAmountFeesMinersSatoshi();
-
-        transaction.setAmountSatoshi(satoshi); //txInfo.getDetails().getmAmountSatoshi());
-        transaction.setABFees(100); //txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
-        transaction.setMinerFees(-100); //txInfo.getDetails().getmAmountFeesMinersSatoshi());
+        transaction.setAmountSatoshi(txInfo.getDetails().getmAmountSatoshi());
+        transaction.setABFees(txInfo.getDetails().getmAmountFeesAirbitzSatoshi());
+        transaction.setMinerFees(txInfo.getDetails().getmAmountFeesMinersSatoshi());
 
         transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
         transaction.setWalletName(wallet.getName());
