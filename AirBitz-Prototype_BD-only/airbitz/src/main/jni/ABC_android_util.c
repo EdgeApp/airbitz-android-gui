@@ -152,65 +152,76 @@ JNIEXPORT jlong JNICALL
 Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr( JNIEnv *env, jobject obj, jlong ptr)
 {
     char *base = *(char **) &ptr;
-    int i=0, shift=0;
+    int i=0;
     char value=0;
+    long long result = 0;
+    for(i=0; i<8; i++) {
+        long long value = base[i];
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%llx", value);
+//        result = result & (value<<shift);
+        result |= ( value << (i*8) );
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
+    }
+    return (jlong) result;
+}
+
+/*
+ * Set 64 bit long at ptr
+ */
+JNIEXPORT void JNICALL
+Java_com_airbitz_api_CoreAPI_set64BitLongAtPtr(jlong obj, jlong value) {
+    unsigned char *base = *(unsigned char **) &obj;
+    int i=0;
     jlong result = 0;
     for(i=0; i<8; i++) {
-//        char value = base[i];
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%x", value);
-//        result = result & (value<<shift);
-        result |= ( (base[i]) << (i*8) );
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
-//        shift+=8;
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "shift=%d", shift);
-//        base++;
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "base=%p", base);
+        base[i] = (unsigned char) ((value >> (i*8)) & 0xff);
+      __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "base[i]=%x", base[i]);
     }
-    return result;
 }
 
-JNIEXPORT jlong JNICALL
-Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountSatoshi(jlong jarg1) {
-  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-  int64_t result;
-  int result2;
 
-  arg1 = *(struct sABC_TxDetails **)&jarg1;
-  result =  ((arg1)->amountSatoshi);
-//  result2 = ((arg1)->amountSatoshi);
-  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi=%lld", result);
-  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi(hex)=%llx", result);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2=%d", result2);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2(hex)=%x", result2);
-
-  return result;
-}
-
-JNIEXPORT jlong JNICALL
-Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesAirbitzSatoshi(jlong jarg1) {
-  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-  int64_t result;
-
-  arg1 = *(struct sABC_TxDetails **)&jarg1;
-  result =  ((arg1)->amountFeesAirbitzSatoshi);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi=%lld", result);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi(hex)=%llx", result);
-
-  return (jlong) result;
-}
-
-JNIEXPORT jlong JNICALL
-Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesMinersSatoshi(jlong jarg1) {
-  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-  int64_t result;
-
-  arg1 = *(struct sABC_TxDetails **)&jarg1;
-  result =  ((arg1)->amountFeesMinersSatoshi);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi=%lld", result);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi(hex)=%llx", result);
-
-  return (jlong) result;
-}
+//JNIEXPORT jlong JNICALL
+//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountSatoshi(jlong jarg1) {
+//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+//  int64_t result;
+//  int result2;
+//
+//  arg1 = *(struct sABC_TxDetails **)&jarg1;
+//  result =  ((arg1)->amountSatoshi);
+////  result2 = ((arg1)->amountSatoshi);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi=%lld", result);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi(hex)=%llx", result);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2=%d", result2);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2(hex)=%x", result2);
+//
+//  return result;
+//}
+//
+//JNIEXPORT jlong JNICALL
+//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesAirbitzSatoshi(jlong jarg1) {
+//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+//  int64_t result;
+//
+//  arg1 = *(struct sABC_TxDetails **)&jarg1;
+//  result =  ((arg1)->amountFeesAirbitzSatoshi);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi=%lld", result);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi(hex)=%llx", result);
+//
+//  return (jlong) result;
+//}
+//
+//JNIEXPORT jlong JNICALL
+//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesMinersSatoshi(jlong jarg1) {
+//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
+//  int64_t result;
+//
+//  arg1 = *(struct sABC_TxDetails **)&jarg1;
+//  result =  ((arg1)->amountFeesMinersSatoshi);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi=%lld", result);
+////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi(hex)=%llx", result);
+//
+//  return (jlong) result;
+//}
 
 
 /*
@@ -220,16 +231,6 @@ JNIEXPORT jlong JNICALL
 Java_com_airbitz_api_CoreAPI_getLongAtPtr(jlong *obj)
 {
     return *obj;
-}
-
-/*
- * SWIG problem so custom call here
- */
-JNIEXPORT void JNICALL
-Java_com_airbitz_api_CoreAPI_int64TPAssign(jlong obj, jlong value) {
-    int64_t *ptr;
-    ptr = (int64_t *) obj; //*(int64_t **)&obj;
-    *ptr = value;
 }
 
 /*

@@ -37,18 +37,17 @@ public class CoreAPI {
         }
         return mInstance;
     }
-    public native String getStringAtPtr(long jarg1);
-    public native byte[] getBytesAtPtr(long jarg1, int length);
-    public native long getLongAtPtr(long jarg1);
-    public native long get64BitLongAtPtr(long jarg1);
-    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
-    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
-    public native long TxDetailsGetAmountSatoshi(long txDetails);
-    public native void int64TPAssign(long jarg1, long jarg2);
+    public native String getStringAtPtr(long pointer);
+    public native byte[] getBytesAtPtr(long pointer, int length);
+    public native long get64BitLongAtPtr(long pointer);
+    public native void set64BitLongAtPtr(long pointer, long value);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
     public native void RegisterAsyncCallback ();
+//    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
+//    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
+//    public native long TxDetailsGetAmountSatoshi(long txDetails);
 
     public void Initialize(String file, String seed, long seedLength){
         tABC_Error error = new tABC_Error();
@@ -200,10 +199,6 @@ public class CoreAPI {
             Log.d("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
             return null;
         }
-    }
-
-    public void setPint64_t(SWIGTYPE_p_int64_t p, long value) {
-        int64TPAssign(SWIGTYPE_p_int64_t.getCPtr(p), value);
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -918,7 +913,8 @@ public class CoreAPI {
         {
             Log.d("CoreAPI", "denomination to Satoshi error");
         }
-        return get64BitLongAtPtr(out.getCPtr(out));
+        long temp = get64BitLongAtPtr(out.getCPtr(out));
+        return temp;
     }
 
     public String BTCtoFiatStringConversion() {
@@ -982,7 +978,7 @@ public class CoreAPI {
         result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
         currency, currencyNum, satoshi, error);
 
-        return core.longp_value(l);
+        return get64BitLongAtPtr(l.getCPtr(l));
     }
 
     //*************** Exchange Rate
