@@ -247,6 +247,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mHelpButton.setVisibility(View.GONE);
         mSearchField = (ClearableEditText) view.findViewById(R.id.edittext_search);
         mLocationField = (ClearableEditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
@@ -883,6 +884,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus()== AsyncTask.Status.RUNNING){
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
+        mFirstLoad = true;
         super.onPause();
     }
 
@@ -983,8 +985,10 @@ public class BusinessDirectoryFragment extends Fragment implements
                                                          long l) {
 
                         if (mFirstLoad) {
+                            System.out.println("THIS IS FIRST LOAD");
                             mFirstLoad = false;
                         } else {
+                            System.out.println("THIS IS OTHER LOAD");
                             Bundle bundle = new Bundle();
                             bundle.putString(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
                                     .getCategoryName());
