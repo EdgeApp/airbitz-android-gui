@@ -57,6 +57,7 @@
         android:layout_centerVertical="true"
         android:src="@drawable/btn_help"
         android:padding="12.6dp"
-        android:contentDescription="@string/string_help_button"/>
+        android:contentDescription="@string/string_help_button"
+        android:visibility="gone"/>
 
 </RelativeLayout>

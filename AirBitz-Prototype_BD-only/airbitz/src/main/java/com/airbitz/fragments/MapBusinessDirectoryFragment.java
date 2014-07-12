@@ -708,8 +708,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override public void run() {
-                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING)
+                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                                Toast.LENGTH_LONG).show();
                         mGetVenuesAsyncTask.cancel(true);
+                    }
                 }
             }, timeout);
         } else {
@@ -721,8 +724,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override public void run() {
-                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING)
+                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                         mGetVenuesAsyncTask.cancel(true);
+                        Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             }, timeout);
         }
@@ -1334,8 +1340,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1388,8 +1392,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1439,8 +1441,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
             super.onCancelled();
         }
 
@@ -1489,8 +1489,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
@@ -1545,8 +1543,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected void onCancelled() {
             mProgressDialog.dismiss();
-            Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
-                    Toast.LENGTH_LONG).show();
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
