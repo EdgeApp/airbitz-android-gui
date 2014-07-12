@@ -76,6 +76,9 @@ public class ListViewUtility {
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView, Context mContext) {
+        if(listView == null){
+            return;
+        }
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             return;

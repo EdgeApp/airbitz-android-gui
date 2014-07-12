@@ -152,7 +152,7 @@
                 android:src="@drawable/search_button"/>
 
             <EditText
-                android:id="@+id/button_balance"
+                android:id="@+id/fragment_wallet_walletname_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="37.8dp"
                 android:layout_centerVertical="true"
@@ -162,9 +162,10 @@
                 android:layout_toLeftOf="@id/fragment_wallet_search_button"
                 android:layout_toRightOf="@id/fragment_wallet_export_button"
                 android:background="@drawable/emboss_down"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="18dp" />
+                android:textSize="14dp" />
 
         </RelativeLayout>
 
@@ -181,7 +182,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/layout_send_request"
+                    android:id="@+id/fragment_wallet_sendrequest_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9.45dp"
@@ -189,14 +190,14 @@
                     android:orientation="horizontal">
 
                     <com.airbitz.objects.ResizableImageView
-                        android:id="@+id/button_request"
+                        android:id="@+id/fragment_wallet_request_button"
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
                         android:layout_marginRight="6.3dp"
                         android:src="@drawable/btn_request_green" />
 
                     <com.airbitz.objects.ResizableImageView
-                        android:id="@+id/button_send"
+                        android:id="@+id/fragment_wallet_send_button"
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
                         android:layout_marginLeft="6.3dp"
