@@ -58,8 +58,6 @@ public class WalletsFragment extends Fragment
     private RelativeLayout mParentLayout;
     private RelativeLayout mContainerLayout;
 
-    private Boolean firstTime = true;
-
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private Button mBitCoinBalanceButton;
@@ -375,7 +373,8 @@ public class WalletsFragment extends Fragment
                 totalSatoshis+=wallet.getBalanceSatoshi();
         }
         mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
-        mFiatBalanceButton.setText(mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true));
+        String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
+        mFiatBalanceButton.setText(temp.substring(0,temp.indexOf('.')+2));
         if(mOnBitcoinMode) {
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
@@ -394,13 +393,9 @@ public class WalletsFragment extends Fragment
     private void switchBarInfo(boolean isBitcoin){
         //RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)getActivity().getResources().getDimension(R.dimen.currency_switch_height));
         if(isBitcoin) {
-            if(!firstTime) {
-                Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-                animator.setDuration(250);
-                animator.start();
-            }else{
-                firstTime = false;
-            }
+            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            animator.setDuration(250);
+            animator.start();
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());

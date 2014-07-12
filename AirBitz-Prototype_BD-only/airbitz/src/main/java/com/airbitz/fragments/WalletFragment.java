@@ -1,5 +1,7 @@
 package com.airbitz.fragments;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -60,6 +62,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
+    private boolean firstTime = true;
 
     private RelativeLayout exportLayout;
     private LinearLayout sendRequestLayout;
@@ -129,15 +132,15 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
         mSearchField = (ClearableEditText) view.findViewById(R.id.fragment_search_edittext);
 
-        mSendButton = (ResizableImageView) view.findViewById(R.id.button_send);
-        mRequestButton = (ResizableImageView) view.findViewById(R.id.button_request);
-        mWalletNameButton = (EditText) view.findViewById(R.id.button_balance);
+        mSendButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_request_button);
+        mWalletNameButton = (EditText) view.findViewById(R.id.fragment_wallet_walletname_edittext);
 
         mExportButton = (ImageButton) view.findViewById(R.id.fragment_wallet_export_button);
         mBackButton = (ImageButton) view.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) view.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_export_layout);
-        sendRequestLayout = (LinearLayout) view.findViewById(R.id.layout_send_request);
+        sendRequestLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_sendrequest_layout);
 
 
         switchable = (RelativeLayout) view.findViewById(R.id.switchable);
@@ -147,7 +150,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mMoverType = (TextView) view.findViewById(R.id.button_mover_type);
         mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
         mBottomType = (TextView) view.findViewById(R.id.bottom_type);
-        mTopType = (TextView) view.findViewById(R.id.top_type);//TODO
+        mTopType = (TextView) view.findViewById(R.id.top_type);
 
         mHelpButton = (ImageButton) view.findViewById(R.id.fragment_wallet_help_button);
         mTitleTextView = (TextView) view.findViewById(R.id.fragment_wallet_title_textview);
@@ -161,6 +164,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mButtonBitcoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mButtonFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mWalletNameButton.setText(mWalletName);
 
@@ -187,7 +193,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     exportLayout.setVisibility(View.GONE);
                     sendRequestLayout.setVisibility(View.GONE);
                     searchPage = true;
-                    mTransactionAdapter.setSearch(searchPage);
+                    mTransactionAdapter.setSearch(true);
                     mTransactionAdapter.notifyDataSetChanged();
                 }
             }
@@ -265,7 +271,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     exportLayout.setVisibility(View.VISIBLE);
                     sendRequestLayout.setVisibility(View.VISIBLE);
                     searchPage = false;
-                    mTransactionAdapter.setSearch(searchPage);
+                    mTransactionAdapter.setSearch(false);
                     mSearchField.clearFocus();
                 }else{
                     getActivity().onBackPressed();
@@ -291,18 +297,25 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
-    // Sum all wallets except for archived and show in total
+    @Override public void onResume(){
+        firstTime = true;
+        super.onResume();
+    }
+
+    // Sum all transactions and show in total
     private void UpdateWalletTotalBalance() {
         long totalSatoshis = 0;
         for(Transaction transaction : mTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
         mButtonBitcoinBalance.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
-        mButtonFiatBalance.setText(mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true));
+        String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
+        mButtonFiatBalance.setText(temp.substring(0,temp.indexOf('.')+2));
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setText("USD");//TODO
+        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mTopType.setText(mCoreAPI.getUserBTCDenomination());
     }
 
 
@@ -311,19 +324,24 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     }
 
     private void switchBarInfo(boolean isBitcoin){
-        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(switchContainer.getWidth(), switchContainer.getHeight()/2);
         if(isBitcoin) {
-            rLP.addRule(RelativeLayout.ABOVE, R.id.bottom_switch);
-            switchable.setLayoutParams(rLP);
+            if(!firstTime) {
+                Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+                animator.setDuration(250);
+                animator.start();
+            }else{
+                firstTime = false;
+            }
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setText("BTC");//TODO
+            mMoverType.setText(mTopType.getText());
         }else{
-            rLP.addRule(RelativeLayout.BELOW, R.id.top_switch);
-            switchable.setLayoutParams(rLP);
+            Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            animator.setDuration(250);
+            animator.start();
             mButtonMover.setText(mButtonFiatBalance.getText());
-            mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);
-            mMoverType.setText("USD");//TODO
+            mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//TODO
+            mMoverType.setText(mBottomType.getText());
         }
         mTransactionAdapter.setIsBitcoin(isBitcoin);
         mTransactionAdapter.notifyDataSetChanged();

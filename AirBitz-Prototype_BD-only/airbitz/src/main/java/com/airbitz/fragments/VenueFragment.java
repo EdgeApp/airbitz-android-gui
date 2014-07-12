@@ -217,8 +217,11 @@ public class VenueFragment extends Fragment implements
         handler.postDelayed(new Runnable()
         {
             @Override public void run() {
-                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING)
+                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    Toast.makeText(getActivity(), "Can not retrieve data",
+                            Toast.LENGTH_LONG).show();
                     mGetVenuesTask.cancel(true);
+                }
             }
         }, timeout);
     }
@@ -263,8 +266,6 @@ public class VenueFragment extends Fragment implements
 //            mVenueListView.removeFooterView(mLoadingFooterView);
             mNoResultView.setVisibility(View.VISIBLE);
             hideLoadingIndicator();
-            Toast.makeText(mContext, "Can not retrieve data",
-                           Toast.LENGTH_LONG).show();
             mGetVenuesTask = null;
             super.onCancelled();
         }
@@ -458,8 +459,6 @@ public class VenueFragment extends Fragment implements
 //            mVenueListView.removeFooterView(mLoadingFooterView);
             mNoResultView.setVisibility(View.VISIBLE);
             hideLoadingIndicator();
-            Toast.makeText(mContext, "Can not retrieve data",
-                           Toast.LENGTH_LONG).show();
             mGetMoreVenuesTask = null;
             super.onCancelled();
         }
@@ -526,8 +525,6 @@ public class VenueFragment extends Fragment implements
 //            mProgressDialog.dismiss();
             mNoResultView.setVisibility(View.VISIBLE);
             hideLoadingIndicator();
-            Toast.makeText(mContext, "Can not retrieve data",
-                           Toast.LENGTH_LONG).show();
             mGetRemainingFirstVenuesTask = null;
             super.onCancelled();
         }

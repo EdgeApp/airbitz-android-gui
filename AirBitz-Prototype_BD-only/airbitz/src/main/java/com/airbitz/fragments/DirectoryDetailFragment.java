@@ -218,8 +218,8 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
                 String.valueOf(getLonFromSharedPreference()));
 
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?saddr=" + saddr
-                        + "&daddr="
+                Uri.parse("http://maps.google.com/maps?"
+                        + "daddr="
                         + daddr
                         + "&dirflg=d"));
 
@@ -556,11 +556,11 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     }
 
     private double getLatFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
+        return mLocationManager.getLocation().getLatitude();
     }
 
     private double getLonFromSharedPreference() {
-        return (double) getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
+        return mLocationManager.getLocation().getLongitude();
     }
 
     @Override public boolean onDown(MotionEvent motionEvent) {
