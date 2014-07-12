@@ -149,19 +149,19 @@ Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr 
  * Return 64 bit long from ptr
  */
 JNIEXPORT jlong JNICALL
-Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr( JNIEnv *env, jobject obj, jlong ptr)
+Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr(JNIEnv *env, jobject obj, jlong ptr)
 {
     char *base = *(char **) &ptr;
     int i=0;
     char value=0;
     long long result = 0;
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_Get64BitLongAtPtr", "ptr=%p", (void *) base);
     for(i=0; i<8; i++) {
         long long value = base[i];
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%llx", value);
-//        result = result & (value<<shift);
+        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%llx", value);
         result |= ( value << (i*8) );
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
     }
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
     return (jlong) result;
 }
 
@@ -169,60 +169,15 @@ Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr( JNIEnv *env, jobject obj, jlong 
  * Set 64 bit long at ptr
  */
 JNIEXPORT void JNICALL
-Java_com_airbitz_api_CoreAPI_set64BitLongAtPtr(jlong obj, jlong value) {
+Java_com_airbitz_api_CoreAPI_set64BitLongAtPtr(JNIEnv *jenv, jclass jcls, jlong obj, jlong value) {
     unsigned char *base = *(unsigned char **) &obj;
     int i=0;
-    jlong result = 0;
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_Set64BitLongAtPtr", "value=%llx", value);
     for(i=0; i<8; i++) {
         base[i] = (unsigned char) ((value >> (i*8)) & 0xff);
       __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "base[i]=%x", base[i]);
     }
 }
-
-
-//JNIEXPORT jlong JNICALL
-//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountSatoshi(jlong jarg1) {
-//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-//  int64_t result;
-//  int result2;
-//
-//  arg1 = *(struct sABC_TxDetails **)&jarg1;
-//  result =  ((arg1)->amountSatoshi);
-////  result2 = ((arg1)->amountSatoshi);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi=%lld", result);
-//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi(hex)=%llx", result);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2=%d", result2);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountsatoshi2(hex)=%x", result2);
-//
-//  return result;
-//}
-//
-//JNIEXPORT jlong JNICALL
-//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesAirbitzSatoshi(jlong jarg1) {
-//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-//  int64_t result;
-//
-//  arg1 = *(struct sABC_TxDetails **)&jarg1;
-//  result =  ((arg1)->amountFeesAirbitzSatoshi);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi=%lld", result);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountAIRBITZFEESsatoshi(hex)=%llx", result);
-//
-//  return (jlong) result;
-//}
-//
-//JNIEXPORT jlong JNICALL
-//Java_com_airbitz_api_CoreAPI_TxDetailsGetAmountFeesMinersSatoshi(jlong jarg1) {
-//  struct sABC_TxDetails *arg1 = (struct sABC_TxDetails *) 0 ;
-//  int64_t result;
-//
-//  arg1 = *(struct sABC_TxDetails **)&jarg1;
-//  result =  ((arg1)->amountFeesMinersSatoshi);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi=%lld", result);
-////  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "txdetailsgetamountMINERSFEESsatoshi(hex)=%llx", result);
-//
-//  return (jlong) result;
-//}
-
 
 /*
  * Return 64 bit long from pointer
@@ -231,6 +186,34 @@ JNIEXPORT jlong JNICALL
 Java_com_airbitz_api_CoreAPI_getLongAtPtr(jlong *obj)
 {
     return *obj;
+}
+
+/*
+ * Proper conversion without SWIG problems
+*/
+JNIEXPORT jint JNICALL
+Java_com_airbitz_api_CoreAPI_FormatAmount(JNIEnv *jenv, jclass jcls, jlong satoshi, jlong ppchar, jlong decimalplaces, jlong perror) {
+  jint jresult = 0 ;
+  int64_t arg1 = satoshi;
+  char **arg2 = (char **) 0 ;
+  unsigned int arg3 ;
+  tABC_Error *argError = (tABC_Error *) 0 ;
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+  arg2 = *(char ***)&ppchar;
+  arg3 = (unsigned int)decimalplaces;
+  argError = *(tABC_Error **)&perror;
+
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "satoshi=%llx", arg1);
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "ppchar=%p", (void *) arg2);
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "decimals=%d", arg3);
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "perror=%p", (void *) argError);
+  result = (tABC_CC)ABC_FormatAmount(arg1,arg2,arg3,argError);
+  jresult = (jint)result;
+  return jresult;
 }
 
 /*

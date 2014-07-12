@@ -103,7 +103,7 @@ public class WalletQRCodeFragment extends Fragment {
         //TODO integrate a finder for associating this with someone
         String fakeUser = "";
         String fakePhone = "";
-        String id = createReceiveRequestFor(fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
+        String id = mCoreAPI.createReceiveRequestFor(mWallet, fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
         if(id!=null) {
             String addr = getRequestAddress(id);
             mBitcoinAddress.setText(addr);
@@ -117,51 +117,6 @@ public class WalletQRCodeFragment extends Fragment {
         return view;
     }
 
-    private String createReceiveRequestFor(String name, String notes, String btc) {
-        //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
-        tABC_TxDetails details = new tABC_TxDetails();
-        tABC_CC result;
-        tABC_Error error = new tABC_Error();
-
-        //first need to create a transaction details struct
-        long satoshi = mCoreAPI.denominationToSatoshi(btc);
-        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) satoshi);
-//        mCoreAPI.setPint64_t(amt, satoshi); //TODO causes SIGILL
-        details.setAmountSatoshi(amt);
-
-        double value = mCoreAPI.SatoshiToCurrency(satoshi, mWallet.getCurrencyNum());
-
-       //the true fee values will be set by the core
-        details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
-        details.setAmountFeesMinersSatoshi(core.new_int64_tp());
-
-        details.setAmountCurrency(value);
-
-        details.setSzName(name);
-        details.setSzNotes(notes);
-        details.setSzCategory("");
-        details.setAttributes(0x0); //for our own use (not used by the core)
-
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
-
-        // create the request
-        result = core.ABC_CreateReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-            mWallet.getUUID(), details, pRequestID, error);
-
-        if (result == tABC_CC.ABC_CC_Ok)
-        {
-            return mCoreAPI.getStringAtPtr(core.longp_value(lp));
-        }
-        else
-        {
-            String message = result.toString() + "," + error.getSzDescription() + ", " +
-                    error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-            Log.d("WalletQRCodeFragment", message);
-            return null;
-        }
-    }
 
     private void generateQRCode_general(String id) throws WriterException {
         tABC_CC result;
