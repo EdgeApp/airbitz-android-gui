@@ -41,6 +41,7 @@ public class CoreAPI {
     public native byte[] getBytesAtPtr(long pointer, int length);
     public native long get64BitLongAtPtr(long pointer);
     public native void set64BitLongAtPtr(long pointer, long value);
+    public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
@@ -839,19 +840,17 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) amount);
-//        setPint64_t(amt, amount); TODO causes SIGILL
-
         int decimalPlaces = maxDecimalPlaces();
 
         boolean negative = amount < 0;
-        tABC_CC result = core.ABC_FormatAmount(amt, ppChar, decimalPlaces, error);
-        if ( result != tABC_CC.ABC_CC_Ok)
+        int result = FormatAmount(amount, ppChar.getCPtr(ppChar), decimalPlaces, error.getCPtr(error));
+        if ( result != 0)
         {
-            return null;
+            return "";
         }
         else {
+            long test1 = core.longp_value(lp);
+            byte[] bytes = getBytesAtPtr(test1, 1);
             String pFormatted = getStringAtPtr(core.longp_value(lp));
             decimalPlaces = decimals > -1 ? decimals : maxDecimalPlaces();
             String pretext = "";
@@ -979,6 +978,58 @@ public class CoreAPI {
         currency, currencyNum, satoshi, error);
 
         return get64BitLongAtPtr(l.getCPtr(l));
+    }
+
+    public String createReceiveRequestFor(Wallet wallet, String name, String notes, String btc) {
+        //first need to create a transaction details struct
+        long satoshi = denominationToSatoshi(btc);
+        double value = SatoshiToCurrency(satoshi, wallet.getCurrencyNum());
+
+        //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
+        tABC_TxDetails details = new tABC_TxDetails();
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        byte[] txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
+
+//        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
+//        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) satoshi);
+//        details.setAmountSatoshi(amt);
+        Log.d("Test", "satoshi="+satoshi);
+        set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
+
+//        txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
+
+        //the true fee values will be set by the core
+        details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
+        details.setAmountFeesMinersSatoshi(core.new_int64_tp());
+
+        details.setAmountCurrency(value);
+//        txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
+
+        details.setSzName(name);
+        details.setSzNotes(notes);
+        details.setSzCategory("");
+        details.setAttributes(0x0); //for our own use (not used by the core)
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
+
+        // create the request
+        result = core.ABC_CreateReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), details, pRequestID, error);
+
+        if (result == tABC_CC.ABC_CC_Ok)
+        {
+            return getStringAtPtr(core.longp_value(lp));
+        }
+        else
+        {
+            String message = result.toString() + "," + error.getSzDescription() + ", " +
+                    error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+            Log.d("WalletQRCodeFragment", message);
+            return null;
+        }
     }
 
     //*************** Exchange Rate
