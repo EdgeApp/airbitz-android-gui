@@ -68,6 +68,9 @@ public class VenueFragment extends Fragment implements
     private int venueAmount = 0;
 
     private GetVenuesTask mGetVenuesTask;
+    private GetMoreVenuesTask mGetMoreVenuesTask;
+    private GetRemainingFirstVenuesTask mGetRemainingFirstVenuesTask;
+
 //    private GestureDetector mGestureDetector;
 
     private boolean mIsInBusinessDirectory = false;
@@ -132,6 +135,9 @@ public class VenueFragment extends Fragment implements
 
         if (getParentFragment().getClass().toString().equalsIgnoreCase(BusinessDirectoryFragment.class.toString())) {
             mIsInBusinessDirectory = true;
+            if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetVenuesTask.cancel(true);
+            }
             mGetVenuesTask = new GetVenuesTask(mActivity);
             mGetVenuesTask.execute(latLon);
             ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
@@ -141,10 +147,15 @@ public class VenueFragment extends Fragment implements
             mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
             mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
             mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
-
+            if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetVenuesTask.cancel(true);
+            }
             mGetVenuesTask = new GetVenuesTask(mActivity);
             mGetVenuesTask.execute(mBusinessName, mLocationName, mBusinessType);
         } else {
+            if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetVenuesTask.cancel(true);
+            }
             mGetVenuesTask = new GetVenuesTask(mActivity);
             mGetVenuesTask.execute(latLon);
         }
@@ -161,20 +172,39 @@ public class VenueFragment extends Fragment implements
     @Override public void onScrollEnded() {
         if (isFirstLoad) {
             isFirstLoad = false;
-            GetRemainingFirstVenuesTask getRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(mActivity);
-            getRemainingFirstVenuesTask.execute("");
+            if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetRemainingFirstVenuesTask.cancel(true);
+            }
+            mGetRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(mActivity);
+            mGetRemainingFirstVenuesTask.execute("");
             venueAmount = 20;
         } else {
             if( venueAmount < 100) {
                 if (isGettingMoreVenueFinished) {
                     isGettingMoreVenueFinished = false;
-
-                    GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(mActivity);
-                    getMoreVenuesTask.execute(mNextUrl);
+                    if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                        mGetMoreVenuesTask.cancel(true);
+                    }
+                    mGetMoreVenuesTask = new GetMoreVenuesTask(mActivity);
+                    mGetMoreVenuesTask.execute(mNextUrl);
                     venueAmount += 20;
                 }
             }
         }
+    }
+
+    @Override
+    public void onPause(){
+        if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetMoreVenuesTask.cancel(true);
+        }
+        if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetRemainingFirstVenuesTask.cancel(true);
+        }
+        if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetVenuesTask.cancel(true);
+        }
+        super.onPause();
     }
 
     @Override
@@ -187,7 +217,7 @@ public class VenueFragment extends Fragment implements
         handler.postDelayed(new Runnable()
         {
             @Override public void run() {
-                if (mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING)
+                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING)
                     mGetVenuesTask.cancel(true);
             }
         }, timeout);
@@ -235,6 +265,7 @@ public class VenueFragment extends Fragment implements
             hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
+            mGetVenuesTask = null;
             super.onCancelled();
         }
 
@@ -260,7 +291,7 @@ public class VenueFragment extends Fragment implements
                 e.printStackTrace();
                 this.cancel(true);
             }
-
+            mGetVenuesTask = null;
         }
     }
 
@@ -321,9 +352,11 @@ public class VenueFragment extends Fragment implements
                         if (mLoadFlag == false) {
                             mLoadFlag = true;
                             if (!mIsInBusinessDirectory) {
-
-                                GetMoreVenuesTask getMoreVenuesTask = new GetMoreVenuesTask(mActivity);
-                                getMoreVenuesTask.execute(mNextUrl);
+                                if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                                    mGetMoreVenuesTask.cancel(true);
+                                }
+                                mGetMoreVenuesTask = new GetMoreVenuesTask(mActivity);
+                                mGetMoreVenuesTask.execute(mNextUrl);
                             }
                         }
                     }
@@ -427,6 +460,7 @@ public class VenueFragment extends Fragment implements
             hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
+            mGetMoreVenuesTask = null;
             super.onCancelled();
         }
 
@@ -457,6 +491,7 @@ public class VenueFragment extends Fragment implements
                 hideLoadingIndicator();
             }
             isGettingMoreVenueFinished = true;
+            mGetMoreVenuesTask = null;
         }
     }
 
@@ -493,6 +528,7 @@ public class VenueFragment extends Fragment implements
             hideLoadingIndicator();
             Toast.makeText(mContext, "Can not retrieve data",
                            Toast.LENGTH_LONG).show();
+            mGetRemainingFirstVenuesTask = null;
             super.onCancelled();
         }
 
@@ -507,6 +543,7 @@ public class VenueFragment extends Fragment implements
                 }
             }
 //            mProgressDialog.dismiss();
+            mGetRemainingFirstVenuesTask = null;
         }
     }
 
