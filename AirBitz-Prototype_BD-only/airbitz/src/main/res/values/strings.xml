@@ -124,6 +124,9 @@
     <string name="send_from_title">Send From:</string>
     <string name="send_to_title">Send To:</string>
     <string name="send_scan_text">Scan QR Code</string>
+    <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawl PIN in order to proceed</string>
+    <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
+
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>

@@ -56,10 +56,10 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
-    public static final String QR_RESULT = "com.airbitz.Sendfragment_QR_RESULT";
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
+    public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -213,12 +213,15 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     dummyFocus.requestFocus();
-                    Fragment frag = new SendConfirmationFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
-                    bundle.putString("to_name",mToEdittext.getText().toString());
-                    frag.setArguments(bundle);
-                    ((NavigationActivity)getActivity()).pushFragment(frag);
+
+                    boolean bIsUUID = false;
+                    String strTo = mToEdittext.getText().toString();
+                    if(mCurrentListing.contains(strTo))
+                    {
+                        bIsUUID = true;
+                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
+                    }
+                    GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     return true;
                 }
                 return false;
@@ -263,12 +266,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
-                Fragment frag = new SendConfirmationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("wallet_name", (String)walletSpinner.getSelectedItem());
-                bundle.putString("to_name",mCurrentListing.get(i));
-                frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                GotoSendConfirmation(mCurrentListing.get(i), 0, " ", true);
             }
         });
 
@@ -298,7 +296,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
             try{
 //            mCamera.takePicture(null, null, SendFragment.this);
-                GotoSendConfirmation("", 100, "test");
+//                GotoSendConfirmation("uuid", 0, "label", false);
             }
             catch (Exception e){
             }
@@ -346,7 +344,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         mCamera.setParameters(params);
 
-        new FakeCapturePhoto().execute();
+//        new FakeCapturePhoto().execute();
     }
 
     @Override
@@ -375,15 +373,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         }
     }
 
-    private void GotoSendConfirmation(String address, long satoshi, String label) {
+    private void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
         Fragment fragment = new SendConfirmationFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(QR_RESULT, address);
-        bundle.putLong(RequestFragment.BITCOIN_VALUE, satoshi);
+        bundle.putBoolean(IS_UUID, isUUID);
+        bundle.putString(UUID, uuid);
+        bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
-        bundle.putBoolean(UUID, false);
-        Wallet w = mCoreAPI.getWalletFromName(mWalletName);
-        bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
@@ -433,7 +429,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                         mHandler.removeCallbacks(cameraDelayRunner);
                     stopCamera();
 
-                    GotoSendConfirmation(uriAddress, amountSatoshi, label);
+                    GotoSendConfirmation(uriAddress, amountSatoshi, label, true);
                 }
                 else
                 {

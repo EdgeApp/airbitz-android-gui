@@ -1,11 +1,14 @@
 package com.airbitz.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,17 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.SWIGTYPE_p_uint64_t;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_TxDetails;
-import com.airbitz.api.tABC_WalletInfo;
+import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
 /**
@@ -81,8 +78,13 @@ public class SendConfirmationFragment extends Fragment {
 
     private boolean mSuccess = false;
 
-    private String mQRResult;
+    private String mUUIDorURI;
+    private String mLabel;
+    private Boolean mIsUUID;
+    private long mAmountToSendSatoshi=0;
+
     private CoreAPI mCoreAPI;
+    private Wallet mSourceWallet, mToWallet;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,9 +93,15 @@ public class SendConfirmationFragment extends Fragment {
         if (bundle == null) {
             System.out.println("Send confirmation bundle is null");
         } else {
-            mQRResult = bundle.getString(SendFragment.QR_RESULT);
+            mUUIDorURI = bundle.getString(SendFragment.UUID);
+            mLabel = bundle.getString(SendFragment.LABEL);
+            mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
+            mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
         }
         mCoreAPI = CoreAPI.getApi();
+        if(mIsUUID) {
+            mToWallet = mCoreAPI.getWallet(mUUIDorURI);
+        }
     }
 
     @Override
@@ -144,8 +152,8 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        mFromEdittext.setText(bundle.getString("wallet_name"));
-        mToEdittext.setText(bundle.getString("to_name"));
+        mFromEdittext.setText("todo");
+        mToEdittext.setText("todo");
 
 
         Shader textShader = new LinearGradient(0, 0, 0, 20,
@@ -262,14 +270,14 @@ public class SendConfirmationFragment extends Fragment {
         mDollarValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //TODO calculate mAmountToSendSatoshi
             }
         });
 
         mBitcoinValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //TODO calculate mAmountToSendSatoshi
             }
         });
 
@@ -289,120 +297,107 @@ public class SendConfirmationFragment extends Fragment {
         }
     }
 
+    private void updateTextFieldContents(boolean btc)
+    {
+        double currency;
+        long satoshi;
+        tABC_Error error = new tABC_Error();
+
+        if (btc) {
+            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
+            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
+            mDollarValueField.setText(String.valueOf(value));
+       }
+        else {
+            currency = Double.valueOf(mDollarValueField.getText().toString());
+            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
+            mAmountToSendSatoshi = satoshi;
+            int currencyDecimalPlaces = 2; //TODO where does this come from?
+            mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+        }
+        updateFeeFieldContents();
+    }
+
+    private void updateFeeFieldContents()
+    {
+//        long fees = 0;
+//        tABC_Error error = new ;
+//        NSString *dest = NULL;
+//        if (self.bAddressIsWalletUUID) {
+//            dest = self.destWallet.strUUID;
+//        } else {
+//            dest = self.sendToAddress;
+//        }
+//        if ([CoreBridge calcSendFees:self.wallet.strUUID
+//        sendTo:dest
+//        amountToSend:self.amountToSendSatoshi
+//        storeResultsIn:&fees
+//        walletTransfer:self.bAddressIsWalletUUID])
+//        {
+//            double currencyFees = 0.0;
+//            self.conversionLabel.textColor = [UIColor whiteColor];
+//            self.amountBTCTextField.textColor = [UIColor whiteColor];
+//            self.amountUSDTextField.textColor = [UIColor whiteColor];
+//
+//            NSMutableString *coinFeeString = [[NSMutableString alloc] init];
+//            NSMutableString *fiatFeeString = [[NSMutableString alloc] init];
+//            [coinFeeString appendString:@"+ "];
+//            [coinFeeString appendString:[CoreBridge formatSatoshi:fees withSymbol:false]];
+//            [coinFeeString appendString:@" "];
+//            [coinFeeString appendString:[User Singleton].denominationLabel];
+//
+//            if (ABC_SatoshiToCurrency([[User Singleton].name UTF8String], [[User Singleton].password UTF8String],
+//            fees, &currencyFees, self.wallet.currencyNum, &error) == ABC_CC_Ok)
+//            {
+//                [fiatFeeString appendString:@"+ "];
+//                [fiatFeeString appendString:[CoreBridge formatCurrency:currencyFees
+//                withCurrencyNum:self.wallet.currencyNum
+//                withSymbol:false]];
+//                [fiatFeeString appendString:@" "];
+//                [fiatFeeString appendString:self.wallet.currencyAbbrev];
+//            }
+//            self.amountBTCLabel.text = coinFeeString;
+//            self.amountUSDLabel.text = fiatFeeString;
+//            self.conversionLabel.text = [CoreBridge conversionString:self.wallet];
+//        }
+//        else
+//        {
+//            NSString *message = NSLocalizedString(@"Insufficient funds", nil);
+//            self.conversionLabel.text = message;
+//            self.conversionLabel.textColor = [UIColor redColor];
+//            self.amountBTCTextField.textColor = [UIColor redColor];
+//            self.amountUSDTextField.textColor = [UIColor redColor];
+//        }
+//        [self alineTextFields:self.amountBTCLabel alignWith:self.amountBTCTextField];
+//        [self alineTextFields:self.amountUSDLabel alignWith:self.amountUSDTextField];
+    }
+
+
     private void attemptInitiateSend() {
         //make sure PIN is good
         String enteredPIN = "";
         if (!enteredPIN.isEmpty()) {
-            //make sure the entered PIN matches the PIN stored in the Core
-            tABC_Error error = new tABC_Error();
-            String szPIN = null;
-
-//            mCoreAPI.ABC_GetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-//                szPIN, error);
-
-            if (szPIN!=null && szPIN.equals(enteredPIN)) {
-                    InitiateSendRequest();
+            String userPIN = mCoreAPI.GetUserPIN();
+            if (userPIN!=null && userPIN.equals(enteredPIN)) {
+                    mCoreAPI.InitiateTransferOrSend(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
                     return;
             }
-//            free(szPIN);
         }
         showIncorrectPINAlert();
-//        [_confirmationSlider resetIn:1.0];
     }
 
-    private void InitiateSendRequest() {
-//            tABC_Error Error = new tABC_Error();
-//            tABC_CC result;
-//            int nCount;
-//            double currency;
-//
-//        long satoshi = 1234; //TODO
-//        int currencyNum = 840; //TODO
-//            currency = mCoreAPI.SatoshiToCurrency(satoshi, currencyNum);
-//            if (result == ABC_CC_Ok)
-//            {
-//                ABC_GetWallets([[User Singleton].name UTF8String], [[User Singleton].password UTF8String], &aWalletInfo, &nCount, &Error);
-//
-//                if (nCount)
-//                {
-//                    tABC_TxDetails Details;
-//
-//                    SWIGTYPE_p_int64_t pAmountSatoshi = core.longp_to
-//                    Details.setAmountSatoshi(mBitcoinValueField.getText().toString());
-//                    Details.amountCurrency = currency;
-//                    // These will be calculated for us
-//                    Details.amountFeesAirbitzSatoshi = 0;
-//                    Details.amountFeesMinersSatoshi = 0;
-//                    // If this is a transfer, populate the comments
-//                    Details.szName = "Anonymous";
-//                    Details.szCategory = "";
-//                    Details.szNotes = "";
-//                    Details.attributes = 0x2;
-//
-//                    tABC_WalletInfo *info = aWalletInfo[self.selectedWalletIndex];
-//
-//                    if (self.bAddressIsWalletUUID)
-//                    {
-//                        NSString *categoryText = NSLocalizedString(@"Transfer:Wallet:", nil);
-//                        tABC_TransferDetails Transfer;
-//                        Transfer.szSrcWalletUUID = strdup(info->szUUID);
-//                        Transfer.szSrcName = strdup([self.destWallet.strName UTF8String]);
-//                        Transfer.szSrcCategory = strdup([[NSString stringWithFormat:@"%@%@", categoryText, self.destWallet.strName] UTF8String]);
-//
-//                        Transfer.szDestWalletUUID = strdup([self.destWallet.strUUID UTF8String]);
-//                        Transfer.szDestName = strdup([self.wallet.strName UTF8String]);
-//                        Transfer.szDestCategory = strdup([[NSString stringWithFormat:@"%@%@", categoryText, self.wallet.strName] UTF8String]);
-//
-//                        result = ABC_InitiateTransfer([[User Singleton].name UTF8String],
-//                        [[User Singleton].password UTF8String],
-//                        &Transfer, &Details,
-//                            ABC_SendConfirmation_Callback,
-//                            (__bridge void *)self,
-//                        &Error);
-//
-//                        free(Transfer.szSrcWalletUUID);
-//                        free(Transfer.szSrcName);
-//                        free(Transfer.szSrcCategory);
-//                        free(Transfer.szDestWalletUUID);
-//                        free(Transfer.szDestName);
-//                        free(Transfer.szDestCategory);
-//                    } else {
-//                        result = ABC_InitiateSendRequest([[User Singleton].name UTF8String],
-//                        [[User Singleton].password UTF8String],
-//                        info->szUUID,
-//                        [self.sendToAddress UTF8String],
-//                        &Details,
-//                                ABC_SendConfirmation_Callback,
-//                                (__bridge void *)self,
-//                        &Error);
-//                    }
-//                    if (result == ABC_CC_Ok)
-//                    {
-//                        [self showSendStatus];
-//                    }
-//                    else
-//                    {
-//                        [Util printABC_Error:&Error];
-//                    }
-//
-////                    ABC_FreeWalletInfoArray(aWalletInfo, nCount);
-//                }
-//            }
-        }
-
     private void showIncorrectPINAlert() {
-//                    UIAlertView * alert =[[UIAlertView alloc]
-//                    initWithTitle:
-//                    NSLocalizedString( @ "Incorrect PIN", nil)
-//                    message:
-//                    NSLocalizedString( @
-//                    "You must enter the correct withdrawl PIN in order to proceed", nil)
-//                    delegate:
-//                    self
-//                    cancelButtonTitle:
-//                    @ "OK"
-//                    otherButtonTitles:
-//                    nil];
-//                    [alert show];
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getResources().getString(R.string.fragment_send_incorrect_pin_message))
+                .setTitle(getResources().getString(R.string.fragment_send_incorrect_pin_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
