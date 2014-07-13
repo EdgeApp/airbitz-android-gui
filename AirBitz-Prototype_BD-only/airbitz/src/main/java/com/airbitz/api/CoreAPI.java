@@ -251,6 +251,33 @@ public class CoreAPI {
     }
 
     //************ Account Recovery
+    public String GetUserPIN() {
+        //make sure PIN is good
+        String enteredPIN = "";
+        if (!enteredPIN.isEmpty()) {
+            //make sure the entered PIN matches the PIN stored in the Core
+            tABC_Error error = new tABC_Error();
+            tABC_CC result;
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+            String szPIN = null;
+
+            result = core.ABC_GetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    ppChar, error);
+
+            if (result == tABC_CC.ABC_CC_Ok)
+            {
+                return getStringAtPtr(core.longp_value(lp));
+            }
+            else
+            {
+                String message = result.toString() + "," + error.getSzDescription() + ", " +
+                        error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+                Log.d("CoreAPI", message);
+            }
+        }
+        return null;
+    }
 
 
     //************ Settings handling
@@ -992,21 +1019,13 @@ public class CoreAPI {
 
         byte[] txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
 
-//        SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-//        core.longp_assign(core.p64_t_to_long_ptr(amt), (int) satoshi);
-//        details.setAmountSatoshi(amt);
-        Log.d("Test", "satoshi="+satoshi);
         set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
-
-//        txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
 
         //the true fee values will be set by the core
         details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
         details.setAmountFeesMinersSatoshi(core.new_int64_tp());
 
         details.setAmountCurrency(value);
-//        txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
-
         details.setSzName(name);
         details.setSzNotes(notes);
         details.setSzCategory("");
@@ -1031,6 +1050,66 @@ public class CoreAPI {
             return null;
         }
     }
+
+    public void InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+        tABC_Error error = new tABC_Error();
+        Wallet destinationWallet = getWalletFromName(destinationAddress);
+        if (satoshi>0)
+        {
+            List<Wallet> wallets = loadWallets();
+            if (!wallets.isEmpty())
+            {
+                double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
+
+                //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
+                tABC_TxDetails details = new tABC_TxDetails();
+                tABC_CC result;
+
+                set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
+
+                //the true fee values will be set by the core
+                details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
+                details.setAmountFeesMinersSatoshi(core.new_int64_tp());
+
+                details.setAmountCurrency(value);
+                details.setSzName("Anonymous");
+                details.setSzNotes("");
+                details.setSzCategory("");
+                details.setAttributes(0x0); //for our own use (not used by the core)
+
+                if (destinationWallet != null)
+                {
+                    tABC_TransferDetails Transfer = new tABC_TransferDetails();
+                    Transfer.setSzSrcWalletUUID(sourceWallet.getUUID());
+                    Transfer.setSzSrcName(destinationWallet.getName());
+                    Transfer.setSzSrcCategory("Transfer:Wallet:"+destinationWallet.getName());
+
+                    Transfer.setSzDestWalletUUID(destinationWallet.getUUID());
+                    Transfer.setSzDestName(sourceWallet.getName());
+                    Transfer.setSzDestCategory("Transfer:Wallet:"+sourceWallet.getName());
+
+                    result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, null, error);
+                } else {
+                    result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                            sourceWallet.getUUID(), destinationAddress, details, null, null, error);
+                }
+                if (result == tABC_CC.ABC_CC_Ok)
+                {
+//                        [self showSendStatus];
+                }
+                else
+                {
+                    String message = result.toString() + "," + error.getSzDescription() + ", " +
+                            error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+                    Log.d("CoreAPI", message);
+                }
+            }
+        } else {
+            Log.d("CoreAPI", "Initiate transfer - nothing to send");
+
+        }
+    }
+
 
     //*************** Exchange Rate
     Handler mExchangeRateHandler = new Handler();
