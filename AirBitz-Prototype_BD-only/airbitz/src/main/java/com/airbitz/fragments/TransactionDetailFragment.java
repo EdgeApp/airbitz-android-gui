@@ -629,7 +629,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     private void SaveTransaction(Transaction transaction) {
         tABC_TxDetails details = new tABC_TxDetails();
-
+        //TODO fill out details
         mCoreAPI.SaveTransaction(transaction, details);
     }
 

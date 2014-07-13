@@ -1249,7 +1249,6 @@ public class CoreAPI {
                 mBalance = core.longp_value(p);
                 mCurrencyNum = super.getCurrencyNum();
                 mAttributes = super.getAttributes();
-                //TODO transactions here?
             }
         }
 
@@ -1284,4 +1283,43 @@ public class CoreAPI {
         return list;
     }
 
+    /*
+     * Other utility functions
+     */
+
+    public byte[] getQRCode(String uuid, String id) {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_unsigned_char ppChar = core.longp_to_unsigned_ppChar(lp);
+
+        SWIGTYPE_p_int pWidth = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pWidth);
+
+        result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, id, ppChar, pUCount, error);
+
+        int width = core.intp_value(pWidth);
+        return getBytesAtPtr(core.longp_value(lp), width*width);
+    }
+
+    public String getRequestAddress(String uuid, String id)  {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        result = core.ABC_GetRequestAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, id, ppChar, error);
+
+        String pAddress = null;
+
+        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+            pAddress = getStringAtPtr(core.longp_value(lp));
+        }
+
+        return pAddress;
+    }
 }
