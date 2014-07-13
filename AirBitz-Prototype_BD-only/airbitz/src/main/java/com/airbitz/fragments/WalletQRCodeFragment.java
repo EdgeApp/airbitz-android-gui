@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +13,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.SWIGTYPE_p_long;
-import com.airbitz.api.SWIGTYPE_p_p_char;
-import com.airbitz.api.SWIGTYPE_p_p_unsigned_char;
-import com.airbitz.api.SWIGTYPE_p_unsigned_int;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_TxDetails;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
-import com.google.zxing.WriterException;
 
 
 public class WalletQRCodeFragment extends Fragment {
@@ -45,8 +32,6 @@ public class WalletQRCodeFragment extends Fragment {
     private Bundle bundle;
 
     private Wallet mWallet;
-    private String mBitcoin;
-    private String mFiat;
 
     private CoreAPI mCoreAPI;
 
@@ -105,7 +90,7 @@ public class WalletQRCodeFragment extends Fragment {
         String fakePhone = "";
         String id = mCoreAPI.createReceiveRequestFor(mWallet, fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
         if(id!=null) {
-            String addr = getRequestAddress(id);
+            String addr = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
             mBitcoinAddress.setText(addr);
             try{
                 generateQRCode_general(id);
@@ -117,24 +102,9 @@ public class WalletQRCodeFragment extends Fragment {
         return view;
     }
 
-
-    private void generateQRCode_general(String id) throws WriterException {
-        tABC_CC result;
-        tABC_Error error = new tABC_Error();
-
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_unsigned_char ppChar = core.longp_to_unsigned_ppChar(lp);
-
-        SWIGTYPE_p_int pWidth = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pWidth);
-
-        result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                mWallet.getUUID(), id, ppChar, pUCount, error);
-
-        int width = core.intp_value(pWidth);
-        byte[] byteArray = mCoreAPI.getBytesAtPtr(core.longp_value(lp), width*width);
-
-        Bitmap bm = FromBinary(byteArray, width, 4);
+    private void generateQRCode_general(String id) {
+        byte[] array = mCoreAPI.getQRCode(mWallet.getUUID(), id);
+        Bitmap bm = FromBinary(array, (int) Math.sqrt(array.length), 4);
 
         if (bm != null) {
             mQRView.setImageBitmap(bm);
@@ -155,22 +125,4 @@ public class WalletQRCodeFragment extends Fragment {
         return resizedBitmap;
     }
 
-    private String getRequestAddress(String id)  {
-        tABC_CC result;
-        tABC_Error error = new tABC_Error();
-
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-
-        result = core.ABC_GetRequestAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                mWallet.getUUID(), id, ppChar, error);
-
-        String pAddress = null;
-
-        if(result.equals(tABC_CC.ABC_CC_Ok)) {
-            pAddress = mCoreAPI.getStringAtPtr(core.longp_value(lp));
-        }
-
-        return pAddress;
-    }
 }
