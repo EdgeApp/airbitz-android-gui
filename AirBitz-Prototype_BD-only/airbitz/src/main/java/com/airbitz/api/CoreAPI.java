@@ -251,34 +251,6 @@ public class CoreAPI {
     }
 
     //************ Account Recovery
-    public String GetUserPIN() {
-        //make sure PIN is good
-        String enteredPIN = "";
-        if (!enteredPIN.isEmpty()) {
-            //make sure the entered PIN matches the PIN stored in the Core
-            tABC_Error error = new tABC_Error();
-            tABC_CC result;
-            SWIGTYPE_p_long lp = core.new_longp();
-            SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-            String szPIN = null;
-
-            result = core.ABC_GetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    ppChar, error);
-
-            if (result == tABC_CC.ABC_CC_Ok)
-            {
-                return getStringAtPtr(core.longp_value(lp));
-            }
-            else
-            {
-                String message = result.toString() + "," + error.getSzDescription() + ", " +
-                        error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-                Log.d("CoreAPI", message);
-            }
-        }
-        return null;
-    }
-
 
     //************ Settings handling
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
@@ -287,6 +259,26 @@ public class CoreAPI {
 
     private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
     private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
+
+    public String GetUserPIN() {
+        tABC_Error error = new tABC_Error();
+        tABC_CC result;
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        String szPIN = null;
+
+        result = core.ABC_GetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                ppChar, error);
+
+        if (result == tABC_CC.ABC_CC_Ok)
+        {
+            return getStringAtPtr(core.longp_value(lp));
+        }
+        String message = result.toString() + "," + error.getSzDescription() + ", " +
+                error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+        Log.d("CoreAPI", message);
+        return null;
+    }
 
     public String getUserBTCDenomination() {
         tABC_AccountSettings settings = loadAccountSettings();
@@ -1051,9 +1043,10 @@ public class CoreAPI {
         }
     }
 
-    public void InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+    //this is a blocking call
+    public boolean InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
         tABC_Error error = new tABC_Error();
-        Wallet destinationWallet = getWalletFromName(destinationAddress);
+        Wallet destinationWallet = getWallet(destinationAddress);
         if (satoshi>0)
         {
             List<Wallet> wallets = loadWallets();
@@ -1075,7 +1068,7 @@ public class CoreAPI {
                 details.setSzName("Anonymous");
                 details.setSzNotes("");
                 details.setSzCategory("");
-                details.setAttributes(0x0); //for our own use (not used by the core)
+                details.setAttributes(0x2); //for our own use (not used by the core)
 
                 if (destinationWallet != null)
                 {
@@ -1093,21 +1086,12 @@ public class CoreAPI {
                     result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                             sourceWallet.getUUID(), destinationAddress, details, null, null, error);
                 }
-                if (result == tABC_CC.ABC_CC_Ok)
-                {
-//                        [self showSendStatus];
-                }
-                else
-                {
-                    String message = result.toString() + "," + error.getSzDescription() + ", " +
-                            error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-                    Log.d("CoreAPI", message);
-                }
+                return result==tABC_CC.ABC_CC_Ok;
             }
         } else {
             Log.d("CoreAPI", "Initiate transfer - nothing to send");
-
         }
+        return false;
     }
 
 

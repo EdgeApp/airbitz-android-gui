@@ -60,6 +60,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
+    public static final String FROM_WALLET_NAME = "com.airbitz.Sendfragment_FROM_WALLET_NAME";
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -87,7 +88,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private Spinner walletSpinner;
     private List<String> mWalletList;
-    private String mWalletName;
+    private String mSpinnerWalletName;
     private List<String> mCurrentListing;
 
     private ArrayAdapter<String> listingAdapter;
@@ -149,7 +150,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mWalletName = mWalletList.get(i);
+                mSpinnerWalletName = mWalletList.get(i);
                 goAutoCompleteListing();
             }
 
@@ -266,7 +267,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
-                GotoSendConfirmation(mCurrentListing.get(i), 0, " ", true);
+                Wallet w = mCoreAPI.getWalletFromName(mCurrentListing.get(i));
+                GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
         });
 
@@ -380,6 +382,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
+        bundle.putString(FROM_WALLET_NAME, mSpinnerWalletName);
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
@@ -508,13 +511,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mCurrentListing.clear();
         if(text.isEmpty()){
             for(String name : mWalletList){
-                if(name != mWalletName){
+                if(name != mSpinnerWalletName){
                     mCurrentListing.add(name);
                 }
             }
         }else {
             for (String name : mWalletList) {
-                if (name != mWalletName && name.toLowerCase().contains(text.toLowerCase())) {
+                if (name != mSpinnerWalletName && name.toLowerCase().contains(text.toLowerCase())) {
                     mCurrentListing.add(name);
                 }
             }

@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,9 +24,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
@@ -89,6 +93,8 @@ public class SendConfirmationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
+
         bundle = this.getArguments();
         if (bundle == null) {
             System.out.println("Send confirmation bundle is null");
@@ -97,8 +103,8 @@ public class SendConfirmationFragment extends Fragment {
             mLabel = bundle.getString(SendFragment.LABEL);
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
+            mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
         }
-        mCoreAPI = CoreAPI.getApi();
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
         }
@@ -130,8 +136,8 @@ public class SendConfirmationFragment extends Fragment {
         mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
 
-        mDollarValueField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
-        mBitcoinValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
+        mDollarValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
+        mBitcoinValueField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
 
         mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
 
@@ -270,14 +276,14 @@ public class SendConfirmationFragment extends Fragment {
         mDollarValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO calculate mAmountToSendSatoshi
+                updateTextFieldContents(false);
             }
         });
 
         mBitcoinValueField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO calculate mAmountToSendSatoshi
+                updateTextFieldContents(true);
             }
         });
 
@@ -287,11 +293,7 @@ public class SendConfirmationFragment extends Fragment {
     public void touchEventsEnded() {
         int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);
         if (mConfirmSwipeButton.getX() <= successThreshold) {
-//            attemptInitiateSend();
-
-            Fragment frag = new ReceivedSuccessFragment();
-            frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag);
+            attemptInitiateSend();
         } else {
             mConfirmSwipeButton.setX(mRightThreshold);
         }
@@ -305,12 +307,12 @@ public class SendConfirmationFragment extends Fragment {
 
         if (btc) {
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
-            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
+            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mToWallet.getCurrencyNum());
             mDollarValueField.setText(String.valueOf(value));
        }
         else {
             currency = Double.valueOf(mDollarValueField.getText().toString());
-            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
+            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mToWallet.getCurrencyNum());
             mAmountToSendSatoshi = satoshi;
             int currencyDecimalPlaces = 2; //TODO where does this come from?
             mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
@@ -375,16 +377,53 @@ public class SendConfirmationFragment extends Fragment {
 
     private void attemptInitiateSend() {
         //make sure PIN is good
-        String enteredPIN = "";
-        if (!enteredPIN.isEmpty()) {
-            String userPIN = mCoreAPI.GetUserPIN();
-            if (userPIN!=null && userPIN.equals(enteredPIN)) {
-                    mCoreAPI.InitiateTransferOrSend(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
-                    return;
+        String enteredPIN = mPinEdittext.getText().toString();
+        String userPIN = mCoreAPI.GetUserPIN();
+        if (userPIN!=null && userPIN.equals(enteredPIN)) {
+            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
+            mSendOrTransferTask.execute();
+        } else {
+            showIncorrectPINAlert();
+        }
+    }
+
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    private SendOrTransferTask mSendOrTransferTask;
+    public class SendOrTransferTask extends AsyncTask<Void, Void, Boolean> {
+        private Wallet mFromWallet;
+        private final String mAddress;
+        private final long mSatoshi;
+
+        SendOrTransferTask(Wallet fromWallet, String address, long amount) {
+            mFromWallet = fromWallet;
+            mAddress = address;
+            mSatoshi = amount;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mSendOrTransferTask = null;
+           if (!success) {
+                Log.d("SendConfirmationFragment", "Send or Transfer failed");
+            } else {
+//                        [self showSendStatus]; //TODO
             }
         }
-        showIncorrectPINAlert();
+
+        @Override
+        protected void onCancelled() {
+            mSendOrTransferTask = null;
+        }
     }
+
+
 
     private void showIncorrectPINAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
