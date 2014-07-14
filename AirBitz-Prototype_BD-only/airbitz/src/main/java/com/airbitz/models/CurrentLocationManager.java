@@ -74,6 +74,8 @@ public class CurrentLocationManager implements
         if(null == mCurrentLocation){
             mCurrentLocation = locationClient.getLastLocation();
         }
+        if(mCurrentLocation == null){
+        }
         return mCurrentLocation;
     }
 
