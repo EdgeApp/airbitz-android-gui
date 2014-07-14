@@ -46,9 +46,6 @@ public class CoreAPI {
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
     public native void RegisterAsyncCallback ();
-//    public native long TxDetailsGetAmountFeesAirbitzSatoshi(long txDetails);
-//    public native long TxDetailsGetAmountFeesMinersSatoshi(long txDetails);
-//    public native long TxDetailsGetAmountSatoshi(long txDetails);
 
     public void Initialize(String file, String seed, long seedLength){
         tABC_Error error = new tABC_Error();
@@ -901,6 +898,22 @@ public class CoreAPI {
         return index;
     }
 
+    public int CurrencyIndex(int currencyNum) {
+        int index = -1;
+        tABC_AccountSettings settings = loadAccountSettings();
+        int[] currencyNumbers = getCurrencyNumbers();
+
+        for(int i=0; i<currencyNumbers.length; i++) {
+            if(currencyNumbers[i] == currencyNum)
+                index = i;
+        }
+        if((index==-1) || (index >= currencyNumbers.length)) { // default usd
+            Log.d("CoreAPI", "currency index out of bounds "+index);
+            index = currencyNumbers.length-1;
+        }
+        return index;
+    }
+
     public void SaveCurrencyNumber(int currencyNum) {
         tABC_AccountSettings settings = loadAccountSettings();
         settings.setCurrencyNum(currencyNum);
@@ -936,10 +949,17 @@ public class CoreAPI {
         return temp;
     }
 
-    public String BTCtoFiatStringConversion() {
+    public String BTCtoDefaultConversion() {
         String currency = FormatDefaultCurrency(100000000, false, true);
         int index = SettingsCurrencyIndex();
         String currencyLabel = mFauxCurrencyAcronyms[index];
+        return "1.00 BTC = " + currency + " " + currencyLabel;
+    }
+
+    public String BTCtoFiatConversion(int currencyNum) {
+        String currency = FormatCurrency(100000000, currencyNum, false, true);
+
+        String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
         return "1.00 BTC = " + currency + " " + currencyLabel;
     }
 

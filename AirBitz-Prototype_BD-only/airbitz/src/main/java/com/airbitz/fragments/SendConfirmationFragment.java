@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,11 +25,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -46,10 +45,11 @@ public class SendConfirmationFragment extends Fragment {
     private TextView mTitleTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
-    private TextView mValueTextView;
     private TextView mSlideTextView;
     private TextView mConfirmTextView;
     private TextView mPinTextView;
+    private TextView mConversionTextView;
+    private Button mMaxButton;
 
     private Bundle bundle;
 
@@ -128,10 +128,11 @@ public class SendConfirmationFragment extends Fragment {
 
         mFromTextView = (TextView) view.findViewById(R.id.textview_from);
         mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mValueTextView = (TextView) view.findViewById(R.id.textview_value);
         mSlideTextView = (TextView) view.findViewById(R.id.textview_slide);
         mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
         mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
+        mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
+        mMaxButton = (Button) view.findViewById(R.id.button_max);
 
         mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
@@ -149,7 +150,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mValueTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mConversionTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPinTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mConfirmTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -159,9 +160,17 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        mFromEdittext.setText("todo");
-        mToEdittext.setText("todo");
+        mFromEdittext.setText(mSourceWallet.getName());
+        if(mToWallet==null)
+            mToEdittext.setText(mUUIDorURI);
+        else
+            mToEdittext.setText(mToWallet.getName());
 
+        mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
+        String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
+        mDollarValueField.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
 
         Shader textShader = new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
@@ -260,6 +269,13 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
+        mMaxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SetMaxAmount();
+            }
+        });
+
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -308,18 +324,31 @@ public class SendConfirmationFragment extends Fragment {
 
         if (btc) {
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
-            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mToWallet.getCurrencyNum());
+            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
             mDollarValueField.setText(String.valueOf(value));
        }
         else {
             currency = Double.valueOf(mDollarValueField.getText().toString());
-            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mToWallet.getCurrencyNum());
+            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
             mAmountToSendSatoshi = satoshi;
             int currencyDecimalPlaces = 2; //TODO where does this come from?
             mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
         }
         updateFeeFieldContents();
     }
+
+    private void SetMaxAmount()
+    {
+        if (mSourceWallet != null)
+        {
+            mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi(), 0);
+            mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
+            String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
+            mDollarValueField.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+        }
+    }
+
+
 
     private void updateFeeFieldContents()
     {

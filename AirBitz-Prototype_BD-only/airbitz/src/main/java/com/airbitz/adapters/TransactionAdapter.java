@@ -68,13 +68,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             String feeCurrency = mCoreAPI.FormatDefaultCurrency(transactionFees, true, false);
 
             creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+walletCurrency.substring(0,walletCurrency.indexOf('.')+2));
-            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+feeCurrency.substring(0,feeCurrency.indexOf('.')+2));
+            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+feeCurrency.substring(0,feeCurrency.indexOf('.')+Math.min(3, feeCurrency.length()-feeCurrency.indexOf('.'))));
         } else {
             String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
             String feeCurrency = mCoreAPI.FormatCurrency(transactionFees, wallet.getCurrencyNum(), false, true);
 
-            creditAmountTextView.setText(walletCurrency.substring(0,walletCurrency.indexOf('.')+2));
-            debitAmountTextView.setText(feeCurrency.substring(0,feeCurrency.indexOf('.')+2));
+            creditAmountTextView.setText(walletCurrency.substring(0,walletCurrency.indexOf('.')+Math.min(3, walletCurrency.length()-walletCurrency.indexOf('.'))));
+            debitAmountTextView.setText(feeCurrency.substring(0,feeCurrency.indexOf('.')+Math.min(3, feeCurrency.length()-feeCurrency.indexOf('.'))));
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");

@@ -93,8 +93,9 @@ public class Wallet {
     public void setTransactions(List<Transaction> list) {
         mTransactions = list;
     }
+
     public List<Transaction> getTransactions() {
-        if(mTransactions==null) {
+        if(mTransactions==null || mTransactions.size()==0) {
             mTransactions = mCoreAPI.loadTransactions(this);
         }
         return mTransactions;
