@@ -196,7 +196,7 @@
                     android:layout_marginBottom="6.3dp"/>
 
                 <TextView
-                    android:id="@+id/textview_value"
+                    android:id="@+id/textview_conversion"
                     android:layout_below="@id/button_dollar_balance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -208,6 +208,7 @@
                     android:layout_centerHorizontal="true"/>
 
                 <Button
+                    android:id="@+id/button_max"
                     android:layout_width="44.1dp"
                     android:layout_height="18.9dp"
                     android:layout_below="@+id/button_dollar_balance"
