@@ -56,6 +56,8 @@ public class VenueFragment extends Fragment implements
     private VenueAdapter mVenueAdapter;
     private TextView mNoResultView;
     private Activity mActivity;
+
+    private boolean locationEnabled;
 //    private View mLoadingFooterView;
 
     private String mLocationName;
@@ -98,6 +100,9 @@ public class VenueFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsInBusinessDirectory = this.getArguments().getBoolean("from_business");
+        locationEnabled = this.getArguments().getBoolean("locationEnabled");
+        mIsInMapBusinessDirectory = !mIsInBusinessDirectory;
         mActivity = getActivity();
     }
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,7 +111,6 @@ public class VenueFragment extends Fragment implements
 
         mLocationManager = CurrentLocationManager.getLocationManager(null);
         mLocationManager.addLocationChangeListener(this);
-
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
         mNoResultView = (TextView) view.findViewById(R.id.no_result_view);
@@ -121,6 +125,10 @@ public class VenueFragment extends Fragment implements
 
         if (mIsInBusinessDirectory) {
             ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView);
+        }
+
+        if(!locationEnabled){
+            updateView(null);
         }
 
         return view;
@@ -250,13 +258,14 @@ public class VenueFragment extends Fragment implements
                 result = mApi.getSearchByLatLong(params[0], "", "", "1");
 
             } else if (mIsInMapBusinessDirectory) {
-                double lat = getLatFromSharedPreference();
-                double lon = getLonFromSharedPreference();
-                if(lat!=-1) {
-                    String latlong = "" + lat + "," + lon;
-                    result = mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "",
-                            "1", params[2], latlong);
+                String latlong = "";
+                if(locationEnabled) {
+                    double lat = getLatFromSharedPreference();
+                    double lon = getLonFromSharedPreference();
+                    latlong = "" + lat + "," + lon;
                 }
+                result = mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "",
+                            "1", params[2], latlong);
             }
 
             return result;
@@ -350,7 +359,7 @@ public class VenueFragment extends Fragment implements
 
                 if (!mNextUrl.equalsIgnoreCase("null")) {
                     if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                        if (mLoadFlag == false) {
+                        if (!mLoadFlag) {
                             mLoadFlag = true;
                             if (!mIsInBusinessDirectory) {
                                 if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){

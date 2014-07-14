@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +57,8 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
     public static final String BIZID = "bizId";
     public static final String BIZNAME = "bizName";
     public static final String BIZDISTANCE = "bizDistance";
+
+    private boolean locationEnabled;
 
     private TextView mAboutField;
 
@@ -114,6 +117,13 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationEnabled = false;
+            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+        }else{
+            locationEnabled = true;
+        }
 
         Log.d(TAG, "Business ID: " + mBusinessId);
 
@@ -214,8 +224,6 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         String address = mDetail.getAddress();
 
         String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
-        String saddr = buildLatLonToStr(String.valueOf(getLatFromSharedPreference()),
-                String.valueOf(getLonFromSharedPreference()));
 
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                 Uri.parse("http://maps.google.com/maps?"
@@ -288,9 +296,12 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         }
 
         @Override protected String doInBackground(String... params) {
-            android.location.Location currentLoc = mLocationManager.getLocation();
-            String latLong = String.valueOf(currentLoc.getLatitude());
-            latLong += "," + String.valueOf(currentLoc.getLongitude());
+            String latLong = "";
+            if(locationEnabled) {
+                android.location.Location currentLoc = mLocationManager.getLocation();
+                latLong = String.valueOf(currentLoc.getLatitude());
+                latLong += "," + String.valueOf(currentLoc.getLongitude());
+            }
             return mApi.getBusinessByIdAndLatLong(params[0],latLong);
         }
 

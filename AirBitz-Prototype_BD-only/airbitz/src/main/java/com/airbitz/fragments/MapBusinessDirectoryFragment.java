@@ -92,6 +92,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private FrameLayout flMapContainer;
 
+    private boolean locationEnabled;
+
     int mapHeight;
 
     private LinearLayout mDragLayout;
@@ -191,6 +193,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
         if(mVenueFragmentLayout.getChildCount()<=0) {
             mFragmentVenue = new VenueFragment();
+            mVenueBundle.putBoolean("from_business",false);
+            mVenueBundle.putBoolean("locationEnabled", locationEnabled);
             mFragmentVenue.setArguments(mVenueBundle);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.add(R.id.venue_container, mFragmentVenue, "venue").commit();
@@ -288,8 +292,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
-                        String latLong = String.valueOf(getLatFromSharedPreference());
-                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        String latLong = "";
+                        if(locationEnabled) {
+                            latLong = String.valueOf(getLatFromSharedPreference());
+                            latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        }
                         if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                             mBusinessAutoCompleteAsyncTask.cancel(true);
                         }
@@ -327,8 +334,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
                 mLocationEdittext.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
-                String latLong = String.valueOf(getLatFromSharedPreference());
-                latLong += "," + String.valueOf(getLonFromSharedPreference());
+
+                String latLong = "";
+                if(locationEnabled) {
+                    latLong = String.valueOf(getLatFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                }
 
                 try {
                     // Only include cached searches if text is empty.
@@ -385,8 +396,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     }
 
                     // Search
-                    String latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    String latLong = "";
+                    if(locationEnabled) {
+                        latLong = String.valueOf(getLatFromSharedPreference());
+                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    }
                     mLocationWords = "";
 
                     try {
@@ -485,8 +499,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }else{
                     mLocationWords = editable.toString();
                 }
-                String latLong = String.valueOf(getLatFromSharedPreference());
-                latLong += "," + String.valueOf(getLonFromSharedPreference());
+
+                String latLong = "";
+                if(locationEnabled) {
+                    latLong = String.valueOf(getLatFromSharedPreference());
+                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                }
 
                 try {
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
@@ -697,12 +715,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 mGetVenuesAsyncTask.cancel(true);
             }
             mGetVenuesAsyncTask = new GetVenuesByLatLongTask(getActivity());
-            String latlong = "" + getLatFromSharedPreference() + "," + getLonFromSharedPreference();
+            String latlong = "";
+            if(locationEnabled){
+                latlong += getLatFromSharedPreference() + "," + getLonFromSharedPreference();
+            }
             if (mBusinessType.equalsIgnoreCase("business")) {
-
                 mGetVenuesAsyncTask.execute(latlong, mBusinessName, "");
             } else {
-
                 mGetVenuesAsyncTask.execute(latlong, "", mBusinessName);
             }
             Handler handler = new Handler();
@@ -723,8 +742,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mGetVenuesAsyncTask.execute(mBusinessName, mLocationName, mBusinessType);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
-                @Override public void run() {
-                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                @Override
+                public void run() {
+                    if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mGetVenuesAsyncTask.cancel(true);
                         Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
                                 Toast.LENGTH_LONG).show();
@@ -778,6 +798,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private void checkLocationManager(){
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationEnabled = false;
+            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+        }else{
+            locationEnabled = true;
+        }
+
     }
 
 //    @Override public void onBackPressed() {
@@ -793,7 +821,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         super.onDestroyView();
     }
 
-    private void initializeMap(){//MapView mapView) {
+    private void initializeMap(){//MapView mapView) {//todo
         //if (mGoogleMap == null) {
             //mapView.onCreate(null);
 
@@ -801,89 +829,96 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             //mGoogleMap = mapView.getMap();
 
             //mGoogleMap = mapFragment.getMap();
-            if (mGoogleMap == null) {
-                Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
-                        .show();
-                return;
+        if (mGoogleMap == null) {
+            Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.setMyLocationEnabled(true);
+
+        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+        try {
+            MapsInitializer.initialize(this.getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Updates the location and zoom of the MapView
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
+        mGoogleMap.animateCamera(cameraUpdate);
+
+        if (mGoogleMap == null) {
+            Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override public void onMyLocationChange(Location location) {
+                mCurrentLocation = location;
+                drawCurrentLocationMarker(location);
             }
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mGoogleMap.setMyLocationEnabled(true);
+        });
 
-            // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
-            try {
-                MapsInitializer.initialize(this.getActivity());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // Updates the location and zoom of the MapView
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-            mGoogleMap.animateCamera(cameraUpdate);
-
-            if (mGoogleMap == null) {
-                Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps", Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                @Override public void onMyLocationChange(Location location) {
-                    mCurrentLocation = location;
-                    drawCurrentLocationMarker(location);
-                }
-            });
+        if(locationEnabled){
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }else{
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        }
 
-            mapHeight = (int) ResHelper.convertDpToPx(480); //hardcoded in layout
+        mapHeight = (int) ResHelper.convertDpToPx(480); //hardcoded in layout
 
-            int padding = (int) ResHelper.convertDpToPx(120);
+        int padding = (int) ResHelper.convertDpToPx(120);
 
-            mGoogleMap.setPadding(0, padding, 0, padding);
+        mGoogleMap.setPadding(0, padding, 0, padding);
 
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if(locationEnabled) {
+            mCurrentLocation = mLocationManager.getLocation();
+        }
 
-            Criteria cri = new Criteria();
-            final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if(gpsEnabled) {
-                String provider = locationManager.getBestProvider(cri, true);
-                mCurrentLocation = locationManager.getLastKnownLocation(provider);
-            }
+        LatLng currentLatLng = null;
 
-            LatLng currentLatLng;
-
-            if (mCurrentLocation != null) {
-                currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            } else {
+        if (mCurrentLocation != null) {
+            currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        } else {
                 mCurrentLocation = new Location("dummyProvider");
+            if(locationEnabled) {
                 mCurrentLocation.setLatitude(getLatFromSharedPreference());
                 mCurrentLocation.setLongitude(getLonFromSharedPreference());
                 currentLatLng = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
             }
-            try {
+        }
+        try {
+            if(locationEnabled) {
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 10);
                 mGoogleMap.animateCamera(cameraUpdate);
                 Log.d("TAG LOC",
                         "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
-
-            } catch (Exception e) {
-
             }
 
-            mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
-            mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
+        } catch (Exception e) {
+
+        }
+
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
+        mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
+        if(locationEnabled) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        }
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-            System.out.println("Before setting custom");
-            MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
-            mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
-            System.out.println("After setting custom");
+        MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
+        mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
 
+        if(locationEnabled) {
             mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
                     Log.d("TAG_LOC",
                             "CUR LOC: " + mCurrentLocation.getLatitude()
                                     + "; "
-                                    + mCurrentLocation.getLongitude());
+                                    + mCurrentLocation.getLongitude()
+                    );
 
                     LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
                             mCurrentLocation.getLongitude());
@@ -894,79 +929,93 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mUserLocationMarker.showInfoWindow();
                 }
             });
-
-            mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override public void onInfoWindowClick(Marker marker) {
-                    if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
-
-                    } else {
-                        showDirectoryDetailFragment(""+mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
-                    }
+        }else{
+            mLocateMeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity().getApplicationContext(), "No current location found.", Toast.LENGTH_SHORT)
+                            .show();
                 }
             });
+        }
 
-            mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                @Override public void onCameraChange(CameraPosition cameraPosition) {
-                    System.out.println("");
-                    if (mCameraChangeListenerEnabled) {
-                        LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
-                        LatLng southWestLatLng = latLngBounds.southwest;
-                        LatLng northEastLatLng = latLngBounds.northeast;
-                        String southWest = "" + southWestLatLng.latitude + "%2C" + southWestLatLng.longitude;
-                        String northEast = "" + northEastLatLng.latitude + "%2C" + northEastLatLng.longitude;
-                        String bound = southWest + "%7C" + northEast;
-                        String userLatLong = "" + mCurrentLocation.getLatitude()
+        mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override public void onInfoWindowClick(Marker marker) {
+                if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
+
+                } else {
+                    showDirectoryDetailFragment(""+mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
+                }
+            }
+        });
+
+        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override public void onCameraChange(CameraPosition cameraPosition) {
+                System.out.println("");
+                if (mCameraChangeListenerEnabled) {
+                    LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
+                    LatLng southWestLatLng = latLngBounds.southwest;
+                    LatLng northEastLatLng = latLngBounds.northeast;
+                    String southWest = "" + southWestLatLng.latitude + "%2C" + southWestLatLng.longitude;
+                    String northEast = "" + northEastLatLng.latitude + "%2C" + northEastLatLng.longitude;
+                    String bound = southWest + "%7C" + northEast;
+                    String userLatLong = "";
+                    if(locationEnabled) {
+                        userLatLong = "" + mCurrentLocation.getLatitude()
                                 + ","
                                 + mCurrentLocation.getLongitude();
-                        if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
-                            mGetVenuesByBoundAsyncTask.cancel(true);
-                        }
-                        mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
-                        mGetVenuesByBoundAsyncTask.execute(bound, mBusinessName, userLatLong);
-                    } else {
-                        mCameraChangeListenerEnabled = true;
                     }
-
+                    if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                        mGetVenuesByBoundAsyncTask.cancel(true);
+                    }
+                    mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
+                    mGetVenuesByBoundAsyncTask.execute(bound, mBusinessName, userLatLong);
+                } else {
+                    mCameraChangeListenerEnabled = true;
                 }
-            });
 
-            mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override public boolean onMarkerClick(Marker marker) {
-                    mCameraChangeListenerEnabled = false;
-                    marker.showInfoWindow();
-                    return true;
-                }
-            });
-            mGoogleMap.setMyLocationEnabled(false);
-            showViewAnimatorChild(0);
-        //}
+            }
+        });
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override public boolean onMarkerClick(Marker marker) {
+                mCameraChangeListenerEnabled = false;
+                marker.showInfoWindow();
+                return true;
+            }
+        });
+        mGoogleMap.setMyLocationEnabled(false);
+        showViewAnimatorChild(0);
+    //}
     }
 
-    private void drawCurrentLocationMarker(Location location) {
+    private void drawCurrentLocationMarker(Location location) {//todo
         if (mUserLocationMarker != null) {
             mUserLocationMarker.remove();
         }
-        LatLng currentPosition;
-        // added default location to prevent breaking
-        if (location != null) {
-            currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        } else {
-            currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
-        }
-        if(mGoogleMap == null){
-            initializeMap();
-        }
-        if(mGoogleMap != null) {
-            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                            .position(currentPosition)
-                            .title(ResHelper.getStringByResId(R.string.your_location))
-                            .snippet("")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-            );
+        if(locationEnabled) {
+            LatLng currentPosition;
+            // added default location to prevent breaking
+            if (location != null) {
+                currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+            } else {
+                currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
+            }
+            if (mGoogleMap == null) {
+                initializeMap();
+            }
+            if (mGoogleMap != null) {
+                mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                .position(currentPosition)
+                                .title(ResHelper.getStringByResId(R.string.your_location))
+                                .snippet("")
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
+                );
+            }
         }
     }
 
-    private void drawCurrentLocationMarker(LatLng location) {
+    private void drawCurrentLocationMarker(LatLng location) {//todo
         if (mUserLocationMarker != null) {
             mUserLocationMarker.remove();
         }
@@ -1088,7 +1137,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 //                mUserLocationMarker.showInfoWindow();
 //            }
         } else {
-            drawCurrentLocationMarker(mCurrentLocation);
+            drawCurrentLocationMarker(mCurrentLocation);//TODO
             mUserLocationMarker.showInfoWindow();
         }
 
@@ -1135,11 +1184,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             }
 
-            if (firstMarker == null) {
+            if (firstMarker == null) {//TODO
                 drawCurrentLocationMarker(mCurrentLocation);
                 mUserLocationMarker.showInfoWindow();
             }
-        } else {
+        } else {//TODO
             drawCurrentLocationMarker(mCurrentLocation);
             mUserLocationMarker.showInfoWindow();
         }
@@ -1535,8 +1584,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected String doInBackground(String... params) {
-            String latLong = String.valueOf(getLatFromSharedPreference())
-                    + "," + String.valueOf(getLonFromSharedPreference());
+            String latLong = "";
+            if(locationEnabled) {
+                latLong = String.valueOf(getLatFromSharedPreference())
+                        + "," + String.valueOf(getLonFromSharedPreference());
+            }
             return mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "", "1",
                     params[2], latLong);
         }
