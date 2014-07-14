@@ -25,6 +25,7 @@ public class Transaction {
     long mAmountFeesAirbitzSatoshi;
     long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
     long mBizId; /** payee business-directory id (0 otherwise) */
+    int mAttributes;
 
     public Transaction() {
         mID = "";
@@ -38,6 +39,7 @@ public class Transaction {
         mAmountFeesAirbitzSatoshi = 0;
         mAmountFeesMinersSatoshi = 0;
         mBizId = 0;
+        mAttributes=0;
     }
 
     public Transaction(String walletUUID, String id, long date, String name, long satoshi, String category,
@@ -53,6 +55,7 @@ public class Transaction {
         mBizId = bizID;
         mAmountFeesAirbitzSatoshi = ABFees;
         mAmountFeesMinersSatoshi = minersFees;
+        mAttributes=0;
     }
 
     public String getWalletUUID() { return mWalletUUID; }
@@ -87,6 +90,9 @@ public class Transaction {
 
     public int getConfirmations() { return mConfirmations; }
     public void setConfirmations(int mConfirmations) { this.mConfirmations = mConfirmations; }
+
+    public int getAttributes() { return mAttributes; }
+    public void setAttributes(int mAttributes) { this.mAttributes = mAttributes; }
 
     public long getAmountSatoshi() { return mAmountSatoshi; }
     public void setAmountSatoshi(long mAmountSatoshi) { this.mAmountSatoshi = mAmountSatoshi; }
