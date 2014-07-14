@@ -609,7 +609,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
-        mFiatValueEdittext.setText(mCoreAPI.formatCurrency(mCoreAPI.SatoshiToDefaultCurrency(coinValue), false));
+        String currencyValue = mCoreAPI.formatCurrency(mCoreAPI.SatoshiToDefaultCurrency(coinValue), false);
+        mFiatValueEdittext.setText(currencyValue.substring(0,currencyValue.indexOf('.')+2));
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
         mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
 
