@@ -38,7 +38,7 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
     private Intent mIntent;
 
-    private Bundle bundle;
+    private Bundle mBundle;
 
     private GestureDetector mGestureDetector;
 
@@ -46,9 +46,9 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        bundle = this.getArguments();
-        if(bundle == null){
-            System.out.println("Send success bundle is null");
+        mBundle = this.getArguments();
+        if(mBundle == null){
+            System.out.println("Success is null");
         }
     }
 
@@ -126,7 +126,10 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         @Override
         protected void onPostExecute(Boolean result) {
-            ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+            if(mBundle.getString(WalletsFragment.FROM_SOURCE).contains("REQUEST"))
+                ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.REQUEST, mBundle);
+            else
+                ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.SEND, mBundle);
         }
     }
 

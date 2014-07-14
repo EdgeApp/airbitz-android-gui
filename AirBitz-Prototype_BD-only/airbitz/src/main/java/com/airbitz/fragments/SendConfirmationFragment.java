@@ -30,6 +30,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
@@ -391,7 +392,7 @@ public class SendConfirmationFragment extends Fragment {
      * Represents an asynchronous creation of the first wallet
      */
     private SendOrTransferTask mSendOrTransferTask;
-    public class SendOrTransferTask extends AsyncTask<Void, Void, Boolean> {
+    public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
         private Wallet mFromWallet;
         private final String mAddress;
         private final long mSatoshi;
@@ -403,17 +404,24 @@ public class SendConfirmationFragment extends Fragment {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final String txid) {
             mSendOrTransferTask = null;
-           if (!success) {
+           if (txid==null) {
                 Log.d("SendConfirmationFragment", "Send or Transfer failed");
             } else {
-//                        [self showSendStatus]; //TODO
+               Bundle bundle = new Bundle();
+               bundle.putString(WalletsFragment.FROM_SOURCE,"SEND");
+               bundle.putString(Transaction.TXID, txid);
+               bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
+
+               Fragment frag = new ReceivedSuccessFragment();
+               frag.setArguments(bundle);
+               ((NavigationActivity)getActivity()).pushFragment(frag);
             }
         }
 

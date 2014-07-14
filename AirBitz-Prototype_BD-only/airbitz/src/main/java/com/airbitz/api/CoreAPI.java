@@ -1044,7 +1044,8 @@ public class CoreAPI {
     }
 
     //this is a blocking call
-    public boolean InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+    public String InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+        String txid = null;
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWallet(destinationAddress);
         if (satoshi>0)
@@ -1070,6 +1071,10 @@ public class CoreAPI {
                 details.setSzCategory("");
                 details.setAttributes(0x2); //for our own use (not used by the core)
 
+                SWIGTYPE_p_long lp = core.new_longp();
+                SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
+                SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(pRequestID.getCPtr(pRequestID), false);
+
                 if (destinationWallet != null)
                 {
                     tABC_TransferDetails Transfer = new tABC_TransferDetails();
@@ -1081,17 +1086,23 @@ public class CoreAPI {
                     Transfer.setSzDestName(sourceWallet.getName());
                     Transfer.setSzDestCategory("Transfer:Wallet:"+sourceWallet.getName());
 
-                    result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, null, error);
+                    result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, pVoid, error);
                 } else {
                     result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                            sourceWallet.getUUID(), destinationAddress, details, null, null, error);
+                            sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
                 }
-                return result==tABC_CC.ABC_CC_Ok;
+                if(result!=tABC_CC.ABC_CC_Ok) {
+                    Log.d("CoreAPI", "InitiateTransferOrSend:  " + error.getSzDescription() +" " + error.getSzSourceFile() +" " +
+                        error.getSzSourceFunc() +" " + error.getNSourceLine());
+                } else {
+                    txid = getStringAtPtr(core.longp_value(lp));
+                    Log.d("CoreAPI", "TxID:  " + txid);
+                }
             }
         } else {
             Log.d("CoreAPI", "Initiate transfer - nothing to send");
         }
-        return false;
+        return txid;
     }
 
 
