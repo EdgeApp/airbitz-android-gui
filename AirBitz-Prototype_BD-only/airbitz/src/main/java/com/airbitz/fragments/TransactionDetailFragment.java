@@ -774,8 +774,10 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 mContactNames.add(name);
                 String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                Uri thumbUri = Uri.parse(photoURI);
-                mContactPhotos.put(name, thumbUri);
+                if(photoURI!=null) {
+                    Uri thumbUri = Uri.parse(photoURI);
+                    mContactPhotos.put(name, thumbUri);
+                }
             }
         }
         cur.close();
