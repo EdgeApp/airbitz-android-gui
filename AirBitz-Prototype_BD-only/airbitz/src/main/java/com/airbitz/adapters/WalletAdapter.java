@@ -121,7 +121,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        Wallet wallet = mWalletList.get(position);
         if(mWalletList.get(position).isHeader() || mWalletList.get(position).isArchiveHeader()){
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
@@ -158,8 +158,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                         + mContext.getResources().getString(R.string.no_break_space_character));
             } else {
                 long satoshi = mWalletList.get(position).getBalanceSatoshi();
-                String temp = mCoreAPI.FormatDefaultCurrency(satoshi, false, true);
-                amountTextView.setText(temp.substring(0,temp.indexOf('.')+2));
+                String temp = mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, true);
+                amountTextView.setText(temp.substring(0,temp.indexOf('.')+3));
             }
 
             if(1 == position){
