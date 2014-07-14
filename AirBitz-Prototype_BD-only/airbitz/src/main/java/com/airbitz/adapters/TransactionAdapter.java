@@ -11,6 +11,7 @@ import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
+import com.airbitz.models.Wallet;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -57,15 +58,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         dateTextView.setText(dateString);
 
         Transaction transaction = mListTransaction.get(position);
+        Wallet wallet = mCoreAPI.getWallet(transaction.getWalletUUID());
 
         nameTextView.setText(transaction.getName());
         long transactionSatoshis = transaction.getAmountSatoshi();
+        long transactionFees = transaction.getMinerFees() + transaction.getABFees();
         if(mIsBitcoin) {
-            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false));
-            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false));
+            String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
+            String feeCurrency = mCoreAPI.FormatDefaultCurrency(transactionFees, true, false);
+
+            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+walletCurrency.substring(0,walletCurrency.indexOf('.')+2));
+            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+feeCurrency.substring(0,feeCurrency.indexOf('.')+2));
         } else {
-            creditAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transactionSatoshis, false, true));
-            debitAmountTextView.setText(mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), false, true));
+            String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
+            String feeCurrency = mCoreAPI.FormatCurrency(transactionFees, wallet.getCurrencyNum(), false, true);
+
+            creditAmountTextView.setText(walletCurrency.substring(0,walletCurrency.indexOf('.')+2));
+            debitAmountTextView.setText(feeCurrency.substring(0,feeCurrency.indexOf('.')+2));
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");
