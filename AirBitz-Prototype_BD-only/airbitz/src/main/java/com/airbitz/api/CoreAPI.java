@@ -114,13 +114,13 @@ public class CoreAPI {
         list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL"));//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1)
+            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1 && wallet.getName()!=null)
                 list.add(wallet);
         }
         list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1)
+            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1 && wallet.getName()!=null)
                 list.add(wallet);
         }
         return list;
@@ -657,6 +657,8 @@ public class CoreAPI {
         String mNotes;  /** notes for the transaction */
         int mAttributes;    /** attributes for the transaction */
 
+        public TxDetails() { }
+
         public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
@@ -702,7 +704,6 @@ public class CoreAPI {
         public int getmAttributes() { return mAttributes; }
         public void setmAttributes(int mAttributes) { this.mAttributes = mAttributes; }
     }
-
 
     public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
         transaction.setID(txInfo.getID());
@@ -799,7 +800,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error: CoreBridge.storeTransaction:  " + Error.getSzDescription());
+            Log.d("CoreAPI", "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
             return false;
         }
 

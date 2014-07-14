@@ -627,12 +627,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     }
 
-    private void SaveTransaction(Transaction transaction) {
-        tABC_TxDetails details = new tABC_TxDetails();
-        //TODO fill out details
-        mCoreAPI.SaveTransaction(transaction, details);
-    }
-
     @Override
     public void onClick(View v) {
 
@@ -741,6 +735,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     @Override
     public void onPause() {
         super.onPause();
+
+        mTransaction.setName(mPayeeEditText.getText().toString());
+        mTransaction.setCategory(mCategoryEdittext.getText().toString());
+        mTransaction.setNotes(mNoteEdittext.getText().toString());
+        mTransaction.setAmountFiat(Double.valueOf(mFiatValueEdittext.getText().toString()));
+        mCoreAPI.storeTransaction(mTransaction);
     }
 
     @Override
