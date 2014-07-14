@@ -133,6 +133,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private float mBTCtoUSDConversion = 450.0f;
 
     private CoreAPI mCoreAPI;
+    private Wallet mWallet;
     private Transaction mTransaction;
     private int mCurrencyIndex;
 
@@ -152,6 +153,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 Log.d("TransactionDetailFragement", "no detail info");
             } else {
                 mCoreAPI = CoreAPI.getApi();
+                mWallet = mCoreAPI.getWallet(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
                 mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
             }
@@ -609,8 +611,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
-        String currencyValue = mCoreAPI.formatCurrency(mCoreAPI.SatoshiToDefaultCurrency(coinValue), false);
-        mFiatValueEdittext.setText(currencyValue.substring(0,currencyValue.indexOf('.')+2));
+        String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
+        mFiatValueEdittext.setText(currencyValue.substring(0,currencyValue.indexOf('.')+3));
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
         mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
 

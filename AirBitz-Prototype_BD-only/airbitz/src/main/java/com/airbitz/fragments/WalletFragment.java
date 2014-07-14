@@ -309,8 +309,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
         mButtonBitcoinBalance.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
-        String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
-        mButtonFiatBalance.setText(temp.substring(0,temp.indexOf('.')+2));
+        String temp = mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
+        mButtonFiatBalance.setText(temp.substring(0,temp.indexOf('.')+3));
         switchBarInfo(mOnBitcoinMode);
 
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
