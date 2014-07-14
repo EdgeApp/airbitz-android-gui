@@ -305,7 +305,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        mConverterTextView.setText(mCoreAPI.BTCtoFiatStringConversion());
+        mConverterTextView.setText(mCoreAPI.BTCtoDefaultConversion());
 
         return view;
     }
