@@ -957,8 +957,8 @@ public class CoreAPI {
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-        String currency = FormatCurrency(100000000, currencyNum, false, true);
-
+        String temp = FormatCurrency(100000000, currencyNum, false, true);
+        String currency = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
         String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
         return "1.00 BTC = " + currency + " " + currencyLabel;
     }
@@ -1126,6 +1126,39 @@ public class CoreAPI {
         return txid;
     }
 
+    public long calcSendFees(String walletUUID, String sendTo, long sendAmount, boolean transferOnly)
+    {
+        long totalFees;
+        tABC_Error error = new tABC_Error();
+        tABC_TxDetails details = new tABC_TxDetails();
+        tABC_CC result;
+
+        set64BitLongAtPtr(details.getCPtr(details)+0, sendAmount);
+        set64BitLongAtPtr(details.getCPtr(details)+8, 0);
+        set64BitLongAtPtr(details.getCPtr(details)+16, 0);
+
+        details.setAmountCurrency(0);
+        details.setSzName("");
+        details.setSzNotes("");
+        details.setSzCategory("");
+        details.setAttributes(0); //for our own use (not used by the core)
+
+        SWIGTYPE_p_int64_t fees = core.new_int64_tp();
+
+        result = core.ABC_CalcSendFees(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                walletUUID, sendTo, transferOnly, details, fees, error);
+
+        if (result != tABC_CC.ABC_CC_Ok)
+        {
+            if (error.getCode() != tABC_CC.ABC_CC_InsufficientFunds)
+            {
+                Log.d("CoreAPI", "CalcSendFees error: "+error.getSzDescription());
+            }
+            return -1; //TODO is this ok for insufficient funds?
+        }
+        totalFees = get64BitLongAtPtr(fees.getCPtr(fees));
+        return totalFees;
+    }
 
     //*************** Exchange Rate
     Handler mExchangeRateHandler = new Handler();
