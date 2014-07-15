@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -73,7 +74,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
-    private boolean firstTime = true;
+
+    private View mDummyFocus;
 
     private RelativeLayout exportLayout;
     private LinearLayout sendRequestLayout;
@@ -155,6 +157,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         exportLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_export_layout);
         sendRequestLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_sendrequest_layout);
 
+        mDummyFocus = view.findViewById(R.id.fragment_wallet_dummy_focus);
 
         switchable = (RelativeLayout) view.findViewById(R.id.switchable);
         switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
@@ -394,7 +397,13 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     private void SetSearchVisibility(boolean visible) {
         if(visible) {
-            mSearchField.findFocus();
+            mSearchField.requestFocus();
+            LayoutTransition lt = new LayoutTransition();
+            Animator animator1 = ObjectAnimator.ofFloat(null, "translateX",mParentLayout.getWidth(),0);
+            lt.setAnimator(LayoutTransition.APPEARING,animator1);
+            lt.setStartDelay(LayoutTransition.APPEARING, 0);
+            lt.setDuration(300);
+            Animator animator2 = ObjectAnimator.ofFloat(null, "translateX",mParentLayout.getWidth(),0);
             mSearchLayout.setVisibility(View.VISIBLE);
             switchContainer.setVisibility(View.GONE);
             exportLayout.setVisibility(View.GONE);
@@ -407,7 +416,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                 }
             });
         } else {
-            mSearchField.clearFocus();
+            mDummyFocus.requestFocus();
             mSearchLayout.setVisibility(View.GONE);
             switchContainer.setVisibility(View.VISIBLE);
             exportLayout.setVisibility(View.VISIBLE);
@@ -424,7 +433,6 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     }
 
     @Override public void onResume(){
-        firstTime = true;
         mCoreAPI.addExchangeRateChangeListener(this);
         super.onResume();
     }
@@ -452,13 +460,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     private void switchBarInfo(boolean isBitcoin){
         if(isBitcoin) {
-            if(!firstTime) {
-                Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-                animator.setDuration(250);
-                animator.start();
-            }else{
-                firstTime = false;
-            }
+            Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            animator.setDuration(250);
+            animator.start();
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());

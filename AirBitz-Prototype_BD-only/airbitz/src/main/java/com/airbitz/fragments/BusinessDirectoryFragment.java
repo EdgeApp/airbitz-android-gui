@@ -826,7 +826,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
             mBusinessList.clear();
             if (businesses == null) {
-                mBusinessList.add(new Business("Result not found", "", ""));
+                mBusinessList.add(new Business("No Results Found", "", ""));
             } else {
 
                 // Add all businesses first
@@ -928,7 +928,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             mLocationList.add(new LocationSearchResult(getString(R.string.on_the_web), false));
 
             if (result == null) {
-                mLocationList.add(new LocationSearchResult("Result not found", false));
+                mLocationList.add(new LocationSearchResult("No Results Found", false));
             } else {
 
                 // Add cached location searches

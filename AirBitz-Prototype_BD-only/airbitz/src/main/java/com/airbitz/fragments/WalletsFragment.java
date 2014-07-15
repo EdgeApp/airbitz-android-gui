@@ -518,7 +518,7 @@ public class WalletsFragment extends Fragment
     }
 
     private void goDone(){
-        if(!mAddWalletNameEditText.getText().toString().isEmpty()) {
+        if(!mAddWalletNameEditText.getText().toString().isEmpty() && mAddWalletNameEditText.getText().toString().trim().length() > 0) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
                 int[] nums = mCoreAPI.getCurrencyNumbers();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);

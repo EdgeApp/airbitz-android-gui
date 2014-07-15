@@ -173,7 +173,7 @@ public class SignUpActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (mUserNameEditText.getText().toString().length() < 3) {
+                if (mUserNameEditText.getText().toString().length() < 3 || mUserNameEditText.getText().toString().trim().length() < 3) {
                     mUserNameRedRingCover.setVisibility(View.VISIBLE);
                 } else {
                     mUserNameRedRingCover.setVisibility(View.GONE);
@@ -261,7 +261,7 @@ public class SignUpActivity extends Activity {
     }
 
     private boolean goodUsername(String name) {
-        return name.length() >= 3;
+        return name.length() >= 3 && name.trim().length() >=3;
     }
 
     private boolean goodPassword(String password) {
