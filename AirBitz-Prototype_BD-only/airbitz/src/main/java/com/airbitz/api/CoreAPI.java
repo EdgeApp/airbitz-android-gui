@@ -700,6 +700,60 @@ public class CoreAPI {
         public void setmAttributes(int mAttributes) { this.mAttributes = mAttributes; }
     }
 
+    public double GetPasswordSecondsToCrack(String password) {
+        SWIGTYPE_p_double seconds = core.new_doublep();
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int puCount = core.int_to_uint(pCount);
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_PasswordRule pppRules = core.longp_to_pppPasswordRule(lp);
+
+        tABC_CC result = core.ABC_CheckPassword(password, seconds, pppRules, puCount, Error);
+
+        if (result!=tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "Error in GetPasswordSecondsToCrack:  " + Error.getSzDescription());
+            return 0;
+        }
+        return core.doublep_value(seconds);
+    }
+
+    public List<tABC_PasswordRule> GetPasswordRules(String password)
+    {
+        List<tABC_PasswordRule> list = new ArrayList<tABC_PasswordRule>();
+        boolean bNewPasswordFieldsAreValid = true;
+
+        SWIGTYPE_p_double seconds = core.new_doublep();
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int puCount = core.int_to_uint(pCount);
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_PasswordRule pppRules = core.longp_to_pppPasswordRule(lp);
+
+        tABC_CC result = core.ABC_CheckPassword(password, seconds, pppRules, puCount, Error);
+
+        if (result!=tABC_CC.ABC_CC_Ok)
+        {
+            Log.d("CoreAPI", "Error in PasswordRule:  " + Error.getSzDescription());
+            return null;
+        }
+
+        int count = core.intp_value(pCount);
+
+        for (int i = 0; i < count; i++)
+        {
+//            SWIGTYPE_p_long temp = core.new_longp(base + i * 4);
+            long start = core.longp_value(lp);
+            tABC_PasswordRule pRule = new tABC_PasswordRule(start + i*2, false);
+            list.add(pRule);
+        }
+
+        return list;
+    }
+
+
     public void setTransaction(Wallet wallet, Transaction transaction, TxInfo txInfo) {
         transaction.setID(txInfo.getID());
         transaction.setName(txInfo.getDetails().getSzName());

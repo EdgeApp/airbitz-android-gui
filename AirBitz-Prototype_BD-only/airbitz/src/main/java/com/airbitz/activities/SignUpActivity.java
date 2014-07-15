@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,12 +30,22 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_double;
+import com.airbitz.api.SWIGTYPE_p_int;
+import com.airbitz.api.SWIGTYPE_p_long;
+import com.airbitz.api.SWIGTYPE_p_p_p_sABC_PasswordRule;
+import com.airbitz.api.SWIGTYPE_p_p_sABC_PasswordRule;
+import com.airbitz.api.SWIGTYPE_p_p_sABC_TxDetails;
+import com.airbitz.api.SWIGTYPE_p_unsigned_int;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.models.Transaction;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -185,6 +196,8 @@ public class SignUpActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 String password = mPasswordEditText.getText().toString();
 
+//                checkPasswordRules();
+
                 //TODO connect to core
                 if(password.length() >= 10){
                     mSwitchImage5.setImageResource(R.drawable.green_check);
@@ -265,6 +278,38 @@ public class SignUpActivity extends Activity {
 
     private boolean goodPin(String pin) {
         return pin.matches("[0-9]+") && pin.length()==4;
+    }
+
+    // checks the password against the password rules
+    // returns YES if new password fields are good, NO if the new password fields failed the checks
+    // if the new password fields are bad, an appropriate message box is displayed
+    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    private boolean checkPasswordRules() {
+        List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(mPasswordEditText.getText().toString());
+
+        if(rules.isEmpty()) {
+            return false;
+        }
+
+        boolean bNewPasswordFieldsAreValid = true;
+        for (int i = 0; i < rules.size(); i++)
+        {
+            String message = "";
+            tABC_PasswordRule pRule = rules.get(i);
+            boolean passed = pRule.getBPassed();
+            String description = pRule.getSzDescription();
+            if (!passed)
+            {
+                bNewPasswordFieldsAreValid = false;
+                message += description;
+            }
+        }
+
+        if (bNewPasswordFieldsAreValid == false)
+        {
+            showErrorDialog("Insufficient Password");
+        }
+        return bNewPasswordFieldsAreValid;
     }
 
     /**
