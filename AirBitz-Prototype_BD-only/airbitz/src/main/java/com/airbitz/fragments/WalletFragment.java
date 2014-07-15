@@ -3,8 +3,12 @@ package com.airbitz.fragments;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,14 +30,18 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Business;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
+import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -198,19 +206,56 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             }
         });
 
-        mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                } else {
-//                    SetSearchVisibility(true);
+        mSearchField.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override public void afterTextChanged(Editable editable) {
+
+                if (mSearchLayout.getVisibility() == View.GONE) {
+                    return;
                 }
+
+                try {
+                    // Only include cached searches if text is empty.
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
+
+                    if(mSearchTask != null && mSearchTask.getStatus()== AsyncTask.Status.RUNNING){
+                        mSearchTask.cancel(true);
+                    }
+                    mSearchTask = new SearchTask();
+                    mSearchTask.execute(query);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+//                if(editable.toString().isEmpty() && mSearchField.hasFocus()){
+//                    editable.append(' ');
+//                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
+//                    mSearchField.setText(" "+editable.toString());
+//                }
             }
         });
 
-        final View.OnKeyListener keyListener =
+//        mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//                } else {
+////                    SetSearchVisibility(true);
+//                }
+//            }
+//        });
+
+        final View.OnKeyListener searchKeyListener =
                 (new View.OnKeyListener() {
                     @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                         int keyAction = keyEvent.getAction();
@@ -232,7 +277,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     }
                 });
 
-        mSearchField.setOnKeyListener(keyListener);
+        mSearchField.setOnKeyListener(searchKeyListener);
 
         mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,6 +295,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                 mOnBitcoinMode = false;
             }
         });
+
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -317,10 +363,34 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         });
 
         UpdateWalletTotalBalance();
-        mCoreAPI.addExchangeRateChangeListener(this);
 
         return view;
     }
+
+    private SearchTask mSearchTask;
+    class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
+
+        public SearchTask() { }
+
+        @Override protected List<Transaction> doInBackground(String... strings) {
+            return searchTransactions(strings[0]);
+        }
+
+        @Override protected void onPostExecute(List<Transaction> transactions) {
+            if(getActivity()==null)
+                return;
+            mTransactions.clear();
+            mTransactions.addAll(transactions);
+            mTransactionAdapter.notifyDataSetChanged();
+            mSearchTask = null;
+        }
+
+        @Override protected void onCancelled(){
+            mSearchTask = null;
+            super.onCancelled();
+        }
+    }
+
 
     private void SetSearchVisibility(boolean visible) {
         if(visible) {
@@ -329,6 +399,13 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             switchContainer.setVisibility(View.GONE);
             exportLayout.setVisibility(View.GONE);
             sendRequestLayout.setVisibility(View.GONE);
+            mSearchField.post(new Runnable() {
+                public void run() {
+                    mSearchField.requestFocusFromTouch();
+                    InputMethodManager lManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    lManager.showSoftInput(mSearchField, 0);
+                }
+            });
         } else {
             mSearchField.clearFocus();
             mSearchLayout.setVisibility(View.GONE);
@@ -348,6 +425,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     @Override public void onResume(){
         firstTime = true;
+        mCoreAPI.addExchangeRateChangeListener(this);
         super.onResume();
     }
 
