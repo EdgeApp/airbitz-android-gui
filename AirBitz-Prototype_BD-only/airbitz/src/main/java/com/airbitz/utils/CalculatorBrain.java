@@ -90,7 +90,7 @@ public class CalculatorBrain {
             mWaitingOperand = 0;
             // mCalculatorMemory = 0;
         } else if (operator.equals(PERCENT)) {
-            mOperand = mOperand*0.01;
+            mOperand = mWaitingOperand*mOperand*0.01;
 //        } else if (operator.equals(CLEARMEMORY)) {
 //            mCalculatorMemory = 0;
 //        } else if (operator.equals(ADDTOMEMORY)) {
@@ -130,7 +130,7 @@ public class CalculatorBrain {
 
         if (mWaitingOperator.equals(ADD)) {
             mOperand = mWaitingOperand + mOperand;
-        } else if (mWaitingOperator.equals(SUBTRACT)) {
+        }  else if (mWaitingOperator.equals(SUBTRACT)) {
             mOperand = mWaitingOperand - mOperand;
         } else if (mWaitingOperator.equals(MULTIPLY)) {
             mOperand = mWaitingOperand * mOperand;
@@ -139,6 +139,5 @@ public class CalculatorBrain {
                 mOperand = mWaitingOperand / mOperand;
             }
         }
-
     }
 }
