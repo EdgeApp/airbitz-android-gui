@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,10 +190,10 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mSearchLayout.getVisibility() != View.VISIBLE) {
-                    mSearchLayout.setVisibility(View.VISIBLE);
+                if (mSearchLayout.getVisibility() != View.VISIBLE) {
+                    SetSearchVisibility(true);
                 } else {
-                    mSearchLayout.setVisibility(View.GONE);
+                    SetSearchVisibility(false);
                 }
             }
         });
@@ -204,15 +205,34 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 } else {
-                    switchContainer.setVisibility(View.GONE);
-                    exportLayout.setVisibility(View.GONE);
-                    sendRequestLayout.setVisibility(View.GONE);
-                    searchPage = true;
-                    mTransactionAdapter.setSearch(true);
-                    mTransactionAdapter.notifyDataSetChanged();
+//                    SetSearchVisibility(true);
                 }
             }
         });
+
+        final View.OnKeyListener keyListener =
+                (new View.OnKeyListener() {
+                    @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                        int keyAction = keyEvent.getAction();
+                        if (keyAction == KeyEvent.ACTION_UP) {
+                            switch (keyCode) {
+                                case KeyEvent.FLAG_EDITOR_ACTION:
+                                case KeyEvent.KEYCODE_ENTER:
+                                    Bundle bundle = new Bundle();
+                                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+//                                        bundle.putString(BUSINESS, mSearchField.getText().toString().substring(1));
+                                    }
+                                    SetSearchVisibility(false);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                        return false;
+                    }
+                });
+
+        mSearchField.setOnKeyListener(keyListener);
 
         mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,12 +302,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             @Override
             public void onClick(View view) {
                 if(searchPage){
-                    switchContainer.setVisibility(View.VISIBLE);
-                    exportLayout.setVisibility(View.VISIBLE);
-                    sendRequestLayout.setVisibility(View.VISIBLE);
-                    searchPage = false;
-                    mTransactionAdapter.setSearch(false);
-                    mSearchField.clearFocus();
+                    SetSearchVisibility(false);
                 }else{
                     getActivity().onBackPressed();
                 }
@@ -305,6 +320,25 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mCoreAPI.addExchangeRateChangeListener(this);
 
         return view;
+    }
+
+    private void SetSearchVisibility(boolean visible) {
+        if(visible) {
+            mSearchField.findFocus();
+            mSearchLayout.setVisibility(View.VISIBLE);
+            switchContainer.setVisibility(View.GONE);
+            exportLayout.setVisibility(View.GONE);
+            sendRequestLayout.setVisibility(View.GONE);
+        } else {
+            mSearchField.clearFocus();
+            mSearchLayout.setVisibility(View.GONE);
+            switchContainer.setVisibility(View.VISIBLE);
+            exportLayout.setVisibility(View.VISIBLE);
+            sendRequestLayout.setVisibility(View.VISIBLE);
+        }
+        searchPage = visible;
+        mTransactionAdapter.setSearch(visible);
+        mTransactionAdapter.notifyDataSetChanged();
     }
 
     @Override public void onPause() {
