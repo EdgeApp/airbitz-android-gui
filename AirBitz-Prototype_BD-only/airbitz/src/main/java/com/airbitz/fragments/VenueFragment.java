@@ -216,6 +216,11 @@ public class VenueFragment extends Fragment implements
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
     public void OnCurrentLocationChange(Location location) {
         updateView(mLocationManager.getLocation());
         mLocationManager.removeLocationChangeListener(this);
