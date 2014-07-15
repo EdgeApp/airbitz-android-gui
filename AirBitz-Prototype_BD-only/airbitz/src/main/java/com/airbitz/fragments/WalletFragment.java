@@ -277,13 +277,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             @Override
             public void onClick(View view) {
                 if(searchPage){
-                    LayoutTransition lt = new LayoutTransition();
-                    Animator animator = ObjectAnimator.ofFloat(null, "translationX", 0, parentView.getWidth());
-                    lt.setAnimator(LayoutTransition.CHANGE_DISAPPEARING,animator);
-                    lt.setAnimator(LayoutTransition.DISAPPEARING,animator);
-                    lt.setStartDelay(LayoutTransition.DISAPPEARING, 0);
-                    lt.setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
-                    lt.setDuration(500);
+                    //mSearchLayout.animate().translationX();
                     mSearchLayout.setVisibility(View.GONE);
                     switchContainer.setVisibility(View.VISIBLE);
                     exportLayout.setVisibility(View.VISIBLE);
