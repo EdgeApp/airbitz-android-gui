@@ -45,10 +45,12 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private ClearableEditText mSearchField;
+    private LinearLayout mSearchLayout;
 
     private ImageButton mExportButton;
     private ImageButton mHelpButton;
     private ImageButton mBackButton;
+    private ImageButton mSearchButton;
 
     private boolean searchPage = false;
 
@@ -131,6 +133,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
 
         mSearchField = (ClearableEditText) view.findViewById(R.id.fragment_search_edittext);
+        mSearchButton = (ImageButton) view.findViewById(R.id.fragment_wallet_search_button);
+        mSearchLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_search_layout);
 
         mSendButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_request_button);
@@ -178,6 +182,17 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     mWallet.setName(mWalletNameButton.getText().toString());
                     mCoreAPI.renameWallet(mWallet);
+                }
+            }
+        });
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mSearchLayout.getVisibility() != View.VISIBLE) {
+                    mSearchLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mSearchLayout.setVisibility(View.GONE);
                 }
             }
         });
