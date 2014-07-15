@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -141,11 +143,22 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
-                mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
-                Intent intent = new Intent(getActivity(), SignUpActivity.class);
-                startActivity(intent);
+                ConnectivityManager cm =
+                        (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+                if(isConnected) {
+                    InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
+                    mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
+                    Intent intent = new Intent(getActivity(), SignUpActivity.class);
+                    startActivity(intent);
+                } else {
+                    showMessageDialog(getActivity().getString(R.string.string_no_connection_title),
+                            getActivity().getString(R.string.string_no_connection_message));
+                }
             }
         });
 
@@ -302,6 +315,21 @@ public class LandingFragment extends Fragment {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             //mLandingLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    private void showMessageDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void showErrorDialog() {
