@@ -1,13 +1,16 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +30,18 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.Image;
+import com.airbitz.models.Business;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
+import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,11 +54,12 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private ClearableEditText mSearchField;
+    private LinearLayout mSearchLayout;
 
     private ImageButton mExportButton;
-    private ImageButton mSearchButton;
     private ImageButton mHelpButton;
     private ImageButton mBackButton;
+    private ImageButton mSearchButton;
 
     private boolean searchPage = false;
 
@@ -70,7 +77,6 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     private RelativeLayout exportLayout;
     private LinearLayout sendRequestLayout;
-    private LinearLayout mSearchLayout;
 
     private RelativeLayout mParentLayout;
 
@@ -125,46 +131,46 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View parentView = inflater.inflate(R.layout.fragment_wallet, container, false);
+        View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) parentView.findViewById(R.id.fragment_wallet_parent_layout);
-        mScrollView = (ScrollView) parentView.findViewById(R.id.layout_scroll);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_parent_layout);
+        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
 
         mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
         mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
 
-        mSearchLayout = (LinearLayout) parentView.findViewById(R.id.fragment_wallet_search_layout);
-        mSearchField = (ClearableEditText) parentView.findViewById(R.id.fragment_search_edittext);
-        mSearchButton = (ImageButton) parentView.findViewById(R.id.fragment_wallet_search_button);
+        mSearchField = (ClearableEditText) view.findViewById(R.id.fragment_search_edittext);
+        mSearchButton = (ImageButton) view.findViewById(R.id.fragment_wallet_search_button);
+        mSearchLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_search_layout);
 
-        mSendButton = (ResizableImageView) parentView.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (ResizableImageView) parentView.findViewById(R.id.fragment_wallet_request_button);
-        mWalletNameButton = (EditText) parentView.findViewById(R.id.fragment_wallet_walletname_edittext);
+        mSendButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_request_button);
+        mWalletNameButton = (EditText) view.findViewById(R.id.fragment_wallet_walletname_edittext);
 
-        mExportButton = (ImageButton) parentView.findViewById(R.id.fragment_wallet_export_button);
-        mBackButton = (ImageButton) parentView.findViewById(R.id.fragment_wallet_back_button);
-        mButtonMover = (Button) parentView.findViewById(R.id.button_mover);
-        exportLayout = (RelativeLayout) parentView.findViewById(R.id.fragment_wallet_export_layout);
-        sendRequestLayout = (LinearLayout) parentView.findViewById(R.id.fragment_wallet_sendrequest_layout);
+        mExportButton = (ImageButton) view.findViewById(R.id.fragment_wallet_export_button);
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_wallet_back_button);
+        mButtonMover = (Button) view.findViewById(R.id.button_mover);
+        exportLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_export_layout);
+        sendRequestLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_sendrequest_layout);
 
 
-        switchable = (RelativeLayout) parentView.findViewById(R.id.switchable);
-        switchContainer = (RelativeLayout) parentView.findViewById(R.id.layout_balance);
+        switchable = (RelativeLayout) view.findViewById(R.id.switchable);
+        switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
 
-        mMoverCoin = (ImageView) parentView.findViewById(R.id.button_mover_coin);
-        mMoverType = (TextView) parentView.findViewById(R.id.button_mover_type);
-        mBottomCoin = (ImageView) parentView.findViewById(R.id.bottom_coin);
-        mBottomType = (TextView) parentView.findViewById(R.id.bottom_type);
-        mTopType = (TextView) parentView.findViewById(R.id.top_type);
+        mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
+        mMoverType = (TextView) view.findViewById(R.id.button_mover_type);
+        mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
+        mBottomType = (TextView) view.findViewById(R.id.bottom_type);
+        mTopType = (TextView) view.findViewById(R.id.top_type);
 
-        mHelpButton = (ImageButton) parentView.findViewById(R.id.fragment_wallet_help_button);
-        mTitleTextView = (TextView) parentView.findViewById(R.id.fragment_wallet_title_textview);
+        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_wallet_help_button);
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_wallet_title_textview);
 
-        mButtonBitcoinBalance = (Button) parentView.findViewById(R.id.back_button_top);
-        mButtonFiatBalance = (Button) parentView.findViewById(R.id.back_button_bottom);
-        mListTransaction = (ListView) parentView.findViewById(R.id.listview_transaction);
+        mButtonBitcoinBalance = (Button) view.findViewById(R.id.back_button_top);
+        mButtonFiatBalance = (Button) view.findViewById(R.id.back_button_bottom);
+        mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
@@ -192,22 +198,86 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutTransition lt = new LayoutTransition();
-                Animator animator = ObjectAnimator.ofFloat(null, "translationX",parentView.getWidth(), 0);
-                lt.setAnimator(LayoutTransition.APPEARING,animator);
-                lt.setAnimator(LayoutTransition.CHANGE_APPEARING, animator);
-                lt.setStartDelay(LayoutTransition.APPEARING,0);
-                lt.setStartDelay(LayoutTransition.CHANGE_APPEARING,0);
-                lt.setDuration(500);
-                mSearchLayout.setVisibility(View.VISIBLE);
-                switchContainer.setVisibility(View.GONE);
-                exportLayout.setVisibility(View.GONE);
-                sendRequestLayout.setVisibility(View.GONE);
-                searchPage = true;
-                mTransactionAdapter.setSearch(true);
-                mTransactionAdapter.notifyDataSetChanged();
+                if (mSearchLayout.getVisibility() != View.VISIBLE) {
+                    SetSearchVisibility(true);
+                } else {
+                    SetSearchVisibility(false);
+                }
             }
         });
+
+        mSearchField.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override public void afterTextChanged(Editable editable) {
+
+                if (mSearchLayout.getVisibility() == View.GONE) {
+                    return;
+                }
+
+                try {
+                    // Only include cached searches if text is empty.
+                    final String query;
+                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
+                        query = editable.toString().substring(1);
+                    }else{
+                        query = editable.toString();
+                    }
+
+                    if(mSearchTask != null && mSearchTask.getStatus()== AsyncTask.Status.RUNNING){
+                        mSearchTask.cancel(true);
+                    }
+                    mSearchTask = new SearchTask();
+                    mSearchTask.execute(query);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+//                if(editable.toString().isEmpty() && mSearchField.hasFocus()){
+//                    editable.append(' ');
+//                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
+//                    mSearchField.setText(" "+editable.toString());
+//                }
+            }
+        });
+
+//        mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//                } else {
+////                    SetSearchVisibility(true);
+//                }
+//            }
+//        });
+
+        final View.OnKeyListener searchKeyListener =
+                (new View.OnKeyListener() {
+                    @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                        int keyAction = keyEvent.getAction();
+                        if (keyAction == KeyEvent.ACTION_UP) {
+                            switch (keyCode) {
+                                case KeyEvent.FLAG_EDITOR_ACTION:
+                                case KeyEvent.KEYCODE_ENTER:
+                                    Bundle bundle = new Bundle();
+                                    if(!mSearchField.getText().toString().isEmpty() && mSearchField.getText().toString().charAt(0)==' ') {
+//                                        bundle.putString(BUSINESS, mSearchField.getText().toString().substring(1));
+                                    }
+                                    SetSearchVisibility(false);
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                        return false;
+                    }
+                });
+
+        mSearchField.setOnKeyListener(searchKeyListener);
 
         mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +295,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                 mOnBitcoinMode = false;
             }
         });
+
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,14 +348,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             @Override
             public void onClick(View view) {
                 if(searchPage){
-                    //mSearchLayout.animate().translationX();
-                    mSearchLayout.setVisibility(View.GONE);
-                    switchContainer.setVisibility(View.VISIBLE);
-                    exportLayout.setVisibility(View.VISIBLE);
-                    sendRequestLayout.setVisibility(View.VISIBLE);
-                    searchPage = false;
-                    mTransactionAdapter.setSearch(false);
-                    mSearchField.clearFocus();
+                    SetSearchVisibility(false);
                 }else{
                     getActivity().onBackPressed();
                 }
@@ -299,9 +363,59 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         });
 
         UpdateWalletTotalBalance();
-        mCoreAPI.addExchangeRateChangeListener(this);
 
-        return parentView;
+        return view;
+    }
+
+    private SearchTask mSearchTask;
+    class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
+
+        public SearchTask() { }
+
+        @Override protected List<Transaction> doInBackground(String... strings) {
+            return searchTransactions(strings[0]);
+        }
+
+        @Override protected void onPostExecute(List<Transaction> transactions) {
+            if(getActivity()==null)
+                return;
+            mTransactions.clear();
+            mTransactions.addAll(transactions);
+            mTransactionAdapter.notifyDataSetChanged();
+            mSearchTask = null;
+        }
+
+        @Override protected void onCancelled(){
+            mSearchTask = null;
+            super.onCancelled();
+        }
+    }
+
+
+    private void SetSearchVisibility(boolean visible) {
+        if(visible) {
+            mSearchField.findFocus();
+            mSearchLayout.setVisibility(View.VISIBLE);
+            switchContainer.setVisibility(View.GONE);
+            exportLayout.setVisibility(View.GONE);
+            sendRequestLayout.setVisibility(View.GONE);
+            mSearchField.post(new Runnable() {
+                public void run() {
+                    mSearchField.requestFocusFromTouch();
+                    InputMethodManager lManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    lManager.showSoftInput(mSearchField, 0);
+                }
+            });
+        } else {
+            mSearchField.clearFocus();
+            mSearchLayout.setVisibility(View.GONE);
+            switchContainer.setVisibility(View.VISIBLE);
+            exportLayout.setVisibility(View.VISIBLE);
+            sendRequestLayout.setVisibility(View.VISIBLE);
+        }
+        searchPage = visible;
+        mTransactionAdapter.setSearch(visible);
+        mTransactionAdapter.notifyDataSetChanged();
     }
 
     @Override public void onPause() {
@@ -311,6 +425,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     @Override public void onResume(){
         firstTime = true;
+        mCoreAPI.addExchangeRateChangeListener(this);
         super.onResume();
     }
 

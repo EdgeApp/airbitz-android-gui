@@ -745,7 +745,7 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_SearchTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 wallet.getUUID(), searchText, paTxInfo, puCount, Error);
-        if (result!=tABC_CC.ABC_CC_Ok)
+        if (result==tABC_CC.ABC_CC_Ok)
         {
             int ptrToInfo = core.longp_value(lp);
             int count = core.intp_value(pCount);
@@ -765,7 +765,6 @@ public class CoreAPI {
         {
             Log.i("CoreAPI", "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
         }
-//        ABC_FreeTransactions(aTransactions, tCount);
         return listTransactions;
     }
 
