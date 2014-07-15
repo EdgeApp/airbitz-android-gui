@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.ListViewUtility;
 
 /**
  * Created on 2/21/14.
@@ -57,6 +60,8 @@ public class SendConfirmationFragment extends Fragment {
 
     private EditText mDollarValueField;
     private EditText mBitcoinValueField;
+    private TextView mBitcoinFeeLabel;
+    private TextView mDollarFeeLabel;
 
     private ImageButton mHelpButton;
     private ImageButton mBackButton;
@@ -138,8 +143,10 @@ public class SendConfirmationFragment extends Fragment {
         mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
 
-        mDollarValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
         mBitcoinValueField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
+//        mBitcoinFeeLabel = (TextView) view.findViewById();
+        mDollarValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
+//        mDollarFeeLabel = (TextView) view.findViewById();
 
         mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
 
@@ -169,6 +176,52 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
         String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
         mDollarValueField.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+
+        final TextWatcher mBTCTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateTextFieldContents(true);
+            }
+        };
+
+        final TextWatcher mDollarTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateTextFieldContents(false);
+            }
+        };
+
+        mBitcoinValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+             public void onFocusChange(View view, boolean hasFocus) {
+                 if (hasFocus) {
+                     mDollarValueField.removeTextChangedListener(mDollarTextWatcher);
+                     mBitcoinValueField.addTextChangedListener(mBTCTextWatcher);
+                 }
+            }
+        });
+
+        mDollarValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mBitcoinValueField.removeTextChangedListener(mBTCTextWatcher);
+                    mDollarValueField.addTextChangedListener(mDollarTextWatcher);
+                }
+            }
+        });
 
         mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
 
@@ -320,12 +373,13 @@ public class SendConfirmationFragment extends Fragment {
     {
         double currency;
         long satoshi;
-        tABC_Error error = new tABC_Error();
 
         if (btc) {
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
             double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
-            mDollarValueField.setText(String.valueOf(value));
+            String temp = String.valueOf(value);
+            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
+            mDollarValueField.setText(out);
        }
         else {
             currency = Double.valueOf(mDollarValueField.getText().toString());
@@ -348,60 +402,34 @@ public class SendConfirmationFragment extends Fragment {
         }
     }
 
-
-
     private void updateFeeFieldContents()
     {
-//        long fees = 0;
-//        tABC_Error error = new ;
-//        NSString *dest = NULL;
-//        if (self.bAddressIsWalletUUID) {
-//            dest = self.destWallet.strUUID;
-//        } else {
-//            dest = self.sendToAddress;
-//        }
-//        if ([CoreBridge calcSendFees:self.wallet.strUUID
-//        sendTo:dest
-//        amountToSend:self.amountToSendSatoshi
-//        storeResultsIn:&fees
-//        walletTransfer:self.bAddressIsWalletUUID])
-//        {
-//            double currencyFees = 0.0;
-//            self.conversionLabel.textColor = [UIColor whiteColor];
-//            self.amountBTCTextField.textColor = [UIColor whiteColor];
+        String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
+        long fees = mCoreAPI.calcSendFees(mToWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+        if (fees != -1)
+        {
+            double currencyFees = 0.0;
+            mConversionTextView.setTextColor(Color.WHITE);
+//            self.amountBTCTextField.textColor = [UIColor whiteColor]; //TODO
 //            self.amountUSDTextField.textColor = [UIColor whiteColor];
-//
-//            NSMutableString *coinFeeString = [[NSMutableString alloc] init];
-//            NSMutableString *fiatFeeString = [[NSMutableString alloc] init];
-//            [coinFeeString appendString:@"+ "];
-//            [coinFeeString appendString:[CoreBridge formatSatoshi:fees withSymbol:false]];
-//            [coinFeeString appendString:@" "];
-//            [coinFeeString appendString:[User Singleton].denominationLabel];
-//
-//            if (ABC_SatoshiToCurrency([[User Singleton].name UTF8String], [[User Singleton].password UTF8String],
-//            fees, &currencyFees, self.wallet.currencyNum, &error) == ABC_CC_Ok)
-//            {
-//                [fiatFeeString appendString:@"+ "];
-//                [fiatFeeString appendString:[CoreBridge formatCurrency:currencyFees
-//                withCurrencyNum:self.wallet.currencyNum
-//                withSymbol:false]];
-//                [fiatFeeString appendString:@" "];
-//                [fiatFeeString appendString:self.wallet.currencyAbbrev];
-//            }
-//            self.amountBTCLabel.text = coinFeeString;
-//            self.amountUSDLabel.text = fiatFeeString;
-//            self.conversionLabel.text = [CoreBridge conversionString:self.wallet];
-//        }
-//        else
-//        {
-//            NSString *message = NSLocalizedString(@"Insufficient funds", nil);
-//            self.conversionLabel.text = message;
-//            self.conversionLabel.textColor = [UIColor redColor];
+
+            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
+
+            double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
+            String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
+
+            if(mBitcoinFeeLabel!=null) mBitcoinFeeLabel.setText(coinFeeString);
+            if(mDollarFeeLabel!=null) mDollarFeeLabel.setText(fiatFeeString);
+            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+        }
+        else
+        {
+            String message = getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds);
+            if(mConversionTextView!=null) mConversionTextView.setText(message);
+            mConversionTextView.setTextColor(Color.RED); //TODO
 //            self.amountBTCTextField.textColor = [UIColor redColor];
 //            self.amountUSDTextField.textColor = [UIColor redColor];
-//        }
-//        [self alineTextFields:self.amountBTCLabel alignWith:self.amountBTCTextField];
-//        [self alineTextFields:self.amountUSDLabel alignWith:self.amountUSDTextField];
+        }
     }
 
 
