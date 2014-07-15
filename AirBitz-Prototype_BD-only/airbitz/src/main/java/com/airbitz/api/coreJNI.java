@@ -377,6 +377,7 @@ public class coreJNI {
   public final static native long longp_to_pppPasswordRule(long jarg1);
   public final static native long longp_to_ppAccountSettings(long jarg1);
   public final static native long longp_to_ppChar(long jarg1);
+  public final static native long longp_to_pppChar(long jarg1);
   public final static native long longp_to_unsigned_ppChar(long jarg1);
   public final static native long charpp_to_longp(long jarg1);
   public final static native long longPtr_to_ppBitcoinURIInfo(long jarg1);

@@ -1017,7 +1017,6 @@ public class CoreAPI {
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
         int currencyNumber = mCoreSettings.getCurrencyNum();
-
         return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
     }
 
@@ -1027,12 +1026,14 @@ public class CoreAPI {
         if (!btc)
         {
             out = formatCurrency(SatoshiToCurrency(satoshi, currencyNum), withSymbol);
+            int index = out.indexOf('.');
+            out = out.substring(0, index + Math.min(3, out.length() - index));
         }
         else
         {
             out = formatSatoshi(satoshi, withSymbol);
         }
-        return out.substring(0,out.indexOf('.')+Math.min(3, out.length()-out.indexOf('.')));
+        return out;
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {
@@ -1433,4 +1434,53 @@ public class CoreAPI {
 
         return pAddress;
     }
+
+    public List<String> loadCategories()
+    {
+        List<String> categories = new ArrayList<String>();
+
+        // get the categories from the core
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_char aszCategories = core.longp_to_pppChar(lp);
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+
+        tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), aszCategories, pUCount, Error);
+
+        if(result!=tABC_CC.ABC_CC_Ok) {
+            Log.d("CoreAPI", "loadCategories failed:"+Error.getSzDescription());
+        }
+
+        int count = core.intp_value(pCount);
+        long base = aszCategories.getCPtr(aszCategories);
+
+        for (int i = 0; i < count; i++)
+        {
+            categories.add(getStringAtPtr(base + i*4));
+        }
+
+        // store the final as sorted
+//        self.arrayCategories = [arrayCategories sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        return categories;
+    }
+
+    public void addCategory(String strCategory, List<String> categories)
+    {
+        // check and see if there is more text than just the prefix
+        //if ([ARRAY_CATEGORY_PREFIXES indexOfObject:strCategory] == NSNotFound)
+        {
+            // check and see that it doesn't already exist
+            if (!categories.contains(strCategory))
+            {
+                // add the category to the core
+                tABC_Error Error = new tABC_Error();
+                core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
+            }
+        }
+    }
+
+
 }
