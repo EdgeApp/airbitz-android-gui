@@ -423,6 +423,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);
   }
 
+  public static SWIGTYPE_p_p_p_sABC_PasswordRule longp_to_pppPasswordRule(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pppPasswordRule(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_PasswordRule(cPtr, false);
+  }
+
   public static SWIGTYPE_p_p_sABC_AccountSettings longp_to_ppAccountSettings(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_ppAccountSettings(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_AccountSettings(cPtr, false);
