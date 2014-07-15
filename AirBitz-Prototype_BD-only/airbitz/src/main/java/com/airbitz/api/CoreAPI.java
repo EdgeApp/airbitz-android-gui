@@ -654,9 +654,7 @@ public class CoreAPI {
         String mNotes;  /** notes for the transaction */
         int mAttributes;    /** attributes for the transaction */
 
-        public TxDetails() { }
-
-        public TxDetails(long pv) {
+       public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
                 mAmountSatoshi = get64BitLongAtPtr(pv);
@@ -666,7 +664,7 @@ public class CoreAPI {
                 mAmountCurrency = super.getAmountCurrency();
 
                 mName = super.getSzName();
-                mBizId = (long) super.getBizId();
+                mBizId = super.getBizId();
                 mCategory = super.getSzCategory();
                 mNotes = super.getSzNotes();
                 mAttributes = (int) super.getAttributes();
@@ -860,14 +858,14 @@ public class CoreAPI {
         int decimalPlaces = maxDecimalPlaces();
 
         boolean negative = amount < 0;
+        if(negative)
+            amount = -amount;
         int result = FormatAmount(amount, ppChar.getCPtr(ppChar), decimalPlaces, error.getCPtr(error));
         if ( result != 0)
         {
             return "";
         }
         else {
-            long test1 = core.longp_value(lp);
-            byte[] bytes = getBytesAtPtr(test1, 1);
             String pFormatted = getStringAtPtr(core.longp_value(lp));
             decimalPlaces = decimals > -1 ? decimals : maxDecimalPlaces();
             String pretext = "";
@@ -965,28 +963,23 @@ public class CoreAPI {
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
-        if (!btc)
-        {
-            int currencyNumber = mCoreSettings.getCurrencyNum();
+        int currencyNumber = mCoreSettings.getCurrencyNum();
 
-            return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
-        }
-        else
-        {
-            return formatSatoshi(satoshi, withSymbol);
-        }
+        return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
     }
 
     public String FormatCurrency(long satoshi, int currencyNum, boolean btc, boolean withSymbol)
     {
+        String out;
         if (!btc)
         {
-            return formatCurrency(SatoshiToCurrency(satoshi, currencyNum), withSymbol);
+            out = formatCurrency(SatoshiToCurrency(satoshi, currencyNum), withSymbol);
         }
         else
         {
-            return formatSatoshi(satoshi, withSymbol);
+            out = formatSatoshi(satoshi, withSymbol);
         }
+        return out.substring(0,out.indexOf('.')+Math.min(3, out.length()-out.indexOf('.')));
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {

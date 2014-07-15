@@ -374,7 +374,7 @@ public class WalletsFragment extends Fragment
         }
         mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
-        mFiatBalanceButton.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+        mFiatBalanceButton.setText(temp);
         if(mOnBitcoinMode) {
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
