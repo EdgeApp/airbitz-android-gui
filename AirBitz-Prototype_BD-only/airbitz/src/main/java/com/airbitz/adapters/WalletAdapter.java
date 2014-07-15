@@ -159,7 +159,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             } else {
                 long satoshi = mWalletList.get(position).getBalanceSatoshi();
                 String temp = mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, true);
-                amountTextView.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+                amountTextView.setText(temp);
             }
 
             if(1 == position){
