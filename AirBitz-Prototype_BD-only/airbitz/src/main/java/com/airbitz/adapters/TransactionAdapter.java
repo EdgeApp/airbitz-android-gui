@@ -54,6 +54,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
         TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
 
+        if(0 == position && mListTransaction.size() == 1){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+        }else if(0 == position){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+        }else if(mListTransaction.size()-1 == position){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+        }else{
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
+        }
+
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
         dateTextView.setText(dateString);
 
