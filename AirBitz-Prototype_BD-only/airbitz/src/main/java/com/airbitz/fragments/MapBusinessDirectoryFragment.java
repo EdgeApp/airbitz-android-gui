@@ -1231,7 +1231,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mLocation.add(new LocationSearchResult(getString(R.string.on_the_web), false));
 
             if (result == null) {
-                mLocation.add(new LocationSearchResult("Result not found", false));
+                mLocation.add(new LocationSearchResult("No Results Found", false));
             } else {
 
                 // Add cached location searches
@@ -1279,7 +1279,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         @Override protected void onPostExecute(List<Business> businesses) {
             mBusinessList.clear();
             if (businesses == null) {
-                mBusinessList.add(new Business("Result not found", "", ""));
+                mBusinessList.add(new Business("No Results Found", "", ""));
             } else {
 
                 // Add all businesses first
