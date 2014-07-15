@@ -20,6 +20,11 @@
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
 
+    <!-- Connectivity -->
+    <string name="string_no_connection_title">No connection</string>
+    <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
+
+
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
