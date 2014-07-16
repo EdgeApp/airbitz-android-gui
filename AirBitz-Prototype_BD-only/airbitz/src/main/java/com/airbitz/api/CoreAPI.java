@@ -1336,7 +1336,7 @@ public class CoreAPI {
     }
 
     //**************** Wallet handling
-    private List<Wallet> getCoreWallets() {
+    public List<Wallet> getCoreWallets() {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
         SWIGTYPE_p_long lp = core.new_longp();

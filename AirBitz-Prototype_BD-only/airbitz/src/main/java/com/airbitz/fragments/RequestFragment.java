@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,7 +57,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private Button mQRCodeButton;
     private Button mBLEButton;
 
-    private List<String> mWalletList;
+    private List<Wallet> mWallets;
+    private List<String> mWalletNames;
 
     private Spinner pickWalletSpinner;
 
@@ -110,8 +113,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mWalletList = new ArrayList<String>();
-        addWalletNamesToList();
+        mWallets = mCoreAPI.getCoreWallets();
+        mWalletNames = new ArrayList<String>();
+        for(Wallet w : mWallets) {
+            if(!(w.isArchiveHeader() || w.isHeader()))
+                mWalletNames.add(w.getName());
+        }
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
@@ -147,9 +154,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
 
         pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletNames);
         pickWalletSpinner.setAdapter(dataAdapter);
-
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
@@ -229,22 +235,61 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });*/
 
+        final TextWatcher mBTCTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateTextFieldContents(true);
+            }
+        };
+
+        final TextWatcher mDollarTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateTextFieldContents(false);
+            }
+        };
+
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    EditText edittext = (EditText) view;
+                    int inType = edittext.getInputType();
+                    edittext.setInputType(InputType.TYPE_NULL);
+                    edittext.setInputType(inType);
+                    mBitcoinField.setText("");
+                    mFiatField.removeTextChangedListener(mDollarTextWatcher);
+                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
                 }
             }
         });
-
 
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                EditText edittext = (EditText) view;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.setInputType(inType);
                 if (hasFocus) {
+                    mFiatField.setText("");
+                    mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mFiatField.addTextChangedListener(mDollarTextWatcher);
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
@@ -252,44 +297,30 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        mBitcoinField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCustomKeyboard(view);
-            }
-        });
-
-        mFiatField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCustomKeyboard(view);
-            }
-        });
-
-        mBitcoinField.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true;
-            }
-        });
-
-
-        mFiatField.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true;
-            }
-        });
+//        mBitcoinField.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                EditText edittext = (EditText) v;
+//                int inType = edittext.getInputType();
+//                edittext.setInputType(InputType.TYPE_NULL);
+//                edittext.onTouchEvent(event);
+//                edittext.setInputType(inType);
+//                return true;
+//            }
+//        });
+//
+//
+//        mFiatField.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                EditText edittext = (EditText) v;
+//                int inType = edittext.getInputType();
+//                edittext.setInputType(InputType.TYPE_NULL);
+//                edittext.onTouchEvent(event);
+//                edittext.setInputType(inType);
+//                return true;
+//            }
+//        });
 
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
@@ -305,10 +336,46 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        mConverterTextView.setText(mCoreAPI.BTCtoDefaultConversion());
+        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Wallet wallet = mWallets.get(i);
+                setConversionText(wallet.getCurrencyNum());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
+        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
+        Wallet wallet = mWallets.get(walletPosition);
+        setConversionText(wallet.getCurrencyNum());
 
         return view;
     }
+
+    private void setConversionText(int currencyNum) {
+        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+    }
+
+    private void updateTextFieldContents(boolean btc)
+    {
+        double currency;
+        long satoshi;
+
+        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
+        Wallet wallet = mWallets.get(walletPosition);
+        if (btc) {
+            satoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+            mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
+        }
+        else {
+            currency = Double.valueOf(mFiatField.getText().toString());
+            satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+            mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+        }
+    }
+
 
     private void setupCalculator(View l) {
         l.findViewById(R.id.button_calc_0).setOnClickListener(this);
@@ -393,30 +460,15 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             mCalculatorBrain.performOperation(buttonTag);
             display.setText(mDF.format(mCalculatorBrain.getResult()));
                 if(buttonTag.equals("=")) {
-                    String temp = String.valueOf(mCalculatorBrain.getResult());
                     if(display.equals(mBitcoinField)) {
-                        long satoshi = mCoreAPI.denominationToSatoshi(temp);
-                        double defaultCurrency = mCoreAPI.SatoshiToDefaultCurrency(satoshi);
-                        mFiatField.setText(mCoreAPI.formatCurrency(defaultCurrency, false));
+                        updateTextFieldContents(true);
                     } else {
-                        double currency = Double.valueOf(mFiatField.getText().toString());
-                        long satoshi = mCoreAPI.DefaultCurrencyToSatoshi(currency);
-                        mBitcoinField.setText(mCoreAPI.formatSatoshi(satoshi, false));
+                        updateTextFieldContents(false);
                     }
                 }
         }
 
     }
-
-    public void addWalletNamesToList(){
-        CoreAPI api = CoreAPI.getApi();
-        List<Wallet> tempWallets = api.loadWallets();
-        for(Wallet wallet: tempWallets){
-            if(!wallet.isHeader() && !wallet.isArchiveHeader())
-            mWalletList.add(wallet.getName());
-        }
-    }
-
 
     public void hideCustomKeyboard() {
         ((NavigationActivity) getActivity()).hideCalculator();
