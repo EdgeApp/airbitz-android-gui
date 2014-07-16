@@ -410,15 +410,15 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 long amountSatoshi = core.longp_value(p);
 
-                if (!uriAddress.isEmpty())
+                if (uriAddress!=null)
                 {
-                    Log.i("SendFragment", "    address: "+uriAddress);
-                    Log.i("SendFragment", "    amount: "+amountSatoshi);
+                    Log.i("SendFragment", "Send address: "+uriAddress);
+                    Log.i("SendFragment", "Send amount: "+amountSatoshi);
 
                     String label = uri.getSzLabel();
-                    if (!label.isEmpty())
+                    if (label!=null && !label.isEmpty())
                     {
-                        Log.i("SendFragment", "    label: "+label);
+                        Log.i("SendFragment", "Send label: "+label);
                     }
                     else
                     {
@@ -426,7 +426,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     }
 
                     String message = uri.getSzMessage();
-                    if (!message.isEmpty())
+                    if (message!=null)
                     {
                         Log.i("SendFragment", "    message: "+message);
                     }
