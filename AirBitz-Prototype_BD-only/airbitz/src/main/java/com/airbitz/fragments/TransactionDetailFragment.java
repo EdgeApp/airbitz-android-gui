@@ -50,6 +50,7 @@ import com.airbitz.models.SearchResult;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CalculatorBrain;
+import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import org.json.JSONException;
@@ -575,7 +576,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Common.showHelpInfo(TransactionDetailFragment.this, "Info", "Business directory info");
+                Common.showHelpInfo(getActivity(), "Transaction Detail", "Transaction Detail info");
             }
         });
 
