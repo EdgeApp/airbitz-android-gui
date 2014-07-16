@@ -365,14 +365,21 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         Wallet wallet = mWallets.get(walletPosition);
-        if (btc) {
+        if (btc && !mBitcoinField.getText().toString().isEmpty()) {
             satoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
         }
-        else {
-            currency = Double.valueOf(mFiatField.getText().toString());
-            satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-            mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+        else if (!btc && !mFiatField.getText().toString().isEmpty()) {
+            try
+            {
+                currency = Double.parseDouble(mFiatField.getText().toString());
+                satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+            }
+            catch(NumberFormatException e)
+            {
+                //not a double, ignore
+            }
         }
     }
 
