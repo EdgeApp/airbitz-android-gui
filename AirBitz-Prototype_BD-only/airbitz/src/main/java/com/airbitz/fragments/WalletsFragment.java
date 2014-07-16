@@ -264,9 +264,10 @@ public class WalletsFragment extends Fragment
 
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(getActivity(), mCurrencyList);
 
-//        mAddWalletCurrencySpinner.setSelection(0);TODO tie in to settings, set current currency as default
 
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
+        int settingIndex = mCoreAPI.SettingsCurrencyIndex();
+        mAddWalletCurrencySpinner.setSelection(settingIndex);
 
         mAddWalletOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

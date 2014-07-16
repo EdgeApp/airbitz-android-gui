@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -153,7 +154,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
+        mFetchQuestionsTask = new FetchQuestionsTask();
         mFetchQuestionsTask.execute((Void) null);
     }
 
@@ -306,7 +307,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setPositiveButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                mSaveQuestionsTask = new SaveQuestionsTask(mUsername, mPassword, questions, answers);
+                                mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                                 mSaveQuestionsTask.execute((Void) null);
                             }
                         }
@@ -319,37 +320,26 @@ public class PasswordRecoveryActivity extends Activity {
      * Represents an asynchronous question fetch task
      */
     public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
+        CoreAPI.QuestionChoice[] mChoices;
 
-        private final String mUsername;
-        QuestionChoice[] mChoices;
-        tABC_Error pError = new tABC_Error();
-        QuestionResults pData = new QuestionResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
-
-        FetchQuestionsTask(String username) {
-            mUsername = username;
-        }
+        FetchQuestionsTask() { }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            mChoices = mCoreAPI.GetRecoveryQuestions();
+                if(mChoices.length > 0) {
 
-            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
-            if(result == tABC_CC.ABC_CC_Ok) {
-                QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
-                long num = qcs.getNumChoices();
-                mChoices = qcs.getChoices();
-
-                if(num>0) {
-                    for(QuestionChoice choice : mChoices) {
-                        if(choice.mCategory.equals("string")) {
+                    for(CoreAPI.QuestionChoice choice : mChoices) {
+                        String category = choice.getCategory();
+                        if(category.equals("string")) {
                             mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentStringCategory1.add(choice.getQuestion());
                             currentStringCategory2.add(choice.getQuestion());
-                        } else if(choice.mCategory.equals("numeric")) {
+                        } else if(category.equals("numeric")) {
                             mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentNumericCategory1.add(choice.getQuestion());
                             currentNumericCategory2.add(choice.getQuestion());
-                        } else if(choice.mCategory.equals("address")) {
+                        } else if(category.equals("address")) {
                             mAddressCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                             currentAddressCategory1.add(choice.getQuestion());
                             currentAddressCategory2.add(choice.getQuestion());
@@ -366,11 +356,7 @@ public class PasswordRecoveryActivity extends Activity {
                     System.err.println("No Questions");
                     return false;
                 }
-            } else {
-                System.err.println("ABC Not Ok");
-                return false;
             }
-        }
 
         @Override
         protected void onPostExecute(final Boolean success) {
@@ -395,14 +381,9 @@ public class PasswordRecoveryActivity extends Activity {
      */
     public class SaveQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername, mPassword, mQuestions, mAnswers;
-        tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+        private final String mQuestions, mAnswers;
 
-        SaveQuestionsTask(String username, String password, String questions, String answers) {
-            mUsername = username;
-            mPassword = password;
+        SaveQuestionsTask(String questions, String answers) {
             mQuestions = questions;
             mAnswers = answers;
         }
@@ -411,7 +392,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC result = core.ABC_SetAccountRecoveryQuestions(mUsername, mPassword, mQuestions, mAnswers, null, pVoid, pError);
+            tABC_CC result = mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers);
             return result == tABC_CC.ABC_CC_Ok;
         }
 
@@ -420,7 +401,7 @@ public class PasswordRecoveryActivity extends Activity {
             mSaveQuestionsTask = null;
             dummyCover.setVisibility(View.GONE);
             if (!success) {
-                ShowSaveFailAlert(pError.getSzDescription());
+                Log.d("PasswordRecoveryActivity", "Save recovery answers failed.");
             } else {
                 SuccessfulSignup();
             }
@@ -436,77 +417,6 @@ public class PasswordRecoveryActivity extends Activity {
         Intent intent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
         startActivity(intent);
         PasswordRecoveryActivity.this.finish();
-    }
-
-    //TODO The following classes should be moved to CoreAPI and a method added to get the questions
-    private class QuestionResults extends tABC_RequestResults {
-        public long getPtrPtr() {
-           QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
-           return fake.getNumChoices();
-        }
-    }
-
-    private class QuestionChoices extends tABC_QuestionChoices {
-        long mNumChoices = 0;
-        long mChoiceStart = 0;
-        QuestionChoice[] choices;
-
-        public QuestionChoices (long pv) {
-           super(pv, false);
-           if(pv!=0) {
-                mNumChoices = super.getNumChoices();
-            }
-        }
-
-        public long getNumChoices() { return mNumChoices; }
-
-        public QuestionChoice[] getChoices() {
-            choices = new QuestionChoice[(int) mNumChoices];
-            SWIGTYPE_p_p_sABC_QuestionChoice start = super.getAChoices();
-            for(int i=0; i<mNumChoices; i++) {
-                QuestionChoices fake = new QuestionChoices(PPVoid.getPtr(start, i*4));
-                mChoiceStart = fake.getNumChoices();
-                choices[i] = new QuestionChoice(new PVOID(mChoiceStart));
-            }
-            return choices;
-        }
-    }
-
-    private class QuestionChoice extends tABC_QuestionChoice {
-        String mQuestion = null;
-        String mCategory = null;
-        long mMinLength = -1;
-
-        public QuestionChoice(SWIGTYPE_p_void pv) {
-            super(PVoidStatic.getPtr(pv), false);
-            if(PVoidStatic.getPtr(pv)!=0) {
-                mQuestion = super.getSzQuestion();
-                mCategory = super.getSzCategory();
-                mMinLength = super.getMinAnswerLength();
-            }
-        }
-
-        public String getQuestion() { return mQuestion; }
-
-        public long getMinLength() { return mMinLength; }
-
-        public String getCategory() { return mCategory; }
-
-    }
-
-    private class PVOID extends SWIGTYPE_p_void {
-        public PVOID(long p) {
-            super(p, false);
-        }
-    }
-
-    private static class PVoidStatic extends SWIGTYPE_p_void {
-        public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
-    }
-
-    private static class PPVoid extends SWIGTYPE_p_p_sABC_QuestionChoice {
-        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p) { return getCPtr(p); }
-        public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p, long i) { return getCPtr(p)+i; }
     }
 
     private class QuestionView extends LinearLayout {

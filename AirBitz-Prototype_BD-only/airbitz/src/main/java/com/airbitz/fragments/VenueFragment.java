@@ -212,6 +212,7 @@ public class VenueFragment extends Fragment implements
         if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
             mGetVenuesTask.cancel(true);
         }
+        mLocationManager.removeLocationChangeListener(this);
         super.onPause();
     }
 

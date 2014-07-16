@@ -72,7 +72,6 @@ public class ForgotPasswordActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(answersCorrect(mRecoveryQA)) {
-                    //TODO Is this right when answers are correct - email password?
                    startActivity(new Intent(ForgotPasswordActivity.this, NavigationActivity.class));
                    finish();
                 }
