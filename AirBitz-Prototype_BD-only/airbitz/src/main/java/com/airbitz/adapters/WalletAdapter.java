@@ -30,7 +30,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private boolean hoverFirstHeader = false;
     private boolean hoverSecondHeader = false;
     private int nextId = 0;
-    private boolean mIsBitcoin;
+    private boolean mIsBitcoin=true;
     private CoreAPI mCoreAPI;
 
     private boolean closeAfterArchive = false;
