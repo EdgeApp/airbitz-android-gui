@@ -1,9 +1,12 @@
 package com.airbitz.api;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 import com.airbitz.AirbitzApplication;
+import com.airbitz.R;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
@@ -456,6 +459,46 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p, long i) { return getCPtr(p)+i; }
     }
 
+    //***************** Questions
+    /**
+     * Get questions
+     */
+    public QuestionChoice[] GetRecoveryQuestions() {
+
+        QuestionChoice[] mChoices = null;
+        tABC_Error pError = new tABC_Error();
+        QuestionResults pData = new QuestionResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
+
+
+        tABC_CC result = core.ABC_GetQuestionChoices(AirbitzApplication.getUsername(), null, pVoid, pError);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
+            long num = qcs.getNumChoices();
+            mChoices = qcs.getChoices();
+        }
+        return mChoices;
+    }
+
+    public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers) {
+
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pResults = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+
+        tABC_CC result = core.ABC_SetAccountRecoveryQuestions(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(),
+                mQuestions, mAnswers, null, pVoid, pError);
+        return result;
+    }
+
+    private class QuestionResults extends tABC_RequestResults {
+        public long getPtrPtr() {
+            QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
+            return fake.getNumChoices();
+        }
+    }
+
     private class QuestionChoices extends tABC_QuestionChoices {
         long mNumChoices = 0;
         long mChoiceStart = 0;
@@ -497,7 +540,7 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_QuestionChoice p, long i) { return getCPtr(p)+i; }
     }
 
-    private class QuestionChoice extends tABC_QuestionChoice {
+    public class QuestionChoice extends tABC_QuestionChoice {
         String mQuestion = null;
         String mCategory = null;
         long mMinLength = -1;
@@ -516,7 +559,6 @@ public class CoreAPI {
         public long getMinLength() { return mMinLength; }
 
         public String getCategory() { return mCategory; }
-
     }
 
 
@@ -742,11 +784,12 @@ public class CoreAPI {
 
         int count = core.intp_value(pCount);
 
+        long base = core.longp_value(lp);
         for (int i = 0; i < count; i++)
         {
-//            SWIGTYPE_p_long temp = core.new_longp(base + i * 4);
-            long start = core.longp_value(lp);
-            tABC_PasswordRule pRule = new tABC_PasswordRule(start + i*2, false);
+            pLong temp = new pLong(base + i * 4);
+            long start = core.longp_value(temp);
+            tABC_PasswordRule pRule = new tABC_PasswordRule(start, false);
             list.add(pRule);
         }
 
@@ -1455,11 +1498,13 @@ public class CoreAPI {
         }
 
         int count = core.intp_value(pCount);
-        long base = aszCategories.getCPtr(aszCategories);
 
+        long base = core.longp_value(lp);
         for (int i = 0; i < count; i++)
         {
-            categories.add(getStringAtPtr(base + i*4));
+            pLong temp = new pLong(base + i * 4);
+            long start = core.longp_value(temp);
+            categories.add(getStringAtPtr(start));
         }
 
         // store the final as sorted
