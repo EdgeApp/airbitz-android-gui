@@ -332,6 +332,11 @@ tABC_TxDetails ** longp_to_ppTxDetails(long * x) {
 }
 
 
+tABC_PasswordRule *** longp_to_pppPasswordRule(long * x) {
+   return (tABC_PasswordRule ***) x;
+}
+
+
 tABC_AccountSettings ** longp_to_ppAccountSettings(long * x) {
    return (tABC_AccountSettings **) x;
 }
@@ -339,6 +344,11 @@ tABC_AccountSettings ** longp_to_ppAccountSettings(long * x) {
 
 char ** longp_to_ppChar(long * x) {
    return (char **) x;
+}
+
+
+char *** longp_to_pppChar(long * x) {
+   return (char ***) x;
 }
 
 
@@ -7094,6 +7104,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppTxDetails(JNI
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1pppPasswordRule(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  tABC_PasswordRule ***result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (tABC_PasswordRule ***)longp_to_pppPasswordRule(arg1);
+  *(tABC_PasswordRule ****)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppAccountSettings(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jlong jresult = 0 ;
   long *arg1 = (long *) 0 ;
@@ -7118,6 +7142,20 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1ppChar(JNIEnv *
   arg1 = *(long **)&jarg1; 
   result = (char **)longp_to_ppChar(arg1);
   *(char ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_longp_1to_1pppChar(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  long *arg1 = (long *) 0 ;
+  char ***result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(long **)&jarg1; 
+  result = (char ***)longp_to_pppChar(arg1);
+  *(char ****)&jresult = result; 
   return jresult;
 }
 

@@ -217,9 +217,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mSearchListView.setAdapter(mSearchAdapter);
 
         mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
-        mCategories = new ArrayList<String>();//TODO put different string order depending upon type of transaction
-        for(String cat :getActivity().getResources().getStringArray(R.array.transaction_categories_list)){
-            mCategories.add(cat);
+
+        mCategories = mCoreAPI.loadCategories();//TODO put different string order depending upon type of transaction
+        if(mCategories.size()==0) {
+            for(String cat :getActivity().getResources().getStringArray(R.array.transaction_categories_list)){
+                mCategories.add(cat);
+            }
         }
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(),mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
@@ -579,7 +582,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCategories.add(0,mCategoryEdittext.getText().toString());
+                mCoreAPI.addCategory(mCategoryEdittext.getText().toString(), mCategories);
                 getActivity().onBackPressed();
             }
         });

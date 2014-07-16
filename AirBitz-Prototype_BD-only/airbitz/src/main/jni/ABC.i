@@ -31,8 +31,10 @@
 %pointer_cast(long *, tABC_TxInfo **, longp_to_ppTxInfo);
 %pointer_cast(long *, tABC_Currency **, longp_to_ppCurrency);
 %pointer_cast(long *, tABC_TxDetails **, longp_to_ppTxDetails);
+%pointer_cast(long *, tABC_PasswordRule ***, longp_to_pppPasswordRule);
 %pointer_cast(long *, tABC_AccountSettings **, longp_to_ppAccountSettings);
 %pointer_cast(long *, char **, longp_to_ppChar);
+%pointer_cast(long *, char ***, longp_to_pppChar);
 %pointer_cast(long *, unsigned char **, longp_to_unsigned_ppChar);
 %pointer_cast(char **, long *, charpp_to_longp);
 %pointer_cast(long *, tABC_BitcoinURIInfo **, longPtr_to_ppBitcoinURIInfo);
