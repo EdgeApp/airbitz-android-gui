@@ -419,8 +419,6 @@ public class PasswordRecoveryActivity extends Activity {
         PasswordRecoveryActivity.this.finish();
     }
 
-    //TODO The following classes should be moved to CoreAPI and a method added to get the questions
-
     private class QuestionView extends LinearLayout {
         Context mContext;
         private String mType;
