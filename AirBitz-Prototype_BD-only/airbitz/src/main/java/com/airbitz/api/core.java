@@ -423,6 +423,11 @@ public class core implements coreConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_TxDetails(cPtr, false);
   }
 
+  public static SWIGTYPE_p_p_p_sABC_PasswordRule longp_to_pppPasswordRule(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pppPasswordRule(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_PasswordRule(cPtr, false);
+  }
+
   public static SWIGTYPE_p_p_sABC_AccountSettings longp_to_ppAccountSettings(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_ppAccountSettings(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_AccountSettings(cPtr, false);
@@ -431,6 +436,11 @@ public class core implements coreConstants {
   public static SWIGTYPE_p_p_char longp_to_ppChar(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longp_to_ppChar(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_char(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_p_p_char longp_to_pppChar(SWIGTYPE_p_long x) {
+    long cPtr = coreJNI.longp_to_pppChar(SWIGTYPE_p_long.getCPtr(x));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_char(cPtr, false);
   }
 
   public static SWIGTYPE_p_p_unsigned_char longp_to_unsigned_ppChar(SWIGTYPE_p_long x) {
