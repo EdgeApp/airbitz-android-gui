@@ -54,5 +54,10 @@
     <dimen name="fragment_wallet_addwallet_height">135.45dp</dimen>
 
     <dimen name="currency_switch_height">37.8dp</dimen>
+    <dimen name="header_height">44.1dp</dimen>
+    <dimen name="fragment_wallet_search_layout_height">44.1dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_height">138.6dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_bottom">119.7dp</dimen>
 
     </resources>
