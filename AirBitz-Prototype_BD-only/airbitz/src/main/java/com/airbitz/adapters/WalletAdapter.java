@@ -64,11 +64,11 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
 
     public void addWallet(Wallet wallet){
-        if(mArchivedIdMap.containsKey(wallet.getName())){
-            mIdMap.put(wallet.getName(),mArchivedIdMap.get(wallet));
-            mArchivedIdMap.remove(wallet.getName());
+        if(mArchivedIdMap.containsKey(wallet.getUUID())){
+            mIdMap.put(wallet.getUUID(),mArchivedIdMap.get(wallet));
+            mArchivedIdMap.remove(wallet.getUUID());
         }else {
-            mIdMap.put(wallet.getName(), nextId);
+            mIdMap.put(wallet.getUUID(), nextId);
             nextId++;
         }
         //mWalletList.add(wallet);
@@ -80,8 +80,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
                 archivePos = i;
             }
-            if(!mIdMap.containsKey(mWalletList.get(i).getName())){
-                mIdMap.put(mWalletList.get(i).getName(), nextId);
+            if(!mIdMap.containsKey(mWalletList.get(i).getUUID())){
+                mIdMap.put(mWalletList.get(i).getUUID(), nextId);
                 nextId++;
             }
         }
@@ -97,8 +97,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
 
     public void removeWallet(Wallet wallet){
-        mArchivedIdMap.put(wallet.getName(),mIdMap.get(wallet));
-        mIdMap.remove(wallet.getName());
+        mArchivedIdMap.put(wallet.getUUID(),mIdMap.get(wallet.getUUID()));
+        mIdMap.remove(wallet.getUUID());
     }
 
     public void switchCloseAfterArchive(int pos){
@@ -202,7 +202,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             return INVALID_ID;
         }
         Wallet item = mWalletList.get(position);
-        return mIdMap.get(item.getName());
+        return mIdMap.get(item.getUUID());
     }
 
     @Override

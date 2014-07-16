@@ -338,7 +338,7 @@ public class WalletsFragment extends Fragment
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
-                    showWalletFragment(a.getList().get(i).getName());
+                    showWalletFragment(a.getList().get(i).getUUID());
                 }else if(wallet.isArchiveHeader()){
                     int pos = a.getPosition(wallet);
                     a.switchCloseAfterArchive(pos);
@@ -411,10 +411,10 @@ public class WalletsFragment extends Fragment
         mLatestWalletAdapter.notifyDataSetChanged();
     }
 
-    private void showWalletFragment(String name) {
+    private void showWalletFragment(String uUID) {
         Bundle bundle = new Bundle();
         bundle.putString(FROM_SOURCE, "");
-        Wallet w = mCoreAPI.getWalletFromName(name);
+        Wallet w = mCoreAPI.getWallet(uUID);
         bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);

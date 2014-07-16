@@ -87,7 +87,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private View dummyFocus;
 
     private Spinner walletSpinner;
-    private List<String> mWalletList;
+    private List<String> mWalletList;//NAMES
+    private List<Wallet> mWallets;//Actual wallets
     private String mSpinnerWalletName;
     private List<String> mCurrentListing;
 
@@ -503,6 +504,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         for(Wallet wallet: tempWallets){
             if(!wallet.isHeader() && !wallet.isArchiveHeader())
                 mWalletList.add(wallet.getName());
+                mWallets.add(wallet);
         }
     }
 
