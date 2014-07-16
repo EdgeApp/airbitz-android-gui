@@ -208,12 +208,7 @@
     <!-- Errors -->
     <string name="error_invalid_recovery_title">Sign Up Failed</string>
     <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
-    <string name="error_invalid_password_details_start">Your password…</string>
-    <string name="error_invalid_password_details_upper">\nMust have at least one upper case letter.</string>
-    <string name="error_invalid_password_details_lower">\nMust have at least one lower case letter.</string>
-    <string name="error_invalid_password_details_number">\nMust have at least one number.</string>
-    <string name="error_invalid_password_details_special">\nMust have at least one special character.</string>
-    <string name="error_invalid_password_details_length">\nMust have at least 10 characters.</string>
+    <string name="error_invalid_password_details_start">Your password is not strong enough.</string>
     <string name="error_invalid_confirmation_details">Passwords do not match</string>
     <string name="error_invalid_pin_details">Withdrawal PIN must be 4  digits</string>
     <string name="error_field_required">This field is required</string>

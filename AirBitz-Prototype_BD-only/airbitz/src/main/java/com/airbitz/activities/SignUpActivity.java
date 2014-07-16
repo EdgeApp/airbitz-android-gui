@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,20 +29,12 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_double;
-import com.airbitz.api.SWIGTYPE_p_int;
-import com.airbitz.api.SWIGTYPE_p_long;
-import com.airbitz.api.SWIGTYPE_p_p_p_sABC_PasswordRule;
-import com.airbitz.api.SWIGTYPE_p_p_sABC_PasswordRule;
-import com.airbitz.api.SWIGTYPE_p_p_sABC_TxDetails;
-import com.airbitz.api.SWIGTYPE_p_unsigned_int;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.models.Transaction;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -61,6 +52,7 @@ public class SignUpActivity extends Activity {
     private EditText mPasswordEditText;
     private EditText mPasswordConfirmationEditText;
     private EditText mWithdrawalPinEditText;
+    private boolean mGoodPassword = false;
 
     private LinearLayout mPopupContainer;
     private ImageView mSwitchImage1;
@@ -68,6 +60,12 @@ public class SignUpActivity extends Activity {
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
     private ImageView mSwitchImage5;
+    private TextView mQuestion1;
+    private TextView mQuestion2;
+    private TextView mQuestion3;
+    private TextView mQuestion4;
+    private TextView mQuestion5;
+    private TextView mTimeTextView;
 
     private View mUserNameRedRingCover;
     private View mPinRedRingCover;
@@ -128,18 +126,13 @@ public class SignUpActivity extends Activity {
         mSwitchImage3 = (ImageView) findViewById(R.id.activity_signup_switch_image_3);
         mSwitchImage4 = (ImageView) findViewById(R.id.activity_signup_switch_image_4);
         mSwitchImage5 = (ImageView) findViewById(R.id.activity_signup_switch_image_5);
+        mQuestion1 = (TextView) findViewById(R.id.activity_signup_switch_text_1);
+        mQuestion2 = (TextView) findViewById(R.id.activity_signup_switch_text_2);
+        mQuestion3 = (TextView) findViewById(R.id.activity_signup_switch_text_3);
+        mQuestion4 = (TextView) findViewById(R.id.activity_signup_switch_text_4);
+        mQuestion5 = (TextView) findViewById(R.id.activity_signup_switch_text_5);
 
-        TextView mSwitchTextView1 = (TextView) findViewById(R.id.activity_signup_switch_text_1);
-        mSwitchTextView1.setTypeface(NavigationActivity.latoRegularTypeFace);
-        TextView mSwitchTextView2 = (TextView) findViewById(R.id.activity_signup_switch_text_2);
-        mSwitchTextView2.setTypeface(NavigationActivity.latoRegularTypeFace);
-        TextView mSwitchTextView3 = (TextView) findViewById(R.id.activity_signup_switch_text_3);
-        mSwitchTextView3.setTypeface(NavigationActivity.latoRegularTypeFace);
-        TextView mSwitchTextView4 = (TextView) findViewById(R.id.activity_signup_switch_text_4);
-        mSwitchTextView4.setTypeface(NavigationActivity.latoRegularTypeFace);
-        TextView mSwitchTextView5 = (TextView) findViewById(R.id.activity_signup_switch_text_5);
-        mSwitchTextView5.setTypeface(NavigationActivity.latoRegularTypeFace);
-        TextView mTimeTextView = (TextView) findViewById(R.id.activity_signup_time_textview);
+        mTimeTextView = (TextView) findViewById(R.id.activity_signup_time_textview);
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) findViewById(R.id.activity_signup_popup_layout);
@@ -196,34 +189,34 @@ public class SignUpActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 String password = mPasswordEditText.getText().toString();
 
-//                checkPasswordRules();
+                mGoodPassword = checkPasswordRules(password);
 
-                //TODO connect to core
-                if(password.length() >= 10){
-                    mSwitchImage5.setImageResource(R.drawable.green_check);
-                }else{
-                    mSwitchImage5.setImageResource(R.drawable.red_x);
-                }
-                if(password.matches(".*[A-Z].*")){
-                    mSwitchImage1.setImageResource(R.drawable.green_check);
-                }else{
-                    mSwitchImage1.setImageResource(R.drawable.red_x);
-                }
-                if(password.matches(".*[a-z].*")){
-                    mSwitchImage2.setImageResource(R.drawable.green_check);
-                }else{
-                    mSwitchImage2.setImageResource(R.drawable.red_x);
-                }
-                if(password.matches(".*\\d.*")){
-                    mSwitchImage3.setImageResource(R.drawable.green_check);
-                }else{
-                    mSwitchImage3.setImageResource(R.drawable.red_x);
-                }
-                if(password.matches(passwordPattern)){
-                    mSwitchImage4.setImageResource(R.drawable.green_check);
-                }else{
-                    mSwitchImage4.setImageResource(R.drawable.red_x);
-                }
+//                //TODO connect to core
+//                if(password.length() >= 10){
+//                    mSwitchImage5.setImageResource(R.drawable.green_check);
+//                }else{
+//                    mSwitchImage5.setImageResource(R.drawable.red_x);
+//                }
+//                if(password.matches(".*[A-Z].*")){
+//                    mSwitchImage1.setImageResource(R.drawable.green_check);
+//                }else{
+//                    mSwitchImage1.setImageResource(R.drawable.red_x);
+//                }
+//                if(password.matches(".*[a-z].*")){
+//                    mSwitchImage2.setImageResource(R.drawable.green_check);
+//                }else{
+//                    mSwitchImage2.setImageResource(R.drawable.red_x);
+//                }
+//                if(password.matches(".*\\d.*")){
+//                    mSwitchImage3.setImageResource(R.drawable.green_check);
+//                }else{
+//                    mSwitchImage3.setImageResource(R.drawable.red_x);
+//                }
+//                if(password.matches(passwordPattern)){
+//                    mSwitchImage4.setImageResource(R.drawable.green_check);
+//                }else{
+//                    mSwitchImage4.setImageResource(R.drawable.red_x);
+//                }
             }
 
             @Override
@@ -284,8 +277,8 @@ public class SignUpActivity extends Activity {
     // returns YES if new password fields are good, NO if the new password fields failed the checks
     // if the new password fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
-    private boolean checkPasswordRules() {
-        List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(mPasswordEditText.getText().toString());
+    private boolean checkPasswordRules(String password) {
+        List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
 
         if(rules.isEmpty()) {
             return false;
@@ -294,22 +287,75 @@ public class SignUpActivity extends Activity {
         boolean bNewPasswordFieldsAreValid = true;
         for (int i = 0; i < rules.size(); i++)
         {
-            String message = "";
             tABC_PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
             String description = pRule.getSzDescription();
             if (!passed)
             {
                 bNewPasswordFieldsAreValid = false;
-                message += description;
+            }
+            //TODO variable length list of items instead of fixed # of items
+            int resource = passed ? R.drawable.green_check : R.drawable.red_x;
+            mQuestion1.setText(description);
+            switch(i) {
+                case 0:
+                    mSwitchImage1.setImageResource(resource);
+                    break;
+                case 1:
+                    mSwitchImage2.setImageResource(resource);
+                    break;
+                case 2:
+                    mSwitchImage3.setImageResource(resource);
+                    break;
+                case 3:
+                    mSwitchImage4.setImageResource(resource);
+                    break;
+                case 4:
+                    mSwitchImage5.setImageResource(resource);
+                    break;
+                default:
+                    break;
             }
         }
-
-        if (bNewPasswordFieldsAreValid == false)
-        {
-            showErrorDialog("Insufficient Password");
-        }
+        mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
         return bNewPasswordFieldsAreValid;
+    }
+
+    private String GetCrackString(double secondsToCrack) {
+        String crackString = "Time to crack: ";
+        if(secondsToCrack < 60.0)
+        {
+            crackString += String.format("%.2f seconds", secondsToCrack);
+        }
+        else if(secondsToCrack < 3600)
+        {
+            crackString += String.format("%.2f minutes", secondsToCrack / 60.0);
+        }
+        else if(secondsToCrack < 86400)
+        {
+            crackString += String.format("%.2f hours", secondsToCrack / 3600.0);
+        }
+        else if(secondsToCrack < 604800)
+        {
+            crackString += String.format("%.2f days", secondsToCrack / 86400.0);
+        }
+        else if(secondsToCrack < 604800)
+        {
+            crackString += String.format("%.2f days", secondsToCrack / 86400.0);
+        }
+        else if(secondsToCrack < 2419200)
+        {
+            crackString += String.format("%.2f weeks", secondsToCrack / 604800.0);
+        }
+        else if(secondsToCrack < 29030400)
+        {
+            crackString += String.format("%.2f months", secondsToCrack / 2419200.0);
+        }
+        else
+        {
+            crackString += String.format("%.2f years", secondsToCrack / 29030400.0);
+        }
+        return crackString;
     }
 
     /**
@@ -452,23 +498,8 @@ public class SignUpActivity extends Activity {
         }
 
         // Check for a valid password.
-        else if (!goodPassword(password)) {
+        else if (!mGoodPassword) {
             String message = getString(R.string.error_invalid_password_details_start);
-            if(!password.matches(".*[A-Z].*")){
-                message+=getString(R.string.error_invalid_password_details_upper);
-            }
-            if(!password.matches(".*[a-z].*")){
-                message+=getString(R.string.error_invalid_password_details_lower);
-            }
-            if(!password.matches(".*\\d.*")){
-                message+=getString(R.string.error_invalid_password_details_number);
-            }
-            if(!password.matches(passwordPattern)){
-                message+=getString(R.string.error_invalid_password_details_special);
-            }
-            if(password.length() < 10){
-                message+=getString(R.string.error_invalid_password_details_length);
-            }
             showErrorDialog(message);
             cancel = true;
         }
