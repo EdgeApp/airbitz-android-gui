@@ -23,7 +23,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private Context mContext;
     private boolean mSearch;
-    private boolean mIsBitcoin;
+    private boolean mIsBitcoin = true;
     private int mCurrencyNum;
     private CoreAPI mCoreAPI;
 
@@ -73,25 +73,59 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         nameTextView.setText(transaction.getName());
         long transactionSatoshis = transaction.getAmountSatoshi();
         long transactionFees = transaction.getMinerFees() + transaction.getABFees();
-        if(mIsBitcoin) {
-            String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
-            String feeCurrency = mCoreAPI.FormatDefaultCurrency(transactionFees, true, false);
+        if(mSearch){
+            String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
+            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+btcCurrency);
+            String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
+            debitAmountTextView.setText(fiatCurrency);
+            if(transactionSatoshis >= 0){
+                debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            }else{
+                debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+            }
+        }else {
+            if(transactionSatoshis >= 0){
+                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            }else{
+                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+            }
+            if (mIsBitcoin) {
+                String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
+                long totalSatoshisSoFar = 0;
+                for(int i = position; i < mListTransaction.size();i++){
+                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
+                }
+                String totalCurrency = mCoreAPI.FormatDefaultCurrency(totalSatoshisSoFar, true, false);
 
-            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+walletCurrency);
-            debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+feeCurrency);
-        } else {
-            String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
-            String feeCurrency = mCoreAPI.FormatCurrency(transactionFees, wallet.getCurrencyNum(), false, true);
+                creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + walletCurrency);
+                debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + totalCurrency);
+            } else {
+                String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
+                long totalSatoshisSoFar = 0;
+                for(int i = position; i < mListTransaction.size();i++){
+                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
+                }
+                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar,wallet.getCurrencyNum(), true, false);
 
-            creditAmountTextView.setText(walletCurrency);
-            debitAmountTextView.setText(feeCurrency);
+                creditAmountTextView.setText(walletCurrency);
+                debitAmountTextView.setText(totalCurrency);
+            }
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");
-            confirmationsTextView.setText("None");
+            confirmationsTextView.setText(transaction.getCategory());
         }else {
-//            debitAmountTextView.setText("Debit amount"+mContext.getResources().getString(R.string.no_break_space_character));
-            confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
+            confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            if(transaction.getConfirmations() == 0){
+                confirmationsTextView.setText("Unconfirmed");
+                confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+            }else if(transaction.getConfirmations() >= 6){
+                confirmationsTextView.setText("Confirmed");
+            }else{
+                confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
+            }
         }
         dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
         nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
