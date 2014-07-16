@@ -1498,11 +1498,13 @@ public class CoreAPI {
         }
 
         int count = core.intp_value(pCount);
-        long base = aszCategories.getCPtr(aszCategories);
 
+        long base = core.longp_value(lp);
         for (int i = 0; i < count; i++)
         {
-            categories.add(getStringAtPtr(base + i*4));
+            pLong temp = new pLong(base + i * 4);
+            long start = core.longp_value(temp);
+            categories.add(getStringAtPtr(start));
         }
 
         // store the final as sorted
