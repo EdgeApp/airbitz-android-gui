@@ -784,11 +784,12 @@ public class CoreAPI {
 
         int count = core.intp_value(pCount);
 
+        long base = core.longp_value(lp);
         for (int i = 0; i < count; i++)
         {
-//            SWIGTYPE_p_long temp = core.new_longp(base + i * 4);
-            long start = core.longp_value(lp);
-            tABC_PasswordRule pRule = new tABC_PasswordRule(start + i*2, false);
+            pLong temp = new pLong(base + i * 4);
+            long start = core.longp_value(temp);
+            tABC_PasswordRule pRule = new tABC_PasswordRule(start, false);
             list.add(pRule);
         }
 
