@@ -41,6 +41,7 @@ import com.airbitz.utils.ListViewUtility;
 import com.google.android.gms.common.images.ImageManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -499,8 +500,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//todo
             mMoverType.setText(mBottomType.getText());
         }
-        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
+        mBottomType.setText(Arrays.asList(mCoreAPI.getCurrencyAcronyms()).get(mWallet.getCurrencyNum()));
         mTopType.setText(mCoreAPI.getUserBTCDenomination());
     }
 

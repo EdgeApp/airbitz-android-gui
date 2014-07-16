@@ -107,7 +107,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 for(int i = position; i < mListTransaction.size();i++){
                     totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
                 }
-                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar,wallet.getCurrencyNum(), true, false);
+                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar,wallet.getCurrencyNum(), false, true);
 
                 creditAmountTextView.setText(walletCurrency);
                 debitAmountTextView.setText(totalCurrency);
