@@ -116,6 +116,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mWalletList = new ArrayList<String>();
+        mWallets = new ArrayList<Wallet>();
         addWalletNamesToList();
 
         mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
@@ -218,11 +219,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
                     boolean bIsUUID = false;
                     String strTo = mToEdittext.getText().toString();
-                    if(mCurrentListing.contains(strTo))
-                    {
-                        bIsUUID = true;
-                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
-                    }
+
+                    //disabled for now - user must select wallet from list, not type a name and hit return
+//                    if(mCurrentListing.contains(strTo))
+//                    {
+//                        bIsUUID = true;
+//                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
+//                    }
                     GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     return true;
                 }
@@ -268,7 +271,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
-                Wallet w = mCoreAPI.getWalletFromName(mCurrentListing.get(i));
+                Wallet w = mCoreAPI.getWallet(mCurrentListing.get(i));
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
         });
