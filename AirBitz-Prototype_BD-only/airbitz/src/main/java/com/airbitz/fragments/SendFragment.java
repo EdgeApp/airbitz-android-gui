@@ -1,12 +1,19 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +49,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
@@ -95,8 +103,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private ArrayAdapter<String> listingAdapter;
 
     private int BACK_CAMERA_INDEX = 0;
-
-//    private ScrollView mScrollView;
 
     private boolean mFlashOn = false;
 
@@ -166,6 +172,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mQRCodeTextView.getPaint().setShader(textShader);
+
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PickAPicture();
+            }
+        });
 
         mFlashOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,6 +388,67 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 Log.d("SendFragment", "QR result is good");
             } else {
                 Log.d("SendFragment", "QR result is bad");
+            }
+        }
+    }
+
+    private static int RESULT_LOAD_IMAGE = 678;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+
+            AttemptDecodePicture(thumbnail);
+        }
+    }
+
+    // Select a picture from the Gallery
+    private void PickAPicture() {
+        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(in, RESULT_LOAD_IMAGE);
+    }
+
+    private void AttemptDecodePicture(Bitmap thumbnail) {
+        if(thumbnail==null) {
+            Log.d("SendFragment", "No picture selected");
+        } else {
+            Log.d("SendFragment", "Picture selected");
+            Result rawResult = null;
+            Reader reader = new QRCodeReader();
+            int w = thumbnail.getWidth();
+            int h = thumbnail.getHeight();
+            int[] pixels = new int[w*h];
+            thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
+            RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
+            if (source != null) {
+                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+                try {
+                    rawResult = reader.decode(bitmap);
+                } catch (ReaderException re) {
+                    // nothing to do here
+                } finally {
+                    reader.reset();
+                }
+            }
+            if(rawResult!=null) {
+                if(CheckQRResults(rawResult.getText())) {
+                    Log.d("SendFragment", "QR result is good");
+                } else {
+                    Log.d("SendFragment", "QR result is bad");
+                }
+            } else {
+                Log.d("Send Fragment", "No QR code found");
             }
         }
     }
