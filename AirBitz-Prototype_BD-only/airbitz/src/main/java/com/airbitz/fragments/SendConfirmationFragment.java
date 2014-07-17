@@ -380,11 +380,15 @@ public class SendConfirmationFragment extends Fragment {
             mDollarValueField.setText(out);
        }
         else {
-            currency = Double.valueOf(mDollarValueField.getText().toString());
-            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
-            mAmountToSendSatoshi = satoshi;
-            int currencyDecimalPlaces = 2; //TODO where does this come from?
-            mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+            try
+            {
+                currency = Double.valueOf(mDollarValueField.getText().toString());
+                satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
+                mAmountToSendSatoshi = satoshi;
+                int currencyDecimalPlaces = 2; //TODO where does this come from?
+                mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+            }
+            catch(NumberFormatException e) {  } //not a double, ignore
         }
         updateFeeFieldContents();
     }
@@ -404,9 +408,11 @@ public class SendConfirmationFragment extends Fragment {
     {
         String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
         long fees = mCoreAPI.calcSendFees(mToWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
-        if (fees != -1)
+        if(fees==-1) {
+            Log.d("SendConfirmationFragment", "Fee calculation error");
+        }
+        else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
-            double currencyFees = 0.0;
             mConversionTextView.setTextColor(Color.WHITE);
             mBitcoinValueField.setTextColor(Color.WHITE);
             mDollarValueField.setTextColor(Color.WHITE);
@@ -422,8 +428,7 @@ public class SendConfirmationFragment extends Fragment {
         }
         else
         {
-            String message = getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds);
-            if(mConversionTextView!=null) mConversionTextView.setText(message);
+            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinValueField.setTextColor(Color.RED);
             mDollarValueField.setTextColor(Color.RED);
