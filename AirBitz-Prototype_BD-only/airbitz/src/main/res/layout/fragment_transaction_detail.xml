@@ -57,7 +57,7 @@
             <TextView
                 android:id="@+id/transaction_detail_textview_date"
                 android:layout_width="match_parent"
-                android:layout_height="22.05dp"
+                android:layout_height="31.5dp"
                 android:layout_alignParentTop="true"
                 android:text="November 13, 2013 04:56 PM"
                 android:gravity="center"
@@ -74,7 +74,7 @@
                 <EditText
                     android:id="@+id/transaction_detail_edittext_name"
                     android:layout_width="match_parent"
-                    android:layout_height="28.35dp"
+                    android:layout_height="31.5dp"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
                     android:textSize="14dp"
@@ -107,8 +107,8 @@
                 android:id="@+id/transaction_detail_button_advanced"
                 android:layout_width="132.3dp"
                 android:layout_height="25.2dp"
-                android:layout_marginTop="6.3dp"
-                android:layout_marginBottom="6.3dp"
+                android:layout_marginTop="15.75dp"
+                android:layout_marginBottom="15.75dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/transaction_detail_layout_name"
                 android:text="@string/transaction_details_advanced_title"
@@ -122,7 +122,7 @@
             <RelativeLayout
                 android:id="@+id/layout_sent_detail"
                 android:layout_width="match_parent"
-                android:layout_height="88.2dp"
+                android:layout_height="113.4dp"
                 android:background="@drawable/emboss_down"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
@@ -131,7 +131,7 @@
                 <LinearLayout
                     android:id="@+id/transaction_detail_layout_sent_from"
                     android:layout_width="match_parent"
-                    android:layout_height="25.2dp"
+                    android:layout_height="44.1dp"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:weightSum="2">
@@ -272,9 +272,25 @@
                 android:layout_below="@id/layout_sent_detail"
                 android:gravity="center_horizontal">
 
+                <TextView
+                    android:id="@+id/transaction_detail_textview_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="25.2dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/transaction_details_category_title"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:textColor="@android:color/white"
+                    android:layout_marginLeft="18.9dp"
+                    android:layout_marginRight="18.9dp"
+                    android:textSize="12dp"/>
+
+
                 <EditText
                     android:id="@+id/transaction_detail_edittext_category"
-                    android:layout_marginTop="6.3dp"
+                    android:layout_below="@+id/transaction_detail_textview_category"
                     android:layout_width="match_parent"
                     android:layout_height="31.5dp"
                     android:layout_alignParentLeft="true"
@@ -282,26 +298,42 @@
                     android:layout_marginLeft="18.9dp"
                     android:layout_marginRight="18.9dp"
                     android:gravity="center_vertical"
-                    android:hint="Category"
+                    android:hint=""
                     android:imeOptions="actionDone"
                     android:textSize="11dp"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
-                    android:textColorHint="#99DDDDDD"
+                    android:textColorHint="@android:color/white"
                     android:inputType="textVisiblePassword|textNoSuggestions"
                     android:paddingLeft="6.3dp"/>
+
+
+                <TextView
+                    android:id="@+id/transaction_detail_textview_notes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/transaction_detail_edittext_category"
+                    android:text="@string/transaction_details_notes_title"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:layout_marginLeft="18.9dp"
+                    android:paddingBottom="6.3dp"
+                    android:paddingTop="6.3dp"
+                    android:textSize="12dp"/>
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_notes"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:layout_below="@id/transaction_detail_edittext_category"
+                    android:layout_below="@id/transaction_detail_textview_notes"
                     android:textSize="11dp"
                     android:gravity="left"
-                    android:hint="Notes"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textColorHint="#99DDDDDD"
+                    android:textColorHint="@android:color/white"
                     android:inputType="textVisiblePassword|textNoSuggestions"
                     android:imeOptions="actionDone"
                     android:selectAllOnFocus="true"
@@ -311,7 +343,6 @@
                     android:paddingTop="6.3dp"
                     android:layout_marginLeft="18.9dp"
                     android:layout_marginRight="18.9dp"
-                    android:layout_marginTop="6.3dp"
                     android:lines="2"
                     android:background="@drawable/bg_textfield"/>
 
@@ -321,7 +352,7 @@
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
                     android:text="@string/string_done"
-                    android:layout_marginTop="6.3dp"
+                    android:layout_marginTop="12.6dp"
                     android:layout_marginBottom="6.3dp"
                     android:textStyle="bold"
                     android:textSize="15sp"
@@ -347,10 +378,10 @@
             <View
                 android:layout_alignTop="@id/transaction_detail_layout_note"
                 android:id="@+id/fragment_transactiondetail_listview_triangle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="41.7dp"
+                android:layout_marginTop="31.7dp"
                 android:background="@drawable/blue_triangle"
                 android:visibility="gone"/>
 
