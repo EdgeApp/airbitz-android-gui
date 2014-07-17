@@ -2,23 +2,23 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="6mm">
+    android:layout_height="37.8dp">
 
     <ImageView
         android:id="@+id/transaction_detail_item_imageview"
-        android:layout_width="6mm"
-        android:layout_height="6mm" />
+        android:layout_width="37.8dp"
+        android:layout_height="37.8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="6mm"
+        android:layout_height="37.8dp"
         android:orientation="vertical"
         android:background="#addff1"
-        android:paddingLeft="2mm">
+        android:paddingLeft="12.6dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="3.5mm"
+            android:layout_height="22.05dp"
             android:text="Name"
             android:textSize="14dp"
             android:gravity="center_vertical"
@@ -26,7 +26,7 @@
             android:textColor="#000000" />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="2mm"
+            android:layout_height="12.6dp"
             android:text="Address"
             android:textSize="11dp"
             android:singleLine="true"

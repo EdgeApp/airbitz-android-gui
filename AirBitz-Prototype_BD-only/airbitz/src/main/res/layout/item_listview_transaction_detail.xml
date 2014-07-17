@@ -2,12 +2,12 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="6mm"
+    android:layout_height="37.8dp"
     android:id="@+id/transaction_detail_item_name"
-    android:background="#addff1"
+    android:background="@android:color/transparent"
     android:gravity="center_vertical"
     android:textSize="14dp"
-    android:paddingLeft="8mm"
+    android:paddingLeft="18.9dp"
     android:textColor="#000000">
 
 </TextView>

@@ -501,7 +501,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             mMoverType.setText(mBottomType.getText());
         }
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
-        mBottomType.setText(Arrays.asList(mCoreAPI.getCurrencyAcronyms()).get(mWallet.getCurrencyNum()));
+        mBottomType.setText(Arrays.asList(mCoreAPI.getCurrencyAcronyms()).get(mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())));
         mTopType.setText(mCoreAPI.getUserBTCDenomination());
     }
 
