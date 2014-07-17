@@ -215,5 +215,7 @@
     <string name="error_invalid_pin_details">Withdrawal PIN must be 4  digits</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_credentials">Invalid User Name or Password</string>
+    <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
+    <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
 
 </resources>
