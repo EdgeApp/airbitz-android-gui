@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -100,6 +99,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public final static int CodeTrig = 55012;
 
     private CoreAPI mCoreAPI;
+    int mFromIndex =0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,12 +121,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         if(bundle!=null && bundle.getString(FROM_UUID)!=null) {
             uuid = bundle.getString(FROM_UUID);
         }
-
-        int fromIndex=0;
         for(int i=0; i<mWallets.size(); i++) {
             mWalletNames.add(mWallets.get(i).getName());
-            if(uuid!=null && mWallets.get(i).getUUID()==uuid)
-                fromIndex = i;
+            if(mWallets.get(i).getUUID().equals(uuid))
+                mFromIndex = i;
         }
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
@@ -165,7 +163,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
         final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletNames);
         pickWalletSpinner.setAdapter(dataAdapter);
-        pickWalletSpinner.setSelection(fromIndex);
+        pickWalletSpinner.post(new Runnable() {
+            @Override
+            public void run() {
+                pickWalletSpinner.setSelection(mFromIndex);
+            }
+        });
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
