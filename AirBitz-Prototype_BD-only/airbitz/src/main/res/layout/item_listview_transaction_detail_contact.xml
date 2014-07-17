@@ -2,12 +2,12 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="6mm">
+    android:layout_height="37.8dp">
 
     <ImageView
         android:id="@+id/transaction_detail_item_imageview"
-        android:layout_width="6mm"
-        android:layout_height="6mm" />
+        android:layout_width="37.8dp"
+        android:layout_height="37.8dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -18,6 +18,6 @@
         android:id="@+id/transaction_detail_item_name"
         android:textColor="#000000"
         android:background="#addff1"
-        android:paddingLeft="2mm"/>
+        android:paddingLeft="12.6dp"/>
 
 </LinearLayout>
