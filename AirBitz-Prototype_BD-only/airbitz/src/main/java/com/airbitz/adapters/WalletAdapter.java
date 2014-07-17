@@ -45,7 +45,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         mContext = context;
         mWalletList = walletList;
         for(Wallet wallet: mWalletList){
-            if(wallet.getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+            if(wallet.getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
                 archivePos = mWalletList.indexOf(wallet);
             }
             addWallet(wallet);
@@ -65,7 +65,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void addWallet(Wallet wallet){
         if(mArchivedIdMap.containsKey(wallet.getUUID())){
-            mIdMap.put(wallet.getUUID(),mArchivedIdMap.get(wallet));
+            mIdMap.put(wallet.getUUID(),mArchivedIdMap.get(wallet.getUUID()));
             mArchivedIdMap.remove(wallet.getUUID());
         }else {
             mIdMap.put(wallet.getUUID(), nextId);
@@ -77,7 +77,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void swapWallets() {
         archivePos++;
         for (int i = 0; i < mWalletList.size(); ++i) {
-            if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+            if(mWalletList.get(i).getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
                 archivePos = i;
             }
             if(!mIdMap.containsKey(mWalletList.get(i).getUUID())){
@@ -89,7 +89,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void updateArchive(){
         for (int i = 0; i < mWalletList.size(); ++i) {
-            if(mWalletList.get(i).getName() == "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd"){
+            if(mWalletList.get(i).getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
                 archivePos = i;
             }
         }

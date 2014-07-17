@@ -469,7 +469,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             editable.clear();
                             editable.append(mCategoryOld);
                             doEdit = false;
-                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
+                        } else {
                             mCategories.remove(baseIncomePosition);
                             mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
@@ -484,7 +484,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             editable.clear();
                             editable.append(mCategoryOld);
                             doEdit = false;
-                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
+                        } else {
                             mCategories.remove(baseIncomePosition);
                             mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
@@ -499,7 +499,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                             editable.clear();
                             editable.append(mCategoryOld);
                             doEdit = false;
-                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
+                        } else {
                             mCategories.remove(baseIncomePosition);
                             mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
