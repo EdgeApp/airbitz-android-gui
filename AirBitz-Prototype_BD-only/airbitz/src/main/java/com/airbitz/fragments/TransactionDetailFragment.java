@@ -113,7 +113,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private int baseIncomePosition = 0;//TODO set these three from categories retrieved
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
-
+    private int baseExchangePosition = 3;
+    private int originalBaseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int originalBaseExpensePosition = 1;
+    private int originalBaseTransferPosition = 2;
+    private int originalBaseExchangePosition = 3;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -185,14 +189,17 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
                 if(mTransaction.getCategory().isEmpty()) {
                     currentType = defaultCat.toString()+":";
-                }else if(mTransaction.getCategory().charAt(0) == 'I'){
+                }else if(mTransaction.getCategory().startsWith("Income:")){
                     currentType = "Income:";
                     catSelected = true;
-                }else if(mTransaction.getCategory().charAt(0) == 'E'){
+                }else if(mTransaction.getCategory().startsWith("Expense:")){
                     currentType = "Expense:";
                     catSelected = true;
-                }else if(mTransaction.getCategory().charAt(0) == 'T'){
+                }else if(mTransaction.getCategory().startsWith("Transfer:")){
                     currentType = "Transfer:";
+                    catSelected = true;
+                }else if(mTransaction.getCategory().startsWith("Exchange:")){
+                    currentType = "Exchange:";
                     catSelected = true;
                 }
             }
@@ -268,17 +275,25 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
 
         mCategories = mCoreAPI.loadCategories();
-        if(mCategories.size()==0) {
-            mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
-        }
+        mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
         for(int index=0; index<mCategories.size(); index++) {
             String cat = mCategories.get(index);
-            if(cat.equals("Income:"))
+            if(cat.equals("Income:")) {
                 baseIncomePosition = index;
-            if(cat.equals("Expense:"))
+                originalBaseIncomePosition = index;
+            }
+            if(cat.equals("Expense:")) {
                 baseExpensePosition = index;
-            if(cat.equals("Transfer:"))
+                originalBaseExpensePosition = index;
+            }
+            if(cat.equals("Transfer:")) {
                 baseTransferPosition = index;
+                originalBaseTransferPosition = index;
+            }
+            if(cat.equals("Exchange:")) {
+                baseExchangePosition = index;
+                originalBaseExchangePosition = index;
+            }
         }
         mOriginalCategories = new ArrayList<String>();
         mOriginalCategories.addAll(mCategories);
@@ -351,22 +366,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
                     }
-                    mCategories.remove(baseIncomePosition);
-                    mCategories.add(baseIncomePosition, "Income:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-                    mCategories.remove(baseExpensePosition);
-                    mCategories.add(baseExpensePosition, "Expense:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-                    mCategories.remove(baseTransferPosition);
-                    mCategories.add(baseTransferPosition, "Transfer:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-
-
-                    mOriginalCategories.remove(baseIncomePosition);
-                    mOriginalCategories.add(baseIncomePosition, "Income:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-                    mOriginalCategories.remove(baseExpensePosition);
-                    mOriginalCategories.add(baseExpensePosition, "Expense:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-                    mOriginalCategories.remove(baseTransferPosition);
-                    mOriginalCategories.add(baseTransferPosition, "Transfer:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-
-
+                    updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     mCategoryAdapter.notifyDataSetChanged();
                 } else {
@@ -477,9 +477,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
             @Override
             public void afterTextChanged(Editable editable) {
-                System.out.println("Text Changed");
                 if (!doEdit) {
-                    System.out.println("doedit false");
                     if (!catSelected) {
                         String temp = editable.toString();
                         doEdit = true;
@@ -488,75 +486,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                         doEdit = false;
                         catSelected = true;
                     }
-                    if (currentType.charAt(0) == 'I') {
-                        System.out.println("current = income");
-                        if (!editable.toString().startsWith("Income:")) {
-                            System.out.println("current = income doesnt start with income");
-                            doEdit = true;
-                            editable.clear();
-                            editable.append(mCategoryOld);
-                            doEdit = false;
-                        } else {
-                            System.out.println("current = income editing blanks: "+editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-
-                            mOriginalCategories.remove(baseIncomePosition);
-                            mOriginalCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseExpensePosition);
-                            mOriginalCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseTransferPosition);
-                            mOriginalCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                        }
-                    } else if (currentType.charAt(0) == 'E') {
-                        if (!editable.toString().startsWith("Expense:")) {
-                            doEdit = true;
-                            editable.clear();
-                            editable.append(mCategoryOld);
-                            doEdit = false;
-                        } else {
-                            mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-
-                            mOriginalCategories.remove(baseIncomePosition);
-                            mOriginalCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseExpensePosition);
-                            mOriginalCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseTransferPosition);
-                            mOriginalCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                        }
-                    } else if (currentType.charAt(0) == 'T') {
-                        if (!editable.toString().startsWith("Transfer:")) {
-                            doEdit = true;
-                            editable.clear();
-                            editable.append(mCategoryOld);
-                            doEdit = false;
-                        } else {
-                            mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-
-                            mOriginalCategories.remove(baseIncomePosition);
-                            mOriginalCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseExpensePosition);
-                            mOriginalCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                            mOriginalCategories.remove(baseTransferPosition);
-                            mOriginalCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':') + 1));
-                        }
-                    } else {
-                        System.err.println("currentType was something other than Income, Expense or Transfer: " + currentType);
+                    if ((currentType.equals("Income:") && !editable.toString().startsWith("Income:")) || (currentType.equals("Expense:") && !editable.toString().startsWith("Expense:")) || (currentType.equals("Transfer:") && !editable.toString().startsWith("Transfer:")) || (currentType.equals("Exchange:") && !editable.toString().startsWith("Exchange:"))) {
+                        doEdit = true;
+                        editable.clear();
+                        editable.append(mCategoryOld);
+                        doEdit = false;
                     }
+                    updateBlanks(editable.toString().substring(editable.toString().indexOf(':') + 1));
                     goCreateCategoryList(editable.toString().substring(editable.toString().indexOf(':') + 1));
                     mCategoryAdapter.notifyDataSetChanged();
                     mCategoryOld = mCategoryEdittext.getText().toString();
@@ -585,22 +521,20 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 catSelected = true;
-                if(mCategories.get(i).charAt(0) == 'I'){
+                if(mCategories.get(i).startsWith("Income:")){
                     currentType = "Income:";
-                }else if(mCategories.get(i).charAt(0) == 'E'){
+                }else if(mCategories.get(i).startsWith("Expense:")){
                     currentType = "Expense:";
-                }else if(mCategories.get(i).charAt(0) == 'T'){
+                }else if(mCategories.get(i).startsWith("Transfer:")){
                     currentType = "Transfer:";
+                }else if(mCategories.get(i).startsWith("Exchange:")){
+                    currentType = "Exchange:";
                 }
                 //TODO move the strings around depending on negative/positive value
                 doEdit = true;
                 mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
                 doEdit = false;
-                if(i==baseIncomePosition){
-                    mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
-                }else if(i==baseExpensePosition){
-                    mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
-                }else if(i==baseTransferPosition){
+                if(i==baseIncomePosition || i==baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition){
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
                 }else {
                     mNoteEdittext.requestFocus();
@@ -637,7 +571,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCoreAPI.addCategory(mCategoryEdittext.getText().toString(), mCategories);
+                mCoreAPI.addCategory(mCategoryEdittext.getText().toString(), mCoreAPI.loadCategories());
                 getActivity().onBackPressed();
             }
         });
@@ -649,6 +583,26 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         UpdateView(mTransaction);
         return view;
+    }
+
+    private void updateBlanks(String term){
+        mCategories.remove(baseIncomePosition);
+        mCategories.add(baseIncomePosition, "Income:" + term);
+        mCategories.remove(baseExpensePosition);
+        mCategories.add(baseExpensePosition, "Expense:" + term);
+        mCategories.remove(baseTransferPosition);
+        mCategories.add(baseTransferPosition, "Transfer:" + term);
+        mCategories.remove(baseExchangePosition);
+        mCategories.add(baseExchangePosition, "Exchange:" + term);
+
+        mOriginalCategories.remove(originalBaseIncomePosition);
+        mOriginalCategories.add(originalBaseIncomePosition,"Income:" + term);
+        mOriginalCategories.remove(originalBaseExpensePosition);
+        mOriginalCategories.add(originalBaseExpensePosition, "Expense:" + term);
+        mOriginalCategories.remove(originalBaseTransferPosition);
+        mOriginalCategories.add(originalBaseTransferPosition, "Transfer:" + term);
+        mOriginalCategories.remove(originalBaseExchangePosition);
+        mOriginalCategories.add(originalBaseExchangePosition, "Exchange:" + term);
     }
 
     private void ShowAdvancedDetails()
@@ -741,12 +695,22 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     public void goCreateCategoryList( String term ){
         mCategories.clear();
-        System.out.println("term: "+term);
-        for(String s : mOriginalCategories){
-            System.out.println("s: "+s+" s-lowercase: "+s.toLowerCase().substring(s.indexOf(':')+1));
+        for(int i = 0; i < mOriginalCategories.size();i++){
+            String s = mOriginalCategories.get(i);
             if(s.toLowerCase().substring(s.indexOf(':')+1).contains(term.toLowerCase())){
-                System.out.println("Adding s");
                 mCategories.add(s);
+                if(i == originalBaseIncomePosition){
+                    baseIncomePosition = mCategories.indexOf(s);
+                }
+                if(i == originalBaseTransferPosition){
+                    baseTransferPosition = mCategories.indexOf(s);
+                }
+                if(i == originalBaseExpensePosition){
+                    baseExpensePosition = mCategories.indexOf(s);
+                }
+                if(i == originalBaseExchangePosition){
+                    baseExchangePosition = mCategories.indexOf(s);
+                }
             }
         }
     }
