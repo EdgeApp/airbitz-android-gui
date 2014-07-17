@@ -408,6 +408,11 @@
             android:layout_marginLeft="12.6dp"
             android:layout_marginBottom="18.9dp">
 
+            <TextView
+                android:id="@+id/fragment_transactiondetail_textview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </LinearLayout>
 
 
