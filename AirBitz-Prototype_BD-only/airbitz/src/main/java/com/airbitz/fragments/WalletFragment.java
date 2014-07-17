@@ -3,13 +3,16 @@ package com.airbitz.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -271,7 +274,21 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     if(mWalletNameButton.getText().toString().trim().isEmpty()){
-
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
+                        builder.setMessage(getResources().getString(R.string.error_invalid_wallet_name_description))
+                                .setTitle(getString(R.string.error_invalid_wallet_name_title))
+                                .setCancelable(false)
+                                .setNeutralButton(getResources().getString(R.string.string_ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                        return false;
+                    }else{
+                        return true;
                     }
                 }
                 return false;
