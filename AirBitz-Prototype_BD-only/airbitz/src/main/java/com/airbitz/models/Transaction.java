@@ -1,5 +1,7 @@
 package com.airbitz.models;
 
+import com.airbitz.api.CoreAPI;
+
 /**
  * Created on 3/14/14.
  */
@@ -14,7 +16,7 @@ public class Transaction {
     private String mAddress;
     private String mCategory;
     private String mNotes;
-    private String[] mBTCAddresses;
+    private CoreAPI.TxOutput[] mOutputs;
     private boolean mConfirmed;
     private int mConfirmations;
     private long mAmountSatoshi;
@@ -43,7 +45,7 @@ public class Transaction {
     }
 
     public Transaction(String walletUUID, String id, long date, String name, long satoshi, String category,
-                       String notes, String[] addresses, long bizID, long ABFees, long minersFees) {
+                       String notes, CoreAPI.TxOutput[] addresses, long bizID, long ABFees, long minersFees) {
         mWalletUUID = walletUUID;
         mID = id;
         mDate = date;
@@ -51,7 +53,7 @@ public class Transaction {
         mAmountSatoshi = satoshi;
         mCategory = category;
         mNotes = notes;
-        mBTCAddresses = addresses;
+        mOutputs = addresses;
         mBizId = bizID;
         mAmountFeesAirbitzSatoshi = ABFees;
         mAmountFeesMinersSatoshi = minersFees;
@@ -82,8 +84,8 @@ public class Transaction {
     public String getNotes() { return mNotes; }
     public void setNotes(String mNotes) { this.mNotes = mNotes; }
 
-    public String[] getBTCAddresses() { return mBTCAddresses; }
-    public void setBTCAddresses(String[] mBTCAddresses) { this.mBTCAddresses = mBTCAddresses; }
+    public CoreAPI.TxOutput[] getOutputs() { return mOutputs; }
+    public void setOutputs(CoreAPI.TxOutput[] outputs) { this.mOutputs = outputs; }
 
     public boolean isConfirmed() { return mConfirmed; }
     public void setConfirmed(boolean mConfirmed) { this.mConfirmed = mConfirmed; }
