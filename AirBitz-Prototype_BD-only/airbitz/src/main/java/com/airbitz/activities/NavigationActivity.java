@@ -220,7 +220,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     public void switchFragmentThread(int id, Bundle bundle) {
         Fragment frag = getSupportFragmentManager().findFragmentById(id);
-        frag.setArguments(bundle);
+        if(bundle!=null)
+            frag.setArguments(bundle);
         switchFragmentThread(id);
     }
 
