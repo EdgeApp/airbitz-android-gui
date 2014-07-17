@@ -19,7 +19,11 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,7 +48,10 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_int64_t;
+import com.airbitz.api.core;
 import com.airbitz.api.tABC_TxDetails;
+import com.airbitz.api.tABC_TxOutput;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.BusinessSearchResult;
@@ -74,6 +81,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     private Button mDoneButton;
     private Button mAdvanceDetailsButton;
+    private TextView mAdvancedDetailTextView;
     private Button mXButton;
 
     private TextView mDateTextView;
@@ -241,6 +249,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
         mAdvancedDetailsPopup = (RelativeLayout) view.findViewById(R.id.advanced_details_popup);
+        mAdvancedDetailTextView = (TextView) view.findViewById(R.id.fragment_transactiondetail_textview);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
@@ -297,7 +306,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
+                ShowAdvancedDetails();
             }
         });
 
@@ -602,6 +611,62 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         UpdateView(mTransaction);
         return view;
+    }
+
+    private void ShowAdvancedDetails()
+    {
+        mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
+
+        String inAddresses = "";
+        String outAddresses = "";
+        String baseUrl = "";
+        if (true) { // TESTNET
+            baseUrl += "https://blockexplorer.com/testnet";
+        } else { // LIVE
+            baseUrl += "https://blockchain.info";
+        }
+        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
+            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
+            String html = String.format("<div class=\"wrapped\"><a href=\"%@/address/%@\">%@</a></div><div>%@</div>",
+                    baseUrl, t.getSzAddress(), t.getSzAddress(), val);
+            if (t.getInput()) {
+                inAddresses += html;
+            } else {
+                outAddresses += html;
+            }
+        }
+        String txIdLink = baseUrl + mTransaction.getID();
+
+//        String txIdLink = String.format("<div class=\"wrapped\"><a href=\"%@/tx/%@\">%@</a></div>",
+//            baseUrl, mTransaction.getID(), mTransaction.getID());
+
+        SpannableStringBuilder longDescription = new SpannableStringBuilder();
+        longDescription.append("First Part Not Bold ");
+        int start = longDescription.length();
+        longDescription.append("BOLD");
+        longDescription.setSpan(new ForegroundColorSpan(0xFFCC5500), start, longDescription.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        longDescription.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        longDescription.append(" rest not bold");
+
+//        //Transaction ID
+//        content += content.replaceAll("1", txIdLink);
+//
+//        //Total Sent - formatSatoshi
+//        content += content.replaceAll("2", mCoreAPI.formatSatoshi(mTransaction.getAmountSatoshi()));
+//
+//        //Source - id\nformatSatoshi
+//        content += content.replaceAll("3", inAddresses);
+//
+//        //Destination - id\nformatSatoshi
+//        content += content.replaceAll("4", outAddresses);
+//
+//        //Miner Fee - formatSatoshi
+//        String fees = mCoreAPI.formatSatoshi(mTransaction.getMinerFees()+mTransaction.getABFees());
+//        content += content.replaceAll("5", fees);
+//
+//        //TODO set content
+//        mAdvancedDetailTextView.setText(content);
     }
 
     private void UpdateView(Transaction transaction) {
