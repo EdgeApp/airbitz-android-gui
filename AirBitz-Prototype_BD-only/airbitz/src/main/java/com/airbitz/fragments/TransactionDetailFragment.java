@@ -219,12 +219,23 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
 
-        mCategories = mCoreAPI.loadCategories();//TODO put different string order depending upon type of transaction
+        mCategories = mCoreAPI.loadCategories();
         if(mCategories.size()==0) {
             for(String cat :getActivity().getResources().getStringArray(R.array.transaction_categories_list)){
                 mCategories.add(cat);
             }
         }
+        for(int index=0; index<mCategories.size(); index++) {
+            String cat = mCategories.get(index);
+            if(cat.equals("Income:"))
+                baseIncomePosition = index;
+            if(cat.equals("Income:"))
+                baseExpensePosition = index;
+            if(cat.equals("Income:"))
+                baseTransferPosition = index;
+        }
+
+
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(),mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
