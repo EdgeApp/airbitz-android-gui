@@ -1,12 +1,9 @@
 package com.airbitz.api;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
@@ -656,16 +653,16 @@ public class CoreAPI {
 
     private class TxInfo extends tABC_TxInfo {
         String mID;
-        long mCountAddresses;
+        long mCountOutputs;
         long mCreationTime;
         private TxDetails mDetails;
-        private String[] mAddresses;
+        private TxOutput[] mOutputs;
 
         public TxInfo(long pv) {
             super(pv, false);
             if (pv != 0) {
                 mID = super.getSzID();
-                mCountAddresses = super.getCountOutputs();
+                mCountOutputs = super.getCountOutputs();
                 SWIGTYPE_p_int64_t temp = super.getTimeCreation();
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mCreationTime = core.longp_value(p);
@@ -673,20 +670,50 @@ public class CoreAPI {
                 tABC_TxDetails txd = super.getPDetails();
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
                 SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
-                mAddresses = new String[(int) mCountAddresses];
+                mOutputs = new TxOutput[(int) mCountOutputs];
                 long base = a.getCPtr(a);
-                for (int i = 0; i < mCountAddresses; ++i)
+                for (int i = 0; i < mCountOutputs; ++i)
                 {
-                    mAddresses[i] = getStringAtPtr(base + i*4);
+                    mOutputs[i] = new TxOutput(base + i*4);
                 }
             }
         }
 
         public String getID() { return mID; }
-        public long getCount() { return mCountAddresses; }
+        public long getCount() { return mCountOutputs; }
         public long getCreationTime() { return mCreationTime; }
         public TxDetails getDetails() {return mDetails; }
-        public String[] getAddresses() {return mAddresses; }
+        public TxOutput[] getOutputs() {return mOutputs; }
+    }
+
+    public class TxOutput extends tABC_TxOutput {
+        /** Was this output used as an input to a tx? **/
+        boolean     mInput;
+        /** The number of satoshis used in the transaction **/
+        long  mValue;
+        /** The coin address **/
+        String mAddress;
+        /** The tx address **/
+        String mTxId;
+        /** The tx index **/
+        long  mIndex;
+
+        public TxOutput(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+//                mInput = super.getInput();
+                mAddress = super.getSzAddress();
+                mTxId = super.getSzTxId();
+                mValue = get64BitLongAtPtr(pv + 1);
+                mIndex = get64BitLongAtPtr(pv + 17);
+            }
+        }
+
+        public long getmValue() {return mValue; }
+        public String getAddress() {return mAddress; }
+        public String getTxId() {return mTxId; }
+        public long getmIndex() {return mIndex; }
+
     }
 
     private class TxDetails extends tABC_TxDetails {
@@ -823,7 +850,7 @@ public class CoreAPI {
         } else {
             transaction.setAddress("1zf76dh4TG");
         }
-        transaction.setBTCAddresses(txInfo.getAddresses());
+        transaction.setOutputs(txInfo.getOutputs());
 
     }
 
@@ -1177,8 +1204,12 @@ public class CoreAPI {
                 set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
 
                 //the true fee values will be set by the core
-                details.setAmountFeesAirbitzSatoshi(core.new_int64_tp());
-                details.setAmountFeesMinersSatoshi(core.new_int64_tp());
+                SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
+                set64BitLongAtPtr(feesAB.getCPtr(feesAB), 10000);
+                details.setAmountFeesAirbitzSatoshi(feesAB);
+                SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
+                set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10001);
+                details.setAmountFeesMinersSatoshi(feesMiner);
 
                 details.setAmountCurrency(value);
                 details.setSzName("Anonymous");
