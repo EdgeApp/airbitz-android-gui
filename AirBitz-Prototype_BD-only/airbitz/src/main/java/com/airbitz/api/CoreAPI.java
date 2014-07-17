@@ -1512,18 +1512,13 @@ public class CoreAPI {
         return categories;
     }
 
-    public void addCategory(String strCategory, List<String> categories)
-    {
-        // check and see if there is more text than just the prefix
-        //if ([ARRAY_CATEGORY_PREFIXES indexOfObject:strCategory] == NSNotFound)
-        {
-            // check and see that it doesn't already exist
-            if (!categories.contains(strCategory))
-            {
-                // add the category to the core
-                tABC_Error Error = new tABC_Error();
-                core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
-            }
+    public void addCategory(String strCategory, List<String> categories) {
+        // check and see that it doesn't already exist
+        if (categories == null || !categories.contains(strCategory)) {
+            // add the category to the core
+            Log.d("CoreAPI", "Adding category: "+strCategory);
+            tABC_Error Error = new tABC_Error();
+            core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
         }
     }
 
