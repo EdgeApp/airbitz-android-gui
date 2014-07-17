@@ -407,7 +407,7 @@ public class SendConfirmationFragment extends Fragment {
     private void updateFeeFieldContents()
     {
         String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
-        long fees = mCoreAPI.calcSendFees(mToWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+        long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
         if(fees==-1) {
             Log.d("SendConfirmationFragment", "Fee calculation error");
         }
