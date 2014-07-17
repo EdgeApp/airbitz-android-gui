@@ -218,6 +218,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();
     }
 
+    public void switchFragmentThread(int id, Bundle bundle) {
+        Fragment frag = getSupportFragmentManager().findFragmentById(id);
+        if(bundle!=null)
+            frag.setArguments(bundle);
+        switchFragmentThread(id);
+    }
+
     public void pushFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(mNavStacks[mNavFragmentId].size()!=0){
