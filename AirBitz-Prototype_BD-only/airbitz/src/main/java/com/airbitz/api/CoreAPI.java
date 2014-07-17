@@ -1190,60 +1190,54 @@ public class CoreAPI {
         String txid = null;
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWallet(destinationAddress);
-        if (satoshi>0)
-        {
-            List<Wallet> wallets = loadWallets();
-            if (!wallets.isEmpty())
-            {
-                double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
+        if (satoshi > 0) {
+            double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
 
-                //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
-                tABC_TxDetails details = new tABC_TxDetails();
-                tABC_CC result;
+            //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
+            tABC_TxDetails details = new tABC_TxDetails();
+            tABC_CC result;
 
-                set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
+            set64BitLongAtPtr(details.getCPtr(details) + 0, satoshi);
 
-                //the true fee values will be set by the core
-                SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
-                set64BitLongAtPtr(feesAB.getCPtr(feesAB), 10000);
-                details.setAmountFeesAirbitzSatoshi(feesAB);
-                SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
-                set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10001);
-                details.setAmountFeesMinersSatoshi(feesMiner);
+            //the true fee values will be set by the core
+            SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
+            set64BitLongAtPtr(feesAB.getCPtr(feesAB), 10000);
+            details.setAmountFeesAirbitzSatoshi(feesAB);
+            SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
+            set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10001);
+            details.setAmountFeesMinersSatoshi(feesMiner);
 
-                details.setAmountCurrency(value);
-                details.setSzName("Anonymous");
-                details.setSzNotes("");
-                details.setSzCategory("");
-                details.setAttributes(0x2); //for our own use (not used by the core)
+            details.setAmountCurrency(value);
+            details.setSzName("Anonymous");
+            details.setSzNotes("");
+            details.setSzCategory("");
+            details.setAttributes(0x2); //for our own use (not used by the core)
 
-                SWIGTYPE_p_long lp = core.new_longp();
-                SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
-                SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(pRequestID.getCPtr(pRequestID), false);
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
+            SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(pRequestID.getCPtr(pRequestID), false);
 
-                if (destinationWallet != null)
-                {
-                    tABC_TransferDetails Transfer = new tABC_TransferDetails();
-                    Transfer.setSzSrcWalletUUID(sourceWallet.getUUID());
-                    Transfer.setSzSrcName(destinationWallet.getName());
-                    Transfer.setSzSrcCategory("Transfer:Wallet:"+destinationWallet.getName());
+            if (destinationWallet.getUUID() != null) {
+                tABC_TransferDetails Transfer = new tABC_TransferDetails();
+                Transfer.setSzSrcWalletUUID(sourceWallet.getUUID());
+                Transfer.setSzSrcName(destinationWallet.getName());
+                Transfer.setSzSrcCategory("Transfer:Wallet:" + destinationWallet.getName());
 
-                    Transfer.setSzDestWalletUUID(destinationWallet.getUUID());
-                    Transfer.setSzDestName(sourceWallet.getName());
-                    Transfer.setSzDestCategory("Transfer:Wallet:"+sourceWallet.getName());
+                Transfer.setSzDestWalletUUID(destinationWallet.getUUID());
+                Transfer.setSzDestName(sourceWallet.getName());
+                Transfer.setSzDestCategory("Transfer:Wallet:" + sourceWallet.getName());
 
-                    result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, pVoid, error);
-                } else {
-                    result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                            sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
-                }
-                if(result!=tABC_CC.ABC_CC_Ok) {
-                    Log.d("CoreAPI", "InitiateTransferOrSend:  " + error.getSzDescription() +" " + error.getSzSourceFile() +" " +
-                        error.getSzSourceFunc() +" " + error.getNSourceLine());
-                } else {
-                    txid = getStringAtPtr(core.longp_value(lp));
-                    Log.d("CoreAPI", "TxID:  " + txid);
-                }
+                result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, pVoid, error);
+            } else {
+                result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                        sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
+            }
+            if (result != tABC_CC.ABC_CC_Ok) {
+                Log.d("CoreAPI", "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
+                        error.getSzSourceFunc() + " " + error.getNSourceLine());
+            } else {
+                txid = getStringAtPtr(core.longp_value(lp));
+                Log.d("CoreAPI", "TxID:  " + txid);
             }
         } else {
             Log.d("CoreAPI", "Initiate transfer - nothing to send");
