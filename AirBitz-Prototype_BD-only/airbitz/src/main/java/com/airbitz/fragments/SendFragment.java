@@ -510,7 +510,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                         mHandler.removeCallbacks(cameraDelayRunner);
                     stopCamera();
 
-                    GotoSendConfirmation(uriAddress, amountSatoshi, label, true);
+                    GotoSendConfirmation(uriAddress, amountSatoshi, label, false);
                 }
                 else
                 {
