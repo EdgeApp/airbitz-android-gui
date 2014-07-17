@@ -414,8 +414,6 @@ public class PasswordRecoveryActivity extends Activity {
     }
 
     private void SuccessfulSignup() {
-        Intent intent = new Intent(PasswordRecoveryActivity.this, NavigationActivity.class);
-        startActivity(intent);
         PasswordRecoveryActivity.this.finish();
     }
 

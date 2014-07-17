@@ -116,6 +116,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mWalletList = new ArrayList<String>();
+        mWallets = new ArrayList<Wallet>();
         addWalletNamesToList();
 
         mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
@@ -218,11 +219,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
                     boolean bIsUUID = false;
                     String strTo = mToEdittext.getText().toString();
-                    if(mCurrentListing.contains(strTo))
-                    {
-                        bIsUUID = true;
-                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
-                    }
+
+                    //disabled for now - user must select wallet from list, not type a name and hit return
+//                    if(mCurrentListing.contains(strTo))
+//                    {
+//                        bIsUUID = true;
+//                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
+//                    }
                     GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     return true;
                 }
@@ -268,7 +271,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
-                Wallet w = mCoreAPI.getWalletFromName(mCurrentListing.get(i));
+                Wallet w = mCoreAPI.getWallet(mCurrentListing.get(i));
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
         });
@@ -407,15 +410,15 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 long amountSatoshi = core.longp_value(p);
 
-                if (!uriAddress.isEmpty())
+                if (uriAddress!=null)
                 {
-                    Log.i("SendFragment", "    address: "+uriAddress);
-                    Log.i("SendFragment", "    amount: "+amountSatoshi);
+                    Log.i("SendFragment", "Send address: "+uriAddress);
+                    Log.i("SendFragment", "Send amount: "+amountSatoshi);
 
                     String label = uri.getSzLabel();
-                    if (!label.isEmpty())
+                    if (label!=null && !label.isEmpty())
                     {
-                        Log.i("SendFragment", "    label: "+label);
+                        Log.i("SendFragment", "Send label: "+label);
                     }
                     else
                     {
@@ -423,7 +426,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     }
 
                     String message = uri.getSzMessage();
-                    if (!message.isEmpty())
+                    if (message!=null)
                     {
                         Log.i("SendFragment", "    message: "+message);
                     }

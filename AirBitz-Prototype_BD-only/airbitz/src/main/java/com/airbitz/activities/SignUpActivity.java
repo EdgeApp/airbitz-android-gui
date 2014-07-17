@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -437,6 +438,8 @@ public class SignUpActivity extends Activity {
                 ShowReasonAlert("Create wallet failed");
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
+                CreateDefaultCategories();
+
                 Intent mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
                 mIntent.putExtra(KEY_USERNAME, mUsername);
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
@@ -449,6 +452,18 @@ public class SignUpActivity extends Activity {
         @Override
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
+        }
+    }
+
+    private void CreateDefaultCategories() {
+        String[] defaults = getResources().getStringArray(R.array.category_defaults);
+
+        for(String cat : defaults)
+            mCoreAPI.addCategory(cat, null);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if(cats.size()==0 || cats.get(0).equals(defaults)) {
+            Log.d("SignupActivity", "Category creation failed");
         }
     }
 
