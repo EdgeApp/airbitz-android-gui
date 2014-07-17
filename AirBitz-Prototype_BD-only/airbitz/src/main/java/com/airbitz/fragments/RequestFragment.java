@@ -44,6 +44,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
+    public static final String FROM_UUID = "com.airbitz.request.from_uuid";
 
     private View mView;
     private EditText mBitcoinField;
@@ -115,9 +116,17 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         mWallets = mCoreAPI.getCoreWallets();
         mWalletNames = new ArrayList<String>();
-        for(Wallet w : mWallets) {
-            if(!(w.isArchiveHeader() || w.isHeader()))
-                mWalletNames.add(w.getName());
+        String uuid = null;
+        Bundle bundle = getArguments();
+        if(bundle!=null && bundle.getString(FROM_UUID)!=null) {
+            uuid = bundle.getString(FROM_UUID);
+        }
+
+        int fromIndex=0;
+        for(int i=0; i<mWallets.size(); i++) {
+            mWalletNames.add(mWallets.get(i).getName());
+            if(uuid!=null && mWallets.get(i).getUUID()==uuid)
+                fromIndex = i;
         }
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
@@ -156,6 +165,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
         final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletNames);
         pickWalletSpinner.setAdapter(dataAdapter);
+        pickWalletSpinner.setSelection(fromIndex);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
