@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -43,6 +45,7 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_TxDetails;
+import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
@@ -60,6 +63,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +85,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TextView mNoteTextView;
 
     private LinearLayout mDummyFocus;
+
+    private View popupTriangle;
+
+    private CurrentLocationManager mLocationManager;
+    private boolean locationEnabled;
+
+    private String mCategoryOld = "";
 
     private int businessCount;
 
@@ -114,7 +125,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private List<BusinessSearchResult> mOriginalBusinesses;
     private List<String> mContactNames;
     private List<Object> mCombined;
-    private Map<String, Uri> mContactPhotos;
+    private LinkedHashMap<String, Uri> mContactPhotos;
 
     private List<String> mCategories;
 
@@ -138,6 +149,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private Transaction mTransaction;
     private int mCurrencyIndex;
 
+    private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -157,6 +170,19 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 mWallet = mCoreAPI.getWallet(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
                 mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
+
+                if(mTransaction.getCategory().isEmpty()) {
+                    currentType = defaultCat.toString()+":";
+                }else if(mTransaction.getCategory().charAt(0) == 'I'){
+                    currentType = "Income:";
+                    catSelected = true;
+                }else if(mTransaction.getCategory().charAt(0) == 'E'){
+                    currentType = "Expense:";
+                    catSelected = true;
+                }else if(mTransaction.getCategory().charAt(0) == 'T'){
+                    currentType = "Transfer:";
+                    catSelected = true;
+                }
             }
         }
     }
@@ -167,7 +193,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ((NavigationActivity)getActivity()).showNavBar();
-
+        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationEnabled = false;
+            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+        }else{
+            locationEnabled = true;
+        }
 
         mCalculatorBrain = new CalculatorBrain();
         mDF.setMinimumFractionDigits(0);
@@ -176,6 +209,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDF.setMaximumIntegerDigits(8);
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
 
+        popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
         mDoneButton = (Button) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (Button) view.findViewById(R.id.transaction_detail_button_advanced);
@@ -204,7 +238,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
         mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
 
-        mDummyFocus = (LinearLayout) view.findViewById(R.id.dummy_focus);
+        mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
         mAdvancedDetailsPopup = (RelativeLayout) view.findViewById(R.id.advanced_details_popup);
 
@@ -213,9 +247,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mOriginalBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
         mCombined = new ArrayList<Object>();
-        mContactPhotos = new HashMap<String, Uri>();
+        mContactPhotos = new LinkedHashMap<String, Uri>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined,mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
+
+        goSearch();
 
         mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
 
@@ -269,21 +305,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mSentDetailLayout.setVisibility(View.GONE);
                     mNoteDetailLayout.setVisibility(View.GONE);
                     mSearchListView.setVisibility(View.VISIBLE);
-                    if (mPayeeEditText.getText().toString().isEmpty()) {
-                        try {
-                            Activity activity = getActivity();
-                            SharedPreferences pref = activity.getSharedPreferences("PREF_NAME", Activity.MODE_PRIVATE);
-                            String latLong = String.valueOf(pref.getFloat("LAT_KEY", -1));
-                            latLong += "," + String.valueOf(pref.getFloat("LON_KEY", -1));
-                            mCombined.clear();
-                            mOriginalBusinesses.clear();
-                            mBusinesses.clear();
-                            new BusinessSearchAsyncTask().execute(latLong);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
                 } else {
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
@@ -304,9 +325,17 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mSentDetailLayout.setVisibility(View.GONE);
                     mDoneButton.setVisibility(View.GONE);
                     mCategoryListView.setVisibility(View.VISIBLE);
+                    popupTriangle.setVisibility(View.VISIBLE);
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
                     }
+                    mCategories.remove(baseIncomePosition);
+                    mCategories.add(baseIncomePosition, "Income:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
+                    mCategories.remove(baseExpensePosition);
+                    mCategories.add(baseExpensePosition, "Expense:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
+                    mCategories.remove(baseTransferPosition);
+                    mCategories.add(baseTransferPosition, "Transfer:" + mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
+                    mCategoryAdapter.notifyDataSetChanged();
                 } else {
                     mDateTextView.setVisibility(View.VISIBLE);
                     mNameDetailLayout.setVisibility(View.VISIBLE);
@@ -314,6 +343,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mDoneButton.setVisibility(View.VISIBLE);
                     mCategoryListView.setVisibility(View.GONE);
+                    popupTriangle.setVisibility(View.GONE);
                     mNoteEdittext.requestFocus();
                 }
             }
@@ -345,7 +375,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //mPayeeEditText.clearFocus();
                     mCategoryEdittext.requestFocus();
                     return true;
                 }
@@ -357,7 +386,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //mCategoryEdittext.clearFocus();
                     mNoteEdittext.requestFocus();
                     return true;
                 }
@@ -369,7 +397,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    System.out.println("Action Done");
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -416,96 +443,64 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (false == doEdit) {
-                    if (false == catSelected) {
+                if (!doEdit) {
+                    if (!catSelected) {
                         String temp = editable.toString();
                         doEdit = true;
                         editable.clear();
-                        editable.append(defaultCat.toString() + ":" + temp);
+                        editable.append(defaultCat.toString()).append(":").append(temp);
                         doEdit = false;
                         catSelected = true;
                     }
                     if (currentType.charAt(0) == 'I') {
-                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:") != 0) {
-                            if (editable.toString().length() > 7) {
-                                String temp = editable.toString().substring(7);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Income:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Income:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 7) {
+                        if (!editable.toString().startsWith("Income:")) {
+                            doEdit = true;
+                            editable.clear();
+                            editable.append(mCategoryOld);
+                            doEdit = false;
+                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
                             mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(7));
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(7));
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(7));
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategoryAdapter.notifyDataSetChanged();
-                        }
-                        if (mCategoryEdittext.getSelectionStart() < 7) {
-                            mCategoryEdittext.setSelection(7, 7);
                         }
                     } else if (currentType.charAt(0) == 'E') {
-                        if (editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:") != 0) {
-                            if (editable.toString().length() > 8) {
-                                String temp = editable.toString().substring(8);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Expense:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Expense:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 8) {
+                        if (!editable.toString().startsWith("Expense:")) {
+                            doEdit = true;
+                            editable.clear();
+                            editable.append(mCategoryOld);
+                            doEdit = false;
+                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
                             mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(8));
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(8));
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(8));
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategoryAdapter.notifyDataSetChanged();
-                        }
-                        if (mCategoryEdittext.getSelectionStart() < 8) {
-                            mCategoryEdittext.setSelection(8, 8);
                         }
                     } else if (currentType.charAt(0) == 'T') {
-                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:") != 0) {
-                            if (editable.toString().length() > 9) {
-                                String temp = editable.toString().substring(9);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Transfer:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Transfer:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 9) {
+                        if (!editable.toString().startsWith("Transfer:")) {
+                            doEdit = true;
+                            editable.clear();
+                            editable.append(mCategoryOld);
+                            doEdit = false;
+                        } else if (editable.toString().indexOf(':') != editable.toString().length()-1) {
                             mCategories.remove(baseIncomePosition);
-                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(9));
+                            mCategories.add(baseIncomePosition, "Income:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseExpensePosition);
-                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(9));
+                            mCategories.add(baseExpensePosition, "Expense:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategories.remove(baseTransferPosition);
-                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(9));
+                            mCategories.add(baseTransferPosition, "Transfer:" + editable.toString().substring(editable.toString().indexOf(':')+1));
                             mCategoryAdapter.notifyDataSetChanged();
-                        }
-                        if (mCategoryEdittext.getSelectionStart() < 9) {
-                            mCategoryEdittext.setSelection(9, 9);
                         }
                     } else {
                         System.err.println("currentType was something other than Income, Expense or Transfer: " + currentType);
                     }
+                    mCategoryOld = mCategoryEdittext.getText().toString();
                 }
             }
         });
@@ -588,8 +583,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        currentType = defaultCat.toString()+":";
-
         if(mFromSend){
             mPayeeEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -610,15 +603,16 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         mPayeeEditText.setText(transaction.getName());
         mNoteEdittext.setText(transaction.getNotes());
+        doEdit = true;
         mCategoryEdittext.setText(transaction.getCategory());
+        doEdit = false;
 
         long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
         String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
-        mFiatValueEdittext.setText(currencyValue.substring(0,currencyValue.indexOf('.')+Math.min(3, currencyValue.length()-currencyValue.indexOf('.'))));
-        mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencySign());
-        mFiatDenominationAcronym.setText(mCoreAPI.FiatCurrencyAcronym());
+        mFiatValueEdittext.setText(currencyValue.substring(0, currencyValue.indexOf('.') + Math.min(3, currencyValue.length() - currencyValue.indexOf('.'))));
+        mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
 
         if(mFromSend) {
             String feeFormatted = "";
@@ -631,7 +625,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         } else {
             mFeeTextview.setVisibility(View.INVISIBLE);
         }
-
+        mSearchListView.setVisibility(View.GONE);
     }
 
     @Override
@@ -704,8 +698,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         }
 
         @Override protected String doInBackground(String... strings) {
-            String jsonParsingResult = api.getSearchByRadius("16093", "", strings[0], "", "1");
-            return jsonParsingResult;
+            return api.getSearchByRadius("16093", "", strings[0], "", "1");
         }
 
         @Override protected void onPostExecute(String searchResult) {
@@ -717,7 +710,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 businessCount = results.getCountValue();
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
                 mOriginalBusinesses.addAll(mBusinesses);
-                mCombined.addAll(mBusinesses);
+                if(mPayeeEditText.getText().toString().isEmpty()){
+                    mCombined.addAll(mBusinesses);
+                }else{
+                    getMatchedContactsList(mPayeeEditText.getText().toString());
+                    getMatchedBusinessList(mPayeeEditText.getText().toString());
+                    combineMatchLists();
+                }
             }catch (JSONException e) {
                 e.printStackTrace();
                 this.cancel(true);
@@ -727,7 +726,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
             mSearchAdapter.notifyDataSetChanged();
             ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
-            mSearchListView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onCancelled(){
+            mBusinessSearchAsyncTask = null;
+            super.onCancelled();
         }
     }
 
@@ -742,7 +746,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     @Override
     public void onPause() {
         super.onPause();
-
+        if(mBusinessSearchAsyncTask != null){
+            mBusinessSearchAsyncTask.cancel(true);
+        }
         mTransaction.setName(mPayeeEditText.getText().toString());
         mTransaction.setCategory(mCategoryEdittext.getText().toString());
         mTransaction.setNotes(mNoteEdittext.getText().toString());
@@ -779,12 +785,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             mContactPhotos.clear();
             while (cur.moveToNext()) {
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                mContactNames.add(name);
                 String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
                 if(photoURI!=null) {
                     Uri thumbUri = Uri.parse(photoURI);
                     mContactPhotos.put(name, thumbUri);
                 }
+            }
+            for(String s: mContactPhotos.keySet()){
+                mContactNames.add(s);
             }
         }
         cur.close();
@@ -860,6 +868,15 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
+    public void goSearch(){
+        mCombined.clear();
+        mOriginalBusinesses.clear();
+        mBusinesses.clear();
+        if(locationEnabled) {
+            mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
+            mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude()+","+mLocationManager.getLocation().getLongitude());
+        }
+    }
 
     public Categories getMoreBusinessCategory(Categories initial, String link){
         while(!link.equalsIgnoreCase("null")){
