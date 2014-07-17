@@ -1550,6 +1550,4 @@ public class CoreAPI {
             core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
         }
     }
-
-
 }
