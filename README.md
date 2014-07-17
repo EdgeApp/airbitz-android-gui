@@ -24,20 +24,35 @@ Setting Up For Mac
       
 9. In the SDK manager you will select the packages you need to install
     
-    Currently they are: Tools->Android SDK Tools
-                               Android SDK Platform-tools
-                               Android SDK Build-tools Rev  19.1
-                                                            19.0.3
-                                                            19.0.1
-                        Android 4.4.2 (API 19)->SDK Platform
-                                                Google APIs (x86 System Image)
-                                                Google APIs (ARM System Image)
-                        Android 4.1.2 (API 16)->SDK PLatform
-                                                Google APIs
-                        Extras->Android Support Repository
-                                Android Support Library
-                                Google Play Services
-                                Google Repository
+Currently they are: 
+
+Tools->Android SDK Tools
+
+Tools->Android SDK Platform-tools
+
+Tools->Android SDK Build-tools Rev  19.1
+
+Tools->Android SDK Build-tools Rev  19.0.3
+
+Tools->Android SDK Build-tools Rev  19.0.1
+
+Android 4.4.2 (API 19)->Android 4.4.2 (API 19)->SDK Platform
+
+Android 4.4.2 (API 19)->Google APIs (x86 System Image)
+
+Android 4.4.2 (API 19)->Google APIs (ARM System Image)
+
+Android 4.1.2 (API 16)->SDK PLatform
+
+Android 4.1.2 (API 16)->Google APIs
+
+Extras->Android Support Repository
+
+Extras->Android Support Library
+
+Extras->Google Play Services
+
+Extras->Google Repository
     
     Some of the Extras might not be available at first, install the others and they should be there.
     
@@ -45,3 +60,5 @@ Setting Up For Mac
     will pop up a window in which you can select what to run it on.  If you have devices plugged in via USB they will show
     up here, if not you can create an emulator from the popup but I would recommend not doing this if possible as it takes
     forever to load, and is slow and difficult to interact with. Running on a physical Android device is much better.
+
+11. To build an updated Airbitz Wallet Core
