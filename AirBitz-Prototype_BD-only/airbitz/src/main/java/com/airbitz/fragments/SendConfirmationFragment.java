@@ -162,7 +162,8 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        mFromEdittext.setText(mSourceWallet.getName());
+        String balance = mCoreAPI.FormatCurrency(mSourceWallet.getBalanceSatoshi(), mSourceWallet.getCurrencyNum(), false, true);
+        mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
