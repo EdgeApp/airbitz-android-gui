@@ -30,11 +30,9 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.ListViewUtility;
 
 /**
  * Created on 2/21/14.
@@ -175,7 +173,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
         String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
-        mDollarValueField.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+        mDollarValueField.setText(temp);
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override
@@ -365,7 +363,7 @@ public class SendConfirmationFragment extends Fragment {
         if (mConfirmSwipeButton.getX() <= successThreshold) {
             attemptInitiateSend();
         } else {
-            mConfirmSwipeButton.setX(mRightThreshold);
+            resetSlider();
         }
     }
 
@@ -410,8 +408,8 @@ public class SendConfirmationFragment extends Fragment {
         {
             double currencyFees = 0.0;
             mConversionTextView.setTextColor(Color.WHITE);
-//            self.amountBTCTextField.textColor = [UIColor whiteColor]; //TODO
-//            self.amountUSDTextField.textColor = [UIColor whiteColor];
+            mBitcoinValueField.setTextColor(Color.WHITE);
+            mDollarValueField.setTextColor(Color.WHITE);
 
             String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
 
@@ -426,9 +424,9 @@ public class SendConfirmationFragment extends Fragment {
         {
             String message = getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds);
             if(mConversionTextView!=null) mConversionTextView.setText(message);
-            mConversionTextView.setTextColor(Color.RED); //TODO
-//            self.amountBTCTextField.textColor = [UIColor redColor];
-//            self.amountUSDTextField.textColor = [UIColor redColor];
+            mConversionTextView.setTextColor(Color.RED);
+            mBitcoinValueField.setTextColor(Color.RED);
+            mDollarValueField.setTextColor(Color.RED);
         }
     }
 
@@ -437,12 +435,20 @@ public class SendConfirmationFragment extends Fragment {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
-        if (userPIN!=null && userPIN.equals(enteredPIN)) {
+        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
+        if(mAmountToSendSatoshi==0) {
+            showMessageAlert(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
+        } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.execute();
         } else {
-            showIncorrectPINAlert();
+            showMessageAlert(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
         }
+        resetSlider();
+    }
+
+    private void resetSlider() {
+        mConfirmSwipeButton.setX(mRightThreshold);
     }
 
     /**
@@ -490,10 +496,10 @@ public class SendConfirmationFragment extends Fragment {
 
 
 
-    private void showIncorrectPINAlert() {
+    private void showMessageAlert(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.fragment_send_incorrect_pin_message))
-                .setTitle(getResources().getString(R.string.fragment_send_incorrect_pin_title))
+        builder.setMessage(message)
+                .setTitle(title)
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
