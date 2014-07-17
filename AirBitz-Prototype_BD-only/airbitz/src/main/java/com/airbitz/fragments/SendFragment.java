@@ -99,6 +99,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private List<Wallet> mWallets;//Actual wallets
     private String mSpinnerWalletName;
     private List<String> mCurrentListing;
+    private List<String> mCurrentListingNames;
 
     private ArrayAdapter<String> listingAdapter;
 
@@ -122,7 +123,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mWalletList = new ArrayList<String>();
-        mWallets = new ArrayList<Wallet>();
         addWalletNamesToList();
 
         mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
@@ -140,6 +140,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mListingListView = (ListView) view.findViewById(R.id.listing_listview);
 
         mCurrentListing = new ArrayList<String>();
+        mCurrentListingNames = new ArrayList<String>();
         listingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mCurrentListing);
         mListingListView.setAdapter(listingAdapter);
 
@@ -284,7 +285,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
-                Wallet w = mCoreAPI.getWalletFromName(mCurrentListing.get(i));
+                Wallet w = mCoreAPI.getWalletFromName(mCurrentListingNames.get(i));
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
         });
@@ -577,27 +578,30 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     };
 
     public void addWalletNamesToList(){
-        List<Wallet> tempWallets = mCoreAPI.loadWallets();
-        for(Wallet wallet: tempWallets){
-            if(!wallet.isHeader() && !wallet.isArchiveHeader())
+        mWallets = mCoreAPI.getCoreWallets();
+        for(Wallet wallet: mWallets){
                 mWalletList.add(wallet.getName());
-                mWallets.add(wallet);
         }
     }
 
     public void goAutoCompleteListing(){
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
+        mCurrentListingNames.clear();
         if(text.isEmpty()){
-            for(String name : mWalletList){
-                if(name != mSpinnerWalletName){
-                    mCurrentListing.add(name);
+            for(Wallet w : mWallets){
+                if(!w.getName().equals(mSpinnerWalletName)){
+                    mCurrentListing.add(w.getName() + "         " +
+                            mCoreAPI.FormatCurrency(w.getBalanceSatoshi(), w.getCurrencyNum(), false, true));
+                    mCurrentListingNames.add(w.getName());
                 }
             }
         }else {
-            for (String name : mWalletList) {
-                if (name != mSpinnerWalletName && name.toLowerCase().contains(text.toLowerCase())) {
-                    mCurrentListing.add(name);
+            for (Wallet w : mWallets) {
+                if (!w.getName().equals(mSpinnerWalletName) && w.getName().toLowerCase().contains(text.toLowerCase())) {
+                    mCurrentListing.add(w.getName() + "         " +
+                            mCoreAPI.FormatCurrency(w.getBalanceSatoshi(), w.getCurrencyNum(), false, true));
+                    mCurrentListingNames.add(w.getName());
                 }
             }
         }
