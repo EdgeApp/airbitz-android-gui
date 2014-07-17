@@ -82,6 +82,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
+    private boolean firstBoot = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -288,6 +290,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }else {
             popFragment();
         }
+    }
+
+    @Override
+    public void onResume() {
+        if(!firstBoot)
+            setLoggedIn(AirbitzApplication.isLoggedIn());
+        super.onResume();
     }
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
