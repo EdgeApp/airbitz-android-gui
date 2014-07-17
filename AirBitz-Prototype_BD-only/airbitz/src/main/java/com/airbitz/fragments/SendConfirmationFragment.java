@@ -109,9 +109,6 @@ public class SendConfirmationFragment extends Fragment {
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
         }
-        if(mIsUUID) {
-            mToWallet = mCoreAPI.getWallet(mUUIDorURI);
-        }
     }
 
     @Override
@@ -166,10 +163,13 @@ public class SendConfirmationFragment extends Fragment {
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
         mFromEdittext.setText(mSourceWallet.getName());
-        if(mToWallet==null)
-            mToEdittext.setText(mUUIDorURI);
-        else
+        if(mIsUUID) {
+            mToWallet = mCoreAPI.getWallet(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
+        }
+        else {
+            mToEdittext.setText(mUUIDorURI);
+        }
 
         mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
         String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
