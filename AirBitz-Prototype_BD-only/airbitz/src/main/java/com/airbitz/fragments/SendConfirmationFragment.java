@@ -162,14 +162,18 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        String balance = mCoreAPI.FormatCurrency(mSourceWallet.getBalanceSatoshi(), mSourceWallet.getCurrencyNum(), false, true);
+        String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
         }
         else {
-            mToEdittext.setText(mUUIDorURI);
+            String temp = mUUIDorURI;
+            if(mUUIDorURI.length()>20) {
+                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length()-5, mUUIDorURI.length());
+            }
+            mToEdittext.setText(temp);
         }
 
         mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
