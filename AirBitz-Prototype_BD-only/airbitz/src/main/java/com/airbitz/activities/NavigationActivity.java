@@ -185,6 +185,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mViewPager.setCurrentItem(2);
             mViewPager.setVisibility(View.INVISIBLE);
 
+            switchFragmentThread(mNavBarFragment.getCurrentTab());
             mCoreAPI.startExchangeRateUpdates();
         }
     }
@@ -204,12 +205,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         if(AirbitzApplication.isLoggedIn()) {
             switchFragmentThread(position);
         } else {
-            if(position != 0) {
-                mNavBarFragment.unselectTab(position);
-                mNavBarFragment.setLastTab(0);
-                mNavBarFragment.selectTab(0);
-                setLoggedIn(false);
-            }
+            setLoggedIn(false);
         }
     }
 
@@ -219,7 +215,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mNavBarFragment.selectTab(id);
         mNavFragmentId = id;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();//.addToBackStack(null).commit();
+        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();
     }
 
     public void pushFragment(Fragment fragment) {

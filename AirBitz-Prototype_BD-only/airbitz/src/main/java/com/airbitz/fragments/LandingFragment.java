@@ -62,7 +62,9 @@ public class LandingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if(AirbitzApplication.isLoggedIn()) { gotoBusinessDirectoryLoggedIn(); }
+        if(AirbitzApplication.isLoggedIn()) {
+            ((NavigationActivity) getActivity()).setLoggedIn(true);
+        }
     }
 
     @Override
@@ -197,7 +199,7 @@ public class LandingFragment extends Fragment {
             showProgress(false);
             if (success){
                 AirbitzApplication.Login(mUsername, mPassword);
-                gotoBusinessDirectoryLoggedIn();
+                ((NavigationActivity) getActivity()).setLoggedIn(true);
             } else {
                 showErrorDialog();
             }
@@ -210,10 +212,10 @@ public class LandingFragment extends Fragment {
         }
     }
 
-    private void gotoBusinessDirectoryLoggedIn() {
-        ((NavigationActivity) getActivity()).setLoggedIn(true);
-        ((NavigationActivity) getActivity()).onNavBarSelected(0);
-    }
+//    private void gotoBusinessDirectoryLoggedIn() {
+//        ((NavigationActivity) getActivity()).setLoggedIn(true);
+//        ((NavigationActivity) getActivity()).onNavBarSelected(0);
+//    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
