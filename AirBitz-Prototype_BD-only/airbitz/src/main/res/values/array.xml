@@ -60,128 +60,134 @@
     </array>
     
     <array name="category_defaults">
-        <item>Expense:Air Travel"</item>
-        <item>Expense:Alcohol &amp;amp;amp; Bars"</item>
-        <item>Expense:Allowance"</item>
-        <item>Expense:Amusement"</item>
-        <item>Expense:Arts"</item>
-        <item>Expense:ATM Fee"</item>
-        <item>Expense:Auto &amp; Transport"</item>
-        <item>Expense:Auto Insurance"</item>
-        <item>Expense:Auto Payment"</item>
-        <item>Expense:Baby Supplies"</item>
-        <item>Expense:Babysitter &amp; Daycare"</item>
-        <item>Expense:Bank Fee",</item>
-        <item>Expense:Bills &amp; Utilities"</item>
-        <item>Expense:Books"</item>
-        <item>Expense:Books &amp; Supplies"</item>
-        <item>Expense:Car Wash"</item>
-        <item>Expense:Cash &amp; ATM"</item>
-        <item>Expense:Charity"</item>
-        <item>Expense:Clothing"</item>
-        <item>Expense:Coffee Shops"</item>
-        <item>Expense:Credit Card Payment"</item>
-        <item>Expense:Dentist"</item>
-        <item>Expense:Deposit to Savings"</item>
-        <item>Expense:Doctor"</item>
-        <item>Expense:Education"</item>
-        <item>Expense:Electronics &amp; Software"</item>
-        <item>Expense:Entertainment"</item>
-        <item>Expense:Eyecare"</item>
-        <item>Expense:Fast Food"</item>
-        <item>Expense:Fees &amp; Charges"</item>
-        <item>Expense:Financial"</item>
-        <item>Expense:Financial Advisor"</item>
-        <item>Expense:Food &amp; Dining"</item>
-        <item>Expense:Furnishings"</item>
-        <item>Expense:Gas &amp; Fuel"</item>
-        <item>Expense:Gift"</item>
-        <item>Expense:Gifts &amp; Donations"</item>
-        <item>Expense:Groceries"</item>
-        <item>Expense:Gym"</item>
-        <item>Expense:Hair"</item>
-        <item>Expense:Health &amp; Fitness"</item>
-        <item>Expense:HOA Dues"</item>
-        <item>Expense:Hobbies"</item>
-        <item>Expense:Home"</item>
-        <item>Expense:Home Improvement"</item>
-        <item>Expense:Home Insurance"</item>
-        <item>Expense:Home Phone"</item>
-        <item>Expense:Home Services"</item>
-        <item>Expense:Home Supplies"</item>
-        <item>Expense:Hotel"</item>
-        <item>Expense:Interest Exp"</item>
-        <item>Expense:Internet"</item>
-        <item>Expense:IRA Contribution"</item>
-        <item>Expense:Kids"</item>
-        <item>Expense:Kids Activities"</item>
-        <item>Expense:Late Fee"</item>
-        <item>Expense:Laundry"</item>
-        <item>Expense:Lawn &amp; Garden"</item>
-        <item>Expense:Life Insurance"</item>
-        <item>Expense:Misc."</item>
-        <item>Expense:Mobile Phone"</item>
-        <item>Expense:Mortgage &amp; Rent"</item>
-        <item>Expense:Mortgage Interest"</item>
-        <item>Expense:Movies &amp; DVDs"</item>
-        <item>Expense:Music"</item>
-        <item>Expense:Newspaper &amp; Magazines"</item>
-        <item>Expense:Not Sure"</item>
-        <item>Expense:Parking"</item>
-        <item>Expense:Personal Care"</item>
-        <item>Expense:Pet Food &amp; Supplies"</item>
-        <item>Expense:Pet Grooming"</item>
-        <item>Expense:Pets"</item>
-        <item>Expense:Pharmacy"</item>
-        <item>Expense:Property"</item>
-        <item>Expense:Public Transportation"</item>
-        <item>Expense:Registration"</item>
-        <item>Expense:Rental Car &amp; Taxi"</item>
-        <item>Expense:Restaurants"</item>
-        <item>Expense:Service &amp; Parts"</item>
-        <item>Expense:Service Fee"</item>
-        <item>Expense:Shopping"</item>
-        <item>Expense:Spa &amp; Massage"</item>
-        <item>Expense:Sporting Goods"</item>
-        <item>Expense:Sports"</item>
-        <item>Expense:Student Loan"</item>
-        <item>Expense:Tax"</item>
-        <item>Expense:Television"</item>
-        <item>Expense:Tolls"</item>
-        <item>Expense:Toys"</item>
-        <item>Expense:Trade Commissions"</item>
-        <item>Expense:Travel"</item>
-        <item>Expense:Tuition"</item>
-        <item>Expense:Utilities"</item>
-        <item>Expense:Vacation"</item>
-        <item>Expense:Vet"</item>
+        <item>Expense:Air Travel</item>
+        <item>Expense:Alcohol &amp; Bars</item>
+        <item>Expense:Allowance</item>
+        <item>Expense:Amusement</item>
+        <item>Expense:Arts</item>
+        <item>Expense:ATM Fee</item>
+        <item>Expense:Auto &amp; Transport</item>
+        <item>Expense:Auto Insurance</item>
+        <item>Expense:Auto Payment</item>
+        <item>Expense:Baby Supplies</item>
+        <item>Expense:Babysitter &amp; Daycare</item>
+        <item>Expense:Bank Fee</item>
+        <item>Expense:Bills &amp; Utilities</item>
+        <item>Expense:Books</item>
+        <item>Expense:Books &amp; Supplies</item>
+        <item>Expense:Car Wash</item>
+        <item>Expense:Cash &amp; ATM</item>
+        <item>Expense:Charity</item>
+        <item>Expense:Clothing</item>
+        <item>Expense:Coffee Shops</item>
+        <item>Expense:Credit Card Payment</item>
+        <item>Expense:Dentist</item>
+        <item>Expense:Deposit to Savings</item>
+        <item>Expense:Doctor</item>
+        <item>Expense:Education</item>
+        <item>Expense:Electronics &amp; Software</item>
+        <item>Expense:Entertainment</item>
+        <item>Expense:Eyecare</item>
+        <item>Expense:Fast Food</item>
+        <item>Expense:Fees &amp; Charges</item>
+        <item>Expense:Financial</item>
+        <item>Expense:Financial Advisor</item>
+        <item>Expense:Food &amp; Dining</item>
+        <item>Expense:Furnishings</item>
+        <item>Expense:Gas &amp; Fuel</item>
+        <item>Expense:Gift</item>
+        <item>Expense:Gifts &amp; Donations</item>
+        <item>Expense:Groceries</item>
+        <item>Expense:Gym</item>
+        <item>Expense:Hair</item>
+        <item>Expense:Health &amp; Fitness</item>
+        <item>Expense:HOA Dues</item>
+        <item>Expense:Hobbies</item>
+        <item>Expense:Home</item>
+        <item>Expense:Home Improvement</item>
+        <item>Expense:Home Insurance</item>
+        <item>Expense:Home Phone</item>
+        <item>Expense:Home Services</item>
+        <item>Expense:Home Supplies</item>
+        <item>Expense:Hotel</item>
+        <item>Expense:Interest Exp</item>
+        <item>Expense:Internet</item>
+        <item>Expense:IRA Contribution</item>
+        <item>Expense:Kids</item>
+        <item>Expense:Kids Activities</item>
+        <item>Expense:Late Fee</item>
+        <item>Expense:Laundry</item>
+        <item>Expense:Lawn &amp; Garden</item>
+        <item>Expense:Life Insurance</item>
+        <item>Expense:Misc.</item>
+        <item>Expense:Mobile Phone</item>
+        <item>Expense:Mortgage &amp; Rent</item>
+        <item>Expense:Mortgage Interest</item>
+        <item>Expense:Movies &amp; DVDs</item>
+        <item>Expense:Music</item>
+        <item>Expense:Newspaper &amp; Magazines</item>
+        <item>Expense:Not Sure</item>
+        <item>Expense:Parking</item>
+        <item>Expense:Personal Care</item>
+        <item>Expense:Pet Food &amp; Supplies</item>
+        <item>Expense:Pet Grooming</item>
+        <item>Expense:Pets</item>
+        <item>Expense:Pharmacy</item>
+        <item>Expense:Property</item>
+        <item>Expense:Public Transportation</item>
+        <item>Expense:Registration</item>
+        <item>Expense:Rental Car &amp; Taxi</item>
+        <item>Expense:Restaurants</item>
+        <item>Expense:Service &amp; Parts</item>
+        <item>Expense:Service Fee</item>
+        <item>Expense:Shopping</item>
+        <item>Expense:Spa &amp; Massage</item>
+        <item>Expense:Sporting Goods</item>
+        <item>Expense:Sports</item>
+        <item>Expense:Student Loan</item>
+        <item>Expense:Tax</item>
+        <item>Expense:Television</item>
+        <item>Expense:Tolls</item>
+        <item>Expense:Toys</item>
+        <item>Expense:Trade Commissions</item>
+        <item>Expense:Travel</item>
+        <item>Expense:Tuition</item>
+        <item>Expense:Utilities</item>
+        <item>Expense:Vacation</item>
+        <item>Expense:Vet</item>
 
-        <item>Income:Consulting Income"</item>
-        <item>Income:Div Income"</item>
-        <item>Income:Net Salary"</item>
-        <item>Income:Other Income"</item>
-        <item>Income:Rent"</item>
-        <item>Income:Sales"</item>
+        <item>Income:Consulting Income</item>
+        <item>Income:Div Income</item>
+        <item>Income:Net Salary</item>
+        <item>Income:Other Income</item>
+        <item>Income:Rent</item>
+        <item>Income:Sales</item>
 
-        <item>Transfer:Airbitz"</item>
-        <item>Transfer:Bitcoin.de"</item>
-        <item>Transfer:Bitfinex"</item>
-        <item>Transfer:Bitstamp"</item>
-        <item>Transfer:Blockchain Wallet"</item>
-        <item>Transfer:BTC-e"</item>
-        <item>Transfer:BTCChina"</item>
-        <item>Transfer:Bter"</item>
-        <item>Transfer:Buy Bitcoin"</item>
-        <item>Transfer:CAVirtex"</item>
-        <item>Transfer:Coinbase"</item>
-        <item>Transfer:CoinMKT"</item>
-        <item>Transfer:Huobi"</item>
-        <item>Transfer:Kraken"</item>
-        <item>Transfer:MintPal"</item>
-        <item>Transfer:Mycelium"</item>
-        <item>Transfer:OKCoin"</item>
-        <item>Transfer:Sell Bitcoin"</item>
-        <item>Transfer:Vault of Satoshi"</item>
+        <item>Exchange:Buy Bitcoin</item>
+        <item>Exchange:Sell Bitcoin</item>
+
+        <item>Transfer:Bitcoin.de</item>
+        <item>Transfer:Bitfinex</item>
+        <item>Transfer:Bitstamp</item>
+        <item>Transfer:BTC-e</item>
+        <item>Transfer:BTCChina</item>
+        <item>Transfer:Bter</item>
+        <item>Transfer:CAVirtex</item>
+        <item>Transfer:Coinbase</item>
+        <item>Transfer:CoinMKT</item>
+        <item>Transfer:Huobi</item>
+        <item>Transfer:Kraken</item>
+        <item>Transfer:MintPal</item>
+        <item>Transfer:OKCoin</item>
+        <item>Transfer:Vault of Satoshi</item>
+        <item>Transfer:Wallet:Airbitz</item>
+        <item>Transfer:Wallet:Armory</item>
+        <item>Transfer:Wallet:Bitcoin Core</item>
+        <item>Transfer:Wallet:Blockchain</item>
+        <item>Transfer:Wallet:Electrum</item>
+        <item>Transfer:Wallet:Multibit</item>
+        <item>Transfer:Wallet:Mycelium</item>
+        <item>Transfer:Wallet:Dark Wallet</item>
     </array>
 
 </resources>
