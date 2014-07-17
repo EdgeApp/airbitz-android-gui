@@ -111,13 +111,17 @@ public class CoreAPI {
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
-        list.add(new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL"));//Wallet HEADER
+        Wallet headerWallet = new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
+        headerWallet.setUUID("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
+        list.add(headerWallet);//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1 && wallet.getName()!=null)
                 list.add(wallet);
         }
-        list.add(new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")); //Archive HEADER
+        Wallet archiveWallet = new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
+        archiveWallet.setUUID("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
+        list.add(archiveWallet); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1 && wallet.getName()!=null)

@@ -266,6 +266,18 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             }
         });
 
+        mWalletNameButton.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    if(mWalletNameButton.getText().toString().trim().isEmpty()){
+
+                    }
+                }
+                return false;
+            }
+        });
+
         mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
