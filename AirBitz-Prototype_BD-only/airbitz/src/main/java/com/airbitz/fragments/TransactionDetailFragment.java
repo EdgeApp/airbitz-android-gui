@@ -90,7 +90,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private EditText mPayeeEditText;
     private TextView mBitcoinValueTextview;
     private TextView mFeeTextview;
-    private TextView mNoteTextView;
 
     private LinearLayout mDummyFocus;
 
@@ -226,7 +225,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
         mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
         mToFromName = (TextView) view.findViewById(R.id.transaction_detail_textview_to_wallet);
-        mNoteTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_notes);
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mFeeTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_fee_value);
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
@@ -297,7 +295,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
 
-        mNoteTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
@@ -692,10 +689,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         if(mFromSend) {
             String feeFormatted = "";
-            if (transaction.getAmountSatoshi() < 0)
-            {
-                feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
-            }
+            feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
             mFeeTextview.setText(feeFormatted);
             mFeeTextview.setVisibility(View.VISIBLE);
         } else {
