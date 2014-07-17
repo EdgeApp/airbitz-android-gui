@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.adapters.SettingsCategoryAdapter;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.models.CategoryTypeEnum;
 
 import java.util.ArrayList;
@@ -70,9 +71,12 @@ public class CategoryFragment extends Fragment {
     private List<Integer> currentPosPopUp;//O - currentpos
     Activity activity;
 
+    CoreAPI mCoreAPI;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -519,11 +523,7 @@ public class CategoryFragment extends Fragment {
     }
 
     private void goAddCategories(){
-        //TODO retrieve categories from core
-        mCategories.add("Expense:Balloons");
-        mCategories.add("Expense:Cotton Candy");
-        mCategories.add("Income:Newspaper Route");
-        mCurrentCategories.addAll(mCategories);
+        mCategories = mCoreAPI.loadCategories();
     }
 
     private void goAddNewCategory(){
