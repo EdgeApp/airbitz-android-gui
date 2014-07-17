@@ -265,9 +265,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             String cat = mCategories.get(index);
             if(cat.equals("Income:"))
                 baseIncomePosition = index;
-            if(cat.equals("Income:"))
+            if(cat.equals("Expense:"))
                 baseExpensePosition = index;
-            if(cat.equals("Income:"))
+            if(cat.equals("Transfer:"))
                 baseTransferPosition = index;
         }
 
