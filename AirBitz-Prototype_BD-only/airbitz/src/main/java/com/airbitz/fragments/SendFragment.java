@@ -292,6 +292,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
+                mListviewContainer.setVisibility(View.GONE);
                 hideKeyboard();
                 Wallet w = mCoreAPI.getWalletFromName(mCurrentListingNames.get(i));
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
@@ -430,6 +431,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     // Select a picture from the Gallery
     private void PickAPicture() {
+        mToEdittext.clearFocus();
         Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
@@ -568,6 +570,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     @Override
     public void onResume() {
         super.onResume();
+        dummyFocus.requestFocus();
         if(mHandler==null)
             mHandler = new Handler();
         mHandler.postDelayed(cameraDelayRunner, 500);
