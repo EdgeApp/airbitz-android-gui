@@ -60,6 +60,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private Button mQRCodeButton;
     private Button mBLEButton;
 
+    private View dummyFocus;
+
     private List<Wallet> mWallets;
     private List<String> mWalletNames;
 
@@ -143,6 +145,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
 
+        dummyFocus = view.findViewById(R.id.fragment_request_dummy_focus);
+
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
 
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
@@ -164,7 +168,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
 
         pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletNames);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNames);
+        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
         pickWalletSpinner.setAdapter(dataAdapter);
         pickWalletSpinner.post(new Runnable() {
             @Override
@@ -193,7 +198,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mButtonGroup.setVisibility(View.VISIBLE);
+                Fragment frag = new WalletQRCodeFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(Wallet.WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
+                bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+                bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
+                frag.setArguments(bundle);
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
 
@@ -268,6 +279,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 updateTextFieldContents(true);
+                mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
             }
         };
 
@@ -281,6 +293,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 updateTextFieldContents(false);
+                mFiatField.setSelection(mFiatField.getText().toString().length());
             }
         };
 
@@ -292,8 +305,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     int inType = edittext.getInputType();
                     edittext.setInputType(InputType.TYPE_NULL);
                     edittext.setInputType(inType);
-                    mBitcoinField.setText("");
                     mFiatField.removeTextChangedListener(mDollarTextWatcher);
+                    mBitcoinField.setText("");
+                    mFiatField.setText("");
                     mBitcoinField.addTextChangedListener(mBTCTextWatcher);
                     showCustomKeyboard(view);
                 } else {
@@ -310,8 +324,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.setInputType(inType);
                 if (hasFocus) {
-                    mFiatField.setText("");
                     mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mFiatField.setText("");
+                    mBitcoinField.setText("");
                     mFiatField.addTextChangedListener(mDollarTextWatcher);
                     showCustomKeyboard(view);
                 } else {
@@ -381,8 +396,18 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         if (btc && !mBitcoinField.getText().toString().isEmpty()) {
             satoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
-        }
-        else if (!btc && !mFiatField.getText().toString().isEmpty()) {
+        }else if(btc && mBitcoinField.getText().toString().isEmpty()){
+            mFiatField.setText("0.00");
+        }else if(!btc && mFiatField.getText().toString().isEmpty()){
+            String s = mCoreAPI.getDefaultBTCDenomination();
+            if(s.equals("mBTC")) {
+                mBitcoinField.setText("0.00000");
+            }else if(s.equals("μBTC")){
+                mBitcoinField.setText("0.00");
+            }else if(s.equals("BTC")){
+                mBitcoinField.setText("0.00000000");
+            }
+        }else if (!btc && !mFiatField.getText().toString().isEmpty()) {
             try
             {
                 currency = Double.parseDouble(mFiatField.getText().toString());
@@ -442,7 +467,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             String s = display.getText().toString();
             if(s.length() == 1) { // 1 character, just set to 0
                 mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
-                display.setText("0");
+                display.setText("");
             } else if (s.length() > 1) {
                 display.setText(s.substring(0, s.length()-1));
             }
@@ -492,6 +517,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     public void hideCustomKeyboard() {
         ((NavigationActivity) getActivity()).hideCalculator();
+        dummyFocus.requestFocus();
     }
 
     public void showCustomKeyboard(View v) {
