@@ -8,6 +8,7 @@ import android.app.Application;
  */
 public class AirbitzApplication extends Application {
     private static Login airbitzLogin = new Login();
+    private static int mLastNavTab = 0;
 
     public static boolean isLoggedIn() {
         return airbitzLogin.getUsername() != null;
@@ -27,6 +28,8 @@ public class AirbitzApplication extends Application {
 
     public static String getUsername() {return airbitzLogin.getUsername(); }
     public static String getPassword() {return airbitzLogin.getPassword(); }
+    public static void setLastNavTab(int tab) {mLastNavTab = tab;}
+    public static int getLastNavTab() {return mLastNavTab;}
 
     private static class Login {
         private String mUsername = null;
