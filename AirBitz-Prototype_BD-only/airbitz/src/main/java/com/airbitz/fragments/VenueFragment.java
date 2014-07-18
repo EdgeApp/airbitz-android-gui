@@ -231,7 +231,7 @@ public class VenueFragment extends Fragment implements
         handler.postDelayed(new Runnable()
         {
             @Override public void run() {
-                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING && getActivity()!=null) {
                     Toast.makeText(getActivity(), "Can not retrieve data",
                             Toast.LENGTH_LONG).show();
                     mGetVenuesTask.cancel(true);
