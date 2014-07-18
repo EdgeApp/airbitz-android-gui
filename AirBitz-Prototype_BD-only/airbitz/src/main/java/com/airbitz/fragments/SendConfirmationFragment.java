@@ -57,6 +57,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private TextView mPinTextView;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
+    private TextView mFiatSignTextView;
     private TextView mConversionTextView;
     private Button mMaxButton;
 
@@ -144,6 +145,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
         mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
         mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
+        mFiatSignTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (Button) view.findViewById(R.id.button_max);
 
         mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
@@ -203,6 +205,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
@@ -304,7 +307,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
 
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.getCurrencyNumbers()[mCoreAPI.SettingsCurrencyIndex()]));
 
         Shader textShader = new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
