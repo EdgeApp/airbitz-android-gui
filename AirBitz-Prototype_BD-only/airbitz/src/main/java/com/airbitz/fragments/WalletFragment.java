@@ -17,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -37,14 +36,11 @@ import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
-import com.google.android.gms.common.images.ImageManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -533,7 +529,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         }
         mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
-        mTopType.setText(mCoreAPI.getUserBTCDenomination());
+        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
     }
 
 

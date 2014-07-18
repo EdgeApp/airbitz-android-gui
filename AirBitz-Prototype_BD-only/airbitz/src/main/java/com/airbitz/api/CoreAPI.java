@@ -281,7 +281,7 @@ public class CoreAPI {
         return null;
     }
 
-    public String getUserBTCDenomination() {
+    public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
@@ -1000,7 +1000,7 @@ public class CoreAPI {
                 pretext += "-";
             }
             if(withSymbol) {
-                pretext += " "+getUserBTCDenomination();
+                pretext += " "+ getDefaultBTCDenomination();
             }
             return pretext+pFormatted;
         }
