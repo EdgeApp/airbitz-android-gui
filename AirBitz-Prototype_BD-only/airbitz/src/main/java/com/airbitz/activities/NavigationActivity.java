@@ -82,8 +82,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
-    private boolean firstBoot = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -113,7 +111,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mNavStacks[i] = new Stack<Fragment>();
             mNavStacks[i].push(mNavFragments[i]);
         }
-        switchFragmentThread(Tabs.BD.ordinal());
 
         // for keyboard hide and show
         final View activityRootView = findViewById(R.id.activity_navigation_root);
@@ -187,7 +184,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mViewPager.setCurrentItem(2);
             mViewPager.setVisibility(View.INVISIBLE);
 
-            switchFragmentThread(mNavBarFragment.getCurrentTab());
+            switchFragmentThread(mNavFragmentId);
             mCoreAPI.startExchangeRateUpdates();
         }
     }
@@ -216,6 +213,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
         mNavFragmentId = id;
+        AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();
     }
@@ -298,8 +296,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     @Override
     public void onResume() {
-        if(!firstBoot)
-            setLoggedIn(AirbitzApplication.isLoggedIn());
+        mNavFragmentId = AirbitzApplication.getLastNavTab();
+        if(!AirbitzApplication.isLoggedIn()) {
+            mNavFragmentId = Tabs.BD.ordinal();
+        }
+        setLoggedIn(AirbitzApplication.isLoggedIn());
         super.onResume();
     }
 
