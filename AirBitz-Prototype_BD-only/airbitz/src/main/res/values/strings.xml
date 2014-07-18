@@ -135,6 +135,7 @@
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
 
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
+    <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
