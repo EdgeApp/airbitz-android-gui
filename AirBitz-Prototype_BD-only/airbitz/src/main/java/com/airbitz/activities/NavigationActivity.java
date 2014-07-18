@@ -96,6 +96,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         // COMMENT OUT NEXT LINE FOR COMMITS
 //        AirbitzApplication.Login("tb2", "Aaaaaaaa1@");
+//        AirbitzApplication.Login("matt104", "O@21grapes");
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -306,9 +307,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
-            while(mNavStacks[mNavFragmentId].size() > 1){
+            while(!mNavStacks[mNavFragmentId].isEmpty()){
                 mNavStacks[mNavFragmentId].pop();
             }
+            Fragment fragment = new RequestFragment();
+            mNavStacks[mNavFragmentId].add(fragment);
             switchFragmentThread(3);
             mNavFragmentId = 3;
             while (!mNavStacks[mNavFragmentId].isEmpty()){
@@ -320,9 +323,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             frag.setArguments(bundle);
             pushFragment(frag);
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
-            while(mNavStacks[mNavFragmentId].size() > 1){
+            while(!mNavStacks[mNavFragmentId].isEmpty()){
                 mNavStacks[mNavFragmentId].pop();
             }
+            Fragment fragment = new SendFragment();
+            mNavStacks[mNavFragmentId].add(fragment);
             switchFragmentThread(3);
             mNavFragmentId = 3;
             while (!mNavStacks[mNavFragmentId].isEmpty()){
