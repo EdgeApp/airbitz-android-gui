@@ -98,7 +98,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         // COMMENT OUT NEXT LINE FOR COMMITS
 //        AirbitzApplication.Login("tb2", "Aaaaaaaa1@");
-        AirbitzApplication.Login("matt104", "O@21grapes");
+//        AirbitzApplication.Login("matt104", "O@21grapes");
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
