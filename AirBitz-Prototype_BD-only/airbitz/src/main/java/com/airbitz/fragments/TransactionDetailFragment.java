@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -22,8 +23,11 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -646,52 +650,92 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         String outAddresses = "";
         String baseUrl = "";
         if (true) { // TESTNET
-            baseUrl += "https://blockexplorer.com/testnet";
+            baseUrl += "https://blockexplorer.com/testnet/";
         } else { // LIVE
-            baseUrl += "https://blockchain.info";
+            baseUrl += "https://blockchain.info/";
         }
-        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
-            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
-            String html = String.format("<div class=\"wrapped\"><a href=\"%@/address/%@\">%@</a></div><div>%@</div>",
-                    baseUrl, t.getSzAddress(), t.getSzAddress(), val);
-            if (t.getInput()) {
-                inAddresses += html;
-            } else {
-                outAddresses += html;
+
+//        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
+//            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
+//            String html = String.format("<div class=\"wrapped\"><a href=\"%@/address/%@\">%@</a></div><div>%@</div>",
+//                    baseUrl, t.getSzAddress(), t.getSzAddress(), val);
+//            if (t.getInput()) {
+//                inAddresses += html;
+//            } else {
+//                outAddresses += html;
+//            }
+//        }
+
+        SpannableStringBuilder s = new SpannableStringBuilder();
+        int start = 0, end=0;
+        s.append("Transaction ID").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n");
+
+        start = s.length();
+        s.append(mTransaction.getID());
+        end = s.length();
+        final String finalBaseUrl = baseUrl;
+        ClickableSpan url = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Intent i = new Intent( Intent.ACTION_VIEW );
+                i.setData( Uri.parse(finalBaseUrl + mTransaction.getID()) );
+                startActivity( i );
             }
-        }
-        String txIdLink = baseUrl + mTransaction.getID();
+        };
+        s.setSpan(url, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        s.append("\n\n");
 
-//        String txIdLink = String.format("<div class=\"wrapped\"><a href=\"%@/tx/%@\">%@</a></div>",
-//            baseUrl, mTransaction.getID(), mTransaction.getID());
+        //Total Sent - formatSatoshi
+        start = s.length();
+        s.append("Total Sent").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n");
 
-        SpannableStringBuilder longDescription = new SpannableStringBuilder();
-        longDescription.append("First Part Not Bold ");
-        int start = longDescription.length();
-        longDescription.append("BOLD");
-        longDescription.setSpan(new ForegroundColorSpan(0xFFCC5500), start, longDescription.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        longDescription.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append(String.valueOf(mTransaction.getAmountSatoshi()+mTransaction.getABFees()+mTransaction.getMinerFees()));
+        s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n\n");
 
-        longDescription.append(" rest not bold");
 
-//        //Transaction ID
-//        content += content.replaceAll("1", txIdLink);
-//
-//        //Total Sent - formatSatoshi
-//        content += content.replaceAll("2", mCoreAPI.formatSatoshi(mTransaction.getAmountSatoshi()));
-//
-//        //Source - id\nformatSatoshi
-//        content += content.replaceAll("3", inAddresses);
-//
-//        //Destination - id\nformatSatoshi
-//        content += content.replaceAll("4", outAddresses);
-//
+        //Source - inAddresses
+        start = s.length();
+        s.append("Source").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n\n");
+
+        //Destination - outAddresses
+        start = s.length();
+        s.append("Destination").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n\n");
+
+
 //        //Miner Fee - formatSatoshi
-//        String fees = mCoreAPI.formatSatoshi(mTransaction.getMinerFees()+mTransaction.getABFees());
-//        content += content.replaceAll("5", fees);
+        start = s.length();
+        s.append("Miner Fee").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n");
+
+        start = s.length();
+        s.append(String.valueOf(mTransaction.getABFees()+mTransaction.getMinerFees()));
+        s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //
 //        //TODO set content
-//        mAdvancedDetailTextView.setText(content);
+        mAdvancedDetailTextView.setText(s);
+        mAdvancedDetailTextView.setMovementMethod( LinkMovementMethod.getInstance() );
+    }
+
+    private URLSpan getURLSpan(String link) {
+        return new URLSpan( link ) {
+            @Override
+            public void onClick( View widget )
+            {
+                Intent i = new Intent( Intent.ACTION_VIEW );
+                i.setData( Uri.parse( getURL() ) );
+                startActivity( i );
+            }
+        };
     }
 
     private void UpdateView(Transaction transaction) {
