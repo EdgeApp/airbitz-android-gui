@@ -110,12 +110,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_request, container, false);
-        mView = view;
 
         mWallets = mCoreAPI.getCoreWallets();
         mWalletNames = new ArrayList<String>();
@@ -129,6 +123,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             if(mWallets.get(i).getUUID().equals(uuid))
                 mFromIndex = i;
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_request, container, false);
+        mView = view;
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
@@ -187,7 +187,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFiatDenominationTextView = (TextView) view.findViewById(R.id.request_fiat_denomination);
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+        Wallet wallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
+        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(wallet.getCurrencyNum())]);
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -359,7 +360,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         });
 
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
-        Wallet wallet = mWallets.get(walletPosition);
+        wallet = mWallets.get(walletPosition);
         setConversionText(wallet.getCurrencyNum());
 
         return view;
