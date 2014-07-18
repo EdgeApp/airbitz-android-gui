@@ -121,7 +121,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                 String walletUUID = bundle.getString(Wallet.WALLET_UUID);
                 if(walletUUID==null || walletUUID.isEmpty()) {
-                    Log.d("WalletFragement", "no detail info");
+                    Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
