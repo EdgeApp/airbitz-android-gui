@@ -26,6 +26,9 @@ public class WalletQRCodeFragment extends Fragment {
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private Button mCancelButton;
+    private Button mSMSButton;
+    private Button mEmailButton;
+    private Button mCopyButton;
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
 
@@ -58,6 +61,8 @@ public class WalletQRCodeFragment extends Fragment {
 
         mBackButton = (ImageButton) view.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mSMSButton = (Button) view.findViewById(R.id.button_sms_address);
+        mEmailButton = (Button) view.findViewById(R.id.button_email_address);
         mCancelButton = (Button) view.findViewById(R.id.button_cancel);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
