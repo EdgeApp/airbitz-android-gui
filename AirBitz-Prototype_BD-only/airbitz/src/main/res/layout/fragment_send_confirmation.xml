@@ -174,8 +174,19 @@
                     android:layout_marginRight="12.6dp"
                     android:layout_marginLeft="12.6dp"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:drawableLeft="@drawable/ico_coin_btc_white"/>
+                    android:background="@drawable/rounded_edge_black_transparent_30"/>
+                    <TextView
+                        android:id="@+id/send_confirmation_btc_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="20dp"
+                        android:textAlignment="textStart"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="28dp"
+                        android:text="B"/>
                     <TextView
                         android:id="@+id/send_confirmation_btc_denomination"
                         android:layout_width="wrap_content"
@@ -213,9 +224,20 @@
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_edge_black_transparent_30"
                     android:gravity="center"
-                    android:drawableLeft="@drawable/ico_coin_usd_white"
                     android:layout_marginTop="6.3dp"
                     android:layout_marginBottom="6.3dp"/>
+                    <TextView
+                        android:id="@+id/send_confirmation_fiat_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="20dp"
+                        android:textAlignment="textStart"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="28dp"
+                        android:text="$"/>
                     <TextView
                         android:id="@+id/send_confirmation_fiat_denomination"
                         android:layout_width="wrap_content"
