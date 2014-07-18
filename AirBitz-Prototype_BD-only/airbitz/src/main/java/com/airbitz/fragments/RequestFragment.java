@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -11,9 +12,11 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -111,8 +114,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
         mView = view;
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mWallets = mCoreAPI.getCoreWallets();
         mWalletNames = new ArrayList<String>();
@@ -310,30 +311,19 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-//        mBitcoinField.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                EditText edittext = (EditText) v;
-//                int inType = edittext.getInputType();
-//                edittext.setInputType(InputType.TYPE_NULL);
-//                edittext.onTouchEvent(event);
-//                edittext.setInputType(inType);
-//                return true;
-//            }
-//        });
-//
-//
-//        mFiatField.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                EditText edittext = (EditText) v;
-//                int inType = edittext.getInputType();
-//                edittext.setInputType(InputType.TYPE_NULL);
-//                edittext.onTouchEvent(event);
-//                edittext.setInputType(inType);
-//                return true;
-//            }
-//        });
+        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+            public boolean onTouch (View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.onTouchEvent(event);
+                edittext.setInputType(inType);
+                return true; // the listener has consumed the event
+            }
+        };
+
+        mBitcoinField.setOnTouchListener(preventOSKeyboard);
+        mFiatField.setOnTouchListener(preventOSKeyboard);
 
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
@@ -496,6 +486,28 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     public void showCustomKeyboard(View v) {
         ((NavigationActivity) getActivity()).showCalculator();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
+    }
+
+    private void showKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE, 0);
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
 }
