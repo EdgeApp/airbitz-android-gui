@@ -103,7 +103,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private String mUUIDorURI;
     private String mLabel;
     private Boolean mIsUUID;
-    private static long mAmountToSendSatoshi;
+    private long mAmountToSendSatoshi;
 
     private CoreAPI mCoreAPI;
     private Wallet mSourceWallet, mToWallet;
@@ -482,10 +482,15 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     {
         if (mSourceWallet != null)
         {
-            mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi(), 0);
-            mBitcoinField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
-            String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
-            mFiatField.setText(temp.substring(0, temp.indexOf('.') + Math.min(3, temp.length() - temp.indexOf('.'))));
+            String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
+            long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+            if(fees<0) {
+                Log.d("SendConfirmationFragment", "Fee calculation error");
+            }
+            mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi()-fees, 0);
+            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+            updateFeeFieldContents();
         }
     }
 
@@ -493,7 +498,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     {
         String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
         long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
-        if(fees==-1) {
+        if(fees<0) {
             Log.d("SendConfirmationFragment", "Fee calculation error");
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
