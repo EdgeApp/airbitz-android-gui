@@ -91,7 +91,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Crashlytics.start(this);
 
         mCoreAPI = CoreAPI.getApi();
+        String seed = getSeedData();
+
+        mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
         mCoreAPI.setOnIncomingBitcoinListener(this);
+
+        // COMMENT OUT NEXT LINE FOR COMMITS
+//        AirbitzApplication.Login("tb2", "Aaaaaaaa1@");
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -122,10 +128,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).hideDoneCancel();
                     }
                 } else {
-                    if(keyBoardUp) {
-                        showNavBar();
-                        keyBoardUp = false;
-                    }
+                    showNavBar();
+                    keyBoardUp = false;
                     if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).showDoneCancel();
                     }
@@ -163,10 +167,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             }
         });
         mViewPager.setCurrentItem(2);
-
-        String seed = getSeedData();
-
-        mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
 
         if(bdonly){
             System.out.println("BD ONLY");
@@ -272,15 +272,19 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void hideCalculator() {
-        mCalculatorLayout.setVisibility(View.GONE);
-        mCalculatorLayout.setEnabled(false);
-        showNavBar();
+        if(mCalculatorLayout.getVisibility()==View.VISIBLE) {
+            mCalculatorLayout.setVisibility(View.GONE);
+            mCalculatorLayout.setEnabled(false);
+            showNavBar();
+        }
     }
 
     public void showCalculator() {
-        hideNavBar();
-        mCalculatorLayout.setVisibility(View.VISIBLE);
-        mCalculatorLayout.setEnabled(true);
+        if(mCalculatorLayout.getVisibility()!=View.VISIBLE) {
+            hideNavBar();
+            mCalculatorLayout.setVisibility(View.VISIBLE);
+            mCalculatorLayout.setEnabled(true);
+        }
     }
 
     @Override
