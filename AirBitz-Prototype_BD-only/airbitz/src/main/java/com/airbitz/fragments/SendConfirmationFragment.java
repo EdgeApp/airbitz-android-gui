@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -34,12 +35,15 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
+
+import java.text.DecimalFormat;
 
 /**
  * Created on 2/21/14.
  */
-public class SendConfirmationFragment extends Fragment {
+public class SendConfirmationFragment extends Fragment implements View.OnClickListener {
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
@@ -53,6 +57,7 @@ public class SendConfirmationFragment extends Fragment {
     private TextView mPinTextView;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
+    private TextView mFiatSignTextView;
     private TextView mConversionTextView;
     private Button mMaxButton;
 
@@ -60,8 +65,8 @@ public class SendConfirmationFragment extends Fragment {
 
     private boolean mConfirmChecked = false;
 
-    private EditText mDollarValueField;
-    private EditText mBitcoinValueField;
+    private EditText mFiatField;
+    private EditText mBitcoinField;
     private TextView mBitcoinFeeLabel;
     private TextView mDollarFeeLabel;
 
@@ -73,6 +78,11 @@ public class SendConfirmationFragment extends Fragment {
     private float dX = 0;
     private float rX = 0;
 
+    private Boolean userIsInTheMiddleOfTypingANumber = false;
+    private CalculatorBrain mCalculatorBrain;
+    private static final String DIGITS = "0123456789.";
+
+    DecimalFormat mDF = new DecimalFormat("@###########");
     private boolean doSet = false;
 
     private RelativeLayout mSlideLayout;
@@ -93,7 +103,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mUUIDorURI;
     private String mLabel;
     private Boolean mIsUUID;
-    private long mAmountToSendSatoshi=0;
+    private static long mAmountToSendSatoshi;
 
     private CoreAPI mCoreAPI;
     private Wallet mSourceWallet, mToWallet;
@@ -119,10 +129,7 @@ public class SendConfirmationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
@@ -138,15 +145,16 @@ public class SendConfirmationFragment extends Fragment {
         mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
         mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
         mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
+        mFiatSignTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (Button) view.findViewById(R.id.button_max);
 
         mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
 
-        mBitcoinValueField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
+        mBitcoinField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
 //        mBitcoinFeeLabel = (TextView) view.findViewById();
-        mDollarValueField = (EditText) view.findViewById(R.id.button_dollar_balance);
+        mFiatField = (EditText) view.findViewById(R.id.button_dollar_balance);
 //        mDollarFeeLabel = (TextView) view.findViewById();
 
         mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
@@ -168,6 +176,14 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
+        mCalculatorBrain = new CalculatorBrain();
+        mDF.setMinimumFractionDigits(0);
+        mDF.setMaximumFractionDigits(6);
+        mDF.setMinimumIntegerDigits(1);
+        mDF.setMaximumIntegerDigits(8);
+
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
@@ -182,11 +198,40 @@ public class SendConfirmationFragment extends Fragment {
             mToEdittext.setText(temp);
         }
 
-        mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
-        String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
-        mDollarValueField.setText(temp);
+        if(mAmountToSendSatoshi==0) {
+            mBitcoinField.setText("");
+            mFiatField.setText("");
+        }
+
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
+
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length()>=4) {
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
+                    mParentLayout.requestFocus();
+                }
+            }
+        };
+        mPinEdittext.addTextChangedListener(mPINTextWatcher);
+        mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus)
+                    showKeyboard();
+            }
+        });
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override
@@ -214,44 +259,55 @@ public class SendConfirmationFragment extends Fragment {
             }
         };
 
-        final TextWatcher mPINTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(editable.length()>=4) {
-                    mPinEdittext.clearFocus();
-                    hideKeyboard();
-                }
-            }
-        };
-        mPinEdittext.addTextChangedListener(mPINTextWatcher);
-
-        mBitcoinValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-             public void onFocusChange(View view, boolean hasFocus) {
-                 if (hasFocus) {
-                     mDollarValueField.removeTextChangedListener(mDollarTextWatcher);
-                     mBitcoinValueField.addTextChangedListener(mBTCTextWatcher);
-                 }
-            }
-        });
-
-        mDollarValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    mBitcoinValueField.removeTextChangedListener(mBTCTextWatcher);
-                    mDollarValueField.addTextChangedListener(mDollarTextWatcher);
+                    EditText edittext = (EditText) view;
+                    int inType = edittext.getInputType();
+                    edittext.setInputType(InputType.TYPE_NULL);
+                    edittext.setInputType(inType);
+                    mFiatField.removeTextChangedListener(mDollarTextWatcher);
+                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+                    showCustomKeyboard(view);
+                } else {
+                    hideCustomKeyboard();
                 }
             }
         });
 
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+        mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                EditText edittext = (EditText) view;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.setInputType(inType);
+                if (hasFocus) {
+                    mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mFiatField.addTextChangedListener(mDollarTextWatcher);
+                    showCustomKeyboard(view);
+                } else {
+                    hideCustomKeyboard();
+                }
+            }
+        });
+
+        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+            public boolean onTouch (View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.onTouchEvent(event);
+                edittext.setInputType(inType);
+                return true; // the listener has consumed the event
+            }
+        };
+
+        mBitcoinField.setOnTouchListener(preventOSKeyboard);
+        mFiatField.setOnTouchListener(preventOSKeyboard);
+
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.getCurrencyNumbers()[mCoreAPI.SettingsCurrencyIndex()]));
 
         Shader textShader = new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
@@ -371,31 +427,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mDollarValueField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateTextFieldContents(false);
-            }
-        });
-
-        mBitcoinValueField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateTextFieldContents(true);
-            }
-        });
-
-        mDollarValueField.setText("");
-        mBitcoinValueField.setText("");
-        if(mAmountToSendSatoshi==0) {
-           mDollarValueField.setFocusableInTouchMode(true);
-           mDollarValueField.requestFocus();
-        } else {
-            mPinEdittext.setText("");
-            mPinEdittext.setFocusableInTouchMode(true);
-            mPinEdittext.requestFocus();
-        }
-
         return view;
     }
 
@@ -403,6 +434,12 @@ public class SendConfirmationFragment extends Fragment {
         InputMethodManager inputManager = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.toggleSoftInput(0, 0);
+    }
+
+    private void showKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE, 0);
     }
 
 
@@ -421,20 +458,20 @@ public class SendConfirmationFragment extends Fragment {
         long satoshi;
 
         if (btc) {
-            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
+            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
             String temp = String.valueOf(value);
             String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
-            mDollarValueField.setText(out);
+            mFiatField.setText(out);
        }
         else {
             try
             {
-                currency = Double.valueOf(mDollarValueField.getText().toString());
+                currency = Double.valueOf(mFiatField.getText().toString());
                 satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
                 mAmountToSendSatoshi = satoshi;
                 int currencyDecimalPlaces = 2; //TODO where does this come from?
-                mBitcoinValueField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
             }
             catch(NumberFormatException e) {  } //not a double, ignore
         }
@@ -446,9 +483,9 @@ public class SendConfirmationFragment extends Fragment {
         if (mSourceWallet != null)
         {
             mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi(), 0);
-            mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
+            mBitcoinField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
             String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
-            mDollarValueField.setText(temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.'))));
+            mFiatField.setText(temp.substring(0, temp.indexOf('.') + Math.min(3, temp.length() - temp.indexOf('.'))));
         }
     }
 
@@ -462,8 +499,8 @@ public class SendConfirmationFragment extends Fragment {
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
             mConversionTextView.setTextColor(Color.WHITE);
-            mBitcoinValueField.setTextColor(Color.WHITE);
-            mDollarValueField.setTextColor(Color.WHITE);
+            mBitcoinField.setTextColor(Color.WHITE);
+            mFiatField.setTextColor(Color.WHITE);
 
             String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
 
@@ -478,8 +515,8 @@ public class SendConfirmationFragment extends Fragment {
         {
             mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mConversionTextView.setTextColor(Color.RED);
-            mBitcoinValueField.setTextColor(Color.RED);
-            mDollarValueField.setTextColor(Color.RED);
+            mBitcoinField.setTextColor(Color.RED);
+            mFiatField.setTextColor(Color.RED);
         }
     }
 
@@ -488,7 +525,7 @@ public class SendConfirmationFragment extends Fragment {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
-        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinValueField.getText().toString());
+        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if(mAmountToSendSatoshi==0) {
             showMessageAlert(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
@@ -562,5 +599,121 @@ public class SendConfirmationFragment extends Fragment {
                         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void setupCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        View focusCurrent = getActivity().getWindow().getCurrentFocus();
+        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
+        EditText display = (EditText) focusCurrent;
+        Editable editable = display.getText();
+        int start = display.getSelectionStart();
+        // delete the selection, if chars are selected:
+        int end = display.getSelectionEnd();
+        if (end > start) {
+            editable.delete(start, end);
+        }
+        String buttonTag = v.getTag().toString();
+
+        if(buttonTag.equals("done")) {
+            hideCustomKeyboard();
+            mPinEdittext.requestFocus();
+        } else if(buttonTag.equals("back")) {
+            String s = display.getText().toString();
+            if(s.length() == 1) { // 1 character, just set to 0
+                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
+                display.setText("0");
+            } else if (s.length() > 1) {
+                display.setText(s.substring(0, s.length()-1));
+            }
+
+        } else if (DIGITS.contains(buttonTag)) {
+
+            // digit was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
+                    // ERROR PREVENTION
+                    // Eliminate entering multiple decimals
+                } else {
+                    display.append(buttonTag);
+                }
+            } else {
+                if (buttonTag.equals(".")) {
+                    // ERROR PREVENTION
+                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                    // before the decimal
+                    display.setText(0 + buttonTag);
+                } else {
+                    display.setText(buttonTag);
+                }
+                userIsInTheMiddleOfTypingANumber = true;
+            }
+
+        } else {
+            // operation was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+
+                mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                userIsInTheMiddleOfTypingANumber = false;
+            }
+
+            mCalculatorBrain.performOperation(buttonTag);
+            display.setText(mDF.format(mCalculatorBrain.getResult()));
+            if(buttonTag.equals("=")) {
+//                updateTextFieldContents(display.equals(mBitcoinField));
+            }
+        }
+    }
+
+    public void hideCustomKeyboard() {
+        ((NavigationActivity) getActivity()).hideCalculator();
+    }
+
+    public void showCustomKeyboard(View v) {
+//        hideKeyboard();
+        ((NavigationActivity) getActivity()).showCalculator();
+    }
+
+    @Override public void onResume() {
+        mParentLayout.requestFocus(); //Take focus away first
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        String btc = mBitcoinField.getText().toString();
+        String fiat = mFiatField.getText().toString();
+        if(btc.isEmpty() && fiat.isEmpty()) {
+            mFiatField.requestFocus();
+        } else if(mPinEdittext.getText().toString().isEmpty()) {
+            mPinEdittext.requestFocus();
+        }
+        super.onResume();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
     }
 }
