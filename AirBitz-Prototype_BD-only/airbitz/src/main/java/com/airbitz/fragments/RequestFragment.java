@@ -183,8 +183,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFiatField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
-        mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
+        mBTCDenominationTextView = (TextView) view.findViewById(R.id.request_btc_denomination);
+        mFiatDenominationTextView = (TextView) view.findViewById(R.id.request_fiat_denomination);
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
