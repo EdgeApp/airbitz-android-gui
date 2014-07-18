@@ -245,18 +245,6 @@
                     android:textSize="14dp"
                     android:layout_centerHorizontal="true"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="25.2dp"
-                    android:layout_toRightOf="@id/transaction_detail_textview_currency_sign"
-                    android:layout_below="@id/transaction_detail_textview_bitcoin_value"
-                    android:text="-"
-                    android:textSize="24dp"
-                    android:layout_marginLeft="25.2dp"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"/>
-
-
             </RelativeLayout>
 
 
@@ -388,7 +376,7 @@
 
         </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="0px"
         android:layout_height="0px"
         android:orientation="vertical"

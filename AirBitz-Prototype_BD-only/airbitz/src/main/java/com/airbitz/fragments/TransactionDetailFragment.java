@@ -92,7 +92,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TextView mBitcoinValueTextview;
     private TextView mFeeTextview;
 
-    private LinearLayout mDummyFocus;
+    private View mDummyFocus;
 
     private View popupTriangle;
 
@@ -171,10 +171,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         super.onCreate(savedInstanceState);
         bundle = getArguments();
         if(bundle!=null) {
-            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE)=="SEND") {
+            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")){
+                System.out.println("SEND");
                 mFromSend = true;
-            } else if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE)=="REQUEST") {
+            } else if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("REQUEST")) {
                 mFromRequest = true;
+                System.out.println("REQUEST");
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
@@ -210,7 +212,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ((NavigationActivity)getActivity()).showNavBar();
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -256,7 +257,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
         mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
 
-        mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
+        mDummyFocus = view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
         mAdvancedDetailsPopup = (RelativeLayout) view.findViewById(R.id.advanced_details_popup);
         mAdvancedDetailTextView = (TextView) view.findViewById(R.id.fragment_transactiondetail_textview);
@@ -318,6 +319,19 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
+        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
+                }
+            }
+        });
+
         getContactsList();
 
         mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
@@ -347,7 +361,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mNoteDetailLayout.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.GONE);
-                    mCategoryEdittext.requestFocus();
                 }
             }
         });
@@ -390,7 +403,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     mDoneButton.setVisibility(View.GONE);
                 } else {
                     mAdvanceDetailsButton.setVisibility(View.VISIBLE);
-                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mDoneButton.setVisibility(View.VISIBLE);
                 }
@@ -432,6 +444,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     mDummyFocus.requestFocus();
+                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     return true;
                 }
                 return false;
@@ -513,7 +530,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 mSentDetailLayout.setVisibility(View.VISIBLE);
                 mNoteDetailLayout.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.GONE);
-                mCategoryEdittext.requestFocus();
+                if(mFromRequest || mFromSend) {
+                    mCategoryEdittext.requestFocus();
+                }else{
+                    mDummyFocus.requestFocus();
+                }
             }
         });
 
@@ -537,7 +558,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 if(i==baseIncomePosition || i==baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition){
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
                 }else {
-                    mNoteEdittext.requestFocus();
+                    if(mFromSend || mFromRequest) {
+                        mNoteEdittext.requestFocus();
+                    }else{
+                        mDummyFocus.requestFocus();
+                    }
                 }
             }
         });
@@ -586,14 +611,22 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     }
 
     private void updateBlanks(String term){
-        mCategories.remove(baseIncomePosition);
-        mCategories.add(baseIncomePosition, "Income:" + term);
-        mCategories.remove(baseExpensePosition);
-        mCategories.add(baseExpensePosition, "Expense:" + term);
-        mCategories.remove(baseTransferPosition);
-        mCategories.add(baseTransferPosition, "Transfer:" + term);
-        mCategories.remove(baseExchangePosition);
-        mCategories.add(baseExchangePosition, "Exchange:" + term);
+        if(baseIncomePosition < mCategories.size()) {
+            mCategories.remove(baseIncomePosition);
+            mCategories.add(baseIncomePosition, "Income:" + term);
+        }
+        if(baseExpensePosition < mCategories.size()) {
+            mCategories.remove(baseExpensePosition);
+            mCategories.add(baseExpensePosition, "Expense:" + term);
+        }
+        if(baseTransferPosition < mCategories.size()){
+            mCategories.remove(baseTransferPosition);
+            mCategories.add(baseTransferPosition, "Transfer:" + term);
+        }
+        if(baseExchangePosition < mCategories.size()) {
+            mCategories.remove(baseExchangePosition);
+            mCategories.add(baseExchangePosition, "Exchange:" + term);
+        }
 
         mOriginalCategories.remove(originalBaseIncomePosition);
         mOriginalCategories.add(originalBaseIncomePosition,"Income:" + term);
@@ -698,18 +731,20 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         for(int i = 0; i < mOriginalCategories.size();i++){
             String s = mOriginalCategories.get(i);
             if(s.toLowerCase().substring(s.indexOf(':')+1).contains(term.toLowerCase())){
-                mCategories.add(s);
-                if(i == originalBaseIncomePosition){
-                    baseIncomePosition = mCategories.indexOf(s);
-                }
-                if(i == originalBaseTransferPosition){
-                    baseTransferPosition = mCategories.indexOf(s);
-                }
-                if(i == originalBaseExpensePosition){
-                    baseExpensePosition = mCategories.indexOf(s);
-                }
-                if(i == originalBaseExchangePosition){
-                    baseExchangePosition = mCategories.indexOf(s);
+                if(!mCategories.contains(s)) {
+                    mCategories.add(s);
+                    if(i == originalBaseIncomePosition){
+                        baseIncomePosition = mCategories.indexOf(s);
+                    }
+                    if(i == originalBaseTransferPosition){
+                        baseTransferPosition = mCategories.indexOf(s);
+                    }
+                    if(i == originalBaseExpensePosition){
+                        baseExpensePosition = mCategories.indexOf(s);
+                    }
+                    if(i == originalBaseExchangePosition){
+                        baseExchangePosition = mCategories.indexOf(s);
+                    }
                 }
             }
         }
