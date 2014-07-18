@@ -692,7 +692,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     public void showCustomKeyboard(View v) {
-        hideKeyboard();
+//        hideKeyboard();
         ((NavigationActivity) getActivity()).showCalculator();
     }
 
@@ -707,12 +707,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         } else if(mPinEdittext.getText().toString().isEmpty()) {
             mPinEdittext.requestFocus();
         }
-//        hideKeyboard();
         super.onResume();
     }
 
     @Override public void onPause() {
         super.onPause();
-//        mParentLayout.requestFocus(); //Take focus away first
     }
 }

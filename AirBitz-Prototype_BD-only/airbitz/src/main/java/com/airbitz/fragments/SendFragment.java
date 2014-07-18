@@ -292,6 +292,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
+                hideKeyboard();
                 Wallet w = mCoreAPI.getWalletFromName(mCurrentListingNames.get(i));
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
