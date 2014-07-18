@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
         android:id="@+id/layout_header"
-        android:background="#40000000">
+        android:background="@drawable/bg_dark_header">
 
         <ImageButton
             android:layout_width="44.1dp"
@@ -33,7 +33,7 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="20dp"/>
+            android:textSize="16dp"/>
 
 
         <ImageButton
@@ -71,7 +71,7 @@
                 android:id="@+id/layout_export_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:background="@drawable/emboss_down"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
                 android:layout_marginTop="12.6dp"
@@ -107,7 +107,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
-                        android:background="@drawable/btn_trans_rounded_stretch"
+                        android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
                         android:textColor="@android:color/white"/>
 
@@ -136,11 +136,12 @@
                         android:id="@+id/edittext_btc"
                         android:layout_width="match_parent"
                         android:layout_height="25.2dp"
-                        android:hint="0.00000"
-                        android:textColorHint="#DDDDDD"
+                        android:hint="Amt (Optional)"
+                        android:textColorHint="#99DDDDDD"
                         android:textColor="@android:color/white"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:background="@drawable/bg_edittext"
                         android:paddingLeft="9.45dp"
+                        android:textCursorDrawable="@drawable/bold_cursor_white"
                         android:layout_centerVertical="true"
                         android:paddingRight="9.45dp"
                         android:layout_marginBottom="9.45dp"
@@ -174,11 +175,11 @@
                     android:id="@+id/edittext_dollar"
                     android:layout_width="match_parent"
                     android:layout_height="25.2dp"
-                    android:layout_toLeftOf="@id/button_expand"
-                    android:hint="0.00"
-                    android:textColorHint="#DDDDDD"
-                    android:background="@drawable/rounded_edge_black_transparent_30"
+                    android:hint="Amt (Optional)"
+                    android:textColorHint="#99DDDDDD"
+                    android:background="@drawable/bg_edittext"
                     android:textColor="@android:color/white"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:paddingLeft="9.45dp"
                     android:paddingRight="9.45dp"
                     android:gravity="center_vertical"
@@ -204,9 +205,19 @@
                     android:text="1.00 BTC = $600.00 USD"
                     android:textColor="@android:color/white"
                     android:layout_below="@id/layout_fiat_fields"
+                    android:layout_toRightOf="@+id/button_import_wallet"
                     android:gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:textSize="12dp"/>
+
+                <Button
+                    android:layout_width="94.5dp"
+                    android:layout_height="18.9dp"
+                    android:id="@+id/button_import_wallet"
+                    android:text="Import"
+                    android:textColor="@android:color/white"
+                    android:layout_below="@id/layout_fiat_fields"
+                    android:background="@drawable/bg_btn_blue_stretch"/>
 
             </RelativeLayout>
 
@@ -226,20 +237,13 @@
         android:background="@drawable/btn_group"
         android:layout_alignParentRight="true"
         android:visibility="gone">
-        
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_import_wallet"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/transparent"/>
+
         <Button
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:id="@+id/button_sms"
             android:layout_alignParentTop="true"
-            android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/button_import_wallet"/>
+            android:background="@android:color/transparent"/>
         <Button
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -269,6 +273,13 @@
             android:layout_toRightOf="@+id/button_email"/>
         
     </RelativeLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/fragment_request_dummy_focus"
+        android:focusableInTouchMode="true"
+        android:focusable="true" />
 
     <!--<android.inputmethodservice.KeyboardView-->
         <!--android:id="@+id/layout_calculator"-->
