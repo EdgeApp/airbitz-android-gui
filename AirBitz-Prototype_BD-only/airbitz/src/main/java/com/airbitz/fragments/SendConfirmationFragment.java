@@ -51,6 +51,8 @@ public class SendConfirmationFragment extends Fragment {
     private TextView mSlideTextView;
     private TextView mConfirmTextView;
     private TextView mPinTextView;
+    private TextView mBTCDenominationTextView;
+    private TextView mFiatDenominationTextView;
     private TextView mConversionTextView;
     private Button mMaxButton;
 
@@ -134,6 +136,8 @@ public class SendConfirmationFragment extends Fragment {
         mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
         mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
         mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
+        mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
+        mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
         mMaxButton = (Button) view.findViewById(R.id.button_max);
 
         mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
@@ -181,6 +185,8 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinValueField.setText(mCoreAPI.FormatDefaultCurrency(mAmountToSendSatoshi, true, false));
         String temp = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, true);
         mDollarValueField.setText(temp);
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override

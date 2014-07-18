@@ -159,9 +159,17 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/layout_btc_fields"
+                    android:layout_below="@id/layout_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:gravity="center_vertical">
                 <EditText
                     android:id="@+id/button_bitcoin_balance"
-                    android:layout_below="@id/layout_to"
                     android:layout_width="match_parent"
                     android:layout_height="34.65dp"
                     android:text=""
@@ -173,12 +181,33 @@
                     android:layout_marginLeft="12.6dp"
                     android:textColor="@android:color/white"
                     android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:drawableLeft="@drawable/ico_coin_btc_white"
-                    android:drawableRight="@drawable/ico_btc_white"/>
+                    android:drawableLeft="@drawable/ico_coin_btc_white"/>
+                    <TextView
+                        android:id="@+id/send_confirmation_btc_denomination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="16dp"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="20dp"
+                        android:text="BTC"/>
+                </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/layout_fiat_fields"
+                    android:layout_below="@id/layout_btc_fields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:weightSum="3"
+                    android:gravity="center_vertical">
                 <EditText
                     android:id="@+id/button_dollar_balance"
-                    android:layout_below="@id/button_bitcoin_balance"
                     android:layout_width="match_parent"
                     android:layout_height="34.65dp"
                     android:text=""
@@ -191,13 +220,25 @@
                     android:background="@drawable/rounded_edge_black_transparent_30"
                     android:gravity="center"
                     android:drawableLeft="@drawable/ico_coin_usd_white"
-                    android:drawableRight="@drawable/ico_usd_white"
                     android:layout_marginTop="6.3dp"
                     android:layout_marginBottom="6.3dp"/>
+                    <TextView
+                        android:id="@+id/send_confirmation_fiat_denomination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="16dp"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="20dp"
+                        android:text="USD"/>
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textview_conversion"
-                    android:layout_below="@id/button_dollar_balance"
+                    android:layout_below="@id/layout_fiat_fields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="1.00 BTC - $876.13 USD"
@@ -211,7 +252,7 @@
                     android:id="@+id/button_max"
                     android:layout_width="44.1dp"
                     android:layout_height="18.9dp"
-                    android:layout_below="@+id/button_dollar_balance"
+                    android:layout_below="@+id/layout_fiat_fields"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="12.6dp"
                     android:textColor="@android:color/white"

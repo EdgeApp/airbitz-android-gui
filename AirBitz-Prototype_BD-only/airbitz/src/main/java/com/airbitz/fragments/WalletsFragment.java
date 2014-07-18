@@ -388,7 +388,7 @@ public class WalletsFragment extends Fragment
 
         mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
-        mTopType.setText(mCoreAPI.getUserBTCDenomination());
+        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
     }
 
     private void switchBarInfo(boolean isBitcoin){

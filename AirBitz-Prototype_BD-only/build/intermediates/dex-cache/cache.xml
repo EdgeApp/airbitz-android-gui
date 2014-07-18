@@ -2,14 +2,14 @@
 <pre-dex-items>
 
     <item
-        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-309265bea4c480ee05cfd2a70024c62c9eabecae.jar"
-        jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/me.grantland/autofittextview/0.1.1/classes.jar"
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android-master/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-596fc9b6b0ed5cf1464622a9b123ae0ee6deb2cd.jar"
+        jar="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android-master/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/me.grantland/autofittextview/0.1.1/classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="920802528981dd0dc30bacefc1add1a3e8f6913e"/>
     <item
-        dex="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-7b79d85b150848e8f83bdd7406b2ac94993220a6.jar"
-        jar="/Users/matt/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android-master/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-72c992c636bef66c0c33ba458dd2bc41e1a8f95a.jar"
+        jar="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android-master/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
