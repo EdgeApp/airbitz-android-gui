@@ -72,6 +72,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private TextView mTitleTextView;
     private TextView mWalletTextView;
     private TextView mConverterTextView;
+    private TextView mBTCDenominationTextView;
+    private TextView mFiatDenominationTextView;
 
     private RelativeLayout mParentLayout;
     private RelativeLayout mNavigationLayout;
@@ -180,6 +182,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mFiatField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+
+        mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
+        mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
+
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
