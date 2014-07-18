@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -206,6 +208,23 @@ public class SendConfirmationFragment extends Fragment {
             }
         };
 
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length()>=4) {
+                    mPinEdittext.clearFocus();
+                    hideKeyboard();
+                }
+            }
+        };
+        mPinEdittext.addTextChangedListener(mPINTextWatcher);
+
         mBitcoinValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
              public void onFocusChange(View view, boolean hasFocus) {
@@ -360,8 +379,26 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
+        mDollarValueField.setText("");
+        mBitcoinValueField.setText("");
+        if(mAmountToSendSatoshi==0) {
+           mDollarValueField.setFocusableInTouchMode(true);
+           mDollarValueField.requestFocus();
+        } else {
+            mPinEdittext.setText("");
+            mPinEdittext.setFocusableInTouchMode(true);
+            mPinEdittext.requestFocus();
+        }
+
         return view;
     }
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
+    }
+
 
     public void touchEventsEnded() {
         int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);

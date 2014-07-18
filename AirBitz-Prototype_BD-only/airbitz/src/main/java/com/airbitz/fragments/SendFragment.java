@@ -1,6 +1,9 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -25,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -233,14 +238,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
                     boolean bIsUUID = false;
                     String strTo = mToEdittext.getText().toString();
-
-                    //disabled for now - user must select wallet from list, not type a name and hit return
-//                    if(mCurrentListing.contains(strTo))
-//                    {
-//                        bIsUUID = true;
-//                        strTo = mCoreAPI.getWalletFromName(strTo).getUUID();
-//                    }
-                    GotoSendConfirmation(strTo, 0, "", bIsUUID);
+                    if(CheckURIResults(strTo)) {
+                        GotoSendConfirmation(strTo, 0, "", bIsUUID);
+                    }
+                    else {
+                        if(strTo.length()>0)
+                            showMessageAlert("", getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+                        else
+                            mListingListView.setVisibility(View.GONE);
+                        hideKeyboard();
+                    }
                     return true;
                 }
                 return false;
@@ -294,6 +301,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mView = view;
         return view;
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
     }
 
     class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
@@ -385,7 +398,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             }
         }
         if(rawResult!=null) {
-            if(CheckQRResults(rawResult.getText())) {
+            if(CheckURIResults(rawResult.getText())) {
                 Log.d("SendFragment", "QR result is good");
             } else {
                 Log.d("SendFragment", "QR result is bad");
@@ -443,7 +456,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 }
             }
             if(rawResult!=null) {
-                if(CheckQRResults(rawResult.getText())) {
+                if(CheckURIResults(rawResult.getText())) {
                     Log.d("SendFragment", "QR result is good");
                 } else {
                     Log.d("SendFragment", "QR result is bad");
@@ -466,7 +479,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
 
-    private boolean CheckQRResults(String results)
+    private boolean CheckURIResults(String results)
     {
         boolean bSuccess = false;
 
@@ -625,6 +638,21 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public void onStop() {
         super.onStop();
         stopCamera();
+    }
+
+    private void showMessageAlert(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
