@@ -109,17 +109,28 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            if(values[0]%3 == 1){
-                mLogoImageView.setImageResource(R.drawable.ico_sending_1);
-                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending.");
-            }
-            else if(values[0]%3 == 2){
-                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending..");
-                mLogoImageView.setImageResource(R.drawable.ico_sending_2);
-            }
-            else if(values[0]%3 == 0){
-                ReceivedSuccessFragment.this.mSendingTextView.setText("Sending...");
-                mLogoImageView.setImageResource(R.drawable.ico_sending_3);
+            if(mBundle.getString(WalletsFragment.FROM_SOURCE).contains("REQUEST")) {
+                if (values[0] % 3 == 1) {
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_1);
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Receiving.");
+                } else if (values[0] % 3 == 2) {
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Receiving..");
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_2);
+                } else if (values[0] % 3 == 0) {
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Receiving...");
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_3);
+                }
+            }else{
+                if (values[0] % 3 == 1) {
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_1);
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Sending.");
+                } else if (values[0] % 3 == 2) {
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Sending..");
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_2);
+                } else if (values[0] % 3 == 0) {
+                    ReceivedSuccessFragment.this.mSendingTextView.setText("Sending...");
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_3);
+                }
             }
 
         }
