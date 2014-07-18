@@ -122,24 +122,56 @@
                     android:background="@drawable/btn_expand"
                     android:layout_below="@id/layout_wallet"/>
 
-                <EditText
-                    android:id="@+id/edittext_btc"
+                <RelativeLayout
+                    android:id="@+id/layout_btc_fields"
                     android:layout_below="@id/layout_wallet"
-                    android:layout_width="match_parent"
-                    android:layout_height="25.2dp"
                     android:layout_toLeftOf="@id/button_expand"
-                    android:hint="0.00000"
-                    android:textColorHint="#DDDDDD"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:paddingLeft="9.45dp"
-                    android:paddingRight="9.45dp"
-                    android:layout_marginBottom="9.45dp"
-                    android:textSize="14dp"
-                    android:drawableRight="@drawable/ico_btc_white"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:gravity="center_vertical">
+                    <EditText
+                        android:id="@+id/edittext_btc"
+                        android:layout_width="match_parent"
+                        android:layout_height="25.2dp"
+                        android:hint="0.00000"
+                        android:textColorHint="#DDDDDD"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:paddingLeft="9.45dp"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="9.45dp"
+                        android:layout_marginBottom="9.45dp"
+                        android:textSize="14dp"/>
+                    <TextView
+                        android:id="@+id/request_btc_denomination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:paddingRight="16dp"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp"
+                        android:text="BTC"/>
+                </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/layout_fiat_fields"
+                android:layout_below="@id/layout_btc_fields"
+                android:layout_toLeftOf="@id/button_expand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="6.3dp"
+                android:gravity="center_vertical">
                 <EditText
                     android:id="@+id/edittext_dollar"
-                    android:layout_below="@id/edittext_btc"
                     android:layout_width="match_parent"
                     android:layout_height="25.2dp"
                     android:layout_toLeftOf="@id/button_expand"
@@ -150,8 +182,20 @@
                     android:paddingLeft="9.45dp"
                     android:paddingRight="9.45dp"
                     android:gravity="center_vertical"
+                    android:textSize="14dp"/>
+                <TextView
+                    android:id="@+id/request_fiat_denomination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingRight="16dp"
+                    android:textAlignment="textEnd"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
                     android:textSize="14dp"
-                    android:drawableRight="@drawable/ico_usd_white"/>
+                    android:text="USD"/>
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textview_converter"
@@ -159,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:text="1.00 BTC = $600.00 USD"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/edittext_dollar"
+                    android:layout_below="@id/layout_fiat_fields"
                     android:gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:textSize="12dp"/>
