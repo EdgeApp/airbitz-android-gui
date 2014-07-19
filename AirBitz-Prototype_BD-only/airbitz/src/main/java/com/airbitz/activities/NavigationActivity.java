@@ -8,10 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -91,6 +91,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mCoreAPI = CoreAPI.getApi();
         String seed = getSeedData();
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
         mCoreAPI.setOnIncomingBitcoinListener(this);
         AirbitzApplication.Login(null, null); // if in TEST mode, will auto login
@@ -154,8 +156,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 if (position == 0 || position == 2) {
                     int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                     if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
                     mViewPager.setVisibility(View.GONE);
                 }
@@ -173,9 +175,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
     }
 
-
-    public void setLoggedIn(boolean loggedIn) {
-        if(!loggedIn) {
+    public void DisplayLoginOverlay(boolean overlay) {
+        if(overlay) {
             mViewPager.setVisibility(View.VISIBLE);
             mViewPager.setCurrentItem(1);
         } else {
@@ -199,10 +200,17 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
+//        if(!AirbitzApplication.isLoggedIn()) {
+//            DisplayLoginOverlay(true);
+//        }
+//        mNavFragmentId = position;
+//        AirbitzApplication.setLastNavTab(position);
+
         if(AirbitzApplication.isLoggedIn()) {
             switchFragmentThread(position);
         } else {
-            setLoggedIn(false);
+            DisplayLoginOverlay(true);
+            AirbitzApplication.setLastNavTab(position);
         }
     }
 
@@ -298,7 +306,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         if(!AirbitzApplication.isLoggedIn()) {
             mNavFragmentId = Tabs.BD.ordinal();
         }
-        setLoggedIn(AirbitzApplication.isLoggedIn());
+        DisplayLoginOverlay(false);
         super.onResume();
     }
 
