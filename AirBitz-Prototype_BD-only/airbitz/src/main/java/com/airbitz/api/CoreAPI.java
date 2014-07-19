@@ -1201,10 +1201,10 @@ public class CoreAPI {
 
             //the true fee values will be set by the core
             SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
-            set64BitLongAtPtr(feesAB.getCPtr(feesAB), 10000);
+            set64BitLongAtPtr(feesAB.getCPtr(feesAB), 1700);
             details.setAmountFeesAirbitzSatoshi(feesAB);
             SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
-            set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10001);
+            set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10000);
             details.setAmountFeesMinersSatoshi(feesMiner);
 
             details.setAmountCurrency(value);
