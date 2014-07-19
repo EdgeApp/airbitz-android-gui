@@ -429,6 +429,7 @@
 
             <TextView
                 android:id="@+id/fragment_transactiondetail_textview"
+                android:bufferType="spannable"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

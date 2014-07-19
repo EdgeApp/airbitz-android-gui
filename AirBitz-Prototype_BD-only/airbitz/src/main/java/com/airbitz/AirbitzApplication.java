@@ -7,6 +7,9 @@ import android.app.Application;
  * Holds App statics for login info during the app lifecycle
  */
 public class AirbitzApplication extends Application {
+
+    public static boolean TEST = true;   // TODO Set to false for deployed application!!!!!!!
+
     private static Login airbitzLogin = new Login();
     private static int mLastNavTab = 0;
 
@@ -15,8 +18,16 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Login(String uname, String password) {
-        airbitzLogin.setUsername(uname);
-        airbitzLogin.setPassword(password);
+        if(TEST) {
+            airbitzLogin.setUsername("tb2");
+            airbitzLogin.setPassword("Aaaaaaaa1@");
+
+//            airbitzLogin.setUsername("matt104");
+//            airbitzLogin.setPassword("O@21grapes");
+        } else if(uname!=null && password!=null) {
+            airbitzLogin.setUsername(uname);
+            airbitzLogin.setPassword(password);
+        }
 
         //TODO setup auto logout based on Settings. App being killed automatically forgets login,
         // like on reboot or force close.
