@@ -35,29 +35,28 @@ public class CurrentLocationManager implements
 
     // Callback interface for adding and removing location change listeners
     private List<OnLocationChange> mObservers = Collections.synchronizedList(new ArrayList<OnLocationChange>());
-    private List<OnLocationChange> mRemovers = new ArrayList<OnLocationChange>();
 
     public interface OnLocationChange {
         public void OnCurrentLocationChange(Location location);
     }
 
     public void addLocationChangeListener(OnLocationChange listener) {
-        if(mObservers.size() == 0) {
-            locationClient = new LocationClient(mContext, this, this);
-            attemptConnection();
+        if(mObservers.isEmpty()) {
+                attemptConnection();
         }
         if(!mObservers.contains(listener)) {
             mObservers.add(listener);
+            Log.d("CurrentLocationManager", "Listener added: "+listener);
         }
-        if(null != listener){
-            if(null != mCurrentLocation) {
+        if(null != listener && null != mCurrentLocation){
                 listener.OnCurrentLocationChange(mCurrentLocation);
-            }
         }
     }
 
     public void removeLocationChangeListener(OnLocationChange listener) {
-        mRemovers.add(listener);
+//        mRemovers.add(listener);
+        mObservers.remove(listener);
+        Log.d("CurrentLocationManager", "Listener removed: " + listener);
         if(mObservers.size() <= 0) {
             locationClient.disconnect();
         }
@@ -71,16 +70,18 @@ public class CurrentLocationManager implements
     }
 
     public Location getLocation() {
-        if(null == mCurrentLocation){
+        if(null == mCurrentLocation && locationClient!=null && locationClient.isConnected()){
             mCurrentLocation = locationClient.getLastLocation();
-        }
-        if(mCurrentLocation == null){
         }
         return mCurrentLocation;
     }
 
     public void attemptConnection() {
-        locationClient.connect();
+        if(locationClient==null || !locationClient.isConnected()) {
+            Log.d("CurrentLocationManager", "Attempting connection");
+            locationClient = new LocationClient(mContext, this, this);
+            locationClient.connect();
+        }
     }
 
     @Override
@@ -104,15 +105,6 @@ public class CurrentLocationManager implements
 
     @Override
     public void onLocationChanged(Location location) {
-        if(!mRemovers.isEmpty()) {
-            for(OnLocationChange i : mRemovers) {
-                if(mObservers.contains(i)) {
-                    mObservers.remove(i);
-                }
-            }
-            mRemovers.clear();
-        }
-
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
             Log.d("TAG_LOC",
