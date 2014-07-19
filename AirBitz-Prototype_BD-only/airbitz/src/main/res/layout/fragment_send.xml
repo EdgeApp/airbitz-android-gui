@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
         android:id="@+id/layout_header"
-        android:background="#40000000">
+        android:background="@drawable/bg_dark_header">
 
         <ImageButton
             android:layout_width="44.1dp"
@@ -64,7 +64,7 @@
                     android:id="@+id/layout_send"
                     android:layout_width="match_parent"
                     android:layout_height="85.05dp"
-                    android:background="@drawable/rounded_edge_black_transparent_30"
+                    android:background="@drawable/emboss_down"
                     android:layout_marginLeft="15.75dp"
                     android:layout_marginRight="15.75dp"
                     android:layout_marginTop="15.75dp"
@@ -101,7 +101,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:textSize="14dp"
-                            android:background="@drawable/btn_trans_rounded_stretch"
+                            android:background="@drawable/bg_btn_blue_stretch"
                             android:gravity="center"
                             android:textColor="@android:color/white"/>
 
@@ -133,11 +133,12 @@
                             android:id="@+id/edittext_to"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/rounded_edge_black_transparent_30"
+                            android:background="@drawable/bg_edittext"
                             android:gravity="left|center_vertical"
                             android:inputType="textAutoComplete"
                             android:paddingLeft="6.3dp"
                             android:singleLine="true"
+                            android:textCursorDrawable="@drawable/bold_cursor_white"
                             android:textColor="@android:color/white"
                             android:textSize="14dp"
                             android:imeOptions="actionDone"
@@ -176,38 +177,18 @@
             android:textSize="14dp"
             android:layout_marginTop="20dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+        <ImageButton
+            android:id="@+id/button_flash"
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:src="@drawable/btn_flash_off"
+            android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/rounded_edge_white_transparent_30"
-            android:weightSum="3">
-
-            <ImageButton
-                android:id="@+id/button_flash_on"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center"
-                android:src="@drawable/ico_flash_on_off"
-                android:background="@android:color/transparent"
-                android:layout_weight="1"/>
-
-            <ImageButton
-                android:id="@+id/button_flash_off"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ico_flash_off_on"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
+            android:background="@android:color/transparent" />
 
         <ImageButton
             android:id="@+id/button_gallery"
@@ -240,21 +221,32 @@
         android:layout_width="0dp"
         android:layout_height="0dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/listview_container"
         android:layout_width="match_parent"
-        android:layout_height="157.5dp"
-        android:orientation="vertical"
-        android:layout_marginTop="-26dp"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="-38.6dp"
         android:layout_below="@id/layout_data"
-        android:background="#FFFFFF"
+        android:background="@android:color/transparent"
         android:visibility="gone">
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listing_listview"/>
+            android:layout_height="fill_parent"
+            android:layout_marginTop="-1dp"
+            android:padding="12.6dp"
+            android:id="@+id/listing_listview"
+            android:layout_below="@+id/fragment_send_listview_triangle"
+            android:background="@drawable/category_popup"/>
 
-    </LinearLayout>
+        <View
+            android:id="@+id/fragment_send_listview_triangle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-25dp"
+            android:background="@drawable/blue_triangle"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
