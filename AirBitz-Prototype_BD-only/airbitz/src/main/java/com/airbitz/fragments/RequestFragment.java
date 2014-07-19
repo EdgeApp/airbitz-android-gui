@@ -369,6 +369,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 Wallet wallet = mWallets.get(i);
                 mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(wallet.getCurrencyNum())]);
                 setConversionText(wallet.getCurrencyNum());
+                updateTextFieldContents(true);
             }
 
             @Override
