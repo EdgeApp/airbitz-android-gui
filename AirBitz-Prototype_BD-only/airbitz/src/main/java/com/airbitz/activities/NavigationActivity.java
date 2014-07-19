@@ -93,10 +93,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
         mCoreAPI.setOnIncomingBitcoinListener(this);
-
-        // COMMENT OUT NEXT LINE FOR COMMITS
-//        AirbitzApplication.Login("tb2", "Aaaaaaaa1@");
-//        AirbitzApplication.Login("matt104", "O@21grapes");
+        AirbitzApplication.Login(null, null); // if in TEST mode, will auto login
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));

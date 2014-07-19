@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -46,6 +47,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
@@ -646,28 +648,42 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     {
         mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
 
-        String inAddresses = "";
-        String outAddresses = "";
+        SpannableStringBuilder inAddresses = new SpannableStringBuilder();
+        SpannableStringBuilder outAddresses = new SpannableStringBuilder();
         String baseUrl = "";
-        if (true) { // TESTNET
+        if (AirbitzApplication.TEST) { // TESTNET
             baseUrl += "https://blockexplorer.com/testnet/";
         } else { // LIVE
             baseUrl += "https://blockchain.info/";
         }
 
-//        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
-//            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
-//            String html = String.format("<div class=\"wrapped\"><a href=\"%@/address/%@\">%@</a></div><div>%@</div>",
-//                    baseUrl, t.getSzAddress(), t.getSzAddress(), val);
-//            if (t.getInput()) {
-//                inAddresses += html;
-//            } else {
-//                outAddresses += html;
-//            }
-//        }
+        int start = 0;
+        int end = 0;
+        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
+            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
+            SpannableString html = new SpannableString(val+"\n");
+            end = val.length();
+            final String url = baseUrl + t.getSzAddress();
+            ClickableSpan span = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    Intent i = new Intent( Intent.ACTION_VIEW );
+                    i.setData(Uri.parse(url));
+                    startActivity( i );
+                }
+            };
+            html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            if (t.getInput()) {
+                inAddresses.append(html);
+            } else {
+                outAddresses.append(html);
+            }
+        }
 
         SpannableStringBuilder s = new SpannableStringBuilder();
-        int start = 0, end=0;
+        start = 0;
+        end=0;
         s.append("Transaction ID").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n");
@@ -684,7 +700,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 startActivity( i );
             }
         };
-        s.setSpan(url, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n\n");
 
         //Total Sent - formatSatoshi
@@ -693,7 +709,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n");
 
-        s.append(String.valueOf(mTransaction.getAmountSatoshi()+mTransaction.getABFees()+mTransaction.getMinerFees()));
+        s.append(String.valueOf(mTransaction.getAmountSatoshi()+mTransaction.getABFees()+mTransaction.getMinerFees()))
+                .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n\n");
 
@@ -702,12 +719,16 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         start = s.length();
         s.append("Source").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n");
+        s.append(inAddresses);
         s.append("\n\n");
 
         //Destination - outAddresses
         start = s.length();
         s.append("Destination").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.append("\n");
+        s.append(outAddresses);
         s.append("\n\n");
 
 
@@ -718,24 +739,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         s.append("\n");
 
         start = s.length();
-        s.append(String.valueOf(mTransaction.getABFees()+mTransaction.getMinerFees()));
+        s.append(String.valueOf(mTransaction.getABFees()+mTransaction.getMinerFees()))
+                .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //
 //        //TODO set content
         mAdvancedDetailTextView.setText(s);
         mAdvancedDetailTextView.setMovementMethod( LinkMovementMethod.getInstance() );
-    }
-
-    private URLSpan getURLSpan(String link) {
-        return new URLSpan( link ) {
-            @Override
-            public void onClick( View widget )
-            {
-                Intent i = new Intent( Intent.ACTION_VIEW );
-                i.setData( Uri.parse( getURL() ) );
-                startActivity( i );
-            }
-        };
     }
 
     private void UpdateView(Transaction transaction) {
