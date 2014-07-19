@@ -52,6 +52,7 @@ import com.airbitz.api.tABC_BitcoinURIInfo;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -85,12 +86,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
 
-    private ImageButton mFlashOnButton;
-    private ImageButton mFlashOffButton;
+    private ImageButton mHelpButton;
+
+    private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
 
     private ListView mListingListView;
-    private LinearLayout mListviewContainer;
+    private RelativeLayout mListviewContainer;
 
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -130,8 +132,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mWalletList = new ArrayList<String>();
         addWalletNamesToList();
 
-        mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
-        mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+
+        mFlashButton = (ImageButton) view.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) view.findViewById(R.id.button_gallery);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
@@ -141,12 +144,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
 
-        mListviewContainer = (LinearLayout) view.findViewById(R.id.listview_container);
+        mListviewContainer = (RelativeLayout) view.findViewById(R.id.listview_container);
         mListingListView = (ListView) view.findViewById(R.id.listing_listview);
 
         mCurrentListing = new ArrayList<String>();
         mCurrentListingNames = new ArrayList<String>();
-        listingAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mCurrentListing);
+        listingAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_send_listing_spinner, mCurrentListing);
         mListingListView.setAdapter(listingAdapter);
 
         dummyFocus = view.findViewById(R.id.dummy_focus);
@@ -158,7 +161,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mWalletList);
+        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletList);
+        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
         walletSpinner.setAdapter(dataAdapter);
 
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,45 +190,21 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             }
         });
 
-        mFlashOffButton.setOnClickListener(new View.OnClickListener() {
+        mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!mFlashOn){
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
+                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
                     mFlashOn = true;
                     Camera.Parameters parameters = mCamera.getParameters();
                     parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                     mCamera.setParameters(parameters);
                 }
                 else{
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
+                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
                     mFlashOn = false;
                     Camera.Parameters parameters = mCamera.getParameters();
                     parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-            }
-        });
-
-        mFlashOnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mFlashOn){
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mFlashOn = false;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-                else{
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
-                    mFlashOn = true;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                     mCamera.setParameters(parameters);
                 }
             }
@@ -275,12 +255,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    /*View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     float heightPop = activityRootView.getHeight() - mListviewContainer.getX();
                     RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)heightPop);
                     lLP.addRule(RelativeLayout.BELOW,R.id.layout_data);
                     lLP.setMargins(0,(int)getActivity().getResources().getDimension(R.dimen.negative_margin_popup),0,0);
-                    mListviewContainer.setLayoutParams(lLP);
+                    mListviewContainer.setLayoutParams(lLP);*/
                     goAutoCompleteListing();
                 }else{
                     mListviewContainer.setVisibility(View.GONE);
@@ -295,9 +275,18 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 mListviewContainer.setVisibility(View.GONE);
                 hideKeyboard();
                 Wallet w = mCoreAPI.getWalletFromName(mCurrentListingNames.get(i));
+
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
         });
+
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Common.showHelpInfo(getActivity(), "Send", "Send info");
+            }
+        });
+
 
         mPreviewFrame = (FrameLayout) view.findViewById(R.id.layout_camera_preview);
 
@@ -306,9 +295,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     }
 
     private void hideKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
+        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
