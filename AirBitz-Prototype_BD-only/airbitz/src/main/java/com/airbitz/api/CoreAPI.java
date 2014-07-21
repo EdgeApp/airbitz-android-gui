@@ -10,6 +10,8 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -934,15 +936,15 @@ public class CoreAPI {
     }
 
     //************************* Currency formatting
+
     public String formatCurrency(double in) {
         return formatCurrency(in, true);
     }
 
     public String formatCurrency(double in, boolean withSymbol) {
-        String pre = "";
-        if (withSymbol)
-            pre = "$ ";
-        return pre+Double.toString(in);
+        String pre = withSymbol ? "$ ":"";
+        String out = new BigDecimal(Double.toString(in)).toPlainString();
+        return pre+out;
     }
 
     public int currencyDecimalPlaces(String label) {
