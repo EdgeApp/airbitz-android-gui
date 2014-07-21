@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends Fragment implements View.OnClickListener {
+public class RequestFragment extends Fragment implements View.OnClickListener, CoreAPI.OnExchangeRatesChange {
 
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
@@ -64,6 +64,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private List<Wallet> mWallets;
     private List<String> mWalletNames;
+    private Wallet mSelectedWallet;
 
     private Spinner pickWalletSpinner;
 
@@ -122,8 +123,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         }
         for(int i=0; i<mWallets.size(); i++) {
             mWalletNames.add(mWallets.get(i).getName());
-            if(mWallets.get(i).getUUID().equals(uuid))
+            if(mWallets.get(i).getUUID().equals(uuid)) {
                 mFromIndex = i;
+                mSelectedWallet = mWallets.get(i);
+            }
         }
     }
 
@@ -366,9 +369,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Wallet wallet = mWallets.get(i);
-                mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(wallet.getCurrencyNum())]);
-                setConversionText(wallet.getCurrencyNum());
+                mSelectedWallet = mWallets.get(i);
+                mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+                setConversionText(mSelectedWallet.getCurrencyNum());
                 updateTextFieldContents(true);
             }
 
@@ -525,26 +528,23 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         ((NavigationActivity) getActivity()).showCalculator();
     }
 
-    private void hideKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
-    }
-
-    private void showKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE, 0);
-    }
-
     @Override public void onResume() {
         super.onResume();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mCoreAPI.addExchangeRateChangeListener(this);
     }
 
     @Override public void onPause() {
         super.onPause();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mCoreAPI.addExchangeRateChangeListener(this);
     }
 
+    @Override
+    public void OnExchangeRatesChange() {
+        if(mSelectedWallet!=null) {
+            setConversionText(mSelectedWallet.getCurrencyNum());
+            updateTextFieldContents(true);
+        }
+    }
 }
