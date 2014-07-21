@@ -184,7 +184,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mViewPager.setVisibility(View.INVISIBLE);
 
             switchFragmentThread(mNavFragmentId);
-            mCoreAPI.startExchangeRateUpdates();
         }
     }
 
@@ -307,7 +306,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mNavFragmentId = Tabs.BD.ordinal();
         }
         DisplayLoginOverlay(false);
+        mCoreAPI.startAllAsyncUpdates();
         super.onResume();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        mCoreAPI.stopAllAsyncUpdates();
     }
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
