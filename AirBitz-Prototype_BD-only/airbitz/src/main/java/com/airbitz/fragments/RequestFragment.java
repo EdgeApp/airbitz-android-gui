@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +37,8 @@ import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -195,8 +199,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mFiatDenominationTextView = (TextView) view.findViewById(R.id.request_fiat_denomination);
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        Wallet wallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(wallet.getCurrencyNum())]);
+        mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
+        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,21 +233,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                smsIntent.setData(Uri.parse("sms:"));
-                startActivity(smsIntent);
+                sendSMS();
             }
         });
 
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                emailIntent.setType("text/html");
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Content description");
-                startActivity(Intent.createChooser(emailIntent, "Email:"));
+                sendEmail();
             }
         });
 
@@ -379,12 +376,66 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
-        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
-        wallet = mWallets.get(walletPosition);
-        setConversionText(wallet.getCurrencyNum());
+        setConversionText(mSelectedWallet.getCurrencyNum());
 
         return view;
     }
+
+    private void sendSMS() {
+        String address="";
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain"); // if no qr code available
+
+        String id = mCoreAPI.createReceiveRequestFor(mSelectedWallet, "", "", mBitcoinField.getText().toString());
+        if(id!=null) {
+            address = mCoreAPI.getRequestAddress(mSelectedWallet.getUUID(), id);
+        }
+        String strBody = "Bitcoin Request:\n" + address;
+        intent.putExtra("sms_body", strBody);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Bitmap bm = mCoreAPI.getQRCodeBitmap(mSelectedWallet.getUUID(), id);
+        if (bm != null) {
+            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
+        } else {
+            Log.d("RequestFragment", "Could not attach qr code to mms");
+        }
+        intent.setData(Uri.parse("sendto:")); // only sms or mms should handle this
+
+        startActivity(intent);
+    }
+
+    private void sendEmail() {
+        String address="";
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+
+        String id = mCoreAPI.createReceiveRequestFor(mSelectedWallet, "", "", mBitcoinField.getText().toString());
+        if(id!=null) {
+            address = mCoreAPI.getRequestAddress(mSelectedWallet.getUUID(), id);
+        }
+        String strBody = "Bitcoin Request:\n" + address;
+
+
+        intent.putExtra(Intent.EXTRA_TEXT, strBody);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Bitmap bm = mCoreAPI.getQRCodeBitmap(mSelectedWallet.getUUID(), id);
+        if (bm != null) {
+            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
+        } else {
+            Log.d("RequestFragment", "Could not attach qr code to email");
+        }
+
+        startActivity(Intent.createChooser(intent, "Email:"));
+    }
+
 
     private void setConversionText(int currencyNum) {
         mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
