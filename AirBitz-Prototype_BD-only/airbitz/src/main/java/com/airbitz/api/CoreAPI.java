@@ -18,6 +18,7 @@ import java.util.List;
 public class CoreAPI {
     private static String TAG = AirbitzAPI.class.getSimpleName();
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
+    private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
     public static int ABC_DENOMINATION_BTC = 0;
     public static int ABC_DENOMINATION_MBTC = 1;
     public static int ABC_DENOMINATION_UBTC = 2;
@@ -61,13 +62,13 @@ public class CoreAPI {
             if(mOnIncomingBitcoin!=null) {
                 mIncomingBitcoinUUID = info.getSzWalletUUID();
                 mIncomingBitcoinTxID = info.getSzTxID();
-                mExchangeRateHandler.post(IncomingBitcoinUpdater);
+                mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
             }
             else
                 Log.d("CoreAPI", "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
-                mExchangeRateHandler.post(BlockHeightUpdater);
+                mPeriodicTaskHandler.post(BlockHeightUpdater);
             else
                 Log.d("CoreAPI", "block exchange event has no listener");
         }
@@ -1279,8 +1280,8 @@ public class CoreAPI {
         return totalFees;
     }
 
-    //*************** Exchange Rate
-    Handler mExchangeRateHandler = new Handler();
+    //*************** Asynchronous Updating
+    Handler mPeriodicTaskHandler = new Handler();
     private ExchangeRateSource[] mExchangeRateSources;
 
     // Callback interface for adding and removing location change listeners
@@ -1291,15 +1292,25 @@ public class CoreAPI {
         public void OnExchangeRatesChange();
     }
 
+    public void startAllAsyncUpdates() {
+        startExchangeRateUpdates();
+        startFileSyncUpdates();
+    }
+
+    public void stopAllAsyncUpdates() {
+        stopExchangeRateUpdates();
+        stopFileSyncUpdates();
+    }
+
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
-            mExchangeRateHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
+            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
             updateAllExchangeRates();
         }
     };
 
     private void stopExchangeRateUpdates() {
-        mExchangeRateHandler.removeCallbacks(ExchangeRateUpdater);
+        mPeriodicTaskHandler.removeCallbacks(ExchangeRateUpdater);
     }
 
     public void startExchangeRateUpdates() {
@@ -1308,7 +1319,7 @@ public class CoreAPI {
                 tABC_AccountSettings settings = loadAccountSettings();
                 mExchangeRateSources = getExchangeRateSources(settings.getExchangeRateSources());
             }
-            mExchangeRateHandler.post(ExchangeRateUpdater);
+            mPeriodicTaskHandler.post(ExchangeRateUpdater);
         }
     }
 
@@ -1318,8 +1329,6 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn())
         {
             tABC_Error error = new tABC_Error();
-
-
             for(int i=0; i< mExchangeRateSources.length; i++) {
                 ExchangeRateSource source = mExchangeRateSources[i];
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -1356,13 +1365,40 @@ public class CoreAPI {
         }
 
         if (!mExchangeRateObservers.isEmpty()) {
-            Log.d("CoreAPI",
-                    "Exchange Rate changed");
+            Log.d("CoreAPI", "Exchange Rate changed");
             for(OnExchangeRatesChange listener : mExchangeRateObservers) {
                 listener.OnExchangeRatesChange();
             }
         }
     }
+
+    final Runnable FileSyncUpdater = new Runnable() {
+        public void run() {
+            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_SYNC_REFRESH_INTERVAL_SECONDS);
+            syncAllData();
+        }
+    };
+
+    private void stopFileSyncUpdates() {
+        mPeriodicTaskHandler.removeCallbacks(FileSyncUpdater);
+    }
+
+    public void startFileSyncUpdates() {
+        if(AirbitzApplication.isLoggedIn()) {
+            mPeriodicTaskHandler.post(FileSyncUpdater);
+        }
+    }
+
+    public void syncAllData()
+    {
+        if (AirbitzApplication.isLoggedIn())
+        {
+            tABC_Error error = new tABC_Error();
+//            core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
+//            Log.d("CoreAPI", "File sync initiated.");
+        }
+    }
+
 
     //**************** Wallet handling
     public List<Wallet> getCoreWallets() {
@@ -1567,4 +1603,5 @@ public class CoreAPI {
         }
         return false;
     }
+
 }
