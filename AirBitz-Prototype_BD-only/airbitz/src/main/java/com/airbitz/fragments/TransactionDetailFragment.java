@@ -709,7 +709,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n");
 
-        s.append(String.valueOf(mTransaction.getAmountSatoshi()+mTransaction.getABFees()+mTransaction.getMinerFees()))
+        long feesSatoshi = mTransaction.getABFees()+mTransaction.getMinerFees();
+        long total = mTransaction.getAmountSatoshi() + feesSatoshi;
+        s.append(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(total, true, false))
                 .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n\n");
@@ -732,14 +734,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         s.append("\n\n");
 
 
-//        //Miner Fee - formatSatoshi
+        //Miner Fee - formatSatoshi
         start = s.length();
         s.append("Miner Fee").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.append("\n");
 
         start = s.length();
-        s.append(String.valueOf(mTransaction.getABFees()+mTransaction.getMinerFees()))
+        s.append(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
                 .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //
