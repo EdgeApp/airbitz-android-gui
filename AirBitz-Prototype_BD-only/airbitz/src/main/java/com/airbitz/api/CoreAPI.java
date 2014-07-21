@@ -1,5 +1,8 @@
 package com.airbitz.api;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.util.Log;
 
@@ -1542,6 +1545,26 @@ public class CoreAPI {
 
         return pAddress;
     }
+
+    public Bitmap getQRCodeBitmap(String uuid, String id) {
+        byte[] array = getQRCode(uuid, id);
+        return FromBinary(array, (int) Math.sqrt(array.length), 4);
+    }
+
+    private Bitmap FromBinary(byte[] bits, int width, int scale) {
+        Bitmap bmpBinary = Bitmap.createBitmap(width*scale, width*scale, Bitmap.Config.ARGB_8888);
+
+        for(int x = 0; x < width; x++) {
+            for (int y = 0; y < width; y++) {
+                bmpBinary.setPixel(x, y, bits[y * width + x] != 0 ? Color.BLACK : Color.WHITE);
+            }
+        }
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        Bitmap resizedBitmap = Bitmap.createBitmap(bmpBinary, 0, 0, width, width, matrix, false);
+        return resizedBitmap;
+    }
+
 
     public List<String> loadCategories()
     {
