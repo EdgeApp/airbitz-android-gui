@@ -34,6 +34,7 @@ public class CoreAPI {
     }
 
     private static CoreAPI mInstance = null;
+    private static boolean initialized = false;
 
     private CoreAPI() { }
 
@@ -43,6 +44,7 @@ public class CoreAPI {
         }
         return mInstance;
     }
+
     public native String getStringAtPtr(long pointer);
     public native byte[] getBytesAtPtr(long pointer, int length);
     public native long get64BitLongAtPtr(long pointer);
@@ -54,9 +56,12 @@ public class CoreAPI {
     public native void RegisterAsyncCallback ();
 
     public void Initialize(String file, String seed, long seedLength){
-        tABC_Error error = new tABC_Error();
-        RegisterAsyncCallback();
-        coreInitialize(file, seed, seedLength, error.getCPtr(error));
+        if(!initialized) {
+            tABC_Error error = new tABC_Error();
+            RegisterAsyncCallback();
+            coreInitialize(file, seed, seedLength, error.getCPtr(error));
+            initialized = true;
+        }
     }
 
     //***************** Callback handling
