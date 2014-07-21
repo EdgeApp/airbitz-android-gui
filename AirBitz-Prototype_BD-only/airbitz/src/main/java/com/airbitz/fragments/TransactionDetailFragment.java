@@ -1,11 +1,9 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
@@ -28,20 +26,17 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,15 +49,11 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_TxDetails;
-import com.airbitz.api.tABC_TxOutput;
-import com.airbitz.models.CurrentLocationManager;
-import com.airbitz.models.Transaction;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
+import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.SearchResult;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.utils.CalculatorBrain;
@@ -76,10 +67,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created on 2/20/14.
@@ -350,6 +339,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mXButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mDummyFocus.requestFocus();
                 mAdvancedDetailsPopup.setVisibility(View.GONE);
             }
         });
@@ -744,8 +734,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         s.append(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
                 .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//        //TODO set content
+
         mAdvancedDetailTextView.setText(s);
         mAdvancedDetailTextView.setMovementMethod( LinkMovementMethod.getInstance() );
     }
