@@ -351,14 +351,8 @@ public class WalletsFragment extends Fragment
             }
         });
         UpdateBalances();
-        mCoreAPI.addExchangeRateChangeListener(this);
 
         return view;
-    }
-
-    @Override public void onPause() {
-        super.onPause();
-        mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
     @Override
@@ -573,6 +567,12 @@ public class WalletsFragment extends Fragment
     public void onResume(){
         super.onResume();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
+        mCoreAPI.addExchangeRateChangeListener(this);
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
     public void buildFragments(){
