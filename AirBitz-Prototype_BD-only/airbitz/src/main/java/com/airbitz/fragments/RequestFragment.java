@@ -537,7 +537,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     @Override public void onPause() {
         super.onPause();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mCoreAPI.addExchangeRateChangeListener(this);
+        mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
     @Override
