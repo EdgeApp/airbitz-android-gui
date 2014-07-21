@@ -641,7 +641,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         SpannableStringBuilder inAddresses = new SpannableStringBuilder();
         SpannableStringBuilder outAddresses = new SpannableStringBuilder();
         String baseUrl = "";
-        if (AirbitzApplication.NETWORK_FAKE) { // TESTNET
+        if (mCoreAPI.isTestNet()) { // TESTNET
             baseUrl += "https://blockexplorer.com/testnet/";
         } else { // LIVE
             baseUrl += "https://blockchain.info/";

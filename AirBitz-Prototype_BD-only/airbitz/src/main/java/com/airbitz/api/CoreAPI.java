@@ -1550,4 +1550,21 @@ public class CoreAPI {
             core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
         }
     }
+
+    public boolean isTestNet()  {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_bool istestnet = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+        result = core.ABC_IsTestNet(istestnet, error);
+
+        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+            return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+        } else {
+            Log.d("CoreAPI", "isTestNet error:"+error.getSzDescription());
+        }
+        return false;
+    }
 }
