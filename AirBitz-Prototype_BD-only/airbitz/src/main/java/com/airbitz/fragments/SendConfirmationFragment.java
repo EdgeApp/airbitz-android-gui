@@ -55,6 +55,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private TextView mSlideTextView;
     private TextView mConfirmTextView;
     private TextView mPinTextView;
+    private TextView mBTCSignTextview;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
     private TextView mFiatSignTextView;
@@ -143,6 +144,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
         mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
         mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
+        mBTCSignTextview = (TextView) view.findViewById(R.id.send_confirmation_btc_sign);
         mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
         mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
         mFiatSignTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_sign);
@@ -203,6 +205,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mFiatField.setText("");
         }
 
+        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
@@ -243,6 +246,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             @Override
             public void afterTextChanged(Editable editable) {
                 updateTextFieldContents(true);
+                mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
             }
         };
 
@@ -256,6 +260,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             @Override
             public void afterTextChanged(Editable editable) {
                 updateTextFieldContents(false);
+                mFiatField.setSelection(mFiatField.getText().toString().length());
             }
         };
 
@@ -268,6 +273,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     edittext.setInputType(InputType.TYPE_NULL);
                     edittext.setInputType(inType);
                     mFiatField.removeTextChangedListener(mDollarTextWatcher);
+                    mFiatField.setText("");
+                    mBitcoinField.setText("");
                     mBitcoinField.addTextChangedListener(mBTCTextWatcher);
                     showCustomKeyboard(view);
                 } else {
@@ -285,6 +292,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 edittext.setInputType(inType);
                 if (hasFocus) {
                     mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mFiatField.setText("");
+                    mBitcoinField.setText("");
                     mFiatField.addTextChangedListener(mDollarTextWatcher);
                     showCustomKeyboard(view);
                 } else {
@@ -351,14 +360,14 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             }
         });
 
-        mConfirmSwipeButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        /*mConfirmSwipeButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (!mSuccess) {
                     mRightThreshold = (int) mConfirmSwipeButton.getX();
                 }
             }
-        });
+        });*/
 
         mConfirmSwipeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -367,10 +376,12 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     case MotionEvent.ACTION_DOWN:
                         mActivePointerId = event.getPointerId(0);
                         dX = (int) event.getX();
+                        mRightThreshold = (int) mConfirmSwipeButton.getX();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         rX = event.getRawX();
                         float delta = rX - dX;
+                        System.out.println("Delta: "+delta+" Left Threshold: "+(mLeftThreshold - mConfirmCenter)+ "Right Threshold: "+mRightThreshold);
                         if (delta < mLeftThreshold - mConfirmCenter) {
                             mConfirmSwipeButton.setX(mLeftThreshold - mConfirmCenter);
                         } else if (delta > mRightThreshold) {
@@ -382,6 +393,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                         return false;
                     case MotionEvent.ACTION_UP:
                         touchEventsEnded();
+                        mConfirmSwipeButton.setX(mRightThreshold);
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         mConfirmSwipeButton.setX(mRightThreshold);
@@ -426,6 +438,12 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
+
+        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
 
         return view;
     }
@@ -701,6 +719,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     public void showCustomKeyboard(View v) {
 //        hideKeyboard();
+        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
         ((NavigationActivity) getActivity()).showCalculator();
     }
 
