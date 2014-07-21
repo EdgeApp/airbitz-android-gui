@@ -8,8 +8,9 @@ import android.app.Application;
  */
 public class AirbitzApplication extends Application {
 
-    public static boolean TEST = false;   // TODO Set to false for deployed application!!!!!!!
-    private static String loginName = "tb2"; private static String loginPassword = "Aaaaaaaa1@";
+    public static boolean NETWORK_FAKE = true;   // TODO Set to false for deployed application!!!!!!!
+    public static boolean AUTOLOGIN = false;
+//    private static String loginName = "tb2"; private static String loginPassword = "Aaaaaaaa1@";
 //    private static String loginName = "matt104"; private static String loginPassword = "O@21grapes";
 
 
@@ -21,9 +22,9 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Login(String uname, String password) {
-        if(TEST) {
-            airbitzLogin.setUsername(loginName);
-            airbitzLogin.setPassword(loginPassword);
+        if(AUTOLOGIN) {
+//            airbitzLogin.setUsername(loginName);
+//            airbitzLogin.setPassword(loginPassword);
         } else if(uname!=null && password!=null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
