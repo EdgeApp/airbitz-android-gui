@@ -90,7 +90,7 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        //TODO integrate a finder for associating this with someone
+        //TODO integrate a finder for associating this with someone ?
         String fakeUser = "";
         String fakePhone = "";
         String id = mCoreAPI.createReceiveRequestFor(mWallet, fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
@@ -98,36 +98,16 @@ public class WalletQRCodeFragment extends Fragment {
             String addr = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
             mBitcoinAddress.setText(addr);
             try{
-                generateQRCode_general(id);
+                Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
+                if (bm != null) {
+                    mQRView.setImageBitmap(bm);
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
 
         return view;
-    }
-
-    private void generateQRCode_general(String id) {
-        byte[] array = mCoreAPI.getQRCode(mWallet.getUUID(), id);
-        Bitmap bm = FromBinary(array, (int) Math.sqrt(array.length), 4);
-
-        if (bm != null) {
-            mQRView.setImageBitmap(bm);
-        }
-    }
-
-    public Bitmap FromBinary(byte[] bits, int width, int scale) {
-        Bitmap bmpBinary = Bitmap.createBitmap(width*scale, width*scale, Bitmap.Config.ARGB_8888);
-
-        for(int x = 0; x < width; x++) {
-            for (int y = 0; y < width; y++) {
-                bmpBinary.setPixel(x, y, bits[y * width + x] != 0 ? Color.BLACK : Color.WHITE);
-            }
-        }
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        Bitmap resizedBitmap = Bitmap.createBitmap(bmpBinary, 0, 0, width, width, matrix, false);
-        return resizedBitmap;
     }
 
 }
