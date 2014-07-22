@@ -191,6 +191,35 @@ Java_com_airbitz_api_CoreAPI_getLongAtPtr(jlong *obj)
 /*
  * Proper conversion without SWIG problems
 */
+JNIEXPORT jlong JNICALL
+Java_com_airbitz_api_CoreAPI_ParseAmount(JNIEnv *jenv, jclass jcls, jstring jarg1, jint decimalplaces) {
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+      char *instring = (char *) 0 ;
+
+      instring = 0;
+      if (jarg1) {
+        instring = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+        if (!instring) return 0;
+      }
+
+  int64_t arg2 = 0; //*(int64_t **)&outp;
+
+  unsigned int arg3 = (unsigned int)decimalplaces;
+
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_ParseAmount", "string=%c", arg1);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_ParseAmount", "ppchar=%p", (void *) arg2);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_ParseAmount", "decimals=%d", arg3);
+  result = (tABC_CC)ABC_ParseAmount(instring,&arg2,arg3);
+  return arg2;
+}
+
+/*
+ * Proper conversion without SWIG problems
+*/
 JNIEXPORT jint JNICALL
 Java_com_airbitz_api_CoreAPI_FormatAmount(JNIEnv *jenv, jclass jcls, jlong satoshi, jlong ppchar, jlong decimalplaces, jlong perror) {
   jint jresult = 0 ;

@@ -328,8 +328,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         DisplayLoginOverlay(false);
         if(!AirbitzApplication.isLoggedIn()) {
             mNavFragmentId = Tabs.BD.ordinal();
-            switchFragmentThread(mNavFragmentId);
         }
+        switchFragmentThread(mNavFragmentId);
         mCoreAPI.startAllAsyncUpdates();
     }
 
