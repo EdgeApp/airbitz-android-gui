@@ -75,6 +75,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
+    private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
 
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
@@ -137,12 +138,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         // Setup top screen - the Landing - that swipes away if no login
         mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
 
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(new TransparentFragment());
-        fragments.add(new LandingFragment());
-        fragments.add(new TransparentFragment());
+        mOverlayFragments.add(new TransparentFragment());
+        mOverlayFragments.add(new LandingFragment());
+        mOverlayFragments.add(new TransparentFragment());
 
-        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), fragments);
+        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
         mViewPager.setAdapter(pageAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
