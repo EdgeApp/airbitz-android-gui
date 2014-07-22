@@ -106,6 +106,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private Spinner walletSpinner;
     private List<String> mWalletList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
+    private Wallet mFromWallet;
     private String mSpinnerWalletName;
     private List<Wallet> mCurrentListing;
 
@@ -163,6 +164,29 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null) {
+            String from = bundle.getString(UUID); // From a wallet with this UUID
+            if(from!=null) {
+                mFromWallet = mCoreAPI.getWallet(from);
+                if(mFromWallet!=null) {
+                    for(int i=0; i<mWallets.size(); i++) {
+                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID())) {
+                            final int finalI = i;
+                            walletSpinner.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    walletSpinner.setSelection(finalI);
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
 
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

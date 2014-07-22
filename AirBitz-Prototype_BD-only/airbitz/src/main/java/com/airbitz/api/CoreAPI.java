@@ -54,6 +54,7 @@ public class CoreAPI {
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
     public native void RegisterAsyncCallback ();
+    public native long ParseAmount(String jarg1, int decimalplaces);
 
     public void Initialize(String file, String seed, long seedLength){
         if(!initialized) {
@@ -947,8 +948,8 @@ public class CoreAPI {
     }
 
     public String formatCurrency(double in, boolean withSymbol) {
-        String pre = withSymbol ? "$ ":"";
-        String out = new BigDecimal(Double.toString(in)).toPlainString();
+        String pre = withSymbol ? mFauxCurrencyDenomination[SettingsCurrencyIndex()] : "";
+        String out = String.format("%.3f", in);
         return pre+out;
     }
 
@@ -1073,30 +1074,30 @@ public class CoreAPI {
 
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = maxDecimalPlaces();
-        SWIGTYPE_p_int64_t out = core.new_int64_tp();
 
         String cleanAmount = amount.replaceAll(",", "");
-        tABC_CC result = core.ABC_ParseAmount(cleanAmount, out, decimalPlaces);
-        if (result != tABC_CC.ABC_CC_Ok)
-        {
-            Log.d("CoreAPI", "denomination to Satoshi error");
-        }
-        long temp = get64BitLongAtPtr(out.getCPtr(out));
-        return temp;
-    }
-
-    public String BTCtoDefaultConversion() {
-        String currency = FormatDefaultCurrency(100000000, false, true);
-        int index = SettingsCurrencyIndex();
-        String currencyLabel = mFauxCurrencyAcronyms[index];
-        return "1.00 BTC = " + currency + " " + currencyLabel;
+        return ParseAmount(cleanAmount, decimalPlaces);
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-        String temp = FormatCurrency(100000000, currencyNum, false, true);
-        String currency = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
-        String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
-        return "1.00 BTC = " + currency + " " + currencyLabel;
+        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        int satoshi = 100;
+        int denomIndex = 0;
+        if(denomination != null) {
+            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                satoshi = 100000000;
+                denomIndex = 0;
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                satoshi = 100000;
+                denomIndex = 1;
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                satoshi = 100;
+                denomIndex = 2;
+            }
+        }
+        String currency = FormatDefaultCurrency(satoshi, false, false);
+        String currencyLabel = mFauxCurrencyAcronyms[SettingsCurrencyIndex()];
+        return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
     }
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
@@ -1110,9 +1111,8 @@ public class CoreAPI {
         String out;
         if (!btc)
         {
-            out = formatCurrency(SatoshiToCurrency(satoshi, currencyNum), withSymbol);
-            int index = out.indexOf('.');
-            out = out.substring(0, index + Math.min(3, out.length() - index));
+            double o = SatoshiToCurrency(satoshi, currencyNum);
+            out = formatCurrency(o, withSymbol);
         }
         else
         {
