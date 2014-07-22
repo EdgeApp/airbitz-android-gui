@@ -549,18 +549,27 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if(mAmountToSendSatoshi==0) {
+            resetSlider();
             showMessageAlert(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.execute();
+            finishSlider();
         } else {
+            resetSlider();
             showMessageAlert(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
         }
-        resetSlider();
     }
 
     private void resetSlider() {
         Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX",-(mRightThreshold-mConfirmSwipeButton.getX()),0);
+        animator.setDuration(300);
+        animator.setStartDelay(0);
+        animator.start();
+    }
+
+    private void finishSlider(){
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX",-(mRightThreshold-mConfirmSwipeButton.getX()),-(mRightThreshold-(mLeftThreshold - mConfirmCenter)));
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
