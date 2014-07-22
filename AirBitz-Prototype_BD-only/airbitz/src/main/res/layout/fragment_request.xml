@@ -3,7 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -139,24 +140,24 @@
                         android:textColorHint="#99DDDDDD"
                         android:textColor="@android:color/white"
                         android:background="@drawable/bg_edittext"
+                        android:singleLine="true"
                         android:paddingLeft="9.45dp"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
                         android:layout_centerVertical="true"
-                        android:paddingRight="9.45dp"
+                        android:paddingRight="50.4dp"
                         android:layout_marginBottom="9.45dp"
                         android:textSize="14dp"/>
                     <TextView
                         android:id="@+id/request_btc_denomination"
-                        android:layout_width="wrap_content"
+                        android:layout_width="44.1dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:paddingRight="16dp"
                         android:textAlignment="textEnd"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:textSize="14dp"
-                        android:text="BTC"/>
+                        android:text="mBTC"/>
                 </RelativeLayout>
 
 
@@ -180,16 +181,16 @@
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:paddingLeft="9.45dp"
-                    android:paddingRight="9.45dp"
+                    android:paddingRight="44.1dp"
+                    android:singleLine="true"
                     android:gravity="center_vertical"
                     android:textSize="14dp"/>
                 <TextView
                     android:id="@+id/request_fiat_denomination"
-                    android:layout_width="wrap_content"
+                    android:layout_width="37.8dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="16dp"
                     android:textAlignment="textEnd"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"

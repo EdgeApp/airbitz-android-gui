@@ -1,5 +1,7 @@
 package com.airbitz.fragments;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -393,7 +395,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                         return false;
                     case MotionEvent.ACTION_UP:
                         touchEventsEnded();
-                        mConfirmSwipeButton.setX(mRightThreshold);
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         mConfirmSwipeButton.setX(mRightThreshold);
@@ -561,6 +562,9 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     private void resetSlider() {
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translateX",mConfirmSwipeButton.getX(),mRightThreshold);
+        animator.setDuration(300);
+        animator.setStartDelay(0);
         mConfirmSwipeButton.setX(mRightThreshold);
     }
 
