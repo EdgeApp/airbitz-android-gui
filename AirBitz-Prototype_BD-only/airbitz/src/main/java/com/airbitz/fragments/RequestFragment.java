@@ -32,8 +32,10 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
@@ -175,8 +177,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
 
         pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNames);
-        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
         pickWalletSpinner.setAdapter(dataAdapter);
         pickWalletSpinner.post(new Runnable() {
             @Override
@@ -249,7 +250,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             public void onClick(View view) {
                 Fragment frag = new WalletQRCodeFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(Wallet.WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
+                bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
                 bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                 bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                 frag.setArguments(bundle);

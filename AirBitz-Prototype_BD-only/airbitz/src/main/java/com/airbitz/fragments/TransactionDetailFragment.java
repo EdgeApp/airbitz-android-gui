@@ -321,7 +321,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }
             }
@@ -443,7 +443,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                     return true;
                 }

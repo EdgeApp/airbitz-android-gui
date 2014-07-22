@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.SWIGTYPE_p_long;
@@ -51,6 +52,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_BitcoinURIInfo;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
+import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
@@ -106,10 +108,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private String mSpinnerWalletName;
-    private List<String> mCurrentListing;
-    private List<String> mCurrentListingNames;
+    private List<Wallet> mCurrentListing;
 
-    private ArrayAdapter<String> listingAdapter;
+    private WalletPickerAdapter listingAdapter;
 
     private int BACK_CAMERA_INDEX = 0;
 
@@ -148,9 +149,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mListviewContainer = (RelativeLayout) view.findViewById(R.id.listview_container);
         mListingListView = (ListView) view.findViewById(R.id.listing_listview);
 
-        mCurrentListing = new ArrayList<String>();
-        mCurrentListingNames = new ArrayList<String>();
-        listingAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_send_listing_spinner, mCurrentListing);
+        mCurrentListing = new ArrayList<Wallet>();
+        listingAdapter = new WalletPickerAdapter(getActivity(), mCurrentListing, WalletPickerEnum.SendTo);
         mListingListView.setAdapter(listingAdapter);
 
         dummyFocus = view.findViewById(R.id.dummy_focus);
@@ -162,8 +162,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
-        final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletList);
-        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
 
         Bundle bundle = getArguments();
@@ -298,7 +297,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 dummyFocus.requestFocus();
                 mListviewContainer.setVisibility(View.GONE);
                 hideKeyboard();
-                Wallet w = mCoreAPI.getWalletFromName(mCurrentListingNames.get(i));
+                Wallet w = mCurrentListing.get(i);
 
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
             }
@@ -322,7 +321,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
         if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
             final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            inputMethodManager.toggleSoftInput(0, 0);
         }
     }
 
@@ -492,7 +491,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
-        bundle.putString(FROM_WALLET_NAME, mSpinnerWalletName);
+        bundle.putString(FROM_WALLET_NAME, ((Wallet)walletSpinner.getSelectedItem()).getName());
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
@@ -619,21 +618,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public void goAutoCompleteListing(){
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
-        mCurrentListingNames.clear();
         if(text.isEmpty()){
             for(Wallet w : mWallets){
                 if(!w.getName().equals(mSpinnerWalletName)){
-                    mCurrentListing.add(w.getName() + "         " +
-                            mCoreAPI.FormatCurrency(w.getBalanceSatoshi(), w.getCurrencyNum(), false, true));
-                    mCurrentListingNames.add(w.getName());
+                    mCurrentListing.add(w);
                 }
             }
         }else {
             for (Wallet w : mWallets) {
                 if (!w.getName().equals(mSpinnerWalletName) && w.getName().toLowerCase().contains(text.toLowerCase())) {
-                    mCurrentListing.add(w.getName() + "         " +
-                            mCoreAPI.FormatCurrency(w.getBalanceSatoshi(), w.getCurrencyNum(), false, true));
-                    mCurrentListingNames.add(w.getName());
+                    mCurrentListing.add(w);
                 }
             }
         }

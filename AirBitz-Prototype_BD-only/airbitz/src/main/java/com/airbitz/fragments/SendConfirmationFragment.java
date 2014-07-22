@@ -383,7 +383,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     case MotionEvent.ACTION_MOVE:
                         rX = event.getRawX();
                         float delta = rX - dX;
-                        System.out.println("Delta: "+delta+" Left Threshold: "+(mLeftThreshold - mConfirmCenter)+ "Right Threshold: "+mRightThreshold);
                         if (delta < mLeftThreshold - mConfirmCenter) {
                             mConfirmSwipeButton.setX(mLeftThreshold - mConfirmCenter);
                         } else if (delta > mRightThreshold) {
@@ -397,7 +396,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                         touchEventsEnded();
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        mConfirmSwipeButton.setX(mRightThreshold);
+                        resetSlider();
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
                 /* If a multitouch event took place and the original touch dictating
@@ -439,12 +438,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
-
-        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
 
         return view;
     }
@@ -562,10 +555,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     private void resetSlider() {
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translateX",mConfirmSwipeButton.getX(),mRightThreshold);
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX",-(mRightThreshold-mConfirmSwipeButton.getX()),0);
         animator.setDuration(300);
         animator.setStartDelay(0);
-        mConfirmSwipeButton.setX(mRightThreshold);
+        animator.start();
     }
 
     /**
