@@ -36,9 +36,6 @@ public class WalletPickerAdapter extends ArrayAdapter {
             convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
             textView.setText(mWalletList.get(position).getName() + " ("+mWalletList.get(position).getBalanceFormatted()+")");
-            System.out.println("Drop Down View: "+textView.getText());
-        }else{
-            System.out.println("Hi");
         }
         return convertView;
     }
