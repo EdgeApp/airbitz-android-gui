@@ -398,7 +398,7 @@
         android:focusableInTouchMode="true"
         android:background="@drawable/advanced_details_bg"
         android:layout_below="@id/layout_header"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/logo"
@@ -425,17 +425,18 @@
             android:background="@drawable/advanced_details_box"
             android:layout_marginRight="12.6dp"
             android:layout_marginLeft="12.6dp"
-            android:layout_marginBottom="18.9dp"
-            android:paddingBottom="6.3dp"
-            android:paddingRight="6.3dp"
-            android:paddingTop="9.45dp"
-            android:paddingLeft="9.45dp">
+            android:layout_marginBottom="18.9dp">
 
             <TextView
                 android:id="@+id/fragment_transactiondetail_textview"
                 android:bufferType="spannable"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_margin="6.3dp"
+                android:paddingBottom="6.3dp"
+                android:paddingRight="6.3dp"
+                android:paddingTop="9.45dp"
+                android:paddingLeft="9.45dp"/>
 
         </LinearLayout>
 
