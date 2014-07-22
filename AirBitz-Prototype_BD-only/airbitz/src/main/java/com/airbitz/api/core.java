@@ -173,6 +173,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_ExportWalletSeed(szUserName, szPassword, szUUID, SWIGTYPE_p_p_char.getCPtr(pszWalletSeed), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_GetWalletUUIDs(String szUserName, SWIGTYPE_p_p_p_char paWalletUUID, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_GetWalletUUIDs(szUserName, SWIGTYPE_p_p_p_char.getCPtr(paWalletUUID), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_GetWallets(String szUserName, String szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetWallets(szUserName, szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo.getCPtr(paWalletInfo), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
   }
@@ -339,6 +343,14 @@ public class core implements coreConstants {
 
   public static void ABC_FreeAccountSettings(tABC_AccountSettings pSettings) {
     coreJNI.ABC_FreeAccountSettings(tABC_AccountSettings.getCPtr(pSettings), pSettings);
+  }
+
+  public static tABC_CC ABC_DataSyncAll(String szUserName, String szPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_DataSyncAll(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WatcherStatus(String szWalletUUID, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WatcherStatus(szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_WatcherStart(String szUserName, String szPassword, String szWalletUUID, tABC_Error pError) {

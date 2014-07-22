@@ -314,6 +314,7 @@ public class coreJNI {
   public final static native int ABC_GetWalletInfo(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfo(long jarg1, tABC_WalletInfo jarg1_);
   public final static native int ABC_ExportWalletSeed(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_GetWalletUUIDs(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_GetWallets(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfoArray(long jarg1, long jarg2);
   public final static native int ABC_SetWalletOrder(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
@@ -356,6 +357,8 @@ public class coreJNI {
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_WatcherStatus(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatchAddresses(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);

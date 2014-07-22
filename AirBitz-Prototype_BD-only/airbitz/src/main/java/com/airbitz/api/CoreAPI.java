@@ -1404,7 +1404,7 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn())
         {
             tABC_Error error = new tABC_Error();
-//            core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
+            core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
 //            Log.d("CoreAPI", "File sync initiated.");
         }
     }
