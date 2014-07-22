@@ -1,6 +1,6 @@
 package com.airbitz.activities;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -30,8 +29,8 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
-import com.airbitz.models.Transaction;
 import com.airbitz.models.FragmentSourceEnum;
+import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.crashlytics.android.Crashlytics;
 
@@ -96,11 +95,10 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        AirbitzApplication.Login(null, null); // if in TEST mode, will auto login
+        AirbitzApplication.Login(null, null); // try auto login
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (LinearLayout) findViewById(R.id.calculator_layout);
@@ -142,29 +140,29 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mOverlayFragments.add(new LandingFragment());
         mOverlayFragments.add(new TransparentFragment());
 
-        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
-        mViewPager.setAdapter(pageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
+//        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
+//        mViewPager.setAdapter(pageAdapter);
+//        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            public void onPageScrollStateChanged(int state) { }
+//
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                // Disappear if transparent page shows
+//                if (position == 0 || position == 2) {
+//                    mViewPager.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            public void onPageSelected(int position) {
+//                // Disappear if transparent page shows
+//                if (position == 0 || position == 2) {
+//                    mViewPager.setVisibility(View.GONE);
+//                }
+//            }
+//        });
+//        mViewPager.setCurrentItem(2);
+        setViewPager();
 
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-                // Disappear if transparent page shows
-                if (position == 0 || position == 2) {
-                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                    if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-//                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-        });
-        mViewPager.setCurrentItem(2);
-
+        mNavBarFragment = (NavigationBarFragment) getSupportFragmentManager().findFragmentById(R.id.navigationFragment);
         if(bdonly){
             System.out.println("BD ONLY");
             mNavBarFragmentLayout.setVisibility(View.GONE);
@@ -176,15 +174,35 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
+        setViewPager();
         if(overlay) {
             mViewPager.setVisibility(View.VISIBLE);
             mViewPager.setCurrentItem(1);
         } else {
-            mViewPager.setCurrentItem(2);
-            mViewPager.setVisibility(View.INVISIBLE);
-
-            switchFragmentThread(mNavFragmentId);
+            mViewPager.setVisibility(View.GONE);
         }
+    }
+
+    private void setViewPager() {
+        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
+        mViewPager.setAdapter(pageAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) { }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Disappear if transparent page shows
+                if (position == 0 || position == 2) {
+                    mViewPager.setVisibility(View.GONE);
+                }
+            }
+
+            public void onPageSelected(int position) {
+                // Disappear if transparent page shows
+                if (position == 0 || position == 2) {
+                    mViewPager.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void setTypeFaces() {
@@ -199,17 +217,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-//        if(!AirbitzApplication.isLoggedIn()) {
-//            DisplayLoginOverlay(true);
-//        }
-//        mNavFragmentId = position;
-//        AirbitzApplication.setLastNavTab(position);
-
         if(AirbitzApplication.isLoggedIn()) {
             switchFragmentThread(position);
         } else {
+            if (position != Tabs.BD.ordinal()) {
+                AirbitzApplication.setLastNavTab(position);
+            }
             DisplayLoginOverlay(true);
-            AirbitzApplication.setLastNavTab(position);
         }
     }
 
@@ -292,26 +306,36 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     @Override
     public void onBackPressed() {
-        if(mNavStacks[mNavFragmentId].size() == 1) {
-            super.onBackPressed();
-        }else {
-            popFragment();
+        if(mCalculatorLayout.getVisibility()==View.VISIBLE){
+            hideCalculator();
+        } else {
+            if (mNavStacks[mNavFragmentId].size() == 1) {
+                // This emulates user pressing Home button, rather than finish this activity
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+            } else {
+                popFragment();
+            }
         }
     }
 
     @Override
     public void onResume() {
+        super.onResume();
         mNavFragmentId = AirbitzApplication.getLastNavTab();
+        DisplayLoginOverlay(false);
         if(!AirbitzApplication.isLoggedIn()) {
             mNavFragmentId = Tabs.BD.ordinal();
+            switchFragmentThread(mNavFragmentId);
         }
-        DisplayLoginOverlay(false);
         mCoreAPI.startAllAsyncUpdates();
-        super.onResume();
     }
 
     @Override public void onPause() {
         super.onPause();
+        mViewPager.setVisibility(View.VISIBLE);
         mCoreAPI.stopAllAsyncUpdates();
     }
 
