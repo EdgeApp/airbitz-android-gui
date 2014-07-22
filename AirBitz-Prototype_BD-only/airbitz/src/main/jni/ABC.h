@@ -174,7 +174,9 @@ extern "C" {
     {
         ABC_AsyncEventType_IncomingBitCoin,
         ABC_AsyncEventType_BlockHeightChange,
-        ABC_AsyncEventType_ExchangeRateUpdate
+        ABC_AsyncEventType_ExchangeRateUpdate,
+        ABC_AsyncEventType_DataSyncUpdate,
+        ABC_AsyncEventType_RemotePasswordChange
     } tABC_AsyncEventType;
 
     /**
@@ -650,6 +652,11 @@ extern "C" {
                                  char **pszWalletSeed,
                                  tABC_Error *pError);
 
+    tABC_CC ABC_GetWalletUUIDs(const char *szUserName,
+                               char ***paWalletUUID,
+                               unsigned int *pCount,
+                               tABC_Error *pError);
+
     tABC_CC ABC_GetWallets(const char *szUserName,
                            const char *szPassword,
                            tABC_WalletInfo ***paWalletInfo,
@@ -877,6 +884,10 @@ extern "C" {
                                       tABC_Error *pError);
 
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
+
+    tABC_CC ABC_DataSyncAll(const char *szUserName, const char *szPassword, tABC_Error *pError);
+
+    tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_WatcherStart(const char *szUserName,
                                 const char *szPassword,
