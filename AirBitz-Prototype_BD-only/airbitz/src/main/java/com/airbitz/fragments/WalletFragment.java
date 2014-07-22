@@ -355,7 +355,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal());
+                Bundle bundle = new Bundle();
+                bundle.putString(SendFragment.UUID, mWallet.getUUID());
+                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), bundle);
             }
         });
 
