@@ -209,6 +209,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         if(mAmountToSendSatoshi==0) {
             mBitcoinField.setText("");
             mFiatField.setText("");
+        } else {
+            String out = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false);
+            mFiatField.setText(out);
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+            mPinEdittext.requestFocus();
         }
 
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
