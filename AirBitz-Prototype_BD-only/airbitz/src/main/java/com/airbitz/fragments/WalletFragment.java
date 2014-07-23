@@ -198,8 +198,10 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
                 }else {
-                    mWallet.setName(mWalletNameButton.getText().toString());
-                    mCoreAPI.renameWallet(mWallet);
+                    if(mWalletNameButton.getText().toString().trim().isEmpty()) {
+                        mWallet.setName(mWalletNameButton.getText().toString());
+                        mCoreAPI.renameWallet(mWallet);
+                    }
                 }
             }
         });
