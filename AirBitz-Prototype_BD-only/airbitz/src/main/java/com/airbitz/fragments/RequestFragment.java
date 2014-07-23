@@ -553,8 +553,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         } else {
             // operation was pressed
             if (userIsInTheMiddleOfTypingANumber) {
-
-                mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                try {
+                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
+                } catch(NumberFormatException e) { // ignore any non-double
+                }
                 userIsInTheMiddleOfTypingANumber = false;
             }
 
