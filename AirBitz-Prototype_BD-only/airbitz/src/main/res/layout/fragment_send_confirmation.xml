@@ -378,4 +378,11 @@
 
     </ScrollView>
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/fragment_sendconfirmation_dummy_focus"/>
+
 </RelativeLayout>

@@ -68,6 +68,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     private boolean mConfirmChecked = false;
 
+    private View mDummyFocus;
+
     private EditText mFiatField;
     private EditText mBitcoinField;
     private TextView mBitcoinFeeLabel;
@@ -133,6 +135,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+
+        mDummyFocus = view.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
@@ -444,6 +448,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             }
         });
 
+        mDummyFocus.requestFocus();
+
         return view;
     }
 
@@ -456,7 +462,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private void showKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE, 0);
+        inputManager.toggleSoftInput(0, 0);
     }
 
 
