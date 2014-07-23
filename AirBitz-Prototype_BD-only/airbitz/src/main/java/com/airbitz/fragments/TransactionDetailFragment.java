@@ -592,6 +592,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
+        mDoneButton.setHighlightColor(getResources().getColor(R.color.red));
+
         if(mFromSend || mFromRequest){
             mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);

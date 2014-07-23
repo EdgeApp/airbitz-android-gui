@@ -24,9 +24,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -85,8 +87,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private LinearLayout mDummyFocus;
 
-    private ClearableEditText mSearchEdittext;
-    private ClearableEditText mLocationEdittext;
+    private EditText mSearchEdittext;
+    private EditText mLocationEdittext;
 
     private RelativeLayout llListContainer;
 
@@ -131,9 +133,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private String mBusinessType;
     private Bundle mVenueBundle;
 
-    private TextView businessHint;
-    private TextView locationHint;
-
     //private GestureDetector mGestureDetector;
 
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
@@ -176,7 +175,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         if(mLocationManager==null) {
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-            mLocationManager.addLocationChangeListener(this);
         }
     }
 
@@ -184,6 +182,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     public void onMapReady() {
         mGoogleMap = mapFragment.getMap();
         initializeMap();
+        mLocationManager.addLocationChangeListener(this);
     }
 
 
@@ -194,6 +193,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         checkLocationManager();
+        if(locationEnabled && mLocationManager.getLocation() != null){
+            System.out.println("!YaY! Location isn't null!");
+            mCurrentLocation = mLocationManager.getLocation();
+        }else{
+            System.out.println("!BOO! Location is null!");
+        }
 
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
         if(mVenueFragmentLayout.getChildCount()<=0) {
@@ -219,10 +224,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mDragLayout = (LinearLayout) view.findViewById(R.id.dragLayout);
         llListContainer = (RelativeLayout) view.findViewById(R.id.list_view_container);
         flMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
-        businessHint = (TextView) view.findViewById(R.id.business_hint);
-        businessHint.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        locationHint = (TextView) view.findViewById(R.id.location_hint);
-        locationHint.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
 
         mBusinessList = new ArrayList<Business>();
         mLocation = new ArrayList<LocationSearchResult>();
@@ -233,8 +234,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         mBackButton.setVisibility(View.VISIBLE);
 
-        mSearchEdittext = (ClearableEditText) view.findViewById(R.id.edittext_search);
-        mLocationEdittext = (ClearableEditText) view.findViewById(R.id.edittext_location);
+        mSearchEdittext = (EditText) view.findViewById(R.id.edittext_search);
+        mLocationEdittext = (EditText) view.findViewById(R.id.edittext_location);
 
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
@@ -277,23 +278,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mLocationEdittext.setVisibility(View.VISIBLE);
                     showViewAnimatorChild(1);
 
-                    if(mSearchEdittext.getText().toString().isEmpty()) {
-                        mSearchEdittext.setText(" ");
-                        mSearchEdittext.setSelection(mSearchEdittext.getText().toString().length());
-                    }else{
-                        if(mSearchEdittext.getText().toString().charAt(0)!=' '){
-                            mSearchEdittext.setText(" " + mSearchEdittext.getText().toString());
-                        }
-                        mSearchEdittext.setSelection(1,mSearchEdittext.getText().toString().length());
-                    }
                     // Start search
                     try {
-                        final String text;
-                        if(mSearchEdittext.getText().toString().charAt(0)==' ') {
-                            text = mSearchEdittext.getText().toString().substring(1);
-                        }else{
-                            text = mSearchEdittext.getText().toString();
-                        }
+                        final String text = mSearchEdittext.getText().toString();
                         final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
@@ -315,7 +302,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }else {
                     if(!mLocationEdittext.hasFocus()){
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        imm.toggleSoftInput(0, 0);
                     }
                     /*if (!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0) == ' ') {
                         mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
@@ -331,7 +318,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                mSearchEdittext.onTextChanged();
             }
 
             @Override public void afterTextChanged(Editable editable) {
@@ -349,11 +335,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 try {
                     // Only include cached searches if text is empty.
                     final String query;
-                    if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
-                        query = editable.toString().substring(1);
-                    }else{
-                        query = editable.toString();
-                    }
+                    query = editable.toString();
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
@@ -367,17 +349,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if(editable.toString().isEmpty() && mSearchEdittext.hasFocus()){
-                    editable.append(' ');
-                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
-                    mSearchEdittext.setText(" "+editable.toString());
-                }
-                if( ( editable.toString().compareTo(" ")==0)){
-                    businessHint.setVisibility(View.VISIBLE);
-                    mSearchEdittext.setSelection(1);
-                }else{
-                    businessHint.setVisibility(View.INVISIBLE);
-                }
             }
         });
 
@@ -389,16 +360,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
-
-                    if(mLocationEdittext.getText().toString().isEmpty()) {
-                        mLocationEdittext.setText(" ");
-                        mLocationEdittext.setSelection(mLocationEdittext.getText().toString().length());
-                    }else{
-                        if(mLocationEdittext.getText().toString().charAt(0)!=' '){
-                            mLocationEdittext.setText(" " + mLocationEdittext.getText().toString());
-                        }
-                        mLocationEdittext.setSelection(1,mLocationEdittext.getText().toString().length());
-                    }
 
                     // Search
                     String latLong = "";
@@ -423,67 +384,39 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
-                    /*if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' ') {
-                        mLocationEdittext.setText(mLocationEdittext.getText().toString().substring(1));
-                    }*/
                 }
             }
         });
 
-        final View.OnKeyListener keyListener = new View.OnKeyListener() {
-            @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                int keyAction = keyEvent.getAction();
-//                String test = "";
-//                mIntent = new Intent(getActivity(), MapBusinessDirectoryFragment.class);
-                if (keyAction == KeyEvent.ACTION_UP) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_ENTER:
-                            showViewAnimatorChild(0);
-                            mBusinessType = "business";
-                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
-                                mBusinessName = mSearchEdittext.getText().toString().substring(1);
-                            }else{
-                                mBusinessName = mSearchEdittext.getText().toString();
-                            }
-                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
-                                mLocationName = mLocationEdittext.getText().toString().substring(1);
-                            }else{
-                                mLocationName = mLocationEdittext.getText().toString();
-                            }
-                            search();
-                            return true;
-                        case KeyEvent.FLAG_EDITOR_ACTION:
-                            mBusinessType = "business";
-                            if(!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0)==' ') {
-                                mBusinessName = mSearchEdittext.getText().toString().substring(1);
-                            }else{
-                                mBusinessName = mSearchEdittext.getText().toString();
-                            }
-                            if(!mLocationEdittext.getText().toString().isEmpty() && mLocationEdittext.getText().toString().charAt(0)==' '){
-                                mLocationName = mLocationEdittext.getText().toString().substring(1);
-                            }else{
-                                mLocationName = mLocationEdittext.getText().toString();
-                            }
-                            search();
-
-//                            mIntent.putExtra(BusinessDirectoryFragment.BUSINESS, mSearchEdittext.getText()
-//                                    .toString());
-//                            mIntent.putExtra(BusinessDirectoryFragment.LOCATION, mLocationEdittext.getText()
-//                                    .toString());
-//                            mIntent.putExtra(BusinessDirectoryFragment.BUSINESSTYPE, mBusinessType);
-//                            startActivity(mIntent);
-                            //finish();
-                            return true;
-                        default:
-                            return false;
-                    }
+        mLocationEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    showViewAnimatorChild(0);
+                    mBusinessType = "business";
+                    mBusinessName = mSearchEdittext.getText().toString();
+                    mLocationName = mLocationEdittext.getText().toString();
+                    search();
+                    return true;
                 }
-
                 return false;
             }
-        };
-        mLocationEdittext.setOnKeyListener(keyListener);
-        mSearchEdittext.setOnKeyListener(keyListener);
+        });
+
+        mSearchEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    showViewAnimatorChild(0);
+                    mBusinessType = "business";
+                    mBusinessName = mSearchEdittext.getText().toString();
+                    mLocationName = mLocationEdittext.getText().toString();
+                    search();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mLocationEdittext.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
@@ -492,18 +425,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                mLocationEdittext.onTextChanged();
+
             }
 
             @Override public void afterTextChanged(Editable editable) {
 
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
-                if(!editable.toString().isEmpty() && editable.toString().charAt(0)==' ') {
-                    mLocationWords = editable.toString().substring(1);
-                }else{
-                    mLocationWords = editable.toString();
-                }
+                mLocationWords = editable.toString();
 
                 String latLong = "";
                 if(locationEnabled) {
@@ -522,17 +451,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mLocationAutoCompleteAsyncTask.execute(mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                if(editable.toString().isEmpty() && mLocationEdittext.hasFocus()){
-                    editable.append(' ');
-                }else if(!editable.toString().isEmpty() && editable.toString().charAt(0)!=' '){
-                    mLocationEdittext.setText(" "+editable.toString());
-                }
-                if( editable.toString().compareTo(" ")==0){
-                    locationHint.setVisibility(View.VISIBLE);
-                    mLocationEdittext.setSelection(1);
-                }else{
-                    locationHint.setVisibility(View.GONE);
                 }
             }
         });
@@ -573,24 +491,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                 if (locationFieldShouldFocus) {
                     mLocationEdittext.requestFocus();
-                    mLocationEdittext.setSelection(1,mLocationEdittext.length());
-                    mLocationEdittext.setSelected(false);
                 } else {
                     mSearchEdittext.requestFocus();
-                    mSearchEdittext.setSelection(1,mSearchEdittext.length());
-                    mSearchEdittext.setSelected(false);
                 }
-
             }
         });
-
-        // final ViewTreeObserver observer = mFrameLayout.getViewTreeObserver();
-        // observer.addOnGlobalLayoutListener(
-        // new ViewTreeObserver.OnGlobalLayoutListener() {
-        // @Override public void onGlobalLayout() {
-        // mDragBarThreshold = (mFrameLayout.getHeight() * 2) - 70;
-        // }
-        // });
 
         mDragLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent event) {
@@ -622,44 +527,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                         float yMove = event.getY(pointerIndexMove);
 
-                        // Log.d(TAG, String.format("yMove: %f", yMove));
-                        //
-                        // if (yMove < 0 && mapOriginalHeight == param.height) {
-                        // Log.d(TAG, "max height reached");
-                        // //return true;
-                        // }
-                        //
-                        // if (param.height == 0 && yMove > 0) {
-                        // Log.d(TAG, "min height reached");
-                        // //return true;
-                        // }
-
                         param.height += yMove;
-
-                        // final float dy = yMove - aLastTouchY;
-                        //
-                        // aPosY += dy;
-                        //
-                        // if (aPosY > mDragBarThreshold) {
-                        // aPosY = mDragBarThreshold;
-                        // }
-                        //
-                        // param.height = (int) (aPosY);
-
-                        // int bottomPadding = param.height - mapOriginalHeight;
-
-                        // Log.d(TAG, String.format("bottomPadding: %d", bottomPadding));
-
-                        // param.setMargins(0, 0, 0, bottomPadding);
 
                         int[] dragBarLocation = new int[2];
                         mDragLayout.getLocationOnScreen(dragBarLocation);
 
-                        //Log.d(TAG, "dragLayout location: " + dragBarLocation[1]);
-                        //Log.d(TAG, "dragLayout height: " + dragBarHeight);
-                        //Log.d(TAG, "display height: " + App.getDisplayHeight());
-
-                        //Log.d(TAG, String.format("flMapContainer height: %d", param.height));
                         if (param.height <= 0 || (dragBarLocation[1] + dragBarHeight >= App.getDisplayHeight() && yMove > 0)) {
                             Log.d(TAG, "height is out of bounds.");
                             param.height = currentHeight;
@@ -668,7 +540,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         flMapContainer.setLayoutParams(param);
 
                         int padding = (mapHeight - param.height) / 2;
-                        //Log.d(TAG, "map padding: " + String.valueOf(padding));
+
                         if(mGoogleMap == null){
                             initializeMap();
                         }
@@ -1202,6 +1074,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     public void OnCurrentLocationChange(Location location) {
         mCurrentLocation = mLocationManager.getLocation();
         mLocationManager.removeLocationChangeListener(this);
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 7));
     }
 
     public HashMap<Marker, String> getMarkerImageLink() {
@@ -1340,6 +1213,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         @Override protected void onPostExecute(String searchResult) {
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
+                System.out.println("New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     mVenues = results.getBusinessSearchObjectArray();
                     if(mGoogleMap == null){
@@ -1412,6 +1286,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mGoogleMap.clear();
                     initializeMarkerWithBusinessSearchResult();
                 }
+                mFragmentVenue.setListView(searchResult);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -1469,6 +1344,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     mGoogleMap.clear();
                     initializeMarkerWithBusinessSearchResult();
                 }
+                mFragmentVenue.setListView(searchResult);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
