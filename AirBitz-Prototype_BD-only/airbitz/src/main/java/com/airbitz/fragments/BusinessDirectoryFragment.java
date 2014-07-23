@@ -64,7 +64,6 @@ import java.util.List;
  * Created by Thomas Baker on 4/22/14.
  */
 public class BusinessDirectoryFragment extends Fragment implements
-        GestureDetector.OnGestureListener,
         ObservableScrollView.ScrollViewListener,
         CurrentLocationManager.OnLocationChange {
 
@@ -191,8 +190,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_business_directory, container, false);
 
         checkLocationManager();
-
-        mGestureDetector = new GestureDetector(this);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
@@ -925,6 +922,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         @Override protected void onPostExecute(List<LocationSearchResult> result) {
+            if(getActivity()==null)
+                return;
 
             mLocationList.clear();
 
@@ -958,8 +957,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         @Override protected void onCancelled(List<LocationSearchResult> JSONResult){
-            mLocationAutoCompleteAsyncTask = null;
             super.onCancelled();
+            mLocationAutoCompleteAsyncTask = null;
         }
 
     }
@@ -983,6 +982,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         @Override protected void onPostExecute(Categories categories) {
+            if(getActivity()==null)
+                return;
 
             if (categories != null) {
                 ArrayList<Category> catArrayList = new ArrayList<Category>();
@@ -1096,23 +1097,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
-//    private float getStateFromSharedPreferences(String key) {
-//        Activity activity = getActivity();
-//        if(activity!=null) {
-//            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-//            return pref.getFloat(key, -1);
-//        }
-//        return -1;
-//    }
-//
-//    public double getLatFromSharedPreference() {
-//        return (double) getStateFromSharedPreferences(this.LAT_KEY);
-//    }
-//
-//    public double getLonFromSharedPreference() {
-//        return (double) getStateFromSharedPreferences(this.LON_KEY);
-//    }
-
     private void checkLocationManager() {
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -1121,151 +1105,51 @@ public class BusinessDirectoryFragment extends Fragment implements
         }else{
             locationEnabled = true;
         }
-
-        //Criteria cri = new Criteria();
-
-        /*final boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if(!gpsEnabled){
-            String provider = mLocationManager.getBestProvider(cri, true);
-            mCurrentLocation = mLocationManager.getLastKnownLocation(provider);
-        }
-        if (mCurrentLocation != null) {
-            clearSharedPreference();
-            writeLatLonToSharedPreference();
-        }
-
-        if (!gpsEnabled) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("GPS is disabled. Please Enable GPS to find business near your location.")
-                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialog, int which) {
-                            wentSettings = true;
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        } else {
-            if (getLatFromSharedPreference() == -1 && getLonFromSharedPreference() == -1) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setMessage("Getting location...");
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
-            }
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-        }*/
-
     }
 
-//    private void writeLatLonToSharedPreference() {
-//        writeValueToSharedPreference(LAT_KEY, (float) mCurrentLocation.getLatitude());
-//        writeValueToSharedPreference(LON_KEY, (float) mCurrentLocation.getLongitude());
-//    }
-//
-//    private void writeValueToSharedPreference(String key, float value) {
-//        Activity activity = getActivity();
-//        if(activity!=null) {
-//            SharedPreferences pref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = pref.edit();
-//            editor.putFloat(key, value);
-//            editor.commit();
-//        }
-//    }
-//
-//    private void clearSharedPreference() {
-//        Activity activity = getActivity();
-//        if(activity!=null) {
-//            SharedPreferences pref = getActivity().getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = pref.edit();
-//            editor.remove(LAT_KEY);
-//            editor.remove(LON_KEY);
-//            editor.commit();
-//        }
-//    }
-//
 
     @Override
     public void onStart(){
         super.onStart();
     }
-
-    // private void clearCacheSharedPreference() {
-    // SharedPreferences pref =
-    // getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, MODE_PRIVATE);
-    // SharedPreferences.Editor editor = pref.edit();
-    // editor.remove(BIZ1_NAME_KEY);
-    // editor.remove(BIZ1_TYPE_KEY);
-    // editor.remove(BIZ1_ID_KEY);
-    // editor.remove(BIZ2_NAME_KEY);
-    // editor.remove(BIZ2_TYPE_KEY);
-    // editor.remove(BIZ2_ID_KEY);
-    //
-    // editor.commit();
-    //
-    // SharedPreferences prefLocation =
-    // getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF,
-    // MODE_PRIVATE);
-    // editor = prefLocation.edit();
-    //
-    // editor.remove(LOC2_KEY);
-    // editor.remove(LOC3_KEY);
-    // editor.remove(LOC4_KEY);
-    // editor.remove(LOC5_KEY);
-    // editor.remove(LOC1_KEY);
-    //
-    // editor.commit();
-    // }
-
-//    @Override public boolean onTouchEvent(MotionEvent event) {
-//        return mGestureDetector.onTouchEvent(event);
+//
+//    @Override public boolean onDown(MotionEvent motionEvent) {
+//        return false;
 //    }
-
-    @Override public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-
-        if (start != null & finish != null) {
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if (xDistance > 100) {
-//                    finish();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
+//
+//    @Override public void onShowPress(MotionEvent motionEvent) {
+//
+//    }
+//
+//    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
+//        return false;
+//    }
+//
+//    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+//        return false;
+//    }
+//
+//    @Override public void onLongPress(MotionEvent motionEvent) {
+//
+//    }
+//
+//    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
+//
+//        if (start != null & finish != null) {
+//
+//            float yDistance = Math.abs(finish.getY() - start.getY());
+//
+//            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
+//                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
+//
+//                if (xDistance > 100) {
+////                    finish();
+//                    return true;
+//                }
+//            }
+//
+//        }
+//
+//        return false;
+//    }
 }
