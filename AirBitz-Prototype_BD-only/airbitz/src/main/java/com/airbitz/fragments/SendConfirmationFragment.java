@@ -306,6 +306,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
@@ -326,6 +327,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
@@ -524,10 +526,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     Handler mFeeHandler=new Handler();
+    Runnable mMaxAmountRunnable;
+    Runnable mUpdateFeeFieldRunnable;
     private void SetMaxAmount()
     {
         if (mSourceWallet != null) {
-            Runnable r=new Runnable() {
+            mFeeHandler.removeCallbacks(mMaxAmountRunnable);
+            mMaxAmountRunnable=new Runnable() {
                 public void run() {
                     String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
                     long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
@@ -542,15 +547,16 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = false;
                 }
             };
-            mFeeHandler.post(r);
+            mFeeHandler.post(mMaxAmountRunnable);
         }
     }
 
 
     private void updateFeeFieldContents()
     {
-        Runnable r=new Runnable() {
+        mUpdateFeeFieldRunnable=new Runnable() {
             public void run() {
+                mFeeHandler.removeCallbacks(mUpdateFeeFieldRunnable);
                 String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
                 long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
 
@@ -583,7 +589,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 mAutoUpdatingTextFields = false;
             }
         };
-        mFeeHandler.post(r);
+        mFeeHandler.post(mUpdateFeeFieldRunnable);
     }
 
 
