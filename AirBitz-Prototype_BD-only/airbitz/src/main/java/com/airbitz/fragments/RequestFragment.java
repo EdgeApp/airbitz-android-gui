@@ -208,7 +208,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             public void onClick(View view) {
                 Fragment frag = new WalletQRCodeFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(Wallet.WALLET_NAME, (String)pickWalletSpinner.getSelectedItem());
+                bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
                 bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                 bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                 frag.setArguments(bundle);
