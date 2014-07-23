@@ -319,7 +319,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
+                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.toggleSoftInput(0, 0);
                     }
@@ -440,11 +440,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     mDummyFocus.requestFocus();
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
-                    }
                     return true;
                 }
                 return false;
