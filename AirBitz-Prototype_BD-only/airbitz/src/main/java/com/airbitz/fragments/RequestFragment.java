@@ -54,7 +54,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
 
-    private View mView;
     private EditText mBitcoinField;
     private EditText mFiatField;
 
@@ -139,7 +138,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
-        mView = view;
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
         mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
