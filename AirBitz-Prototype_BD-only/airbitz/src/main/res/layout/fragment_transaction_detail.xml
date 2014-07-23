@@ -152,40 +152,6 @@
 
                     </LinearLayout>
 
-
-                <TextView
-                    android:id="@+id/transaction_detail_textview_bitcoin_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25.2dp"
-                    android:layout_below="@id/transaction_detail_layout_sent_from"
-                    android:layout_centerHorizontal="true"
-                    android:hint="B 25.000"
-                    android:shadowColor="#000000"
-                    android:shadowDy="2"
-                    android:shadowRadius="1"
-                    android:textColorHint="@android:color/white"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textSize="20dp"/>
-
-                <TextView
-                    android:id="@+id/transaction_detail_textview_fee_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25.2dp"
-                    android:layout_below="@id/transaction_detail_layout_sent_from"
-                    android:layout_alignParentRight="true"
-                    android:text="fee B 0.1"
-                    android:shadowColor="#000000"
-                    android:shadowDy="2"
-                    android:shadowRadius="1"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:layout_marginRight="18.9dp"
-                    android:gravity="center"
-                    android:textSize="16dp"/>
-
                 <TextView
                     android:id="@+id/transaction_detail_textview_bitcoin_sign"
                     android:layout_width="wrap_content"
@@ -197,11 +163,55 @@
                     android:shadowColor="#000000"
                     android:shadowDy="2"
                     android:shadowRadius="1"
+                    android:paddingRight="10dp"
                     android:textSize="16dp"
                     android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
                     android:layout_marginLeft="18.9dp"
                     />
+
+
+                <LinearLayout
+                    android:id="@+id/transaction_detail_btc_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="25.2dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/transaction_detail_layout_sent_from"
+                    android:layout_toRightOf="@id/transaction_detail_textview_bitcoin_sign"
+                    android:gravity="center">
+
+                <TextView
+                    android:id="@+id/transaction_detail_textview_bitcoin_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25.2dp"
+                    android:hint="B 25.000"
+                    android:layout_weight="10"
+                    android:shadowColor="#000000"
+                    android:shadowDy="2"
+                    android:shadowRadius="1"
+                    android:textColorHint="@android:color/white"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/transaction_detail_textview_fee_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25.2dp"
+                    android:text="fee B 0.1"
+                    android:layout_weight="1"
+                    android:shadowColor="#000000"
+                    android:shadowDy="2"
+                    android:shadowRadius="1"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="18.9dp"
+                    android:gravity="center"
+                    android:textSize="16sp"/>
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_currency_sign"
@@ -215,7 +225,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="18.9dp"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/transaction_detail_textview_bitcoin_value"/>
+                    android:layout_below="@id/transaction_detail_btc_layout"/>
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_currency_text"
@@ -225,13 +235,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="18.9dp"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/transaction_detail_textview_bitcoin_value"/>
+                    android:layout_below="@id/transaction_detail_btc_layout"/>
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_dollar_value"
                     android:layout_width="wrap_content"
                     android:layout_height="31.5dp"
-                    android:layout_below="@id/transaction_detail_textview_bitcoin_value"
+                    android:layout_below="@id/transaction_detail_btc_layout"
                     android:layout_toRightOf="@id/transaction_detail_textview_currency_sign"
                     android:layout_toLeftOf="@id/transaction_detail_textview_currency_text"
                     android:hint="2000.00"

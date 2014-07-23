@@ -757,7 +757,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         if(mFromSend) {
             String feeFormatted = "";
-            feeFormatted = "+"+mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees())+" fee";
+            feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
             mFeeTextview.setText(feeFormatted);
             mFeeTextview.setVisibility(View.VISIBLE);
         } else {

@@ -1012,7 +1012,7 @@ public class CoreAPI {
                 pretext += "-";
             }
             if(withSymbol) {
-                pretext += " "+ getDefaultBTCDenomination();
+                pretext += " "+ getUserBTCSymbol();
             }
             return pretext+pFormatted;
         }
