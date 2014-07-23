@@ -1637,7 +1637,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             return mCurrentLocation.getLatitude();
         else
             return 0.0;
-//        return mLocationManager.getLocation().getLatitude();
     }
 
     private double getLonFromSharedPreference() {
@@ -1645,7 +1644,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             return mCurrentLocation.getLongitude();
         else
             return 0.0;
-//        return mLocationManager.getLocation().getLongitude();
     }
 
 }
