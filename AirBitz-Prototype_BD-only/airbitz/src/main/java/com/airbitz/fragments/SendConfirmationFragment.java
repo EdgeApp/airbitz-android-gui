@@ -63,6 +63,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private TextView mFiatSignTextView;
     private TextView mConversionTextView;
     private Button mMaxButton;
+    private TextWatcher mFiatTextWatcher;
+    private TextWatcher mBTCTextWatcher;
 
     private Bundle bundle;
 
@@ -112,6 +114,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     private CoreAPI mCoreAPI;
     private Wallet mSourceWallet, mToWallet;
+
+    private boolean mAutoUpdatingTextFields = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -239,54 +243,67 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             }
         };
         mPinEdittext.addTextChangedListener(mPINTextWatcher);
+
+        mBTCTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!mAutoUpdatingTextFields) {
+                    updateTextFieldContents(true);
+                    mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
+                }
+            }
+        };
+        mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+
+        mFiatTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!mAutoUpdatingTextFields) {
+                    updateTextFieldContents(false);
+                    mFiatField.setSelection(mFiatField.getText().toString().length());
+                }
+            }
+        };
+        mFiatField.addTextChangedListener(mFiatTextWatcher);
+
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus)
+                Log.d("SendConfirmationFragment", "PIN field focus changed");
+                if(hasFocus) {
+                    mAutoUpdatingTextFields = true;
                     showKeyboard();
+                } else {
+                    mAutoUpdatingTextFields = false;
+                }
             }
         });
-
-        final TextWatcher mBTCTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                updateTextFieldContents(true);
-                mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
-            }
-        };
-
-        final TextWatcher mDollarTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                updateTextFieldContents(false);
-                mFiatField.setSelection(mFiatField.getText().toString().length());
-            }
-        };
 
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                Log.d("SendConfirmationFragment", "Bitcoin field focus changed");
                 if (hasFocus) {
                     EditText edittext = (EditText) view;
                     int inType = edittext.getInputType();
                     edittext.setInputType(InputType.TYPE_NULL);
                     edittext.setInputType(inType);
-                    mFiatField.removeTextChangedListener(mDollarTextWatcher);
+                    mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+                    mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
@@ -297,15 +314,16 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                Log.d("SendConfirmationFragment", "Fiat field focus changed");
                 EditText edittext = (EditText) view;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.setInputType(inType);
                 if (hasFocus) {
-                    mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mFiatField.addTextChangedListener(mDollarTextWatcher);
+                    mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
@@ -458,12 +476,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         return view;
     }
 
-    private void hideKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
-    }
-
     private void showKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -485,6 +497,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         double currency;
         long satoshi;
 
+        mAutoUpdatingTextFields = true;
         if (btc) {
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
@@ -504,12 +517,14 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             catch(NumberFormatException e) {  } //not a double, ignore
         }
         updateFeeFieldContents();
+        mAutoUpdatingTextFields = false;
     }
 
     private void SetMaxAmount()
     {
         if (mSourceWallet != null)
         {
+            mAutoUpdatingTextFields = true;
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
             long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
             if(fees<0) {
@@ -519,11 +534,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
             updateFeeFieldContents();
+            mAutoUpdatingTextFields = false;
         }
     }
 
     private void updateFeeFieldContents()
     {
+//        Log.d("SendConfirmationFragment", "Updating fee fields");
         String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
         long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
         if(fees<0) {
