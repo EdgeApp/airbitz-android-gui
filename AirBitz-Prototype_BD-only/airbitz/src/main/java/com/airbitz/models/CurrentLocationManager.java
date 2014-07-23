@@ -13,7 +13,10 @@ import com.google.android.gms.location.LocationRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by matt on 6/30/14.
@@ -34,7 +37,7 @@ public class CurrentLocationManager implements
     }
 
     // Callback interface for adding and removing location change listeners
-    private List<OnLocationChange> mObservers = Collections.synchronizedList(new ArrayList<OnLocationChange>());
+    private List<OnLocationChange> mObservers = new CopyOnWriteArrayList<OnLocationChange>();
 
     public interface OnLocationChange {
         public void OnCurrentLocationChange(Location location);
@@ -109,8 +112,10 @@ public class CurrentLocationManager implements
             mCurrentLocation = location;
             Log.d("TAG_LOC",
                     "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
-            for(OnLocationChange listener : mObservers) {
-                listener.OnCurrentLocationChange(mCurrentLocation);
+
+                Iterator<OnLocationChange> i = mObservers.iterator(); // Must be in synchronized block
+                while (i.hasNext()) {
+                    i.next().OnCurrentLocationChange(mCurrentLocation);
             }
         }
     }

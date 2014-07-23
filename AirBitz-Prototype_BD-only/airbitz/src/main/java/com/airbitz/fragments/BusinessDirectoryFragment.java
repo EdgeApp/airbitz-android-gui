@@ -180,6 +180,10 @@ public class BusinessDirectoryFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if(mLocationManager==null) {
+            mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+            mLocationManager.addLocationChangeListener(this);
+        }
     }
 
     @Override
@@ -791,7 +795,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        // TODO - update directory?
+        // TODO - anything to do here?
+       mLocationManager.removeLocationChangeListener(this);
     }
 
     @Override public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
@@ -1109,8 +1114,6 @@ public class BusinessDirectoryFragment extends Fragment implements
 //    }
 
     private void checkLocationManager() {
-
-        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;

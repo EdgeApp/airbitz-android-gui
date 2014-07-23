@@ -173,6 +173,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mBusinessName = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESS);
         mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
         mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
+
+        if(mLocationManager==null) {
+            mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+            mLocationManager.addLocationChangeListener(this);
+        }
     }
 
     @Override
@@ -797,7 +802,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private void checkLocationManager(){
-        mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
@@ -805,7 +809,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }else{
             locationEnabled = true;
         }
-
     }
 
 //    @Override public void onBackPressed() {
@@ -872,9 +875,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         mGoogleMap.setPadding(0, padding, 0, padding);
 
-        if(locationEnabled) {
-            mCurrentLocation = mLocationManager.getLocation();
-        }
+//        if(locationEnabled) {
+//            mCurrentLocation = mLocationManager.getLocation();
+//        }
 
         LatLng currentLatLng = null;
 
@@ -1197,7 +1200,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        // TODO - update map?
+        mCurrentLocation = mLocationManager.getLocation();
+        mLocationManager.removeLocationChangeListener(this);
     }
 
     public HashMap<Marker, String> getMarkerImageLink() {
@@ -1368,150 +1372,150 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     }
 
-    private class GetVenuesByLocationTask extends AsyncTask<String, Void, String> {
-
-        AirbitzAPI mApi = AirbitzAPI.getApi();
-        Context mContext;
-        ProgressDialog mProgressDialog;
-
-        public GetVenuesByLocationTask(Context context) {
-            mContext = context;
-        }
-
-        @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venues list...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
-        }
-
-        @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
-            super.onCancelled();
-        }
-
-        @Override protected String doInBackground(String... params) {
-            return mApi.getSearchByLocation(params[0], "", "", "");
-        }
-
-        @Override protected void onPostExecute(String searchResult) {
-            try {
-                SearchResult results = new SearchResult(new JSONObject(searchResult));
-                mVenues = results.getBusinessSearchObjectArray();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    initializeMarkerWithBusinessSearchResult();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private class GetVenuesByBusinessTask extends AsyncTask<String, Void, String> {
-
-        AirbitzAPI mApi = AirbitzAPI.getApi();
-        Context mContext;
-        ProgressDialog mProgressDialog;
-
-        public GetVenuesByBusinessTask(Context context) {
-            mContext = context;
-        }
-
-        @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venues list...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
-        }
-
-        @Override protected String doInBackground(String... params) {
-            return mApi.getSearchByTerm(params[0], "", "", "");
-        }
-
-        @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
-            super.onCancelled();
-        }
-
-        @Override protected void onPostExecute(String searchResult) {
-            try {
-                SearchResult result = new SearchResult(new JSONObject(searchResult));
-                mVenues = result.getBusinessSearchObjectArray();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    initializeMarkerWithBusinessSearchResult();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private class GetVenuesByCategoryTask extends AsyncTask<String, Void, String> {
-
-        AirbitzAPI mApi = AirbitzAPI.getApi();
-        Context mContext;
-        ProgressDialog mProgressDialog;
-
-        public GetVenuesByCategoryTask(Context context) {
-            mContext = context;
-        }
-
-        @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venues list...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
-        }
-
-        @Override protected String doInBackground(String... params) {
-            return mApi.getSearchByCategory(params[0], "", "", "");
-        }
-
-        @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
-            super.onCancelled();
-        }
-
-        @Override protected void onPostExecute(String searchResult) {
-            try {
-                SearchResult result = new SearchResult(new JSONObject(searchResult));
-                mVenues = result.getBusinessSearchObjectArray();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    initializeMarkerWithBusinessSearchResult();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mProgressDialog.dismiss();
-        }
-    }
+//    private class GetVenuesByLocationTask extends AsyncTask<String, Void, String> {
+//
+//        AirbitzAPI mApi = AirbitzAPI.getApi();
+//        Context mContext;
+//        ProgressDialog mProgressDialog;
+//
+//        public GetVenuesByLocationTask(Context context) {
+//            mContext = context;
+//        }
+//
+//        @Override protected void onPreExecute() {
+//            mProgressDialog = new ProgressDialog(mContext);
+//            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            mProgressDialog.setMessage("Getting venues list...");
+//            mProgressDialog.setIndeterminate(true);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.show();
+//        }
+//
+//        @Override protected void onCancelled() {
+//            mProgressDialog.dismiss();
+//            super.onCancelled();
+//        }
+//
+//        @Override protected String doInBackground(String... params) {
+//            return mApi.getSearchByLocation(params[0], "", "", "");
+//        }
+//
+//        @Override protected void onPostExecute(String searchResult) {
+//            try {
+//                SearchResult results = new SearchResult(new JSONObject(searchResult));
+//                mVenues = results.getBusinessSearchObjectArray();
+//                if(mGoogleMap == null){
+//                    initializeMap();
+//                }
+//                if(mGoogleMap != null) {
+//                    mGoogleMap.clear();
+//                    initializeMarkerWithBusinessSearchResult();
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            mProgressDialog.dismiss();
+//        }
+//    }
+//
+//    private class GetVenuesByBusinessTask extends AsyncTask<String, Void, String> {
+//
+//        AirbitzAPI mApi = AirbitzAPI.getApi();
+//        Context mContext;
+//        ProgressDialog mProgressDialog;
+//
+//        public GetVenuesByBusinessTask(Context context) {
+//            mContext = context;
+//        }
+//
+//        @Override protected void onPreExecute() {
+//            mProgressDialog = new ProgressDialog(mContext);
+//            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            mProgressDialog.setMessage("Getting venues list...");
+//            mProgressDialog.setIndeterminate(true);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.show();
+//        }
+//
+//        @Override protected String doInBackground(String... params) {
+//            return mApi.getSearchByTerm(params[0], "", "", "");
+//        }
+//
+//        @Override protected void onCancelled() {
+//            mProgressDialog.dismiss();
+//            super.onCancelled();
+//        }
+//
+//        @Override protected void onPostExecute(String searchResult) {
+//            try {
+//                SearchResult result = new SearchResult(new JSONObject(searchResult));
+//                mVenues = result.getBusinessSearchObjectArray();
+//                if(mGoogleMap == null){
+//                    initializeMap();
+//                }
+//                if(mGoogleMap != null) {
+//                    mGoogleMap.clear();
+//                    initializeMarkerWithBusinessSearchResult();
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            mProgressDialog.dismiss();
+//        }
+//    }
+//
+//    private class GetVenuesByCategoryTask extends AsyncTask<String, Void, String> {
+//
+//        AirbitzAPI mApi = AirbitzAPI.getApi();
+//        Context mContext;
+//        ProgressDialog mProgressDialog;
+//
+//        public GetVenuesByCategoryTask(Context context) {
+//            mContext = context;
+//        }
+//
+//        @Override protected void onPreExecute() {
+//            mProgressDialog = new ProgressDialog(mContext);
+//            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            mProgressDialog.setMessage("Getting venues list...");
+//            mProgressDialog.setIndeterminate(true);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.show();
+//        }
+//
+//        @Override protected String doInBackground(String... params) {
+//            return mApi.getSearchByCategory(params[0], "", "", "");
+//        }
+//
+//        @Override protected void onCancelled() {
+//            mProgressDialog.dismiss();
+//            super.onCancelled();
+//        }
+//
+//        @Override protected void onPostExecute(String searchResult) {
+//            try {
+//                SearchResult result = new SearchResult(new JSONObject(searchResult));
+//                mVenues = result.getBusinessSearchObjectArray();
+//                if(mGoogleMap == null){
+//                    initializeMap();
+//                }
+//                if(mGoogleMap != null) {
+//                    mGoogleMap.clear();
+//                    initializeMarkerWithBusinessSearchResult();
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            mProgressDialog.dismiss();
+//        }
+//    }
 
     private class GetVenuesByLatLongTask extends AsyncTask<String, Void, String> {
 
@@ -1629,48 +1633,19 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private double getLatFromSharedPreference() {
-        return mLocationManager.getLocation().getLatitude();
+        if(mCurrentLocation!=null)
+            return mCurrentLocation.getLatitude();
+        else
+            return 0.0;
+//        return mLocationManager.getLocation().getLatitude();
     }
 
     private double getLonFromSharedPreference() {
-        return mLocationManager.getLocation().getLongitude();
+        if(mCurrentLocation!=null)
+            return mCurrentLocation.getLongitude();
+        else
+            return 0.0;
+//        return mLocationManager.getLocation().getLongitude();
     }
 
-    /*@Override public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if (start != null & finish != null) {
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if (xDistance > 100) {
-//                    finish();
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }*/
 }
