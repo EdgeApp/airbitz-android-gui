@@ -11,6 +11,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
@@ -138,6 +139,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
         mDummyFocus = view.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
@@ -253,7 +256,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mAutoUpdatingTextFields) {
+                if(!mAutoUpdatingTextFields && !mBitcoinField.getText().toString().isEmpty()) {
                     updateTextFieldContents(true);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
@@ -270,7 +273,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mAutoUpdatingTextFields) {
+                if(!mAutoUpdatingTextFields && !mFiatField.getText().toString().isEmpty()) {
                     updateTextFieldContents(false);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
@@ -516,58 +519,71 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             }
             catch(NumberFormatException e) {  } //not a double, ignore
         }
-        updateFeeFieldContents();
         mAutoUpdatingTextFields = false;
+        updateFeeFieldContents();
     }
 
+    Handler mFeeHandler=new Handler();
     private void SetMaxAmount()
     {
-        if (mSourceWallet != null)
-        {
-            mAutoUpdatingTextFields = true;
-            String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
-            long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
-            if(fees<0) {
-                Log.d("SendConfirmationFragment", "Fee calculation error");
-            }
-            mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi()-fees, 0);
-            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
-            updateFeeFieldContents();
-            mAutoUpdatingTextFields = false;
+        if (mSourceWallet != null) {
+            Runnable r=new Runnable() {
+                public void run() {
+                    String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
+                    long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+                    if(fees<0) {
+                        Log.d("SendConfirmationFragment", "Fee calculation error");
+                    }
+                    mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi()-fees, 0);
+                    mAutoUpdatingTextFields = true;
+                    mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
+                    mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+                    updateFeeFieldContents();
+                    mAutoUpdatingTextFields = false;
+                }
+            };
+            mFeeHandler.post(r);
         }
     }
+
 
     private void updateFeeFieldContents()
     {
-//        Log.d("SendConfirmationFragment", "Updating fee fields");
-        String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
-        long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
-        if(fees<0) {
-            Log.d("SendConfirmationFragment", "Fee calculation error");
-        }
-        else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
-        {
-            mConversionTextView.setTextColor(Color.WHITE);
-            mBitcoinField.setTextColor(Color.WHITE);
-            mFiatField.setTextColor(Color.WHITE);
+        Runnable r=new Runnable() {
+            public void run() {
+                String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
+                long fees = mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
 
-            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
+                mAutoUpdatingTextFields = true;
+                if(fees<0) {
+                    Log.d("SendConfirmationFragment", "Fee calculation error");
+                }
+                else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
+                {
+                    mConversionTextView.setTextColor(Color.WHITE);
+                    mBitcoinField.setTextColor(Color.WHITE);
+                    mFiatField.setTextColor(Color.WHITE);
 
-            double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
+                    String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
 
-            if(mBitcoinFeeLabel!=null) mBitcoinFeeLabel.setText(coinFeeString);
-            if(mDollarFeeLabel!=null) mDollarFeeLabel.setText(fiatFeeString);
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
-        }
-        else
-        {
-            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
-            mConversionTextView.setTextColor(Color.RED);
-            mBitcoinField.setTextColor(Color.RED);
-            mFiatField.setTextColor(Color.RED);
-        }
+                    double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
+                    String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
+
+                    if(mBitcoinFeeLabel!=null) mBitcoinFeeLabel.setText(coinFeeString);
+                    if(mDollarFeeLabel!=null) mDollarFeeLabel.setText(fiatFeeString);
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+                }
+                else
+                {
+                    mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+                    mConversionTextView.setTextColor(Color.RED);
+                    mBitcoinField.setTextColor(Color.RED);
+                    mFiatField.setTextColor(Color.RED);
+                }
+                mAutoUpdatingTextFields = false;
+            }
+        };
+        mFeeHandler.post(r);
     }
 
 
