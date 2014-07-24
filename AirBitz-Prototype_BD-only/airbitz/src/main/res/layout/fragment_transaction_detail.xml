@@ -345,7 +345,7 @@
                     android:background="@drawable/bg_textfield"/>
 
 
-                <Button
+                <com.airbitz.models.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_done"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"

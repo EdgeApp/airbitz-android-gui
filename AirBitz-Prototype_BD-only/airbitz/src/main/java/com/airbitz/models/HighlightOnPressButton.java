@@ -1,6 +1,11 @@
 package com.airbitz.models;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +14,9 @@ import android.widget.Button;
 /**
  * Created by matt on 7/23/14.
  */
-public class HighlightOnPressButton extends Button implements View.OnTouchListener{
+public class HighlightOnPressButton extends Button{
+
+    protected ColorFilter _pressedFilter = new LightingColorFilter(Color.LTGRAY, 1);
 
     public HighlightOnPressButton(Context context) {
         super(context);
@@ -24,18 +31,54 @@ public class HighlightOnPressButton extends Button implements View.OnTouchListen
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                view.setAlpha(.6f);
-                break;
-            case MotionEvent.ACTION_UP:
-                view.setAlpha(1);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                view.setAlpha(1);
-                break;
+    public void setBackground(Drawable d) {
+        // Replace the original background drawable (e.g. image) with a LayerDrawable that
+        // contains the original drawable.
+        SAutoBgButtonBackgroundDrawable layer = new SAutoBgButtonBackgroundDrawable(d);
+        super.setBackground(layer);
+    }
+
+    protected class SAutoBgButtonBackgroundDrawable extends LayerDrawable {
+
+        // The color filter to apply when the button is pressed
+        protected ColorFilter _pressedFilter = new LightingColorFilter(Color.LTGRAY, 1);
+        // Alpha value when the button is disabled
+        protected int _disabledAlpha = 100;
+
+        public SAutoBgButtonBackgroundDrawable(Drawable d) {
+            super(new Drawable[] { d });
         }
-        return super.onTouchEvent(motionEvent);
+
+        @Override
+        protected boolean onStateChange(int[] states) {
+            boolean enabled = false;
+            boolean pressed = false;
+
+            for (int state : states) {
+                if (state == android.R.attr.state_enabled)
+                    enabled = true;
+                else if (state == android.R.attr.state_pressed)
+                    pressed = true;
+            }
+
+            mutate();
+            if (enabled && pressed) {
+                setColorFilter(_pressedFilter);
+            } else if (!enabled) {
+                setColorFilter(null);
+                setAlpha(_disabledAlpha);
+            } else {
+                setColorFilter(null);
+            }
+
+            invalidateSelf();
+
+            return super.onStateChange(states);
+        }
+
+        @Override
+        public boolean isStateful() {
+            return true;
+        }
     }
 }
