@@ -449,12 +449,19 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         Wallet wallet = mWallets.get(walletPosition);
-        if (btc && !mBitcoinField.getText().toString().isEmpty()) {
-            satoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-            mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
-        }else if(btc && mBitcoinField.getText().toString().isEmpty()){
+        String bitcoin = mBitcoinField.getText().toString();
+        String fiat = mFiatField.getText().toString();
+        if (btc && !bitcoin.isEmpty()) {
+            if(!mCoreAPI.TooMuchBitcoin(bitcoin)) {
+                satoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+                mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
+            } else {
+                //TODO ???
+                Log.d("RequestFragment", "Too much bitcoin");
+            }
+        }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
-        }else if(!btc && mFiatField.getText().toString().isEmpty()){
+        }else if(!btc && fiat.isEmpty()){
             String s = mCoreAPI.getDefaultBTCDenomination();
             if(s.equals("mBTC")) {
                 mBitcoinField.setText("0.00000");
@@ -463,12 +470,16 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }else if(s.equals("BTC")){
                 mBitcoinField.setText("0.00000000");
             }
-        }else if (!btc && !mFiatField.getText().toString().isEmpty()) {
+        }else if (!btc && !fiat.isEmpty()) {
             try
             {
-                currency = Double.parseDouble(mFiatField.getText().toString());
-                satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-                mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+                if(!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
+                    currency = Double.parseDouble(fiat);
+                    satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                    mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+                } else {
+                    Log.d("RequestFragment", "Too much fiat");
+                }
             }
             catch(NumberFormatException e)
             {

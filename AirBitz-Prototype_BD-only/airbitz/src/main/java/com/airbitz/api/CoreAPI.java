@@ -26,6 +26,9 @@ public class CoreAPI {
     public static int ABC_DENOMINATION_BTC = 0;
     public static int ABC_DENOMINATION_MBTC = 1;
     public static int ABC_DENOMINATION_UBTC = 2;
+    public static double SATOSHI_PER_BTC = 1E8;
+    public static double SATOSHI_PER_mBTC = 1E5;
+    public static double SATOSHI_PER_uBTC = 1E2;
 
     static {
         System.loadLibrary("abc");
@@ -1080,17 +1083,17 @@ public class CoreAPI {
 
     public String BTCtoFiatConversion(int currencyNum) {
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
-        int satoshi = 100;
+        long satoshi = 100;
         int denomIndex = 0;
         if(denomination != null) {
             if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
-                satoshi = 100000000;
+                satoshi = (long) SATOSHI_PER_BTC;
                 denomIndex = 0;
             } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
-                satoshi = 100000;
+                satoshi = (long) SATOSHI_PER_mBTC;
                 denomIndex = 1;
             } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
-                satoshi = 100;
+                satoshi = (long) SATOSHI_PER_uBTC;
                 denomIndex = 2;
             }
         }
@@ -1150,6 +1153,40 @@ public class CoreAPI {
 
         return get64BitLongAtPtr(l.getCPtr(l));
     }
+
+    private static double MAX_SATOSHI = 9.223372036854775807E18; // = 0x7fffffffffffffff, but Java can't handle that.
+
+    public boolean TooMuchBitcoin(String bitcoin) {
+        double val=0.0;
+        try {
+            val = Double.parseDouble(bitcoin);
+        } catch(NumberFormatException e) { // ignore any non-double
+        }
+
+        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        if(denomination != null) {
+            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                val = val * SATOSHI_PER_BTC;
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                val = val * SATOSHI_PER_mBTC;
+            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                val = val * SATOSHI_PER_uBTC;
+            }
+        }
+        return val > MAX_SATOSHI;
+    }
+
+    public boolean TooMuchFiat(String fiat, int currencyNum) {
+        double maxFiat = SatoshiToCurrency((long) MAX_SATOSHI, currencyNum);
+        double val=0.0;
+        try {
+            val = Double.parseDouble(fiat);
+        } catch(NumberFormatException e) { // ignore any non-double
+        }
+        return val > maxFiat;
+    }
+
+
 
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, String btc) {
         //first need to create a transaction details struct
