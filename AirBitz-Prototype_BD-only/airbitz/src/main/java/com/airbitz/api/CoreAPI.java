@@ -3,6 +3,7 @@ package com.airbitz.api;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
@@ -10,8 +11,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -1315,9 +1314,35 @@ public class CoreAPI {
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
-            updateAllExchangeRates();
+            updateExchangeRates();
         }
     };
+
+    public void updateExchangeRates()
+    {
+        if (AirbitzApplication.isLoggedIn())
+        {
+            mUpdateExchangeRateTask = new UpdateExchangeRateTask();
+
+//            Log.d("CoreAPI", "Exchange Rate Update initiated.");
+            mUpdateExchangeRateTask.execute();
+        }
+    }
+
+    private UpdateExchangeRateTask mUpdateExchangeRateTask;
+    public class UpdateExchangeRateTask extends AsyncTask<Void, Void, Void> {
+        UpdateExchangeRateTask() { }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            updateAllExchangeRates();
+            return null;
+        }
+
+        protected void onPostExecute() {
+            onExchangeRatesUpdated();
+        }
+    }
 
     private void stopExchangeRateUpdates() {
         mPeriodicTaskHandler.removeCallbacks(ExchangeRateUpdater);
@@ -1344,7 +1369,6 @@ public class CoreAPI {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         source.getCurrencyNum(), null, null, error);
             }
-            onExchangeRatesUpdated();
         }
     }
 
@@ -1403,11 +1427,26 @@ public class CoreAPI {
     {
         if (AirbitzApplication.isLoggedIn())
         {
-            tABC_Error error = new tABC_Error();
-            core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
-//            Log.d("CoreAPI", "File sync initiated.");
+            mSyncDataTask = new SyncDataTask();
+
+            Log.d("CoreAPI", "File sync initiated.");
+            mSyncDataTask.execute();
         }
     }
+
+    private SyncDataTask mSyncDataTask;
+    public class SyncDataTask extends AsyncTask<Void, Void, Void> {
+        SyncDataTask() { }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            tABC_Error error = new tABC_Error();
+            tABC_CC val = core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
+            return null;
+        }
+    }
+
+
 
 
     //**************** Wallet handling
