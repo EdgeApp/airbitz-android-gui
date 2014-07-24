@@ -54,6 +54,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -78,7 +79,7 @@ import java.util.List;
 public class TransactionDetailFragment extends Fragment implements View.OnClickListener,
         CurrentLocationManager.OnLocationChange{
 
-    private Button mDoneButton;
+    private HighlightOnPressButton mDoneButton;
     private Button mAdvanceDetailsButton;
     private TextView mAdvancedDetailTextView;
     private Button mXButton;
@@ -229,7 +230,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
-        mDoneButton = (Button) view.findViewById(R.id.transaction_detail_button_done);
+        mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (Button) view.findViewById(R.id.transaction_detail_button_advanced);
         mXButton = (Button) view.findViewById(R.id.x_button);
 
@@ -416,7 +417,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     mCategoryEdittext.requestFocus();
                     return true;
-                }else if(actionId == EditorInfo.IME_ACTION_DONE){
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -514,9 +515,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mSearchAdapter.getItem(i) instanceof BusinessSearchResult){
+                if (mSearchAdapter.getItem(i) instanceof BusinessSearchResult) {
                     mPayeeEditText.setText(((BusinessSearchResult) mSearchAdapter.getItem(i)).getName());
-                }else{
+                } else {
                     mPayeeEditText.setText((String) mSearchAdapter.getItem(i));
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
@@ -524,9 +525,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 mSentDetailLayout.setVisibility(View.VISIBLE);
                 mNoteDetailLayout.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.GONE);
-                if(mFromRequest || mFromSend) {
+                if (mFromRequest || mFromSend) {
                     mCategoryEdittext.requestFocus();
-                }else{
+                } else {
                     mDummyFocus.requestFocus();
                 }
             }
@@ -617,10 +618,10 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         touchView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.setAlpha(.75f);
                     return true;
-                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
                     view.setAlpha(1);
                     return true;
                 }
@@ -1076,6 +1077,9 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }else{
                 mLocationManager.addLocationChangeListener(this);
             }
+        }else{
+            mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
+            mBusinessSearchAsyncTask.execute("");
         }
     }
 

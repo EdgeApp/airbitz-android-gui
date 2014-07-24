@@ -47,6 +47,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/fragment_landing_arrowleft_imageview"
                 android:src="@drawable/ico_arrow_left"
                 android:contentDescription="@string/fragment_landing_arrow_description"/>
 
@@ -63,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ico_arrow_right"
+                android:id="@+id/fragment_landing_arrowright_imageview"
                 android:contentDescription="@string/fragment_landing_arrow_description"/>
         </LinearLayout>
 
@@ -117,7 +119,7 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/bg_edittext"/>
 
-                <Button
+                <com.airbitz.models.HighlightOnPressButton
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signin_button"
@@ -132,7 +134,7 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/btn_green"/>
 
-                <Button
+                <com.airbitz.models.HighlightOnPressButton
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signup_button"
@@ -147,31 +149,20 @@
                     android:layout_marginBottom="6.3dp"
                     android:background="@drawable/btn_blue"/>
 
-                <LinearLayout
+                <com.airbitz.models.HighlightOnPressButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:text="@string/fragment_landing_forgot_text"
                     android:paddingRight="6.3dp"
                     android:paddingLeft="6.3dp"
+                    android:textSize="11dp"
+                    android:textColor="@android:color/white"
+                    android:drawableRight="@drawable/ico_forgot"
                     android:background="@drawable/bg_btn_blue_stretch"
-                    android:id="@+id/fragment_landing_forgot_password_layout">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="6.3dp"
-                        android:textSize="11dp"
-                        android:textColor="@android:color/white"
-                        android:text="@string/fragment_landing_forgot_text"
-                        android:id="@+id/fragment_landing_forgot_password_textview"/>
-                    <ImageView
-                        android:layout_width="12.6dp"
-                        android:layout_height="12.6dp"
-                        android:src="@drawable/ico_forgot"
-                        android:id="@+id/fragment_landing_forgot_password_imageview"
-                        android:contentDescription="@string/fragment_landing_forgot_image_description"/>
-                </LinearLayout>
+                    android:id="@+id/fragment_landing_forgot_password_layout" />
             </LinearLayout>
         </ScrollView>
 
