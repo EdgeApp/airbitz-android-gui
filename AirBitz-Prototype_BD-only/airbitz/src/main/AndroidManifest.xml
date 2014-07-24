@@ -10,7 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.NFC" />
+
     <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
@@ -60,6 +64,26 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <data android:mimeType="application/x-btctx" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:label="NavigationActivity" >
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <data android:scheme="bitcoin" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:label="NavigationActivity">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="application/bitcoin-paymentrequest" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:label="NavigationActivity" >
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <data android:mimeType="application/bitcoin-paymentrequest" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
