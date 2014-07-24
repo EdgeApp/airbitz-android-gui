@@ -137,6 +137,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
 
+        mOnBitcoinMode = true;
+
         mParentLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) view.findViewById(R.id.fragment_wallet_scrollview);
 
@@ -520,6 +522,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         for(Transaction transaction : mTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
+        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
+        mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
+        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mButtonBitcoinBalance.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         String temp = mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
         mButtonFiatBalance.setText(temp);
@@ -532,9 +537,6 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//todo
             mMoverType.setText(mBottomType.getText());
         }
-        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
-        mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
-        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
     }
 
 
