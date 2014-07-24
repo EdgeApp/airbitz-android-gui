@@ -109,8 +109,11 @@ public class VenueFragment extends Fragment implements
                                        Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
 
-        mLocationManager = CurrentLocationManager.getLocationManager(null);
-        mLocationManager.addLocationChangeListener(this);
+        if(mLocationManager==null) {
+            mLocationManager = CurrentLocationManager.getLocationManager(null);
+            mLocationManager.addLocationChangeListener(this);
+        }
+
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
         mNoResultView = (TextView) view.findViewById(R.id.no_result_view);
