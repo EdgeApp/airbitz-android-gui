@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,6 +30,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -73,7 +75,8 @@ import java.util.List;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements View.OnClickListener {
+public class TransactionDetailFragment extends Fragment implements View.OnClickListener,
+        CurrentLocationManager.OnLocationChange{
 
     private Button mDoneButton;
     private Button mAdvanceDetailsButton;
@@ -592,7 +595,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        mDoneButton.setHighlightColor(getResources().getColor(R.color.red));
+        //setOnTouchListeners();
 
         if(mFromSend || mFromRequest){
             mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -601,6 +604,29 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         UpdateView(mTransaction);
         return view;
+    }
+
+    private void setOnTouchListeners(){
+        setOnTouchListener(mBackButton);
+        setOnTouchListener(mDoneButton);
+        setOnTouchListener(mHelpButton);
+        setOnTouchListener(mAdvanceDetailsButton);
+    }
+
+    private void setOnTouchListener(View touchView){
+        touchView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    view.setAlpha(.75f);
+                    return true;
+                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
+                    view.setAlpha(1);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void updateBlanks(String term){
@@ -855,6 +881,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     }
 
+    @Override
+    public void OnCurrentLocationChange(Location location) {
+        mLocationManager.removeLocationChangeListener(this);
+        mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
+        mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+    }
+
     class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String>{
         private AirbitzAPI api = AirbitzAPI.getApi();
 
@@ -1037,8 +1070,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mOriginalBusinesses.clear();
         mBusinesses.clear();
         if(locationEnabled) {
-            mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
-            mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude()+","+mLocationManager.getLocation().getLongitude());
+            if(mLocationManager.getLocation() != null) {
+                mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
+                mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+            }else{
+                mLocationManager.addLocationChangeListener(this);
+            }
         }
     }
 
