@@ -604,7 +604,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
+            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
 
             if(mBitcoinFeeLabel!=null) mBitcoinFeeLabel.setText(coinFeeString);
             if(mDollarFeeLabel!=null) mDollarFeeLabel.setText(fiatFeeString);

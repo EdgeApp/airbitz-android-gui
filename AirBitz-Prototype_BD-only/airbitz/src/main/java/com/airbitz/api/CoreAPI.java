@@ -323,6 +323,10 @@ public class CoreAPI {
         return mFauxCurrencyDenomination[SettingsCurrencyIndex()];
     }
 
+    public String getCurrencyDenomination(int currencyNum) {
+        return mFauxCurrencyDenomination[SettingsCurrencyIndex()];
+    }
+
     public int[] getCurrencyNumbers() {
         return mFauxCurrencyNumbers;
     }
@@ -945,14 +949,25 @@ public class CoreAPI {
 
     //************************* Currency formatting
 
-    public String formatCurrency(double in) {
-        return formatCurrency(in, true);
+    public String formatDefaultCurrency(double in) {
+        String pre = mBTCSymbols[mCoreSettings.getBitcoinDenomination().getDenominationType()];
+        String out = String.format(" %.3f", in);
+        return pre+out;
     }
 
-    public String formatCurrency(double in, boolean withSymbol) {
-        String pre = withSymbol ? mFauxCurrencyDenomination[SettingsCurrencyIndex()] : "";
-        String out = String.format("%.3f", in);
+    public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
+        String pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
+        String out = String.format(" %.3f", in);
         return pre+out;
+    }
+
+    private int findCurrencyIndex(int currencyNum) {
+        for(int i=0; i< mFauxCurrencyNumbers.length; i++) {
+            if(currencyNum == mFauxCurrencyNumbers[i])
+                return i;
+        }
+        Log.d("CoreAPI", "CurrencyIndex not found, using default");
+        return 6; // default US
     }
 
     public int currencyDecimalPlaces(String label) {
@@ -1114,7 +1129,7 @@ public class CoreAPI {
         if (!btc)
         {
             double o = SatoshiToCurrency(satoshi, currencyNum);
-            out = formatCurrency(o, withSymbol);
+            out = formatCurrency(o, currencyNum, withSymbol);
         }
         else
         {
