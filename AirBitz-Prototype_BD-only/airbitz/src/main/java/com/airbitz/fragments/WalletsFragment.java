@@ -153,6 +153,8 @@ public class WalletsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
+        mOnBitcoinMode = true;
+
         mParentLayout = (RelativeLayout) view;
         mContainerLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallets_container);
 
@@ -241,8 +243,6 @@ public class WalletsFragment extends Fragment
                 }
             }
         });
-
-        mOnBitcoinMode = true;
 
         mInvisibleCover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -367,6 +367,9 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalanceSatoshi();
         }
+        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
+        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
         String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
         mFiatBalanceButton.setText(temp);
@@ -379,10 +382,6 @@ public class WalletsFragment extends Fragment
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
             mMoverType.setText(mBottomType.getText());
         }
-
-        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
-        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
-        mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
     }
 
     private void switchBarInfo(boolean isBitcoin){
