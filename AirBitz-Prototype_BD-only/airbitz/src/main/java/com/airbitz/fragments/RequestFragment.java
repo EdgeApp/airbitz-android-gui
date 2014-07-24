@@ -99,17 +99,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     private static final String DIGITS = "0123456789.";
 
     DecimalFormat mDF = new DecimalFormat("@###########");
-    public final static int CodePrev = 55000;
-    public final static int CodeAllLeft = 55001;
-    public final static int CodeLeft = 55002;
-    public final static int CodeRight = 55003;
-    public final static int CodeAllRight = 55004;
-    public final static int CodeNext = 55005;
-    public final static int CodeClear = 55006;
-    public final static int CodeConst = 55009;
-    public final static int CodeLog = 55010;
-    public final static int CodeConv = 55011; // Conversions like round or degrees
-    public final static int CodeTrig = 55012;
 
     private CoreAPI mCoreAPI;
     int mFromIndex =0;
@@ -449,12 +438,19 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         Wallet wallet = mWallets.get(walletPosition);
-        if (btc && !mBitcoinField.getText().toString().isEmpty()) {
-            satoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-            mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
-        }else if(btc && mBitcoinField.getText().toString().isEmpty()){
+        String bitcoin = mBitcoinField.getText().toString();
+        String fiat = mFiatField.getText().toString();
+        if (btc && !bitcoin.isEmpty()) {
+            if(!mCoreAPI.TooMuchBitcoin(bitcoin)) {
+                satoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+                mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
+            } else {
+                //TODO ???
+                Log.d("RequestFragment", "Too much bitcoin");
+            }
+        }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
-        }else if(!btc && mFiatField.getText().toString().isEmpty()){
+        }else if(!btc && fiat.isEmpty()){
             String s = mCoreAPI.getDefaultBTCDenomination();
             if(s.equals("mBTC")) {
                 mBitcoinField.setText("0.00000");
@@ -463,12 +459,16 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }else if(s.equals("BTC")){
                 mBitcoinField.setText("0.00000000");
             }
-        }else if (!btc && !mFiatField.getText().toString().isEmpty()) {
+        }else if (!btc && !fiat.isEmpty()) {
             try
             {
-                currency = Double.parseDouble(mFiatField.getText().toString());
-                satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-                mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+                if(!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
+                    currency = Double.parseDouble(fiat);
+                    satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                    mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+                } else {
+                    Log.d("RequestFragment", "Too much fiat");
+                }
             }
             catch(NumberFormatException e)
             {
