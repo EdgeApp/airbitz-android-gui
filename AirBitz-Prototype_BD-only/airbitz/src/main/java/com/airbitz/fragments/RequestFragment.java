@@ -99,17 +99,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     private static final String DIGITS = "0123456789.";
 
     DecimalFormat mDF = new DecimalFormat("@###########");
-    public final static int CodePrev = 55000;
-    public final static int CodeAllLeft = 55001;
-    public final static int CodeLeft = 55002;
-    public final static int CodeRight = 55003;
-    public final static int CodeAllRight = 55004;
-    public final static int CodeNext = 55005;
-    public final static int CodeClear = 55006;
-    public final static int CodeConst = 55009;
-    public final static int CodeLog = 55010;
-    public final static int CodeConv = 55011; // Conversions like round or degrees
-    public final static int CodeTrig = 55012;
 
     private CoreAPI mCoreAPI;
     int mFromIndex =0;
