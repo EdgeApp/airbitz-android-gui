@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
@@ -100,10 +101,16 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        //TODO integrate a finder for associating this with someone ?
-        String fakeUser = "";
-        String fakePhone = "";
-        String id = mCoreAPI.createReceiveRequestFor(mWallet, fakeUser, fakePhone, bundle.getString(RequestFragment.BITCOIN_VALUE));
+        String name = "";
+        String notes = "";
+        tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
+        if(settings.getBNameOnPayments()) {
+            name = settings.getSzNickname();
+            if(name.isEmpty())
+                name = settings.getSzFirstName() +" "+ settings.getSzLastName();
+            notes = "";
+        }
+        String id = mCoreAPI.createReceiveRequestFor(mWallet, name, notes, bundle.getString(RequestFragment.BITCOIN_VALUE));
         if(id!=null) {
             String addr = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
             mBitcoinAddress.setText(addr);
