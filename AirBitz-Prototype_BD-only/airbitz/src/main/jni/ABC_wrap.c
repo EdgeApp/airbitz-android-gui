@@ -5810,7 +5810,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CurrencyToSatoshi(JNIE
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ParseAmount(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
-  int64_t *arg2 = (int64_t *) 0 ;
+  uint64_t *arg2 = (uint64_t *) 0 ;
   unsigned int arg3 ;
   tABC_CC result;
   
@@ -5821,7 +5821,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ParseAmount(JNIEnv *je
     arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
     if (!arg1) return 0;
   }
-  arg2 = *(int64_t **)&jarg2; 
+  arg2 = *(uint64_t **)&jarg2; 
   arg3 = (unsigned int)jarg3; 
   result = (tABC_CC)ABC_ParseAmount((char const *)arg1,arg2,arg3);
   jresult = (jint)result; 
@@ -5832,19 +5832,19 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ParseAmount(JNIEnv *je
 
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1FormatAmount(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
   jint jresult = 0 ;
-  int64_t arg1 ;
+  uint64_t arg1 ;
   char **arg2 = (char **) 0 ;
   unsigned int arg3 ;
   tABC_Error *arg4 = (tABC_Error *) 0 ;
-  int64_t *argp1 ;
+  uint64_t *argp1 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg4_;
-  argp1 = *(int64_t **)&jarg1; 
+  argp1 = *(uint64_t **)&jarg1; 
   if (!argp1) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null int64_t");
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null uint64_t");
     return 0;
   }
   arg1 = *argp1; 
