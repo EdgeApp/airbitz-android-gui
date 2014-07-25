@@ -133,14 +133,25 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         }
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wallet, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mOnBitcoinMode = true;
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_parent_layout);
-        mScrollView = (ScrollView) view.findViewById(R.id.fragment_wallet_scrollview);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
+        mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
 
         mTotalTransactions = new ArrayList<Transaction>();
         mTotalTransactions.addAll(mTransactions);
@@ -148,37 +159,37 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
         mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
 
-        mSearchField = (EditText) view.findViewById(R.id.fragment_search_edittext);
-        mSearchButton = (ImageButton) view.findViewById(R.id.fragment_wallet_search_button);
-        mSearchLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_search_layout);
+        mSearchField = (EditText) mView.findViewById(R.id.fragment_search_edittext);
+        mSearchButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
+        mSearchLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_search_layout);
 
-        mSendButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (ResizableImageView) view.findViewById(R.id.fragment_wallet_request_button);
-        mWalletNameButton = (EditText) view.findViewById(R.id.fragment_wallet_walletname_edittext);
+        mSendButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_request_button);
+        mWalletNameButton = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
-        mExportButton = (ImageButton) view.findViewById(R.id.fragment_wallet_export_button);
-        mBackButton = (ImageButton) view.findViewById(R.id.fragment_wallet_back_button);
-        mButtonMover = (Button) view.findViewById(R.id.button_mover);
-        exportLayout = (RelativeLayout) view.findViewById(R.id.fragment_wallet_export_layout);
-        sendRequestLayout = (LinearLayout) view.findViewById(R.id.fragment_wallet_sendrequest_layout);
+        mExportButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
+        mButtonMover = (Button) mView.findViewById(R.id.button_mover);
+        exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
+        sendRequestLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_sendrequest_layout);
 
-        mDummyFocus = view.findViewById(R.id.fragment_wallet_dummy_focus);
+        mDummyFocus = mView.findViewById(R.id.fragment_wallet_dummy_focus);
 
-        switchable = (RelativeLayout) view.findViewById(R.id.switchable);
-        switchContainer = (RelativeLayout) view.findViewById(R.id.layout_balance);
+        switchable = (RelativeLayout) mView.findViewById(R.id.switchable);
+        switchContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
 
-        mMoverCoin = (ImageView) view.findViewById(R.id.button_mover_coin);
-        mMoverType = (TextView) view.findViewById(R.id.button_mover_type);
-        mBottomCoin = (ImageView) view.findViewById(R.id.bottom_coin);
-        mBottomType = (TextView) view.findViewById(R.id.bottom_type);
-        mTopType = (TextView) view.findViewById(R.id.top_type);
+        mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
+        mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
+        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
+        mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
+        mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_wallet_help_button);
-        mTitleTextView = (TextView) view.findViewById(R.id.fragment_wallet_title_textview);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_help_button);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_wallet_title_textview);
 
-        mButtonBitcoinBalance = (Button) view.findViewById(R.id.back_button_top);
-        mButtonFiatBalance = (Button) view.findViewById(R.id.back_button_bottom);
-        mListTransaction = (ListView) view.findViewById(R.id.listview_transaction);
+        mButtonBitcoinBalance = (Button) mView.findViewById(R.id.back_button_top);
+        mButtonFiatBalance = (Button) mView.findViewById(R.id.back_button_bottom);
+        mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
@@ -399,7 +410,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
         UpdateWalletTotalBalance();
         mDummyFocus.requestFocus();
-        return view;
+        return mView;
     }
 
     private SearchTask mSearchTask;

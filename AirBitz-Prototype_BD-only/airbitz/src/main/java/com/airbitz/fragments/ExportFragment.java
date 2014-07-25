@@ -77,14 +77,25 @@ public class ExportFragment extends Fragment implements GestureDetector.OnGestur
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_export, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_export, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mGestureDetector = new GestureDetector(this);
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
 
         calendar = Calendar.getInstance();
@@ -92,31 +103,31 @@ public class ExportFragment extends Fragment implements GestureDetector.OnGestur
 //        mMonth = calendar.get(Calendar.MONTH);
 //        mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 
-        mCSVButton = (Button) view.findViewById(R.id.button_csv);
-        mQuickenButton = (Button) view.findViewById(R.id.button_quicken);
-        mQuickBooksButton = (Button) view.findViewById(R.id.button_quickbooks);
-        mPdfbutton = (Button) view.findViewById(R.id.button_pdf);
-        mWalletbutton = (Button) view.findViewById(R.id.button_wallet);
+        mCSVButton = (Button) mView.findViewById(R.id.button_csv);
+        mQuickenButton = (Button) mView.findViewById(R.id.button_quicken);
+        mQuickBooksButton = (Button) mView.findViewById(R.id.button_quickbooks);
+        mPdfbutton = (Button) mView.findViewById(R.id.button_pdf);
+        mWalletbutton = (Button) mView.findViewById(R.id.button_wallet);
 
-        mAccountButton = (Button) view.findViewById(R.id.button_acount);
-        mFromDateEdittext = (EditText) view.findViewById(R.id.edittext_from);
-        mToDateEdittext = (EditText) view.findViewById(R.id.edittext_to);
+        mAccountButton = (Button) mView.findViewById(R.id.button_acount);
+        mFromDateEdittext = (EditText) mView.findViewById(R.id.edittext_from);
+        mToDateEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mAccountTextView = (TextView) view.findViewById(R.id.textview_account);
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mAccountTextView = (TextView) mView.findViewById(R.id.textview_account);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
-        mThisWeekButton = (Button) view.findViewById(R.id.button_this_week);
-        mThisMonthButton = (Button) view.findViewById(R.id.button_this_month);
-        mThisYearButton = (Button) view.findViewById(R.id.button_this_year);
+        mThisWeekButton = (Button) mView.findViewById(R.id.button_this_week);
+        mThisMonthButton = (Button) mView.findViewById(R.id.button_this_month);
+        mThisYearButton = (Button) mView.findViewById(R.id.button_this_year);
 
         mAccountButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mFromDateEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
@@ -240,7 +251,7 @@ public class ExportFragment extends Fragment implements GestureDetector.OnGestur
             }
         });
 
-        return view;
+        return mView;
     }
 
 //    @Override

@@ -65,27 +65,38 @@ public class LandingFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_landing, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_landing, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mProgressView = view.findViewById(R.id.fragment_landing_login_progressbar);
-        mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
+        mProgressView = mView.findViewById(R.id.fragment_landing_login_progressbar);
+        mLandingLayout = (RelativeLayout) mView.findViewById(R.id.fragment_landing_main_layout);
 
-        mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
+        mLogoImageView = (ImageView) mView.findViewById(R.id.fragment_landing_logo_imageview);
 
-        mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
-        mSwipeTextLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
-        TextView mSwipeTextView = (TextView) view.findViewById(R.id.fragment_landing_swipe_textview);
+        mDetailTextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
+        mSwipeTextLayout = (LinearLayout) mView.findViewById(R.id.fragment_landing_swipe_layout);
+        TextView mSwipeTextView = (TextView) mView.findViewById(R.id.fragment_landing_swipe_textview);
 
-        mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
-        mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
-        Button mSignInButton = (Button) view.findViewById(R.id.fragment_landing_signin_button);
-        Button mSignUpButton = (Button) view.findViewById(R.id.fragment_landing_signup_button);
-        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
-        LinearLayout mForgotPasswordLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_layout);
+        mUserNameEditText = (EditText) mView.findViewById(R.id.fragment_landing_username_edittext);
+        mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_landing_password_edittext);
+        Button mSignInButton = (Button) mView.findViewById(R.id.fragment_landing_signin_button);
+        Button mSignUpButton = (Button) mView.findViewById(R.id.fragment_landing_signup_button);
+        TextView mForgotPasswordTextView = (TextView) mView.findViewById(R.id.fragment_landing_forgot_password_textview);
+        LinearLayout mForgotPasswordLayout = (LinearLayout) mView.findViewById(R.id.fragment_landing_forgot_password_layout);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -96,7 +107,7 @@ public class LandingFragment extends Fragment {
         mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
 
-        final View activityRootView = view.findViewById(R.id.fragment_landing_container);
+        final View activityRootView = mView.findViewById(R.id.fragment_landing_container);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -162,7 +173,7 @@ public class LandingFragment extends Fragment {
             }
         });
 
-        return view;
+        return mView;
     }
 
     /**

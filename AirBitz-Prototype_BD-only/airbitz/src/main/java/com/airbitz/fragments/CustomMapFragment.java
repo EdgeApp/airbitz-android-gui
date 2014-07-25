@@ -27,12 +27,12 @@ public class CustomMapFragment extends SupportMapFragment {
 
     @Override
     public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
-        View v = super.onCreateView(arg0, arg1, arg2);
+        View mView = super.onCreateView(arg0, arg1, arg2);
         Fragment fragment = getParentFragment();
         if (fragment != null && fragment instanceof OnMapReadyListener) {
             ((OnMapReadyListener) fragment).onMapReady();
         }
-        return v;
+        return mView;
     }
 
 

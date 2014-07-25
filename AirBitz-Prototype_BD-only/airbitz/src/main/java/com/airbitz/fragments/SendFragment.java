@@ -81,8 +81,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private Handler mHandler;
     private EditText mToEdittext;
 
-    private View mView;
-
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
@@ -125,35 +123,46 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mCoreAPI = CoreAPI.getApi();
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_send, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mWalletList = new ArrayList<String>();
         addWalletNamesToList();
 
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mFlashButton = (ImageButton) view.findViewById(R.id.button_flash);
-        mGalleryButton = (ImageButton) view.findViewById(R.id.button_gallery);
+        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
+        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mQRCodeTextView = (TextView) view.findViewById(R.id.textview_scan_qrcode);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
+        mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
-        mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
+        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
-        mListviewContainer = (RelativeLayout) view.findViewById(R.id.listview_container);
-        mListingListView = (ListView) view.findViewById(R.id.listing_listview);
+        mListviewContainer = (RelativeLayout) mView.findViewById(R.id.listview_container);
+        mListingListView = (ListView) mView.findViewById(R.id.listing_listview);
 
         mCurrentListing = new ArrayList<Wallet>();
         listingAdapter = new WalletPickerAdapter(getActivity(), mCurrentListing, WalletPickerEnum.SendTo);
         mListingListView.setAdapter(listingAdapter);
 
-        dummyFocus = view.findViewById(R.id.dummy_focus);
+        dummyFocus = mView.findViewById(R.id.dummy_focus);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -161,7 +170,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        walletSpinner = (Spinner) view.findViewById(R.id.from_wallet_spinner);
+        walletSpinner = (Spinner) mView.findViewById(R.id.from_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
 
@@ -311,10 +320,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         });
 
 
-        mPreviewFrame = (FrameLayout) view.findViewById(R.id.layout_camera_preview);
+        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
-        mView = view;
-        return view;
+        this.mView = mView;
+        return mView;
     }
 
     private void hideKeyboard() {

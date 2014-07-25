@@ -85,31 +85,42 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_wallet, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mGestureDetector = new GestureDetector(this);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 //        mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
 
-        mFromButton = (Button) view.findViewById(R.id.button_from);
-        mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
+        mFromButton = (Button) mView.findViewById(R.id.button_from);
+        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mQRCodeTextView = (TextView) view.findViewById(R.id.textview_scan_qrcode);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
+        mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mFlashOffButton = (ImageButton) view.findViewById(R.id.button_flash_off);
-        mFlashOnButton = (ImageButton) view.findViewById(R.id.button_flash_on);
-        mAutoFlashButton = (ImageButton) view.findViewById(R.id.button_flash_auto);
+        mFlashOffButton = (ImageButton) mView.findViewById(R.id.button_flash_off);
+        mFlashOnButton = (ImageButton) mView.findViewById(R.id.button_flash_on);
+        mAutoFlashButton = (ImageButton) mView.findViewById(R.id.button_flash_auto);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -195,7 +206,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
             }
         });
 
-        preview = (FrameLayout) view.findViewById(R.id.layout_camera_preview);
+        preview = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
 
         try {
@@ -227,7 +238,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
             }
         });
 
-        return view;
+        return mView;
     }
 
     private void orientationListener() {
