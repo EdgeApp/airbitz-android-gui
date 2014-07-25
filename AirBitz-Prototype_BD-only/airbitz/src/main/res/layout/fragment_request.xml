@@ -33,7 +33,7 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16dp"/>
+            android:textSize="16sp"/>
 
 
         <ImageButton
