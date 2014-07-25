@@ -134,46 +134,57 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
-        mDummyFocus = view.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
+        mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mConfirmSwipeButton = (ImageButton) view.findViewById(R.id.button_confirm_swipe);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mSlideTextView = (TextView) view.findViewById(R.id.textview_slide);
-        mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
-        mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
-        mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
-        mBTCSignTextview = (TextView) view.findViewById(R.id.send_confirmation_btc_sign);
-        mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
-        mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
-        mFiatSignTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_sign);
-        mMaxButton = (Button) view.findViewById(R.id.button_max);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
+        mSlideTextView = (TextView) mView.findViewById(R.id.textview_slide);
+        mConfirmTextView = (TextView) mView.findViewById(R.id.textview_confirm);
+        mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
+        mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
+        mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
+        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
+        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
+        mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
+        mMaxButton = (Button) mView.findViewById(R.id.button_max);
 
-        mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
-        mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
-        mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
+        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
+        mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
+        mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
-        mBitcoinField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
+        mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
 //        mBitcoinFeeLabel = (TextView) view.findViewById();
-        mFiatField = (EditText) view.findViewById(R.id.button_dollar_balance);
+        mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
 //        mDollarFeeLabel = (TextView) view.findViewById();
 
-        mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
+        mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mConfirmImageView = (ImageView) view.findViewById(R.id.imageview_confirm);
+        mConfirmImageView = (ImageView) mView.findViewById(R.id.imageview_confirm);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
@@ -185,8 +196,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mConfirmTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
@@ -483,7 +494,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mDummyFocus.requestFocus();
 
-        return view;
+        return mView;
     }
 
     private void showKeyboard() {

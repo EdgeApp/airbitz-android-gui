@@ -46,24 +46,34 @@ public class WalletQRCodeFragment extends Fragment {
         mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
-        mQRView = (ImageView) view.findViewById(R.id.qr_code_view);
+        mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
-        mBitcoinAmount = (TextView) view.findViewById(R.id.textview_bitcoin_amount);
+        mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
         mBitcoinAmount.setText(bundle.getString(RequestFragment.BITCOIN_VALUE));
 
-        mBitcoinAddress = (TextView) view.findViewById(R.id.textview_address);
+        mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mSMSButton = (Button) view.findViewById(R.id.button_sms_address);
-        mEmailButton = (Button) view.findViewById(R.id.button_email_address);
-        mCancelButton = (Button) view.findViewById(R.id.button_cancel);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mSMSButton = (Button) mView.findViewById(R.id.button_sms_address);
+        mEmailButton = (Button) mView.findViewById(R.id.button_email_address);
+        mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +117,7 @@ public class WalletQRCodeFragment extends Fragment {
             }
         }
 
-        return view;
+        return mView;
     }
 
 }

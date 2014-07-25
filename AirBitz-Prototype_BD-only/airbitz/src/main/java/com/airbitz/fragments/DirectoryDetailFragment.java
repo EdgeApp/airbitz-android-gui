@@ -108,13 +108,24 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_business_detail, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
 
         mGestureDetector = new GestureDetector(this);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -127,9 +138,9 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
         Log.d(TAG, "Business ID: " + mBusinessId);
 
-        mCategoriesTextView = (TextView) view.findViewById(R.id.textview_categories);
-        mDiscountTextView = (TextView) view.findViewById(R.id.textview_discount);
-        mDistanceTextView = (TextView) view.findViewById(R.id.textview_distance);
+        mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
+        mDiscountTextView = (TextView) mView.findViewById(R.id.textview_discount);
+        mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
 
         if(mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
@@ -155,21 +166,21 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
             }
         }, timeout);
 
-        mAddressButton = (Button) view.findViewById(R.id.button_address);
-        mPhoneButton = (Button) view.findViewById(R.id.button_phone);
-        mWebButton = (Button) view.findViewById(R.id.button_web);
-        mHourContainer = (LinearLayout) view.findViewById(R.id.LinearLayout_hourContainer);
-        mDaysTextView = (TextView) view.findViewById(R.id.TextView_days);
-        mHoursTextView = (TextView) view.findViewById(R.id.TextView_hours);
-        mBackImage = (ImageView) view.findViewById(R.id.imageview_business);
+        mAddressButton = (Button) mView.findViewById(R.id.button_address);
+        mPhoneButton = (Button) mView.findViewById(R.id.button_phone);
+        mWebButton = (Button) mView.findViewById(R.id.button_web);
+        mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
+        mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
+        mHoursTextView = (TextView) mView.findViewById(R.id.TextView_hours);
+        mBackImage = (ImageView) mView.findViewById(R.id.imageview_business);
 
-        mAboutField = (TextView) view.findViewById(R.id.edittext_about);
+        mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
 
         // Header
-        mLogo = (ImageView) view.findViewById(R.id.logo);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mLogo = (ImageView) mView.findViewById(R.id.logo);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
         mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         mLogo.setVisibility(View.GONE);
@@ -200,7 +211,7 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
             }
         });
 
-        return view;
+        return mView;
     }
 
     @Override
