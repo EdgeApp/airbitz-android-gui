@@ -6,4 +6,14 @@
     <color name="gray_text">#656766</color>
     <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
+
+    <color name="identifier_pink">#FF00FF</color>
+    <color name="identifier_purple">#ff862eae</color>
+    <color name="identifier_green">#00FF00</color>
+    <color name="identifier_black">#000000</color>
+
+    <color name="identifier_white">#FFFFFF</color>
+    <color name="identifier_off_text">#444444</color>
+    <color name="red">#FF0000</color>
+    <color name="text_hint">#99DDDDDD</color>
 </resources>

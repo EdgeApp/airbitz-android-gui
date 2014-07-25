@@ -7,11 +7,7 @@ import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,6 +30,11 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class AirbitzAPI {
+
+    /*static {
+        System.loadLibrary("abc");
+        System.loadLibrary("airbitz");
+    }*/
 
     private static AirbitzAPI mInstance = null;
 
@@ -57,7 +57,6 @@ public class AirbitzAPI {
     }
 
     private AirbitzAPI(){
-
     }
 
     public static String getServerRoot(){
@@ -203,7 +202,6 @@ public class AirbitzAPI {
     public String getSearchByLatLong(String latlong, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", latlong));
-        System.out.println("THIS IS THE LAT LONG OF OUR LIVES: " +latlong);
 
         if(page_size.length() != 0){
             params.add(new BasicNameValuePair("page_size", page_size));
@@ -221,7 +219,6 @@ public class AirbitzAPI {
 
     public String getSearchByLatLongAndBusiness(String latlong, String businessName, String category, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
-        System.out.println("THIS IS THE LAT LONG OF OUR LIVES: " +latlong);
         params.add(new BasicNameValuePair("ll", latlong));
 
         if(businessName.length()>0){
@@ -245,8 +242,9 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public String getSearchByRadius(String radius, String page_size, String page, String sort){
+    public String getSearchByRadius(String radius, String page_size, String ll, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
+        params.add(new BasicNameValuePair("ll",ll));
         params.add(new BasicNameValuePair("radius", radius));
 
         if(page_size.length() != 0){
@@ -329,7 +327,7 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public BusinessDetail getHttpBusiness(String bizId){
+    public BusinessDetail getHttpBusiness(int bizId){
 
         String url = API_BUSINESS+bizId +"/";
 
@@ -444,9 +442,9 @@ public class AirbitzAPI {
             JSONObject jsonResponse = new JSONObject(response);
             return Business.generateBusinessObjectListFromJSON(jsonResponse.getJSONArray("results"));
         }catch (JSONException e){
-            Log.e(TAG, ""+e.getMessage());
+            Log.e(TAG, "" + e.getMessage());
         }catch (Exception e){
-            Log.e(TAG, ""+e.getMessage());
+            Log.e(TAG, "" + e.getMessage());
         }
         return null;
     }
@@ -511,7 +509,5 @@ public class AirbitzAPI {
         }
         return getRequest(API_SEARCH, createURLParams(params));
     }
-
-
 
 }

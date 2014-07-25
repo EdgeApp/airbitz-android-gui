@@ -92,6 +92,7 @@ public class BusinessDetail {
             }else{
                 mLocation = new Location(0,0);
             }
+
         }
     }
 

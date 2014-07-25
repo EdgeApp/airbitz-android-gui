@@ -1,15 +1,17 @@
 import java.util.regex.Pattern
 
+apply plugin: 'android'
+
 buildscript {
     repositories {
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/' }
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-
     }
 }
 apply plugin: 'android'
@@ -17,19 +19,24 @@ apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven {
+        url 'http://download.crashlytics.com/maven'
+        }
 
+    maven {
+        url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/'
+    }
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    buildToolsVersion "19.1"
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 11
-        versionName "1.0.11"
+        versionCode 27
+        versionName "1.0.27"
     }
     buildTypes {
         release {
@@ -37,7 +44,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-
 
     productFlavors {
 
@@ -82,6 +88,7 @@ android {
         }
     }
 
+    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build
 }
 
 // Used for appending the application version code in the generated .apk
@@ -114,5 +121,6 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'commons-io:commons-io:2.4'
-
+    compile 'com.google.zxing:core:3.0.1'
 }
+

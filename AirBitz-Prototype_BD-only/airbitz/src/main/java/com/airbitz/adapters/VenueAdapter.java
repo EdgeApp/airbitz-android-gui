@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.LruCache;
@@ -29,7 +29,6 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
-    private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
     private boolean firstPlace = false;
     private double mLat;
@@ -40,12 +39,9 @@ public class VenueAdapter extends BaseAdapter {
         firstPlace = false;
         mContext = context;
         mVenues = venues;
-        mInflater = LayoutInflater.from(mContext);
         mLat = getLatFromSharedPreference();
         mLon = getLonFromSharedPreference();
-
         p =  new Picasso.Builder(context).build();
-
     }
 
     static class VenueViewHolderItem {
@@ -79,29 +75,21 @@ public class VenueAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        /*for(BusinessSearchResult k : mVenues){
-            System.out.println(k.getName());
-        }
-        System.out.println(" ");*/
-
         mCurrentPosition = position;
         VenueViewHolderItem viewHolder;
 
         if(convertView==null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_venues, parent, false);
-
-
             TextView venueNameTextView = (TextView) convertView.findViewById(R.id.textview_business_name);
             TextView distanceTextView = (TextView) convertView.findViewById(R.id.textview_distance);
             TextView addressTextView = (TextView) convertView.findViewById(R.id.textview_address);
             TextView discountTextView = (TextView) convertView.findViewById(R.id.textview_discount);
 
-            venueNameTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
-            distanceTextView.setTypeface(BusinessDirectoryActivity.latoBlackTypeFace);
-            addressTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
-            discountTextView.setTypeface(BusinessDirectoryActivity.helveticaNeueTypeFace);
+            venueNameTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+            distanceTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+            addressTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+            discountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
             final BusinessSearchResult result = mVenues.get(position);
 
@@ -159,7 +147,6 @@ public class VenueAdapter extends BaseAdapter {
             ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
             venueNameTextView.setText(mVenues.get(position).getName());
 
-
             if(position==0){
                 RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
                 int height = (int) mContext.getResources().getDimension(R.dimen.new_height);
@@ -171,8 +158,10 @@ public class VenueAdapter extends BaseAdapter {
             }else{
                 RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
                 mainLayout.getLayoutParams().height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
+                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(distanceTextView.getLayoutParams().width, distanceTextView.getLayoutParams().height);
+                llp.setMargins(0, 0, 0, 0); // llp.setMargins(left, top, right, bottom);
+                distanceTextView.setLayoutParams(llp);
             }
-
 
             p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(backgroundView);
 
@@ -205,6 +194,11 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.textViewDistanceItem.setLayoutParams(llp);
         }else{
             viewHolder.relativeLayoutItem.getLayoutParams().height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
+            RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(viewHolder.textViewDistanceItem.getLayoutParams().width, viewHolder.textViewDistanceItem.getLayoutParams().height);
+            llp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            llp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            llp.topMargin = 0;
+            viewHolder.textViewDistanceItem.setLayoutParams(llp);
         }
 
         p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(viewHolder.venueBackgroundItem);
@@ -263,18 +257,19 @@ public class VenueAdapter extends BaseAdapter {
     }
 
     private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = mContext.getSharedPreferences(BusinessDirectoryActivity.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = mContext.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME, Context.MODE_PRIVATE);
         return pref.getFloat(key, -1);
     }
 
     private double getLatFromSharedPreference(){
-        double lat = (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LAT_KEY);
+        double lat = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
         return lat;
     }
 
     private double getLonFromSharedPreference(){
-        double lon = (double)getStateFromSharedPreferences(BusinessDirectoryActivity.LON_KEY);
+        double lon = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
         return lon;
     }
+
 
 }

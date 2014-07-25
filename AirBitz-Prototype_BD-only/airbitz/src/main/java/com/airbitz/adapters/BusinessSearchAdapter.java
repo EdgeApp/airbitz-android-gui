@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.BusinessDirectoryActivity;
+import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Business;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
         final Business business = mLocationValue.get(position);
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
-        textView.setTypeface(BusinessDirectoryActivity.montserratRegularTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         textView.setText(business.getName());
         textView.setTextColor(business.isCached() ? sGreenText : sGrayText);
 

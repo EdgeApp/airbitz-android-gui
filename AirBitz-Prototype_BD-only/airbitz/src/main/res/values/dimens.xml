@@ -8,6 +8,14 @@
     <dimen name="map_info_window_width">150dp</dimen>
     <dimen name="venue_list_full_height_275">112dp</dimen>
     <dimen name="venue_list_small_height_175">112dp</dimen>
+    <dimen name="wallet_list_view_height">70dp</dimen>
+    <dimen name="transaction_list_view_height">69.3dp</dimen>
+
+    <dimen name="offset_height">20dp</dimen>
+    <dimen name="new_height">135dp</dimen>
+    <dimen name="ribbon_height">40dp</dimen>
+    <dimen name="ribbon_width">120dp</dimen>
+    <dimen name="padding_map_info">5dp</dimen>
 
     <dimen name="offset_height">20dp</dimen>
     <dimen name="new_height">135dp</dimen>
@@ -31,5 +39,31 @@
     <dimen name="text_size_h2">18sp</dimen>
     <dimen name="text_size_h3">16sp</dimen>
     <dimen name="text_size_h4">14sp</dimen>
+
+    <dimen name="spinner_width_password">245.7dp</dimen>
+    <dimen name="drop_down_height">38.7dp</dimen>
+
+    <dimen name="negative_margin_popup">-27dp</dimen>
+
+    <dimen name="nav_bar_height">56.7dp</dimen>
+
+    <dimen name="nexus_5_width">1080px</dimen>
+    <dimen name="pop_up_height">144.9dp</dimen>
+    <dimen name="pop_up_offset">25.2dp</dimen>
+    <dimen name="one_point_five_mm">9.45dp</dimen>
+    <dimen name="two_point_five_mm">15.75dp</dimen>
+    <dimen name="two_mm">12.6dp</dimen>
+    <dimen name="three_mm">18.9dp</dimen>
+
+    <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
+    <dimen name="activity_signup_popup_height">119.7dp</dimen>
+    <dimen name="fragment_wallet_addwallet_height">135.45dp</dimen>
+
+    <dimen name="currency_switch_height">37.8dp</dimen>
+    <dimen name="header_height">44.1dp</dimen>
+    <dimen name="fragment_wallet_search_layout_height">44.1dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_height">138.6dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>
+    <dimen name="fragment_wallet_search_scroll_animation_bottom">119.7dp</dimen>
 
     </resources>
