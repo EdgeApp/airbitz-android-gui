@@ -578,6 +578,7 @@ public class WalletsFragment extends Fragment
         super.onResume();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         mCoreAPI.addExchangeRateChangeListener(this);
+        UpdateBalances();
     }
 
     @Override public void onPause() {

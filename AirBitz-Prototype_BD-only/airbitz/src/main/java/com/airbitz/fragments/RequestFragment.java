@@ -199,9 +199,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -596,6 +594,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     @Override public void onResume() {
         super.onResume();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
         mCoreAPI.addExchangeRateChangeListener(this);
     }
 

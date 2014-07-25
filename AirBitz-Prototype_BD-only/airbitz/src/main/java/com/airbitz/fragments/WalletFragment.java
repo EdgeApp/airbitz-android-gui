@@ -531,8 +531,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     }
 
     @Override public void onResume(){
-        mCoreAPI.addExchangeRateChangeListener(this);
         super.onResume();
+        mCoreAPI.addExchangeRateChangeListener(this);
+        UpdateWalletTotalBalance();
     }
 
     // Sum all transactions and show in total
