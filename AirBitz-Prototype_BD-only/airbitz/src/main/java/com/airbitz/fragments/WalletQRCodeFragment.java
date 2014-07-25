@@ -103,13 +103,6 @@ public class WalletQRCodeFragment extends Fragment {
 
         String name = "";
         String notes = "";
-        tABC_AccountSettings settings = mCoreAPI.loadAccountSettings();
-        if(settings.getBNameOnPayments()) {
-            name = settings.getSzNickname();
-            if(name.isEmpty())
-                name = settings.getSzFirstName() +" "+ settings.getSzLastName();
-            notes = "";
-        }
         String id = mCoreAPI.createReceiveRequestFor(mWallet, name, notes, bundle.getString(RequestFragment.BITCOIN_VALUE));
         if(id!=null) {
             String addr = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
