@@ -88,12 +88,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-        mCoreAPI = CoreAPI.getApi();
-        String seed = getSeedData();
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mCoreAPI.Initialize(this.getApplicationContext().getFilesDir().toString(), seed, seed.length());
+        mCoreAPI = CoreAPI.getApi();
+        String seed = mCoreAPI.getSeedData();
+        mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
+
         mCoreAPI.setOnIncomingBitcoinListener(this);
         AirbitzApplication.Login(null, null); // try auto login
 
@@ -373,27 +373,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             frag.setArguments(bundle);
             pushFragment(frag);
         }
-    }
-
-    private String getSeedData()
-    {
-        String strSeed = new String();
-
-        strSeed += Build.MANUFACTURER;
-        strSeed += Build.DEVICE;
-        strSeed += Build.SERIAL;
-
-        long time = System.nanoTime();
-        ByteBuffer bb1 = ByteBuffer.allocate(8);
-        bb1.putLong(time);
-        strSeed += bb1.array();
-
-        Random r = new Random();
-        ByteBuffer bb2 = ByteBuffer.allocate(4);
-        bb2.putInt(r.nextInt());
-        strSeed += bb2.array();
-
-        return strSeed;
     }
 
 

@@ -1,9 +1,11 @@
 package com.airbitz.api;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
@@ -11,9 +13,11 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by tom on 6/20/14.
@@ -43,7 +47,6 @@ public class CoreAPI {
     public static CoreAPI getApi() {
         if (mInstance == null) {
             mInstance = new CoreAPI();
-            mInstance.loadAccountSettings();
         }
         return mInstance;
     }
@@ -1726,4 +1729,24 @@ public class CoreAPI {
         return false;
     }
 
+    public static String getSeedData()
+    {
+        String strSeed = new String();
+
+        strSeed += Build.MANUFACTURER;
+        strSeed += Build.DEVICE;
+        strSeed += Build.SERIAL;
+
+        long time = System.nanoTime();
+        ByteBuffer bb1 = ByteBuffer.allocate(8);
+        bb1.putLong(time);
+        strSeed += bb1.array();
+
+        Random r = new Random();
+        ByteBuffer bb2 = ByteBuffer.allocate(4);
+        bb2.putInt(r.nextInt());
+        strSeed += bb2.array();
+
+        return strSeed;
+    }
 }

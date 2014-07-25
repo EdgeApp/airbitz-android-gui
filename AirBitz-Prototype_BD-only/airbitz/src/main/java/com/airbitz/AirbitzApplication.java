@@ -17,7 +17,14 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static Login airbitzLogin = new Login();
+    private static Context mContext;
     private static int mLastNavTab = 0;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        mContext=getApplicationContext();
+    }
 
     public static boolean isLoggedIn() {
         return airbitzLogin.getUsername() != null;
@@ -45,6 +52,7 @@ public class AirbitzApplication extends Application {
 
     public static String getUsername() {return airbitzLogin.getUsername(); }
     public static String getPassword() {return airbitzLogin.getPassword(); }
+    public static Context getContext() {return mContext; }
     public static void setLastNavTab(int tab) {mLastNavTab = tab;}
     public static int getLastNavTab() {return mLastNavTab;}
 
