@@ -618,6 +618,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+        setConversionText(mSelectedWallet.getCurrencyNum());
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
         mCoreAPI.addExchangeRateChangeListener(this);
     }

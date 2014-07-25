@@ -864,6 +864,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         super.onResume();
     }
 
