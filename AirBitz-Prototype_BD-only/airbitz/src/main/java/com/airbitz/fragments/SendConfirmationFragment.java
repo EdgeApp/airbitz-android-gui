@@ -233,11 +233,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mPinEdittext.requestFocus();
         }
 
-        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
-        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
-
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
@@ -839,6 +834,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         } else if(mPinEdittext.getText().toString().isEmpty()) {
             mPinEdittext.requestFocus();
         }
+        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
         super.onResume();
     }
 
