@@ -34,8 +34,10 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
@@ -59,11 +61,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private Button mImportWalletButton;
-    private Button mEmailButton;
-    private Button mSmsButton;
-    private Button mQRCodeButton;
-    private Button mBLEButton;
+    private HighlightOnPressButton mImportWalletButton;
 
     private View dummyFocus;
 
@@ -71,11 +69,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     private List<String> mWalletNames;
     private Wallet mSelectedWallet;
 
-    private Spinner pickWalletSpinner;
+    private HighlightOnPressSpinner pickWalletSpinner;
 
     private RelativeLayout mButtonGroup;
-    private Button mExpandButton;
-    private Button mUnExpandButton;
+    private HighlightOnPressButton mExpandButton;
 
     private TextView mTitleTextView;
     private TextView mWalletTextView;
@@ -171,18 +168,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
-        mImportWalletButton = (Button) mView.findViewById(R.id.button_import_wallet);
-        mEmailButton = (Button) mView.findViewById(R.id.button_email);
-        mSmsButton = (Button) mView.findViewById(R.id.button_sms);
-        mQRCodeButton = (Button) mView.findViewById(R.id.button_qr_code);
-        mBLEButton = (Button) mView.findViewById(R.id.button_ble);
+        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 
         mButtonGroup = (RelativeLayout) mView.findViewById(R.id.button_group);
 
-        mExpandButton = (Button) mView.findViewById(R.id.button_expand);
-        mUnExpandButton = (Button) mView.findViewById(R.id.button_unexpand);
+        mExpandButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
 
-        pickWalletSpinner = (Spinner) mView.findViewById(R.id.new_wallet_spinner);
+        pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
         pickWalletSpinner.setAdapter(dataAdapter);
         pickWalletSpinner.post(new Runnable() {
@@ -220,44 +212,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         });
 
-        mUnExpandButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mButtonGroup.setVisibility(View.GONE);
-            }
-        });
-
         mImportWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment frag = new ImportFragment();
-                ((NavigationActivity) getActivity()).pushFragment(frag);
-            }
-        });
-
-        mSmsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendSMS();
-            }
-        });
-
-        mEmailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendEmail();
-            }
-        });
-
-        mQRCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment frag = new WalletQRCodeFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
-                bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
-                bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
-                frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
