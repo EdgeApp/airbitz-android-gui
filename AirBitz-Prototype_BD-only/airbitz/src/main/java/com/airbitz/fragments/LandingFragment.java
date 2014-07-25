@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -162,6 +163,9 @@ public class LandingFragment extends Fragment {
                 }
             }
         });
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
 
         return view;
     }

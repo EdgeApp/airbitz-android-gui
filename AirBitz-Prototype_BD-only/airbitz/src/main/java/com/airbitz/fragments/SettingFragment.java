@@ -265,7 +265,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 saveCurrentSettings();
-                AirbitzApplication.Logout();
+                AirbitzApplication.Logout(getActivity());
                 getActivity().startActivity(new Intent(getActivity(), NavigationActivity.class));
             }
         });
