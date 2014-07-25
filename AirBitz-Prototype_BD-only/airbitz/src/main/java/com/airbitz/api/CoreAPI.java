@@ -20,7 +20,7 @@ import java.util.List;
  * This class is a bridge to the ndk core code, acting like a viewmodel
  */
 public class CoreAPI {
-    private static String TAG = AirbitzAPI.class.getSimpleName();
+    private static String TAG = CoreAPI.class.getSimpleName();
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
     private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
     public static int ABC_DENOMINATION_BTC = 0;
@@ -43,6 +43,7 @@ public class CoreAPI {
     public static CoreAPI getApi() {
         if (mInstance == null) {
             mInstance = new CoreAPI();
+            mInstance.loadAccountSettings();
         }
         return mInstance;
     }
@@ -78,12 +79,12 @@ public class CoreAPI {
                 mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
             }
             else
-                Log.d("CoreAPI", "incoming bitcoin event has no listener");
+                Log.d(TAG, "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
             else
-                Log.d("CoreAPI", "block exchange event has no listener");
+                Log.d(TAG, "block exchange event has no listener");
         }
     }
 
@@ -152,7 +153,7 @@ public class CoreAPI {
         if(result==tABC_CC.ABC_CC_Ok) {
             return true;
         } else {
-            Log.d("CoreAPI", "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
+            Log.d(TAG, "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
             return result == tABC_CC.ABC_CC_Ok;
         }
     }
@@ -245,7 +246,7 @@ public class CoreAPI {
 
         if(tABC_CC.swigToEnum(result) != tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
+            Log.d(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
         }
     }
 
@@ -258,7 +259,7 @@ public class CoreAPI {
                 return true;
             }
             else {
-                Log.d("CoreAPI", "Error: CoreBridge.setWalletAttributes: "+ Error.getSzDescription());
+                Log.d(TAG, "Error: CoreBridge.setWalletAttributes: "+ Error.getSzDescription());
                 return false;
             }
         }
@@ -291,7 +292,7 @@ public class CoreAPI {
         }
         String message = result.toString() + "," + error.getSzDescription() + ", " +
                 error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-        Log.d("CoreAPI", message);
+        Log.d(TAG, message);
         return null;
     }
 
@@ -299,7 +300,7 @@ public class CoreAPI {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
-            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            Log.d(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
         return mBTCDenominations[bitcoinDenomination.getDenominationType()];
@@ -309,7 +310,7 @@ public class CoreAPI {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
-            Log.d("CoreAPI", "Bad bitcoin denomination from core settings");
+            Log.d(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
         return mBTCSymbols[bitcoinDenomination.getDenominationType()];
@@ -409,7 +410,7 @@ public class CoreAPI {
             return mCoreSettings;
         } else {
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
-            Log.d("CoreAPI", "Load settings failed - "+message);
+            Log.d(TAG, "Load settings failed - "+message);
         }
         return null;
     }
@@ -593,7 +594,7 @@ public class CoreAPI {
         Wallet wallet = getWallet(walletUUID);
         if (wallet == null)
         {
-            Log.d("CoreAPI", "Could not find wallet for "+ walletUUID);
+            Log.d(TAG, "Could not find wallet for "+ walletUUID);
             return null;
         }
         tABC_CC result = core.ABC_GetTransaction(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -607,7 +608,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d("CoreAPI", "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Log.d(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
         }
         return transaction;
     }
@@ -654,7 +655,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d("CoreAPI", "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Log.d(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
         }
 //        core.ABC_FreeTransactions(aTransactions, tCount);
         return listTransactions;
@@ -804,7 +805,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error in GetPasswordSecondsToCrack:  " + Error.getSzDescription());
+            Log.d(TAG, "Error in GetPasswordSecondsToCrack:  " + Error.getSzDescription());
             return 0;
         }
         return core.doublep_value(seconds);
@@ -827,7 +828,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error in PasswordRule:  " + Error.getSzDescription());
+            Log.d(TAG, "Error in PasswordRule:  " + Error.getSzDescription());
             return null;
         }
 
@@ -909,7 +910,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.i("CoreAPI", "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
+            Log.i(TAG, "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
         }
         return listTransactions;
     }
@@ -924,7 +925,7 @@ public class CoreAPI {
                 transaction.getWalletUUID(), transaction.getID(), pDetails, Error);
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
+            Log.d(TAG, "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
             return false;
         }
 
@@ -940,7 +941,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d("CoreAPI", "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
+            Log.d(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
             return false;
         }
 
@@ -966,7 +967,7 @@ public class CoreAPI {
             if(currencyNum == mFauxCurrencyNumbers[i])
                 return i;
         }
-        Log.d("CoreAPI", "CurrencyIndex not found, using default");
+        Log.d(TAG, "CurrencyIndex not found, using default");
         return 6; // default US
     }
 
@@ -1046,7 +1047,7 @@ public class CoreAPI {
                 index = i;
         }
         if((index==-1) || (index >= currencyNumbers.length)) { // default usd
-            Log.d("CoreAPI", "currency index out of bounds "+index);
+            Log.d(TAG, "currency index out of bounds "+index);
             index = currencyNumbers.length-1;
         }
         return index;
@@ -1062,7 +1063,7 @@ public class CoreAPI {
                 index = i;
         }
         if((index==-1) || (index >= currencyNumbers.length)) { // default usd
-            Log.d("CoreAPI", "currency index out of bounds "+index);
+            Log.d(TAG, "currency index out of bounds "+index);
             index = currencyNumbers.length-1;
         }
         return index;
@@ -1295,14 +1296,14 @@ public class CoreAPI {
                         sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
             }
             if (result != tABC_CC.ABC_CC_Ok) {
-                Log.d("CoreAPI", "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
+                Log.d(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
                         error.getSzSourceFunc() + " " + error.getNSourceLine());
             } else {
                 txid = getStringAtPtr(core.longp_value(lp));
-                Log.d("CoreAPI", "TxID:  " + txid);
+                Log.d(TAG, "TxID:  " + txid);
             }
         } else {
-            Log.d("CoreAPI", "Initiate transfer - nothing to send");
+            Log.d(TAG, "Initiate transfer - nothing to send");
         }
         return txid;
     }
@@ -1333,7 +1334,7 @@ public class CoreAPI {
         {
             if (error.getCode() != tABC_CC.ABC_CC_InsufficientFunds)
             {
-                Log.d("CoreAPI", "CalcSendFees error: "+error.getSzDescription());
+                Log.d(TAG, "CalcSendFees error: "+error.getSzDescription());
             }
             return -1; //TODO is this ok for insufficient funds?
         }
@@ -1376,7 +1377,7 @@ public class CoreAPI {
         {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
-//            Log.d("CoreAPI", "Exchange Rate Update initiated.");
+//            Log.d(TAG, "Exchange Rate Update initiated.");
             mUpdateExchangeRateTask.execute();
         }
     }
@@ -1451,7 +1452,7 @@ public class CoreAPI {
         }
 
         if (!mExchangeRateObservers.isEmpty()) {
-            Log.d("CoreAPI", "Exchange Rate changed");
+            Log.d(TAG, "Exchange Rate changed");
             for(OnExchangeRatesChange listener : mExchangeRateObservers) {
                 listener.OnExchangeRatesChange();
             }
@@ -1481,7 +1482,7 @@ public class CoreAPI {
         {
             mSyncDataTask = new SyncDataTask();
 
-            Log.d("CoreAPI", "File sync initiated.");
+            Log.d(TAG, "File sync initiated.");
             mSyncDataTask.execute();
         }
     }
@@ -1536,7 +1537,7 @@ public class CoreAPI {
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
             return mWallets;
         } else {
-            Log.d("CoreAPI", "getCoreWallets failed.");
+            Log.d(TAG, "getCoreWallets failed.");
         }
         return null;
     }
@@ -1680,7 +1681,7 @@ public class CoreAPI {
         tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), aszCategories, pUCount, Error);
 
         if(result!=tABC_CC.ABC_CC_Ok) {
-            Log.d("CoreAPI", "loadCategories failed:"+Error.getSzDescription());
+            Log.d(TAG, "loadCategories failed:"+Error.getSzDescription());
         }
 
         int count = core.intp_value(pCount);
@@ -1702,7 +1703,7 @@ public class CoreAPI {
         // check and see that it doesn't already exist
         if (categories == null || !categories.contains(strCategory)) {
             // add the category to the core
-            Log.d("CoreAPI", "Adding category: "+strCategory);
+            Log.d(TAG, "Adding category: "+strCategory);
             tABC_Error Error = new tABC_Error();
             core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
         }
@@ -1720,7 +1721,7 @@ public class CoreAPI {
         if(result.equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
-            Log.d("CoreAPI", "isTestNet error:"+error.getSzDescription());
+            Log.d(TAG, "isTestNet error:"+error.getSzDescription());
         }
         return false;
     }

@@ -113,41 +113,52 @@ public class SettingFragment extends Fragment {
         mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_setting, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_setting, container, false);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.settings_button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.settings_button_help);
-        mTitleTextView = (TextView) view.findViewById(R.id.settings_textview_title);
+        mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.settings_button_help);
+        mTitleTextView = (TextView) mView.findViewById(R.id.settings_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mCategoryContainer = (RelativeLayout) view.findViewById(R.id.category_container);
+        mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
 
-        mDenominationGroup = (RadioGroup) view.findViewById(R.id.settings_denomination_denomination_group);
-        mBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_bitcoin);
-        mmBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_mbitcoin);
-        muBitcoinButton = (RadioButton) view.findViewById(R.id.settings_denomination_buttons_ubitcoin);
+        mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
+        mBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_bitcoin);
+        mmBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_mbitcoin);
+        muBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_ubitcoin);
 
-        mChangePasswordButton = (Button) view.findViewById(R.id.settings_button_change_password);
-        mChangePINButton = (Button) view.findViewById(R.id.settings_button_pin);
-        mChangeRecoveryButton = (Button) view.findViewById(R.id.settings_button_recovery);
+        mChangePasswordButton = (Button) mView.findViewById(R.id.settings_button_change_password);
+        mChangePINButton = (Button) mView.findViewById(R.id.settings_button_pin);
+        mChangeRecoveryButton = (Button) mView.findViewById(R.id.settings_button_recovery);
 
-        mSendNameSwitch = (Switch) view.findViewById(R.id.settings_toggle_send_user_info);
-        mFirstEditText = (EditText) view.findViewById(R.id.settings_edit_first_name);
-        mLastEditText = (EditText) view.findViewById(R.id.settings_edit_last_name);
-        mNicknameEditText = (EditText) view.findViewById(R.id.settings_edit_nick_name);
-        mAutoLogoffButton = (Button) view.findViewById(R.id.settings_button_auto_logoff);
-        mLanguageButton = (Button) view.findViewById(R.id.settings_button_language);
-        mDefaultCurrencyButton = (Button) view.findViewById(R.id.settings_button_currency);
+        mSendNameSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
+        mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
+        mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
+        mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
+        mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
+        mLanguageButton = (Button) mView.findViewById(R.id.settings_button_language);
+        mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
 
-        mUSDollarButton = (Button) view.findViewById(R.id.settings_button_usd);
-        mCanadianDollarButton = (Button) view.findViewById(R.id.settings_button_canadian);
-        mEuroButton = (Button) view.findViewById(R.id.settings_button_euro);
-        mPesoButton = (Button) view.findViewById(R.id.settings_button_peso);
-        mYuanButton = (Button) view.findViewById(R.id.settings_button_yuan);
+        mUSDollarButton = (Button) mView.findViewById(R.id.settings_button_usd);
+        mCanadianDollarButton = (Button) mView.findViewById(R.id.settings_button_canadian);
+        mEuroButton = (Button) mView.findViewById(R.id.settings_button_euro);
+        mPesoButton = (Button) mView.findViewById(R.id.settings_button_peso);
+        mYuanButton = (Button) mView.findViewById(R.id.settings_button_yuan);
 
-        mLogoutButton = (Button) view.findViewById(R.id.settings_button_logout);
+        mLogoutButton = (Button) mView.findViewById(R.id.settings_button_logout);
 
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,12 +265,12 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 saveCurrentSettings();
-                AirbitzApplication.Logout();
+                AirbitzApplication.Logout(getActivity());
                 getActivity().startActivity(new Intent(getActivity(), NavigationActivity.class));
             }
         });
 
-        return view;
+        return mView;
     }
 
     private void loadSettings(tABC_AccountSettings settings) {

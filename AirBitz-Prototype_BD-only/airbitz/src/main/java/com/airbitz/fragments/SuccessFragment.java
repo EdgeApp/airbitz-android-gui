@@ -32,14 +32,25 @@ public class SuccessFragment extends Fragment {
         bundle = this.getArguments();
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_success, container, false);
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mFiatTextView = (TextView) view.findViewById(R.id.textview_fiat);
-        mBitcoinTextView = (TextView) view.findViewById(R.id.textview_bitcoin);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_success, container, false);
+
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mFiatTextView = (TextView) mView.findViewById(R.id.textview_fiat);
+        mBitcoinTextView = (TextView) mView.findViewById(R.id.textview_bitcoin);
 
         mBitcoinTextView.setText(bundle.getString("bitcoin_value"));
         mFiatTextView.setText(bundle.getString("fiat_value"));
@@ -58,7 +69,7 @@ public class SuccessFragment extends Fragment {
             }
         });
 
-        return view;
+        return mView;
     }
 
     class ArtificialDelay extends AsyncTask<Void, Integer, Boolean> {

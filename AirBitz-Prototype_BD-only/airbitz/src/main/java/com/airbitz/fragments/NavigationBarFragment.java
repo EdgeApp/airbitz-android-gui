@@ -51,6 +51,9 @@ public class NavigationBarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(mView!=null)
+            return mView;
+
         mView = inflater.inflate(R.layout.fragment_navigation_bar, container, false);
 
         mButtons = (View) mView.findViewById(R.id.normal_navigation_bar);

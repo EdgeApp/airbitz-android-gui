@@ -43,21 +43,32 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wallet_password, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_wallet_password, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mGestureDetector = new GestureDetector(this);
 
-        mPasswordEdittext = (EditText) view.findViewById(R.id.wallet_password_edittext_password);
-        mValidPasswordImageView = (ImageView) view.findViewById(R.id.imageview_valid_password);
+        mPasswordEdittext = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
+        mValidPasswordImageView = (ImageView) mView.findViewById(R.id.imageview_valid_password);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
 
-        TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
+        TextView titleTextView = (TextView) mView.findViewById(R.id.textview_title);
         titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mPasswordEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -142,7 +153,7 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
             }
         });
 
-        return view;
+        return mView;
     }
 
 //    @Override

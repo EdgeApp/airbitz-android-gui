@@ -17,16 +17,16 @@
 
         <ImageButton
             android:id="@+id/button_back"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
             android:contentDescription="@string/string_back_button"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:layout_margin="5dp"/>
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:padding="12.6dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/textview_title"
@@ -36,22 +36,21 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_margin="10dp"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
 
 
         <ImageButton
-            android:layout_width="26dp"
-            android:layout_height="26dp"
             android:id="@+id/button_help"
-            android:contentDescription="@string/string_help_button"
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:layout_margin="5dp"/>
-
+            android:padding="12.6dp"
+            android:contentDescription="@string/string_help_button"/>
     </RelativeLayout>
 
 

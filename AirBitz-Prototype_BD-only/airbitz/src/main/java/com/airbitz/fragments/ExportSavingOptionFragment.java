@@ -57,32 +57,43 @@ public class ExportSavingOptionFragment extends Fragment implements GestureDetec
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_export, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_export, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
         mGestureDetector = new GestureDetector(this);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mAccountEdittext = (EditText) view.findViewById(R.id.edittext_account);
-        mFromEdittext = (EditText) view.findViewById(R.id.edittext_from);
-        mToEdittext = (EditText) view.findViewById(R.id.edittext_to);
+        mAccountEdittext = (EditText) mView.findViewById(R.id.edittext_account);
+        mFromEdittext = (EditText) mView.findViewById(R.id.edittext_from);
+        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
-        mAccountTexView = (TextView) view.findViewById(R.id.textview_account);
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
+        mAccountTexView = (TextView) mView.findViewById(R.id.textview_account);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
 
         mAccountEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -111,7 +122,7 @@ public class ExportSavingOptionFragment extends Fragment implements GestureDetec
             }
         });
 
-        return view;
+        return mView;
     }
 
     @Override

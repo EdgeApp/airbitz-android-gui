@@ -132,18 +132,29 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         }
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_request, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_request, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
-        mFocusDistractorLayout = (LinearLayout) view.findViewById(R.id.layout_focus_distractor);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
+        mFocusDistractorLayout = (LinearLayout) mView.findViewById(R.id.layout_focus_distractor);
         mFocusDistractorLayout.requestFocus();
 
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_amount);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_amount);
 
         mCalculatorBrain = new CalculatorBrain();
         mDF.setMinimumFractionDigits(0);
@@ -151,29 +162,27 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
 
-        dummyFocus = view.findViewById(R.id.fragment_request_dummy_focus);
+        dummyFocus = mView.findViewById(R.id.fragment_request_dummy_focus);
 
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
+        mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
+        mFiatField = (EditText) mView.findViewById(R.id.edittext_dollar);
 
-        mBitcoinField = (EditText) view.findViewById(R.id.edittext_btc);
-        mFiatField = (EditText) view.findViewById(R.id.edittext_dollar);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mImportWalletButton = (Button) mView.findViewById(R.id.button_import_wallet);
+        mEmailButton = (Button) mView.findViewById(R.id.button_email);
+        mSmsButton = (Button) mView.findViewById(R.id.button_sms);
+        mQRCodeButton = (Button) mView.findViewById(R.id.button_qr_code);
+        mBLEButton = (Button) mView.findViewById(R.id.button_ble);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mImportWalletButton = (Button) view.findViewById(R.id.button_import_wallet);
-        mEmailButton = (Button) view.findViewById(R.id.button_email);
-        mSmsButton = (Button) view.findViewById(R.id.button_sms);
-        mQRCodeButton = (Button) view.findViewById(R.id.button_qr_code);
-        mBLEButton = (Button) view.findViewById(R.id.button_ble);
+        mButtonGroup = (RelativeLayout) mView.findViewById(R.id.button_group);
 
-        mButtonGroup = (RelativeLayout) view.findViewById(R.id.button_group);
+        mExpandButton = (Button) mView.findViewById(R.id.button_expand);
+        mUnExpandButton = (Button) mView.findViewById(R.id.button_unexpand);
 
-        mExpandButton = (Button) view.findViewById(R.id.button_expand);
-        mUnExpandButton = (Button) view.findViewById(R.id.button_unexpand);
-
-        pickWalletSpinner = (Spinner) view.findViewById(R.id.new_wallet_spinner);
+        pickWalletSpinner = (Spinner) mView.findViewById(R.id.new_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
         pickWalletSpinner.setAdapter(dataAdapter);
         pickWalletSpinner.post(new Runnable() {
@@ -183,9 +192,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         });
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mWalletTextView = (TextView) view.findViewById(R.id.textview_wallet);
-        mConverterTextView = (TextView) view.findViewById(R.id.textview_converter);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
+        mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -193,12 +202,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mFiatField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mBTCDenominationTextView = (TextView) view.findViewById(R.id.request_btc_denomination);
-        mFiatDenominationTextView = (TextView) view.findViewById(R.id.request_fiat_denomination);
+        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
+        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,9 +381,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
-        setConversionText(mSelectedWallet.getCurrencyNum());
-
-        return view;
+        return mView;
     }
 
     private void sendSMS() {
@@ -510,6 +515,30 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
+    private void removeCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -593,6 +622,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     @Override public void onResume() {
         super.onResume();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+        setConversionText(mSelectedWallet.getCurrencyNum());
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
         mCoreAPI.addExchangeRateChangeListener(this);
     }
 
@@ -600,6 +633,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         super.onPause();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
+        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 
     @Override

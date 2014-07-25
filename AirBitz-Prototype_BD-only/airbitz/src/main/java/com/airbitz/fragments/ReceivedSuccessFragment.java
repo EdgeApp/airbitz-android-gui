@@ -52,21 +52,32 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
         }
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_received_success, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_received_success, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mSendingTextView = (TextView) view.findViewById(R.id.textview_sending);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mSendingTextView = (TextView) mView.findViewById(R.id.textview_sending);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
-        mLogoImageView = (ImageView) view.findViewById(R.id.imageview_logo);
+        mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mSendingLayout = (RelativeLayout) view.findViewById(R.id.layout_sending);
+        mSendingLayout = (RelativeLayout) mView.findViewById(R.id.layout_sending);
 
         mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -90,7 +101,7 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         new RequestSendingAsynctask().execute();
 
-        return view;
+        return mView;
     }
 
     class RequestSendingAsynctask extends AsyncTask<Void, Integer, Boolean>{
