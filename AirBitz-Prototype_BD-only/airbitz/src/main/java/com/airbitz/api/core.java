@@ -233,12 +233,12 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CurrencyToSatoshi(szUserName, szPassword, currency, currencyNum, SWIGTYPE_p_int64_t.getCPtr(pSatoshi), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_ParseAmount(String szAmount, SWIGTYPE_p_int64_t pAmountOut, long decimalPlaces) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_ParseAmount(szAmount, SWIGTYPE_p_int64_t.getCPtr(pAmountOut), decimalPlaces));
+  public static tABC_CC ABC_ParseAmount(String szAmount, SWIGTYPE_p_uint64_t pAmountOut, long decimalPlaces) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_ParseAmount(szAmount, SWIGTYPE_p_uint64_t.getCPtr(pAmountOut), decimalPlaces));
   }
 
-  public static tABC_CC ABC_FormatAmount(SWIGTYPE_p_int64_t amount, SWIGTYPE_p_p_char pszAmountOut, long decimalPlaces, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_FormatAmount(SWIGTYPE_p_int64_t.getCPtr(amount), SWIGTYPE_p_p_char.getCPtr(pszAmountOut), decimalPlaces, tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_FormatAmount(SWIGTYPE_p_uint64_t amount, SWIGTYPE_p_p_char pszAmountOut, long decimalPlaces, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_FormatAmount(SWIGTYPE_p_uint64_t.getCPtr(amount), SWIGTYPE_p_p_char.getCPtr(pszAmountOut), decimalPlaces, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_CreateReceiveRequest(String szUserName, String szPassword, String szWalletUUID, tABC_TxDetails pDetails, SWIGTYPE_p_p_char pszRequestID, tABC_Error pError) {
