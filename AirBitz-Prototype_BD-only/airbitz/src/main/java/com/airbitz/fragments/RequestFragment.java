@@ -156,8 +156,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         dummyFocus = mView.findViewById(R.id.fragment_request_dummy_focus);
 
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
-
         mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
@@ -511,6 +509,30 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
+    private void removeCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -596,6 +618,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
         mCoreAPI.addExchangeRateChangeListener(this);
     }
 
@@ -603,6 +626,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         super.onPause();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
+        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 
     @Override

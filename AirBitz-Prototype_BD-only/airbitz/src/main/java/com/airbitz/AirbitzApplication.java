@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
  */
 public class AirbitzApplication extends Application {
 
-    public static boolean AUTOLOGIN = false;
+    public static boolean AUTOLOGIN = true;
     private static String loginName = "tb0"; private static String loginPassword = "Aaaaaaaa1@";
 //    private static String loginName = "matt104"; private static String loginPassword = "O@21grapes";
 

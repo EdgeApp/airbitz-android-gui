@@ -207,8 +207,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
 
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
-
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
@@ -588,6 +586,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         @Override
         protected void onPostExecute(final Long fees) {
+            if(getActivity()==null)
+                return;
             mCalculationTask = null;
             UpdateFeeFields(fees);
         }
@@ -744,6 +744,30 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
+    private void removeCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
+    }
+
     @Override
     public void onClick(View v) {
         View focusCurrent = getActivity().getWindow().getCurrentFocus();
@@ -839,10 +863,14 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
         super.onResume();
     }
 
     @Override public void onPause() {
         super.onPause();
+        if(mCalculationTask!=null)
+            mCalculationTask.cancel(true);
+        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 }
