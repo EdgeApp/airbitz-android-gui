@@ -95,6 +95,10 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
             }
         });
 
+        if(mBundle.getString(WalletsFragment.FROM_SOURCE).contains("REQUEST")) {
+            mTitleTextView.setText("Request Bitcoin");
+        }
+
         new RequestSendingAsynctask().execute();
 
         return mView;
