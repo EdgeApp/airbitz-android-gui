@@ -87,12 +87,12 @@ public class PasswordRecoveryActivity extends Activity {
         setContentView(R.layout.activity_password_recovery);
 
         mCoreAPI = CoreAPI.getApi();
-        mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
 
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
 
+        mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
         if(mChangeQuestions) {
             //TODO question changes flow, user already logged in
             mUsername = AirbitzApplication.getUsername();
@@ -189,7 +189,8 @@ public class PasswordRecoveryActivity extends Activity {
         }
         if (allQuestionsSelected) {
             if (allAnswersValid) {
-                ShowCompleteAlert(questions, answers);
+                mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
+                mSaveQuestionsTask.execute((Void) null);
             } else {
                 ShowAnswerAllQuestionsAlert();
             }
@@ -251,7 +252,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.INVISIBLE);
+                                dummyCover.setVisibility(View.GONE);
                                 dialog.cancel();
                             }
                         }
@@ -268,7 +269,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.INVISIBLE);
+                                dummyCover.setVisibility(View.GONE);
                                 dialog.cancel();
                             }
                         });
@@ -284,7 +285,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.INVISIBLE);
+                                dummyCover.setVisibility(View.GONE);
                                 dialog.cancel();
                             }
                         });
@@ -292,11 +293,11 @@ public class PasswordRecoveryActivity extends Activity {
         alert.show();
     }
 
-    private void ShowCompleteAlert(final String questions, final String answers){
+    private void ShowCompleteAlert(){
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(getString(R.string.activity_recovery_done_details))
                 .setTitle(getResources().getString(R.string.activity_recovery_done_title))
-                .setCancelable(false)
+                .setCancelable(true)
                 .setNegativeButton(getResources().getString(R.string.string_back),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -307,8 +308,7 @@ public class PasswordRecoveryActivity extends Activity {
                 .setPositiveButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
-                                mSaveQuestionsTask.execute((Void) null);
+                                SuccessfulSignup();
                             }
                         }
                 );
@@ -402,8 +402,9 @@ public class PasswordRecoveryActivity extends Activity {
             dummyCover.setVisibility(View.GONE);
             if (!success) {
                 Log.d("PasswordRecoveryActivity", "Save recovery answers failed.");
+                ShowSaveFailAlert("Save recovery answers failed.");
             } else {
-                SuccessfulSignup();
+                ShowCompleteAlert();
             }
         }
 
