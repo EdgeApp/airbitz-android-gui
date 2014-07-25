@@ -373,8 +373,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
-        setConversionText(mSelectedWallet.getCurrencyNum());
-
         return mView;
     }
 
