@@ -515,11 +515,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mAutoUpdatingTextFields = true;
         if (btc) {
+//            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+//            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
+//            String temp = String.valueOf(value);
+//            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
+//            mFiatField.setText(out);
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
-            String temp = String.valueOf(value);
-            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
-            mFiatField.setText(out);
+            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
        }
         else {
             try
@@ -744,7 +746,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-
         View focusCurrent = getActivity().getWindow().getCurrentFocus();
         if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
         EditText display = (EditText) focusCurrent;
