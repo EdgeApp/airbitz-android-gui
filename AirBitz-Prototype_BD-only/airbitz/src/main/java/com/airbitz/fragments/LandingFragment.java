@@ -1,15 +1,12 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -19,16 +16,17 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -49,6 +47,8 @@ public class LandingFragment extends Fragment {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+
+    private RelativeLayout mLandingLayout;
 
     private ImageView mLogoImageView;
 
@@ -74,10 +74,9 @@ public class LandingFragment extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mProgressView = view.findViewById(R.id.fragment_landing_login_progressbar);
+        mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
 
         mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
-        ImageView mLeftArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowleft_imageview);
-        ImageView mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
 
         mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
         mSwipeTextLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
@@ -87,6 +86,7 @@ public class LandingFragment extends Fragment {
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
         HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
+//        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
         HighlightOnPressButton mForgotPasswordLayout = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_layout);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -95,6 +95,8 @@ public class LandingFragment extends Fragment {
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+//        mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
+
 
         final View activityRootView = view.findViewById(R.id.fragment_landing_container);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -162,17 +164,8 @@ public class LandingFragment extends Fragment {
             }
         });
 
-        ObjectAnimator leftBounce = ObjectAnimator.ofFloat(mLeftArrow,"translationX", 0, -50);
-        leftBounce.setRepeatCount(ValueAnimator.INFINITE);
-        leftBounce.setDuration(500);
-        leftBounce.setRepeatMode(ValueAnimator.REVERSE);
-        leftBounce.start();
-        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow,"translationX", 0, 50);
-        rightBounce.setRepeatCount(ValueAnimator.INFINITE);
-        rightBounce.setDuration(500);
-        rightBounce.setRepeatMode(ValueAnimator.REVERSE);
-        rightBounce.start();
-
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
 
         return view;
     }

@@ -134,46 +134,57 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
-        mDummyFocus = view.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
+        mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
-        mConfirmSwipeButton = (ImageButton) view.findViewById(R.id.button_confirm_swipe);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
-        mFromTextView = (TextView) view.findViewById(R.id.textview_from);
-        mToTextView = (TextView) view.findViewById(R.id.textview_to);
-        mSlideTextView = (TextView) view.findViewById(R.id.textview_slide);
-        mConfirmTextView = (TextView) view.findViewById(R.id.textview_confirm);
-        mPinTextView = (TextView) view.findViewById(R.id.textview_pin);
-        mConversionTextView = (TextView) view.findViewById(R.id.textview_conversion);
-        mBTCSignTextview = (TextView) view.findViewById(R.id.send_confirmation_btc_sign);
-        mBTCDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_btc_denomination);
-        mFiatDenominationTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_denomination);
-        mFiatSignTextView = (TextView) view.findViewById(R.id.send_confirmation_fiat_sign);
-        mMaxButton = (Button) view.findViewById(R.id.button_max);
+        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
+        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
+        mSlideTextView = (TextView) mView.findViewById(R.id.textview_slide);
+        mConfirmTextView = (TextView) mView.findViewById(R.id.textview_confirm);
+        mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
+        mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
+        mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
+        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
+        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
+        mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
+        mMaxButton = (Button) mView.findViewById(R.id.button_max);
 
-        mFromEdittext = (TextView) view.findViewById(R.id.textview_from_name);
-        mToEdittext = (TextView) view.findViewById(R.id.textview_to_name);
-        mPinEdittext = (EditText) view.findViewById(R.id.edittext_pin);
+        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
+        mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
+        mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
-        mBitcoinField = (EditText) view.findViewById(R.id.button_bitcoin_balance);
+        mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
 //        mBitcoinFeeLabel = (TextView) view.findViewById();
-        mFiatField = (EditText) view.findViewById(R.id.button_dollar_balance);
+        mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
 //        mDollarFeeLabel = (TextView) view.findViewById();
 
-        mSlideLayout = (RelativeLayout) view.findViewById(R.id.layout_slide);
+        mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mConfirmImageView = (ImageView) view.findViewById(R.id.imageview_confirm);
+        mConfirmImageView = (ImageView) mView.findViewById(R.id.imageview_confirm);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
@@ -185,8 +196,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mConfirmTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
@@ -195,8 +206,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mDF.setMaximumFractionDigits(6);
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
-
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
@@ -221,11 +230,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
             mPinEdittext.requestFocus();
         }
-
-        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
-        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
@@ -350,8 +354,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
-
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.getCurrencyNumbers()[mCoreAPI.SettingsCurrencyIndex()]));
 
         Shader textShader = new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
@@ -483,7 +485,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mDummyFocus.requestFocus();
 
-        return view;
+        return mView;
     }
 
     private void showKeyboard() {
@@ -509,11 +511,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mAutoUpdatingTextFields = true;
         if (btc) {
+//            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+//            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
+//            String temp = String.valueOf(value);
+//            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
+//            mFiatField.setText(out);
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
-            String temp = String.valueOf(value);
-            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
-            mFiatField.setText(out);
+            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
        }
         else {
             try
@@ -580,6 +584,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         @Override
         protected void onPostExecute(final Long fees) {
+            if(getActivity()==null)
+                return;
             mCalculationTask = null;
             UpdateFeeFields(fees);
         }
@@ -736,9 +742,32 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
+    private void removeCalculator(View l) {
+        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
+
+        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
+        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
+    }
+
     @Override
     public void onClick(View v) {
-
         View focusCurrent = getActivity().getWindow().getCurrentFocus();
         if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
         EditText display = (EditText) focusCurrent;
@@ -828,10 +857,19 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         } else if(mPinEdittext.getText().toString().isEmpty()) {
             mPinEdittext.requestFocus();
         }
+        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+        mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         super.onResume();
     }
 
     @Override public void onPause() {
         super.onPause();
+        if(mCalculationTask!=null)
+            mCalculationTask.cancel(true);
+        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 }

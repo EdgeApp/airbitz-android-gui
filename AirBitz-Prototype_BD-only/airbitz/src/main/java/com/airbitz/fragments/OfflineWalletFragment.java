@@ -71,15 +71,26 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         super.onCreate(savedInstanceState);
     }
 
+    private View mView;
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
+        if( null != parentViewGroup ) {
+            parentViewGroup.removeView( mView );
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_offline_wallet, container, false);
+        if(mView!=null)
+            return mView;
+        mView = inflater.inflate(R.layout.fragment_offline_wallet, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mRootLayout = (RelativeLayout) view.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) view.findViewById(R.id.navigation_layout);
-        mAddressTextView = (TextView) view.findViewById(R.id.textview_address);
+        mRootLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
+        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
+        mAddressTextView = (TextView) mView.findViewById(R.id.textview_address);
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
@@ -103,29 +114,29 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         });
 
 
-        mScrollView = (ScrollView) view.findViewById(R.id.layout_scroll);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mGestureDetector = new GestureDetector(this);
 
-        mAddressField = (EditText) view.findViewById(R.id.edittext_address);
-        mPrivateKeyField = (EditText) view.findViewById(R.id.edittext_privatekey);
+        mAddressField = (EditText) mView.findViewById(R.id.edittext_address);
+        mPrivateKeyField = (EditText) mView.findViewById(R.id.edittext_privatekey);
         mPrivateKeyField.setKeyListener(null);
         mAddressField.setKeyListener(null);
 
-        mDoneButton = (Button) view.findViewById(R.id.button_done);
-        mCopyButton = (Button) view.findViewById(R.id.button_copy_address);
-        mPrintButton = (Button) view.findViewById(R.id.button_external_storage);
+        mDoneButton = (Button) mView.findViewById(R.id.button_done);
+        mCopyButton = (Button) mView.findViewById(R.id.button_copy_address);
+        mPrintButton = (Button) mView.findViewById(R.id.button_external_storage);
 
         mCopyButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
         mPrintButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
 
-        mQRCodeImage = (ImageView) view.findViewById(R.id.imageview_qrcode);
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mQRCodeImage = (ImageView) mView.findViewById(R.id.imageview_qrcode);
+        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
+        TextView titleTextView = (TextView) mView.findViewById(R.id.textview_title);
 
         titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mAddressField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);
@@ -208,7 +219,7 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
             }
         });
 
-        return view;
+        return mView;
     }
 
     @Override
