@@ -355,8 +355,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
 
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.getCurrencyNumbers()[mCoreAPI.SettingsCurrencyIndex()]));
-
         Shader textShader = new LinearGradient(0, 0, 0, 20,
                 new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
