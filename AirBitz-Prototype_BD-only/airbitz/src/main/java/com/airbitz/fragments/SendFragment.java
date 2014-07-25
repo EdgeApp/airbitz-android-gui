@@ -530,14 +530,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     Log.i("SendFragment", "Send amount: "+amountSatoshi);
 
                     String label = uri.getSzLabel();
-                    if (label!=null && !label.isEmpty())
-                    {
-                        Log.i("SendFragment", "Send label: "+label);
-                    }
-                    else
-                    {
-                        label = "Anonymous"; //TODO localize
-                    }
 
                     String message = uri.getSzMessage();
                     if (message!=null)
