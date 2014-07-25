@@ -1,8 +1,10 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,8 +19,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -46,6 +50,7 @@ import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
+import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
@@ -146,7 +151,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
-    private boolean mCategoriesSuccess = false;
 
     private boolean mFirstLoad = true;
 
@@ -178,25 +182,13 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    private View mView;
-//    @Override public void onDestroyView() {
-//        super.onDestroyView();
-//        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-//        if( null != parentViewGroup ) {
-//            parentViewGroup.removeView( mView );
-//        }
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        if(mView!=null)
-//            return mView;
-
-        mView = inflater.inflate(R.layout.fragment_business_directory, container, false);
+        View view = inflater.inflate(R.layout.fragment_business_directory, container, false);
 
         checkLocationManager();
 
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -216,43 +208,59 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         Log.d("TAG_LOC", "CUR LOC: ");
 
-        mRestaurantButton = (TextView) mView.findViewById(R.id.button_restaurant);
-        mBarButton = (TextView) mView.findViewById(R.id.button_bar);
-        mCoffeeButton = (TextView) mView.findViewById(R.id.button_coffee_tea);
-        mMoreButton = (TextView) mView.findViewById(R.id.button_more);
+        mRestaurantButton = (TextView) view.findViewById(R.id.button_restaurant);
+        mBarButton = (TextView) view.findViewById(R.id.button_bar);
+        mCoffeeButton = (TextView) view.findViewById(R.id.button_coffee_tea);
+        mMoreButton = (TextView) view.findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
 
-        mDummyFocusLayout = (LinearLayout) mView.findViewById(R.id.fragment_businessdirectory_dummy_focus);
+        mDummyFocusLayout = (LinearLayout) view.findViewById(R.id.fragment_businessdirectory_dummy_focus);
 
-        mStickyLayout = (LinearLayout) mView.findViewById(R.id.layout_near_you_sticky);
+        mStickyLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
 
-        mNearYouContainer = (LinearLayout) mView.findViewById(R.id.layout_near_you);
-        mVenueFragmentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_layout_container);
-        mVenueFragmentLayoutInner = (LinearLayout) mView.findViewById(R.id.fragment_layout);
+        mNearYouContainer = (LinearLayout) view.findViewById(R.id.layout_near_you);
+        mVenueFragmentLayout = (RelativeLayout) view.findViewById(R.id.fragment_layout_container);
+        mVenueFragmentLayoutInner = (LinearLayout) view.findViewById(R.id.fragment_layout);
 
-        mScrollView = (ObservableScrollView) mView.findViewById(R.id.scroll_view);
+        if(mVenueFragment == null) {
+            mVenueFragment = new VenueFragment();
+        }
+        if(mVenueFragmentLayoutInner.getChildCount()<=0) {
+            if(getChildFragmentManager().findFragmentByTag("venue") == null) {
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                Bundle tempBundle = new Bundle();
+                tempBundle.putBoolean("from_business",true);
+                tempBundle.putBoolean("locationEnabled",locationEnabled);
+                mVenueFragment.setArguments(tempBundle);
+                transaction.add(R.id.fragment_layout, mVenueFragment, "venue").commit();
+            }
+        }
+
+
+
+        mScrollView = (ObservableScrollView) view.findViewById(R.id.scroll_view);
         mScrollView.setScrollViewListener(this);
         mScrollView.setContext(getActivity());
         mScrollView.setSticky(mStickyLayout);
 
-        mMoreSpinner = (Spinner) mView.findViewById(R.id.spinner_more_categories);
+        mMoreSpinner = (Spinner) view.findViewById(R.id.spinner_more_categories);
 
-        mBusinessLayout = (LinearLayout) mView.findViewById(R.id.layout_listview_business);
+        mBusinessLayout = (LinearLayout) view.findViewById(R.id.layout_listview_business);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
         mHelpButton.setVisibility(View.GONE);
-        mSearchField = (EditText) mView.findViewById(R.id.edittext_search);
-        mLocationField = (EditText) mView.findViewById(R.id.edittext_location);
-        mSearchListView = (ListView) mView.findViewById(R.id.listview_search);
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mSearchField = (EditText) view.findViewById(R.id.edittext_search);
+        mLocationField = (EditText) view.findViewById(R.id.edittext_location);
+        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
+        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mNearYouTextView = (TextView) mView.findViewById(R.id.textview_nearyou);
-        mNearYouTextViewSticky = (TextView) mView.findViewById(R.id.textview_nearyou_sticky);
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
+        mNearYouTextView = (TextView) view.findViewById(R.id.textview_nearyou);
+        mNearYouTextViewSticky = (TextView) view.findViewById(R.id.textview_nearyou_sticky);
+        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
-        mViewGroupLoading = (ViewGroup) mView.findViewById(R.id.ViewGroup_loading);
-        mLoadingText = (TextView) mView.findViewById(R.id.TextView_loading);
+        mViewGroupLoading = (ViewGroup) view.findViewById(R.id.ViewGroup_loading);
+        mLoadingText = (TextView) view.findViewById(R.id.TextView_loading);
 
         mTitleTextView.setTypeface(montserratBoldTypeFace);
         mSearchField.setTypeface(montserratRegularTypeFace);
@@ -280,18 +288,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
         });
 
-        if(mVenueFragment == null) {
-            mVenueFragment = new VenueFragment();
-        }
-        if(mVenueFragmentLayoutInner.getChildCount()<=0) {
-            if(getChildFragmentManager().findFragmentByTag("venue") == null) {
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                Bundle tempBundle = new Bundle();
-                tempBundle.putBoolean("from_business",true);
-                tempBundle.putBoolean("locationEnabled",locationEnabled);
-                mVenueFragment.setArguments(tempBundle);
-                transaction.add(R.id.fragment_layout, mVenueFragment, "venue").commit();
-            }
+        try {
+            mBusinessCategoryAsynctask.execute("level");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         int timeout = 15000;
@@ -687,11 +687,12 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
         mBackButton.setVisibility(View.GONE);
 
-        return mView;
+        return view;
     }
 
     @Override
     public void OnCurrentLocationChange(Location location) {
+        // TODO - anything to do here?
        mLocationManager.removeLocationChangeListener(this);
     }
 
@@ -781,18 +782,6 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         checkLocationManager();
-        if(!mCategoriesSuccess) { // business category didn't finish last time
-            try {
-                mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
-                mBusinessCategoryAsynctask.execute("level");
-                Log.d("BusinessDirectoryFragment", "Trying to fetch categories");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.d("BusinessDirectoryFragment", "Updating categories");
-            UpdateCategories(mCategories);
-        }
         super.onResume();
     }
 
@@ -882,101 +871,89 @@ public class BusinessDirectoryFragment extends Fragment implements
             try {
                 jsonParsingResult = api.getHttpCategories(strings[0]);
                 mNextUrl = jsonParsingResult.getNextLink();
-                getMoreBusinessCategory(jsonParsingResult, mNextUrl);
+                mCategories = jsonParsingResult;
+                getMoreBusinessCategory(mCategories, mNextUrl);
             } catch (Exception e) {
 
             }
+
             return jsonParsingResult;
         }
 
         @Override protected void onPostExecute(Categories categories) {
-            Log.d("BusinessDirectoryFragment", "BusinessCategoryAsyncTask Done fetching");
-            mCategoriesSuccess = true;
             if(getActivity()==null)
                 return;
-            mCategories = categories;
-            UpdateCategories(mCategories);
-        }
 
-        @Override protected void onCancelled() {
-            Log.d("BusinessDirectoryFragment", "BusinessCategoryAsyncTask Canceled");
-            mCategoriesSuccess = false;
-            mBusinessCategoryAsynctask = null;
-            mCategories = null;
-            super.onCancelled();
-        }
-    }
+            if (categories != null) {
+                ArrayList<Category> catArrayList = new ArrayList<Category>();
 
-    private void UpdateCategories(Categories categories) {
-        if (categories != null) {
-            mCategories = categories;
-            ArrayList<Category> catArrayList = new ArrayList<Category>();
-
-            for (Category cat : categories.getBusinessCategoryArray()) {
-                if (!cat.getCategoryLevel().equalsIgnoreCase("1")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("2")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("3")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("null")) {
-                    catArrayList.add(cat);
-                }
-            }
-
-            categories.removeBusinessCategoryArray();
-            categories.setBusinessCategoryArray(catArrayList);
-
-            mMoreCategoryAdapter = new MoreCategoryAdapter(getActivity(), mCategories);
-            mMoreSpinner.setAdapter(mMoreCategoryAdapter);
-            mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onItemSelected(AdapterView<?> adapterView,
-                                                     View view,
-                                                     int position,
-                                                     long l) {
-
-                    if (mFirstLoad) {
-                        mFirstLoad = false;
-                    } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
-                                .getCategoryName());
-                        bundle.putString(LOCATION, "");
-                        bundle.putString(BUSINESSTYPE, "category");
-                        Fragment fragment = new MapBusinessDirectoryFragment();
-                        fragment.setArguments(bundle);
-                        ((NavigationActivity) getActivity()).pushFragment(fragment);
+                for (Category cat : categories.getBusinessCategoryArray()) {
+                    if (!cat.getCategoryLevel().equalsIgnoreCase("1")
+                            && !cat.getCategoryLevel().equalsIgnoreCase("2")
+                            && !cat.getCategoryLevel().equalsIgnoreCase("3")
+                            && !cat.getCategoryLevel().equalsIgnoreCase("null")) {
+                        catArrayList.add(cat);
                     }
                 }
 
-                @Override public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-            mMoreButton.setClickable(true);
+                categories.removeBusinessCategoryArray();
+                categories.setBusinessCategoryArray(catArrayList);
 
-            if (mIsMoreCategoriesProgressRunning) {
-                if (categories == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
-                            Toast.LENGTH_LONG).show();
-                }
-                mIsMoreCategoriesProgressRunning = false;
+                mMoreCategoryAdapter = new MoreCategoryAdapter(getActivity(), mCategories);
+                mMoreSpinner.setAdapter(mMoreCategoryAdapter);
+                mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override public void onItemSelected(AdapterView<?> adapterView,
+                                                         View view,
+                                                         int position,
+                                                         long l) {
 
-                mMoreCategoriesProgressDialog.dismiss();
+                        if (mFirstLoad) {
+                            mFirstLoad = false;
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
+                                    .getCategoryName());
+                            bundle.putString(LOCATION, "");
+                            bundle.putString(BUSINESSTYPE, "category");
+                            Fragment fragment = new MapBusinessDirectoryFragment();
+                            fragment.setArguments(bundle);
+                            ((NavigationActivity) getActivity()).pushFragment(fragment);
+                        }
+                    }
 
-                mMoreSpinner.setVisibility(View.INVISIBLE);
-                mMoreSpinner.performClick();
-            }
+                    @Override public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                });
+                mMoreButton.setClickable(true);
 
-            mMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
+                if (mIsMoreCategoriesProgressRunning) {
+                    if (categories == null) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    mIsMoreCategoriesProgressRunning = false;
+
+                    mMoreCategoriesProgressDialog.dismiss();
+
                     mMoreSpinner.setVisibility(View.INVISIBLE);
                     mMoreSpinner.performClick();
                 }
-            });
-        } else {
-            mMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(), "No categories retrieved from server",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+
+                mMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        mMoreSpinner.setVisibility(View.INVISIBLE);
+                        mMoreSpinner.performClick();
+                    }
+                });
+            } else {
+                mMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        Toast.makeText(getActivity().getApplicationContext(), "No categories retrieved from server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
         }
     }
 
@@ -994,7 +971,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 jsonParsingResult = new Categories(new JSONObject(jSOnString));
                 link = jsonParsingResult.getNextLink();
                 initial.addCategories(jsonParsingResult);
-                mCategoriesSuccess = true;
             } catch (Exception e) {
                 link = "null";
             }

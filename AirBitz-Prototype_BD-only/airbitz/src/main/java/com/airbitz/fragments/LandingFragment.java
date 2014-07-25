@@ -84,7 +84,7 @@ public class LandingFragment extends Fragment {
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         Button mSignInButton = (Button) view.findViewById(R.id.fragment_landing_signin_button);
         Button mSignUpButton = (Button) view.findViewById(R.id.fragment_landing_signup_button);
-        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
+//        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
         LinearLayout mForgotPasswordLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_layout);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -93,7 +93,7 @@ public class LandingFragment extends Fragment {
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
+//        mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
 
         final View activityRootView = view.findViewById(R.id.fragment_landing_container);
