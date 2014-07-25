@@ -5,9 +5,27 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="loading">Loading…</string>
-
+    <string name="no_break_space_character">\u00A0</string>
     <string name="google_maps_api_key">***REMOVED***</string>
 
+    <!-- Generic strings -->
+    <string name="string_ok">OK</string>
+    <string name="string_back">Back</string>
+    <string name="string_yes">Yes</string>
+    <string name="string_no">No</string>
+    <string name="string_cancel">Cancel</string>
+    <string name="string_search">Search</string>
+    <string name="string_done">Done</string>
+    <string name="string_back_button">Back button returns to the previous screen</string>
+    <string name="string_help_button">Help button shows help for this screen</string>
+    <string name="string_add_button">Add button adds a new wallet</string>
+
+    <!-- Connectivity -->
+    <string name="string_no_connection_title">No connection</string>
+    <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
+
+
+    <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
@@ -19,5 +37,187 @@
     <string name="phone_number">Phone Number</string>
     <string name="web">Web</string>
     <string name="your_location">Your Location</string>
+    <string name="near_you">Near You</string>
+
+    <!-- Strings related to Landing -->
+    <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>
+    <string name="fragment_landing_detail_text">Digital Currency Wallet</string>
+    <string name="fragment_landing_swipe_text">Swipe to View Business Directory</string>
+    <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
+    <string name="fragment_landing_username_hint">User Name</string>
+    <string name="fragment_landing_password_hint">Password</string>
+    <string name="fragment_landing_signin_button">Sign In</string>
+    <string name="fragment_landing_signup_button">Sign Up</string>
+    <string name="fragment_landing_forgot_text">Forgot Password</string>
+    <string name="fragment_landing_forgot_image_description">Arrow Button</string>
+    <string name="fragment_forgot_no_username_title">User Name Required</string>
+    <string name="fragment_forgot_no_username_details">Please enter a User Name</string>
+
+    <!-- Strings for Signup -->
+    <string name="activity_signup_title">Sign Up</string>
+    <string name="activity_signup_button_next">Next Step</string>
+    <string name="activity_signup_username_hint">User Name</string>
+    <string name="activity_signup_password_hint">Password</string>
+    <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
+    <string name="activity_signup_pin_label">Withdrawal Pin</string>
+    <string name="activity_signup_pin_hint">Create Pin</string>
+    <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
+    <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
+    <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
+    <string name="activity_signup_popup_number">Must have at least one number</string>
+    <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
+    <string name="activity_signup_popup_length">Must have at least 10 characters</string>
+
+    <!-- Strings for PasswordRecovery -->
+    <string name="activity_recovery_title">Password Recovery Setup</string>
+    <string name="activity_recovery_skip_button_text">Skip This Step</string>
+    <string name="activity_recovery_complete_button">Complete Sign Up</string>
+    <string name="activity_recovery_complete_button_change_questions">Done</string>
+    <string name="activity_recovery_prompt_title">Skip this step</string>
+    <string name="activity_recovery_prompt_skip">Warning: You will never be able to recover your password if it is forgotten.</string>
+    <string name="activity_recovery_first_wallet_name">My Wallet</string>
+    <string name="activity_recovery_alert_title">Alert</string>
+    <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
+    <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>
+    <string name="activity_recovery_question_default">Question</string>
+    <string name="item_recovery_spinner_arrow_description">Drop down arrow</string>
+    <string name="activity_recovery_done_title">Recovery Questions Set</string>
+    <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up. When recovering your password, your answers must match exactly in order to succeed.</string>
+
+    <!-- Strings for ForgotPassword -->
+    <string name="activity_forgot_title">Forgot Password</string>
+    <string name="activity_forgot_submit">Submit</string>
+    <string name="activity_forgot_no_questions">You skipped password recovery questions when you created your account. You cannot recover your password this way.</string>
+
+    <!-- Strings for Settings fragment -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_denomination_title">BITCOIN DENOMINATION</string>
+    <string name="settings_denomination_buttons_bitcoin">Bitcoin</string>
+    <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0.001 Bitcoin)</string>
+    <string name="settings_denomination_buttons_ubitcoin">uBitcoin = (0.000001 Bitcoin)</string>
+    <string name="settings_credentials_title">CREDENTIALS</string>
+    <string name="settings_button_change_password">Change password</string>
+    <string name="settings_button_pin">Change withdrawal PIN</string>
+    <string name="settings_button_recovery">Change recovery questions</string>
+    <string name="settings_user_title">USER NAME</string>
+    <string name="settings_button_send_user_info">Send name on payment request</string>
+    <string name="settings_edit_first_name">First Name (optional)</string>
+    <string name="settings_edit_last_name">Last Name (optional)</string>
+    <string name="settings_edit_nick_name">Nickname (optional)</string>
+    <string name="settings_general_title">GENERAL</string>
+    <string name="settings_title_auto_logoff">Auto log off after</string>
+    <string name="settings_title_language">Language</string>
+    <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
+    <string name="settings_title_usd">US dollar</string>
+    <string name="settings_title_canadian">Canadian dollar</string>
+    <string name="settings_title_euro">Euro</string>
+    <string name="settings_title_peso">Mexican Peso</string>
+    <string name="settings_title_yuan">Yuan</string>
+    <string name="settings_button_logout">Log Out</string>
+    <string name="settings_button_cancel">Cancel</string>
+    <string name="settings_button_done">Done</string>
+
+    <!-- Strings for AutoLogoff Dialog -->
+    <string name="dialog_days">Days</string>
+    <string name="dialog_hours">Hours</string>
+    <string name="dialog_mins">Mins</string>
+    <string name="dialog_title">Set Auto Logoff time</string>
+
+    <!-- Strings for Send fragment -->
+    <string name="send_title">Send Bitcoin</string>
+    <string name="send_from_title">Send From:</string>
+    <string name="send_to_title">Send To:</string>
+    <string name="send_scan_text">Scan QR Code</string>
+    <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawl PIN in order to proceed</string>
+    <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
+    <string name="fragment_send_no_satoshi_title">Enter an amount</string>
+    <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
+
+    <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
+    <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
+
+    <!-- Strings for Wallets fragment -->
+    <string name="fragment_wallets_title">Wallets</string>
+    <string name="fragment_wallets_balance_text">Total Balance</string>
+    <string name="fragment_wallets_addwallet_name_hint">Name your new wallet</string>
+    <string name="fragment_wallets_addwallet_currency_textview">Currency:</string>
+    <string name="fragment_wallets_addwallet_online_textview">ONLINE</string>
+    <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
+
+    <!-- Strings for Wallet fragment -->
+    <string name="fragment_wallet_title">Transactions</string>
+    <string name="wallet">xxx</string>
+    <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
+
+    <!-- Strings for Request fragment -->
+    <string name="request_title">Request Bitcoin</string>
+    <string name="request_wallet_title">Wallet:</string>
+
+    <!-- Strings for Transaction Details fragment -->
+    <string name="transaction_details_title">Transaction Details</string>
+    <string name="transaction_details_advanced_title">Advanced Details</string>
+    <string name="transaction_details_to_title">To:</string>
+    <string name="transaction_details_category_title">Category</string>
+    <string name="transaction_details_notes_title">Notes</string>
+    <string name="transaction_details_category_hint">Add category</string>
+    <string name="transaction_details_notes_hint">Add transaction note</string>
+    <string name="transaction_details_to">To: </string>
+    <string name="transaction_details_from">From: </string>
+
+    <!-- Strings for Export fragment -->
+    <string name="export_title">Export</string>
+    <string name="export_account_title">Account:</string>
+    <string name="export_account_button_hint">Account:</string>
+    <string name="export_account_from_title">From:</string>
+    <string name="export_account_to_title">To:</string>
+    <string name="export_account_this_week">This Week</string>
+    <string name="export_account_this_month">This Month</string>
+    <string name="export_account_this_year">This Year</string>
+    <string name="export_csv_title">CSV</string>
+    <string name="export_quicken_title">Quicken</string>
+    <string name="export_quickbooks_title">Quickbooks</string>
+    <string name="export_pdf_title">View</string>
+    <string name="export_print_title">Print</string>
+
+    <!-- Strings for Export Saving fragment -->
+    <string name="export_saving_title">Title?</string>
+
+    <!-- Strings for Offline Wallet fragment -->
+    <string name="offline_wallet_title">Offline Wallet</string>
+    <string name="offline_wallet_public_address_title">PUBLIC ADDRESS</string>
+    <string name="offline_wallet_private_key_title">PRIVATE KEY</string>
+    <string name="offline_wallet_copy_button_title">Copy Public Address</string>
+    <string name="offline_wallet_print_button_title">External Storage / Print</string>
+
+    <!-- Strings for Received Success fragment -->
+    <string name="received_success_title">Send Bitcoin</string>
+    <string name="received_success_sending_title">Sending…</string>
+    <string name="received_success_received_title">Received!</string>
+    <string name="question">Question</string>
+
+    <string-array name="currency_selection">
+        <item>CAD</item>
+        <item>USD</item>
+    </string-array>
+    <string-array name="transaction_categories_list">
+        <item>Income:</item>
+        <item>Expense:</item>
+        <item>Transfer:</item>
+        <item>Exchange:</item>
+    </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Errors -->
+    <string name="error_invalid_recovery_title">Sign Up Failed</string>
+    <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
+    <string name="error_invalid_password_details_start">Your password is not strong enough.</string>
+    <string name="error_invalid_confirmation_details">Passwords do not match</string>
+    <string name="error_invalid_pin_details">Withdrawal PIN must be 4  digits</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_credentials">Invalid User Name or Password</string>
+    <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
+    <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
 
 </resources>

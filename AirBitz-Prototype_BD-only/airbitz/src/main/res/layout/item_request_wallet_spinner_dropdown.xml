@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_request_wallet_spinner_dropdown_textview"
+    android:layout_width="match_parent" android:layout_height="37.8dp"
+    android:background="#FFFFFF"
+    android:textColor="@android:color/black"
+    android:text="Wallet"
+    android:gravity="center_vertical"
+    android:textSize="14dp"
+    android:paddingLeft="12.6dp"
+    android:paddingRight="12.6dp"
+    android:ellipsize="end"
+    android:singleLine="true">
+
+</TextView>

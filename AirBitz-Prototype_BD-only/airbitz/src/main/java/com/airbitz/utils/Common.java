@@ -2,12 +2,15 @@ package com.airbitz.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.airbitz.R;
+import com.airbitz.activities.HelpActivity;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +50,10 @@ public class Common {
         dialog.show();
     }
 
+    public static void showHelpInfo(Activity act, String title, String message){
+        Intent intent = new Intent(act, HelpActivity.class);
+        act.startActivity(intent);
+    }
 
     public static String convertStreamToString(InputStream inputStream)
     {

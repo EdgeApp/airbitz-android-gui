@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
+    android:id="@+id/layout_root">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_padding"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:background="@drawable/bg_tab_bar"
+            android:id="@+id/directory_button"
+            android:src="@drawable/ico_tab_directory"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_header"
+        android:background="#40000000"
+        android:padding="4dp">
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/button_back"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_back"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:textSize="20dp"/>
+
+
+        <ImageButton
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:id="@+id/button_help"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:layout_margin="5dp"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
+        android:layout_above="@id/bottom_padding">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:layout_marginBottom="10dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edge_blue"
+                    android:id="@+id/layout_data"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp">
+
+                    <Button
+                        android:id="@+id/button_question_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Help question goes here"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableRight="@drawable/arrow_dropdown"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:inputType="text|textCapSentences|textMultiLine"
+                        android:padding="18dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/separator_1"
+                        android:layout_below="@id/button_question_1"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+                    <LinearLayout
+                        android:id="@+id/layout_separator_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/separator_1"
+                        android:orientation="vertical"
+                        android:paddingRight="1dp"
+                        android:paddingLeft="1dp"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/textview_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#6c6b6c"
+                            android:paddingRight="20dp"
+                            android:paddingLeft="21dp"
+                            android:paddingTop="21dp"
+                            android:paddingBottom="25dp"
+                            android:text="Lorem ipsum dolor sit amet, has ne sonet partem commodo. Solum vocent vituperatoribus ut eos, sea cu patrioque tincidunt intellegebat. Albucius salutatus ex vel, no prima maiorum nominavi pro, at vis eius audiam dignissim. Vim ut modo phaedrum rationibus, in his fugit decore necessitatibus. Prima nostro ea vis, at tale feugait praesent has. Detraxit convenire consetetur cum no, ne eum alia quidam aliquando, usu diceret scripserit ei."
+                            android:background="#FFFFFFFF"/>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/darker_gray"/>
+                        </LinearLayout>
+
+                    <Button
+                        android:id="@+id/button_question_2"
+                        android:layout_below="@id/layout_separator_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Help question goes here"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableRight="@drawable/arrow_dropdown"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:padding="18dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/separator_2"
+                        android:layout_below="@id/button_question_2"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+                    <LinearLayout
+                        android:id="@+id/layout_separator_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/separator_2"
+                        android:orientation="vertical"
+                        android:paddingRight="1dp"
+                        android:paddingLeft="1dp"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/textview_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#6c6b6c"
+                            android:paddingRight="20dp"
+                            android:paddingLeft="21dp"
+                            android:paddingTop="21dp"
+                            android:paddingBottom="25dp"
+                            android:text="Lorem ipsum dolor sit amet, has ne sonet partem commodo. Solum vocent vituperatoribus ut eos, sea cu patrioque tincidunt intellegebat. Albucius salutatus ex vel, no prima maiorum nominavi pro, at vis eius audiam dignissim. Vim ut modo phaedrum rationibus, in his fugit decore necessitatibus. Prima nostro ea vis, at tale feugait praesent has. Detraxit convenire consetetur cum no, ne eum alia quidam aliquando, usu diceret scripserit ei."
+                            android:background="#FFFFFFFF"/>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/darker_gray"/>
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/button_question_3"
+                        android:layout_below="@id/layout_separator_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Help question goes here"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableRight="@drawable/arrow_dropdown"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:padding="18dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/separator_3"
+                        android:layout_below="@id/button_question_3"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <LinearLayout
+                        android:id="@+id/layout_separator_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/separator_3"
+                        android:orientation="vertical"
+                        android:paddingRight="1dp"
+                        android:paddingLeft="1dp"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/textview_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#6c6b6c"
+                            android:paddingRight="20dp"
+                            android:paddingLeft="21dp"
+                            android:paddingTop="21dp"
+                            android:paddingBottom="25dp"
+                            android:text="Lorem ipsum dolor sit amet, has ne sonet partem commodo. Solum vocent vituperatoribus ut eos, sea cu patrioque tincidunt intellegebat. Albucius salutatus ex vel, no prima maiorum nominavi pro, at vis eius audiam dignissim. Vim ut modo phaedrum rationibus, in his fugit decore necessitatibus. Prima nostro ea vis, at tale feugait praesent has. Detraxit convenire consetetur cum no, ne eum alia quidam aliquando, usu diceret scripserit ei."
+                            android:background="#FFFFFFFF"/>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/darker_gray"/>
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/button_question_4"
+                        android:layout_below="@id/layout_separator_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Help question goes here"
+                        android:textColor="#005f96"
+                        android:background="@android:color/transparent"
+                        android:drawableRight="@drawable/arrow_dropdown"
+                        android:drawablePadding="20dp"
+                        android:gravity="left|center_vertical"
+                        android:padding="18dp"
+                        android:focusable="false"/>
+                    <LinearLayout
+                        android:id="@+id/layout_separator_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/button_question_4"
+                        android:orientation="vertical"
+                        android:paddingRight="1dp"
+                        android:paddingLeft="1dp"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/darker_gray"/>
+                        <TextView
+                            android:id="@+id/textview_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#6c6b6c"
+                            android:paddingRight="20dp"
+                            android:paddingLeft="21dp"
+                            android:paddingTop="21dp"
+                            android:paddingBottom="25dp"
+                            android:text="Lorem ipsum dolor sit amet, has ne sonet partem commodo. Solum vocent vituperatoribus ut eos, sea cu patrioque tincidunt intellegebat. Albucius salutatus ex vel, no prima maiorum nominavi pro, at vis eius audiam dignissim. Vim ut modo phaedrum rationibus, in his fugit decore necessitatibus. Prima nostro ea vis, at tale feugait praesent has. Detraxit convenire consetetur cum no, ne eum alia quidam aliquando, usu diceret scripserit ei."
+                            android:background="#FFFFFFFF"/>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/darker_gray"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp">
+
+                            </LinearLayout>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <!--<ListView-->
+                <!--android:id="@+id/listview_export"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@drawable/rounded_edge_blue"-->
+                <!--android:layout_below="@id/layout_export_data"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginBottom="50dp"-->
+                <!--android:layout_marginLeft="10dp"></ListView>-->
+
+            </RelativeLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+</RelativeLayout>

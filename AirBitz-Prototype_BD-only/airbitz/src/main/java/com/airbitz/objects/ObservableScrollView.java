@@ -2,7 +2,6 @@ package com.airbitz.objects;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -28,6 +27,7 @@ public class ObservableScrollView extends ScrollView {
     public void setSticky(LinearLayout stickyLayout){
         stickyPopUp = stickyLayout;
     }
+
 
     public interface ScrollViewListener {
         void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy);
@@ -70,7 +70,6 @@ public class ObservableScrollView extends ScrollView {
                 unstickyPopUp.setVisibility(VISIBLE);
             }
         }
-
 
         View view = (View) getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY()));

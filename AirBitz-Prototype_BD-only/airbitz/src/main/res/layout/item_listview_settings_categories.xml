@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="44.1dp"
+    android:paddingTop="9.45dp"
+    android:paddingBottom="9.45dp"
+    android:paddingLeft="12.6dp"
+    android:paddingRight="12.6dp"
+    android:background="@android:color/transparent">
+
+    <EditText
+        android:id="@+id/category_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="12.6dp"
+        android:textSize="12dp"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword|textNoSuggestions"
+        android:layout_toLeftOf="@+id/category_delete"
+        android:background="@drawable/rounded_edge"/>
+    <Button
+        android:id="@+id/category_delete"
+        android:layout_width="37.8dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="12.6dp"
+        android:background="#FF0000"/>
+    <View
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:id="@+id/settings_category_list_item_dummy_focus" />
+
+</RelativeLayout>
