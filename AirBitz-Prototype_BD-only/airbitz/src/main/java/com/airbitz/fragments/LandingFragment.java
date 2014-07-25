@@ -38,6 +38,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.models.HighlightOnPressButton;
 
 public class LandingFragment extends Fragment {
 
@@ -82,10 +83,10 @@ public class LandingFragment extends Fragment {
 
         mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
-        Button mSignInButton = (Button) view.findViewById(R.id.fragment_landing_signin_button);
-        Button mSignUpButton = (Button) view.findViewById(R.id.fragment_landing_signup_button);
+        HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
+        HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
 //        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
-        LinearLayout mForgotPasswordLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_layout);
+        HighlightOnPressButton mForgotPasswordLayout = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_layout);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
