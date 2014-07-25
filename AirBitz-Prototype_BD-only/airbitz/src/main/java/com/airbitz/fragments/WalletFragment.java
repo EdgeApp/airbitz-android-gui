@@ -156,6 +156,8 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTotalTransactions = new ArrayList<Transaction>();
         mTotalTransactions.addAll(mTransactions);
 
+        mOnBitcoinMode = true;
+
         mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
         mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
 
@@ -209,12 +211,17 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() <= 100) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }else {
-                    if(mWalletNameButton.getText().toString().trim().isEmpty()) {
+                    if(!mWalletNameButton.getText().toString().trim().isEmpty()) {
                         mWallet.setName(mWalletNameButton.getText().toString());
                         mCoreAPI.renameWallet(mWallet);
+                    }
+                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() >= 100) {
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }
             }
@@ -227,7 +234,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() <= 100) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }
             }
@@ -300,6 +307,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                         alert.show();
                         return false;
                     }else{
+                        mDummyFocus.requestFocus();
                         return true;
                     }
                 }
@@ -314,7 +322,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }
             }
