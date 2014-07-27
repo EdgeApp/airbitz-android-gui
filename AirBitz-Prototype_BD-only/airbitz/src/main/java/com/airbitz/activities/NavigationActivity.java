@@ -322,6 +322,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11 in Support Package
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mNavFragmentId = AirbitzApplication.getLastNavTab();

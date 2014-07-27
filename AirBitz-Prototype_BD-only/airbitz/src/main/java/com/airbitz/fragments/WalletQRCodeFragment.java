@@ -1,10 +1,13 @@
 package com.airbitz.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,8 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class WalletQRCodeFragment extends Fragment {
@@ -76,11 +81,24 @@ public class WalletQRCodeFragment extends Fragment {
         mEmailButton = (Button) mView.findViewById(R.id.button_email_address);
         mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
 
+        mSMSButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendSMS();
+            }
+        });
+
+        mEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendEmail();
+            }
+        });
+
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((NavigationActivity)getActivity()).showNavBar();
-//                artificialDelay.cancel(true);
                 getActivity().onBackPressed();
             }
         });
@@ -89,7 +107,6 @@ public class WalletQRCodeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ((NavigationActivity)getActivity()).showNavBar();
-//                artificialDelay.cancel(true);
                 getActivity().onBackPressed();
             }
         });
@@ -120,4 +137,58 @@ public class WalletQRCodeFragment extends Fragment {
         return mView;
     }
 
+    private void sendSMS() {
+        String address="";
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setData(Uri.parse("smsto:"));  // This ensures only SMS apps respond
+
+        String id = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mBitcoinAmount.getText().toString());
+        if(id!=null) {
+            address = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
+        }
+        String strBody = "bitcoin:\n" + address;
+        intent.putExtra("sms_body", strBody);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
+        if (bm != null) {
+            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
+        } else {
+            Log.d("RequestFragment", "Could not attach qr code to mms");
+        }
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void sendEmail() {
+        String address="";
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
+
+        String id = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mBitcoinAmount.getText().toString());
+        if(id!=null) {
+            address = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
+        }
+        String strBody = "bitcoin:\n" + address;
+
+        intent.putExtra(Intent.EXTRA_TEXT, strBody);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
+        if (bm != null) {
+            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
+        } else {
+            Log.d("RequestFragment", "Could not attach qr code to email");
+        }
+
+        startActivity(Intent.createChooser(intent, "Email bitcoin request..."));
+    }
 }
