@@ -191,33 +191,6 @@ public class SignUpActivity extends Activity {
                 String password = mPasswordEditText.getText().toString();
 
                 mGoodPassword = checkPasswordRules(password);
-
-//                //TODO connect to core
-//                if(password.length() >= 10){
-//                    mSwitchImage5.setImageResource(R.drawable.green_check);
-//                }else{
-//                    mSwitchImage5.setImageResource(R.drawable.red_x);
-//                }
-//                if(password.matches(".*[A-Z].*")){
-//                    mSwitchImage1.setImageResource(R.drawable.green_check);
-//                }else{
-//                    mSwitchImage1.setImageResource(R.drawable.red_x);
-//                }
-//                if(password.matches(".*[a-z].*")){
-//                    mSwitchImage2.setImageResource(R.drawable.green_check);
-//                }else{
-//                    mSwitchImage2.setImageResource(R.drawable.red_x);
-//                }
-//                if(password.matches(".*\\d.*")){
-//                    mSwitchImage3.setImageResource(R.drawable.green_check);
-//                }else{
-//                    mSwitchImage3.setImageResource(R.drawable.red_x);
-//                }
-//                if(password.matches(passwordPattern)){
-//                    mSwitchImage4.setImageResource(R.drawable.green_check);
-//                }else{
-//                    mSwitchImage4.setImageResource(R.drawable.red_x);
-//                }
             }
 
             @Override
@@ -252,18 +225,6 @@ public class SignUpActivity extends Activity {
             }
         });
 
-    }
-
-    private boolean goodUsername(String name) {
-        return name.length() >= 3 && name.trim().length() >=3;
-    }
-
-    private boolean goodPassword(String password) {
-        return password.length() >= 10 &&
-                password.matches(".*[A-Z].*") &&
-                password.matches(".*[a-z].*") &&
-                password.matches(".*\\d.*") &&
-                password.matches(passwordPattern);
     }
 
     private boolean goodConfirmation(String password, String confirmation) {
@@ -383,7 +344,7 @@ public class SignUpActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
-            mFailureReason = pError.getSzDescription();
+            mFailureReason = pError.getSzDescription() + "; " + pError.getSzSourceFile() + pError.getSzSourceFunc() + "; " + pError.getNSourceLine();
             return code == tABC_CC.ABC_CC_Ok;
         }
 
@@ -506,14 +467,8 @@ public class SignUpActivity extends Activity {
 
         boolean cancel = false;
 
-        // Check for a valid username.
-        if (!goodUsername(username)) {
-            showErrorDialog(getResources().getString(R.string.error_invalid_username_details));
-            cancel = true;
-        }
-
         // Check for a valid password.
-        else if (!mGoodPassword) {
+        if (!mGoodPassword) {
             String message = getString(R.string.error_invalid_password_details_start);
             showErrorDialog(message);
             cancel = true;
