@@ -227,20 +227,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         });
 
-        mSmsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendSMS();
-            }
-        });
-
-        mEmailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendEmail();
-            }
-        });
-
         mQRCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -374,61 +360,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         });
 
         return mView;
-    }
-
-    private void sendSMS() {
-        String address="";
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain"); // if no qr code available
-
-        String id = mCoreAPI.createReceiveRequestFor(mSelectedWallet, "", "", mBitcoinField.getText().toString());
-        if(id!=null) {
-            address = mCoreAPI.getRequestAddress(mSelectedWallet.getUUID(), id);
-        }
-        String strBody = "Bitcoin Request:\n" + address;
-        intent.putExtra("sms_body", strBody);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Bitmap bm = mCoreAPI.getQRCodeBitmap(mSelectedWallet.getUUID(), id);
-        if (bm != null) {
-            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
-        } else {
-            Log.d("RequestFragment", "Could not attach qr code to mms");
-        }
-        intent.setData(Uri.parse("sendto:")); // only sms or mms should handle this
-
-        startActivity(intent);
-    }
-
-    private void sendEmail() {
-        String address="";
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("*/*");
-        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-
-        String id = mCoreAPI.createReceiveRequestFor(mSelectedWallet, "", "", mBitcoinField.getText().toString());
-        if(id!=null) {
-            address = mCoreAPI.getRequestAddress(mSelectedWallet.getUUID(), id);
-        }
-        String strBody = "Bitcoin Request:\n" + address;
-
-
-        intent.putExtra(Intent.EXTRA_TEXT, strBody);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Bitmap bm = mCoreAPI.getQRCodeBitmap(mSelectedWallet.getUUID(), id);
-        if (bm != null) {
-            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
-        } else {
-            Log.d("RequestFragment", "Could not attach qr code to email");
-        }
-
-        startActivity(Intent.createChooser(intent, "Email:"));
     }
 
 
