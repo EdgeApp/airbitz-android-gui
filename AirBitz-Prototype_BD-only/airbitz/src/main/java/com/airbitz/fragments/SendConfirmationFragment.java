@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.CalculatorBrain;
@@ -55,14 +56,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mSlideTextView;
-    private TextView mConfirmTextView;
     private TextView mPinTextView;
     private TextView mBTCSignTextview;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
     private TextView mFiatSignTextView;
     private TextView mConversionTextView;
-    private Button mMaxButton;
+    private HighlightOnPressButton mMaxButton;
     private TextWatcher mFiatTextWatcher;
     private TextWatcher mBTCTextWatcher;
 
@@ -94,7 +94,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     private RelativeLayout mSlideLayout;
 
-    private ImageView mConfirmImageView;
 
     private RelativeLayout mParentLayout;
 
@@ -164,14 +163,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mSlideTextView = (TextView) mView.findViewById(R.id.textview_slide);
-        mConfirmTextView = (TextView) mView.findViewById(R.id.textview_confirm);
         mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
         mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
         mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
-        mMaxButton = (Button) mView.findViewById(R.id.button_max);
+        mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
 
         mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
@@ -184,7 +182,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mConfirmImageView = (ImageView) mView.findViewById(R.id.imageview_confirm);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
@@ -194,7 +191,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mConversionTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPinTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-        mConfirmTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
         mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
@@ -360,18 +356,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mSlideTextView.getPaint().setShader(textShader);
 
-        mConfirmImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mConfirmChecked) {
-                    mConfirmImageView.setImageResource(R.drawable.btn_confirm_off);
-                    mConfirmChecked = false;
-                } else {
-                    mConfirmImageView.setImageResource(R.drawable.btn_confirm_on);
-                    mConfirmChecked = true;
-                }
-            }
-        });
 
         mParentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
