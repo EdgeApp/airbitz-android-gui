@@ -198,6 +198,8 @@ public class LandingFragment extends Fragment {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
+            if(getActivity()==null)
+                return;
 
             showProgress(false);
             if (success){
