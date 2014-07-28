@@ -94,7 +94,7 @@
                             android:textStyle="bold"
                             android:paddingRight="6.3dp"/>
 
-                        <Spinner
+                        <com.airbitz.objects.HighlightOnPressSpinner
                             android:id="@+id/from_wallet_spinner"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

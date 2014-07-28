@@ -54,6 +54,7 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
@@ -101,7 +102,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private View dummyFocus;
 
-    private Spinner walletSpinner;
+    private HighlightOnPressSpinner walletSpinner;
     private List<String> mWalletList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
@@ -170,7 +171,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        walletSpinner = (Spinner) mView.findViewById(R.id.from_wallet_spinner);
+        walletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
 
