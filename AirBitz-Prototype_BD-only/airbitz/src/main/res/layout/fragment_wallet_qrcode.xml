@@ -107,8 +107,8 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/button_copy_address"
+            <com.airbitz.models.HighlightOnPressButton
+                android:id="@+id/fragment_qrcode_copy_button"
                 android:layout_width="75.6dp"
                 android:layout_height="37.8dp"
                 android:layout_marginRight="3.15dp"
@@ -116,7 +116,7 @@
                 android:background="@drawable/btn_copy"
                 android:layout_gravity="center_horizontal"/>
 
-            <Button
+            <com.airbitz.models.HighlightOnPressButton
                 android:id="@+id/button_email_address"
                 android:layout_width="75.6dp"
                 android:layout_height="37.8dp"
@@ -126,7 +126,7 @@
                 android:background="@drawable/btn_email"
                 android:layout_gravity="center_horizontal"/>
 
-            <Button
+            <com.airbitz.models.HighlightOnPressButton
                 android:id="@+id/button_sms_address"
                 android:layout_width="75.6dp"
                 android:layout_height="37.8dp"
@@ -137,8 +137,8 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button_cancel"
+        <com.airbitz.models.HighlightOnPressButton
+            android:id="@+id/fragment_qrcode_cancel_button"
             android:layout_width="245.7dp"
             android:layout_height="37.8dp"
             android:text="Cancel"

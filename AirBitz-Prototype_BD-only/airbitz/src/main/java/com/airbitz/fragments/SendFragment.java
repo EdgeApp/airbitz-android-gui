@@ -181,7 +181,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 mFromWallet = mCoreAPI.getWallet(from);
                 if(mFromWallet!=null) {
                     for(int i=0; i<mWallets.size(); i++) {
-                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID())) {
+                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
                             final int finalI = i;
                             walletSpinner.post(new Runnable() {
                                 @Override
@@ -610,9 +610,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     };
 
     public void addWalletNamesToList(){
-        mWallets = mCoreAPI.getCoreWallets();
-        for(Wallet wallet: mWallets){
+        List<Wallet> temp = mCoreAPI.getCoreWallets();
+        mWallets = new ArrayList<Wallet>();
+        for(Wallet wallet: temp){
+            if(!wallet.isArchived()){
+                mWallets.add(wallet);
                 mWalletList.add(wallet.getName());
+            }
         }
     }
 
@@ -621,13 +625,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mCurrentListing.clear();
         if(text.isEmpty()){
             for(Wallet w : mWallets){
-                if(!w.getName().equals(mSpinnerWalletName)){
+                if(!w.getName().equals(mSpinnerWalletName) && !w.isArchived()){
                     mCurrentListing.add(w);
                 }
             }
         }else {
             for (Wallet w : mWallets) {
-                if (!w.getName().equals(mSpinnerWalletName) && w.getName().toLowerCase().contains(text.toLowerCase())) {
+                if (!w.getName().equals(mSpinnerWalletName) && !w.isArchived() && w.getName().toLowerCase().contains(text.toLowerCase())) {
                     mCurrentListing.add(w);
                 }
             }
