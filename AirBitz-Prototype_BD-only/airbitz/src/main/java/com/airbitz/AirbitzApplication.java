@@ -37,6 +37,9 @@ public class AirbitzApplication extends Application {
         } else if(uname!=null && password!=null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
+            SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+            editor.putString(LOGIN_NAME, uname);
+            editor.apply();
         }
 
         //TODO setup auto logout based on Settings. App being killed automatically forgets login,
@@ -44,9 +47,6 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Logout(Context context) {
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        editor.putString(LOGIN_NAME, airbitzLogin.getUsername());
-        editor.apply();
         airbitzLogin = new Login();
     }
 
