@@ -38,7 +38,7 @@ public class AirbitzApplication extends Application {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-            editor.putString(LOGIN_NAME, airbitzLogin.getUsername());
+            editor.putString(LOGIN_NAME, uname);
             editor.apply();
         }
 
