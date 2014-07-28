@@ -1,13 +1,15 @@
 package com.airbitz.fragments;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.support.v4.app.Fragment;
@@ -15,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,7 +28,10 @@ import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
-import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class WalletQRCodeFragment extends Fragment {
@@ -46,6 +50,11 @@ public class WalletQRCodeFragment extends Fragment {
     private String mID;
     private String mAddress;
     private String mContentURL;
+    private String mRequestURI;
+
+    private List<String> mContactNames = new ArrayList<String>();
+    private Map<String, String> mContactPhones = new LinkedHashMap<String, String>();
+
 
     private Bundle bundle;
 
@@ -150,6 +159,7 @@ public class WalletQRCodeFragment extends Fragment {
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 try{
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                    mRequestURI = mCoreAPI.getRequestURI();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -181,7 +191,7 @@ public class WalletQRCodeFragment extends Fragment {
         {
             String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity()); //Need to change the build to API 19
 
-            smsIntent.putExtra(Intent.EXTRA_TEXT, "bitcoin:" + mAddress);
+            smsIntent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
 
             if (defaultSmsPackageName != null)//Can be null in case that there is no default, then the user would be able to choose any app that support this intent.
             {
@@ -190,7 +200,7 @@ public class WalletQRCodeFragment extends Fragment {
         }
         else //For earlier versions, the old method
         {
-            smsIntent.putExtra("sms_body", "bitcoin:" + mAddress);
+            smsIntent.putExtra("sms_body", mRequestURI);
         }
         smsIntent.setType("text/plain");
         if(mQRBitmap!=null) {
@@ -204,12 +214,37 @@ public class WalletQRCodeFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
-        intent.putExtra(Intent.EXTRA_TEXT, "bitcoin:" + mAddress);
+        intent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
         }
 
         startActivity(Intent.createChooser(intent, "Email bitcoin request..."));
+    }
+
+    public void getMatchedContactsList(String searchTerm) {
+        ContentResolver cr = getActivity().getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        // Do something with phones
+                    }
+                    pCur.close();
+                }
+            }
+        }
     }
 }
