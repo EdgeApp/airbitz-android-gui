@@ -128,8 +128,8 @@
     <string name="send_title">Send Bitcoin</string>
     <string name="send_from_title">Send From:</string>
     <string name="send_to_title">Send To:</string>
-    <string name="send_scan_text">Scan QR Code</string>
-    <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawl PIN in order to proceed</string>
+    <string name="send_scan_text">Scan QR Code or use photo</string>
+    <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawal PIN in order to proceed</string>
     <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>

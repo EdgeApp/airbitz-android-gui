@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.utils.Common;
+
+import org.w3c.dom.Text;
 
 /**
  * Created on 2/12/14.
@@ -61,6 +64,8 @@ public class SettingFragment extends Fragment {
     private Button mAutoLogoffButton;
     private Button mLanguageButton;
     private Button mDefaultCurrencyButton;
+
+    private TextView mUsernameTitle;
 
     private Button mUSDollarButton;
     private Button mCanadianDollarButton;
@@ -134,6 +139,8 @@ public class SettingFragment extends Fragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
+
+        mUsernameTitle = (TextView) mView.findViewById(R.id.settings_user_title);
 
         mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
         mBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_bitcoin);
@@ -269,6 +276,15 @@ public class SettingFragment extends Fragment {
                 getActivity().startActivity(new Intent(getActivity(), NavigationActivity.class));
             }
         });
+
+        mUsernameTitle.setText(mUsernameTitle.getText().toString()+": "+AirbitzApplication.getUsername());
+        try {
+            String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            TextView debugInfo = (TextView) mView.findViewById(R.id.fragment_settings_debug_info);
+            debugInfo.setText(s);
+        }catch (PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+        }
 
         return mView;
     }

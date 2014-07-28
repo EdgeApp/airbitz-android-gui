@@ -194,7 +194,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // Disappear if transparent page shows
                 if (position == 0 || position == 2) {
-                    mViewPager.setVisibility(View.GONE);
+                    //mViewPager.setVisibility(View.GONE);
                 }
             }
 
