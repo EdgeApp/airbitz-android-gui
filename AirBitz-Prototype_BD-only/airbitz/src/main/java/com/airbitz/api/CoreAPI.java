@@ -1485,7 +1485,7 @@ public class CoreAPI {
         {
             mSyncDataTask = new SyncDataTask();
 
-            Log.d(TAG, "File sync initiated.");
+//            Log.d(TAG, "File sync initiated.");
             mSyncDataTask.execute();
         }
     }
