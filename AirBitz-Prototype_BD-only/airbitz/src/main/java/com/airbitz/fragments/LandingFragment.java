@@ -2,6 +2,8 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -55,6 +57,9 @@ public class LandingFragment extends Fragment {
     private TextView mDetailTextView;
     private LinearLayout mSwipeTextLayout;
 
+    private ImageView mRightArrow;
+    private ImageView mLeftArrow;
+
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
 
@@ -88,6 +93,9 @@ public class LandingFragment extends Fragment {
         HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
 //        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
         HighlightOnPressButton mForgotPasswordLayout = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_layout);
+
+        mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
+        mLeftArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowleft_imageview);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -166,6 +174,17 @@ public class LandingFragment extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
+
+        ObjectAnimator leftBounce = ObjectAnimator.ofFloat(mLeftArrow, "translationX", 0, -50);
+        leftBounce.setRepeatCount(ValueAnimator.INFINITE);
+        leftBounce.setDuration(500);
+        leftBounce.setRepeatMode(ValueAnimator.REVERSE);
+        leftBounce.start();
+        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow,"translationX", 0, 50);
+        rightBounce.setRepeatCount(ValueAnimator.INFINITE);
+        rightBounce.setDuration(500);
+        rightBounce.setRepeatMode(ValueAnimator.REVERSE);
+        rightBounce.start();
 
         return view;
     }

@@ -153,7 +153,7 @@
 
                 <RelativeLayout
                     android:id="@+id/layout_btc_fields"
-                    android:layout_below="@id/layout_to"
+                    android:layout_below="@+id/button_max"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -255,21 +255,21 @@
 
                 <TextView
                     android:id="@+id/textview_conversion"
-                    android:layout_below="@id/layout_fiat_fields"
-                    android:layout_width="match_parent"
+                    android:layout_below="@id/layout_to"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1.00 BTC - $876.13 USD"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textSize="12dp"
                     android:layout_marginTop="3.15dp"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_marginLeft="25.4dp"/>
 
-                <Button
+                <com.airbitz.models.HighlightOnPressButton
                     android:id="@+id/button_max"
                     android:layout_width="44.1dp"
                     android:layout_height="18.9dp"
-                    android:layout_below="@+id/layout_fiat_fields"
+                    android:layout_below="@+id/layout_to"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="12.6dp"
                     android:textColor="@android:color/white"
@@ -352,27 +352,6 @@
                 android:layout_alignTop="@id/layout_slide"
                 android:background="@drawable/left_arrow"/>
 
-            <ImageView
-                android:id="@+id/imageview_confirm"
-                android:layout_below="@id/layout_slide"
-                android:layout_marginTop="15dp"
-                android:layout_centerHorizontal="true"
-                android:layout_width="31.5dp"
-                android:layout_height="31.5dp"
-                android:src="@drawable/btn_confirm_off"/>
-
-            <TextView
-                android:id="@+id/textview_confirm"
-                android:layout_below="@id/imageview_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Always confirm for future transactions"
-                android:gravity="center"
-                android:textColor="@android:color/holo_blue_light"
-                android:textSize="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="15dp"
-                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 
