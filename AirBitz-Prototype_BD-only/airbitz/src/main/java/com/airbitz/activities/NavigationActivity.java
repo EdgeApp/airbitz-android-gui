@@ -1,13 +1,16 @@
 package com.airbitz.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,16 +31,15 @@ import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
+import com.airbitz.fragments.WalletQRCodeFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.crashlytics.android.Crashlytics;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -381,15 +383,63 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
 
+    String mUUID, mTxId;
     @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
+
+        mUUID = walletUUID;
+        mTxId = txId;
+        /* If showing QR code, launch receiving screen*/
+        if(mNavStacks[mNavFragmentId].peek().equals(WalletQRCodeFragment.class)) {
+            gotoDetails();
+        } else {
+            showIncomingBitcoinDialog();
+        }
+    }
+
+    private void gotoDetails() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
-        bundle.putString(Transaction.TXID, txId);
-        bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        bundle.putString(Transaction.TXID, mTxId);
+        bundle.putString(Wallet.WALLET_UUID, mUUID);
 
         Fragment frag = new ReceivedSuccessFragment();
         frag.setArguments(bundle);
         pushFragment(frag);
     }
+
+    private AlertDialog mIncomingDialog;
+    Handler mHandler = new Handler();
+    final Runnable dialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if(mIncomingDialog!=null)
+                mIncomingDialog.dismiss(); // hide dialog
+        }
+    };
+
+    private void showIncomingBitcoinDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage("Bitcoin received. Tap Details to see them.")
+                .setTitle("Received Funds")
+                .setCancelable(false)
+                .setPositiveButton("Details",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                gotoDetails();
+                            }
+                        })
+                .setNegativeButton("Ignore",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        mIncomingDialog = builder.create();
+        mIncomingDialog.show();
+        mHandler.postDelayed(dialogKiller, 5000);
+    }
+
+
 }
