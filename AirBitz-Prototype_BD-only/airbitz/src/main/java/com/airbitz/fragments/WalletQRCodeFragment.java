@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -131,24 +132,47 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        String name = "";
-        String notes = "";
-        mID = mCoreAPI.createReceiveRequestFor(mWallet, name, notes, bundle.getString(RequestFragment.BITCOIN_VALUE));
-        if(mID!=null) {
-            mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
-            mBitcoinAddress.setText(mAddress);
-            try{
-                mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
-                if (mQRBitmap != null) {
-                    mQRView.setImageBitmap(mQRBitmap);
+        mCreateBitmapTask = new CreateBitmapTask();
+        mCreateBitmapTask.execute();
+        return mView;
+    }
+
+
+    private CreateBitmapTask mCreateBitmapTask;
+    public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
+
+        CreateBitmapTask() { }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", bundle.getString(RequestFragment.BITCOIN_VALUE));
+            if(mID!=null) {
+                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+                try{
+                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mCreateBitmapTask = null;
+            mBitcoinAddress.setText(mAddress);
+            if (mQRBitmap != null) {
+                mQRView.setImageBitmap(mQRBitmap);
             }
         }
 
-        return mView;
+        @Override
+        protected void onCancelled() {
+            mCreateBitmapTask = null;
+        }
     }
+
+
 
     private void sendSMS() {
         Intent smsIntent = new Intent(Intent.ACTION_SEND);
@@ -166,7 +190,7 @@ public class WalletQRCodeFragment extends Fragment {
         }
         else //For earlier versions, the old method
         {
-            smsIntent.putExtra("sms_body", "bitcoin:"+mAddress);
+            smsIntent.putExtra("sms_body", "bitcoin:" + mAddress);
         }
         smsIntent.setType("text/plain");
         if(mQRBitmap!=null) {
