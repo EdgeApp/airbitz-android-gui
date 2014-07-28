@@ -234,6 +234,8 @@ public class SignUpActivity extends Activity {
     }
 
     private void setupUI(Bundle b) {
+        if(b==null)
+            return;
         //Hide some elements if this is not a fresh signup
         int mode = b.getInt(MODE);
         if(mode==CHANGE_PASSWORD) {
