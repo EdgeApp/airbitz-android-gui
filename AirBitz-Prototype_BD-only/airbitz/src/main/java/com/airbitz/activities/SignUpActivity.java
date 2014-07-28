@@ -83,6 +83,10 @@ public class SignUpActivity extends Activity {
     public static String KEY_USERNAME = "KEY_USERNAME";
     public static String KEY_PASSWORD = "KEY_PASSWORD";
     public static String KEY_WITHDRAWAL = "KEY_WITHDRAWAL";
+    public static String MODE = "com.airbitz.signup.mode";
+    public static int CHANGE_PASSWORD=0;
+    public static int CHANGE_PASSWORD_VIA_QUESTIONS = 1;
+    public static int CHANGE_PIN = 2;
 
     private CoreAPI mCoreAPI;
 
@@ -91,6 +95,8 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
+
+        setupUI(getIntent().getExtras());
 
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
@@ -225,6 +231,23 @@ public class SignUpActivity extends Activity {
             }
         });
 
+    }
+
+    private void setupUI(Bundle b) {
+        //Hide some elements if this is not a fresh signup
+        int mode = b.getInt(MODE);
+        if(mode==CHANGE_PASSWORD) {
+            // Reuse mUserNameEditText for old password too
+            // change username label, title
+            // hide PIN
+        } else if(mode==CHANGE_PASSWORD_VIA_QUESTIONS) {
+            // Reuse mUserNameEditText for old password too
+            // change username label, title
+            // hide PIN
+        } else if(mode==CHANGE_PIN) {
+            // hide both password fields
+            // change title
+        }
     }
 
     private boolean goodConfirmation(String password, String confirmation) {
