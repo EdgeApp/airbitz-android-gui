@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
@@ -31,10 +31,10 @@ public class WalletQRCodeFragment extends Fragment {
     private ImageView mQRView;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private Button mCancelButton;
-    private Button mSMSButton;
-    private Button mEmailButton;
-    private Button mCopyButton;
+    private HighlightOnPressButton mCancelButton;
+    private HighlightOnPressButton mSMSButton;
+    private HighlightOnPressButton mEmailButton;
+    private HighlightOnPressButton mCopyButton;
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
 
@@ -77,9 +77,10 @@ public class WalletQRCodeFragment extends Fragment {
 
         mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
-        mSMSButton = (Button) mView.findViewById(R.id.button_sms_address);
-        mEmailButton = (Button) mView.findViewById(R.id.button_email_address);
-        mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
+        mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
+        mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
+        mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);
+        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_cancel_button);
 
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
