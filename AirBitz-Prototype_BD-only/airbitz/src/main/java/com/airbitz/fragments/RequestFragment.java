@@ -108,7 +108,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-        mWallets = mCoreAPI.getCoreWallets();
+        mWallets = new ArrayList<Wallet>();
+        List<Wallet> temp = mCoreAPI.getCoreWallets();
+        for(Wallet wallet: temp){
+            if(!wallet.isArchived()){
+                mWallets.add(wallet);
+            }
+        }
         mWalletNames = new ArrayList<String>();
         String uuid = null;
         Bundle bundle = getArguments();
@@ -116,10 +122,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             uuid = bundle.getString(FROM_UUID);
         }
         for(int i=0; i<mWallets.size(); i++) {
-            mWalletNames.add(mWallets.get(i).getName());
-            if(mWallets.get(i).getUUID().equals(uuid)) {
-                mFromIndex = i;
-                mSelectedWallet = mWallets.get(i);
+            if(!mWallets.get(i).isArchived()) {
+                mWalletNames.add(mWallets.get(i).getName());
+                if (mWallets.get(i).getUUID().equals(uuid)) {
+                    mFromIndex = i;
+                    mSelectedWallet = mWallets.get(i);
+                }
             }
         }
     }
