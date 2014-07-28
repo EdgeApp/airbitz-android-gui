@@ -5,7 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Telephony;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,11 +42,17 @@ public class WalletQRCodeFragment extends Fragment {
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
 
+    private Bitmap mQRBitmap;
+    private String mID;
+    private String mAddress;
+    private String mContentURL;
+
     private Bundle bundle;
 
     private Wallet mWallet;
 
     private CoreAPI mCoreAPI;
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +62,15 @@ public class WalletQRCodeFragment extends Fragment {
         mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
     }
 
-    private View mView;
     @Override public void onDestroyView() {
         super.onDestroyView();
         ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
         if( null != parentViewGroup ) {
             parentViewGroup.removeView( mView );
+        }
+        if(mContentURL!=null) { // delete temp file
+            Log.d("WalletQRCodeFragment", "deleting temp file");
+            getActivity().getContentResolver().delete(Uri.parse(mContentURL), null, null);
         }
     }
 
@@ -119,75 +132,82 @@ public class WalletQRCodeFragment extends Fragment {
             }
         });
 
-        String name = "";
-        String notes = "";
-        String id = mCoreAPI.createReceiveRequestFor(mWallet, name, notes, bundle.getString(RequestFragment.BITCOIN_VALUE));
-        if(id!=null) {
-            String addr = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
-            mBitcoinAddress.setText(addr);
-            try{
-                Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
-                if (bm != null) {
-                    mQRView.setImageBitmap(bm);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-
+        mCreateBitmapTask = new CreateBitmapTask();
+        mCreateBitmapTask.execute();
         return mView;
     }
 
-    private void sendSMS() {
-        String address="";
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setData(Uri.parse("smsto:"));  // This ensures only SMS apps respond
+    private CreateBitmapTask mCreateBitmapTask;
+    public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
 
-        String id = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mBitcoinAmount.getText().toString());
-        if(id!=null) {
-            address = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
+        CreateBitmapTask() { }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", bundle.getString(RequestFragment.BITCOIN_VALUE));
+            if(mID!=null) {
+                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+                try{
+                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            return null;
         }
-        String strBody = "bitcoin:\n" + address;
-        intent.putExtra("sms_body", strBody);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
-        if (bm != null) {
-            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
-        } else {
-            Log.d("RequestFragment", "Could not attach qr code to mms");
+        @Override
+        protected void onPostExecute(Void v) {
+            mCreateBitmapTask = null;
+            mBitcoinAddress.setText(mAddress);
+            if (mQRBitmap != null) {
+                mQRView.setImageBitmap(mQRBitmap);
+            }
         }
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(intent);
+
+        @Override
+        protected void onCancelled() {
+            mCreateBitmapTask = null;
         }
     }
 
-    private void sendEmail() {
-        String address="";
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
 
-        String id = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mBitcoinAmount.getText().toString());
-        if(id!=null) {
-            address = mCoreAPI.getRequestAddress(mWallet.getUUID(), id);
+    private void sendSMS() {
+        Intent smsIntent = new Intent(Intent.ACTION_SEND);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //At least KitKat
+        {
+            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity()); //Need to change the build to API 19
+
+            smsIntent.putExtra(Intent.EXTRA_TEXT, "bitcoin:" + mAddress);
+
+            if (defaultSmsPackageName != null)//Can be null in case that there is no default, then the user would be able to choose any app that support this intent.
+            {
+                smsIntent.setPackage(defaultSmsPackageName);
+            }
         }
-        String strBody = "bitcoin:\n" + address;
+        else //For earlier versions, the old method
+        {
+            smsIntent.putExtra("sms_body", "bitcoin:" + mAddress);
+        }
+        smsIntent.setType("text/plain");
+        if(mQRBitmap!=null) {
+            mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
+            smsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+        }
+        startActivity(Intent.createChooser(smsIntent, "Request Bitcoin from..."));
+    }
 
-        intent.putExtra(Intent.EXTRA_TEXT, strBody);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Bitmap bm = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), id);
-        if (bm != null) {
-            bm.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, bos.toByteArray());
-        } else {
-            Log.d("RequestFragment", "Could not attach qr code to email");
+    private void sendEmail() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
+        intent.putExtra(Intent.EXTRA_TEXT, "bitcoin:" + mAddress);
+        if(mQRBitmap!=null) {
+            mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
         }
 
         startActivity(Intent.createChooser(intent, "Email bitcoin request..."));

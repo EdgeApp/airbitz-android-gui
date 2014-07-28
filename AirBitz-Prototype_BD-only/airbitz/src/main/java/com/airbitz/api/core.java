@@ -257,8 +257,8 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CancelReceiveRequest(szUserName, szPassword, szWalletUUID, szRequestID, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_GenerateRequestQRCode(String szUserName, String szPassword, String szWalletUUID, String szRequestID, SWIGTYPE_p_p_unsigned_char paData, SWIGTYPE_p_unsigned_int pWidth, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GenerateRequestQRCode(szUserName, szPassword, szWalletUUID, szRequestID, SWIGTYPE_p_p_unsigned_char.getCPtr(paData), SWIGTYPE_p_unsigned_int.getCPtr(pWidth), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_GenerateRequestQRCode(String szUserName, String szPassword, String szWalletUUID, String szRequestID, SWIGTYPE_p_p_char pszURI, SWIGTYPE_p_p_unsigned_char paData, SWIGTYPE_p_unsigned_int pWidth, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_GenerateRequestQRCode(szUserName, szPassword, szWalletUUID, szRequestID, SWIGTYPE_p_p_char.getCPtr(pszURI), SWIGTYPE_p_p_unsigned_char.getCPtr(paData), SWIGTYPE_p_unsigned_int.getCPtr(pWidth), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_InitiateSendRequest(String szUserName, String szPassword, String szWalletUUID, String szDestAddress, tABC_TxDetails pDetails, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {

@@ -1485,7 +1485,7 @@ public class CoreAPI {
         {
             mSyncDataTask = new SyncDataTask();
 
-            Log.d(TAG, "File sync initiated.");
+//            Log.d(TAG, "File sync initiated.");
             mSyncDataTask.execute();
         }
     }
@@ -1612,6 +1612,7 @@ public class CoreAPI {
      * Other utility functions
      */
 
+    private String mStrRequestURI =null;
     public byte[] getQRCode(String uuid, String id) {
         tABC_CC result;
         tABC_Error error = new tABC_Error();
@@ -1619,14 +1620,24 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_unsigned_char ppChar = core.longp_to_unsigned_ppChar(lp);
 
+        SWIGTYPE_p_long lp2 = core.new_longp();
+        SWIGTYPE_p_p_char ppURI = core.longp_to_ppChar(lp2);
+
         SWIGTYPE_p_int pWidth = core.new_intp();
         SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pWidth);
 
         result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                uuid, id, ppChar, pUCount, error);
+                uuid, id, ppURI, ppChar, pUCount, error);
 
         int width = core.intp_value(pWidth);
+
+        mStrRequestURI = getStringAtPtr(lp2.getCPtr(lp2));
         return getBytesAtPtr(core.longp_value(lp), width*width);
+    }
+
+    // Must call after getQRCode()
+    public String getRequestURI() {
+        return mStrRequestURI;
     }
 
     public String getRequestAddress(String uuid, String id)  {
