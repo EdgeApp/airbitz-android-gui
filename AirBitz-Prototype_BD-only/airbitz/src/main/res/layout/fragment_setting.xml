@@ -171,14 +171,14 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/settings_credentials_title"
+                    android:id="@+id/settings_account_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="@string/settings_credentials_title"
+                    android:text="@string/settings_account_title"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
