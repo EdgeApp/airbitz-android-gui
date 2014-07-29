@@ -1,6 +1,5 @@
 package com.airbitz.api;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -12,6 +11,7 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.Common;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -82,12 +82,22 @@ public class CoreAPI {
                 mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
             }
             else
-                Log.d(TAG, "incoming bitcoin event has no listener");
+                Common.LogD(TAG, "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
             else
-                Log.d(TAG, "block exchange event has no listener");
+                Common.LogD(TAG, "block exchange event has no listener");
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
+            if(mOnDataSync!=null)
+                mPeriodicTaskHandler.post(DataSyncUpdater);
+            else
+                Common.LogD(TAG, "data sync event has no listener");
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
+            if(mOnDataSync!=null)
+                mPeriodicTaskHandler.post(DataSyncUpdater);
+            else
+                Common.LogD(TAG, "data sync event has no listener");
         }
     }
 
@@ -115,6 +125,31 @@ public class CoreAPI {
     }
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() { mOnBlockHeightChange.onBlockHeightChange(); }
+    };
+
+    // Callback interface when a data sync change is received
+    private OnDataSync mOnDataSync;
+    public interface OnDataSync {
+        public void OnDataSync();
+    }
+    public void setOnOnDataSyncListener(OnDataSync listener) {
+        mOnDataSync = listener;
+    }
+    final Runnable DataSyncUpdater = new Runnable() {
+        public void run() { mOnDataSync.OnDataSync(); }
+    };
+
+
+    // Callback interface when a remote password change is received
+    private OnRemotePasswordChange mOnRemotePasswordChange;
+    public interface OnRemotePasswordChange {
+        public void OnRemotePasswordChange();
+    }
+    public void setOnOnRemotePasswordChangeListener(OnRemotePasswordChange listener) {
+        mOnRemotePasswordChange = listener;
+    }
+    final Runnable RemotePasswordChangeUpdater = new Runnable() {
+        public void run() { mOnRemotePasswordChange.OnRemotePasswordChange(); }
     };
 
     //***************** Wallet handling
@@ -156,7 +191,7 @@ public class CoreAPI {
         if(result==tABC_CC.ABC_CC_Ok) {
             return true;
         } else {
-            Log.d(TAG, "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
+            Common.LogD(TAG, "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
             return result == tABC_CC.ABC_CC_Ok;
         }
     }
@@ -216,7 +251,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
+            Common.LogD("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
             return null;
         }
     }
@@ -249,7 +284,7 @@ public class CoreAPI {
 
         if(tABC_CC.swigToEnum(result) != tABC_CC.ABC_CC_Ok)
         {
-            Log.d(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
         }
     }
 
@@ -262,7 +297,7 @@ public class CoreAPI {
                 return true;
             }
             else {
-                Log.d(TAG, "Error: CoreBridge.setWalletAttributes: "+ Error.getSzDescription());
+                Common.LogD(TAG, "Error: CoreBridge.setWalletAttributes: "+ Error.getSzDescription());
                 return false;
             }
         }
@@ -295,7 +330,7 @@ public class CoreAPI {
         }
         String message = result.toString() + "," + error.getSzDescription() + ", " +
                 error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-        Log.d(TAG, message);
+        Common.LogD(TAG, message);
         return null;
     }
 
@@ -303,7 +338,7 @@ public class CoreAPI {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
-            Log.d(TAG, "Bad bitcoin denomination from core settings");
+            Common.LogD(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
         return mBTCDenominations[bitcoinDenomination.getDenominationType()];
@@ -313,7 +348,7 @@ public class CoreAPI {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
-            Log.d(TAG, "Bad bitcoin denomination from core settings");
+            Common.LogD(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
         return mBTCSymbols[bitcoinDenomination.getDenominationType()];
@@ -413,7 +448,7 @@ public class CoreAPI {
             return mCoreSettings;
         } else {
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
-            Log.d(TAG, "Load settings failed - "+message);
+            Common.LogD(TAG, "Load settings failed - "+message);
         }
         return null;
     }
@@ -597,7 +632,7 @@ public class CoreAPI {
         Wallet wallet = getWallet(walletUUID);
         if (wallet == null)
         {
-            Log.d(TAG, "Could not find wallet for "+ walletUUID);
+            Common.LogD(TAG, "Could not find wallet for "+ walletUUID);
             return null;
         }
         tABC_CC result = core.ABC_GetTransaction(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -611,7 +646,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
         }
         return transaction;
     }
@@ -658,7 +693,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
         }
 //        core.ABC_FreeTransactions(aTransactions, tCount);
         return listTransactions;
@@ -808,7 +843,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d(TAG, "Error in GetPasswordSecondsToCrack:  " + Error.getSzDescription());
+            Common.LogD(TAG, "Error in GetPasswordSecondsToCrack:  " + Error.getSzDescription());
             return 0;
         }
         return core.doublep_value(seconds);
@@ -831,7 +866,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d(TAG, "Error in PasswordRule:  " + Error.getSzDescription());
+            Common.LogD(TAG, "Error in PasswordRule:  " + Error.getSzDescription());
             return null;
         }
 
@@ -928,7 +963,7 @@ public class CoreAPI {
                 transaction.getWalletUUID(), transaction.getID(), pDetails, Error);
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d(TAG, "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
             return false;
         }
 
@@ -944,7 +979,7 @@ public class CoreAPI {
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
-            Log.d(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
             return false;
         }
 
@@ -970,7 +1005,7 @@ public class CoreAPI {
             if(currencyNum == mFauxCurrencyNumbers[i])
                 return i;
         }
-        Log.d(TAG, "CurrencyIndex not found, using default");
+        Common.LogD(TAG, "CurrencyIndex not found, using default");
         return 6; // default US
     }
 
@@ -1050,7 +1085,7 @@ public class CoreAPI {
                 index = i;
         }
         if((index==-1) || (index >= currencyNumbers.length)) { // default usd
-            Log.d(TAG, "currency index out of bounds "+index);
+            Common.LogD(TAG, "currency index out of bounds "+index);
             index = currencyNumbers.length-1;
         }
         return index;
@@ -1066,7 +1101,7 @@ public class CoreAPI {
                 index = i;
         }
         if((index==-1) || (index >= currencyNumbers.length)) { // default usd
-            Log.d(TAG, "currency index out of bounds "+index);
+            Common.LogD(TAG, "currency index out of bounds "+index);
             index = currencyNumbers.length-1;
         }
         return index;
@@ -1246,7 +1281,7 @@ public class CoreAPI {
         {
             String message = result.toString() + "," + error.getSzDescription() + ", " +
                     error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-            Log.d("WalletQRCodeFragment", message);
+            Common.LogD("WalletQRCodeFragment", message);
             return null;
         }
     }
@@ -1299,14 +1334,14 @@ public class CoreAPI {
                         sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
             }
             if (result != tABC_CC.ABC_CC_Ok) {
-                Log.d(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
+                Common.LogD(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
                         error.getSzSourceFunc() + " " + error.getNSourceLine());
             } else {
                 txid = getStringAtPtr(core.longp_value(lp));
-                Log.d(TAG, "TxID:  " + txid);
+                Common.LogD(TAG, "TxID:  " + txid);
             }
         } else {
-            Log.d(TAG, "Initiate transfer - nothing to send");
+            Common.LogD(TAG, "Initiate transfer - nothing to send");
         }
         return txid;
     }
@@ -1337,7 +1372,7 @@ public class CoreAPI {
         {
             if (error.getCode() != tABC_CC.ABC_CC_InsufficientFunds)
             {
-                Log.d(TAG, "CalcSendFees error: "+error.getSzDescription());
+                Common.LogD(TAG, "CalcSendFees error: "+error.getSzDescription());
             }
             return -1; //TODO is this ok for insufficient funds?
         }
@@ -1380,7 +1415,7 @@ public class CoreAPI {
         {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
-//            Log.d(TAG, "Exchange Rate Update initiated.");
+//            Common.LogD(TAG, "Exchange Rate Update initiated.");
             mUpdateExchangeRateTask.execute();
         }
     }
@@ -1455,7 +1490,7 @@ public class CoreAPI {
         }
 
         if (!mExchangeRateObservers.isEmpty()) {
-            Log.d(TAG, "Exchange Rate changed");
+            Common.LogD(TAG, "Exchange Rate changed");
             for(OnExchangeRatesChange listener : mExchangeRateObservers) {
                 listener.OnExchangeRatesChange();
             }
@@ -1485,7 +1520,7 @@ public class CoreAPI {
         {
             mSyncDataTask = new SyncDataTask();
 
-//            Log.d(TAG, "File sync initiated.");
+//            Common.LogD(TAG, "File sync initiated.");
             mSyncDataTask.execute();
         }
     }
@@ -1540,7 +1575,7 @@ public class CoreAPI {
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
             return mWallets;
         } else {
-            Log.d(TAG, "getCoreWallets failed.");
+            Common.LogD(TAG, "getCoreWallets failed.");
         }
         return null;
     }
@@ -1695,7 +1730,7 @@ public class CoreAPI {
         tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), aszCategories, pUCount, Error);
 
         if(result!=tABC_CC.ABC_CC_Ok) {
-            Log.d(TAG, "loadCategories failed:"+Error.getSzDescription());
+            Common.LogD(TAG, "loadCategories failed:"+Error.getSzDescription());
         }
 
         int count = core.intp_value(pCount);
@@ -1717,7 +1752,7 @@ public class CoreAPI {
         // check and see that it doesn't already exist
         if (categories == null || !categories.contains(strCategory)) {
             // add the category to the core
-            Log.d(TAG, "Adding category: "+strCategory);
+            Common.LogD(TAG, "Adding category: "+strCategory);
             tABC_Error Error = new tABC_Error();
             core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
         }
@@ -1735,7 +1770,7 @@ public class CoreAPI {
         if(result.equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
-            Log.d(TAG, "isTestNet error:"+error.getSzDescription());
+            Common.LogD(TAG, "isTestNet error:"+error.getSzDescription());
         }
         return false;
     }
@@ -1760,4 +1795,112 @@ public class CoreAPI {
 
         return strSeed;
     }
+
+    //************************* Watcher code
+
+    public boolean allWatchersReady()
+    {
+        Common.LogD("CoreAPI", "watchersReady?");
+        List<Wallet> wallets = getCoreWallets();
+        for (Wallet w : wallets) {
+            if (!w.isArchived() && !watcherIsReady(w.getUUID())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean watcherIsReady(String UUID)
+    {
+        tABC_Error Error = new tABC_Error();
+        boolean result = core.ABC_WatcherStatus(UUID, Error) == tABC_CC.ABC_CC_Ok;
+        if(!result)
+            Common.LogD(TAG, Error.getSzDescription()+";"+Error.getSzSourceFile()+";"+Error.getSzSourceFunc()+";"+Error.getNSourceLine());
+        return result;
+    }
+
+    public void startWatchers()
+    {
+        Common.LogD(TAG, "startWatchers");
+
+        mStartWatchersTask = new StartWatchersTask();
+        mStartWatchersTask.execute();
+
+        // Once watchers start, tell views to redraw
+//        dispatch_async(watcherQueue, ^{
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+//                        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_BLOCK_HEIGHT_CHANGE object:self];
+    }
+
+    private StartWatchersTask mStartWatchersTask;
+    public class StartWatchersTask extends AsyncTask<Void, Void, Void> {
+        StartWatchersTask() { }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<Wallet> wallets = getCoreWallets();
+            for (Wallet w : wallets) {
+                startWatcher(w.getUUID());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mStartWatchersTask = null;
+        }
+    }
+
+    private void startWatcher(String walletUUID)
+    {
+        tABC_Error Error = new tABC_Error();
+        Common.LogD(TAG, "ABC_WatcherStart("+walletUUID+")");
+
+        core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, Error);
+        core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, Error);
+        Common.LogD(TAG, Error.getSzDescription()+";"+Error.getSzSourceFile()+";"+Error.getSzSourceFunc()+";"+Error.getNSourceLine());
+    }
+
+    private void stopWatchers()
+    {
+        mStopWatchersTask = new StopWatchersTask();
+        mStopWatchersTask.execute();
+    }
+
+    private StopWatchersTask mStopWatchersTask;
+    public class StopWatchersTask extends AsyncTask<Void, Void, Void> {
+        StopWatchersTask() { }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            tABC_Error Error = new tABC_Error();
+            Common.LogD(TAG, "startWatchers");
+            List<Wallet> wallets = getCoreWallets();
+
+            for(Wallet w : wallets)
+            {
+                core.ABC_WatcherStop(w.getUUID() , Error);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mStopWatchersTask = null;
+        }
+    }
+
+    public long maxSpendable(String walletUUID, String destAddress, boolean bTransfer)
+    {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
+        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false);
+        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
+        core.ABC_MaxSpendable(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID,
+            destAddress, bTransfer, result, Error);
+        long out = get64BitLongAtPtr(l.getCPtr(l));
+        Common.LogD(TAG, "Max spendable: "+out);
+        return out;
+    }
+
 }
