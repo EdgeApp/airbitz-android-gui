@@ -139,12 +139,6 @@ public class WalletsFragment extends Fragment
         mCoreAPI = CoreAPI.getApi();
         mLatestWalletList = mCoreAPI.loadWallets();
         archivedWalletList = new ArrayList<Wallet>();
-        bundle = this.getArguments();
-        if(bundle != null && bundle.getBoolean(CREATE)){
-            bundle.remove(CREATE);
-            bundle.putBoolean(CREATE, false);
-            buildFragments();
-        }
 
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
     }
@@ -160,8 +154,15 @@ public class WalletsFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
+//        if(mView!=null)
+//            return mView;
+        bundle = this.getArguments();
+        if(bundle != null && bundle.getBoolean(CREATE)){
+            bundle.remove(CREATE);
+            bundle.putBoolean(CREATE, false);
+            buildFragments();
+        }
+
         mView = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mOnBitcoinMode = true;
