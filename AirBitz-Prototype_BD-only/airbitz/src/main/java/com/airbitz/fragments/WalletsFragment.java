@@ -143,19 +143,8 @@ public class WalletsFragment extends Fragment
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        if(mView!=null)
-//            return mView;
         bundle = this.getArguments();
         if(bundle != null && bundle.getBoolean(CREATE)){
             bundle.remove(CREATE);
@@ -163,6 +152,7 @@ public class WalletsFragment extends Fragment
             buildFragments();
         }
 
+        View mView;
         mView = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mOnBitcoinMode = true;
@@ -426,18 +416,6 @@ public class WalletsFragment extends Fragment
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment);
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        if(mRequestClass == null){
-//            finish();
-//        }
-//        else{
-//            super.onBackPressed();
-//        }
-//
-//    }
-//
 
     public void addNewWallet(String name, int currencyNum){
         if(AirbitzApplication.isLoggedIn()) {
