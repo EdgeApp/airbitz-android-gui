@@ -142,26 +142,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mOverlayFragments.add(new LandingFragment());
         mOverlayFragments.add(new TransparentFragment());
 
-//        NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
-//        mViewPager.setAdapter(pageAdapter);
-//        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            public void onPageScrollStateChanged(int state) { }
-//
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                // Disappear if transparent page shows
-//                if (position == 0 || position == 2) {
-//                    mViewPager.setVisibility(View.GONE);
-//                }
-//            }
-//
-//            public void onPageSelected(int position) {
-//                // Disappear if transparent page shows
-//                if (position == 0 || position == 2) {
-//                    mViewPager.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//        mViewPager.setCurrentItem(2);
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getSupportFragmentManager().findFragmentById(R.id.navigationFragment);
