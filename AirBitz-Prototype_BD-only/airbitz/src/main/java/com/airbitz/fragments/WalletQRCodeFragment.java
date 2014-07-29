@@ -68,7 +68,6 @@ public class WalletQRCodeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
-        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
     }
 
     @Override public void onDestroyView() {
@@ -85,8 +84,10 @@ public class WalletQRCodeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
+        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
+
+//        if(mView!=null)
+//            return mView;
         mView = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
@@ -158,6 +159,7 @@ public class WalletQRCodeFragment extends Fragment {
             if(mID!=null) {
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 try{
+                    // Using Zxing app, data in barcode is bitcoin:address?amount=0.001   (for bitcoin)
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
                     mRequestURI = mCoreAPI.getRequestURI();
                 }catch (Exception e){
