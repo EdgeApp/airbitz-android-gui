@@ -36,6 +36,7 @@ import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
@@ -49,7 +50,9 @@ import java.util.Stack;
  */
 public class NavigationActivity extends FragmentActivity
 implements NavigationBarFragment.OnScreenSelectedListener,
-        CoreAPI.OnIncomingBitcoin {
+        CoreAPI.OnIncomingBitcoin,
+        CoreAPI.OnDataSync,
+        CoreAPI.OnRemotePasswordChange {
 
     private CoreAPI mCoreAPI;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
@@ -97,6 +100,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
+        mCoreAPI.setOnOnDataSyncListener(this);
+
         AirbitzApplication.Login(null, null); // try auto login
 
         setContentView(R.layout.activity_navigation);
@@ -377,6 +382,18 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
     }
 
+    @Override
+    public void OnDataSync() {
+        Common.LogD("NavigationActivity", "Data Sync received");
+        mCoreAPI.startWatchers();
+    }
+
+    @Override
+    public void OnRemotePasswordChange() {
+        showRemotePasswordChangeDialog();
+    }
+
+
     private void gotoDetails() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
@@ -402,7 +419,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage("Bitcoin received. Tap Details to see them.")
                 .setTitle("Received Funds")
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("Details",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -421,5 +438,20 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mHandler.postDelayed(dialogKiller, 5000);
     }
 
-
+    private void showRemotePasswordChangeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage("The password to this account was changed by another device. Please login using the new credentials.")
+                .setTitle("Password Change")
+                .setCancelable(false)
+                .setNegativeButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                AirbitzApplication.Logout(NavigationActivity.this);
+                                dialog.cancel();
+                            }
+                        }
+                );
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }
