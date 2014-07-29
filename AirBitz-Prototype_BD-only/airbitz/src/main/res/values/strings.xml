@@ -95,11 +95,11 @@
     <string name="settings_denomination_buttons_bitcoin">Bitcoin</string>
     <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0.001 Bitcoin)</string>
     <string name="settings_denomination_buttons_ubitcoin">uBitcoin = (0.000001 Bitcoin)</string>
-    <string name="settings_credentials_title">CREDENTIALS</string>
+    <string name="settings_account_title">ACCOUNT</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change withdrawal PIN</string>
     <string name="settings_button_recovery">Change recovery questions</string>
-    <string name="settings_user_title">USER NAME</string>
+    <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
     <string name="settings_edit_last_name">Last Name (optional)</string>
