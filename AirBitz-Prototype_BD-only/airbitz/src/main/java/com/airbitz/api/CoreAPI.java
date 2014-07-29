@@ -1240,8 +1240,6 @@ public class CoreAPI {
         return val > maxFiat;
     }
 
-
-
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, String btc) {
         //first need to create a transaction details struct
         long satoshi = denominationToSatoshi(btc);
@@ -1251,8 +1249,6 @@ public class CoreAPI {
         tABC_TxDetails details = new tABC_TxDetails();
         tABC_CC result;
         tABC_Error error = new tABC_Error();
-
-        byte[] txdetailbytes = getBytesAtPtr(details.getCPtr(details), 52);
 
         set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
 
