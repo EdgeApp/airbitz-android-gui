@@ -132,18 +132,9 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
         mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
