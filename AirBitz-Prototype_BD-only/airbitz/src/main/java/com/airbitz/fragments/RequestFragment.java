@@ -1,12 +1,8 @@
 package com.airbitz.fragments;
 
 import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -18,16 +14,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -41,8 +33,6 @@ import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,7 +192,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment frag = new WalletQRCodeFragment();
+                Fragment frag = new RequestQRCodeFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
                 bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
@@ -219,18 +209,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                 ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
-
-
-        /*mQRCodeButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("private key", "SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf");
-                clipboard.setPrimaryClip(clip);
-
-                return true;
-            }
-        });*/
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override
