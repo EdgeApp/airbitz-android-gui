@@ -24,10 +24,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -495,11 +493,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mAutoUpdatingTextFields = true;
         if (btc) {
-//            mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-//            double value = mCoreAPI.SatoshiToCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum());
-//            String temp = String.valueOf(value);
-//            String out = temp.substring(0,temp.indexOf('.')+Math.min(3, temp.length()-temp.indexOf('.')));
-//            mFiatField.setText(out);
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
        }
@@ -515,10 +508,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             catch(NumberFormatException e) {  } //not a double, ignore
         }
         mAutoUpdatingTextFields = false;
-        if(mCalculationTask != null)
-            mCalculationTask.cancel(true);
-        mCalculationTask = new CalculationTask();
-        mCalculationTask.execute();
+        if(mCalculateFeesTask != null)
+            mCalculateFeesTask.cancel(true);
+        mCalculateFeesTask = new CalculateFeesTask();
+        mCalculateFeesTask.execute();
     }
 
     /**
@@ -532,21 +525,20 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         @Override
         protected Long doInBackground(Void... params) {
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
-            return mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+            return mCoreAPI.maxSpendable(mSourceWallet.getUUID(), dest, mIsUUID);
         }
 
         @Override
-        protected void onPostExecute(final Long fees) {
+        protected void onPostExecute(final Long max) {
             mMaxAmountTask = null;
-            if(fees<0) {
-                Log.d("SendConfirmationFragment", "Fee calculation error");
+            if(max<0) {
+                Log.d("SendConfirmationFragment", "Max calculation error");
             }
-            mAmountToSendSatoshi = Math.max(mSourceWallet.getBalanceSatoshi()-fees, 0);
+            mAmountToSendSatoshi = max;
             mAutoUpdatingTextFields = true;
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mSourceWallet.getCurrencyNum(), false, false));
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
             mAutoUpdatingTextFields = false;
-            UpdateFeeFields(fees);
         }
 
         @Override
@@ -555,10 +547,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private CalculationTask mCalculationTask;
-    public class CalculationTask extends AsyncTask<Void, Void, Long> {
+    private CalculateFeesTask mCalculateFeesTask;
+    public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
 
-        CalculationTask() { }
+        CalculateFeesTask() { }
 
         @Override
         protected Long doInBackground(Void... params) {
@@ -570,13 +562,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         protected void onPostExecute(final Long fees) {
             if(getActivity()==null)
                 return;
-            mCalculationTask = null;
+            mCalculateFeesTask = null;
             UpdateFeeFields(fees);
         }
 
         @Override
         protected void onCancelled() {
-            mCalculationTask = null;
+            mCalculateFeesTask = null;
         }
     }
 
@@ -852,8 +844,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     @Override public void onPause() {
         super.onPause();
-        if(mCalculationTask!=null)
-            mCalculationTask.cancel(true);
+        if(mCalculateFeesTask !=null)
+            mCalculateFeesTask.cancel(true);
         removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 }
