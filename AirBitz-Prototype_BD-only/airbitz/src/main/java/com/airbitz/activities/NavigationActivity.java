@@ -28,10 +28,10 @@ import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.ReceivedSuccessFragment;
 import com.airbitz.fragments.RequestFragment;
+import com.airbitz.fragments.RequestQRCodeFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
-import com.airbitz.fragments.WalletQRCodeFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
@@ -375,7 +375,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mUUID = walletUUID;
         mTxId = txId;
         /* If showing QR code, launch receiving screen*/
-        if(mNavStacks[mNavFragmentId].peek().equals(WalletQRCodeFragment.class)) {
+        if(mNavStacks[mNavFragmentId].peek().equals(RequestQRCodeFragment.class)) {
             gotoDetails();
         } else {
             showIncomingBitcoinDialog();
