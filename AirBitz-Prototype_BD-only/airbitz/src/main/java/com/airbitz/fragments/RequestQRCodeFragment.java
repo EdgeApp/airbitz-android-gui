@@ -76,24 +76,19 @@ public class RequestQRCodeFragment extends Fragment {
         mCoreAPI = CoreAPI.getApi();
     }
 
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
+    @Override
+    public void onPause() {
         if(mContentURL!=null) { // delete temp file
             Log.d("WalletQRCodeFragment", "deleting temp file");
             getActivity().getContentResolver().delete(Uri.parse(mContentURL), null, null);
         }
+        super.onPause();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
 
-//        if(mView!=null)
-//            return mView;
         mView = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
@@ -203,25 +198,33 @@ public class RequestQRCodeFragment extends Fragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //At least KitKat
         {
-            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity()); //Need to change the build to API 19
-
-            smsIntent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
-
-            if (defaultSmsPackageName != null)//Can be null in case that there is no default, then the user would be able to choose any app that support this intent.
-            {
-                smsIntent.setPackage(defaultSmsPackageName);
+//            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity()); //Need to change the build to API 19
+//
+//            smsIntent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
+//
+//            if (defaultSmsPackageName != null)//Can be null in case that there is no default, then the user would be able to choose any app that support this intent.
+//            {
+//                smsIntent.setPackage(defaultSmsPackageName);
+//            }
+            smsIntent = new Intent(Intent.ACTION_SENDTO);
+            if(mQRBitmap!=null) {
+                smsIntent.setData(Uri.parse("mmsto:" + Uri.encode(phone)));
+            } else {
+                smsIntent.setData(Uri.parse("smsto:" + Uri.encode(phone)));
             }
         }
         else //For earlier versions, the old method
         {
-            smsIntent.putExtra("sms_body", mRequestURI);
+            smsIntent.putExtra("address", phone);
+            smsIntent.setType("text/plain");
         }
-        smsIntent.setType("text/plain");
+        smsIntent.putExtra("sms_body", mRequestURI);
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             smsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
         }
-        startActivity(Intent.createChooser(smsIntent, "Request Bitcoin from..."));
+
+        startActivity(smsIntent);
     }
 
     private void startEmail() {
@@ -230,9 +233,10 @@ public class RequestQRCodeFragment extends Fragment {
         startActivityForResult(intent, PICK_CONTACT_EMAIL);
     }
 
-    private void finishEmail(String name, String phone) {
+    private void finishEmail(String name, String email) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
         intent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
         if(mQRBitmap!=null) {
