@@ -160,7 +160,7 @@ public class RequestQRCodeFragment extends Fragment {
             if(mID!=null) {
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 try{
-                    // Using Zxing app, data in barcode is bitcoin:address?amount=0.001   (for bitcoin)
+                    // data in barcode is like bitcoin:address?amount=0.001
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
                     mRequestURI = mCoreAPI.getRequestURI();
                 }catch (Exception e){
