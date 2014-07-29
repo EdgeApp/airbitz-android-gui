@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -387,25 +388,39 @@ public class WalletsFragment extends Fragment
     }
 
     private void switchBarInfo(boolean isBitcoin){
-        //RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)getActivity().getResources().getDimension(R.dimen.currency_switch_height));
         if(isBitcoin) {
-            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(250);
-            animator.start();
+            mHandler.post(animateSwitchUp);
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());
         }else{
-            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(250);
-            animator.start();
-            mButtonMover.setText(mFiatBalanceButton.getText());
+            mHandler.post(animateSwitchDown);
+           mButtonMover.setText(mFiatBalanceButton.getText());
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
             mMoverType.setText(mBottomType.getText());
         }
         mLatestWalletAdapter.setIsBitcoin(isBitcoin);
         mLatestWalletAdapter.notifyDataSetChanged();
     }
+
+    private Handler mHandler = new Handler();
+    Runnable animateSwitchUp = new Runnable() {
+        @Override
+        public void run() {
+            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            animator.setDuration(250);
+            animator.start();
+        }
+    };
+
+    Runnable animateSwitchDown = new Runnable() {
+        @Override
+        public void run() {
+            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            animator.setDuration(250);
+            animator.start();
+        }
+    };
 
     private void showWalletFragment(String uUID) {
         Bundle bundle = new Bundle();
