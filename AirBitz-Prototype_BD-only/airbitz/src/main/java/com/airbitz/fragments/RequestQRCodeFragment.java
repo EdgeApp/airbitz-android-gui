@@ -336,6 +336,7 @@ public class RequestQRCodeFragment extends Fragment {
 
                         int i=0;
                         if(c.moveToFirst()) {
+                            final String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
                             while(!c.isAfterLast()) { // for each phone number, add it to the numbers array
                                 String type = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(this.getResources(), c.getInt(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)), ""); // insert a type string in front of the number
                                 String email = type + ":" + c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
@@ -348,7 +349,6 @@ public class RequestQRCodeFragment extends Fragment {
                             builder.setItems(numbers, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int item) {
-                                    String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
                                     String email = (String) numbers[item];
                                     int index = email.indexOf(":");
                                     email = email.substring(index + 1);
