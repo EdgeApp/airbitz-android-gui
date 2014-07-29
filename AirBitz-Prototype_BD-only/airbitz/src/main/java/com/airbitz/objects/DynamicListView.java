@@ -159,7 +159,16 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    if(mWalletList.get(pos).getName() != "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL" && mWalletList.get(pos).getName() != "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") {
+                    boolean tempFlag = false;
+                    for(Wallet wallet:mWalletList){
+                        if(mWalletList.indexOf(wallet)!=pos && !wallet.getName().equals("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL") && !wallet.getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
+                            if(!wallet.isArchived()){
+                                System.out.println("pos: "+pos+" walletcheckpos: "+mWalletList.indexOf(wallet));
+                                tempFlag = true;
+                            }
+                        }
+                    }
+                    if(!mWalletList.get(pos).getName().equals("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL") && !mWalletList.get(pos).getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd") && tempFlag) {
                         mTotalOffset = 0;
 
                         int position = pointToPosition(mDownX, mDownY);
