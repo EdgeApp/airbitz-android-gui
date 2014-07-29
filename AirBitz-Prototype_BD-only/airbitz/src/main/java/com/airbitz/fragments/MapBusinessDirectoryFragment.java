@@ -1,11 +1,9 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.location.Criteria;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -18,6 +16,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,7 +36,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbitz.App;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
@@ -50,8 +48,6 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
-import com.airbitz.objects.ClearableEditText;
-import com.airbitz.shared.helpers.ResHelper;
 import com.airbitz.utils.CacheUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -110,7 +106,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private ArrayList<BusinessVenue> mBusinessVenueList;
 
     private float aPosY;
-    private float aLastTouchY;
+    private float dY;
     private static final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
 
@@ -138,6 +134,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
     private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
     private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
+
+    private int mWindowHeight = 0;
 
     private List<BusinessSearchResult> mVenues;
     private static String mLocationWords = "";
@@ -503,19 +501,21 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 int action = MotionEventCompat.getActionMasked(event);
                 switch (action) {
                     case (MotionEvent.ACTION_DOWN):
-                        Log.d(TAG, "action down");
+                        //Log.d(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
-                        final float y = event.getY(0);
+                        dY = event.getY(0);
 
-                        aLastTouchY = y;
-                        if (aPosY == 0) {
-                            aPosY = llListContainer.getLayoutParams().height;
-                        }
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        mWindowHeight = size.y;
+
+                        aPosY = llListContainer.getHeight();
                         return true;
 
                     case (MotionEvent.ACTION_MOVE):
-                        Log.d(TAG, "action move");
+                        //Log.d(TAG, "action move");
                         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) flMapContainer.getLayoutParams();
                         int currentHeight = param.height;
 
@@ -529,11 +529,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                         param.height += yMove;
 
-                        int[] dragBarLocation = new int[2];
-                        mDragLayout.getLocationOnScreen(dragBarLocation);
+                        int barY = (int)mDragLayout.getY();
 
-                        if (param.height <= 0 || (dragBarLocation[1] + dragBarHeight >= App.getDisplayHeight() && yMove > 0)) {
+                        if (param.height <= 0 || (barY + dragBarHeight >= aPosY && yMove > 0)) {
                             Log.d(TAG, "height is out of bounds.");
+                            Log.d(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" yMove: "+yMove);
                             param.height = currentHeight;
                         }
 
