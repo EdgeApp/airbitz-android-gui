@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.HelpActivity;
 
@@ -121,6 +123,11 @@ public class Common {
             dist = (((int)(dist * 100)) / 100.0);
         }
         return dist;
+    }
+
+    public static void LogD(String title, String message) {
+        if(AirbitzApplication.DEBUG_LOGGING)
+            Log.d(title, message);
     }
 
 }
