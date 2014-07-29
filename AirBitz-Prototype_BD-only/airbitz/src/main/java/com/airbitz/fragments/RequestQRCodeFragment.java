@@ -219,6 +219,8 @@ public class RequestQRCodeFragment extends Fragment {
             smsIntent.setType("text/plain");
         }
         smsIntent.putExtra("sms_body", mRequestURI);
+
+        //TODO Hangouts does not recognize this
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             smsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
