@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -555,16 +556,12 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
     private void switchBarInfo(boolean isBitcoin){
         if(isBitcoin) {
-            Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(250);
-            animator.start();
+            mHandler.post(animateSwitchUp);
             mButtonMover.setText(mButtonBitcoinBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());
         }else{
-            Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(250);
-            animator.start();
+            mHandler.post(animateSwitchDown);
             mButtonMover.setText(mButtonFiatBalance.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//TODO
             mMoverType.setText(mBottomType.getText());
@@ -572,6 +569,26 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter.setIsBitcoin(isBitcoin);
         mTransactionAdapter.notifyDataSetChanged();
     }
+
+    private Handler mHandler = new Handler();
+    Runnable animateSwitchUp = new Runnable() {
+        @Override
+        public void run() {
+            Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            animator.setDuration(250);
+            animator.start();
+        }
+    };
+
+    Runnable animateSwitchDown = new Runnable() {
+        @Override
+        public void run() {
+            Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            animator.setDuration(250);
+            animator.start();
+        }
+    };
+
 
     @Override
     public void OnExchangeRatesChange() {
