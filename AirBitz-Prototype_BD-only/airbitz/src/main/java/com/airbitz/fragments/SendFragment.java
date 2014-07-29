@@ -124,20 +124,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         mCoreAPI = CoreAPI.getApi();
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
-        mView = inflater.inflate(R.layout.fragment_send, container, false);
+        View mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -323,7 +312,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
-        this.mView = mView;
         return mView;
     }
 
@@ -390,15 +378,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
         SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
-//        Log.d("TAG", "removeView");
         mPreviewFrame.removeView(mPreview);
-        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
-//        Log.d("TAG", "addView");
         mPreviewFrame.addView(mPreview);
-//        Log.d("TAG", "setPreviewCallback");
         if(mCamera!=null)
             mCamera.setPreviewCallback(SendFragment.this);
-//        Log.d("TAG", "end setPreviewCallback");
         Camera.Parameters params = mCamera.getParameters();
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         mCamera.setParameters(params);

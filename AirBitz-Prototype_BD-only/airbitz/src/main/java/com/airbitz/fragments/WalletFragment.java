@@ -133,20 +133,9 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         }
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
-        mView = inflater.inflate(R.layout.fragment_wallet, container, false);
+        View mView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mOnBitcoinMode = true;
 
