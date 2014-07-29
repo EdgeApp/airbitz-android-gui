@@ -556,7 +556,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         });
 
         // Hide map if "On the Web" search
-        if (ResHelper.getStringByResId(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
+        if (getString(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
             mDragLayout.setVisibility(View.GONE);
             flMapContainer.setVisibility(View.GONE);
         }
@@ -741,9 +741,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
-        mapHeight = (int) ResHelper.convertDpToPx(480); //hardcoded in layout
+        mapHeight = (int) getResources().getDimension(R.dimen.map_height); //hardcoded in layout
 
-        int padding = (int) ResHelper.convertDpToPx(120);
+        int padding = (int) getResources().getDimension(R.dimen.map_padding);
 
         mGoogleMap.setPadding(0, padding, 0, padding);
 
@@ -816,7 +816,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override public void onInfoWindowClick(Marker marker) {
-                if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
+                if (marker.getTitle().equalsIgnoreCase(getString(R.string.your_location))) {
 
                 } else {
                     showDirectoryDetailFragment(""+mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
@@ -882,7 +882,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             if (mGoogleMap != null) {
                 mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .position(currentPosition)
-                                .title(ResHelper.getStringByResId(R.string.your_location))
+                                .title(getString(R.string.your_location))
                                 .snippet("")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
                 );
@@ -903,7 +903,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         if(mGoogleMap != null) {
             mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                             .position(location)
-                            .title(ResHelper.getStringByResId(R.string.your_location))
+                            .title(getString(R.string.your_location))
                             .snippet("")
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
             );
