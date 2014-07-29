@@ -393,4 +393,12 @@ public class LandingFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
+    @Override
+    public void onPause(){
+        if(mAuthTask != null){
+            mAuthTask.cancel(true);
+        }
+        super.onPause();
+    }
 }
