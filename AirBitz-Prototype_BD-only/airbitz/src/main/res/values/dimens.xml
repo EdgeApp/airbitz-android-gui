@@ -60,4 +60,7 @@
     <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_bottom">119.7dp</dimen>
 
+    <dimen name="map_height">480dp</dimen>
+    <dimen name="map_padding">120dp</dimen>
+
     </resources>

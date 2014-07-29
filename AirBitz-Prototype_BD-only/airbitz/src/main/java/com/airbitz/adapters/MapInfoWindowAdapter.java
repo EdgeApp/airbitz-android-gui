@@ -52,7 +52,7 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }else{
             titleView.setText(marker.getTitle());
         }
-        if (marker.getTitle().equalsIgnoreCase(ResHelper.getStringByResId(R.string.your_location))) {
+        if (marker.getTitle().equalsIgnoreCase(mContext.getString(R.string.your_location))) {
             addressView.setText(" ");
             LinearLayout balloonLayout = (LinearLayout) view.findViewById(R.id.balloon_layout);
             LinearLayout balloonLayoutInner = (LinearLayout) view.findViewById(R.id.balloon_layout_inner);
