@@ -1,6 +1,8 @@
 package com.airbitz.fragments;
 
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -192,13 +195,27 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment frag = new RequestQRCodeFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
-                bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
-                bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
-                frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(frag);
+                if(!mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
+                    builder.setMessage("Invalid Amount")
+                            .setCancelable(false)
+                            .setNeutralButton(getResources().getString(R.string.string_ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }else{
+                    Fragment frag = new RequestQRCodeFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
+                    bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+                    bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
+                    frag.setArguments(bundle);
+                    ((NavigationActivity) getActivity()).pushFragment(frag);
+                }
             }
         });
 
