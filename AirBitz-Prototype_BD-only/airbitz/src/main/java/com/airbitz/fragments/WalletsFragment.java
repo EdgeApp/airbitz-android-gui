@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -570,6 +571,12 @@ public class WalletsFragment extends Fragment
     @Override
     public void onResume(){
         super.onResume();
+        SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
+        archiveClosed = prefs.getBoolean("archiveClosed",false);
+        if(archiveClosed){
+            archiveClosed = false;
+            archiveHeader.performClick();
+        }
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         mCoreAPI.addExchangeRateChangeListener(this);
         UpdateBalances();
@@ -577,6 +584,8 @@ public class WalletsFragment extends Fragment
 
     @Override public void onPause() {
         super.onPause();
+        SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
+        prefs.edit().putBoolean("archiveClosed", archiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
     }
 
