@@ -98,6 +98,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        String data = intent.getDataString();
+        Common.LogD(TAG, "Received onCreate intent: action="+action+", type="+type+", data="+data);
+
         mCoreAPI = CoreAPI.getApi();
         String seed = mCoreAPI.getSeedData();
         mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
@@ -165,13 +171,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
         }
-    }
-
-    @Override public void onNewIntent(Intent intent) {
-        String action = intent.getAction();
-        String type = intent.getType();
-        String data = intent.getDataString();
-        Common.LogD(TAG, "Received new intent: action="+action+", type="+type+", data="+data);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
