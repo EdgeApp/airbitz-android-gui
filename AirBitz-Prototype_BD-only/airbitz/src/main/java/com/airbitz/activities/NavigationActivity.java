@@ -131,10 +131,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).hideDoneCancel();
                     }
                 } else {
-                    showNavBar();
-                    keyBoardUp = false;
-                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment){
+                    if(keyBoardUp) {
+                        showNavBar();
+                        keyBoardUp = false;
+                    }
+                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment && keyBoardUp){
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).showDoneCancel();
+                        keyBoardUp = false;
                     }
                 }
             }

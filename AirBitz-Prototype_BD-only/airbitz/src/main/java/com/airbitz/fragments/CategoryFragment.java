@@ -41,6 +41,7 @@ public class CategoryFragment extends Fragment {
     private TextView mAddExpensePopUpTextView;
     private TextView mAddIncomePopUpTextView;
     private TextView mAddTransferPopUpTextView;
+    private TextView mAddExchangePopUpTextView;
 
     private LinearLayout mDoneCancelContainer;
 
@@ -61,7 +62,8 @@ public class CategoryFragment extends Fragment {
     private boolean popupDoEdit = false;
 
 
-    private CategoryTypeEnum currentType = CategoryTypeEnum.Expense;
+    private String currentType = "";
+    private String mCategoryOld = "";
     private CategoryTypeEnum mPopUpCurrentType;
 
     private ListView mCategoryListView;
@@ -108,6 +110,7 @@ public class CategoryFragment extends Fragment {
         mAddExpensePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_expense);
         mAddIncomePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_income);
         mAddTransferPopUpTextView = (TextView) mView.findViewById(R.id.add_popup_transfer);
+        mAddExchangePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_exchange);
 
         mItemPopUpContainer = (RelativeLayout) mView.findViewById(R.id.popup_container);
         mItemPopUpEdittext = (EditText) mView.findViewById(R.id.item_popup_edittext);            //0
@@ -180,7 +183,7 @@ public class CategoryFragment extends Fragment {
                         mAddField.append("Expense:");
                         mAddField.setSelection(mAddField.getText().toString().length());
                     }else{
-
+                        //mAddField.
                     }
                 }else {
                     mAddPopUpContainer.setVisibility(View.GONE);
@@ -212,76 +215,15 @@ public class CategoryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(false == doEdit) {
-                    if (CategoryTypeEnum.Income == currentType) {
-                        if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:") != 0) {
-                            if (editable.toString().length() > 7) {
-                                String temp = editable.toString().substring(7);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Income:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Income:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 7) {
-                            mAddExpensePopUpTextView.setText("Expense:" + editable.toString().substring(7));
-                            mAddIncomePopUpTextView.setText("Income:" + editable.toString().substring(7));
-                            mAddTransferPopUpTextView.setText("Transfer:" + editable.toString().substring(7));
-                        }
-                        if (mAddField.getSelectionStart() < 7) {
-                            mAddField.setSelection(7, 7);
-                        }
-                    } else if (CategoryTypeEnum.Expense == currentType) {
-                        if (editable.toString().length() < 8 || editable.toString().substring(0, 8).compareTo("Expense:") != 0) {
-                            if (editable.toString().length() > 8) {
-                                String temp = editable.toString().substring(8);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Expense:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Expense:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 8) {
-                            mAddExpensePopUpTextView.setText("Expense:" + editable.toString().substring(8));
-                            mAddIncomePopUpTextView.setText("Income:" + editable.toString().substring(8));
-                            mAddTransferPopUpTextView.setText("Transfer:" + editable.toString().substring(8));
-                        }
-                        if (mAddField.getSelectionStart() < 8) {
-                            mAddField.setSelection(8, 8);
-                        }
-                    } else if (CategoryTypeEnum.Transfer == currentType) {
-                        if (editable.toString().length() < 9 || editable.toString().substring(0, 9).compareTo("Transfer:") != 0) {
-                            if (editable.toString().length() > 9) {
-                                String temp = editable.toString().substring(9);
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Transfer:" + temp);
-                                doEdit = false;
-                            } else {
-                                doEdit = true;
-                                editable.clear();
-                                editable.append("Transfer:");
-                                doEdit = false;
-                            }
-                        } else if (editable.toString().length() >= 9) {
-                            mAddExpensePopUpTextView.setText("Expense:" + editable.toString().substring(9));
-                            mAddIncomePopUpTextView.setText("Income:" + editable.toString().substring(9));
-                            mAddTransferPopUpTextView.setText("Transfer:" + editable.toString().substring(9));
-                        }
-                        if (mAddField.getSelectionStart() < 9) {
-                            mAddField.setSelection(9, 9);
-                        }
-                    } else {
-                        System.err.println("currentType was something other than Income, Expense or Transfer: " + currentType);
+                if(!doEdit) {
+                    if ((currentType.equals("Income:") && !editable.toString().startsWith("Income:")) || (currentType.equals("Expense:") && !editable.toString().startsWith("Expense:")) || (currentType.equals("Transfer:") && !editable.toString().startsWith("Transfer:")) || (currentType.equals("Exchange:") && !editable.toString().startsWith("Exchange:"))) {
+                        doEdit = true;
+                        editable.clear();
+                        editable.append(mCategoryOld);
+                        doEdit = false;
                     }
+                    updateBlanks(editable.toString().substring(editable.toString().indexOf(':') + 1));
+                    mCategoryOld = mAddField.getText().toString();
                 }
             }
         });
@@ -292,7 +234,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddExpensePopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = CategoryTypeEnum.Expense;
+                currentType = "Expense:";
                 doEdit = false;
             }
         });
@@ -303,7 +245,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddIncomePopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = CategoryTypeEnum.Income;
+                currentType = "Income:";
                 doEdit = false;
             }
         });
@@ -314,7 +256,18 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddTransferPopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = CategoryTypeEnum.Transfer;
+                currentType = "Transfer:";
+                doEdit = false;
+            }
+        });
+
+        mAddExchangePopUpTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doEdit = true;
+                mAddField.setText(mAddExchangePopUpTextView.getText());
+                mAddField.setSelection(mAddField.getText().toString().length());
+                currentType = "Exchange:";
                 doEdit = false;
             }
         });
@@ -408,7 +361,7 @@ public class CategoryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(false == popupDoEdit) {
+                if(!popupDoEdit) {
                     if ('I' == editable.toString().charAt(0)) {
                         if (editable.toString().length() < 7 || editable.toString().substring(0, 7).compareTo("Income:") != 0) {
                             if (editable.toString().length() > 7) {
@@ -537,9 +490,16 @@ public class CategoryFragment extends Fragment {
         mCategories = mCoreAPI.loadCategories();
     }
 
+    private void updateBlanks(String term){
+        mAddExpensePopUpTextView.setText("Expense:" + term);
+        mAddIncomePopUpTextView.setText("Income:" + term);
+        mAddTransferPopUpTextView.setText("Transfer:" + term);
+        mAddExchangePopUpTextView.setText("Exchange:" + term);
+    }
+
     private void goAddNewCategory(){
         String newCat;
-        if(currentType == CategoryTypeEnum.Transfer){
+        if(currentType == "Transfer:"){
             if(mAddField.getText().toString().length()>9 && mAddField.getText().toString().compareTo("Transfer:")!=0) {
                 newCat = mAddField.getText().toString();
                 mCategories.add(newCat);
@@ -549,7 +509,7 @@ public class CategoryFragment extends Fragment {
                 mCategoryAdapter.notifyDataSetChanged();
                 mAddField.getText().clear();
             }
-        }else if(currentType == CategoryTypeEnum.Expense){
+        }else if(currentType == "Expense:"){
             if(mAddField.getText().toString().length()>8 && mAddField.getText().toString().compareTo("Transfer:")!=0) {
                 newCat = mAddField.getText().toString();
                 mCategories.add(newCat);
@@ -559,7 +519,7 @@ public class CategoryFragment extends Fragment {
                 mCategoryAdapter.notifyDataSetChanged();
                 mAddField.getText().clear();
             }
-        }else if(currentType == CategoryTypeEnum.Income){
+        }else if(currentType == "Income"){
             if(mAddField.getText().toString().length()>7 && mAddField.getText().toString().compareTo("Income:")!=0) {
                 newCat = mAddField.getText().toString();
                 mCategories.add(newCat);

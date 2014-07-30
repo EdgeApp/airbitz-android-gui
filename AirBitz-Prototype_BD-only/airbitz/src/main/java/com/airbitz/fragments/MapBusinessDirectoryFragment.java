@@ -525,7 +525,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                         final int pointerIndexMove = event.findPointerIndex(mActivePointerId);
 
-                        float yMove = event.getY(pointerIndexMove);
+                        float yMove = event.getY(0);
 
                         param.height += yMove;
 
