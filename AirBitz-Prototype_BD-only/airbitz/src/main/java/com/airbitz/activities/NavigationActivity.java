@@ -338,8 +338,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             }
             Fragment fragment = new RequestFragment();
             mNavStacks[mNavFragmentId].add(fragment);
-            switchFragmentThread(3);
-            mNavFragmentId = 3;
+            switchFragmentThread(Tabs.WALLET.ordinal());
+            mNavFragmentId = Tabs.WALLET.ordinal();
             while (!mNavStacks[mNavFragmentId].isEmpty()){
                 mNavStacks[mNavFragmentId].pop();
             }
@@ -354,8 +354,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             }
             Fragment fragment = new SendFragment();
             mNavStacks[mNavFragmentId].add(fragment);
-            switchFragmentThread(3);
-            mNavFragmentId = 3;
+            switchFragmentThread(Tabs.WALLET.ordinal());
+            mNavFragmentId = Tabs.WALLET.ordinal();
             while (!mNavStacks[mNavFragmentId].isEmpty()){
                 mNavStacks[mNavFragmentId].pop();
             }
@@ -404,6 +404,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Fragment frag = new ReceivedSuccessFragment();
         frag.setArguments(bundle);
         pushFragment(frag);
+
+        removeRequestQRCodeFragment();
     }
 
     private void gotoDetailsNow() {
@@ -412,6 +414,14 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         bundle.putString(Transaction.TXID, mTxId);
         bundle.putString(Wallet.WALLET_UUID, mUUID);
         switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+
+        removeRequestQRCodeFragment();
+    }
+
+    private void removeRequestQRCodeFragment() {
+        if(mNavStacks[Tabs.REQUEST.ordinal()].peek() instanceof RequestQRCodeFragment) {
+            mNavStacks[Tabs.REQUEST.ordinal()].pop();
+        }
     }
 
     private AlertDialog mIncomingDialog;
@@ -438,6 +448,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 .setNegativeButton("Ignore",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                removeRequestQRCodeFragment();
                                 dialog.cancel();
                             }
                         }
