@@ -156,12 +156,16 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
+            Common.LogD(TAG, "Starting Receive Request at:"+System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", bundle.getString(RequestFragment.BITCOIN_VALUE));
             if(mID!=null) {
+                Common.LogD(TAG, "Starting Request Address at:"+System.currentTimeMillis());
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 try{
                     // data in barcode is like bitcoin:address?amount=0.001
+                    Common.LogD(TAG, "Starting QRCodeBitmap at:"+System.currentTimeMillis());
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                    Common.LogD(TAG, "Ending QRCodeBitmap at:"+System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
                 }catch (Exception e){
                     e.printStackTrace();
