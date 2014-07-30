@@ -89,6 +89,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private EditText mPayeeEditText;
     private TextView mBitcoinValueTextview;
     private TextView mFeeTextview;
+    private TextView mBitcoinSignTextview;
 
     private View mDummyFocus;
 
@@ -244,6 +245,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
         mFiatDenominationAcronym = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_text);
+        mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
         mCategoryEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_category);
@@ -606,13 +608,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         return view;
     }
 
-    private void setOnTouchListeners(){
-        setOnTouchListener(mBackButton);
-        setOnTouchListener(mDoneButton);
-        setOnTouchListener(mHelpButton);
-        setOnTouchListener(mAdvanceDetailsButton);
-    }
-
     private void setOnTouchListener(View touchView){
         touchView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -782,6 +777,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
         mFiatValueEdittext.setText(currencyValue.substring(0, currencyValue.indexOf('.') + Math.min(3, currencyValue.length() - currencyValue.indexOf('.'))));
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
+        mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
         if(mFromSend) {
             String feeFormatted = "";
