@@ -58,7 +58,7 @@
 
             <RelativeLayout
                 android:layout_width="283.5dp"
-                android:layout_height="277.2dp"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:paddingLeft="18.9dp"
                 android:paddingRight="18.9dp"
@@ -181,6 +181,21 @@
                         android:gravity="center" />
 
                 </LinearLayout>
+
+                <com.airbitz.models.HighlightOnPressButton
+                    android:id="@+id/activity_signup_next_button"
+                    android:layout_width="245.7dp"
+                    android:layout_height="37.8dp"
+                    android:text="@string/string_next_step"
+                    android:layout_marginTop="12.6dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/white"
+                    android:layout_below="@id/activity_signup_withdrawal_layout"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/btn_green"/>
+
             </RelativeLayout>
 
             <LinearLayout

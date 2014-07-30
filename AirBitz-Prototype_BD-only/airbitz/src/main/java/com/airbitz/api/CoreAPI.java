@@ -334,6 +334,13 @@ public class CoreAPI {
         return null;
     }
 
+    public tABC_CC SetUserPIN(String pin) {
+        tABC_Error error = new tABC_Error();
+
+        return core.ABC_SetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                pin, error);
+    }
+
     public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
@@ -1897,6 +1904,21 @@ public class CoreAPI {
         long out = get64BitLongAtPtr(l.getCPtr(l));
         Common.LogD(TAG, "Max spendable: "+out);
         return out;
+    }
+
+    public tABC_CC ChangePassword(String password) {
+        tABC_Error Error = new tABC_Error();
+
+        String oldPIN = GetUserPIN();
+
+        return core.ABC_ChangePassword(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            password, oldPIN, null, null, Error);
+    }
+
+    public tABC_CC ChangePasswordWithRecoveryAnswers(String password, String pin, String recoveryAnswers) {
+        tABC_Error Error = new tABC_Error();
+        return core.ABC_ChangePasswordWithRecoveryAnswers(AirbitzApplication.getUsername(),
+        recoveryAnswers, password, pin, null, null, Error);
     }
 
 }

@@ -25,6 +25,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.PasswordRecoveryActivity;
+import com.airbitz.activities.SignUpActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -183,12 +184,18 @@ public class SettingFragment extends Fragment {
         mChangePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent mIntent = new Intent(getActivity(), SignUpActivity.class);
+                mIntent.putExtra(SignUpActivity.MODE, SignUpActivity.CHANGE_PASSWORD);
+                startActivity(mIntent);
             }
         });
 
         mChangePINButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent mIntent = new Intent(getActivity(), SignUpActivity.class);
+                mIntent.putExtra(SignUpActivity.MODE, SignUpActivity.CHANGE_PIN);
+                startActivity(mIntent);
             }
         });
 

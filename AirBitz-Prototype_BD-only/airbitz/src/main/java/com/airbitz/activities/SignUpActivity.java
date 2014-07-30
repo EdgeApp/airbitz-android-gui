@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -20,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,7 +47,7 @@ import java.util.regex.Pattern;
  */
 public class SignUpActivity extends Activity {
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
-
+    public static final int MIN_PIN_LENGTH = 4;
     private RelativeLayout mParentLayout;
 
     private View mProgressView;
@@ -53,7 +55,12 @@ public class SignUpActivity extends Activity {
     private EditText mPasswordEditText;
     private EditText mPasswordConfirmationEditText;
     private EditText mWithdrawalPinEditText;
+    private TextView mWithdrawalLabel;
+    private Button mNextButton;
     private boolean mGoodPassword = false;
+    private int mMode = SIGNUP;
+
+    private TextView mTitleTextView;
 
     private LinearLayout mPopupContainer;
     private ImageView mSwitchImage1;
@@ -84,9 +91,10 @@ public class SignUpActivity extends Activity {
     public static String KEY_PASSWORD = "KEY_PASSWORD";
     public static String KEY_WITHDRAWAL = "KEY_WITHDRAWAL";
     public static String MODE = "com.airbitz.signup.mode";
-    public static int CHANGE_PASSWORD=0;
-    public static int CHANGE_PASSWORD_VIA_QUESTIONS = 1;
-    public static int CHANGE_PIN = 2;
+    public static int SIGNUP = 0;
+    public static int CHANGE_PASSWORD=1;
+    public static int CHANGE_PASSWORD_VIA_QUESTIONS = 2;
+    public static int CHANGE_PIN = 3;
 
     private CoreAPI mCoreAPI;
 
@@ -96,15 +104,13 @@ public class SignUpActivity extends Activity {
 
         mCoreAPI = CoreAPI.getApi();
 
-        setupUI(getIntent().getExtras());
-
         setContentView(R.layout.activity_signup);
         overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
 
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
 
         mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
-
+        mNextButton = (Button) findViewById(R.id.activity_signup_next_button);
         mProgressView = findViewById(R.id.activity_signup_progressbar);
 
         mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
@@ -114,16 +120,16 @@ public class SignUpActivity extends Activity {
         mPasswordEditText = (EditText) findViewById(R.id.activity_signup_password_edittext);
         mPasswordConfirmationEditText = (EditText) findViewById(R.id.activity_signup_repassword_edittext);
         mWithdrawalPinEditText = (EditText) findViewById(R.id.activity_signup_withdrawal_edittext);
-        TextView mTitleTextView = (TextView) findViewById(R.id.activity_signup_title_textview);
+        mTitleTextView = (TextView) findViewById(R.id.activity_signup_title_textview);
         TextView mHintTextView = (TextView) findViewById(R.id.activity_signup_password_help);
-        TextView withdrawalTextView = (TextView) findViewById(R.id.activity_signup_withdrawal_textview);
+        mWithdrawalLabel = (TextView) findViewById(R.id.activity_signup_withdrawal_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        withdrawalTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         ImageButton mBackButton = (ImageButton) findViewById(R.id.activity_signup_back_button);
@@ -152,13 +158,19 @@ public class SignUpActivity extends Activity {
             }
         });
 
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goNext();
+            }
+        });
+
         mWithdrawalPinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    attemptLogin();
                     return true;
                 }
                 return false;
@@ -231,33 +243,49 @@ public class SignUpActivity extends Activity {
             }
         });
 
+        setupUI(getIntent().getExtras());
     }
 
     private void setupUI(Bundle b) {
         if(b==null)
             return;
         //Hide some elements if this is not a fresh signup
-        int mode = b.getInt(MODE);
-        if(mode==CHANGE_PASSWORD) {
+        mMode = b.getInt(MODE);
+        if(mMode==CHANGE_PASSWORD) {
             // Reuse mUserNameEditText for old password too
-            // change username label, title
-            // hide PIN
-        } else if(mode==CHANGE_PASSWORD_VIA_QUESTIONS) {
-            // Reuse mUserNameEditText for old password too
-            // change username label, title
-            // hide PIN
-        } else if(mode==CHANGE_PIN) {
-            // hide both password fields
+            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
+            mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
+            mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
+            mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
+            mTitleTextView.setText(R.string.activity_signup_title_change_password);
+            // hide PIN
+            mWithdrawalPinEditText.setVisibility(View.GONE);
+            mWithdrawalLabel.setVisibility(View.GONE);
+        } else if(mMode==CHANGE_PASSWORD_VIA_QUESTIONS) {
+            // change username label, title
+            mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
+            mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
+            mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
+            mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mNextButton.setText(getResources().getString(R.string.string_done));
+            // hide username
+            mUserNameEditText.setVisibility(View.GONE);
+        } else if(mMode==CHANGE_PIN) {
+            // hide both password fields
+            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password_hint));
+            mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordEditText.setVisibility(View.GONE);
+            mPasswordConfirmationEditText.setVisibility(View.GONE);
+            mWithdrawalPinEditText.setHint(getResources().getString(R.string.activity_signup_new_pin));
+            mNextButton.setText(getResources().getString(R.string.string_done));
+            // change title
+            mTitleTextView.setText(R.string.activity_signup_title_change_pin);
         }
-    }
-
-    private boolean goodConfirmation(String password, String confirmation) {
-        return password.equals(confirmation);
-    }
-
-    private boolean goodPin(String pin) {
-        return pin.matches("[0-9]+") && pin.length()==4;
     }
 
     // checks the password against the password rules
@@ -307,6 +335,125 @@ public class SignUpActivity extends Activity {
         mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
         return bNewPasswordFieldsAreValid;
     }
+
+    private void goNext()
+    {
+        // if they entered a valid username or old password
+        if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid())
+                {
+                    tABC_CC result = tABC_CC.ABC_CC_Ok;
+
+                    // if we are signing up a new account
+                    if (mMode == SIGNUP)
+                    {
+                        attempSignUp();
+                    }
+                    else if (mMode == CHANGE_PASSWORD)
+                    {
+                        result = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
+                    }
+                    else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS)
+                    {
+                        result = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
+                                mWithdrawalPinEditText.getText().toString(), "");
+                    }
+                    else // new PIN
+                    {
+                        result = mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+                    }
+
+                    // if success
+                    if (result == tABC_CC.ABC_CC_Ok)
+                    {
+                        if (mMode == CHANGE_PIN) {
+                            showMessageAndFinish("PIN successfully changed.");
+                        } else {
+                            showMessageAndFinish("Password successfully changed.");
+                        }
+                    } else {
+                        showMessageAndFinish("Change failed.");
+                    }
+                }
+    }
+
+    // checks the username field (non-blank or matches old password depending on the mode)
+// returns YES if field is good
+// if the field is bad, an appropriate message box is displayed
+// note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    private boolean userNameFieldIsValid()
+    {
+        boolean bUserNameFieldIsValid = true;
+
+        // if we are signing up for a new account
+        if (mMode == SIGNUP)
+        {
+            // if nothing was entered
+            if (mUserNameEditText.getText().toString().length() == 0)
+            {
+                bUserNameFieldIsValid = false;
+                showMessage("You must enter a user name");
+            }
+        }
+        else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old password in this case
+        {
+            // if the password is wrong
+            if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
+            {
+                bUserNameFieldIsValid = false;
+                showMessage("Incorrect password");
+            }
+        }
+        return bUserNameFieldIsValid;
+    }
+
+    // checks the password against the password rules
+    // returns YES if new password fields are good, NO if the new password fields failed the checks
+    // if the new password fields are bad, an appropriate message box is displayed
+    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    private boolean newPasswordFieldsAreValid()
+    {
+        boolean bNewPasswordFieldsAreValid = true;
+
+        // if we are signing up for a new account or changing our password
+        if ((mMode!=CHANGE_PIN))
+        {
+            if (!mGoodPassword)
+            {
+                bNewPasswordFieldsAreValid = false;
+                showMessage("Insufficient Password");
+            }
+            else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
+            {
+                bNewPasswordFieldsAreValid = false;
+                showMessage("Password does not match re-entered password");
+            }
+        }
+
+        return bNewPasswordFieldsAreValid;
+    }
+
+    // checks the pin field
+    // returns YES if field is good
+    // if the field is bad, an appropriate message box is displayed
+    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    private boolean pinFieldIsValid()
+    {
+        boolean bpinNameFieldIsValid = true;
+
+        // if we are signing up for a new account
+        if (mMode != CHANGE_PASSWORD)
+        {
+            // if the pin isn't long enough
+            if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
+            {
+                bpinNameFieldIsValid = false;
+                showMessage("Withdrawl PIN must be 4 digits");
+            }
+        }
+
+        return bpinNameFieldIsValid;
+    }
+
 
     private String GetCrackString(double secondsToCrack) {
         String crackString = "Time to crack: ";
@@ -473,15 +620,13 @@ public class SignUpActivity extends Activity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    public void attempSignUp() {
         if (mAuthTask != null) {
             return;
         }
 
-        // Store values at the time of the login attempt.
         String username = mUserNameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
-        String confirmation = mPasswordConfirmationEditText.getText().toString();
         String pin = mWithdrawalPinEditText.getText().toString();
 
         // Reset errors.
@@ -490,37 +635,8 @@ public class SignUpActivity extends Activity {
         mPasswordConfirmationEditText.setError(null);
         mWithdrawalPinEditText.setError(null);
 
-        boolean cancel = false;
-
-        // Check for a valid password.
-        if (!mGoodPassword) {
-            String message = getString(R.string.error_invalid_password_details_start);
-            showErrorDialog(message);
-            cancel = true;
-        }
-
-        // Check for a valid confirmation.
-        else if (!goodConfirmation(password, confirmation)) {
-            showErrorDialog(getString(R.string.error_invalid_confirmation_details));
-            cancel = true;
-        }
-
-        // Check for a valid confirmation.
-        else if (!goodPin(pin)) {
-            showErrorDialog(getString(R.string.error_invalid_pin_details));
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            mDummyFocus.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            mAuthTask = new CreateAccountTask(username, password, pin);
-            mAuthTask.execute((Void) null);
-        }
+        mAuthTask = new CreateAccountTask(username, password, pin);
+        mAuthTask.execute((Void) null);
     }
 
     public void showProgress(final boolean show) {
@@ -567,7 +683,7 @@ public class SignUpActivity extends Activity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
     }
 
-    private void showErrorDialog(String message) {
+    private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(getString(R.string.error_invalid_recovery_title))
@@ -581,4 +697,19 @@ public class SignUpActivity extends Activity {
         AlertDialog alert = builder.create();
         alert.show();
     }
-}
+
+    private void showMessageAndFinish(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(getString(R.string.error_invalid_recovery_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                finish();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }}

@@ -16,6 +16,7 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
     <string name="string_done">Done</string>
+    <string name="string_next_step">Next Step</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -55,12 +56,19 @@
 
     <!-- Strings for Signup -->
     <string name="activity_signup_title">Sign Up</string>
+    <string name="activity_signup_title_change_password">Change Password</string>
+    <string name="activity_signup_title_change_password_via_questions">Change Password</string>
+    <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
     <string name="activity_signup_button_next">Next Step</string>
     <string name="activity_signup_username_hint">User Name</string>
     <string name="activity_signup_password_hint">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
+    <string name="activity_signup_old_password">Old Password</string>
+    <string name="activity_signup_new_password">New Password</string>
+    <string name="activity_signup_new_password_confirm">Re-enter New Password</string>
     <string name="activity_signup_pin_label">Withdrawal Pin</string>
     <string name="activity_signup_pin_hint">Create Pin</string>
+    <string name="activity_signup_new_pin">New PIN</string>
     <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
     <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
     <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
