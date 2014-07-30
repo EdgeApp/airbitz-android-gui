@@ -375,8 +375,9 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mUUID = walletUUID;
         mTxId = txId;
         /* If showing QR code, launch receiving screen*/
-        if(mNavStacks[mNavFragmentId].peek().equals(RequestQRCodeFragment.class)) {
-            gotoDetails();
+        Fragment f = mNavStacks[mNavFragmentId].peek();
+        if( f instanceof RequestQRCodeFragment) {
+            startReceivedSuccess();
         } else {
             showIncomingBitcoinDialog();
         }
@@ -394,7 +395,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
 
-    private void gotoDetails() {
+    private void startReceivedSuccess() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
         bundle.putString(Transaction.TXID, mTxId);
@@ -403,6 +404,14 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Fragment frag = new ReceivedSuccessFragment();
         frag.setArguments(bundle);
         pushFragment(frag);
+    }
+
+    private void gotoDetailsNow() {
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+        bundle.putString(Transaction.TXID, mTxId);
+        bundle.putString(Wallet.WALLET_UUID, mUUID);
+        switchToWallets(FragmentSourceEnum.REQUEST, bundle);
     }
 
     private AlertDialog mIncomingDialog;
@@ -423,7 +432,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 .setPositiveButton("Details",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                gotoDetails();
+                                gotoDetailsNow();
                             }
                         })
                 .setNegativeButton("Ignore",
