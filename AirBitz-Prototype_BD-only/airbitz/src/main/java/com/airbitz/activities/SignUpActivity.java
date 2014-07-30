@@ -346,7 +346,7 @@ public class SignUpActivity extends Activity {
                     // if we are signing up a new account
                     if (mMode == SIGNUP)
                     {
-                        attempSignUp();
+                        attemptSignUp();
                     }
                     else if (mMode == CHANGE_PASSWORD)
                     {
@@ -623,7 +623,7 @@ public class SignUpActivity extends Activity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attempSignUp() {
+    public void attemptSignUp() {
         if (mAuthTask != null) {
             return;
         }
