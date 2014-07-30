@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
         CoreAPI.OnRemotePasswordChange {
+
+    private final String TAG = getClass().getSimpleName();
 
     private CoreAPI mCoreAPI;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
@@ -162,6 +165,13 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
         }
+    }
+
+    @Override public void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        String type = intent.getType();
+        String data = intent.getDataString();
+        Common.LogD(TAG, "Received new intent: action="+action+", type="+type+", data="+data);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
