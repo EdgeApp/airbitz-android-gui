@@ -45,7 +45,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mRunningSatoshi = new long[listTransaction.size()];
 
         long total = 0;
-        for(int i=listTransaction.size()-1; i>0; i--) {
+        for(int i=listTransaction.size()-1; i>-1; i--) {
             total += listTransaction.get(i).getAmountSatoshi();
             mRunningSatoshi[i] = total;
         }
