@@ -76,6 +76,24 @@
     <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
 
+    <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
+    <string name="activity_signup_password_change_good">Password successfully changed.</string>
+    <string name="activity_signup_change_bad">Unsuccessful change. Try again.</string>
+    <string name="activity_signup_enter_username">You must enter a user name</string>
+    <string name="activity_signup_incorrect_password">Incorrect password.</string>
+    <string name="activity_signup_insufficient_password">Insufficient Password.</string>
+    <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
+    <string name="activity_signup_insufficient_pin">Withdrawl PIN must be 4 digits</string>
+    <string name="activity_signup_time_to_crack">Time to crack: </string>
+    <string name="activity_signup_seconds">seconds</string>
+    <string name="activity_signup_minutes">minutes</string>
+    <string name="activity_signup_hours">hours</string>
+    <string name="activity_signup_days">days</string>
+    <string name="activity_signup_weeks">weeks</string>
+    <string name="activity_signup_months">months</string>
+    <string name="activity_signup_years">years</string>
+
+
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_title">Password Recovery Setup</string>
     <string name="activity_recovery_skip_button_text">Skip This Step</string>
