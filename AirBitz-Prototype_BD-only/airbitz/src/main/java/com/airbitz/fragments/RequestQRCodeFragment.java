@@ -121,16 +121,16 @@ public class RequestQRCodeFragment extends Fragment {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).showNavBar();
                 getActivity().onBackPressed();
+                ((NavigationActivity)getActivity()).showNavBar();
             }
         });
 
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).showNavBar();
                 getActivity().onBackPressed();
+                ((NavigationActivity)getActivity()).showNavBar();
             }
         });
 
