@@ -598,7 +598,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        if(mAmountToSendSatoshi==0) {
+        if( !mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0) {
+            resetSlider();
+            showMessageAlert("Invalid Amount", "Invalid Amount");
+        }else if(mAmountToSendSatoshi==0) {
             resetSlider();
             showMessageAlert(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
