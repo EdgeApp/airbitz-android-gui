@@ -111,7 +111,6 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private int mFiatCurrencyNum;
     private int mCurrencyIndex;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -148,8 +147,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
 
         mOnBitcoinMode = true;
 
-        mTransactionAdapter = new TransactionAdapter(getActivity(), mTransactions);
-        mTransactionAdapter.setCurrencyNum(mWallet.getCurrencyNum());
+        mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions);
 
         mSearchField = (EditText) mView.findViewById(R.id.fragment_search_edittext);
         mSearchButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
