@@ -65,8 +65,6 @@ public class RequestQRCodeFragment extends Fragment {
     private View mView;
     static final int PICK_CONTACT_SMS =1;
     static final int PICK_CONTACT_EMAIL=2;
-    private enum SendType {SEND_EMAIL, SEND_SMS};
-    private SendType mSendType = SendType.SEND_EMAIL;
 
 
     @Override
@@ -143,11 +141,16 @@ public class RequestQRCodeFragment extends Fragment {
             }
         });
 
-        mCreateBitmapTask = new CreateBitmapTask();
-        mCreateBitmapTask.execute();
         return mView;
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        if(mQRBitmap==null) {
+            mCreateBitmapTask = new CreateBitmapTask();
+            mCreateBitmapTask.execute();
+        }
+    }
 
     private CreateBitmapTask mCreateBitmapTask;
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
@@ -190,9 +193,7 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
 
-
     private void startSMS() {
-        mSendType = SendType.SEND_SMS;
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT_SMS);
     }
@@ -234,7 +235,6 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private void startEmail() {
-        mSendType = SendType.SEND_EMAIL;
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT_EMAIL);
     }
