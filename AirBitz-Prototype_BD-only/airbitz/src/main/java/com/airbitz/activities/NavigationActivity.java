@@ -306,7 +306,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(homeIntent);
             } else {
-                popFragment();
+                if(mNavStacks[mNavFragmentId].peek() instanceof RequestQRCodeFragment){
+                    popFragment();
+                    showNavBar();
+                }else {//needed or show nav before switching fragments
+                    popFragment();
+                }
             }
         }
     }
