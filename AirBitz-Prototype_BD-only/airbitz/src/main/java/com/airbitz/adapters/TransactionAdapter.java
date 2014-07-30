@@ -22,18 +22,33 @@ import java.util.List;
 public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private Context mContext;
+    private Wallet mWallet;
     private boolean mSearch;
     private boolean mIsBitcoin = true;
     private int mCurrencyNum;
     private CoreAPI mCoreAPI;
 
     private List<Transaction> mListTransaction;
+    private long[] mRunningSatoshi;
 
-    public TransactionAdapter(Context context, List<Transaction> listTransaction){
+    public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction){
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
+        mWallet = wallet;
+        mCurrencyNum = mWallet.getCurrencyNum();
         mListTransaction = listTransaction;
+        createRunningSatoshi(listTransaction);
         mCoreAPI = CoreAPI.getApi();
+    }
+
+    private void createRunningSatoshi(List<Transaction> listTransaction) {
+        mRunningSatoshi = new long[listTransaction.size()];
+
+        long total = 0;
+        for(int i=listTransaction.size()-1; i>0; i--) {
+            total += listTransaction.get(i).getAmountSatoshi();
+            mRunningSatoshi[i] = total;
+        }
     }
 
     public void setSearch(boolean isSearch){
@@ -42,17 +57,37 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
 
-    public void setCurrencyNum(int num) { mCurrencyNum = num; }
+    static class ViewHolderItem {
+        TextView dateTextView;
+        TextView nameTextView;
+        TextView debitAmountTextView;
+        TextView creditAmountTextView;
+        TextView confirmationsTextView;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.item_listview_transaction, parent, false);
-        TextView dateTextView = (TextView) convertView.findViewById(R.id.textview_date);
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.textview_name);
-        TextView debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
-        TextView creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
-        TextView confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
+        ViewHolderItem viewHolder;
+        if(convertView==null){
+            // well set up the ViewHolder
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_transaction, parent, false);
+            viewHolder = new ViewHolderItem();
+            viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.textview_date);
+            viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.textview_name);
+            viewHolder.debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
+            viewHolder.creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
+            viewHolder.confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
+            viewHolder.dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+            viewHolder.debitAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            // store the holder with the view.
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolderItem) convertView.getTag();
+        }
+
 
         if(0 == position && mListTransaction.size() == 1){
             convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
@@ -65,72 +100,69 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
 
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
-        dateTextView.setText(dateString);
+        viewHolder.dateTextView.setText(dateString);
 
         Transaction transaction = mListTransaction.get(position);
-        Wallet wallet = mCoreAPI.getWallet(transaction.getWalletUUID());
 
-        nameTextView.setText(transaction.getName());
+        viewHolder.nameTextView.setText(transaction.getName());
         long transactionSatoshis = transaction.getAmountSatoshi();
         long transactionFees = transaction.getMinerFees() + transaction.getABFees();
         if(mSearch){
             String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
-            creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+btcCurrency);
-            String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
-            debitAmountTextView.setText(fiatCurrency);
+            viewHolder.creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+btcCurrency);
+            String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+            viewHolder.debitAmountTextView.setText(fiatCurrency);
             if(transactionSatoshis >= 0){
-                debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
-                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
             }else{
-                debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
-                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
             }
         }else {
             if(transactionSatoshis >= 0){
-                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
             }else{
-                creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
             }
             if (mIsBitcoin) {
                 String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
                 long totalSatoshisSoFar = 0;
-                for(int i = position; i < mListTransaction.size();i++){
-                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
-                }
-                String totalCurrency = mCoreAPI.FormatDefaultCurrency(totalSatoshisSoFar, true, false);
+//                for(int i = position; i < mListTransaction.size();i++){
+//                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
+//                }
+//                String totalCurrency = mCoreAPI.FormatDefaultCurrency(totalSatoshisSoFar, true, false);
+                String totalCurrency = mCoreAPI.FormatDefaultCurrency(mRunningSatoshi[position], true, false);
 
-                creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + walletCurrency);
-                debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + totalCurrency);
+                viewHolder.creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + walletCurrency);
+                viewHolder.debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + totalCurrency);
             } else {
-                String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, wallet.getCurrencyNum(), false, true);
-                long totalSatoshisSoFar = 0;
-                for(int i = position; i < mListTransaction.size();i++){
-                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
-                }
-                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar,wallet.getCurrencyNum(), false, true);
+                String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+//                long totalSatoshisSoFar = 0;
+//                for(int i = position; i < mListTransaction.size();i++){
+//                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
+//                }
+//                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar, mCurrencyNum, false, true);
+                String totalCurrency = mCoreAPI.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
 
-                creditAmountTextView.setText(walletCurrency);
-                debitAmountTextView.setText(totalCurrency);
+                viewHolder.creditAmountTextView.setText(walletCurrency);
+                viewHolder.debitAmountTextView.setText(totalCurrency);
             }
         }
         if(mSearch){
 //            debitAmountTextView.setText("$0.00");
-            confirmationsTextView.setText(transaction.getCategory());
+            viewHolder.confirmationsTextView.setText(transaction.getCategory());
         }else {
-            confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
             if(transaction.getConfirmations() == 0){
-                confirmationsTextView.setText("Unconfirmed");
-                confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.confirmationsTextView.setText("Unconfirmed");
+                viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
             }else if(transaction.getConfirmations() >= 6){
-                confirmationsTextView.setText("Confirmed");
+                viewHolder.confirmationsTextView.setText("Confirmed");
             }else{
-                confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
+                viewHolder.confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
             }
         }
-        dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
-        nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-        debitAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         return convertView;
     }
 }
