@@ -383,10 +383,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         if(mCamera!=null)
             mCamera.setPreviewCallback(SendFragment.this);
         Camera.Parameters params = mCamera.getParameters();
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
+        if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         mCamera.setParameters(params);
 
-//        new FakeCapturePhoto().execute();
     }
 
     @Override
