@@ -127,18 +127,19 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     hideNavBar();
                     keyBoardUp = true;
-                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment){
+                    if(mNavStacks[mNavFragmentId].peek() instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).hideDoneCancel();
                     }
                 } else {
+                    System.out.println("keyboard not up anymore");
                     if(keyBoardUp) {
                         showNavBar();
-                        keyBoardUp = false;
                     }
-                    if(mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1) instanceof CategoryFragment && keyBoardUp){
+                    if(mNavStacks[mNavFragmentId].peek() instanceof CategoryFragment && keyBoardUp){
+                        System.out.println("donecancel should be back up");
                         ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).showDoneCancel();
-                        keyBoardUp = false;
                     }
+                    keyBoardUp = false;
                 }
             }
         });

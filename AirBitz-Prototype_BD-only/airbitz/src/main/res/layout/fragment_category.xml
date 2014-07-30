@@ -69,8 +69,9 @@
             android:textColor="#000000"
             android:textColorHint="#44000000"
             android:imeOptions="actionDone"
-            android:inputType="textAutoComplete"
+            android:inputType="textAutoComplete|textNoSuggestions"
             android:drawableLeft="@drawable/ico_search"
+            android:selectAllOnFocus="true"
             android:drawablePadding="12.6dp"
             android:textCursorDrawable="@drawable/bold_cursor"
             android:paddingLeft="12.6dp"
@@ -92,7 +93,7 @@
                 android:paddingLeft="12.6dp"
                 android:textColor="#000000"
                 android:imeOptions="actionDone"
-                android:inputType="textAutoComplete"
+                android:inputType="textAutoComplete|textNoSuggestions"
                 android:textColorHint="#44000000"
                 android:textCursorDrawable="@drawable/bold_cursor"
                 android:layout_toLeftOf="@+id/settings_category_button_add"
@@ -104,7 +105,7 @@
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:background="#0000FF"/>
+                android:background="@drawable/btn_add_category"/>
         </RelativeLayout>
 
     </LinearLayout>
@@ -132,7 +133,7 @@
         android:paddingTop="6.3dp"
         android:gravity="center"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF">
+        android:background="@drawable/bg_tab_bar">
 
         <Button
             android:id="@+id/button_cancel"
@@ -161,6 +162,26 @@
         android:orientation="horizontal"
         android:focusable="true"
         android:focusableInTouchMode="true" />
+
+
+    <RelativeLayout
+        android:id="@+id/add_popup_triangle_container"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:layout_below="@+id/layout_search_container"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/add_popup_triangle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-25dp"
+            android:background="@drawable/blue_triangle"/>
+    </RelativeLayout>
     
     <LinearLayout
         android:id="@+id/add_popup_container"
@@ -168,9 +189,9 @@
         android:layout_height="189dp"
         android:orientation="vertical"
         android:padding="6.3dp"
-        android:background="#0000FF"
+        android:background="@drawable/category_popup"
         android:visibility="gone"
-        android:layout_below="@+id/layout_search_container">
+        android:layout_below="@+id/add_popup_triangle_container">
 
         <TextView
             android:id="@+id/add_popup_expense"
@@ -228,14 +249,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_header"
-        android:background="#0000FF"
+        android:background="@android:color/transparent"
         android:visibility="gone">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:background="#FFFFFF"
-            android:layout_margin="6.3dp"
-            android:layout_above="@+id/item_popup_edittext_container">
+            android:background="@drawable/category_popup"
+            android:paddingTop="6.3dp"
+            android:layout_above="@+id/item_popup_listview_triangle">
             <LinearLayout
                 android:id="@+id/item_popup_container"
                 android:layout_width="match_parent"
@@ -280,9 +301,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="#DD000000"/>
+                <TextView
+                    android:id="@+id/item_popup_exchange"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="#000000"
+                    android:text="Exchange:"
+                    android:gravity="center_vertical"/>
 
             </LinearLayout>
         </ScrollView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:clickable="true"
+            android:background="@android:color/transparent"
+            android:layout_above="@+id/item_popup_edittext_container"/>
+        <View
+            android:id="@+id/item_popup_listview_triangle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:rotation="180"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-25dp"
+            android:background="@drawable/blue_triangle"
+            android:layout_above="@+id/item_popup_edittext_container"/>
         <RelativeLayout
             android:id="@+id/item_popup_edittext_container"
             android:layout_width="match_parent"
@@ -310,7 +356,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="9.45dp"
-                android:background="#FF0000"/>
+                android:background="@drawable/btn_delete_category"/>
             <View
                 android:layout_width="0px"
                 android:layout_height="0px"
