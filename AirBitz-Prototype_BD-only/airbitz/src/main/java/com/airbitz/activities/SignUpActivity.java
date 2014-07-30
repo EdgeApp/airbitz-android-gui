@@ -366,12 +366,12 @@ public class SignUpActivity extends Activity {
                     if (result == tABC_CC.ABC_CC_Ok)
                     {
                         if (mMode == CHANGE_PIN) {
-                            showMessageAndFinish("PIN successfully changed.");
+                            showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
                         } else {
-                            showMessageAndFinish("Password successfully changed.");
+                            showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
                         }
                     } else {
-                        showMessageAndFinish("Change failed.");
+                        showMessageAndFinish(getResources().getString(R.string.activity_signup_change_bad));
                     }
                 }
     }
@@ -391,7 +391,7 @@ public class SignUpActivity extends Activity {
             if (mUserNameEditText.getText().toString().length() == 0)
             {
                 bUserNameFieldIsValid = false;
-                showMessage("You must enter a user name");
+                showMessage(getResources().getString(R.string.activity_signup_enter_username));
             }
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old password in this case
@@ -400,7 +400,7 @@ public class SignUpActivity extends Activity {
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                showMessage("Incorrect password");
+                showMessage(getResources().getString(R.string.activity_signup_incorrect_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -420,12 +420,12 @@ public class SignUpActivity extends Activity {
             if (!mGoodPassword)
             {
                 bNewPasswordFieldsAreValid = false;
-                showMessage("Insufficient Password");
+                showMessage(getResources().getString(R.string.activity_signup_insufficient_password));
             }
             else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
             {
                 bNewPasswordFieldsAreValid = false;
-                showMessage("Password does not match re-entered password");
+                showMessage(getResources().getString(R.string.activity_signup_passwords_dont_match));
             }
         }
 
@@ -447,7 +447,7 @@ public class SignUpActivity extends Activity {
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
             {
                 bpinNameFieldIsValid = false;
-                showMessage("Withdrawl PIN must be 4 digits");
+                showMessage(getResources().getString(R.string.activity_signup_insufficient_pin));
             }
         }
 
@@ -456,38 +456,41 @@ public class SignUpActivity extends Activity {
 
 
     private String GetCrackString(double secondsToCrack) {
-        String crackString = "Time to crack: ";
+        String crackString = getResources().getString(R.string.activity_signup_time_to_crack);
         if(secondsToCrack < 60.0)
         {
-            crackString += String.format("%.2f seconds", secondsToCrack);
+            crackString += String.format("%.2f ", secondsToCrack);
+            crackString += getResources().getString(R.string.activity_signup_seconds);
         }
         else if(secondsToCrack < 3600)
         {
-            crackString += String.format("%.2f minutes", secondsToCrack / 60.0);
+            crackString += String.format("%.2f ", secondsToCrack / 60.0);
+            crackString += getResources().getString(R.string.activity_signup_minutes);
         }
         else if(secondsToCrack < 86400)
         {
-            crackString += String.format("%.2f hours", secondsToCrack / 3600.0);
+            crackString += String.format("%.2f ", secondsToCrack / 3600.0);
+            crackString += getResources().getString(R.string.activity_signup_hours);
         }
         else if(secondsToCrack < 604800)
         {
-            crackString += String.format("%.2f days", secondsToCrack / 86400.0);
-        }
-        else if(secondsToCrack < 604800)
-        {
-            crackString += String.format("%.2f days", secondsToCrack / 86400.0);
+            crackString += String.format("%.2f ", secondsToCrack / 86400.0);
+            crackString += getResources().getString(R.string.activity_signup_days);
         }
         else if(secondsToCrack < 2419200)
         {
-            crackString += String.format("%.2f weeks", secondsToCrack / 604800.0);
+            crackString += String.format("%.2f ", secondsToCrack / 604800.0);
+            crackString += getResources().getString(R.string.activity_signup_weeks);
         }
         else if(secondsToCrack < 29030400)
         {
-            crackString += String.format("%.2f months", secondsToCrack / 2419200.0);
+            crackString += String.format("%.2f ", secondsToCrack / 2419200.0);
+            crackString += getResources().getString(R.string.activity_signup_months);
         }
         else
         {
-            crackString += String.format("%.2f years", secondsToCrack / 29030400.0);
+            crackString += String.format("%.2f ", secondsToCrack / 29030400.0);
+            crackString += getResources().getString(R.string.activity_signup_years);
         }
         return crackString;
     }
