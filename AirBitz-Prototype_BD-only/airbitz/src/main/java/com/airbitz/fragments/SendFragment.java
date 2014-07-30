@@ -386,6 +386,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
         if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         mCamera.setParameters(params);
 
     }
