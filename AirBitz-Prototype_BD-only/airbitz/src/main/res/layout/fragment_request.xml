@@ -259,7 +259,7 @@
         <Button
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/button_email"
+            android:id="@+id/fragment_exportsaving_button_email"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             android:layout_toRightOf="@+id/button_ble"/>
@@ -269,7 +269,7 @@
             android:id="@+id/button_qr_code"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/button_email"/>
+            android:layout_toRightOf="@+id/fragment_exportsaving_button_email"/>
         
     </RelativeLayout>
 

@@ -203,8 +203,8 @@
     <string name="export_csv_title">CSV</string>
     <string name="export_quicken_title">Quicken</string>
     <string name="export_quickbooks_title">Quickbooks</string>
-    <string name="export_pdf_title">View</string>
-    <string name="export_print_title">Print</string>
+    <string name="export_pdf_title">PDF</string>
+    <string name="export_print_title">Wallet Private Seed (advanced)</string>
 
     <!-- Strings for Export Saving fragment -->
     <string name="export_saving_title">Title?</string>

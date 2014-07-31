@@ -14,8 +14,8 @@
         android:background="#40000000"
         android:padding="4dp">
 
-        <ImageButton
-            android:id="@+id/button_back"
+        <com.airbitz.objects.HighlightOnPressImageButton
+            android:id="@+id/fragment_exportsaving_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:scaleType="centerCrop"
@@ -39,8 +39,8 @@
             android:textSize="16sp"/>
 
 
-        <ImageButton
-            android:id="@+id/button_help"
+        <com.airbitz.objects.HighlightOnPressImageButton
+            android:id="@+id/fragment_exportsaving_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:scaleType="centerCrop"
@@ -53,297 +53,382 @@
             android:contentDescription="@string/string_help_button"/>
     </RelativeLayout>
 
-<ScrollView
-    android:id="@+id/layout_scroll"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/layout_header"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="5dp">
-
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/layout_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_header"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp">
 
         <RelativeLayout
-            android:id="@+id/layout_export_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edge_black_transparent_30"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center_horizontal"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingRight="10dp">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/layout_account"
+            <RelativeLayout
+                android:id="@+id/layout_export_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:id="@+id/textview_account"
-                    android:layout_width="250dp"
-                    android:layout_height="match_parent"
-                    android:text="Account:"
-                    android:gravity="right|center_vertical"
-                    android:textColor="@android:color/white"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="15dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="right"
-                    android:textStyle="bold"/>
-
-                <EditText
-                    android:id="@+id/edittext_account"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textview_account"
-                    android:text="Checking"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    android:gravity="left|center_vertical"
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:textSize="15dp"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/layout_from"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/layout_account"
-                android:weightSum="2"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:id="@+id/textview_from"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:text="From:"
-                    android:gravity="right"
-                    android:textColor="@android:color/white"
-                    android:layout_below="@id/textview_account"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="15dp"
-                    android:layout_weight="1"
-                    android:textStyle="bold"/>
-
-                <EditText
-                    android:id="@+id/edittext_from"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textview_account"
-                    android:text="10/15/2014"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    android:gravity="left|center_vertical"
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:textSize="15dp"
-                    android:layout_weight="1"/>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_to"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/layout_from"
-                android:layout_marginBottom="5dp"
+                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:weightSum="2">
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingRight="10dp"
+                android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/textview_to"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:text="To:"
-                    android:textColor="@android:color/white"
-                    android:layout_below="@id/textview_from"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="15dp"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:textStyle="bold"/>
-
-
-                <EditText
-                    android:id="@+id/edittext_to"
+                <LinearLayout
+                    android:id="@+id/layout_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textview_from"
-                    android:text="10/15/2014"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    android:gravity="left|center_vertical"
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:textSize="15dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/textview_account"
+                        android:layout_width="250dp"
+                        android:layout_height="match_parent"
+                        android:text="Account:"
+                        android:gravity="right|center_vertical"
+                        android:textColor="@android:color/white"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="15dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:id="@+id/edittext_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview_account"
+                        android:text="Checking"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:gravity="left|center_vertical"
+                        android:textColor="@android:color/white"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:textSize="15dp"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/layout_account"
+                    android:weightSum="2"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/textview_from"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:text="From:"
+                        android:gravity="right"
+                        android:textColor="@android:color/white"
+                        android:layout_below="@id/textview_account"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="15dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:id="@+id/edittext_from"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview_account"
+                        android:text="10/15/2014"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:gravity="left|center_vertical"
+                        android:textColor="@android:color/white"
+                        android:layout_marginLeft="5dp"
+                        android:drawableLeft="@drawable/ico_calendar"
+                        android:layout_marginRight="5dp"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:textSize="15dp"
+                        android:layout_weight="1"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/layout_from"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/textview_to"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:text="To:"
+                        android:textColor="@android:color/white"
+                        android:layout_below="@id/textview_from"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="15dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textStyle="bold"/>
+
+
+                    <EditText
+                        android:id="@+id/edittext_to"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview_from"
+                        android:text="10/15/2014"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:gravity="left|center_vertical"
+                        android:textColor="@android:color/white"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:textSize="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_export_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_export_data"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/export_account_this_week"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/button_this_week"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:background="@drawable/bg_btn_orange"
                     android:layout_weight="1"/>
 
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_account_this_month"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/button_this_month"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="15sp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/btn_inactive"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/export_account_this_year"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:id="@+id/button_this_year"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/btn_inactive"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:id="@+id/layout_data"
+                android:layout_marginLeft="12.6dp"
+                android:layout_marginRight="12.6dp"
+                android:layout_marginTop="18.9dp"
+                android:layout_marginBottom="6.3dp"
+                android:layout_below="@id/layout_export_period">
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_print"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Print"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_top"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"
+                    android:gravity="center_vertical"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_print"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_print"
+                    android:padding="12.6dp"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_sd_card"
+                    android:layout_below="@id/fragment_exportsaving_button_print"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Save to SD card"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_standard"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_sd_card"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_sdcard"
+                    android:padding="12.6dp"
+                    android:layout_below="@id/fragment_exportsaving_button_print"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_email"
+                    android:layout_below="@id/fragment_exportsaving_button_sd_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Email"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_standard"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_email"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_email_small"
+                    android:padding="12.6dp"
+                    android:layout_below="@id/fragment_exportsaving_button_sd_card"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_google_drive"
+                    android:layout_below="@id/fragment_exportsaving_button_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Google Drive"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_standard"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_google_drive"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_gdrive"
+                    android:padding="12.6dp"
+                    android:layout_below="@id/fragment_exportsaving_button_email"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_dropbox"
+                    android:layout_below="@id/fragment_exportsaving_button_google_drive"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="Dropbox"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_standard"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_dropbox"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_dropbox"
+                    android:padding="12.6dp"
+                    android:layout_below="@id/fragment_exportsaving_button_google_drive"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_exportsaving_button_view"
+                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="View"
+                    android:textColor="#005f96"
+                    android:background="@drawable/wallet_list_bottom"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:gravity="center_vertical"
+                    android:paddingRight="18.9dp"
+                    android:paddingLeft="56.7dp"/>
+                <ImageView
+                    android:id="@+id/fragment_exportsaving_image_view"
+                    android:layout_width="44.1dp"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ico_view"
+                    android:padding="12.6dp"
+                    android:layout_below="@id/fragment_exportsaving_button_dropbox"/>
+            </RelativeLayout>
+
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edge_blue"
-            android:id="@+id/layout_data"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="5dp"
-            android:layout_below="@id/layout_export_data">
-
-            <Button
-                android:id="@+id/button_print"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Print"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ico_print"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:inputType="text|textCapSentences|textMultiLine"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_1"
-                android:layout_below="@id/button_print"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-
-            <Button
-                android:id="@+id/button_email"
-                android:layout_below="@id/separator_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ico_email_small"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_2"
-                android:layout_below="@id/button_email"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-            <Button
-                android:id="@+id/button_google_drive"
-                android:layout_below="@id/separator_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Google Drive"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ico_gdrive"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_4"
-                android:layout_below="@id/button_google_drive"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-            <Button
-                android:id="@+id/button_dropbox"
-                android:layout_below="@id/separator_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dropbox"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ico_dropbox"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-            <LinearLayout
-                android:id="@+id/separator_5"
-                android:layout_below="@id/button_dropbox"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-            <Button
-                android:id="@+id/button_view"
-                android:layout_below="@id/separator_5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="View"
-                android:textColor="#005f96"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ico_view"
-                android:drawableRight="@drawable/arrow_right"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:padding="20dp"
-                android:focusable="false"/>
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_below="@id/layout_data">
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</ScrollView>
+    </ScrollView>
 
 </RelativeLayout>
