@@ -595,7 +595,7 @@ public class SignUpActivity extends Activity {
         String[] defaults = getResources().getStringArray(R.array.category_defaults);
 
         for(String cat : defaults)
-            mCoreAPI.addCategory(cat, null);
+            mCoreAPI.addCategory(cat);
 
         List<String> cats = mCoreAPI.loadCategories();
         if(cats.size()==0 || cats.get(0).equals(defaults)) {

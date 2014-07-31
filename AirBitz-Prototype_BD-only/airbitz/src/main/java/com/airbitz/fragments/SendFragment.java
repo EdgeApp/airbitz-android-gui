@@ -116,12 +116,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private boolean mFlashOn = false;
 
     private CoreAPI mCoreAPI;
+    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
+        if(mCoreAPI==null)
+            mCoreAPI = CoreAPI.getApi();
+
+        mActivity = (NavigationActivity) getActivity();
     }
 
     @Override
@@ -130,7 +134,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mWalletList = new ArrayList<String>();
         addWalletNamesToList();
 
         mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
@@ -163,29 +166,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         walletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
-
-        Bundle bundle = getArguments();
-        if(bundle!=null) {
-            String from = bundle.getString(UUID); // From a wallet with this UUID
-            if(from!=null) {
-                mFromWallet = mCoreAPI.getWallet(from);
-                if(mFromWallet!=null) {
-                    for(int i=0; i<mWallets.size(); i++) {
-                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
-                            final int finalI = i;
-                            walletSpinner.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    walletSpinner.setSelection(finalI);
-                                }
-                            });
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
 
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -311,6 +291,34 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
 
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null) {
+            String uuid = bundle.getString(UUID); // From a wallet with this UUID
+            if(uuid!=null) {
+                mFromWallet = mCoreAPI.getWallet(uuid);
+                if(mFromWallet!=null) {
+                    for(int i=0; i<mWallets.size(); i++) {
+                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
+                            final int finalI = i;
+                            walletSpinner.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    walletSpinner.setSelection(finalI);
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals("URI")) {
+                String uriString = bundle.getString(NavigationActivity.URI);
+                bundle.putString(NavigationActivity.URI, ""); //to clear the URI after reading once
+                if(!uriString.isEmpty())
+                    CheckURIResults(uriString);
+            }
+        }
+
 
         return mView;
     }
@@ -487,12 +495,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
-        bundle.putString(FROM_WALLET_NAME, ((Wallet)walletSpinner.getSelectedItem()).getName());
+        bundle.putString(FROM_WALLET_NAME, ((Wallet) walletSpinner.getSelectedItem()).getName());
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
+        if(mActivity!=null)
+            mActivity.pushFragment(fragment);
     }
 
-    private boolean CheckURIResults(String results)
+    public boolean CheckURIResults(String results)
     {
         boolean bSuccess = false;
 
@@ -511,39 +520,28 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 long amountSatoshi = core.longp_value(p);
 
-                if (uriAddress!=null)
-                {
+                if (uriAddress!=null) {
                     Log.i("SendFragment", "Send address: "+uriAddress);
                     Log.i("SendFragment", "Send amount: "+amountSatoshi);
 
                     String label = uri.getSzLabel();
-
                     String message = uri.getSzMessage();
-                    if (message!=null)
-                    {
+                    if (message!=null) {
                         Log.i("SendFragment", "    message: "+message);
                     }
                     bSuccess = true;
 
-                    if(mHandler != null)
-                        mHandler.removeCallbacks(cameraDelayRunner);
-                    stopCamera();
-
                     GotoSendConfirmation(uriAddress, amountSatoshi, label, false);
                 }
-                else
-                {
+                else {
                     Log.i("SendFragment", "no address: ");
                     bSuccess = false;
                 }
             }
-            else
-            {
+            else {
                 Log.i("SendFragment", "URI parse failed!");
                 bSuccess = false;
             }
-
-//            ABC_FreeURIInfo(uri);
 
         return bSuccess;
     }
@@ -599,6 +597,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public void addWalletNamesToList(){
         List<Wallet> temp = mCoreAPI.getCoreWallets();
         mWallets = new ArrayList<Wallet>();
+        mWalletList = new ArrayList<String>();
         for(Wallet wallet: temp){
             if(!wallet.isArchived()){
                 mWallets.add(wallet);
