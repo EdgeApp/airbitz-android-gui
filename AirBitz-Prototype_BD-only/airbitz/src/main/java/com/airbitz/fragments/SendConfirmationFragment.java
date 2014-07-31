@@ -127,7 +127,9 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mLabel = bundle.getString(SendFragment.LABEL);
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
+            if(mIsUUID) {
+                mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
+            }
         }
     }
 
