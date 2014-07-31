@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,7 +34,10 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.utils.Common;
+
+import java.util.Arrays;
 
 /**
  * Created on 2/12/14.
@@ -51,35 +57,35 @@ public class SettingFragment extends Fragment {
     private RadioButton mmBitcoinButton;
     private RadioButton muBitcoinButton;
 
-    private Button mChangePasswordButton;
-    private Button mChangePINButton;
-    private Button mChangeRecoveryButton;
+    private HighlightOnPressButton mChangePasswordButton;
+    private HighlightOnPressButton mChangePINButton;
+    private HighlightOnPressButton mChangeRecoveryButton;
 
     private Switch mSendNameSwitch;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
 
-    private Button mAutoLogoffButton;
-    private Button mLanguageButton;
-    private Button mDefaultCurrencyButton;
+    private HighlightOnPressButton mAutoLogoffButton;
+    private HighlightOnPressButton mLanguageButton;
+    private HighlightOnPressButton mDefaultCurrencyButton;
 
     private TextView mAccountTitle;
 
-    private Button mUSDollarButton;
-    private Button mCanadianDollarButton;
-    private Button mEuroButton;
-    private Button mPesoButton;
-    private Button mYuanButton;
+    private HighlightOnPressButton mUSDollarButton;
+    private HighlightOnPressButton mCanadianDollarButton;
+    private HighlightOnPressButton mEuroButton;
+    private HighlightOnPressButton mPesoButton;
+    private HighlightOnPressButton mYuanButton;
 
-    private Button mLogoutButton;
+    private HighlightOnPressButton mLogoutButton;
 
     private NumberPicker mNumberPicker;
     private NumberPicker mTextPicker;
     private int mNumberSelection;
     private int mTextSelection;
     private int mAutoLogoffMinutes;
-    private String[] mAutoLogoffStrings = { "Day", "Hour", "Minute" };
+    private String[] mAutoLogoffStrings = { "Day(s)", "Hour(s)", "Minute(s)" };
 
     private String[] mLanguageItems;
     private String[] mCurrencyItems;
@@ -146,25 +152,25 @@ public class SettingFragment extends Fragment {
         mmBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_mbitcoin);
         muBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_ubitcoin);
 
-        mChangePasswordButton = (Button) mView.findViewById(R.id.settings_button_change_password);
-        mChangePINButton = (Button) mView.findViewById(R.id.settings_button_pin);
-        mChangeRecoveryButton = (Button) mView.findViewById(R.id.settings_button_recovery);
+        mChangePasswordButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_change_password);
+        mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
+        mChangeRecoveryButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_recovery);
 
         mSendNameSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
-        mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
-        mLanguageButton = (Button) mView.findViewById(R.id.settings_button_language);
-        mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
+        mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
+        mLanguageButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_language);
+        mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
 
-        mUSDollarButton = (Button) mView.findViewById(R.id.settings_button_usd);
-        mCanadianDollarButton = (Button) mView.findViewById(R.id.settings_button_canadian);
-        mEuroButton = (Button) mView.findViewById(R.id.settings_button_euro);
-        mPesoButton = (Button) mView.findViewById(R.id.settings_button_peso);
-        mYuanButton = (Button) mView.findViewById(R.id.settings_button_yuan);
+        mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
+        mCanadianDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_canadian);
+        mEuroButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_euro);
+        mPesoButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_peso);
+        mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
 
-        mLogoutButton = (Button) mView.findViewById(R.id.settings_button_logout);
+        mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
 
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,7 +247,7 @@ public class SettingFragment extends Fragment {
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);
+                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);//TODO for all exhange buttons, sub core call for default for 0
             }
         });
 
@@ -291,6 +297,8 @@ public class SettingFragment extends Fragment {
             e.printStackTrace();
         }
 
+        setUserNameState(mSendNameSwitch.isChecked());
+
         return mView;
     }
 
@@ -319,7 +327,7 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mAutoLogoffMinutes = settings.getMinutesAutoLogout();
-        int amount = 0;
+        int amount;
         String strType;
         if (mAutoLogoffMinutes < MAX_TIME_VALUE) {
             strType = "minute";
@@ -421,47 +429,69 @@ public class SettingFragment extends Fragment {
         if(on) {
             mFirstEditText.setEnabled(true);
             mFirstEditText.setTextColor(getResources().getColor(android.R.color.black));
+            mFirstEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
+            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
             mLastEditText.setEnabled(true);
             mLastEditText.setTextColor(getResources().getColor(android.R.color.black));
+            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
+            mLastEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
             mNicknameEditText.setEnabled(true);
             mNicknameEditText.setTextColor(getResources().getColor(android.R.color.black));
+            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
+            mNicknameEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
         } else {
             mFirstEditText.setEnabled(false);
             mFirstEditText.setTextColor(getResources().getColor(R.color.disabled_color));
+            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
+            mFirstEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mLastEditText.setEnabled(false);
             mLastEditText.setTextColor(getResources().getColor(R.color.disabled_color));
+            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
+            mLastEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mNicknameEditText.setEnabled(false);
             mNicknameEditText.setTextColor(getResources().getColor(R.color.disabled_color));
+            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
+            mNicknameEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
         }
     }
 
     private void showAutoLogoffDialog() {
-        LayoutInflater inflater = (LayoutInflater)
-                getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View npView = inflater.inflate(R.layout.dialog_auto_logoff, null);
-        mNumberPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_number_picker);
-        mTextPicker = (NumberPicker) npView.findViewById(R.id.dialog_auto_logout_text_picker);
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        View blankView = new View(getActivity());
+        LinearLayout.LayoutParams bLP = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.two_mm), ViewGroup.LayoutParams.MATCH_PARENT);
+        blankView.setLayoutParams(bLP);
+        LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        linearLayout.setLayoutParams(lLP);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        mNumberPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
+        mTextPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
 
         mTextPicker.setMaxValue(2);
         mTextPicker.setMinValue(0);
         mTextPicker.setDisplayedValues( mAutoLogoffStrings);
+        mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mNumberPicker.setMaxValue(MAX_TIME_VALUE);
-        mNumberPicker.setMinValue(0);
+        mNumberPicker.setMinValue(1);
 
         String[] current = mAutoLogoffButton.getText().toString().split(" ");
         if(current[0]!=null && current[1]!=null) {
             mNumberPicker.setValue(Integer.valueOf(current[0]));
             String temp = current[1];
             for(int i=0; i<mAutoLogoffStrings.length; i++) {
-                if(mAutoLogoffStrings[i].contains(temp)) {
+                if(mAutoLogoffStrings[i].contains(temp+"(s)")) {
                     mTextPicker.setValue(i);
                 }
             }
         }
 
-        AlertDialog frag = new AlertDialog.Builder(getActivity())
+        linearLayout.addView(mNumberPicker);
+        linearLayout.addView(blankView);
+        linearLayout.addView(mTextPicker);
+
+        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
                 .setTitle(getResources().getString(R.string.dialog_title))
-                .setView(npView)
+                .setView(linearLayout)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -474,7 +504,7 @@ public class SettingFragment extends Fragment {
                                 else if (mTextSelection==2)
                                     mAutoLogoffMinutes = mNumberSelection;
 
-                                mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[Integer.valueOf(mTextSelection)]);
+                                mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[mTextSelection].substring(0, mAutoLogoffStrings[mTextSelection].indexOf('(')));
                             }
                         }
                 )
@@ -489,21 +519,25 @@ public class SettingFragment extends Fragment {
     }
 
     private void showSelectorDialog(final Button button, final String[] items, String title, int index) {
-        LayoutInflater inflater = (LayoutInflater)
-                getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View npView = inflater.inflate(R.layout.dialog_text_selector, null);
-        mTextPicker = (NumberPicker) npView.findViewById(R.id.dialog_text_picker);
 
-        mTextPicker.setMaxValue(items.length-1);
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        linearLayout.setLayoutParams(lLP);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        mTextPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
+
+        mTextPicker.setMaxValue(items.length - 1);
         mTextPicker.setMinValue(0);
         mTextPicker.setValue(index);
+        mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mTextPicker.setDisplayedValues(items);
         mTextPicker.setOnValueChangedListener( new NumberPicker.
                 OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int
                     oldVal, int newVal) {
-                if(mCurrencyItems.equals(items)) {
+                if(Arrays.equals(mCurrencyItems, items)) {
                     mCurrencyNum = mCoreAPI.getCurrencyNumbers()[newVal];
                     mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
                     mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
@@ -511,16 +545,17 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        linearLayout.addView(mTextPicker);
 
-        AlertDialog frag = new AlertDialog.Builder(getActivity())
+        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
                 .setTitle(title)
-                .setView(npView)
+                .setView(linearLayout)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
-                            int num = Integer.valueOf(mTextPicker.getValue());
                             public void onClick(DialogInterface dialog, int whichButton) {
-//                                button.setText(items[num]);
-//                                if(mCurrencyItems.equals(items)) {
+                                  int num = mTextPicker.getValue();
+                                  button.setText(items[num]);
+//                                if(mCurrencyItems.equals(items)) {//TODO?
 //                                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[num];
 //                                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
 //                                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());

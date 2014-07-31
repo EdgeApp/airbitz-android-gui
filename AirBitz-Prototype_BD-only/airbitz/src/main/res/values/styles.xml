@@ -91,4 +91,9 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="AlertDialogCustomLight" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">200dp</item>
+    </style>
+
 </resources>
