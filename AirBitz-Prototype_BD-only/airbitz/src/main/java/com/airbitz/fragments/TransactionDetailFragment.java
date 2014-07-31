@@ -592,7 +592,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCoreAPI.addCategory(mCategoryEdittext.getText().toString(), mCoreAPI.loadCategories());
+                mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
                 getActivity().onBackPressed();
             }
         });

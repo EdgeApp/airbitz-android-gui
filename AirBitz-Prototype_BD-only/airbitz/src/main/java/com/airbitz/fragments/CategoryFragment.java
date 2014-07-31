@@ -313,6 +313,7 @@ public class CategoryFragment extends Fragment {
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SaveAllChanges();
                 getActivity().onBackPressed();
             }
         });
@@ -428,8 +429,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mCurrentCategories.remove(currentPosPopUp.get(0).intValue());
-                String removed = mCategories.remove(currentPosPopUp.get(1).intValue());
-                mCoreAPI.removeCategory(removed);
+                mCategories.remove(currentPosPopUp.get(1).intValue());
                 currentPosPopUp.clear();
                 mCategoryAdapter.notifyDataSetChanged();
                 mItemPopUpContainer.setVisibility(View.GONE);
@@ -466,7 +466,6 @@ public class CategoryFragment extends Fragment {
         String newCat;
         if(!mAddField.getText().toString().substring(mAddField.getText().toString().indexOf(':')+1).trim().isEmpty()){
             newCat = mAddField.getText().toString();
-            mCoreAPI.addCategory(newCat, mCategories); // add if not in list already
             mCategories.add(newCat);
             if(newCat.toLowerCase().contains(mSearchField.getText().toString().toLowerCase())){
                 mCurrentCategories.add(newCat);
@@ -490,5 +489,20 @@ public class CategoryFragment extends Fragment {
 
     public void hideDoneCancel(){
         mDoneCancelContainer.setVisibility(View.GONE);
+    }
+
+    private void SaveAllChanges() {
+        List<String> coreCategories = mCoreAPI.loadCategories();
+        // Remove any categories first
+        for(String category : coreCategories) {
+            if(!mCategories.contains(category)) {
+                mCoreAPI.removeCategory(category);
+            }
+        }
+
+        // Add any categories
+        for(String category : mCategories) {
+            mCoreAPI.addCategory(category);
+        }
     }
 }

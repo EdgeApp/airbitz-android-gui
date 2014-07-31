@@ -1751,9 +1751,10 @@ public class CoreAPI {
         return categories;
     }
 
-    public void addCategory(String strCategory, List<String> categories) {
+    public void addCategory(String strCategory) {
         // check and see that it doesn't already exist
-        if (categories == null || !categories.contains(strCategory)) {
+        List<String> categories = loadCategories();
+        if (categories != null && !categories.contains(strCategory)) {
             // add the category to the core
             Common.LogD(TAG, "Adding category: "+strCategory);
             tABC_Error Error = new tABC_Error();
@@ -1762,10 +1763,10 @@ public class CoreAPI {
     }
 
     public void removeCategory(String strCategory) {
-            // add the category to the core
-            Common.LogD(TAG, "Remove category: "+strCategory);
-            tABC_Error Error = new tABC_Error();
-            core.ABC_RemoveCategory(AirbitzApplication.getUsername(), strCategory, Error);
+        Common.LogD(TAG, "Remove category: "+strCategory);
+        tABC_Error Error = new tABC_Error();
+        tABC_CC result = core.ABC_RemoveCategory(AirbitzApplication.getUsername(), strCategory, Error);
+        boolean test= result==tABC_CC.ABC_CC_Ok;
     }
 
     public boolean isTestNet()  {
