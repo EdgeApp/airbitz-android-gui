@@ -420,18 +420,18 @@ public class SettingFragment extends Fragment {
     private void setUserNameState(boolean on) {
         if(on) {
             mFirstEditText.setEnabled(true);
-            mFirstEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent_30_padded);
+            mFirstEditText.setTextColor(getResources().getColor(android.R.color.black));
             mLastEditText.setEnabled(true);
-            mLastEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent_30_padded);
+            mLastEditText.setTextColor(getResources().getColor(android.R.color.black));
             mNicknameEditText.setEnabled(true);
-            mNicknameEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent_30_padded);
+            mNicknameEditText.setTextColor(getResources().getColor(android.R.color.black));
         } else {
             mFirstEditText.setEnabled(false);
-            mFirstEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent);
+            mFirstEditText.setTextColor(getResources().getColor(R.color.disabled_color));
             mLastEditText.setEnabled(false);
-            mLastEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent);
+            mLastEditText.setTextColor(getResources().getColor(R.color.disabled_color));
             mNicknameEditText.setEnabled(false);
-            mNicknameEditText.setBackgroundResource(R.drawable.rounded_edge_black_transparent);
+            mNicknameEditText.setTextColor(getResources().getColor(R.color.disabled_color));
         }
     }
 

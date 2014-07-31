@@ -4,7 +4,6 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -82,8 +81,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_denomination_title"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18dp" />
 
                 <RadioGroup
                     android:id="@+id/settings_denomination_denomination_group"
@@ -94,13 +92,13 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/rounded_edge_blue">
+                    android:background="@android:color/transparent">
 
                     <RadioButton
                         android:id="@+id/settings_denomination_buttons_bitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_top"
                         android:drawableRight="@android:drawable/btn_radio"
                         android:button="@null"
                         android:drawablePadding="15dp"
@@ -111,20 +109,14 @@
                         android:paddingTop="13dp"
                         android:checked="true"
                         android:text="@string/settings_denomination_buttons_bitcoin"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
 
                     <RadioButton
                         android:id="@+id/settings_denomination_buttons_mbitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_standard"
                         android:drawablePadding="20dp"
                         android:drawableRight="@android:drawable/btn_radio"
                         android:button="@null"
@@ -134,20 +126,14 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_denomination_buttons_mbitcoin"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
 
                     <RadioButton
                         android:id="@+id/settings_denomination_buttons_ubitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_bottom"
                         android:drawableRight="@android:drawable/btn_radio"
                         android:button="@null"
                         android:gravity="left"
@@ -156,7 +142,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_denomination_buttons_ubitcoin"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
 
                 </RadioGroup>
@@ -180,8 +166,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_account_title"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18dp" />
 
                 <LinearLayout
                     android:id="@+id/credentials_buttons"
@@ -192,13 +177,13 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/rounded_edge_blue">
+                    android:background="@android:color/transparent">
 
                     <Button
                         android:id="@+id/settings_button_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_top"
                         android:drawableRight="@drawable/arrow_right"
                         android:gravity="left"
                         android:paddingBottom="13dp"
@@ -206,20 +191,14 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_change_password"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
 
                     <Button
                         android:id="@+id/settings_button_pin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_standard"
                         android:drawableRight="@drawable/arrow_right"
                         android:gravity="left"
                         android:paddingBottom="13dp"
@@ -227,20 +206,14 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_pin"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
 
                     <Button
                         android:id="@+id/settings_button_recovery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_bottom"
                         android:drawableRight="@drawable/arrow_right"
                         android:gravity="left"
                         android:paddingBottom="13dp"
@@ -248,7 +221,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_recovery"
-                        android:textColor="@android:color/black"
+                        android:textColor="#CC333333"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -272,8 +245,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_user_title"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18dp" />
 
                 <LinearLayout
                     android:id="@+id/user_buttons"
@@ -284,12 +256,12 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/rounded_edge_blue">
+                    android:background="@android:color/transparent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_top"
                         android:orientation="horizontal" >
 
                         <Switch
@@ -300,7 +272,7 @@
                             android:textOn=""
                             android:textOff=""
                             android:text="@string/settings_button_send_user_info"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="10dp"
@@ -312,76 +284,76 @@
                             android:checked="false" />
 
                     </RelativeLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <EditText
-                        android:id="@+id/settings_edit_first_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent"
-                        android:gravity="left"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:hint="@string/settings_edit_first_name"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:singleLine="true"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <EditText
-                        android:id="@+id/settings_edit_last_name"
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent"
-                        android:gravity="left"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:paddingTop="8dp"
-                        android:hint="@string/settings_edit_last_name"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:singleLine="true" />
-
+                        android:orientation="horizontal"
+                        android:background="@drawable/wallet_list_standard">
+                        <EditText
+                            android:id="@+id/settings_edit_first_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="31.5dp"
+                            android:background="@drawable/bg_edittext"
+                            android:gravity="left|center_vertical"
+                            android:enabled="false"
+                            android:layout_marginBottom="6.3dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="6.3dp"
+                            android:paddingLeft="9.45dp"
+                            android:hint="@string/settings_edit_first_name"
+                            android:textColorHint="#DDDDDD"
+                            android:textColor="#999999"
+                            android:textSize="14sp"
+                            android:singleLine="true"/>
+                    </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <EditText
-                        android:id="@+id/settings_edit_nick_name"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/wallet_list_standard">
+                        <EditText
+                            android:id="@+id/settings_edit_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="31.5dp"
+                            android:background="@drawable/bg_edittext"
+                            android:gravity="left|center_vertical"
+                            android:layout_marginBottom="6.3dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:enabled="false"
+                            android:layout_marginTop="6.3dp"
+                            android:paddingLeft="9.45dp"
+                            android:hint="@string/settings_edit_last_name"
+                            android:textColorHint="#DDDDDD"
+                            android:textColor="#999999"
+                            android:textSize="14sp"
+                            android:singleLine="true" />
+                    </LinearLayout>
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_edge_black_transparent"
-                        android:gravity="left"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:paddingTop="8dp"
-                        android:hint="@string/settings_edit_nick_name"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:singleLine="true" />
+                        android:orientation="horizontal"
+                        android:background="@drawable/wallet_list_bottom">
+                        <EditText
+                            android:id="@+id/settings_edit_nick_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="31.5dp"
+                            android:background="@drawable/bg_edittext"
+                            android:gravity="left|center_vertical"
+                            android:layout_marginBottom="6.3dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="6.3dp"
+                            android:enabled="false"
+                            android:paddingLeft="9.45dp"
+                            android:hint="@string/settings_edit_nick_name"
+                            android:textColorHint="#DDDDDD"
+                            android:textColor="#999999"
+                            android:textSize="14sp"
+                            android:singleLine="true" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -404,8 +376,7 @@
                     android:paddingTop="2dp"
                     android:text="OPTIONS"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18dp"/>
 
                 <LinearLayout
                     android:id="@+id/misc_views"
@@ -416,12 +387,12 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/rounded_edge_blue">
+                    android:background="@android:color/transparent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_solo"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_auto_logoff"
@@ -436,28 +407,30 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_auto_logoff"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_auto_logoff"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded"/>
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
+                        android:layout_height="2dp"
+                        android:background="@android:color/transparent"
                         android:orientation="vertical" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_solo"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_language"
@@ -472,28 +445,30 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_language"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_language"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/bg_btn_blue_stretch"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
+                        android:layout_height="2dp"
+                        android:background="@android:color/transparent"
                         android:orientation="vertical" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_solo"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_currency"
@@ -508,28 +483,30 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_currency"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_currency"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
+                        android:layout_height="2dp"
+                        android:background="@android:color/transparent"
                         android:orientation="vertical" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/wallet_list_solo"
                         android:id="@+id/category_container">
                         <TextView
                             android:id="@+id/settings_title_categories"
@@ -546,7 +523,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="Change Categories"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
@@ -583,8 +560,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_exchange_title"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18dp" />
 
                 <LinearLayout
                     android:id="@+id/exchange_views"
@@ -595,12 +571,12 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/rounded_edge_blue">
+                    android:background="@android:color/transparent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_top"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_usd"
@@ -615,28 +591,24 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_usd"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_usd"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_standard"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_canadian"
@@ -651,28 +623,24 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_canadian"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_canadian"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_standard"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_euro"
@@ -687,28 +655,24 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_euro"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_euro"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_standard"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_peso"
@@ -723,28 +687,24 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_peso"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_peso"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/darker_gray"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:layout_height="44.1dp"
+                        android:background="@drawable/wallet_list_bottom"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_yuan"
@@ -759,16 +719,18 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_yuan"
-                            android:textColor="@android:color/black"
+                            android:textColor="#CC333333"
                             android:textSize="13sp" />
 
                         <Button
                             android:id="@+id/settings_button_yuan"
                             android:layout_width="100dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="25.2dp"
                             android:layout_weight="1"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/btn_trans_rounded" />
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bg_btn_blue_stretch" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -781,7 +743,7 @@
                 android:text="@string/settings_button_logout"
                 android:textColor="@android:color/white"
                 android:textStyle="normal"
-                android:textSize="24sp"
+                android:textSize="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
