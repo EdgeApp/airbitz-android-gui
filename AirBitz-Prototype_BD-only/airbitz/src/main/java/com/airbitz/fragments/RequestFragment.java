@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -29,9 +28,10 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
@@ -52,8 +52,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     private EditText mBitcoinField;
     private EditText mFiatField;
 
-    private ImageButton mBackButton;
-    private ImageButton mHelpButton;
+    private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
 
     private View dummyFocus;
@@ -159,8 +158,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
         mFiatField = (EditText) mView.findViewById(R.id.edittext_dollar);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_request_help_button);
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 
         mButtonGroup = (RelativeLayout) mView.findViewById(R.id.button_group);
@@ -307,13 +305,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
 
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                finish();
-            }
-        });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

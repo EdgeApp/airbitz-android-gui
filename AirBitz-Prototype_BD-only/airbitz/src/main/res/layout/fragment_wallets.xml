@@ -15,7 +15,7 @@
             android:id="@+id/fragment_wallets_header_layout"
             android:background="@drawable/bg_dark_header">
 
-            <ImageButton
+            <com.airbitz.objects.HighlightOnPressImageButton
                 android:id="@+id/fragment_wallets_add_button"
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
@@ -39,7 +39,7 @@
                 android:textSize="16sp"/>
 
 
-            <ImageButton
+            <com.airbitz.objects.HighlightOnPressImageButton
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
                 android:id="@+id/fragment_wallets_help_button"
@@ -161,7 +161,7 @@
                     android:gravity="center"
                     android:textColor="@android:color/white"/>
 
-                <Spinner
+                <com.airbitz.objects.HighlightOnPressSpinner
                     android:id="@+id/fragment_wallets_addwallet_currency_spinner"
                     android:layout_width="138.6dp"
                     android:layout_height="match_parent"
@@ -222,7 +222,7 @@
                 android:layout_marginTop="12.6dp"
                 android:gravity="center">
 
-                <Button
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_wallets_addwallet_cancel_button"
                     android:layout_width="138.6dp"
                     android:layout_height="match_parent"
@@ -233,7 +233,7 @@
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"/>
 
-                <Button
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_wallets_addwallet_done_button"
                     android:layout_width="138.6dp"
                     android:layout_height="match_parent"

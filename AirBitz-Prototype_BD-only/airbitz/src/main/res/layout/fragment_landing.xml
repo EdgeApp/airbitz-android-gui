@@ -119,7 +119,7 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/bg_edittext"/>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signin_button"
@@ -134,7 +134,7 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/btn_green"/>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signup_button"
@@ -149,7 +149,7 @@
                     android:layout_marginBottom="6.3dp"
                     android:background="@drawable/btn_blue"/>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

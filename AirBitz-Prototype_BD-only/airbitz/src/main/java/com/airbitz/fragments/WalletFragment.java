@@ -38,6 +38,7 @@ import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
@@ -57,10 +58,10 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     private EditText mSearchField;
     private LinearLayout mSearchLayout;
 
-    private ImageButton mExportButton;
-    private ImageButton mHelpButton;
-    private ImageButton mBackButton;
-    private ImageButton mSearchButton;
+    private HighlightOnPressImageButton mExportButton;
+    private HighlightOnPressImageButton mHelpButton;
+    private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mSearchButton;
 
     private boolean searchPage = false;
 
@@ -150,15 +151,15 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions);
 
         mSearchField = (EditText) mView.findViewById(R.id.fragment_search_edittext);
-        mSearchButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
+        mSearchButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
         mSearchLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_search_layout);
 
         mSendButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_request_button);
         mWalletNameButton = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
-        mExportButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
+        mExportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
         sendRequestLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_sendrequest_layout);
@@ -174,7 +175,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_wallet_help_button);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_help_button);
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_wallet_title_textview);
 
         mButtonBitcoinBalance = (Button) mView.findViewById(R.id.back_button_top);
