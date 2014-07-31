@@ -18,4 +18,6 @@
     <color name="text_hint">#99DDDDDD</color>
 
     <color name="disabled_color">#999999</color>
+    <color name="disabled_hint_color">#DDDDDD</color>
+    <color name="enabled_hint_color">#999999</color>
 </resources>

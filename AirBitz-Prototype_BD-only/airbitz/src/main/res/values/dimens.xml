@@ -63,4 +63,5 @@
     <dimen name="map_height">480dp</dimen>
     <dimen name="map_padding">120dp</dimen>
 
+
     </resources>
