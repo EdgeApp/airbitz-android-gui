@@ -66,6 +66,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     private CoreAPI mCoreAPI;
     private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
+    private Uri mDataUri;
 
     private boolean keyBoardUp = false;
 
@@ -342,9 +343,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void onResume() {
         super.onResume();
         mNavFragmentId = AirbitzApplication.getLastNavTab();
-        DisplayLoginOverlay(false);
+
         if(!AirbitzApplication.isLoggedIn()) {
+            DisplayLoginOverlay(mDataUri!=null);
             mNavFragmentId = Tabs.BD.ordinal();
+        } else {
+            DisplayLoginOverlay(false);
         }
         switchFragmentThread(mNavFragmentId);
         mCoreAPI.startAllAsyncUpdates();
@@ -396,20 +400,23 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     Handle bitcoin:<address> Uri's coming from OS
      */
     private void onBitcoinUri(Uri dataUri) {
-        if(!AirbitzApplication.isLoggedIn())
-            return;
         Common.LogD(TAG, "Received onCreate intent = "+dataUri.toString());
-        if(mNavStacks[Tabs.SEND.ordinal()].size()==2) {
-            popFragment(); // remove send confirmation if needed
+        if(!AirbitzApplication.isLoggedIn()) {
+            mDataUri = dataUri;
+            return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE, "URI");
-        bundle.putString(URI, dataUri.toString());
+        if(mNavStacks[Tabs.SEND.ordinal()].size()==2) {
+            mNavStacks[Tabs.SEND.ordinal()].pop();
+        }
 
-        if(mNavFragmentId!=Tabs.SEND.ordinal())
+        if(mNavFragmentId!=Tabs.SEND.ordinal()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, "URI");
+            bundle.putString(URI, dataUri.toString());
             switchFragmentThread(Tabs.SEND.ordinal(), bundle);
-        else
+        } else {
             ((SendFragment) mNavFragments[Tabs.SEND.ordinal()]).CheckURIResults(dataUri.toString());
+        }
     }
 
 
@@ -518,5 +525,15 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 );
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void UserJustLoggedIn() {
+        if(mDataUri!=null) {
+            DisplayLoginOverlay(false);
+            onBitcoinUri(mDataUri);
+            mDataUri = null;
+        } else {
+            switchFragmentThread(AirbitzApplication.getLastNavTab());
+        }
     }
 }
