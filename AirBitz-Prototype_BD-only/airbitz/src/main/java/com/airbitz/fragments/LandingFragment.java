@@ -221,11 +221,8 @@ public class LandingFragment extends Fragment {
             showProgress(false);
             if (success){
                 AirbitzApplication.Login(mUsername, mPassword);
-//                InputMethodManager inputManager = (InputMethodManager)
-//                        getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                inputManager.toggleSoftInput(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN, 0);
-                ((NavigationActivity) getActivity()).switchFragmentThread(AirbitzApplication.getLastNavTab());
                 ((NavigationActivity) getActivity()).DisplayLoginOverlay(false);
+                ((NavigationActivity) getActivity()).UserJustLoggedIn();
             } else {
                 showErrorDialog();
             }
