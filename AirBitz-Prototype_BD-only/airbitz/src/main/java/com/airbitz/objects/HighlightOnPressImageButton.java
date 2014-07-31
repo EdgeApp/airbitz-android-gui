@@ -7,28 +7,28 @@ import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+
+import com.airbitz.R;
 
 /**
- * Created by zakiy on 2/27/14.
+ * Created by matt on 7/31/14.
  */
-public class ResizableImageView extends ImageView {
+public class HighlightOnPressImageButton extends ImageButton {
 
-    public ResizableImageView(Context context, AttributeSet attrs) {
+    protected ColorFilter _pressedFilter = new LightingColorFilter(Color.LTGRAY, 1);
+
+    public HighlightOnPressImageButton(Context context) {
+        super(context);
+    }
+
+    public HighlightOnPressImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Drawable d = getDrawable();
-
-        if (d != null) {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
-            setMeasuredDimension(width, height);
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
+    public HighlightOnPressImageButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     @Override
@@ -39,6 +39,14 @@ public class ResizableImageView extends ImageView {
         super.setImageDrawable(layer);
     }
 
+    @Override
+    public void setBackground(Drawable d) {
+        // Replace the original background drawable (e.g. image) with a LayerDrawable that
+        // contains the original drawable.
+        SAutoBgButtonBackgroundDrawable layer = new SAutoBgButtonBackgroundDrawable(d);
+        super.setBackground(layer);
+    }
+
     protected class SAutoBgButtonBackgroundDrawable extends LayerDrawable {
 
         // The color filter to apply when the button is pressed
@@ -47,7 +55,7 @@ public class ResizableImageView extends ImageView {
         protected int _disabledAlpha = 100;
 
         public SAutoBgButtonBackgroundDrawable(Drawable d) {
-            super(new Drawable[] { d });
+            super(new Drawable[]{d});
         }
 
         @Override
@@ -82,4 +90,5 @@ public class ResizableImageView extends ImageView {
             return true;
         }
     }
+
 }

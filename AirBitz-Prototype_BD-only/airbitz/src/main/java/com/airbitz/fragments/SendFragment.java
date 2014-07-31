@@ -54,6 +54,7 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
@@ -87,7 +88,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
 
-    private ImageButton mHelpButton;
+    private HighlightOnPressImageButton mHelpButton;
 
     private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
@@ -136,7 +137,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
         addWalletNamesToList();
 
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_send_help_button);
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);

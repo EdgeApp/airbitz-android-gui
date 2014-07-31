@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/transaction_detail_layout_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_app">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,7 +11,7 @@
         android:id="@+id/layout_header"
         android:background="@drawable/bg_dark_header">
 
-        <ImageButton
+        <com.airbitz.objects.HighlightOnPressImageButton
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:scaleType="centerCrop"
@@ -35,7 +34,7 @@
             android:textSize="16sp"/>
 
 
-        <ImageButton
+        <com.airbitz.objects.HighlightOnPressImageButton
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:id="@+id/transaction_detail_button_help"
@@ -103,7 +102,7 @@
             </RelativeLayout>
 
 
-            <Button
+            <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/transaction_detail_button_advanced"
                 android:layout_width="132.3dp"
                 android:layout_height="25.2dp"
@@ -345,7 +344,7 @@
                     android:background="@drawable/bg_textfield"/>
 
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_done"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"

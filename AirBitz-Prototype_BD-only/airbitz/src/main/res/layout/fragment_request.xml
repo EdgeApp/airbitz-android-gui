@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_app">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,10 +35,10 @@
             android:textSize="16sp"/>
 
 
-        <ImageButton
+        <com.airbitz.objects.HighlightOnPressImageButton
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:id="@+id/button_help"
+            android:id="@+id/fragment_request_help_button"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
@@ -113,7 +112,7 @@
 
                 </LinearLayout>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/button_expand"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
@@ -210,7 +209,7 @@
                     android:layout_margin="5dp"
                     android:textSize="12dp"/>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="94.5dp"
                     android:layout_height="18.9dp"
                     android:id="@+id/button_import_wallet"

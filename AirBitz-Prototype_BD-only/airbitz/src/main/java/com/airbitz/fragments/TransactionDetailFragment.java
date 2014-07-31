@@ -58,6 +58,8 @@ import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
@@ -78,8 +80,8 @@ import java.util.List;
 public class TransactionDetailFragment extends Fragment implements View.OnClickListener,
         CurrentLocationManager.OnLocationChange{
 
-    private Button mDoneButton;
-    private Button mAdvanceDetailsButton;
+    private HighlightOnPressButton mDoneButton;
+    private HighlightOnPressButton mAdvanceDetailsButton;
     private TextView mAdvancedDetailTextView;
     private Button mXButton;
 
@@ -118,8 +120,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private int originalBaseTransferPosition = 2;
     private int originalBaseExchangePosition = 3;
 
-    private ImageButton mBackButton;
-    private ImageButton mHelpButton;
+    private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mHelpButton;
 
     private RelativeLayout mSentDetailLayout;
     private RelativeLayout mNoteDetailLayout;
@@ -230,8 +232,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
-        mDoneButton = (Button) view.findViewById(R.id.transaction_detail_button_done);
-        mAdvanceDetailsButton = (Button) view.findViewById(R.id.transaction_detail_button_advanced);
+        mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
+        mAdvanceDetailsButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_advanced);
         mXButton = (Button) view.findViewById(R.id.x_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
@@ -250,8 +252,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
         mCategoryEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_category);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.transaction_detail_button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.transaction_detail_button_help);
+        mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_back);
+        mHelpButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_help);
 
         mSentDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_sent_detail);
         mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);

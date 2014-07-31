@@ -38,6 +38,9 @@ import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -74,9 +77,9 @@ public class WalletsFragment extends Fragment
     private TextView mAddWalletOnlineTextView;
     private TextView mAddWalletOfflineTextView;
     private Switch mAddWalletOnOffSwitch;
-    private Button mAddWalletCancelButton;
-    private Button mAddWalletDoneButton;
-    private Spinner mAddWalletCurrencySpinner;
+    private HighlightOnPressButton mAddWalletCancelButton;
+    private HighlightOnPressButton mAddWalletDoneButton;
+    private HighlightOnPressSpinner mAddWalletCurrencySpinner;
     private LinearLayout mAddWalletCurrencyLayout;
 
     private View mInvisibleCover;
@@ -92,8 +95,8 @@ public class WalletsFragment extends Fragment
 
     private DynamicListView mLatestWalletListView;
 
-    private ImageButton mHelpButton;
-    private ImageButton mAddButton;
+    private HighlightOnPressImageButton mHelpButton;
+    private HighlightOnPressImageButton mAddButton;
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
@@ -176,9 +179,9 @@ public class WalletsFragment extends Fragment
         mAddWalletOnlineTextView = (TextView) mView.findViewById(R.id.fragment_wallets_addwallet_online_textview);
         mAddWalletOfflineTextView = (TextView) mView.findViewById(R.id.fragment_wallets_addwallet_offline_textview);
         mAddWalletOnOffSwitch = (Switch) mView.findViewById(R.id.fragment_wallets_addwallet_onoff_switch);
-        mAddWalletCancelButton = (Button) mView.findViewById(R.id.fragment_wallets_addwallet_cancel_button);
-        mAddWalletDoneButton = (Button) mView.findViewById(R.id.fragment_wallets_addwallet_done_button);
-        mAddWalletCurrencySpinner = (Spinner) mView.findViewById(R.id.fragment_wallets_addwallet_currency_spinner);
+        mAddWalletCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_wallets_addwallet_cancel_button);
+        mAddWalletDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_wallets_addwallet_done_button);
+        mAddWalletCurrencySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_wallets_addwallet_currency_spinner);
         mAddWalletCurrencyLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallets_addwallet_currency_layout);
 
         mInvisibleCover = mView.findViewById(R.id.fragment_wallets_invisible_cover);
@@ -192,8 +195,8 @@ public class WalletsFragment extends Fragment
         mBalanceSwitchLayout = (RelativeLayout) mView.findViewById(R.id.switchable);
         mBalanceContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
 
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_wallets_help_button);
-        mAddButton = (ImageButton) mView.findViewById(R.id.fragment_wallets_add_button);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_help_button);
+        mAddButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_add_button);
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);

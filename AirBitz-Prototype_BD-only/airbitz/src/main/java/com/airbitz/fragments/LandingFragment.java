@@ -18,13 +18,11 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,7 +39,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.models.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressButton;
 
 public class LandingFragment extends Fragment {
 

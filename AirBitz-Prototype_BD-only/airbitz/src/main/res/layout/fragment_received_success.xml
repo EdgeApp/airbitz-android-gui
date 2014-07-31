@@ -48,7 +48,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_help"
-            android:padding="12.6dp"/>
+            android:padding="12.6dp"
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 

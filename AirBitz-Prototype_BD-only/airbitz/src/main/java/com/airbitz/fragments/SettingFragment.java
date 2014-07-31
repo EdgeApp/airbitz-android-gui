@@ -1,7 +1,6 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,7 +33,8 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
-import com.airbitz.models.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public class SettingFragment extends Fragment {
     private RelativeLayout mCategoryContainer;
 
     private ImageButton mBackButton;
-    private ImageButton mHelpButton;
+    private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
 
     private RadioGroup mDenominationGroup;
@@ -139,7 +139,7 @@ public class SettingFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_setting, container, false);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.settings_button_help);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);
         mTitleTextView = (TextView) mView.findViewById(R.id.settings_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
