@@ -293,7 +293,6 @@ public class CategoryFragment extends Fragment {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Popup
                 getActivity().onBackPressed();
             }
         });
@@ -301,7 +300,6 @@ public class CategoryFragment extends Fragment {
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Save to core (mCategories)
                 getActivity().onBackPressed();
             }
         });
@@ -417,7 +415,8 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mCurrentCategories.remove(currentPosPopUp.get(0).intValue());
-                mCategories.remove(currentPosPopUp.get(1).intValue());
+                String removed = mCategories.remove(currentPosPopUp.get(1).intValue());
+                mCoreAPI.removeCategory(removed);
                 currentPosPopUp.clear();
                 mCategoryAdapter.notifyDataSetChanged();
                 mItemPopUpContainer.setVisibility(View.GONE);
@@ -454,6 +453,7 @@ public class CategoryFragment extends Fragment {
         String newCat;
         if(!mAddField.getText().toString().substring(mAddField.getText().toString().indexOf(':')+1).trim().isEmpty()){
             newCat = mAddField.getText().toString();
+            mCoreAPI.addCategory(newCat, mCategories); // add if not in list already
             mCategories.add(newCat);
             if(newCat.toLowerCase().contains(mSearchField.getText().toString().toLowerCase())){
                 mCurrentCategories.add(newCat);

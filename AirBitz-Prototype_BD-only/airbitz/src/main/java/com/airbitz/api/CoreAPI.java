@@ -1761,6 +1761,13 @@ public class CoreAPI {
         }
     }
 
+    public void removeCategory(String strCategory) {
+            // add the category to the core
+            Common.LogD(TAG, "Remove category: "+strCategory);
+            tABC_Error Error = new tABC_Error();
+            core.ABC_RemoveCategory(AirbitzApplication.getUsername(), strCategory, Error);
+    }
+
     public boolean isTestNet()  {
         tABC_CC result;
         tABC_Error error = new tABC_Error();
