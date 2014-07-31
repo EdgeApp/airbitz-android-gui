@@ -29,6 +29,7 @@ import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.ReceivedSuccessFragment;
 import com.airbitz.fragments.RequestFragment;
+import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
@@ -40,6 +41,11 @@ import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -55,6 +61,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnDataSync,
         CoreAPI.OnRemotePasswordChange {
 
+    public static final String URI = "com.airbitz.navigation.uri";
     private final String TAG = getClass().getSimpleName();
 
     private CoreAPI mCoreAPI;
@@ -97,12 +104,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         Crashlytics.start(this);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-        String data = intent.getDataString();
-        Common.LogD(TAG, "Received onCreate intent: action="+action+", type="+type+", data="+data);
 
         mCoreAPI = CoreAPI.getApi();
         String seed = mCoreAPI.getSeedData();
@@ -173,6 +174,14 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
     }
 
+    @Override
+    public void onNewIntent(Intent intent) {
+        Uri dataUri = intent.getData();
+        if(dataUri != null && dataUri.getScheme().equals("bitcoin")) {
+            onBitcoinUri(dataUri);
+        }
+    }
+
     public void DisplayLoginOverlay(boolean overlay) {
         setViewPager();
         if(overlay) {
@@ -234,7 +243,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mNavFragmentId = id;
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commit();
+        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commitAllowingStateLoss();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -250,7 +259,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
         transaction.replace(R.id.activityLayout, fragment);
         mNavStacks[mNavFragmentId].push(fragment);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     public void popFragment() {
@@ -260,7 +269,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             transaction.setCustomAnimations(R.anim.slide_in_from_left,R.anim.slide_out_right,R.anim.slide_in_from_left,R.anim.slide_out_right);
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavFragmentId].peek());
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     public void hideNavBar() {
@@ -383,6 +392,26 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             frag.setArguments(bundle);
             pushFragment(frag);
         }
+    }
+
+    /*
+    Handle bitcoin:<address> Uri's coming from OS
+     */
+    private void onBitcoinUri(Uri dataUri) {
+        if(!AirbitzApplication.isLoggedIn())
+            return;
+        Common.LogD(TAG, "Received onCreate intent = "+dataUri.toString());
+        if(mNavStacks[Tabs.SEND.ordinal()].size()==2) {
+            popFragment(); // remove send confirmation if needed
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, "URI");
+        bundle.putString(URI, dataUri.toString());
+
+        if(mNavFragmentId!=Tabs.SEND.ordinal())
+            switchFragmentThread(Tabs.SEND.ordinal(), bundle);
+        else
+            ((SendFragment) mNavFragments[Tabs.SEND.ordinal()]).CheckURIResults(dataUri.toString());
     }
 
 

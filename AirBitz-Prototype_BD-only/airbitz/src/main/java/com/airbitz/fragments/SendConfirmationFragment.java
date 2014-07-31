@@ -40,6 +40,7 @@ import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * Created on 2/21/14.
@@ -127,9 +128,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mLabel = bundle.getString(SendFragment.LABEL);
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            if(mIsUUID) {
-                mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
-            }
+            mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
         }
     }
 
