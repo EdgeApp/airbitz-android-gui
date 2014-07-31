@@ -524,6 +524,10 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p, long i) { return getCPtr(p)+i; }
     }
 
+    public void saveExchangeRateSource(String name, int currencyNumber) {
+
+    }
+
     //***************** Questions
     /**
      * Get questions

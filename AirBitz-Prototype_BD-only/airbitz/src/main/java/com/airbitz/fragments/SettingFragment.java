@@ -34,6 +34,7 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.api.tABC_ExchangeRateSources;
 import com.airbitz.models.HighlightOnPressButton;
 import com.airbitz.utils.Common;
 
@@ -247,7 +248,7 @@ public class SettingFragment extends Fragment {
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);//TODO for all exhange buttons, sub core call for default for 0
+                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);
             }
         });
 
@@ -364,17 +365,73 @@ public class SettingFragment extends Fragment {
         for(int i=0; i<mExchanges.length; i++) {
             exchangeSources[i] = mExchanges[i].getSource();
         }
-        mUSDollarButton.setText(exchangeSources[0]);
+
+        //TODO for all exhange buttons, sub core call for default for 0
+        mUSDollarButton.setText(exchangeForCurrencyNum(840));
         mUSDExchangeItems = exchangeSources;
-        mCanadianDollarButton.setText(exchangeSources[0]);
+        mCanadianDollarButton.setText(exchangeForCurrencyNum(124));
         mCanadianExchangeItems = exchangeSources;
-        mEuroButton.setText(exchangeSources[0]);
+        mEuroButton.setText(exchangeForCurrencyNum(978));
         mEuroExchangeItems = exchangeSources;
-        mPesoButton.setText(exchangeSources[0]);
+        mPesoButton.setText(exchangeForCurrencyNum(484));
         mPesoExchangeItems = exchangeSources;
-        mYuanButton.setText(exchangeSources[0]);
+        mYuanButton.setText(exchangeForCurrencyNum(156));
         mYuanExchangeItems = exchangeSources;
     }
+
+    // searches the exchanges in the settings for the exchange associated with the given currency number
+    // NULL is returned if none can be found
+    String exchangeForCurrencyNum(int currencyNum) {
+        String szRetVal = "";
+        // look through all the sources
+        for (CoreAPI.ExchangeRateSource source : mExchanges) {
+            if (source.getmCurrencyNum() == currencyNum) {
+                szRetVal = source.getSource();
+                break;
+            }
+        }
+        return szRetVal;
+    }
+
+    // sets the exchange for the given currency in the settings
+    void setExchange(String szSourceSel, int currencyNum)
+    {
+            // if there are currently any sources
+            if (mExchanges.length > 0)
+            {
+                boolean bReplaced = false;
+                // look through all the sources
+                for (CoreAPI.ExchangeRateSource source : mExchanges)
+                {
+                    if (source.getmCurrencyNum() == currencyNum)
+                    {
+                        source.setSzSource(szSourceSel);
+                        bReplaced = true;
+                        break;
+                    }
+                }
+                if (!bReplaced)
+                {
+//                    pSources->numSources++;
+//                    pSources->aSources = realloc(pSources->aSources, pSources->numSources * sizeof(tABC_ExchangeRateSource *));
+//                    pSources->aSources[pSources->numSources - 1] = calloc(1, sizeof(tABC_ExchangeRateSource));
+//                    pSources->aSources[pSources->numSources - 1]->currencyNum = currencyNum;
+//                    pSources->aSources[pSources->numSources - 1]->szSource = strdup(szSourceSel);
+                }
+            }
+            else
+            {
+                // add our first and only source
+                mCoreAPI.saveExchangeRateSource(szSourceSel, currencyNum);
+//                CoreAPI.ExchangeRateSource source = new CoreAPI.ExchangeRateSource();
+//                pSources->numSources = 1;
+//                pSources->aSources = calloc(1, sizeof(tABC_ExchangeRateSource *));
+//                pSources->aSources[0] = calloc(1, sizeof(tABC_ExchangeRateSource));
+//                pSources->aSources[0]->currencyNum = currencyNum;
+//                pSources->aSources[0]->szSource = strdup(szSourceSel);
+            }
+    }
+
 
     private void saveCurrentSettings() {
         //Bitcoin denomination
