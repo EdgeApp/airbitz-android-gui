@@ -64,13 +64,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/layout_export_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:background="@drawable/emboss_down"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
@@ -78,150 +78,120 @@
                 android:gravity="center_horizontal"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:paddingRight="10dp"
-                android:visibility="gone">
+                android:paddingRight="10dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/layout_account"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
+                    android:layout_height="31.5dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp">
 
                     <TextView
                         android:id="@+id/textview_account"
-                        android:layout_width="250dp"
+                        android:layout_width="100.8dp"
                         android:layout_height="match_parent"
-                        android:text="Account:"
+                        android:text="Wallet:"
                         android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="12.6dp"
+                        android:layout_marginLeft="6.3dp"
                         android:textSize="15dp"
-                        android:layout_weight="1"
-                        android:layout_gravity="right"
-                        android:textStyle="bold"/>
+                        android:layout_alignParentLeft="true"/>
 
-                    <EditText
-                        android:id="@+id/edittext_account"
+                    <com.airbitz.objects.HighlightOnPressSpinner
+                        android:id="@+id/fragment_exportsaving_account_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_toRightOf="@id/textview_account"
                         android:text="Checking"
-                        android:textStyle="bold"
-                        android:background="@android:color/transparent"
-                        android:gravity="left|center_vertical"
+                        android:background="@drawable/bg_btn_blue_stretch"
+                        android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
-                        android:textSize="15dp"
-                        android:layout_weight="1"/>
+                        android:layout_marginRight="18.9dp"
+                        android:textSize="15dp"/>
 
-                </LinearLayout>
+                </RelativeLayout>
 
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/layout_from"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_height="31.5dp"
                     android:layout_below="@id/layout_account"
-                    android:weightSum="2"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp">
 
                     <TextView
                         android:id="@+id/textview_from"
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100.8dp"
+                        android:layout_height="match_parent"
                         android:text="From:"
-                        android:gravity="right"
+                        android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
-                        android:layout_below="@id/textview_account"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="12.6dp"
+                        android:layout_marginLeft="6.3dp"
                         android:textSize="15dp"
-                        android:layout_weight="1"
-                        android:textStyle="bold"/>
+                        android:layout_alignParentLeft="true"/>
 
-                    <EditText
-                        android:id="@+id/edittext_from"
+                    <com.airbitz.objects.HighlightOnPressSpinner
+                        android:id="@+id/fragment_exportsaving_from_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_account"
+                        android:layout_height="match_parent"
                         android:text="10/15/2014"
-                        android:textStyle="bold"
-                        android:background="@android:color/transparent"
-                        android:gravity="left|center_vertical"
+                        android:layout_toRightOf="@+id/textview_from"
+                        android:background="@drawable/bg_btn_blue_stretch"
+                        android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:layout_marginLeft="5dp"
                         android:drawableLeft="@drawable/ico_calendar"
-                        android:layout_marginRight="5dp"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
-                        android:textSize="15dp"
-                        android:layout_weight="1"/>
+                        android:paddingLeft="12.6dp"
+                        android:drawablePadding="-25.2dp"
+                        android:layout_marginRight="18.9dp"
+                        android:textSize="15dp"/>
 
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/layout_to"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_height="31.5dp"
                     android:layout_below="@id/layout_from"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:weightSum="2">
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp">
 
                     <TextView
                         android:id="@+id/textview_to"
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100.8dp"
+                        android:layout_height="match_parent"
                         android:text="To:"
+                        android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
-                        android:layout_below="@id/textview_from"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="12.6dp"
+                        android:layout_marginLeft="6.3dp"
                         android:textSize="15dp"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:textStyle="bold"/>
+                        android:layout_alignParentLeft="true"/>
 
 
-                    <EditText
-                        android:id="@+id/edittext_to"
+                    <com.airbitz.objects.HighlightOnPressSpinner
+                        android:id="@+id/fragment_exportsaving_to_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_from"
+                        android:layout_height="match_parent"
                         android:text="10/15/2014"
-                        android:textStyle="bold"
-                        android:background="@android:color/transparent"
-                        android:gravity="left|center_vertical"
+                        android:layout_toRightOf="@+id/textview_to"
+                        android:background="@drawable/bg_btn_blue_stretch"
+                        android:gravity="center"
                         android:textColor="@android:color/white"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
-                        android:textSize="15dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_weight="1"/>
+                        android:drawableLeft="@drawable/ico_calendar"
+                        android:paddingLeft="12.6dp"
+                        android:drawablePadding="-25.2dp"
+                        android:layout_marginRight="18.9dp"
+                        android:textSize="15dp"/>
 
-                </LinearLayout>
+                </RelativeLayout>Layout>
 
 
             </RelativeLayout>
@@ -242,7 +212,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/export_account_this_week"
-                    android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="5dp"
                     android:id="@+id/button_this_week"
@@ -252,37 +221,35 @@
                     android:paddingRight="10dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="15sp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:background="@drawable/bg_btn_orange"
+                    android:textSize="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="@string/export_account_this_month"
-                    android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:id="@+id/button_this_month"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="5dp"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:gravity="center"
-                    android:background="@drawable/btn_inactive"
+                    android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/export_account_this_year"
-                    android:textStyle="bold"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:id="@+id/button_this_year"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
@@ -291,7 +258,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:gravity="center"
-                    android:background="@drawable/btn_inactive"
+                    android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
             </LinearLayout>
 
