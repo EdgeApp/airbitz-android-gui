@@ -49,7 +49,9 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
+public class WalletFragment extends Fragment
+        implements CoreAPI.OnExchangeRatesChange,
+        NavigationActivity.OnWalletUpdated {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -253,10 +255,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                         mSearchTask.cancel(true);
                     }
                     if(editable.toString().isEmpty()){
-                        mTransactions.clear();
-                        mTransactions.addAll(mTotalTransactions);
-                        mTransactionAdapter.notifyDataSetChanged();
-                        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
+                        UpdateTransactionsListView(mTransactions);
                     }else {
                         mSearchTask = new SearchTask();
                         mSearchTask.execute(editable.toString());
@@ -412,6 +411,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     }
 
     private SearchTask mSearchTask;
+
     class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
 
         public SearchTask() { }
@@ -516,14 +516,24 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         mTransactionAdapter.notifyDataSetChanged();
     }
 
+    private void UpdateTransactionsListView(List<Transaction> transactions) {
+        mTransactions.clear();
+        mTransactions.addAll(transactions);
+        mTransactionAdapter.notifyDataSetChanged();
+        mTransactionAdapter.createRunningSatoshi();
+        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, transactions.size(), getActivity());
+    }
+
     @Override public void onPause() {
         super.onPause();
         mCoreAPI.removeExchangeRateChangeListener(this);
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
     @Override public void onResume(){
         super.onResume();
         mCoreAPI.addExchangeRateChangeListener(this);
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
         UpdateWalletTotalBalance();
     }
 
@@ -594,5 +604,11 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
     @Override
     public void OnExchangeRatesChange() {
         UpdateWalletTotalBalance();
+    }
+
+    @Override
+    public void onWalletUpdated() {
+        if(mWallet!=null)
+            UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
     }
 }
