@@ -48,6 +48,7 @@
     <dimen name="two_point_five_mm">15.75dp</dimen>
     <dimen name="two_mm">12.6dp</dimen>
     <dimen name="three_mm">18.9dp</dimen>
+    <dimen name="nine_mm">56.7dp</dimen>
 
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
     <dimen name="activity_signup_popup_height">119.7dp</dimen>

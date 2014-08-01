@@ -63,7 +63,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
     private HighlightOnPressSpinner pickWalletSpinner;
 
-    private RelativeLayout mButtonGroup;
     private HighlightOnPressButton mExpandButton;
 
     private TextView mTitleTextView;
@@ -160,8 +159,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_request_help_button);
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
-
-        mButtonGroup = (RelativeLayout) mView.findViewById(R.id.button_group);
 
         mExpandButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
 

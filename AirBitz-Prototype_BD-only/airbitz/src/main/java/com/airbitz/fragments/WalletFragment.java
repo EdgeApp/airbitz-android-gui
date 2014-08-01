@@ -256,6 +256,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
                         mTransactions.clear();
                         mTransactions.addAll(mTotalTransactions);
                         mTransactionAdapter.notifyDataSetChanged();
+                        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
                     }else {
                         mSearchTask = new SearchTask();
                         mSearchTask.execute(editable.toString());
