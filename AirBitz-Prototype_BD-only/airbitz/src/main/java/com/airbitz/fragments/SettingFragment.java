@@ -33,12 +33,12 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
-import com.airbitz.api.tABC_ExchangeRateSources;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created on 2/12/14.
@@ -91,7 +91,7 @@ public class SettingFragment extends Fragment {
     private String[] mLanguageItems;
     private String[] mCurrencyItems;
     private int mCurrencyNum;
-    private CoreAPI.ExchangeRateSource[] mExchanges;
+    private List<CoreAPI.ExchangeRateSource> mExchanges;
 
     //TODO Move to strings.xml as these will depend on translations there
     private static final String[] ARRAY_LANG_CHOICES = {"English", "Spanish", "German", "French", "Italian", "Chinese", "Portuguese", "Japanese"};
@@ -361,9 +361,9 @@ public class SettingFragment extends Fragment {
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
-        String[] exchangeSources = new String[mExchanges.length];
-        for(int i=0; i<mExchanges.length; i++) {
-            exchangeSources[i] = mExchanges[i].getSource();
+        String[] exchangeSources = new String[mExchanges.size()];
+        for(int i=0; i<mExchanges.size(); i++) {
+            exchangeSources[i] = mExchanges.get(i).getSource();
         }
 
         //TODO for all exhange buttons, sub core call for default for 0
@@ -394,44 +394,26 @@ public class SettingFragment extends Fragment {
     }
 
     // sets the exchange for the given currency in the settings
-    void setExchange(String szSourceSel, int currencyNum)
-    {
+    void setExchange(String szSourceSel, int currencyNum) {
             // if there are currently any sources
-            if (mExchanges.length > 0)
-            {
+            if (mExchanges.size() > 0) {
                 boolean bReplaced = false;
                 // look through all the sources
-                for (CoreAPI.ExchangeRateSource source : mExchanges)
-                {
-                    if (source.getmCurrencyNum() == currencyNum)
-                    {
+                for (CoreAPI.ExchangeRateSource source : mExchanges) {
+                    if (source.getmCurrencyNum() == currencyNum) {
                         source.setSzSource(szSourceSel);
                         bReplaced = true;
                         break;
                     }
                 }
-                if (!bReplaced)
-                {
-//                    pSources->numSources++;
-//                    pSources->aSources = realloc(pSources->aSources, pSources->numSources * sizeof(tABC_ExchangeRateSource *));
-//                    pSources->aSources[pSources->numSources - 1] = calloc(1, sizeof(tABC_ExchangeRateSource));
-//                    pSources->aSources[pSources->numSources - 1]->currencyNum = currencyNum;
-//                    pSources->aSources[pSources->numSources - 1]->szSource = strdup(szSourceSel);
+                if (!bReplaced) { // add the source
+                    mCoreAPI.addExchangeRateSource(szSourceSel, currencyNum);
                 }
-            }
-            else
-            {
+            } else {
                 // add our first and only source
-                mCoreAPI.saveExchangeRateSource(szSourceSel, currencyNum);
-//                CoreAPI.ExchangeRateSource source = new CoreAPI.ExchangeRateSource();
-//                pSources->numSources = 1;
-//                pSources->aSources = calloc(1, sizeof(tABC_ExchangeRateSource *));
-//                pSources->aSources[0] = calloc(1, sizeof(tABC_ExchangeRateSource));
-//                pSources->aSources[0]->currencyNum = currencyNum;
-//                pSources->aSources[0]->szSource = strdup(szSourceSel);
+                mCoreAPI.addExchangeRateSource(szSourceSel, currencyNum);
             }
     }
-
 
     private void saveCurrentSettings() {
         //Bitcoin denomination
