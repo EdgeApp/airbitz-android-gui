@@ -12,21 +12,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.provider.Telephony;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -38,8 +37,8 @@ import java.util.Map;
 public class RequestQRCodeFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     private ImageView mQRView;
-    private ImageButton mBackButton;
-    private ImageButton mHelpButton;
+    private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mCancelButton;
     private HighlightOnPressButton mSMSButton;
     private HighlightOnPressButton mEmailButton;
@@ -97,8 +96,8 @@ public class RequestQRCodeFragment extends Fragment {
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.button_back);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.button_help);
         mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
         mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
         mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);

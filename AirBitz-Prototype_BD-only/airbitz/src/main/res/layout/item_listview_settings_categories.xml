@@ -19,7 +19,7 @@
         android:inputType="textVisiblePassword|textNoSuggestions"
         android:layout_toLeftOf="@+id/category_delete"
         android:background="@drawable/rounded_edge"/>
-    <Button
+    <com.airbitz.objects.HighlightOnPressButton
         android:id="@+id/category_delete"
         android:layout_width="37.8dp"
         android:layout_height="match_parent"

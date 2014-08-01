@@ -182,7 +182,7 @@
 
                 </LinearLayout>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/activity_signup_next_button"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"

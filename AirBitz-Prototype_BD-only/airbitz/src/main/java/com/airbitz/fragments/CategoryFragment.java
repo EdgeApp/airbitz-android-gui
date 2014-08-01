@@ -27,6 +27,8 @@ import com.airbitz.R;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.CategoryTypeEnum;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +58,13 @@ public class CategoryFragment extends Fragment {
     private TextView mItemPopUpIncomeTextView;
     private TextView mItemPopUpTransferTextView;
     private TextView mItemPopUpExchangeTextView;
-    private Button mItemPopUpDelete;
+    private HighlightOnPressButton mItemPopUpDelete;
 
     private List<TextView> popUpViews;
 
-    private Button mAddButton;
-    private Button mCancelButton;
-    private Button mDoneButton;
+    private HighlightOnPressButton mAddButton;
+    private HighlightOnPressButton mCancelButton;
+    private HighlightOnPressButton mDoneButton;
 
     private boolean doEdit = false;
     private boolean popupDoEdit = false;
@@ -99,9 +101,9 @@ public class CategoryFragment extends Fragment {
         mAddField = (EditText) mView.findViewById(R.id.add_field);
         mSearchField = (EditText) mView.findViewById(R.id.search_field);
 
-        mAddButton = (Button) mView.findViewById(R.id.settings_category_button_add);
-        mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
-        mDoneButton = (Button) mView.findViewById(R.id.button_done);
+        mAddButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_category_button_add);
+        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.button_cancel);
+        mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.button_done);
 
         mAddPopUpContainer = (LinearLayout) mView.findViewById(R.id.add_popup_container);
         mAddExpensePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_expense);
@@ -116,7 +118,7 @@ public class CategoryFragment extends Fragment {
         mItemPopUpIncomeTextView = (TextView) mView.findViewById(R.id.item_popup_income);        //2
         mItemPopUpTransferTextView = (TextView) mView.findViewById(R.id.item_popup_transfer);    //3
         mItemPopUpExchangeTextView = (TextView) mView.findViewById(R.id.item_popup_exchange);   //4
-        mItemPopUpDelete = (Button) mView.findViewById(R.id.item_popup_delete);
+        mItemPopUpDelete = (HighlightOnPressButton) mView.findViewById(R.id.item_popup_delete);
 
         popUpViews = new ArrayList<TextView>();
         popUpViews.add(mItemPopUpEdittext);

@@ -33,14 +33,14 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.CalculatorBrain;
 import com.airbitz.utils.Common;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 /**
  * Created on 2/21/14.
@@ -76,8 +76,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private TextView mBitcoinFeeLabel;
     private TextView mDollarFeeLabel;
 
-    private ImageButton mHelpButton;
-    private ImageButton mBackButton;
+    private HighlightOnPressImageButton mBackButton;
     private ImageButton mConfirmSwipeButton;
 
     private float mConfirmCenter;
@@ -132,11 +131,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private View mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+        View mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -146,8 +144,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_back_button);
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
@@ -447,13 +444,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     inputMethodManager.toggleSoftInput(0, 0);
                 }
                 getActivity().onBackPressed();
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
             }
         });
 

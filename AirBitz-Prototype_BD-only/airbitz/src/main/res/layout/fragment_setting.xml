@@ -37,7 +37,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-        <ImageButton
+        <com.airbitz.objects.HighlightOnPressImageButton
             android:id="@+id/settings_button_help"
             android:src="@drawable/btn_help"
             android:layout_width="44.1dp"
@@ -179,7 +179,7 @@
                     android:layout_marginTop="0dp"
                     android:background="@android:color/transparent">
 
-                    <com.airbitz.models.HighlightOnPressButton
+                    <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/settings_button_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
                         android:textColor="#CC333333"
                         android:textSize="13sp" />
 
-                    <com.airbitz.models.HighlightOnPressButton
+                    <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/settings_button_pin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -209,7 +209,7 @@
                         android:textColor="#CC333333"
                         android:textSize="13sp" />
 
-                    <com.airbitz.models.HighlightOnPressButton
+                    <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/settings_button_recovery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -410,7 +410,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_auto_logoff"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -448,7 +448,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_language"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -486,7 +486,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_currency"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -526,7 +526,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_category"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -594,7 +594,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_usd"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -626,7 +626,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_canadian"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -658,7 +658,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_euro"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -690,7 +690,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_peso"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -722,7 +722,7 @@
                             android:textColor="#CC333333"
                             android:textSize="13sp" />
 
-                        <com.airbitz.models.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_yuan"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
@@ -736,7 +736,7 @@
 
             </LinearLayout>
 
-            <com.airbitz.models.HighlightOnPressButton
+            <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

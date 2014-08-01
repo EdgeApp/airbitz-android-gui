@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_app">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,10 +35,10 @@
             android:textSize="16sp"/>
 
 
-        <ImageButton
+        <com.airbitz.objects.HighlightOnPressImageButton
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:id="@+id/button_help"
+            android:id="@+id/fragment_request_help_button"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
@@ -113,7 +112,7 @@
 
                 </LinearLayout>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/button_expand"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
@@ -210,7 +209,7 @@
                     android:layout_margin="5dp"
                     android:textSize="12dp"/>
 
-                <com.airbitz.models.HighlightOnPressButton
+                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="94.5dp"
                     android:layout_height="18.9dp"
                     android:id="@+id/button_import_wallet"
@@ -226,53 +225,6 @@
         </LinearLayout>
 
     </ScrollView>
-    
-    <RelativeLayout
-        android:id="@+id/button_group"
-        android:layout_width="180dp"
-        android:layout_height="120dp"
-        android:layout_alignTop="@id/layout_amount"
-        android:layout_marginRight="27dp"
-        android:layout_marginTop="53.54dp"
-        android:background="@drawable/btn_group"
-        android:layout_alignParentRight="true"
-        android:visibility="gone">
-
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_sms"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/transparent"/>
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_unexpand"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/button_sms"/>
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_ble"
-            android:background="@android:color/transparent"
-            android:layout_alignParentBottom="true"/>
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_email"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/button_ble"/>
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/button_qr_code"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/button_email"/>
-        
-    </RelativeLayout>
 
     <View
         android:layout_width="0dp"
