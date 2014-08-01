@@ -175,6 +175,8 @@ public class ExportSavingOptionFragment extends Fragment{
             mViewImage.setVisibility(View.GONE);
             mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("Quicken")){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
@@ -184,6 +186,8 @@ public class ExportSavingOptionFragment extends Fragment{
             mViewImage.setVisibility(View.GONE);
             mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("Quickbooks")){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
@@ -193,6 +197,8 @@ public class ExportSavingOptionFragment extends Fragment{
             mViewImage.setVisibility(View.GONE);
             mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("PDF")){
             mSDCardButton.setVisibility(View.GONE);
             mSDCardImage.setVisibility(View.GONE);

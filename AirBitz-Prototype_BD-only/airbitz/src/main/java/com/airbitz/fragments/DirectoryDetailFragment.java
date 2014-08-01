@@ -51,7 +51,7 @@ import java.util.List;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class DirectoryDetailFragment extends Fragment  implements GestureDetector.OnGestureListener {
+public class DirectoryDetailFragment extends Fragment {
 
     private static final String TAG = DirectoryDetailFragment.class.getSimpleName();
     public static final String BIZID = "bizId";
@@ -95,8 +95,6 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
     private GetBusinessDetailTask mTask;
 
-    private GestureDetector mGestureDetector;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -108,22 +106,9 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
-        mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
-
-        mGestureDetector = new GestureDetector(this);
+        View mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
@@ -145,12 +130,6 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
         if(mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
         }
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mGestureDetector.onTouchEvent(motionEvent);
-            }
-        });
 
         mTask = new GetBusinessDetailTask(getActivity());
         mTask.execute(mBusinessId);
@@ -582,42 +561,5 @@ public class DirectoryDetailFragment extends Fragment  implements GestureDetecto
 
     private double getLonFromSharedPreference() {
         return mLocationManager.getLocation().getLongitude();
-    }
-
-    @Override public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if (start != null & finish != null) {
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if ((finish.getRawX() > start.getRawX()) && (yDistance < 10)) {
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if (xDistance > 100) {
-//                    finish();
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
