@@ -72,7 +72,6 @@
     <LinearLayout
         android:id="@+id/layout_data"
         android:layout_below="@id/layout_header"
-        android:layout_above="@id/bottom_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -199,102 +198,72 @@
 
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textview_scan_qrcode"
-                    android:layout_below="@id/layout_send"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Scan QR Code or NFC"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp"
-                    android:layout_weight="1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"/>
-
                 <RelativeLayout
                     android:id="@+id/layout_camera"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_data">
 
                     <FrameLayout
                         android:id="@+id/layout_camera_preview"
                         android:background="@android:color/darker_gray"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp"
+                        android:layout_height="match_parent"
                         android:layout_centerHorizontal="true">
 
                     </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/textview_scan_qrcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_scan_text"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="14dp"
+                        android:layout_marginTop="20dp"/>
+
+                    <ImageButton
+                        android:id="@+id/button_flash"
+                        android:layout_width="40dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"
+                        android:src="@drawable/btn_flash_off"
+                        android:layout_marginRight="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:color/transparent" />
+
+                    <ImageButton
+                        android:id="@+id/button_gallery"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:scaleType="centerInside"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:adjustViewBounds="true"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/gallery_button"
+                        android:layout_weight="1"/>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:layout_margin="12.6dp"
+                        android:background="@drawable/camera_frame"/>
+
                 </RelativeLayout>
 
 
 
             </LinearLayout>
 
-        <!--</ScrollView>-->
-
-
-
-
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/layout_action"
-        android:layout_above="@id/bottom_padding">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/bg_camera">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_edge_white_transparent_30"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/button_flash_on"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ico_flash_on_off"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="1"/>
-                <ImageButton
-                    android:id="@+id/button_flash_auto"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/ico_flash_auto_on"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="1"/>
-                <ImageButton
-                    android:id="@+id/button_flash_off"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ico_flash_off_off"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
-    </RelativeLayout>
 
 </RelativeLayout>

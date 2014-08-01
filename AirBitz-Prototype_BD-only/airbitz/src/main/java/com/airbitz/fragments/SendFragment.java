@@ -73,7 +73,7 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
+public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private final String TAG = getClass().getSimpleName();
     
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
@@ -223,7 +223,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
                     boolean bIsUUID = false;
                     String strTo = mToEdittext.getText().toString();
-                    if(CheckURIResults(strTo)) {
+                    if(mCoreAPI.CheckURIResults(strTo)!=null) {
                         GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     }
                     else {
@@ -317,8 +317,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals("URI")) {
                 String uriString = bundle.getString(NavigationActivity.URI);
                 bundle.putString(NavigationActivity.URI, ""); //to clear the URI after reading once
-                if(!uriString.isEmpty())
-                    CheckURIResults(uriString);
+                if(!uriString.isEmpty()) {
+                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriString);
+                    if(info!=null && info.getSzAddress()!=null) {
+                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                    }
+                }
             }
         }
 
@@ -334,37 +338,37 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         }
     }
 
-    class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
-        public FakeCapturePhoto() { }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-           for(int i=0;i<=7;i++){
-               try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException e) {
-                   e.printStackTrace();
-               }
-           }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-
-            try{
-//            mCamera.takePicture(null, null, SendFragment.this);
-//                GotoSendConfirmation("uuid", 0, "label", false);
-            }
-            catch (Exception e){
-            }
-        }
-    }
-
-    @Override
-    public void onPictureTaken(byte[] data, Camera camera) {
-    }
-
+//    class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
+//        public FakeCapturePhoto() { }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... voids) {
+//           for(int i=0;i<=7;i++){
+//               try {
+//                   Thread.sleep(1000);
+//               } catch (InterruptedException e) {
+//                   e.printStackTrace();
+//               }
+//           }
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean aBoolean) {
+//
+//            try{
+////            mCamera.takePicture(null, null, SendFragment.this);
+////                GotoSendConfirmation("uuid", 0, "label", false);
+//            }
+//            catch (Exception e){
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onPictureTaken(byte[] data, Camera camera) {
+//    }
+//
 
 
     public void stopCamera() {
@@ -405,27 +409,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        Result rawResult = null;
-        Reader reader = new QRCodeReader();
-        int w = camera.getParameters().getPreviewSize().width;
-        int h = camera.getParameters().getPreviewSize().height;
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
-        if (source != null) {
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-            try {
-                rawResult = reader.decode(bitmap);
-            } catch (ReaderException re) {
-                // nothing to do here
-            } finally {
-                reader.reset();
-            }
-        }
-        if(rawResult!=null) {
-            if(CheckURIResults(rawResult.getText())) {
-                Common.LogD(TAG, "QR result is good");
-            } else {
-                Common.LogD(TAG, "QR result is bad");
-            }
+        CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
+        if(info!=null && info.getSzAddress()!=null) {
+            GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
         }
     }
 
@@ -446,18 +432,49 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             cursor.close();
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
-            AttemptDecodePicture(thumbnail);
+            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
+            if(info!=null && info.getSzAddress()!=null) {
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            }
         }
     }
 
     // Select a picture from the Gallery
     private void PickAPicture() {
         mToEdittext.clearFocus();
-        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(in, RESULT_LOAD_IMAGE);
+//        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(in, RESULT_LOAD_IMAGE);
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
     }
 
-    private void AttemptDecodePicture(Bitmap thumbnail) {
+    private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {
+        Result rawResult = null;
+        Reader reader = new QRCodeReader();
+        int w = camera.getParameters().getPreviewSize().width;
+        int h = camera.getParameters().getPreviewSize().height;
+        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = reader.decode(bitmap);
+            } catch (ReaderException re) {
+                // nothing to do here
+            } finally {
+                reader.reset();
+            }
+        }
+        if(rawResult!=null) {
+            return mCoreAPI.CheckURIResults(rawResult.getText());
+        } else {
+            Common.LogD(TAG, "No QR code found");
+        }
+        return null;
+    }
+
+    private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
         if(thumbnail==null) {
             Common.LogD(TAG, "No picture selected");
         } else {
@@ -480,19 +497,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 }
             }
             if(rawResult!=null) {
-                if(CheckURIResults(rawResult.getText())) {
-                    Common.LogD(TAG, "QR result is good");
-                } else {
-                    Common.LogD(TAG, "QR result is bad");
-                }
+                return mCoreAPI.CheckURIResults(rawResult.getText());
             } else {
-                Common.LogD("Send Fragment", "No QR code found");
+                Common.LogD(TAG, "No QR code found");
             }
         }
+        return null;
     }
 
-    private void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
-        if(mToEdittext!=null)
+    public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
+        if(mToEdittext!=null && !isUUID)
             mToEdittext.setText(uuid);
 
         Fragment fragment = new SendConfirmationFragment();
@@ -505,72 +519,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         fragment.setArguments(bundle);
         if(mActivity!=null)
             mActivity.pushFragment(fragment);
-    }
-
-    public boolean CheckURIResults(String results)
-    {
-        boolean bSuccess = false;
-
-        tABC_Error Error = new tABC_Error();
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_BitcoinURIInfo pUri = core.longPtr_to_ppBitcoinURIInfo(lp);
-
-        core.ABC_ParseBitcoinURI(results, pUri, Error);
-
-        BitcoinURIInfo uri = new BitcoinURIInfo(core.longp_value(lp));
-
-        if (uri.getPtr(uri) != 0)
-            {
-                String uriAddress = uri.getSzAddress();
-                SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi();
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                long amountSatoshi = core.longp_value(p);
-
-                if (uriAddress!=null) {
-                    Log.i(TAG, "Send address: "+uriAddress);
-                    Log.i(TAG, "Send amount: "+amountSatoshi);
-
-                    String label = uri.getSzLabel();
-                    String message = uri.getSzMessage();
-                    if (message!=null) {
-                        Log.i(TAG, "    message: "+message);
-                    }
-                    bSuccess = true;
-
-                    GotoSendConfirmation(uriAddress, amountSatoshi, label, false);
-                }
-                else {
-                    Log.i(TAG, "no address: ");
-                    bSuccess = false;
-                }
-            }
-            else {
-                Log.i(TAG, "URI parse failed!");
-                bSuccess = false;
-            }
-
-        return bSuccess;
-    }
-
-    private class BitcoinURIInfo extends tABC_BitcoinURIInfo {
-        public String address;
-        public String label;
-        public String message;
-        public long amountSatoshi;
-        public BitcoinURIInfo(long pv) {
-            super(pv, false);
-            if (pv != 0) {
-                address = super.getSzAddress();
-                label = super.getSzLabel();
-                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                amountSatoshi = core.longp_value(p);
-                message = super.getSzMessage();
-            }
-        }
-        public long getPtr(tABC_BitcoinURIInfo p) {
-            return getCPtr(p);
-        }
     }
 
     @Override

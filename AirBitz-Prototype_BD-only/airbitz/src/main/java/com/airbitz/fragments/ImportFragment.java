@@ -1,19 +1,21 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
@@ -29,13 +31,23 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.CameraSurfacePreview;
-import com.airbitz.objects.PhotoHandler;
+import com.airbitz.utils.Common;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback, GestureDetector.OnGestureListener{
+public class ImportFragment extends Fragment implements Camera.PreviewCallback {
+    private final String TAG = getClass().getSimpleName();
 
     private EditText mToEdittext;
 
@@ -46,20 +58,16 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
 
     private RelativeLayout mParentLayout;
     private RelativeLayout mNavigationLayout;
-//    private ScrollView mScrollView;
 
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
 
-    private ImageButton mFlashOnButton;
-    private ImageButton mFlashOffButton;
-    private ImageButton mAutoFlashButton;
+    private ImageButton mFlashButton;
+    private ImageButton mGalleryButton;
 
     private OrientationEventListener orientationEventListener;
-    private int deviceOrientation;
-    private int presentOrientation;
 
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -71,18 +79,15 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
 
     private int BACK_CAMERA_INDEX = 0;
 
-    private GestureDetector mGestureDetector;
+    private boolean mFlashOn = false;
 
-    private Intent mIntent;
-
-    private boolean mFlashAutoActive = true;
-    private boolean mFlashOffInActive = false;
-    private boolean mFlashOnInActive = false;
+    private CoreAPI mCoreAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
     }
 
     private View mView;
@@ -101,7 +106,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mGestureDetector = new GestureDetector(this);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
         mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
@@ -118,9 +122,8 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
         mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
 
-        mFlashOffButton = (ImageButton) mView.findViewById(R.id.button_flash_off);
-        mFlashOnButton = (ImageButton) mView.findViewById(R.id.button_flash_on);
-        mAutoFlashButton = (ImageButton) mView.findViewById(R.id.button_flash_auto);
+        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
+        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -143,59 +146,33 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
             }
         });
 
-        mFlashOffButton.setOnClickListener(new View.OnClickListener() {
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mFlashOffInActive){
+                PickAPicture();
+            }
+        });
 
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-
-                    mFlashOffInActive = true;
+        mFlashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mFlashOn){
+                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
+                    mFlashOn = true;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
                 }
                 else{
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashOffInActive = false;
+                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
+                    mFlashOn = false;
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
                 }
             }
         });
 
-        mFlashOnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mFlashOnInActive){
-                    mFlashOnInActive = true;
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_on);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                }
-                else{
-
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_on);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_off);
-                    mFlashOnInActive = false;
-                }
-            }
-        });
-
-        mAutoFlashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mFlashAutoActive){
-
-                }
-                else{
-                    mFlashOffButton.setImageResource(R.drawable.ico_flash_off_off);
-                    mFlashOnButton.setImageResource(R.drawable.ico_flash_on_off);
-                    mAutoFlashButton.setImageResource(R.drawable.ico_flash_auto_on);
-                    mFlashAutoActive = true;
-                }
-            }
-        });
         mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -212,9 +189,9 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         try {
             mCamera = Camera.open(cameraIndex);
             mCamParam = mCamera.getParameters();
-            Log.d("TAG", "Camera Does exist");
+            Common.LogD(TAG, "Camera Does exist");
         } catch (Exception e) {
-            Log.d("TAG", "Camera Does Not exist");
+            Common.LogD(TAG, "Camera Does Not exist");
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
@@ -222,8 +199,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         preview.addView(mPreview);
 
         mCamera.setPreviewCallback(ImportFragment.this);
-
-        orientationListener();
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,107 +216,30 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         return mView;
     }
 
-    private void orientationListener() {
-        Log.d("TAG", "orientationListener");
-        orientationEventListener = new OrientationEventListener(getActivity(), SensorManager.SENSOR_DELAY_NORMAL) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                deviceOrientation = orientation;
-
-                if (orientation == ORIENTATION_UNKNOWN){
-                    return;
-                }
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Camera.getCameraInfo(cameraIndex, info);
-                orientation = (orientation + 45) / 90 * 90;
-                int rotation = 0;
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    rotation = (info.orientation - orientation + 360) % 360;
-                } else {
-                    rotation = (info.orientation + orientation) % 360;
-                }
-                mCamParam.setRotation(rotation);
-            }
-        };
-
-        if (orientationEventListener.canDetectOrientation()) {
-            orientationEventListener.enable();
-        }
-
-        presentOrientation = 90 * (deviceOrientation / 360) % 360;
-    }
-
-
-    class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean> {
-        public FakeCapturePhoto(){
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            for(int i=0;i<=7;i++){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-
-            try{
-                mCamera.takePicture(null, null, ImportFragment.this);
-            }
-            catch (Exception e){
-
-            }
-        }
-    }
-
-    @Override
-    public void onPictureTaken(byte[] data, Camera camera) {
-
-        Camera.CameraInfo info = new Camera.CameraInfo();
-
-        new PhotoHandler(getActivity(), data, info);
-        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-        if (heightDiff > 100) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-        Fragment fragment = new WalletPasswordFragment();
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
-    }
-
     public void startCamera(int cameraIndex) {
 
         try {
-            Log.d("TAG", "Opening Camera");
+            Common.LogD(TAG, "Opening Camera");
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
-            Log.d("TAG", "Camera Does Not exist");
+            Common.LogD(TAG, "Camera Does Not exist");
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
         SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
-        Log.d("TAG", "removeView");
+        Common.LogD(TAG, "removeView");
         preview.removeView(mPreview);
         preview = (FrameLayout) getView().findViewById(R.id.layout_camera_preview);
-        Log.d("TAG", "addView");
+        Common.LogD(TAG, "addView");
         preview.addView(mPreview);
-        Log.d("TAG", "setPreviewCallback");
+        Common.LogD(TAG, "setPreviewCallback");
         mCamera.setPreviewCallback(ImportFragment.this);
-        Log.d("TAG", "end setPreviewCallback");
+        Common.LogD(TAG, "end setPreviewCallback");
 
-        new FakeCapturePhoto().execute();
     }
 
     public void stopCamera() {
-        Log.d("TAG", "stopCamera");
+        Common.LogD(TAG, "stopCamera");
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -372,64 +270,98 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback, 
         stopCamera();
     }
 
-
-
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-//        Log.d("TAG", "onPreviewFrame");
+        CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
+        if(info!=null && info.getSzAddress()!=null) {
+            Fragment fragment = new WalletPasswordFragment();
+            ((NavigationActivity) getActivity()).pushFragment(fragment);
+        }
+
+    }
+
+//    private static int RESULT_LOAD_IMAGE = 876;
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
 //
-//        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-//        Camera.getCameraInfo(BACK_CAMERA_INDEX, cameraInfo);
-//        int angle = cameraInfo.orientation;
+//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+//            Uri selectedImage = data.getData();
+//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+//            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 //
-//        Log.d("TAG", "Orientation Angle = " + angle);
-//
-//        presentOrientation = (90 * Math.round(deviceOrientation / 90)) % 360;
-//        Log.d("TAG", "presentOrientation: " + presentOrientation);
-//        int dRotation = display.getRotation();
-//        Log.d("TAG", "dRotation: " + dRotation);
+//            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
+//            if(info!=null && info.getSzAddress()!=null) {
+//                Fragment fragment = new WalletPasswordFragment();
+//                ((NavigationActivity) getActivity()).pushFragment(fragment);
+//            }
+//        }
+//    }
+
+    // Select a picture from the Gallery
+    private void PickAPicture() {
+//        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-//                    finish();
-                    return true;
-                }
+    private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {
+        Result rawResult = null;
+        Reader reader = new QRCodeReader();
+        int w = camera.getParameters().getPreviewSize().width;
+        int h = camera.getParameters().getPreviewSize().height;
+        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = reader.decode(bitmap);
+            } catch (ReaderException re) {
+                // nothing to do here
+            } finally {
+                reader.reset();
             }
         }
-        return false;
+        if(rawResult!=null) {
+            return mCoreAPI.CheckURIResults(rawResult.getText());
+        } else {
+            Common.LogD(TAG, "No QR code found");
+        }
+        return null;
     }
+    private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
+        if(thumbnail==null) {
+            Common.LogD(TAG, "No picture selected");
+        } else {
+            Common.LogD(TAG, "Picture selected");
+            Result rawResult = null;
+            Reader reader = new QRCodeReader();
+            int w = thumbnail.getWidth();
+            int h = thumbnail.getHeight();
+            int[] pixels = new int[w*h];
+            thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
+            RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
+            if (source != null) {
+                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+                try {
+                    rawResult = reader.decode(bitmap);
+                } catch (ReaderException re) {
+                    // nothing to do here
+                } finally {
+                    reader.reset();
+                }
+            }
+            if(rawResult!=null) {
+                return mCoreAPI.CheckURIResults(rawResult.getText());
+            } else {
+                Common.LogD(TAG, "No QR code found");
+            }
+        }
+        return null;
+    }
+
+
 }
