@@ -395,8 +395,10 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mDataUri = dataUri;
             return;
         }
-        if(mNavStacks[Tabs.SEND.ordinal()].size()==2) {
-            mNavStacks[Tabs.SEND.ordinal()].pop();
+        if(mNavStacks[Tabs.SEND.ordinal()].size()>=2) {
+            while (mNavStacks[Tabs.SEND.ordinal()].size()>1){
+                mNavStacks[Tabs.SEND.ordinal()].pop();
+            }
         }
 
         if(mNavFragmentId!=Tabs.SEND.ordinal()) {
