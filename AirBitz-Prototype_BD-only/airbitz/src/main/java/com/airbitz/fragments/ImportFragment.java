@@ -280,33 +280,33 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
     }
 
-//    private static int RESULT_LOAD_IMAGE = 876;
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-//            Uri selectedImage = data.getData();
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-//
-//            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
-//            if(info!=null && info.getSzAddress()!=null) {
-//                Fragment fragment = new WalletPasswordFragment();
-//                ((NavigationActivity) getActivity()).pushFragment(fragment);
-//            }
-//        }
-//    }
+    private static int RESULT_LOAD_IMAGE = 876;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+
+            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
+            if(info!=null && info.getSzAddress()!=null) {
+                Fragment fragment = new WalletPasswordFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment);
+            }
+        }
+    }
 
     // Select a picture from the Gallery
     private void PickAPicture() {
-//        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        startActivityForResult(in, RESULT_LOAD_IMAGE);
+        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
     private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {

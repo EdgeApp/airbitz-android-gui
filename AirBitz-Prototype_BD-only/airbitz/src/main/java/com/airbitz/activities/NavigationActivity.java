@@ -168,8 +168,9 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        Uri dataUri = intent.getData();
+    public void onStart() {
+        super.onStart();
+        Uri dataUri = getIntent().getData();
         if(dataUri != null && dataUri.getScheme().equals("bitcoin")) {
             onBitcoinUri(dataUri);
         }
