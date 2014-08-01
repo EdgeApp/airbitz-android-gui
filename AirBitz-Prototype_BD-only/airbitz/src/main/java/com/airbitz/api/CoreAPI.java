@@ -6,9 +6,12 @@ import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
+import com.airbitz.activities.NavigationActivity;
+import com.airbitz.fragments.WalletPasswordFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
@@ -1931,6 +1934,65 @@ public class CoreAPI {
         tABC_Error Error = new tABC_Error();
         return core.ABC_ChangePasswordWithRecoveryAnswers(AirbitzApplication.getUsername(),
         recoveryAnswers, password, pin, null, null, Error);
+    }
+
+    public BitcoinURIInfo CheckURIResults(String results)
+    {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_sABC_BitcoinURIInfo pUri = core.longPtr_to_ppBitcoinURIInfo(lp);
+
+        core.ABC_ParseBitcoinURI(results, pUri, Error);
+
+        BitcoinURIInfo uri = new BitcoinURIInfo(core.longp_value(lp));
+
+        if (uri.getPtr(uri) != 0)
+        {
+            String uriAddress = uri.getSzAddress();
+            SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi();
+            SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+            long amountSatoshi = core.longp_value(p);
+
+            if (uriAddress!=null) {
+                Common.LogD(TAG, "BitcoinURI address: "+uriAddress);
+                Common.LogD(TAG, "BitcoinURI amount: " + amountSatoshi);
+
+                String label = uri.getSzLabel();
+                String message = uri.getSzMessage();
+                if (message!=null) {
+                    Common.LogD(TAG, "BitcoinURI message: "+message);
+                }
+            }
+            else {
+                Common.LogD(TAG, "BitcoinURI no address");
+            }
+        }
+        else {
+            Common.LogD(TAG, "URI parse failed!");
+        }
+
+        return uri;
+    }
+
+    public class BitcoinURIInfo extends tABC_BitcoinURIInfo {
+        public String address;
+        public String label;
+        public String message;
+        public long amountSatoshi;
+        public BitcoinURIInfo(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+                address = super.getSzAddress();
+                label = super.getSzLabel();
+                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
+                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
+                amountSatoshi = core.longp_value(p);
+                message = super.getSzMessage();
+            }
+        }
+        public long getPtr(tABC_BitcoinURIInfo p) {
+            return getCPtr(p);
+        }
     }
 
 }

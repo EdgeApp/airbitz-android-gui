@@ -29,7 +29,6 @@ import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.ReceivedSuccessFragment;
 import com.airbitz.fragments.RequestFragment;
-import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.TransparentFragment;
@@ -41,11 +40,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -387,7 +381,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     /*
-    Handle bitcoin:<address> Uri's coming from OS
+     * Handle bitcoin:<address> Uri's coming from OS
      */
     private void onBitcoinUri(Uri dataUri) {
         Common.LogD(TAG, "Received onCreate intent = "+dataUri.toString());
@@ -395,11 +389,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             mDataUri = dataUri;
             return;
         }
-        if(mNavStacks[Tabs.SEND.ordinal()].size()>=2) {
-            while (mNavStacks[Tabs.SEND.ordinal()].size()>1){
-                mNavStacks[Tabs.SEND.ordinal()].pop();
-            }
-        }
+        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         if(mNavFragmentId!=Tabs.SEND.ordinal()) {
             Bundle bundle = new Bundle();
@@ -407,7 +397,10 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             bundle.putString(URI, dataUri.toString());
             switchFragmentThread(Tabs.SEND.ordinal(), bundle);
         } else {
-            ((SendFragment) mNavFragments[Tabs.SEND.ordinal()]).CheckURIResults(dataUri.toString());
+            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(dataUri.toString());
+            if(info!=null && info.address!=null) {
+                ((SendFragment) mNavFragments[Tabs.SEND.ordinal()]).GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            }
         }
     }
 
@@ -449,7 +442,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         frag.setArguments(bundle);
         pushFragment(frag);
 
-        removeRequestQRCodeFragment();
+        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
     private void gotoDetailsNow() {
@@ -459,12 +452,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         bundle.putString(Wallet.WALLET_UUID, mUUID);
         switchToWallets(FragmentSourceEnum.REQUEST, bundle);
 
-        removeRequestQRCodeFragment();
+        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
-    private void removeRequestQRCodeFragment() {
-        if(mNavStacks[Tabs.REQUEST.ordinal()].peek() instanceof RequestQRCodeFragment) {
-            mNavStacks[Tabs.REQUEST.ordinal()].pop();
+    private void resetFragmentThreadToBaseFragment(int threadId) {
+        if(mNavStacks[threadId].size() > 1) {
+            mNavStacks[threadId].pop();
         }
     }
 
@@ -492,7 +485,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 .setNegativeButton("Ignore",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                removeRequestQRCodeFragment();
+                                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
                                 dialog.cancel();
                             }
                         }
