@@ -14,7 +14,7 @@
             android:layout_height="44.1dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:id="@+id/button_back"
+            android:id="@+id/fragment_wallet_qrcode_button_back"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
@@ -35,7 +35,7 @@
         <com.airbitz.objects.HighlightOnPressImageButton
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:id="@+id/button_help"
+            android:id="@+id/fragment_wallet_qrcode_button_help"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
@@ -157,5 +157,13 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/fragment_wallet_qrcode_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@xml/progress"
+        android:visibility="gone"/>
 
 </RelativeLayout>
