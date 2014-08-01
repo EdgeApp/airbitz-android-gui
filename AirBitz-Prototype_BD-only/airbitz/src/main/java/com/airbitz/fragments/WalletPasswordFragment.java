@@ -25,17 +25,13 @@ import com.airbitz.utils.Common;
 /**
  * Created on 2/24/14.
  */
-public class WalletPasswordFragment extends Fragment implements GestureDetector.OnGestureListener{
+public class WalletPasswordFragment extends Fragment {
 
     private EditText mPasswordEdittext;
     private ImageView mValidPasswordImageView;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-
-    private GestureDetector mGestureDetector;
-    private Intent mIntent;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -59,7 +55,6 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
         mView = inflater.inflate(R.layout.fragment_wallet_password, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mGestureDetector = new GestureDetector(this);
 
         mPasswordEdittext = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
         mValidPasswordImageView = (ImageView) mView.findViewById(R.id.imageview_valid_password);
@@ -156,54 +151,4 @@ public class WalletPasswordFragment extends Fragment implements GestureDetector.
         return mView;
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        mValidPasswordImageView.setVisibility(View.GONE);
-//    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    getActivity().onBackPressed();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
-    }
 }
