@@ -207,7 +207,6 @@ public class SignUpActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 String password = mPasswordEditText.getText().toString();
-
                 mGoodPassword = checkPasswordRules(password);
             }
 
@@ -347,6 +346,7 @@ public class SignUpActivity extends Activity {
                     if (mMode == SIGNUP)
                     {
                         attemptSignUp();
+                        return;
                     }
                     else if (mMode == CHANGE_PASSWORD)
                     {
@@ -569,8 +569,8 @@ public class SignUpActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
-            showProgress(false);
             if (!success) {
+                showProgress(false);
                 ShowReasonAlert("Create wallet failed");
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
@@ -580,6 +580,8 @@ public class SignUpActivity extends Activity {
                 mIntent.putExtra(KEY_USERNAME, mUsername);
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
                 mIntent.putExtra(KEY_WITHDRAWAL, mPin);
+
+                showProgress(false);
                 startActivity(mIntent);
                 finish();
             }
@@ -689,7 +691,6 @@ public class SignUpActivity extends Activity {
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
-                .setTitle(getString(R.string.error_invalid_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
