@@ -164,47 +164,38 @@ public class ExportSavingOptionFragment extends Fragment{
         return mView;
     }
 
-    private void showButtons(){//TODO SD CARD?
+    private void showButtons(){
         String source = bundle.getString("button_clicked");
         if(source.equals("CSV")){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
-            mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
+            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("Quicken")){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
-            mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
+            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("Quickbooks")){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
-            mEmailButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
+            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mEmailButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
+            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
         }else if(source.equals("PDF")){
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
+
         }else if(source.equals("Wallet")){
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
             mGoogleDriveButton.setVisibility(View.GONE);
             mGoogleDriveImage.setVisibility(View.GONE);
             mDropBoxButton.setVisibility(View.GONE);
