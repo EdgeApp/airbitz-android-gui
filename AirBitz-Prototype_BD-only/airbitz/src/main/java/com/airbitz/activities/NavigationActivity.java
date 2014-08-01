@@ -421,6 +421,20 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
     }
 
+    // Callback interface when a wallet could be updated
+    private OnWalletUpdated mOnWalletUpdated;
+    public interface OnWalletUpdated {
+        public void onWalletUpdated();
+    }
+    public void setOnWalletUpdated(OnWalletUpdated listener) {
+        mOnWalletUpdated = listener;
+    }
+
+    private void updateWalletListener() {
+        if(mOnWalletUpdated!=null)
+            mOnWalletUpdated.onWalletUpdated();
+    }
+
     @Override
     public void OnDataSync() {
         Common.LogD("NavigationActivity", "Data Sync received");
@@ -431,7 +445,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void OnRemotePasswordChange() {
         showRemotePasswordChangeDialog();
     }
-
 
     private void startReceivedSuccess() {
         Bundle bundle = new Bundle();
@@ -467,8 +480,10 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
-            if(mIncomingDialog!=null)
+            if(mIncomingDialog!=null) {
+                updateWalletListener();
                 mIncomingDialog.dismiss(); // hide dialog
+            }
         }
     };
 
@@ -476,7 +491,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage("Bitcoin received. Tap Details to see them.")
                 .setTitle("Received Funds")
-                .setCancelable(true)
+                .setCancelable(false)
                 .setPositiveButton("Details",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -487,6 +502,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+                                updateWalletListener();
                                 dialog.cancel();
                             }
                         }

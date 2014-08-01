@@ -53,7 +53,8 @@ import java.util.List;
  */
 public class WalletsFragment extends Fragment
         implements DynamicListView.OnListReordered,
-        CoreAPI.OnExchangeRatesChange {
+        CoreAPI.OnExchangeRatesChange,
+        NavigationActivity.OnWalletUpdated {
 
     private static final int BTC = 0;
     private static final int CURRENCY = 1;
@@ -461,6 +462,12 @@ public class WalletsFragment extends Fragment
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
 
+    @Override
+    public void onWalletUpdated() {
+        refreshWalletList(mCoreAPI.loadWallets());
+        UpdateBalances();
+    }
+
     /**
      * Represents an asynchronous creation of the first wallet
      */
@@ -583,6 +590,7 @@ public class WalletsFragment extends Fragment
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         mCoreAPI.addExchangeRateChangeListener(this);
         UpdateBalances();
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
     }
 
     @Override public void onPause() {
@@ -590,6 +598,7 @@ public class WalletsFragment extends Fragment
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         prefs.edit().putBoolean("archiveClosed", archiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
     public void buildFragments(){

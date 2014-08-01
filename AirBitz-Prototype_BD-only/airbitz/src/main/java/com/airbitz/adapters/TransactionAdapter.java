@@ -37,16 +37,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mWallet = wallet;
         mCurrencyNum = mWallet.getCurrencyNum();
         mListTransaction = listTransaction;
-        createRunningSatoshi(listTransaction);
+        createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
     }
 
-    private void createRunningSatoshi(List<Transaction> listTransaction) {
-        mRunningSatoshi = new long[listTransaction.size()];
+    public void createRunningSatoshi() {
+        mRunningSatoshi = new long[mListTransaction.size()];
 
         long total = 0;
-        for(int i=listTransaction.size()-1; i>-1; i--) {
-            total += listTransaction.get(i).getAmountSatoshi();
+        for(int i=mListTransaction.size()-1; i>-1; i--) {
+            total += mListTransaction.get(i).getAmountSatoshi();
             mRunningSatoshi[i] = total;
         }
     }
