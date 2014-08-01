@@ -442,12 +442,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     // Select a picture from the Gallery
     private void PickAPicture() {
         mToEdittext.clearFocus();
-//        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        startActivityForResult(in, RESULT_LOAD_IMAGE);
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
+        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
     private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {
