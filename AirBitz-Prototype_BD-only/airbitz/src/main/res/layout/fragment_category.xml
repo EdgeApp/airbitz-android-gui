@@ -100,7 +100,7 @@
                 android:layout_marginRight="12.6dp"
                 android:background="@drawable/rounded_edge"/>
 
-            <Button
+            <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_category_button_add"
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"
@@ -135,7 +135,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_tab_bar">
 
-        <Button
+        <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/button_cancel"
             android:layout_width="138.6dp"
             android:layout_height="match_parent"
@@ -144,7 +144,7 @@
             android:text="Cancel"
             android:textColor="#FFFFFF"/>
 
-        <Button
+        <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/button_done"
             android:layout_width="138.6dp"
             android:layout_height="match_parent"
@@ -350,7 +350,7 @@
                 android:inputType="textVisiblePassword|textNoSuggestions"
                 android:layout_toLeftOf="@+id/item_popup_delete"
                 android:background="@drawable/rounded_edge"/>
-            <Button
+            <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/item_popup_delete"
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"

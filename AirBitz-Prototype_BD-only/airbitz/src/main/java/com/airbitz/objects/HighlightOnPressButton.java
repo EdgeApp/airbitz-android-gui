@@ -1,4 +1,4 @@
-package com.airbitz.models;
+package com.airbitz.objects;
 
 import android.content.Context;
 import android.graphics.Color;

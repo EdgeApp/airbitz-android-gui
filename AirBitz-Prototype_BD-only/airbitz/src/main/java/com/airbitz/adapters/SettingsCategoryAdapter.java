@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.objects.HighlightOnPressButton;
 
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
 
             }
         });
-        Button mDeleteButton = (Button) convertView.findViewById(R.id.category_delete);
+        HighlightOnPressButton mDeleteButton = (HighlightOnPressButton) convertView.findViewById(R.id.category_delete);
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
