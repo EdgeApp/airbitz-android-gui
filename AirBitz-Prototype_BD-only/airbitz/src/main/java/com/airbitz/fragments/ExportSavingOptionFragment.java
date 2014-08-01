@@ -6,30 +6,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2/22/14.
  */
 public class ExportSavingOptionFragment extends Fragment{
 
-    private EditText mAccountEdittext;
-    private EditText mFromEdittext;
-    private EditText mToEdittext;
+    private HighlightOnPressSpinner mWalletSpinner;
+    private HighlightOnPressSpinner mFromSpinner;
+    private HighlightOnPressSpinner mToSpinner;
 
     private TextView mTitleTextView;
     private TextView mAccountTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
+
+    private Button mThisWeek;
+    private Button mThisMonth;
+    private Button mThisYear;
 
     private HighlightOnPressButton mPrintButton;
     private ImageView mPrintImage;
@@ -51,12 +62,25 @@ public class ExportSavingOptionFragment extends Fragment{
 
     private Bundle bundle;
 
+    private List<Button> mTimeButtons;
+    private List<Wallet> mWalletList;
+    private List<String> mWalletNameList;
+    private CoreAPI mCoreApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
+        mCoreApi = CoreAPI.getApi();
+        mWalletList = new ArrayList<Wallet>();
+        mWalletNameList = new ArrayList<String>();
+        for(Wallet w: mCoreApi.loadWallets()){
+            if(!w.isArchiveHeader() && !w.isHeader() &&!w.isArchived()) {
+                mWalletList.add(w);
+                mWalletNameList.add(w.getName());
+            }
+        }
     }
 
     @Override
@@ -72,17 +96,13 @@ public class ExportSavingOptionFragment extends Fragment{
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_exportsaving_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_exportsaving_button_help);
 
-        mAccountEdittext = (EditText) mView.findViewById(R.id.edittext_account);
-        mFromEdittext = (EditText) mView.findViewById(R.id.edittext_from);
-        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
+        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_exportsaving_account_spinner);
+        mFromSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
+        mToSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
 
         mAccountTextView = (TextView) mView.findViewById(R.id.textview_account);
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
-
-        mAccountEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mFromEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mToEdittext.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mAccountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -101,9 +121,23 @@ public class ExportSavingOptionFragment extends Fragment{
         mViewButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_view);
         mViewImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_view);
 
+        mThisMonth = (Button) mView.findViewById(R.id.button_this_month);
+        mThisWeek = (Button) mView.findViewById(R.id.button_this_week);
+        mThisYear = (Button) mView.findViewById(R.id.button_this_year);
+
+        mTimeButtons = new ArrayList<Button>();
+        mTimeButtons.add(mThisWeek);
+        mTimeButtons.add(mThisMonth);
+        mTimeButtons.add(mThisYear);
+
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        showButtons();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.item_request_wallet_spinner,mWalletNameList);
+        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+        mWalletSpinner.setAdapter(dataAdapter);
+        mWalletSpinner.setSelection(0);
+
+        showExportButtons();
 
         mPrintButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,10 +195,30 @@ public class ExportSavingOptionFragment extends Fragment{
             }
         });
 
+        mThisWeek.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimeButton(0);//TODO
+            }
+        });
+        mThisMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimeButton(1);//todo
+            }
+        });
+        mThisYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimeButton(2);
+            }
+        });
+
+
         return mView;
     }
 
-    private void showButtons(){
+    private void showExportButtons(){
         String source = bundle.getString("button_clicked");
         if(source.equals("CSV")){
             mPrintButton.setVisibility(View.GONE);
@@ -200,6 +254,16 @@ public class ExportSavingOptionFragment extends Fragment{
             mGoogleDriveImage.setVisibility(View.GONE);
             mDropBoxButton.setVisibility(View.GONE);
             mDropBoxImage.setVisibility(View.GONE);
+        }
+    }
+
+    private void showTimeButton(int pos){
+        for(int i = 0;i < mTimeButtons.size();i++){
+            if(i==pos){
+                mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.btn_cancel));
+            }else{
+                mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.emboss_down));
+            }
         }
     }
 }
