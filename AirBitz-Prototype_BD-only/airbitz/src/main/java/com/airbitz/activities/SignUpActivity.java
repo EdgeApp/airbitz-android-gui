@@ -704,7 +704,6 @@ public class SignUpActivity extends Activity {
     private void showMessageAndFinish(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
-                .setTitle(getString(R.string.error_invalid_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
