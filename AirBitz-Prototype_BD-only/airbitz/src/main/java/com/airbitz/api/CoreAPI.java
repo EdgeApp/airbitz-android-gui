@@ -474,7 +474,7 @@ public class CoreAPI {
         }
     }
 
-    public ExchangeRateSource[] getExchangeRateSources(tABC_ExchangeRateSources sources) {
+    public List<ExchangeRateSource> getExchangeRateSources(tABC_ExchangeRateSources sources) {
         List<tABC_ExchangeRateSource> list = new ArrayList<tABC_ExchangeRateSource>();
         ExchangeRateSources temp = new ExchangeRateSources(sources.getCPtr(sources));
         return temp.getSources();
@@ -483,7 +483,7 @@ public class CoreAPI {
     private class ExchangeRateSources extends tABC_ExchangeRateSources {
         long mNumSources = 0;
         long mChoiceStart = 0;
-        ExchangeRateSource[] sources;
+        List<ExchangeRateSource> sources;
 
         public ExchangeRateSources (long pv) {
             super(pv, false);
@@ -494,32 +494,41 @@ public class CoreAPI {
 
         public long getNumSources() { return mNumSources; }
 
-        public ExchangeRateSource[] getSources() {
-            sources = new ExchangeRateSource[(int) mNumSources];
+        public List<ExchangeRateSource> getSources() {
+            sources = new ArrayList<ExchangeRateSource>();
             SWIGTYPE_p_p_sABC_ExchangeRateSource start = super.getASources();
             for(int i=0; i< mNumSources; i++) {
                 ExchangeRateSources fake = new ExchangeRateSources(ppExchangeRateSource.getPtr(start, i * 4));
                 mChoiceStart = fake.getNumSources();
-                sources[i] = new ExchangeRateSource(new PVOID(mChoiceStart));
+                sources.add(new ExchangeRateSource(mChoiceStart));
             }
             return sources;
+        }
+
+        public void setSources(ExchangeRateSource[] sources) {
+
         }
     }
 
     public class ExchangeRateSource extends tABC_ExchangeRateSource {
-            String mSource = null;
-            long mCurrencyNum = -1;
+        String mSource = null;
+        long mCurrencyNum = -1;
 
-            public ExchangeRateSource(SWIGTYPE_p_void pv) {
-                super(PVoidStatic.getPtr(pv), false);
-                if(PVoidStatic.getPtr(pv)!=0) {
-                    mSource = super.getSzSource();
-                    mCurrencyNum = super.getCurrencyNum();
-                }
+        public ExchangeRateSource(long pv) {
+            super(pv, false);
+            if (pv != 0) {
+                mSource = super.getSzSource();
+                mCurrencyNum = super.getCurrencyNum();
             }
+        }
 
-            public String getSource() { return mSource; }
-            public long getmCurrencyNum() { return mCurrencyNum; }
+        public String getSource() {
+            return mSource;
+        }
+
+        public long getmCurrencyNum() {
+            return mCurrencyNum;
+        }
     }
 
     private static class ppExchangeRateSource extends SWIGTYPE_p_p_sABC_ExchangeRateSource {
@@ -527,8 +536,15 @@ public class CoreAPI {
         public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p, long i) { return getCPtr(p)+i; }
     }
 
-    public void saveExchangeRateSource(String name, int currencyNumber) {
+    public void addExchangeRateSource(String name, int currencyNumber) {
+        ExchangeRateSource newSource = (ExchangeRateSource) new tABC_ExchangeRateSource();
+        newSource.setSzSource(name);
+        newSource.setCurrencyNum(currencyNumber);
 
+        tABC_ExchangeRateSources sources = mCoreSettings.getExchangeRateSources();
+        List<ExchangeRateSource> list = getExchangeRateSources(mCoreSettings.getExchangeRateSources());
+        list.add(newSource);
+//        sources.setASources();
     }
 
     //***************** Questions
@@ -1392,7 +1408,7 @@ public class CoreAPI {
 
     //*************** Asynchronous Updating
     Handler mPeriodicTaskHandler = new Handler();
-    private ExchangeRateSource[] mExchangeRateSources;
+    private List<ExchangeRateSource> mExchangeRateSources;
 
     // Callback interface for adding and removing location change listeners
     private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
@@ -1465,8 +1481,8 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn())
         {
             tABC_Error error = new tABC_Error();
-            for(int i=0; i< mExchangeRateSources.length; i++) {
-                ExchangeRateSource source = mExchangeRateSources[i];
+            for(int i=0; i< mExchangeRateSources.size(); i++) {
+                ExchangeRateSource source = mExchangeRateSources.get(i);
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         source.getCurrencyNum(), null, null, error);
             }
