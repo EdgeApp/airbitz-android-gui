@@ -74,6 +74,8 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.PictureCallback {
+    private final String TAG = getClass().getSimpleName();
+    
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -366,7 +368,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
 
     public void stopCamera() {
-        Log.d("TAG", "stopCamera");
+        Common.LogD(TAG, "stopCamera");
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -379,10 +381,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public void startCamera(int cameraIndex) {
 
         try {
-            Log.d("TAG", "Opening Camera");
+            Common.LogD(TAG, "Opening Camera");
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
-            Log.d("TAG", "Camera Does Not exist");
+            Common.LogD(TAG, "Camera Does Not exist");
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
@@ -420,9 +422,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         }
         if(rawResult!=null) {
             if(CheckURIResults(rawResult.getText())) {
-                Log.d("SendFragment", "QR result is good");
+                Common.LogD(TAG, "QR result is good");
             } else {
-                Log.d("SendFragment", "QR result is bad");
+                Common.LogD(TAG, "QR result is bad");
             }
         }
     }
@@ -457,9 +459,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
 
     private void AttemptDecodePicture(Bitmap thumbnail) {
         if(thumbnail==null) {
-            Log.d("SendFragment", "No picture selected");
+            Common.LogD(TAG, "No picture selected");
         } else {
-            Log.d("SendFragment", "Picture selected");
+            Common.LogD(TAG, "Picture selected");
             Result rawResult = null;
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
@@ -479,12 +481,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             }
             if(rawResult!=null) {
                 if(CheckURIResults(rawResult.getText())) {
-                    Log.d("SendFragment", "QR result is good");
+                    Common.LogD(TAG, "QR result is good");
                 } else {
-                    Log.d("SendFragment", "QR result is bad");
+                    Common.LogD(TAG, "QR result is bad");
                 }
             } else {
-                Log.d("Send Fragment", "No QR code found");
+                Common.LogD("Send Fragment", "No QR code found");
             }
         }
     }
@@ -525,25 +527,25 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                 long amountSatoshi = core.longp_value(p);
 
                 if (uriAddress!=null) {
-                    Log.i("SendFragment", "Send address: "+uriAddress);
-                    Log.i("SendFragment", "Send amount: "+amountSatoshi);
+                    Log.i(TAG, "Send address: "+uriAddress);
+                    Log.i(TAG, "Send amount: "+amountSatoshi);
 
                     String label = uri.getSzLabel();
                     String message = uri.getSzMessage();
                     if (message!=null) {
-                        Log.i("SendFragment", "    message: "+message);
+                        Log.i(TAG, "    message: "+message);
                     }
                     bSuccess = true;
 
                     GotoSendConfirmation(uriAddress, amountSatoshi, label, false);
                 }
                 else {
-                    Log.i("SendFragment", "no address: ");
+                    Log.i(TAG, "no address: ");
                     bSuccess = false;
                 }
             }
             else {
-                Log.i("SendFragment", "URI parse failed!");
+                Log.i(TAG, "URI parse failed!");
                 bSuccess = false;
             }
 
