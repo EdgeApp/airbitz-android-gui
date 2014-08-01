@@ -362,11 +362,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
-            while(!mNavStacks[mNavFragmentId].isEmpty()){
-                mNavStacks[mNavFragmentId].pop();
-            }
-            Fragment fragment = new RequestFragment();
-            mNavStacks[mNavFragmentId].add(fragment);
             switchFragmentThread(Tabs.WALLET.ordinal());
             mNavFragmentId = Tabs.WALLET.ordinal();
             while (!mNavStacks[mNavFragmentId].isEmpty()){
@@ -378,11 +373,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
             frag.setArguments(bundle);
             pushFragment(frag);
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
-            while(!mNavStacks[mNavFragmentId].isEmpty()){
-                mNavStacks[mNavFragmentId].pop();
-            }
-            Fragment fragment = new SendFragment();
-            mNavStacks[mNavFragmentId].add(fragment);
             switchFragmentThread(Tabs.WALLET.ordinal());
             mNavFragmentId = Tabs.WALLET.ordinal();
             while (!mNavStacks[mNavFragmentId].isEmpty()){
