@@ -48,11 +48,11 @@ android {
     productFlavors {
 
         dev {
-            packageName "com.airbitz.dev"
+            applicationId "com.airbitz.dev"
         }
 
         prod {
-            packageName "com.airbitz"
+            applicationId "com.airbitz"
         }
     }
 

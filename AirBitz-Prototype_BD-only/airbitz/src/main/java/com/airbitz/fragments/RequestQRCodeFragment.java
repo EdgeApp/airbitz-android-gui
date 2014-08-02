@@ -1,5 +1,7 @@
 package com.airbitz.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -55,6 +57,7 @@ public class RequestQRCodeFragment extends Fragment {
     private List<String> mContactNames = new ArrayList<String>();
     private Map<String, String> mContactPhones = new LinkedHashMap<String, String>();
 
+    private View mProgressView;
 
     private Bundle bundle;
 
@@ -89,6 +92,8 @@ public class RequestQRCodeFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
+        mProgressView = mView.findViewById(R.id.fragment_wallet_qrcode_progressbar);
+
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
@@ -96,8 +101,8 @@ public class RequestQRCodeFragment extends Fragment {
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_qrcode_button_back);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_qrcode_button_help);
         mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
         mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
         mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);
@@ -154,7 +159,10 @@ public class RequestQRCodeFragment extends Fragment {
     private CreateBitmapTask mCreateBitmapTask;
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
 
-        CreateBitmapTask() { }
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -183,11 +191,29 @@ public class RequestQRCodeFragment extends Fragment {
             if (mQRBitmap != null) {
                 mQRView.setImageBitmap(mQRBitmap);
             }
+            showProgress(false);
         }
 
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
+            showProgress(false);
+        }
+    }
+
+    public void showProgress(final boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 
