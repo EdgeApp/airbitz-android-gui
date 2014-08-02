@@ -576,7 +576,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         @Override
         public void run() {
             Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(250);
+            animator.setDuration(100);
             animator.start();
         }
     };
@@ -585,7 +585,7 @@ public class WalletFragment extends Fragment implements CoreAPI.OnExchangeRatesC
         @Override
         public void run() {
             Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(250);
+            animator.setDuration(100);
             animator.start();
         }
     };
