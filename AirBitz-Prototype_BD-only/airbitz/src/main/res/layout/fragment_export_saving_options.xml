@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
     android:id="@+id/layout_root">
 
 
@@ -136,11 +137,11 @@
                         android:textSize="15dp"
                         android:layout_alignParentLeft="true"/>
 
-                    <com.airbitz.objects.HighlightOnPressSpinner
+                    <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/fragment_exportsaving_from_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="10/15/2014"
+                        android:text="10/15/2014 12:20pm"
                         android:layout_toRightOf="@+id/textview_from"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
@@ -149,7 +150,7 @@
                         android:paddingLeft="12.6dp"
                         android:drawablePadding="-25.2dp"
                         android:layout_marginRight="18.9dp"
-                        android:textSize="15dp"/>
+                        android:textSize="12dp"/>
 
 
                 </RelativeLayout>
@@ -176,11 +177,11 @@
                         android:layout_alignParentLeft="true"/>
 
 
-                    <com.airbitz.objects.HighlightOnPressSpinner
+                    <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/fragment_exportsaving_to_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="10/15/2014"
+                        android:text="10/15/2014 12:20pm"
                         android:layout_toRightOf="@+id/textview_to"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
@@ -189,39 +190,95 @@
                         android:paddingLeft="12.6dp"
                         android:drawablePadding="-25.2dp"
                         android:layout_marginRight="18.9dp"
-                        android:textSize="15dp"/>
+                        android:textSize="12dp"/>
 
-                </RelativeLayout>Layout>
+                </RelativeLayout>
 
 
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/layout_export_period"
+                android:id="@+id/layout_export_last_period"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="44.1dp"
                 android:layout_below="@id/layout_export_data"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="12.6dp"
+                android:layout_marginBottom="6.3dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:text="@string/export_account_yesterday"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/button_yesterday"
+                    android:layout_marginRight="6.3dp"
+                    android:textSize="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/emboss_down"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/export_account_last_week"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/button_last_week"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="3.15dp"
+                    android:layout_marginRight="3.15dp"
+                    android:gravity="center"
+                    android:background="@drawable/emboss_down"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/export_account_last_month"
+                    android:textColor="@android:color/white"
+                    android:textSize="15dp"
+                    android:id="@+id/button_last_month"
+                    android:layout_marginLeft="6.3dp"
+                    android:gravity="center"
+                    android:background="@drawable/emboss_down"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_export_this_period"
+                android:layout_width="match_parent"
+                android:layout_height="44.1dp"
+                android:layout_below="@id/layout_export_last_period"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="12.6dp"
+                android:layout_marginBottom="6.3dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/export_account_today"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/button_today"
+                    android:layout_marginRight="6.3dp"
+                    android:textSize="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/emboss_down"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:text="@string/export_account_this_week"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/button_this_week"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:textSize="15dp"
+                    android:layout_marginLeft="3.15dp"
+                    android:layout_marginRight="3.15dp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -231,32 +288,9 @@
                     android:layout_height="match_parent"
                     android:text="@string/export_account_this_month"
                     android:textColor="@android:color/white"
+                    android:textSize="15dp"
                     android:id="@+id/button_this_month"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:textSize="15dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center"
-                    android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/export_account_this_year"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp"
-                    android:id="@+id/button_this_year"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:layout_marginLeft="6.3dp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -271,7 +305,7 @@
                 android:layout_marginRight="12.6dp"
                 android:layout_marginTop="18.9dp"
                 android:layout_marginBottom="6.3dp"
-                android:layout_below="@id/layout_export_period">
+                android:layout_below="@id/layout_export_this_period">
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_print"

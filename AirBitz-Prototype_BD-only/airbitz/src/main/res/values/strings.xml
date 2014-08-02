@@ -198,8 +198,12 @@
     <string name="export_account_from_title">From:</string>
     <string name="export_account_to_title">To:</string>
     <string name="export_account_this_week">This Week</string>
+    <string name="export_account_last_week">Last Week</string>
     <string name="export_account_this_month">This Month</string>
+    <string name="export_account_last_month">Last Month</string>
     <string name="export_account_this_year">This Year</string>
+    <string name="export_account_yesterday">Yesterday</string>
+    <string name="export_account_today">Today</string>
     <string name="export_csv_title">CSV</string>
     <string name="export_quicken_title">Quicken</string>
     <string name="export_quickbooks_title">Quickbooks</string>
