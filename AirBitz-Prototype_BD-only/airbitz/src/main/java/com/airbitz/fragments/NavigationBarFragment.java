@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,9 +34,7 @@ public class NavigationBarFragment extends Fragment {
 
     private LinearLayout mContainerLayout;
 
-    public int getCurrentTab(){ return selectedTab; }
-    public int getLastTab(){ return mLastTab; }
-    public void setLastTab(int tab){ mLastTab = tab; }
+    private NavigationActivity mActivity;
 
     //Callbacks for containing Activity to implement
     public interface OnScreenSelectedListener {
@@ -46,6 +45,7 @@ public class NavigationBarFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mActivity = (NavigationActivity) getActivity();
     }
 
     @Override
@@ -101,7 +101,9 @@ public class NavigationBarFragment extends Fragment {
             selectTab(selectedTab);
             unselectTab(mLastTab);
             mLastTab = selectedTab;
-            ((NavigationActivity)this.getActivity()).onNavBarSelected(selectedTab);
+
+            if(mActivity!=null)
+                mActivity.onNavBarSelected(selectedTab);
         }
     }
 
