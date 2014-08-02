@@ -1,11 +1,13 @@
 package com.airbitz.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,14 +33,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_p_sABC_QuestionChoice;
-import com.airbitz.api.SWIGTYPE_p_void;
-import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_QuestionChoice;
-import com.airbitz.api.tABC_QuestionChoices;
-import com.airbitz.api.tABC_RequestResults;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +55,8 @@ public class PasswordRecoveryActivity extends Activity {
     private View dummyCover;
 
     private ImageButton mBackButton;
+    private EditText mPasswordEditText;
+    private ProgressBar mProgressView;
 
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
@@ -89,6 +87,8 @@ public class PasswordRecoveryActivity extends Activity {
         mCoreAPI = CoreAPI.getApi();
 
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        mPasswordEditText = (EditText) findViewById(R.id.activity_password_recovery_password_edittext);
+        mProgressView = (ProgressBar) findViewById(R.id.activity_password_recovery_progressbar);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
 
@@ -99,6 +99,7 @@ public class PasswordRecoveryActivity extends Activity {
             mPassword = AirbitzApplication.getPassword();
 
             mSkipStepButton.setVisibility(View.INVISIBLE);
+            mPasswordEditText.setVisibility(View.VISIBLE);
             mBackButton.setVisibility(View.VISIBLE);
             mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
         } else {
@@ -166,6 +167,11 @@ public class PasswordRecoveryActivity extends Activity {
         String questions = "";
         String answers = "";
 
+        if(!mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+            ShowMessageAlert("Please enter your correct password so your answers can be changed.");
+            return;
+        }
+
         int count = 0;
         for (View view : mQuestionViews) {
             QuestionView qaView = (QuestionView) view;
@@ -192,10 +198,10 @@ public class PasswordRecoveryActivity extends Activity {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                 mSaveQuestionsTask.execute((Void) null);
             } else {
-                ShowAnswerAllQuestionsAlert();
+                ShowMessageAlert(getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ShowPickAllQuestionsAlert();
+            ShowMessageAlert(getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -244,43 +250,9 @@ public class PasswordRecoveryActivity extends Activity {
         alertDialog.show();
     }
 
-    private void ShowAnswerAllQuestionsAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.activity_recovery_answer_questions_alert))
-                .setTitle(getResources().getString(R.string.activity_recovery_title))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.GONE);
-                                dialog.cancel();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void ShowPickAllQuestionsAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.activity_recovery_pick_questions_alert))
-                .setTitle(getResources().getString(R.string.activity_recovery_title))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.GONE);
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void ShowSaveFailAlert(String reason) {
+    private void ShowMessageAlert(String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
-                .setTitle(getResources().getString(R.string.activity_recovery_title))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -289,29 +261,6 @@ public class PasswordRecoveryActivity extends Activity {
                                 dialog.cancel();
                             }
                         });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void ShowCompleteAlert(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getString(R.string.activity_recovery_done_details))
-                .setTitle(getResources().getString(R.string.activity_recovery_done_title))
-                .setCancelable(true)
-                .setNegativeButton(getResources().getString(R.string.string_back),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }
-                )
-                .setPositiveButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                SuccessfulSignup();
-                            }
-                        }
-                );
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -388,7 +337,10 @@ public class PasswordRecoveryActivity extends Activity {
             mAnswers = answers;
         }
 
-        //TODO need pre and post execute busy spinner
+        @Override
+        public void onPreExecute() {
+            showProgress(true);
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -399,12 +351,12 @@ public class PasswordRecoveryActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
+            showProgress(false);
             dummyCover.setVisibility(View.GONE);
             if (!success) {
-                Log.d("PasswordRecoveryActivity", "Save recovery answers failed.");
-                ShowSaveFailAlert("Save recovery answers failed.");
+                ShowMessageAlert("Save recovery answers failed.");
             } else {
-                ShowCompleteAlert();
+                ShowMessageAlert(getString(R.string.activity_recovery_done_details));
             }
         }
 
@@ -546,21 +498,6 @@ public class PasswordRecoveryActivity extends Activity {
             mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
             final View redRing = findViewById(R.id.item_recovery_answer_redring);
             mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-//        edittext.setOnKeyListener(new View.OnKeyListener() {
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                // If the event is a key-down event on the "enter" button
-//                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-//                    // Perform action on key press
-////                    View newQuestion = getQuestionView();
-////                    mQuestionViews.add(newQuestion);
-////                    populateQuestionViews();
-////                    newQuestion.requestFocus();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
 
             mText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -653,6 +590,23 @@ public class PasswordRecoveryActivity extends Activity {
         if(mChangeQuestions)
             super.onBackPressed();
     }
+
+    public void showProgress(final boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
 
 }
 
