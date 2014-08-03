@@ -6,6 +6,7 @@ import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,7 +51,6 @@ public class SignUpActivity extends Activity {
     public static final int MIN_PIN_LENGTH = 4;
     private RelativeLayout mParentLayout;
 
-    private View mProgressView;
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mPasswordConfirmationEditText;
@@ -111,7 +111,6 @@ public class SignUpActivity extends Activity {
 
         mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) findViewById(R.id.activity_signup_next_button);
-        mProgressView = findViewById(R.id.activity_signup_progressbar);
 
         mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
         mDummyFocus = findViewById(R.id.activity_signup_dummy_focus);
@@ -644,37 +643,20 @@ public class SignUpActivity extends Activity {
         mAuthTask.execute((Void) null);
     }
 
+    private ProgressDialog mProgressDialog;
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            /*mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });*/
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        if(show) {
+            mProgressDialog = ProgressDialog.show(this, null, null);
+            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
+            mProgressDialog.setCancelable(false);
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            //mLoginView.setVisibility(show ? View.GONE : View.VISIBLE);
+            if(mProgressDialog!=null) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
         }
     }
+
 
     @Override
     public void onBackPressed(){

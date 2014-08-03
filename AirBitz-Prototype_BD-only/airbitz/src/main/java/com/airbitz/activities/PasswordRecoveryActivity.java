@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -56,7 +57,6 @@ public class PasswordRecoveryActivity extends Activity {
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
-    private ProgressBar mProgressView;
 
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
@@ -88,7 +88,6 @@ public class PasswordRecoveryActivity extends Activity {
 
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
         mPasswordEditText = (EditText) findViewById(R.id.activity_password_recovery_password_edittext);
-        mProgressView = (ProgressBar) findViewById(R.id.activity_password_recovery_progressbar);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
 
@@ -591,21 +590,20 @@ public class PasswordRecoveryActivity extends Activity {
             super.onBackPressed();
     }
 
+    private ProgressDialog mProgressDialog;
     public void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        if(show) {
+            mProgressDialog = ProgressDialog.show(this, null, null);
+            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
+            mProgressDialog.setCancelable(false);
         } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            if(mProgressDialog!=null) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
         }
     }
+
 
 
 }

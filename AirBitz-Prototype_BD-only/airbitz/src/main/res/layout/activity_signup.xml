@@ -6,18 +6,6 @@
     tools:ignore="MergeRootFrame"
     android:animateLayoutChanges="true">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/activity_signup_progressbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@xml/progress"
-        android:padding="120dp"
-        android:visibility="gone"/>
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
