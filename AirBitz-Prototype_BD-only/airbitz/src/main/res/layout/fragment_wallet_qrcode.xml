@@ -157,13 +157,4 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/fragment_wallet_qrcode_progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@xml/progress"
-        android:visibility="gone"/>
-
 </RelativeLayout>

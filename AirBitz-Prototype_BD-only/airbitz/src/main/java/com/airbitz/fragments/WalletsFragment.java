@@ -116,8 +116,6 @@ public class WalletsFragment extends Fragment
     private boolean mSwitchWordOne = true;
     private boolean mOnBitcoinMode = true;
 
-    private View mProgressView;
-
     private List<Wallet> mLatestWalletList;
     private List<Wallet> archivedWalletList;
 
@@ -164,8 +162,6 @@ public class WalletsFragment extends Fragment
 
         View mView;
         mView = inflater.inflate(R.layout.fragment_wallets, container, false);
-
-        mProgressView = mView.findViewById(R.id.fragment_wallets_progressbar);
 
         mOnBitcoinMode = true;
 
@@ -489,7 +485,7 @@ public class WalletsFragment extends Fragment
 
         @Override
         protected void onPreExecute() {
-            showProgress(true);
+            ((NavigationActivity)getActivity()).showProgress(true);
         }
 
         @Override
@@ -506,7 +502,7 @@ public class WalletsFragment extends Fragment
             } else {
                 refreshWalletList(mCoreAPI.loadWallets());
             }
-            showProgress(false);
+            ((NavigationActivity)getActivity()).showProgress(false);
         }
 
         @Override
@@ -618,22 +614,5 @@ public class WalletsFragment extends Fragment
             ((NavigationActivity) getActivity()).pushFragment(frag2);
         }
     }
-
-    public void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-    }
-
 
 }
