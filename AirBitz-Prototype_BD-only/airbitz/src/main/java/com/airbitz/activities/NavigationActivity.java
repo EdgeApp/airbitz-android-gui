@@ -539,7 +539,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 .setNegativeButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                AirbitzApplication.Logout(NavigationActivity.this);
+                                Logout();
                                 dialog.cancel();
                             }
                         }
@@ -558,6 +558,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
 
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+    }
+
+    public void Logout() {
+        sendCredentialsToService(null, null);
+        AirbitzApplication.Logout();
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     public void attemptLogin(String username, String password) {
