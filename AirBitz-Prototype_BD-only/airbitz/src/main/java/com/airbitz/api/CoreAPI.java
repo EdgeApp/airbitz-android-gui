@@ -143,7 +143,7 @@ public class CoreAPI {
     };
 
 
-    // Callback interface when a remote password change is received
+    // Callback interface when a remote mPassword change is received
     private OnRemotePasswordChange mOnRemotePasswordChange;
     public interface OnRemotePasswordChange {
         public void OnRemotePasswordChange();

@@ -1,8 +1,11 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +40,7 @@ import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.AirbitzService;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
@@ -337,11 +341,16 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     @Override
     public void onResume() {
         super.onResume();
+
+        registerServiceReceiver();
+        startAirbitzService();
+
         mNavFragmentId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
             DisplayLoginOverlay(mDataUri!=null);
             mNavFragmentId = Tabs.BD.ordinal();
+            askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
         }
@@ -351,6 +360,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     @Override public void onPause() {
         super.onPause();
+        unregisterReceiver(AirbitzServiceReceiver);
         mViewPager.setVisibility(View.VISIBLE);
         mCoreAPI.stopAllAsyncUpdates();
     }
@@ -514,7 +524,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     private void showRemotePasswordChangeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage("The password to this account was changed by another device. Please login using the new credentials.")
+        builder.setMessage("The mPassword to this account was changed by another device. Please login using the new credentials.")
                 .setTitle("Password Change")
                 .setCancelable(false)
                 .setNegativeButton(getResources().getString(R.string.string_ok),
@@ -537,5 +547,46 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         } else {
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
+
+        sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
+
+    private void sendCredentialsToService(String username, String password) {
+        final Intent intent = new Intent(AirbitzService.SET_CREDENTIALS);
+        intent.putExtra(AirbitzService.SERVICE_USERNAME, username);
+        intent.putExtra(AirbitzService.SERVICE_PASSWORD, password);
+        sendBroadcast(intent);
+        Common.LogD(TAG, "Sending credentials");
+    }
+
+    private void askCredentialsFromService() {
+        Intent appIntent = new Intent(AirbitzService.ASK_CREDENTIALS);
+        sendBroadcast(appIntent);
+        Common.LogD(TAG, "Asking for credentials");
+    }
+
+    private void registerServiceReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(AirbitzService.REPLY_CREDENTIALS);
+        registerReceiver(AirbitzServiceReceiver, filter);
+    }
+
+    private void startAirbitzService() {
+        Intent i= new Intent(this, AirbitzService.class);
+        startService(i);
+    }
+
+    // For receiving Service queries
+    private BroadcastReceiver AirbitzServiceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Common.LogD(TAG, "Broadcast received: " + intent.getAction());
+            if (intent.getAction().equals(AirbitzService.REPLY_CREDENTIALS)) {
+                Common.LogD(TAG, "Credentials received, logging in");
+                AirbitzApplication.Login(intent.getStringExtra(AirbitzService.SERVICE_USERNAME),
+                        intent.getStringExtra(AirbitzService.SERVICE_USERNAME));
+                UserJustLoggedIn();
+            }
+        }
+    };
 }
