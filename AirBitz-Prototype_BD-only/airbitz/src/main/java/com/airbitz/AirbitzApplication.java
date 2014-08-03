@@ -13,7 +13,7 @@ public class AirbitzApplication extends Application {
     public static final boolean DEBUG_LOGGING = true;
 
     public static boolean AUTOLOGIN = false;
-    private static String loginName = "tb0"; private static String loginPassword = "Aaaaaaaa1@";
+    private static String loginName = "testjbvffvj"; private static String loginPassword = "Aaaaaaaa1@";
 //    private static String loginName = "matt104"; private static String loginPassword = "O@21grapes";
 
     public static String PREFS = "com.airbitz.prefs";
@@ -48,7 +48,7 @@ public class AirbitzApplication extends Application {
         // like on reboot or force close.
     }
 
-    public static void Logout(Context context) {
+    public static void Logout() {
         airbitzLogin = new Login();
     }
 
