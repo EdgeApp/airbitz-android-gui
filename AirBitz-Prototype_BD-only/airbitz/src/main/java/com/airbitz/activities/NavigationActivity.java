@@ -3,6 +3,7 @@ package com.airbitz.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -84,7 +85,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     private RelativeLayout mCalculatorLayout;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
-    private View mProgressView;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -122,7 +122,6 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         AirbitzApplication.Login(null, null); // try auto login
 
         setContentView(R.layout.activity_navigation);
-        mProgressView = (View) findViewById(R.id.activity_navigation_progressbar);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
@@ -622,19 +621,17 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
     }
 
+    private ProgressDialog mProgressDialog;
     public void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        if(show) {
+            mProgressDialog = ProgressDialog.show(this, null, null);
+            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
+            mProgressDialog.setCancelable(false);
         } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            if(mProgressDialog!=null) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
         }
     }
 
