@@ -43,11 +43,6 @@ import com.airbitz.objects.HighlightOnPressButton;
 
 public class LandingFragment extends Fragment {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
     private RelativeLayout mLandingLayout;
 
     private ImageView mLogoImageView;
@@ -61,9 +56,6 @@ public class LandingFragment extends Fragment {
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
 
-    private View mProgressView;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -76,7 +68,6 @@ public class LandingFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mProgressView = view.findViewById(R.id.fragment_landing_login_progressbar);
         mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
 
         mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
@@ -127,7 +118,8 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(mUserNameEditText.getText().toString().isEmpty()){
-                    showAlertDialog();
+                    showMessageDialog(getResources().getString(R.string.fragment_forgot_no_username_details),
+                            getResources().getString(R.string.fragment_forgot_no_username_title));
                 }else {
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
                     intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameEditText.getText().toString());
@@ -188,62 +180,11 @@ public class LandingFragment extends Fragment {
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        private final String mPassword;
-
-        UserLoginTask(String username, String password) {
-            mUsername = username;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pResults = new tABC_RequestResults();
-            SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
-
-            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pVoid, pError);
-
-            return result == tABC_CC.ABC_CC_Ok;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            if(getActivity()==null)
-                return;
-
-            showProgress(false);
-            if (success){
-                AirbitzApplication.Login(mUsername, mPassword);
-                ((NavigationActivity) getActivity()).DisplayLoginOverlay(false);
-                ((NavigationActivity) getActivity()).UserJustLoggedIn();
-            } else {
-                showErrorDialog();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
-
-    /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mPasswordEditText.setError(null);
@@ -287,11 +228,7 @@ public class LandingFragment extends Fragment {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(username, password);
-            mAuthTask.execute((Void) null);
+            ((NavigationActivity) getActivity()).attemptLogin(username, password);
         }
     }
 
@@ -303,22 +240,6 @@ public class LandingFragment extends Fragment {
     private boolean isPasswordValid(String password) {
         //TODO real logic for good mPassword
         return !password.isEmpty();
-    }
-
-    public void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
     }
 
     private void showMessageDialog(String title, String message) {
@@ -336,38 +257,6 @@ public class LandingFragment extends Fragment {
         alert.show();
     }
 
-    private void showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.error_invalid_credentials))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-
-    public void showAlertDialog(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
-        alertDialogBuilder.setMessage(getResources().getString(R.string.fragment_forgot_no_username_details))
-                .setTitle(getResources().getString(R.string.fragment_forgot_no_username_title))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }
-                );
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -375,9 +264,6 @@ public class LandingFragment extends Fragment {
 
     @Override
     public void onPause(){
-        if(mAuthTask != null){
-            mAuthTask.cancel(true);
-        }
         super.onPause();
     }
 }

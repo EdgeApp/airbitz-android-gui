@@ -1,5 +1,7 @@
 package com.airbitz.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -26,6 +30,11 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.SWIGTYPE_p_void;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
@@ -75,8 +84,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     private RelativeLayout mCalculatorLayout;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
-
-    private LinearLayout mNormalNavBarLayout;
+    private View mProgressView;
 
     private int mNavFragmentId;
     private Fragment[] mNavFragments = {
@@ -114,6 +122,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         AirbitzApplication.Login(null, null); // try auto login
 
         setContentView(R.layout.activity_navigation);
+        mProgressView = (View) findViewById(R.id.activity_navigation_progressbar);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
@@ -540,8 +549,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void UserJustLoggedIn() {
+        DisplayLoginOverlay(false);
         if(mDataUri!=null) {
-            DisplayLoginOverlay(false);
             onBitcoinUri(mDataUri);
             mDataUri = null;
         } else {
@@ -550,6 +559,94 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
+
+    public void attemptLogin(String username, String password) {
+        mUserLoginTask = new UserLoginTask(username, password);
+        mUserLoginTask.execute();
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    private UserLoginTask mUserLoginTask;
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUsername;
+        private final String mPassword;
+
+        UserLoginTask(String username, String password) {
+            mUsername = username;
+            mPassword = password;
+        }
+
+        @Override
+        public void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            tABC_Error pError = new tABC_Error();
+            tABC_RequestResults pResults = new tABC_RequestResults();
+            SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+
+            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pVoid, pError);
+
+            return result == tABC_CC.ABC_CC_Ok;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mUserLoginTask = null;
+
+            showProgress(false);
+            if (success){
+                AirbitzApplication.Login(mUsername, mPassword);
+                UserJustLoggedIn();
+            } else {
+                showMessageDialog(getResources().getString(R.string.error_invalid_credentials));
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mUserLoginTask = null;
+            showProgress(false);
+        }
+    }
+
+    public void showProgress(final boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void showMessageDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    //************************** Service support
 
     private void sendCredentialsToService(String username, String password) {
         final Intent intent = new Intent(AirbitzService.SET_CREDENTIALS);
@@ -582,11 +679,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         public void onReceive(Context context, Intent intent) {
             Common.LogD(TAG, "Broadcast received: " + intent.getAction());
             if (intent.getAction().equals(AirbitzService.REPLY_CREDENTIALS)) {
-                Common.LogD(TAG, "Credentials received, logging in");
-                AirbitzApplication.Login(intent.getStringExtra(AirbitzService.SERVICE_USERNAME),
-                        intent.getStringExtra(AirbitzService.SERVICE_USERNAME));
-                UserJustLoggedIn();
+                String username = intent.getStringExtra(AirbitzService.SERVICE_USERNAME);
+                String password = intent.getStringExtra(AirbitzService.SERVICE_PASSWORD);
+                Common.LogD(TAG, "Credentials received, logging in: "+username+", "+password);
+                attemptLogin(username, password);
             }
         }
     };
+
 }
