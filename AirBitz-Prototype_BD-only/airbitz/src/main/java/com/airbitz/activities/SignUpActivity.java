@@ -251,7 +251,7 @@ public class SignUpActivity extends Activity {
         //Hide some elements if this is not a fresh signup
         mMode = b.getInt(MODE);
         if(mMode==CHANGE_PASSWORD) {
-            // Reuse mUserNameEditText for old password too
+            // Reuse mUserNameEditText for old mPassword too
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
@@ -265,17 +265,17 @@ public class SignUpActivity extends Activity {
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
         } else if(mMode==CHANGE_PASSWORD_VIA_QUESTIONS) {
-            // change username label, title
+            // change mUsername label, title
             mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mNextButton.setText(getResources().getString(R.string.string_done));
-            // hide username
+            // hide mUsername
             mUserNameEditText.setVisibility(View.GONE);
         } else if(mMode==CHANGE_PIN) {
-            // hide both password fields
+            // hide both mPassword fields
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password_hint));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordEditText.setVisibility(View.GONE);
@@ -287,9 +287,9 @@ public class SignUpActivity extends Activity {
         }
     }
 
-    // checks the password against the password rules
-    // returns YES if new password fields are good, NO if the new password fields failed the checks
-    // if the new password fields are bad, an appropriate message box is displayed
+    // checks the mPassword against the mPassword rules
+    // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
+    // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean checkPasswordRules(String password) {
         List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
@@ -337,7 +337,7 @@ public class SignUpActivity extends Activity {
 
     private void goNext()
     {
-        // if they entered a valid username or old password
+        // if they entered a valid mUsername or old mPassword
         if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid())
                 {
                     tABC_CC result = tABC_CC.ABC_CC_Ok;
@@ -376,7 +376,7 @@ public class SignUpActivity extends Activity {
                 }
     }
 
-    // checks the username field (non-blank or matches old password depending on the mode)
+    // checks the mUsername field (non-blank or matches old mPassword depending on the mode)
 // returns YES if field is good
 // if the field is bad, an appropriate message box is displayed
 // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
@@ -394,9 +394,9 @@ public class SignUpActivity extends Activity {
                 showMessage(getResources().getString(R.string.activity_signup_enter_username));
             }
         }
-        else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old password in this case
+        else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
-            // if the password is wrong
+            // if the mPassword is wrong
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
@@ -406,15 +406,15 @@ public class SignUpActivity extends Activity {
         return bUserNameFieldIsValid;
     }
 
-    // checks the password against the password rules
-    // returns YES if new password fields are good, NO if the new password fields failed the checks
-    // if the new password fields are bad, an appropriate message box is displayed
+    // checks the mPassword against the mPassword rules
+    // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
+    // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean newPasswordFieldsAreValid()
     {
         boolean bNewPasswordFieldsAreValid = true;
 
-        // if we are signing up for a new account or changing our password
+        // if we are signing up for a new account or changing our mPassword
         if ((mMode!=CHANGE_PIN))
         {
             if (!mGoodPassword)

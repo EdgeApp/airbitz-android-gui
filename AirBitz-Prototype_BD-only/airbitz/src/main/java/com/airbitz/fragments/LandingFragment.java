@@ -256,7 +256,7 @@ public class LandingFragment extends Fragment {
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid username.
+        // Check for a valid mUsername.
         if (TextUtils.isEmpty(username)) {
             mUserNameEditText.setError(getString(R.string.error_field_required));
             focusView = mUserNameEditText;
@@ -267,7 +267,7 @@ public class LandingFragment extends Fragment {
             cancel = true;
         }
 
-        // Check for a valid password.
+        // Check for a valid mPassword.
         if (TextUtils.isEmpty(password)) {
             mPasswordEditText.setError(getString(R.string.error_field_required));
             if(null == focusView) {
@@ -296,12 +296,12 @@ public class LandingFragment extends Fragment {
     }
 
     private boolean isUsernameValid(String username) {
-        //TODO real logic for good username
+        //TODO real logic for good mUsername
         return !username.isEmpty();
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO real logic for good password
+        //TODO real logic for good mPassword
         return !password.isEmpty();
     }
 
