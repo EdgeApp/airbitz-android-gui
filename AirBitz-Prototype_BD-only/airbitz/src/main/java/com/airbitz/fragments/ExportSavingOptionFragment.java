@@ -35,7 +35,9 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class ExportSavingOptionFragment extends Fragment{
+public class ExportSavingOptionFragment extends Fragment {
+    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF }
+    public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
 
     private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mFromButton;
@@ -77,7 +79,9 @@ public class ExportSavingOptionFragment extends Fragment{
     private List<Wallet> mWalletList;
     private List<String> mWalletNameList;
     private CoreAPI mCoreApi;
-    private Calendar c;
+    private Calendar today;
+
+    private String mPrivateKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -85,13 +89,11 @@ public class ExportSavingOptionFragment extends Fragment{
         super.onCreate(savedInstanceState);
         bundle = getArguments();
         mCoreApi = CoreAPI.getApi();
-        mWalletList = new ArrayList<Wallet>();
+        mWalletList = mCoreApi.getCoreWallets();
         mWalletNameList = new ArrayList<String>();
-        for(Wallet w: mCoreApi.loadWallets()){
-            if(!w.isArchiveHeader() && !w.isHeader() &&!w.isArchived()) {
-                mWalletList.add(w);
+        for(Wallet w: mWalletList){
+            if(!w.isArchived())
                 mWalletNameList.add(w.getName());
-            }
         }
     }
 
@@ -101,7 +103,7 @@ public class ExportSavingOptionFragment extends Fragment{
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        c = Calendar.getInstance();
+        today = Calendar.getInstance();
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
@@ -220,84 +222,118 @@ public class ExportSavingOptionFragment extends Fragment{
         mThisWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimeButton(4);//TODO
+                HighlightTimeButton(4);
+                String AMPM = "";
+                if(today.get(Calendar.AM_PM)==1){
+                    AMPM = "pm";
+                }else{
+                    AMPM = "am";
+                }
+                String tempMin = "";
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
+                }else{
+                    tempMin = ""+ today.get(Calendar.MINUTE);
+                }
+                Calendar firstDay = Calendar.getInstance();
+                firstDay.set(Calendar.DAY_OF_WEEK, 1);
+
+                mFromButton.setText((firstDay.get(Calendar.MONTH)+1)+"/"+ firstDay.get(Calendar.DAY_OF_MONTH)+"/"+ firstDay.get(Calendar.YEAR)+" 12:00 am");
+                mToButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
             }
         });
         mThisMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimeButton(5);
+                HighlightTimeButton(5);
                 String AMPM = "";
-                if(c.get(Calendar.AM_PM)==1){
+                if(today.get(Calendar.AM_PM)==1){
                     AMPM = "pm";
                 }else{
                     AMPM = "am";
                 }
                 String tempMin = "";
-                if(c.get(Calendar.MINUTE)<10){
-                    tempMin = "0"+c.get(Calendar.MINUTE);
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
                 }else{
-                    tempMin = ""+c.get(Calendar.MINUTE);
+                    tempMin = ""+ today.get(Calendar.MINUTE);
                 }
-                mFromButton.setText((c.get(Calendar.MONTH)+1)+"/1/"+c.get(Calendar.YEAR)+" 12:00 am");
-                mToButton.setText((c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR)+" "+c.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
+                mFromButton.setText((today.get(Calendar.MONTH)+1)+"/1/"+ today.get(Calendar.YEAR)+" 12:00 am");
+                mToButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
             }
         });
         mToday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimeButton(3);
+                HighlightTimeButton(3);
 
                 String AMPM = "";
-                if(c.get(Calendar.AM_PM)==1){
+                if(today.get(Calendar.AM_PM)==1){
                     AMPM = "pm";
                 }else{
                     AMPM = "am";
                 }
                 String tempMin = "";
-                if(c.get(Calendar.MINUTE)<10){
-                    tempMin = "0"+c.get(Calendar.MINUTE);
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
                 }else{
-                    tempMin = ""+c.get(Calendar.MINUTE);
+                    tempMin = ""+ today.get(Calendar.MINUTE);
                 }
-                mFromButton.setText((c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR)+" 12:00 am");
-                mToButton.setText((c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR)+" "+c.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
+                mFromButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" 12:00 am");
+                mToButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
             }
         });
         mYesterday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimeButton(0);//TODO
-            }
-        });
-        mLastMonth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTimeButton(2);
+                HighlightTimeButton(0);
                 String AMPM = "";
-                if(c.get(Calendar.AM_PM)==1){
+                if(today.get(Calendar.AM_PM)==1){
                     AMPM = "pm";
                 }else{
                     AMPM = "am";
                 }
                 String tempMin = "";
-                if(c.get(Calendar.MINUTE)<10){
-                    tempMin = "0"+c.get(Calendar.MINUTE);
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
                 }else{
-                    tempMin = ""+c.get(Calendar.MINUTE);
+                    tempMin = ""+ today.get(Calendar.MINUTE);
+                }
+                Calendar yesterday = Calendar.getInstance();
+                yesterday.add(Calendar.DATE, -1);
+
+                mFromButton.setText((yesterday.get(Calendar.MONTH)+1)+"/"+ yesterday.get(Calendar.DAY_OF_MONTH)+"/"+ yesterday.get(Calendar.YEAR)+" 12:00 am");
+                mToButton.setText((yesterday.get(Calendar.MONTH)+1)+"/"+ yesterday.get(Calendar.DAY_OF_MONTH)+"/"+ yesterday.get(Calendar.YEAR)+" 11:59 pm");
+            }
+        });
+        mLastMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HighlightTimeButton(2);
+                String AMPM = "";
+                if(today.get(Calendar.AM_PM)==1){
+                    AMPM = "pm";
+                }else{
+                    AMPM = "am";
+                }
+                String tempMin = "";
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
+                }else{
+                    tempMin = ""+ today.get(Calendar.MINUTE);
                 }
                 String tempYear = "";
                 String tempMonth = "";
-                if(c.get(Calendar.MONTH)==0){
-                    tempYear = ""+(c.get(Calendar.YEAR)-1);
+                if(today.get(Calendar.MONTH)==0){
+                    tempYear = ""+(today.get(Calendar.YEAR)-1);
                     tempMonth = "12";
                 }else{
-                    tempYear = ""+(c.get(Calendar.YEAR));
-                    tempMonth = ""+(c.get(Calendar.MONTH));
+                    tempYear = ""+(today.get(Calendar.YEAR));
+                    tempMonth = ""+(today.get(Calendar.MONTH));
                 }
-                int year = c.get(Calendar.YEAR);
+                int year = today.get(Calendar.YEAR);
                 String tempDay = "";
-                if(c.get(Calendar.MONTH)==2) {
+                if(today.get(Calendar.MONTH)==2) {
                     if (year % 4 != 0) {
                         tempDay = "28";
                     }else if(year % 100 != 0){
@@ -307,7 +343,7 @@ public class ExportSavingOptionFragment extends Fragment{
                     }else{
                         tempDay = "29";
                     }
-                }else if(c.get(Calendar.MONTH)==1 ||c.get(Calendar.MONTH)==3||c.get(Calendar.MONTH)==5||c.get(Calendar.MONTH)==7||c.get(Calendar.MONTH)==8||c.get(Calendar.MONTH)==10||c.get(Calendar.MONTH)==12){
+                }else if(today.get(Calendar.MONTH)==1 || today.get(Calendar.MONTH)==3|| today.get(Calendar.MONTH)==5|| today.get(Calendar.MONTH)==7|| today.get(Calendar.MONTH)==8|| today.get(Calendar.MONTH)==10|| today.get(Calendar.MONTH)==12){
                     tempDay = "31";
                 }else{
                     tempDay = "30";
@@ -319,7 +355,27 @@ public class ExportSavingOptionFragment extends Fragment{
         mLastWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimeButton(1);//TODO
+                HighlightTimeButton(1);
+                String AMPM = "";
+                if(today.get(Calendar.AM_PM)==1){
+                    AMPM = "pm";
+                }else{
+                    AMPM = "am";
+                }
+                String tempMin = "";
+                if(today.get(Calendar.MINUTE)<10){
+                    tempMin = "0"+ today.get(Calendar.MINUTE);
+                }else{
+                    tempMin = ""+ today.get(Calendar.MINUTE);
+                }
+                Calendar lastWeek = Calendar.getInstance();
+                lastWeek.add(Calendar.WEEK_OF_YEAR, -1);
+                lastWeek.set(Calendar.DAY_OF_WEEK, 1);
+
+                mFromButton.setText((lastWeek.get(Calendar.MONTH)+1)+"/"+ lastWeek.get(Calendar.DAY_OF_MONTH)+"/"+ lastWeek.get(Calendar.YEAR)+" 12:00 am");
+
+                lastWeek.set(Calendar.DAY_OF_WEEK, 7);
+                mToButton.setText((lastWeek.get(Calendar.MONTH)+1)+"/"+ lastWeek.get(Calendar.DAY_OF_MONTH)+"/"+ lastWeek.get(Calendar.YEAR)+" 11:59 pm");
             }
         });
 
@@ -347,8 +403,8 @@ public class ExportSavingOptionFragment extends Fragment{
     }
 
     private void showExportButtons(){
-        String source = bundle.getString("button_clicked");
-        if(source.equals("CSV")){
+        int type = bundle.getInt(EXPORT_TYPE);
+        if(type == ExportTypes.CSV.ordinal()){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
@@ -357,7 +413,7 @@ public class ExportSavingOptionFragment extends Fragment{
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
             mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(source.equals("Quicken")){
+        }else if(type == ExportTypes.Quicken.ordinal()){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
@@ -366,7 +422,7 @@ public class ExportSavingOptionFragment extends Fragment{
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
             mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(source.equals("Quickbooks")){
+        }else if(type == ExportTypes.Quickbooks.ordinal()){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
@@ -375,9 +431,9 @@ public class ExportSavingOptionFragment extends Fragment{
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
             mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
             mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(source.equals("PDF")){
+        }else if(type == ExportTypes.PDF.ordinal()){
 
-        }else if(source.equals("Wallet")){
+        }else if(type == ExportTypes.PrivateSeed.ordinal()){
             mGoogleDriveButton.setVisibility(View.GONE);
             mGoogleDriveImage.setVisibility(View.GONE);
             mDropBoxButton.setVisibility(View.GONE);
@@ -385,7 +441,7 @@ public class ExportSavingOptionFragment extends Fragment{
         }
     }
 
-    private void showTimeButton(int pos){
+    private void HighlightTimeButton(int pos){
         for(int i = 0;i < mTimeButtons.size();i++){
             if(i==pos){
                 mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.btn_cancel));
@@ -426,7 +482,7 @@ public class ExportSavingOptionFragment extends Fragment{
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                showTimeButton(7);
+                                HighlightTimeButton(7);
                                 int time = 0;
                                 String tempAMPM="";
                                 if(timePicker.getCurrentHour()>12){
@@ -465,18 +521,18 @@ public class ExportSavingOptionFragment extends Fragment{
 
     public void goSetFromToText(){
         String AMPM = "";
-        if(c.get(Calendar.AM_PM)==1){
+        if(today.get(Calendar.AM_PM)==1){
             AMPM = "pm";
         }else{
             AMPM = "am";
         }
         String tempMin = "";
-        if(c.get(Calendar.MINUTE)<10){
-            tempMin = "0"+c.get(Calendar.MINUTE);
+        if(today.get(Calendar.MINUTE)<10){
+            tempMin = "0"+ today.get(Calendar.MINUTE);
         }else{
-            tempMin = ""+c.get(Calendar.MINUTE);
+            tempMin = ""+ today.get(Calendar.MINUTE);
         }
-        mToButton.setText((c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR)+" "+c.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
-        mFromButton.setText((c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR)+" "+c.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
+        mToButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
+        mFromButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
     }
 }
