@@ -623,6 +623,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
      * Represents an asynchronous creation of the first wallet
      */
     private SendOrTransferTask mSendOrTransferTask;
+
     public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
         private Wallet mFromWallet;
         private final String mAddress;
@@ -635,6 +636,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         }
 
         @Override
+        public void onPreExecute() {
+            ((NavigationActivity) getActivity()).showProgress(true);
+        }
+
+        @Override
         protected String doInBackground(Void... params) {
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
@@ -642,17 +648,18 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         @Override
         protected void onPostExecute(final String txid) {
             mSendOrTransferTask = null;
-           if (txid==null) {
+            ((NavigationActivity) getActivity()).showProgress(false);
+            if (txid == null) {
                 Log.d("SendConfirmationFragment", "Send or Transfer failed");
             } else {
-               Bundle bundle = new Bundle();
-               bundle.putString(WalletsFragment.FROM_SOURCE,"SEND");
-               bundle.putString(Transaction.TXID, txid);
-               bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
+                Bundle bundle = new Bundle();
+                bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
+                bundle.putString(Transaction.TXID, txid);
+                bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
 
-               Fragment frag = new ReceivedSuccessFragment();
-               frag.setArguments(bundle);
-               ((NavigationActivity)getActivity()).pushFragment(frag);
+                Fragment frag = new ReceivedSuccessFragment();
+                frag.setArguments(bundle);
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         }
 
