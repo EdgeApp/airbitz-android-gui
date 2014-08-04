@@ -28,7 +28,7 @@ public class OfflineWalletMenuAdapter extends ArrayAdapter<String>{
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_menu_wallet_address, parent, false);
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
+        TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
         textView.setText(mMenus[position]);
         return convertView;
     }

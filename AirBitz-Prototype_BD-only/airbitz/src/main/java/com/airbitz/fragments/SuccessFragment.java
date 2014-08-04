@@ -47,8 +47,8 @@ public class SuccessFragment extends Fragment {
             return mView;
         mView = inflater.inflate(R.layout.fragment_success, container, false);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
         mFiatTextView = (TextView) mView.findViewById(R.id.textview_fiat);
         mBitcoinTextView = (TextView) mView.findViewById(R.id.textview_bitcoin);
 

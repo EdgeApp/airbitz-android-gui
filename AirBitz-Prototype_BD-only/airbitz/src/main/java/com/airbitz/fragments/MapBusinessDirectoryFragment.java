@@ -227,15 +227,15 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mLocation = new ArrayList<LocationSearchResult>();
 
         mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
 
         mBackButton.setVisibility(View.VISIBLE);
 
         mSearchEdittext = (EditText) view.findViewById(R.id.edittext_search);
         mLocationEdittext = (EditText) view.findViewById(R.id.edittext_location);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mSearchEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);

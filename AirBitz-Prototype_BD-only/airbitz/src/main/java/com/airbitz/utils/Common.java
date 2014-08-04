@@ -38,7 +38,7 @@ public class Common {
         dialog.setContentView(R.layout.dialog_help_info);
         dialog.setTitle(title);
 
-        TextView textView = (TextView) dialog.findViewById(R.id.textview_title);
+        TextView textView = (TextView) dialog.findViewById(R.id.fragment_category_textview_title);
         textView.setText(message);
         Button okButton = (Button) dialog.findViewById(R.id.button_ok);
 

@@ -65,7 +65,7 @@ public class NoteCategoryAdapter extends BaseAdapter{
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
         RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.layout_item);
         relativeLayout.setBackgroundResource(android.R.color.transparent);
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
+        TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
         textView.setText(mListCategory.get(position).getCategoryName());
         Typeface latoBlackTypeFace=Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
         textView.setTypeface(latoBlackTypeFace);

@@ -148,7 +148,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }else {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
-            TextView titleTextView = (TextView) convertView.findViewById(R.id.textview_title);
+            TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);

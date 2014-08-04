@@ -58,10 +58,10 @@ public class ForgotPasswordActivity extends Activity {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
         mSubmitButton = (Button)findViewById(R.id.submitButton);
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        mBackButton = (ImageButton) findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) findViewById(R.id.fragment_category_button_help);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mRecoveryQA = getRecoveryQA();

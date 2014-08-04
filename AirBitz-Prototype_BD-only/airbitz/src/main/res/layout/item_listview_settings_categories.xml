@@ -29,6 +29,6 @@
     <View
         android:layout_width="0px"
         android:layout_height="0px"
-        android:id="@+id/settings_category_list_item_dummy_focus" />
+        android:id="@+id/fragment_category_list_item_dummy_focus" />
 
 </RelativeLayout>

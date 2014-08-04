@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_header"
+    android:id="@+id/fragment_category_layout_header"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
     android:background="@drawable/bg_dark_header"
@@ -10,7 +10,7 @@
         android:layout_height="44.1dp"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:id="@+id/button_back"
+        android:id="@+id/fragment_category_button_back"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:background="@android:color/transparent"
@@ -27,14 +27,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_toRightOf="@+id/button_back"
-        android:layout_toLeftOf="@+id/button_help"
+        android:layout_toRightOf="@+id/fragment_category_button_back"
+        android:layout_toLeftOf="@+id/fragment_category_button_help"
         android:layout_height="wrap_content" >
 
         <!-- NOTE: this needs to be in a ViewGroup since gravity doesn't work properly on AutofitTextView. -->
 
         <me.grantland.widget.AutofitTextView
-            android:id="@+id/textview_title"
+            android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="44.1dp"
             android:gravity="center"
@@ -49,7 +49,7 @@
     <ImageButton
         android:layout_width="44.1dp"
         android:layout_height="44.1dp"
-        android:id="@+id/button_help"
+        android:id="@+id/fragment_category_button_help"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"

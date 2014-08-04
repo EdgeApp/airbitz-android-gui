@@ -70,12 +70,12 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mSendingTextView = (TextView) mView.findViewById(R.id.textview_sending);
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
         mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
         mSendingLayout = (RelativeLayout) mView.findViewById(R.id.layout_sending);
 

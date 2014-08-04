@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:orientation="horizontal"
-        android:id="@+id/popup_container"
+        android:id="@+id/fragment_category_popup_items_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <ImageView
