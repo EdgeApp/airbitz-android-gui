@@ -487,8 +487,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
-    private void resetFragmentThreadToBaseFragment(int threadId) {
-        if(mNavStacks[threadId].size() > 1) {
+    public void resetFragmentThreadToBaseFragment(int threadId) {
+        while(mNavStacks[threadId].size() > 1) {
             mNavStacks[threadId].pop();
         }
     }
