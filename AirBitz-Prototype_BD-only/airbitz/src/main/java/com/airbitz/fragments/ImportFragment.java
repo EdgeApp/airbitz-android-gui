@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.hardware.Camera;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -114,13 +113,13 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         mFromButton = (Button) mView.findViewById(R.id.button_from);
         mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);

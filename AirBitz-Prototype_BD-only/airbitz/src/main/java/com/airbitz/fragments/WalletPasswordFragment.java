@@ -1,14 +1,11 @@
 package com.airbitz.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -59,11 +56,11 @@ public class WalletPasswordFragment extends Fragment {
         mPasswordEdittext = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
         mValidPasswordImageView = (ImageView) mView.findViewById(R.id.imageview_valid_password);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
 
-        TextView titleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mPasswordEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {

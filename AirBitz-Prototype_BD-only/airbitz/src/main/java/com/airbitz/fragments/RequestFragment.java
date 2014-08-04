@@ -172,7 +172,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         });
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 

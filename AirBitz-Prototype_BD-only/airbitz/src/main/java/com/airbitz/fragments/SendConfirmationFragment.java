@@ -38,7 +38,6 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.CalculatorBrain;
-import com.airbitz.utils.Common;
 
 import java.text.DecimalFormat;
 
@@ -138,7 +137,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
         mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 

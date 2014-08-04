@@ -125,7 +125,7 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mPrivateKeyField.setKeyListener(null);
         mAddressField.setKeyListener(null);
 
-        mDoneButton = (Button) mView.findViewById(R.id.button_done);
+        mDoneButton = (Button) mView.findViewById(R.id.fragment_category_button_done);
         mCopyButton = (Button) mView.findViewById(R.id.button_copy_address);
         mPrintButton = (Button) mView.findViewById(R.id.button_external_storage);
 
@@ -133,10 +133,10 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mPrintButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
 
         mQRCodeImage = (ImageView) mView.findViewById(R.id.imageview_qrcode);
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
-        TextView titleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
         titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mAddressField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);

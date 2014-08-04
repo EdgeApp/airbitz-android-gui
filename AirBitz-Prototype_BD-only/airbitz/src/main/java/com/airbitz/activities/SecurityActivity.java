@@ -40,7 +40,7 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
         setContentView(R.layout.activity_security);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
 
         mGestureDetector = new GestureDetector(this);
 
@@ -53,8 +53,8 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
         mExchangeRateButton = (Button) findViewById(R.id.button_exchange);
         mCategoriesButton = (Button) findViewById(R.id.button_categories);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        mBackButton = (ImageButton) findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) findViewById(R.id.fragment_category_button_help);
 
 
         mDisplayButton.setTypeface(NavigationActivity.latoBlackTypeFace);

@@ -16,9 +16,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
-import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
@@ -156,9 +153,9 @@ public class DirectoryDetailFragment extends Fragment {
 
         // Header
         mLogo = (ImageView) mView.findViewById(R.id.logo);
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
-        mBackButton = (ImageButton) mView.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.button_help);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
         mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         mLogo.setVisibility(View.GONE);

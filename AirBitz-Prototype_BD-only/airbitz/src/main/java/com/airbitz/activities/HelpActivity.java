@@ -60,7 +60,7 @@ public class HelpActivity extends Activity implements GestureDetector.OnGestureL
         mAnswerTextView2 = (TextView) findViewById(R.id.textview_2);
         mAnswerTextView3 = (TextView) findViewById(R.id.textview_3);
         mAnswerTextView4 = (TextView) findViewById(R.id.textview_4);
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
 
         mQuestionLayout1 = (LinearLayout) findViewById(R.id.layout_separator_1);
         mQuestionLayout2 = (LinearLayout) findViewById(R.id.layout_separator_2);
@@ -79,8 +79,8 @@ public class HelpActivity extends Activity implements GestureDetector.OnGestureL
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mBackButton = (ImageButton) findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.button_help);
+        mBackButton = (ImageButton) findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) findViewById(R.id.fragment_category_button_help);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override

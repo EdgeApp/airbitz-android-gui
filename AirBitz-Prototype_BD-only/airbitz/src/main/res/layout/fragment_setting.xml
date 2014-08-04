@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
-        android:id="@+id/layout_header"
+        android:id="@+id/fragment_category_layout_header"
         android:background="@drawable/bg_dark_header">
 
         <ImageButton
@@ -55,7 +55,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_header">
+        android:layout_below="@id/fragment_category_layout_header">
 
         <LinearLayout
             android:id="@+id/settings_container"

@@ -1,10 +1,8 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -19,10 +17,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -50,7 +46,6 @@ import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
-import com.airbitz.objects.ClearableEditText;
 import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
@@ -247,13 +242,13 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mBusinessLayout = (LinearLayout) view.findViewById(R.id.layout_listview_business);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.button_help);
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
         mHelpButton.setVisibility(View.GONE);
         mSearchField = (EditText) view.findViewById(R.id.edittext_search);
         mLocationField = (EditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
 
         mNearYouTextView = (TextView) view.findViewById(R.id.textview_nearyou);
         mNearYouTextViewSticky = (TextView) view.findViewById(R.id.textview_nearyou_sticky);

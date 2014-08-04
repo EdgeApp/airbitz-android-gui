@@ -49,7 +49,7 @@ public class LocationAdapterTemp extends ArrayAdapter<String> implements Filtera
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
         RelativeLayout layoutItem = (RelativeLayout) convertView.findViewById(R.id.layout_item);
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
+        TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
         textView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
         textView.setText(mLocationValue.get(position));
 

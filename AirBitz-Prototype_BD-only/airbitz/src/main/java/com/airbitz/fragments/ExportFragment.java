@@ -1,34 +1,18 @@
 package com.airbitz.fragments;
 
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.ExportAdapter;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
-
-import org.apache.http.HeaderIterator;
-
-import java.util.Calendar;
 
 /**
  * Created on 2/22/14.
@@ -68,7 +52,7 @@ public class ExportFragment extends Fragment{
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_back_button);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_help_button);
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         bundle = new Bundle();

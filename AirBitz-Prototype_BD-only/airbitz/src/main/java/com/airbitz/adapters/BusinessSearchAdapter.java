@@ -6,9 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -59,7 +56,7 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
 
         final Business business = mLocationValue.get(position);
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_title);
+        TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
         textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         textView.setText(business.getName());
         textView.setTextColor(business.isCached() ? sGreenText : sGrayText);
