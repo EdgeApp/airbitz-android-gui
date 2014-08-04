@@ -152,10 +152,13 @@ public class ReceivedSuccessFragment extends Fragment implements GestureDetector
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if(mBundle.getString(WalletsFragment.FROM_SOURCE).contains("REQUEST"))
+            if(mBundle.getString(WalletsFragment.FROM_SOURCE).contains("REQUEST")) {
                 ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.REQUEST, mBundle);
-            else
+            }
+            else {
                 ((NavigationActivity) getActivity()).switchToWallets(FragmentSourceEnum.SEND, mBundle);
+            }
+            ((NavigationActivity) getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
         }
     }
 
