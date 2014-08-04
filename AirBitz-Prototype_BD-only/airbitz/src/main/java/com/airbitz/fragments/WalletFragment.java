@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,10 +50,6 @@ import java.util.List;
 public class WalletFragment extends Fragment
         implements CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
-
-    private static final int BTC = 0;
-    private static final int CURRENCY = 1;
-    private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private EditText mSearchField;
     private LinearLayout mSearchLayout;
@@ -106,7 +100,7 @@ public class WalletFragment extends Fragment
     private TransactionAdapter mTransactionAdapter;
 
     private List<Transaction> mTransactions;
-    private List<Transaction> mTotalTransactions;
+    private List<Transaction> mAllTransactions;
 
     private String mWalletName;
     private Wallet mWallet;
@@ -145,8 +139,8 @@ public class WalletFragment extends Fragment
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
 
-        mTotalTransactions = new ArrayList<Transaction>();
-        mTotalTransactions.addAll(mTransactions);
+        mAllTransactions = new ArrayList<Transaction>();
+        mAllTransactions.addAll(mTransactions);
 
         mOnBitcoinMode = true;
 
@@ -255,7 +249,7 @@ public class WalletFragment extends Fragment
                         mSearchTask.cancel(true);
                     }
                     if(editable.toString().isEmpty()){
-                        UpdateTransactionsListView(mTransactions);
+                        UpdateTransactionsListView(mAllTransactions);
                     }else {
                         mSearchTask = new SearchTask();
                         mSearchTask.execute(editable.toString());
@@ -423,10 +417,7 @@ public class WalletFragment extends Fragment
         @Override protected void onPostExecute(List<Transaction> transactions) {
             if(getActivity()==null)
                 return;
-            mTransactions.clear();
-            mTransactions.addAll(transactions);
-            mTransactionAdapter.notifyDataSetChanged();
-            ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
+            UpdateTransactionsListView(transactions);
             mSearchTask = null;
         }
 
