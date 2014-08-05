@@ -548,10 +548,8 @@ public class CoreAPI {
     }
 
     //***************** Questions
-    /**
-     * Get questions
-     */
-    public QuestionChoice[] GetRecoveryQuestions() {
+
+    public QuestionChoice[] GetQuestionChoices() {
 
         QuestionChoice[] mChoices = null;
         tABC_Error pError = new tABC_Error();
@@ -564,6 +562,21 @@ public class CoreAPI {
             QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
             long num = qcs.getNumChoices();
             mChoices = qcs.getChoices();
+        }
+        return mChoices;
+    }
+
+    public QuestionChoice[] GetRecoveryQuestions() {
+
+        QuestionChoice[] mChoices = null;
+        tABC_Error pError = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        tABC_CC result = core.ABC_GetRecoveryQuestions(AirbitzApplication.getUsername(), ppChar, pError);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            String questions = getStringAtPtr(core.longp_value(lp));
         }
         return mChoices;
     }
