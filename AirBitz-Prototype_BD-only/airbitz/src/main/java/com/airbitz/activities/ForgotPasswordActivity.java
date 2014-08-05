@@ -208,20 +208,6 @@ public class ForgotPasswordActivity extends Activity {
                 return 0;
         }
 
-        public Map getQuestionsMap() {
-            //TODO replace with server received Q & A
-
-            Map map = new HashMap<String, String>();
-            ArrayList<String> questions = new ArrayList<String>();
-            map.put("What is your father\'s birthdate?", "fbday");
-            map.put("What is your mother\'s maiden and current last name?", "mname");
-            map.put("What is your oldest sibling\'s birthdate?", "sbday");
-            map.put("Who is your favorite superhero?", "superhero");
-            map.put("What is the first street address you remember living in?", "firstaddress");
-            map.put("What was the address of your home in college?", "collegehome");
-
-            return map;
-        }
     }
 
     private static class PVoid extends SWIGTYPE_p_void {
