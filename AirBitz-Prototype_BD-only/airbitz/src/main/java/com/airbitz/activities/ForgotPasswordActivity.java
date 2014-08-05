@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -239,7 +240,7 @@ public class ForgotPasswordActivity extends Activity {
     }
 
     private void showNoQuestionsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.activity_forgot_no_questions))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
