@@ -150,6 +150,8 @@
                     android:background="@drawable/btn_blue"/>
 
                 <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_landing_forgot_password_layout"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -161,8 +163,7 @@
                     android:textSize="11dp"
                     android:textColor="@android:color/white"
                     android:drawableRight="@drawable/ico_forgot"
-                    android:background="@drawable/bg_btn_blue_stretch"
-                    android:id="@+id/fragment_landing_forgot_password_layout" />
+                    android:background="@drawable/bg_btn_blue_stretch" />
             </LinearLayout>
         </ScrollView>
 
