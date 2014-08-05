@@ -2,7 +2,10 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -19,15 +22,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.core;
+import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -36,6 +44,8 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class ExportSavingOptionFragment extends Fragment {
+    private final String TAG = getClass().getSimpleName();
+
     public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF }
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
 
@@ -81,13 +91,17 @@ public class ExportSavingOptionFragment extends Fragment {
     private CoreAPI mCoreApi;
     private Calendar today;
 
-    private String mPrivateKey;
+    private String mPrivateSeed; // for private seed type
+    private String mFilepath; // for filetypes
+    private int mExportType;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
+        mExportType = bundle.getInt(EXPORT_TYPE);
+
         mCoreApi = CoreAPI.getApi();
         mWalletList = mCoreApi.getCoreWallets();
         mWalletNameList = new ArrayList<String>();
@@ -95,6 +109,7 @@ public class ExportSavingOptionFragment extends Fragment {
             if(!w.isArchived())
                 mWalletNameList.add(w.getName());
         }
+        setupData(mExportType, mWalletList.get(0));
     }
 
     @Override
@@ -180,7 +195,13 @@ public class ExportSavingOptionFragment extends Fragment {
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//TODO
+                Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                String data;
+                if(mExportType == ExportTypes.PrivateSeed.ordinal())
+                    data = mPrivateSeed;
+                else
+                    data = mFilepath;
+                exportWithEmail(w, data);
             }
         });
 
@@ -535,4 +556,69 @@ public class ExportSavingOptionFragment extends Fragment {
         mToButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
         mFromButton.setText((today.get(Calendar.MONTH)+1)+"/"+ today.get(Calendar.DAY_OF_MONTH)+"/"+ today.get(Calendar.YEAR)+" "+ today.get(Calendar.HOUR)+":"+tempMin+" "+AMPM);
     }
+
+    private void setupData(int type, Wallet wallet) {
+        if(type == ExportTypes.PrivateSeed.ordinal()) {
+            mPrivateSeed = mCoreApi.getPrivateSeed(wallet);
+        } else {
+            mFilepath = getExportFilepath(wallet, type);
+        }
+    }
+
+    private String getExportFilepath(Wallet wallet, int type)
+    {
+        String output = null;
+        // TODO: create the proper export in the proper from using self.wallet
+
+        // for now just hard code
+        if(type == ExportTypes.CSV.ordinal()) {
+            output = "[CSV Data Here]";
+        } else if(type == ExportTypes.Quicken.ordinal()) {
+//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
+        } else if(type == ExportTypes.Quickbooks.ordinal()) {
+//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
+        } else if(type == ExportTypes.PDF.ordinal()) {
+//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportPDF" ofType:@"pdf"];
+        }
+        return output;
+    }
+
+    private String mimeTypeFor(int type)
+    {
+        String strMimeType;
+        if(type == ExportTypes.CSV.ordinal()) {
+            strMimeType = "text/plain";
+        } else if(type == ExportTypes.Quicken.ordinal()) {
+            strMimeType = "application/qif";
+        } else if(type == ExportTypes.Quickbooks.ordinal()) {
+            strMimeType = "application/qbooks";
+        } else if(type == ExportTypes.PDF.ordinal()) {
+            strMimeType = "application/pdf";
+        } else if(type == ExportTypes.PrivateSeed.ordinal()) {
+            strMimeType = "text/plain";
+        } else {
+            strMimeType = "???";
+        }
+        return strMimeType;
+    }
+
+    private void exportWithEmail(Wallet wallet, String data) {
+
+        // Compose
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "AirBitz Bitcoin Wallet Transactions");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Attached are the transactions for the AirBitz Bitcoin Wallet: "+wallet.getName());
+        if(mExportType == ExportTypes.PrivateSeed.ordinal()) {
+            sb.append("Private Seed: " + mPrivateSeed);
+        } else {
+            // TODO attach file from mFilename
+            String mimeType = mimeTypeFor(mExportType);
+        }
+        intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+        startActivity(intent);
+    }
+
 }
