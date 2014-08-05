@@ -1,7 +1,6 @@
 package com.airbitz.activities;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -11,7 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -334,51 +332,26 @@ public class SignUpActivity extends Activity {
         return bNewPasswordFieldsAreValid;
     }
 
-    private void goNext()
-    {
+    private void goNext() {
         // if they entered a valid mUsername or old mPassword
-        if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid())
-                {
-                    tABC_CC result = tABC_CC.ABC_CC_Ok;
+        if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid()) {
+            tABC_CC result = tABC_CC.ABC_CC_Ok;
 
-                    // if we are signing up a new account
-                    if (mMode == SIGNUP)
-                    {
-                        attemptSignUp();
-                        return;
-                    }
-                    else if (mMode == CHANGE_PASSWORD)
-                    {
-                        result = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
-                    }
-                    else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS)
-                    {
-                        result = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
-                                mWithdrawalPinEditText.getText().toString(), "");
-                    }
-                    else // new PIN
-                    {
-                        result = mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
-                    }
-
-                    // if success
-                    if (result == tABC_CC.ABC_CC_Ok)
-                    {
-                        if (mMode == CHANGE_PIN) {
-                            showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
-                        } else {
-                            showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
-                        }
-                    } else {
-                        showMessageAndFinish(getResources().getString(R.string.activity_signup_change_bad));
-                    }
-                }
+            // if we are signing up a new account
+            if (mMode == SIGNUP) {
+                attemptSignUp();
+                return;
+            } else {
+                mChangeTask = new ChangeTask();
+                mChangeTask.execute((Void) null);
+            }
+        }
     }
 
     // checks the mUsername field (non-blank or matches old mPassword depending on the mode)
-// returns YES if field is good
-// if the field is bad, an appropriate message box is displayed
-// note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    // returns YES if field is good
+    // if the field is bad, an appropriate message box is displayed
+    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean userNameFieldIsValid()
     {
         boolean bUserNameFieldIsValid = true;
@@ -492,6 +465,63 @@ public class SignUpActivity extends Activity {
             crackString += getResources().getString(R.string.activity_signup_years);
         }
         return crackString;
+    }
+
+    /**
+     * Represents an asynchronous account creation task
+     */
+    private ChangeTask mChangeTask;
+    public class ChangeTask extends AsyncTask<Void, Void, Boolean> {
+        tABC_CC success;
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (mMode == CHANGE_PASSWORD) {
+                success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
+            }
+            else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
+                        mWithdrawalPinEditText.getText().toString(), "");
+            }
+            else {
+                success = mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+            }
+
+            return success == tABC_CC.ABC_CC_Ok;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            showProgress(false);
+            if (success) {
+                if (mMode == CHANGE_PASSWORD) {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
+                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                } else {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
+                }
+            } else {
+                if (mMode == CHANGE_PASSWORD) {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_bad));
+                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                } else {
+                    showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_bad));
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mChangeTask = null;
+            showProgress(false);
+        }
     }
 
     /**
