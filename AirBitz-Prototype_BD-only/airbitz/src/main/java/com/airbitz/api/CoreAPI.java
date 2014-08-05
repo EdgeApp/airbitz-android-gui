@@ -2011,4 +2011,19 @@ public class CoreAPI {
         }
     }
 
+    public String getPrivateSeed(Wallet wallet) {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        tABC_CC result = core.ABC_ExportWalletSeed(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(), ppChar, Error);
+
+        if (tABC_CC.ABC_CC_Ok == result) {
+            return getStringAtPtr(core.longp_value(lp));
+        } else {
+            return null;
+        }
+    }
+
 }
