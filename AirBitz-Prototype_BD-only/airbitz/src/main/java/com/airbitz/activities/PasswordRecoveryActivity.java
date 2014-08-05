@@ -1,18 +1,14 @@
 package com.airbitz.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,7 +48,7 @@ public class PasswordRecoveryActivity extends Activity {
     private String mUsername, mPassword;
 
     private View dummyFocus;
-    private View dummyCover;
+//    private View dummyCover;
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
@@ -133,12 +128,11 @@ public class PasswordRecoveryActivity extends Activity {
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
-        dummyCover = findViewById(R.id.activity_recovery_dummy_cover);
 
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CompleteSignup();
+                AttemptSignupOrChange();
             }
         });
 
@@ -158,15 +152,14 @@ public class PasswordRecoveryActivity extends Activity {
         mFetchQuestionsTask.execute((Void) null);
     }
 
-    private void CompleteSignup() {
+    private void AttemptSignupOrChange() {
         //verify that all six questions have been selected
-        dummyCover.setVisibility(View.VISIBLE);
         boolean allQuestionsSelected = true;
         boolean allAnswersValid = true;
         String questions = "";
         String answers = "";
 
-        if(!mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+        if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
             ShowMessageAlert("Please enter your correct password so your answers can be changed.");
             return;
         }
@@ -227,41 +220,6 @@ public class PasswordRecoveryActivity extends Activity {
             mPasswordRecoveryListView.addView(v);
         }
         mPasswordRecoveryListView.invalidate();
-    }
-
-    public void ShowSkipQuestionsAlert(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
-                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        SuccessfulSignup();
-                    }
-                })
-                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    private void ShowMessageAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.GONE);
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     /**
@@ -351,11 +309,10 @@ public class PasswordRecoveryActivity extends Activity {
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
             showProgress(false);
-            dummyCover.setVisibility(View.GONE);
             if (!success) {
                 ShowMessageAlert("Save recovery answers failed.");
             } else {
-                ShowMessageAlert(getString(R.string.activity_recovery_done_details));
+                ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
             }
         }
 
@@ -365,7 +322,7 @@ public class PasswordRecoveryActivity extends Activity {
         }
     }
 
-    private void SuccessfulSignup() {
+    private void CloseActivity() {
         PasswordRecoveryActivity.this.finish();
     }
 
@@ -604,7 +561,54 @@ public class PasswordRecoveryActivity extends Activity {
         }
     }
 
+    public void ShowSkipQuestionsAlert(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
+                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        CloseActivity();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
+    private void ShowMessageAlert(String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void ShowMessageAlertAndExit(String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                CloseActivity();
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }
 
