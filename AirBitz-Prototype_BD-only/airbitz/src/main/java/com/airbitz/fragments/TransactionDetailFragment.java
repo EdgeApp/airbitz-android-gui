@@ -157,7 +157,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private CalculatorBrain mCalculatorBrain;
     private static final String DIGITS = "0123456789.";
     private ClipboardManager clipboard;
-    private float mBTCtoUSDConversion = 450.0f;
 
     private CoreAPI mCoreAPI;
     private Wallet mWallet;
