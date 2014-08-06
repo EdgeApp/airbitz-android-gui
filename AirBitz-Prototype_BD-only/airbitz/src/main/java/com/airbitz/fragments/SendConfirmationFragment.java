@@ -610,7 +610,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showProgress(true);
+            ((NavigationActivity) getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -621,7 +621,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         @Override
         protected void onPostExecute(final String txid) {
             mSendOrTransferTask = null;
-            ((NavigationActivity) getActivity()).showProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
             if (txid == null) {
                 Log.d("SendConfirmationFragment", "Send or Transfer failed");
             } else {

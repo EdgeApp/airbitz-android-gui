@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 2/10/14.
  */
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends BaseActivity {
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
     private RelativeLayout mParentLayout;
@@ -364,7 +364,7 @@ public class SignUpActivity extends Activity {
             if (mUserNameEditText.getText().toString().length() == 0)
             {
                 bUserNameFieldIsValid = false;
-                showMessage(getResources().getString(R.string.activity_signup_enter_username));
+                showOkMessageDialog(getResources().getString(R.string.activity_signup_enter_username));
             }
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
@@ -373,7 +373,7 @@ public class SignUpActivity extends Activity {
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                showMessage(getResources().getString(R.string.activity_signup_incorrect_password));
+                showOkMessageDialog(getResources().getString(R.string.activity_signup_incorrect_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -393,12 +393,12 @@ public class SignUpActivity extends Activity {
             if (!mGoodPassword)
             {
                 bNewPasswordFieldsAreValid = false;
-                showMessage(getResources().getString(R.string.activity_signup_insufficient_password));
+                showOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_password));
             }
             else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
             {
                 bNewPasswordFieldsAreValid = false;
-                showMessage(getResources().getString(R.string.activity_signup_passwords_dont_match));
+                showOkMessageDialog(getResources().getString(R.string.activity_signup_passwords_dont_match));
             }
         }
 
@@ -420,7 +420,7 @@ public class SignUpActivity extends Activity {
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
             {
                 bpinNameFieldIsValid = false;
-                showMessage(getResources().getString(R.string.activity_signup_insufficient_pin));
+                showOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_pin));
             }
         }
 
@@ -506,19 +506,19 @@ public class SignUpActivity extends Activity {
             if (success) {
                 AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_bad));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    showMessageAndFinish(getResources().getString(R.string.activity_signup_pin_change_bad));
+                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
@@ -706,21 +706,7 @@ public class SignUpActivity extends Activity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
     }
 
-    private void showMessage(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void showMessageAndFinish(String message) {
+    private void showOkMessageDialogAndFinish(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setCancelable(false)

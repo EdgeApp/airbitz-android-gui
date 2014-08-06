@@ -1,7 +1,6 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
@@ -61,8 +59,8 @@ import java.util.Stack;
  * the custom Navigation Bar for Airbitz
  * Created by Thomas Baker on 4/22/14.
  */
-public class NavigationActivity extends FragmentActivity
-implements NavigationBarFragment.OnScreenSelectedListener,
+public class NavigationActivity extends BaseActivity
+        implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
         CoreAPI.OnRemotePasswordChange {
@@ -592,7 +590,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         @Override
         public void onPreExecute() {
-            showProgress(true);
+            showModalProgress(true);
         }
 
         @Override
@@ -610,49 +608,22 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         protected void onPostExecute(final Boolean success) {
             mUserLoginTask = null;
 
-            showProgress(false);
+            showModalProgress(false);
             if (success){
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
             } else {
-                showMessageDialog(getResources().getString(R.string.error_invalid_credentials));
+                showOkMessageDialog(getResources().getString(R.string.error_invalid_credentials));
             }
         }
 
         @Override
         protected void onCancelled() {
             mUserLoginTask = null;
-            showProgress(false);
+            showModalProgress(false);
         }
     }
 
-    private ProgressDialog mProgressDialog;
-    public void showProgress(final boolean show) {
-        if(show) {
-            mProgressDialog = ProgressDialog.show(this, null, null);
-            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
-            mProgressDialog.setCancelable(false);
-        } else {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
-    }
-
-    private void showMessageDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
 
     //************************** Service support
 

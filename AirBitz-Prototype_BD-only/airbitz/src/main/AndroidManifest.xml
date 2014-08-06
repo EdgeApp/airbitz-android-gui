@@ -120,10 +120,15 @@
 
         <service
             android:name=".objects.AirbitzService"
-            android:process=":remoteairbitzservice"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true"
+            android:process=":remoteairbitzservice" >
         </service>
+
+        <activity
+            android:name=".activities.BaseActivity"
+            android:label="@string/title_activity_base" >
+        </activity>
     </application>
     <!--
      To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
