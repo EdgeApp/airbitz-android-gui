@@ -125,7 +125,7 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mPrivateKeyField.setKeyListener(null);
         mAddressField.setKeyListener(null);
 
-        mDoneButton = (Button) mView.findViewById(R.id.fragment_category_button_done);
+        mDoneButton = (Button) mView.findViewById(R.id.fragment_offline_wallet_button_done);
         mCopyButton = (Button) mView.findViewById(R.id.button_copy_address);
         mPrintButton = (Button) mView.findViewById(R.id.button_external_storage);
 

@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -25,7 +27,9 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.CategoryTypeEnum;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -68,6 +72,7 @@ public class CategoryFragment extends Fragment {
     private boolean doEdit = false;
     private boolean popupDoEdit = false;
 
+
     private String currentType = "";
     private String mCategoryOld = "";
     private String mPopUpCurrentType = "";
@@ -96,32 +101,32 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_category, container, false);
 
-        mRootView = mView.findViewById(R.id.fragment_category_category_page);
+        mRootView = mView.findViewById(R.id.category_page);
 
         mParentActivity = getActivity();
 
         //  Inflate Fields
-        mAddField = (EditText) mView.findViewById(R.id.fragment_category_add_field);
-        mSearchField = (EditText) mView.findViewById(R.id.fragment_category_search_field);
+        mAddField = (EditText) mView.findViewById(R.id.add_field);
+        mSearchField = (EditText) mView.findViewById(R.id.search_field);
 
-        mAddButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_category_button_add);
-        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_category_button_cancel);
-        mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_category_button_done);
+        mAddButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_category_button_add);
+        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.button_cancel);
+        mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.button_done);
 
-        mAddPopUpContainer = (LinearLayout) mView.findViewById(R.id.fragment_category_add_popup_container);
-        mAddExpensePopUpTextView = (TextView) mView.findViewById(R.id.fragment_category_add_popup_expense);
-        mAddIncomePopUpTextView = (TextView) mView.findViewById(R.id.fragment_category_add_popup_income);
-        mAddTransferPopUpTextView = (TextView) mView.findViewById(R.id.fragment_category_add_popup_transfer);
-        mAddExchangePopUpTextView = (TextView) mView.findViewById(R.id.fragment_category_add_popup_exchange);
-        mAddTriangleContainer = (RelativeLayout) mView.findViewById(R.id.fragment_category_add_popup_triangle_container);
+        mAddPopUpContainer = (LinearLayout) mView.findViewById(R.id.add_popup_container);
+        mAddExpensePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_expense);
+        mAddIncomePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_income);
+        mAddTransferPopUpTextView = (TextView) mView.findViewById(R.id.add_popup_transfer);
+        mAddExchangePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_exchange);
+        mAddTriangleContainer = (RelativeLayout) mView.findViewById(R.id.add_popup_triangle_container);
 
-        mItemPopUpContainer = (RelativeLayout) mView.findViewById(R.id.fragment_category_popup_items_container);
-        mItemPopUpEdittext = (EditText) mView.findViewById(R.id.fragment_category_item_popup_edittext);            //0
-        mItemPopUpExpenseTextView = (TextView) mView.findViewById(R.id.fragment_category_item_popup_expense);      //1
-        mItemPopUpIncomeTextView = (TextView) mView.findViewById(R.id.fragment_category_item_popup_income);        //2
-        mItemPopUpTransferTextView = (TextView) mView.findViewById(R.id.fragment_category_item_popup_transfer);    //3
-        mItemPopUpExchangeTextView = (TextView) mView.findViewById(R.id.fragment_category_item_popup_exchange);   //4
-        mItemPopUpDelete = (HighlightOnPressButton) mView.findViewById(R.id.fragment_category_item_popup_delete);
+        mItemPopUpContainer = (RelativeLayout) mView.findViewById(R.id.popup_container);
+        mItemPopUpEdittext = (EditText) mView.findViewById(R.id.item_popup_edittext);            //0
+        mItemPopUpExpenseTextView = (TextView) mView.findViewById(R.id.item_popup_expense);      //1
+        mItemPopUpIncomeTextView = (TextView) mView.findViewById(R.id.item_popup_income);        //2
+        mItemPopUpTransferTextView = (TextView) mView.findViewById(R.id.item_popup_transfer);    //3
+        mItemPopUpExchangeTextView = (TextView) mView.findViewById(R.id.item_popup_exchange);   //4
+        mItemPopUpDelete = (HighlightOnPressButton) mView.findViewById(R.id.item_popup_delete);
 
         popUpViews = new ArrayList<TextView>();
         popUpViews.add(mItemPopUpEdittext);
@@ -131,16 +136,16 @@ public class CategoryFragment extends Fragment {
         popUpViews.add(mItemPopUpExchangeTextView);
         currentPosPopUp = new ArrayList<Integer>();
 
-        dummyFocus = mView.findViewById(R.id.fragment_category_dummy_focus);
+        dummyFocus = mView.findViewById(R.id.settings_category_dummy_focus);
 
-        mCategoryListView = (ListView) mView.findViewById(R.id.fragment_category_list_view);
+        mCategoryListView = (ListView) mView.findViewById(R.id.category_list_view);
         mCategories = new ArrayList<String>();
         mCurrentCategories = new ArrayList<String>();
         goAddCategories();
         mCategoryAdapter = new SettingsCategoryAdapter(getActivity(),mCurrentCategories, mCategories, popUpViews, mItemPopUpContainer, currentPosPopUp);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
-        mDoneCancelContainer = (LinearLayout) mView.findViewById(R.id.fragment_category_done_cancel_container);
+        mDoneCancelContainer = (LinearLayout) mView.findViewById(R.id.done_cancel_container);
 
         //  EditTexts
         mSearchField.addTextChangedListener(new TextWatcher() {
@@ -192,6 +197,9 @@ public class CategoryFragment extends Fragment {
                     }else{
                         mAddField.setSelection(mAddField.getText().toString().indexOf(':')+1,mAddField.getText().toString().length());
                     }
+                }else {
+                    mAddPopUpContainer.setVisibility(View.GONE);
+                    mAddTriangleContainer.setVisibility(View.GONE);
                 }
             }
         });
@@ -498,6 +506,7 @@ public class CategoryFragment extends Fragment {
             updateItemBlanks("");
             doEdit = false;
         }
+        dummyFocus.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
@@ -530,5 +539,4 @@ public class CategoryFragment extends Fragment {
             mCoreAPI.addCategory(category);
         }
     }
-
 }
