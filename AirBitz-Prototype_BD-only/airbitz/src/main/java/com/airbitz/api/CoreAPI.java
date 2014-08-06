@@ -1908,7 +1908,7 @@ public class CoreAPI {
         Common.LogD(TAG, Error.getSzDescription()+";"+Error.getSzSourceFile()+";"+Error.getSzSourceFunc()+";"+Error.getNSourceLine());
     }
 
-    private void stopWatchers()
+    public void stopWatchers()
     {
         mStopWatchersTask = new StopWatchersTask();
         mStopWatchersTask.execute();
