@@ -1,8 +1,6 @@
 package com.airbitz.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -416,12 +414,12 @@ public class PasswordRecoveryActivity extends BaseActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
             mSpinner = (Spinner)findViewById(R.id.item_recovery_question_spinner);
-            mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
-            mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
-            mSpinner.setAdapter(mAdapter);
             mSpinner.setDropDownWidth((int) getResources().getDimension(R.dimen.spinner_width_password));
             mSpinner.setFocusable(true);
             mSpinner.setFocusableInTouchMode(true);
+            mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
+            mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
+            mSpinner.setAdapter(mAdapter);
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -550,7 +548,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 public void onFocusChange(View view, boolean hasFocus) {
                     if (hasFocus) {
                         pos = mQuestionViews.indexOf(me);
-                        System.out.println(pos);
                     }
                 }
             });

@@ -166,7 +166,7 @@ public class NavigationActivity extends BaseActivity
 
         mNavBarFragment = (NavigationBarFragment) getSupportFragmentManager().findFragmentById(R.id.navigationFragment);
         if(bdonly){
-            System.out.println("BD ONLY");
+            Common.LogD(TAG, "BD ONLY");
             mNavBarFragmentLayout.setVisibility(View.GONE);
             mNavBarFragment.hideNavBarFragment();
             mNavBarFragmentLayout.invalidate();
