@@ -257,12 +257,12 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void pushFragment(Fragment fragment, int threadID) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         mNavStacks[threadID].push(fragment);
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
             if (mNavStacks[threadID].size() != 0) {
                 transaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_left, R.anim.slide_in_from_right, R.anim.slide_out_left);
             }
