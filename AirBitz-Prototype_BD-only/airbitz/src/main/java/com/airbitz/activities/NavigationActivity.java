@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -314,6 +315,8 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void showCalculator() {
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
+
         if(mCalculatorLayout.getVisibility()!=View.VISIBLE) {
             hideNavBar();
             mCalculatorLayout.setVisibility(View.VISIBLE);
