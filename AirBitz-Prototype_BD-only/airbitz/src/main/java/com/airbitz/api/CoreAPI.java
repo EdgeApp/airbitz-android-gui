@@ -1348,7 +1348,7 @@ public class CoreAPI {
             details.setAmountFeesMinersSatoshi(feesMiner);
 
             details.setAmountCurrency(value);
-            details.setSzName("Anonymous");
+            details.setSzName("");
             details.setSzNotes("");
             details.setSzCategory("");
             details.setAttributes(0x2); //for our own use (not used by the core)
