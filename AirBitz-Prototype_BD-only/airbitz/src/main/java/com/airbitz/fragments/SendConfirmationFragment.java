@@ -135,7 +135,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
@@ -266,6 +266,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         };
         mFiatField.addTextChangedListener(mFiatTextWatcher);
 
+        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -448,6 +449,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
         mDummyFocus.requestFocus();
 
+        if(mAmountToSendSatoshi>0) {
+            mPinEdittext.requestFocus();
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(mPinEdittext, InputMethodManager.SHOW_FORCED);
+        }
         return mView;
     }
 
