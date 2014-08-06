@@ -42,7 +42,7 @@ import java.util.Map;
  * two are Numeric, and two are Address, in that order. See PasswordRecoveryViewcontroller.m.
  * Also, following questions in the same category don't repeat earlier questions.
  */
-public class PasswordRecoveryActivity extends Activity {
+public class PasswordRecoveryActivity extends BaseActivity {
     public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
     public static final String FORGOT_PASSWORD = "com.airbitz.passwordrecoveryactivity.forgot_password";
 
@@ -353,7 +353,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         @Override
         public void onPreExecute() {
-            showProgress(true);
+            showModalProgress(true);
         }
 
         @Override
@@ -365,7 +365,7 @@ public class PasswordRecoveryActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
-            showProgress(false);
+            showModalProgress(false);
             if (!success) {
                 ShowMessageAlert("Save recovery answers failed.");
             } else {
@@ -602,20 +602,6 @@ public class PasswordRecoveryActivity extends Activity {
     public void onBackPressed(){
         if(mChangeQuestions)
             super.onBackPressed();
-    }
-
-    private ProgressDialog mProgressDialog;
-    public void showProgress(final boolean show) {
-        if(show) {
-            mProgressDialog = ProgressDialog.show(this, null, null);
-            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
-            mProgressDialog.setCancelable(false);
-        } else {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
     }
 
     public void ShowSkipQuestionsAlert(){

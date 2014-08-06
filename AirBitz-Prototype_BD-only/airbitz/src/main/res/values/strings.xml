@@ -25,7 +25,6 @@
     <string name="string_no_connection_title">No connection</string>
     <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
 
-
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
     <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
@@ -75,7 +74,6 @@
     <string name="activity_signup_popup_number">Must have at least one number</string>
     <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
-
     <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
     <string name="activity_signup_pin_change_bad">PIN could not be changed.</string>
     <string name="activity_signup_password_change_good">Password successfully changed.</string>
@@ -96,7 +94,6 @@
     <string name="activity_signup_weeks">weeks</string>
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
-
 
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_title">Password Recovery Setup</string>
@@ -163,7 +160,6 @@
     <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
 
@@ -253,5 +249,6 @@
     <string name="error_invalid_credentials">Invalid User Name or Password</string>
     <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
     <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
+    <string name="title_activity_base">BaseActivity</string>
 
 </resources>

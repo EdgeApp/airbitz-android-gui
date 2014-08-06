@@ -1,7 +1,5 @@
 package com.airbitz.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -157,7 +155,7 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -187,13 +185,13 @@ public class RequestQRCodeFragment extends Fragment {
             if (mQRBitmap != null) {
                 mQRView.setImageBitmap(mQRBitmap);
             }
-            ((NavigationActivity)getActivity()).showProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
-            ((NavigationActivity)getActivity()).showProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
 

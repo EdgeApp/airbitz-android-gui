@@ -1,13 +1,11 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -23,12 +21,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -488,7 +484,7 @@ public class WalletsFragment extends Fragment
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -505,7 +501,7 @@ public class WalletsFragment extends Fragment
             } else {
                 refreshWalletList(mCoreAPI.loadWallets());
             }
-            ((NavigationActivity)getActivity()).showProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
         @Override
