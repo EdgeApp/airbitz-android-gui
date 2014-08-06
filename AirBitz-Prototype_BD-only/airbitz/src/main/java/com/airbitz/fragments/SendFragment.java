@@ -327,39 +327,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         }
     }
 
-//    class FakeCapturePhoto extends AsyncTask<Void, Integer, Boolean>{
-//        public FakeCapturePhoto() { }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... voids) {
-//           for(int i=0;i<=7;i++){
-//               try {
-//                   Thread.sleep(1000);
-//               } catch (InterruptedException e) {
-//                   e.printStackTrace();
-//               }
-//           }
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean aBoolean) {
-//
-//            try{
-////            mCamera.takePicture(null, null, SendFragment.this);
-////                GotoSendConfirmation("uuid", 0, "label", false);
-//            }
-//            catch (Exception e){
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onPictureTaken(byte[] data, Camera camera) {
-//    }
-//
-
-
     public void stopCamera() {
         Common.LogD(TAG, "stopCamera");
         if (mCamera != null) {
@@ -491,9 +458,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     }
 
     public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
-        if(mToEdittext!=null && !isUUID)
-            mToEdittext.setText(uuid);
-
         Fragment fragment = new SendConfirmationFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_UUID, isUUID);
