@@ -66,14 +66,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     private Bundle bundle;
 
-    private boolean mConfirmChecked = false;
-
     private View mDummyFocus;
 
     private EditText mFiatField;
     private EditText mBitcoinField;
-    private TextView mBitcoinFeeLabel;
-    private TextView mDollarFeeLabel;
 
     private HighlightOnPressImageButton mBackButton;
     private ImageButton mConfirmSwipeButton;
@@ -87,7 +83,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private static final String DIGITS = "0123456789.";
 
     DecimalFormat mDF = new DecimalFormat("@###########");
-    private boolean doSet = false;
 
     private RelativeLayout mSlideLayout;
 
@@ -96,8 +91,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
     private ScrollView mScrollView;
 
-    private static final int INVALID_POINTER_ID = -1;
-    private int mActivePointerId = INVALID_POINTER_ID;
     private int mRightThreshold;
     private int mLeftThreshold;
 
@@ -273,7 +266,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 Log.d("SendConfirmationFragment", "PIN field focus changed");
                 if(hasFocus) {
                     mAutoUpdatingTextFields = true;
-                    showKeyboard();
+                    showPINkeyboard();
                 } else {
                     mAutoUpdatingTextFields = false;
                 }
@@ -368,21 +361,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             }
         });
 
-        /*mConfirmSwipeButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (!mSuccess) {
-                    mRightThreshold = (int) mConfirmSwipeButton.getX();
-                }
-            }
-        });*/
-
         mConfirmSwipeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mActivePointerId = event.getPointerId(0);
                         dX = (int) event.getX();
                         mRightThreshold = (int) mConfirmSwipeButton.getX();
                         break;
@@ -396,7 +379,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                         } else {
                             mConfirmSwipeButton.setX(delta);
                         }
-                        //mConfirmSwipeButton.invalidate();
                         return false;
                     case MotionEvent.ACTION_UP:
                         touchEventsEnded();
@@ -405,16 +387,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                         resetSlider();
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
-                /* If a multitouch event took place and the original touch dictating
-                 * the movement of the hover cell has ended, then the dragging event
-                 * ends and the hover cell is animated to its corresponding position
-                 * in the listview. */
-                        /*pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
-                                MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-                        final int pointerId = event.getPointerId(pointerIndex);
-                        if (pointerId == mActivePointerId) {
-                            touchEventsEnded();
-                        }*/
                         break;
                     default:
                         break;
@@ -457,7 +429,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         return mView;
     }
 
-    private void showKeyboard() {
+    private void showPINkeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.toggleSoftInput(0, 0);
@@ -575,8 +547,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
             String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
 
-            if(mBitcoinFeeLabel!=null) mBitcoinFeeLabel.setText(coinFeeString);
-            if(mDollarFeeLabel!=null) mDollarFeeLabel.setText(fiatFeeString);
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
         else
@@ -810,12 +780,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     public void showCustomKeyboard(View v) {
-//        hideKeyboard();
-        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(0, 0);
-        }
         ((NavigationActivity) getActivity()).showCalculator();
     }
 
