@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
@@ -46,6 +48,8 @@ public class ForgotPasswordActivity extends Activity {
     private String mUsername;
     private FetchQuestionsTask mFetchQuestionsTask;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -53,6 +57,9 @@ public class ForgotPasswordActivity extends Activity {
         if(intent !=null) {
             mUsername = intent.getStringExtra(SignUpActivity.KEY_USERNAME);
         }
+
+        if(mCoreAPI==null)
+            mCoreAPI = CoreAPI.getApi();
 
         setContentView(R.layout.activity_forgot_password);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
@@ -63,8 +70,6 @@ public class ForgotPasswordActivity extends Activity {
 
         mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-
-        mRecoveryQA = getRecoveryQA();
 
         mSubmitButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
@@ -94,8 +99,6 @@ public class ForgotPasswordActivity extends Activity {
 
         mItemsLayout = (LinearLayout) findViewById(R.id.forgot_questions_layout);
 
-        populateQuestions(mRecoveryQA);
-
         mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
         mFetchQuestionsTask.execute((Void) null);
 
@@ -124,20 +127,6 @@ public class ForgotPasswordActivity extends Activity {
     protected void onResume() {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         super.onResume();
-    }
-
-    //TODO remove when server QA finished
-    private Map getRecoveryQA() {
-        Map map = new HashMap<String, String>();
-        ArrayList<String> questions = new ArrayList<String>();
-        map.put("What is your father\'s birthdate?", "fbday");
-        map.put("What is your mother\'s maiden and current last name?", "mname");
-        map.put("What is your oldest sibling\'s birthdate?", "sbday");
-        map.put("Who is your favorite superhero?", "superhero");
-        map.put("What is the first street address you remember living in?", "firstaddress");
-        map.put("What was the address of your home in college?", "collegehome");
-
-        return map;
     }
 
     private View getQueryView(String question) {
@@ -188,6 +177,7 @@ public class ForgotPasswordActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mFetchQuestionsTask = null;
+            populateQuestions(mRecoveryQA);
 
             if (success) {
                 populateQuestions(questionMap);
@@ -218,20 +208,6 @@ public class ForgotPasswordActivity extends Activity {
                 return 0;
         }
 
-        public Map getQuestionsMap() {
-            //TODO replace with server received Q & A
-
-            Map map = new HashMap<String, String>();
-            ArrayList<String> questions = new ArrayList<String>();
-            map.put("What is your father\'s birthdate?", "fbday");
-            map.put("What is your mother\'s maiden and current last name?", "mname");
-            map.put("What is your oldest sibling\'s birthdate?", "sbday");
-            map.put("Who is your favorite superhero?", "superhero");
-            map.put("What is the first street address you remember living in?", "firstaddress");
-            map.put("What was the address of your home in college?", "collegehome");
-
-            return map;
-        }
     }
 
     private static class PVoid extends SWIGTYPE_p_void {
@@ -239,7 +215,7 @@ public class ForgotPasswordActivity extends Activity {
     }
 
     private void showNoQuestionsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.activity_forgot_no_questions))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),

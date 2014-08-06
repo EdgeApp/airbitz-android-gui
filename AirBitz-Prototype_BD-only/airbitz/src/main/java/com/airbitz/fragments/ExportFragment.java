@@ -23,7 +23,7 @@ public class ExportFragment extends Fragment{
     private HighlightOnPressButton mQuickenButton;
     private HighlightOnPressButton mQuickBooksButton;
     private HighlightOnPressButton mPdfbutton;
-    private HighlightOnPressButton mWalletbutton;
+    private HighlightOnPressButton mWalletPrivateSeed;
 
 
     private HighlightOnPressImageButton mHelpButton;
@@ -48,7 +48,7 @@ public class ExportFragment extends Fragment{
         mQuickenButton = (HighlightOnPressButton) mView.findViewById(R.id.button_quicken);
         mQuickBooksButton = (HighlightOnPressButton) mView.findViewById(R.id.button_quickbooks);
         mPdfbutton = (HighlightOnPressButton) mView.findViewById(R.id.button_pdf);
-        mWalletbutton = (HighlightOnPressButton) mView.findViewById(R.id.button_wallet);
+        mWalletPrivateSeed = (HighlightOnPressButton) mView.findViewById(R.id.button_wallet);
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_back_button);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_help_button);
@@ -76,7 +76,7 @@ public class ExportFragment extends Fragment{
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
                 bundle = new Bundle();
-                bundle.putString("button_clicked","CSV");
+                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.CSV.ordinal());
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragment(frag);
             }
@@ -86,7 +86,7 @@ public class ExportFragment extends Fragment{
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
                 bundle = new Bundle();
-                bundle.putString("button_clicked","Quicken");
+                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quicken.ordinal());
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragment(frag);
             }
@@ -96,7 +96,7 @@ public class ExportFragment extends Fragment{
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
                 bundle = new Bundle();
-                bundle.putString("button_clicked","Quickbooks");
+                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal());
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragment(frag);
             }
@@ -106,19 +106,19 @@ public class ExportFragment extends Fragment{
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
                 bundle = new Bundle();
-                bundle.putString("button_clicked","PDF");
+                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PDF.ordinal());
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragment(frag);
             }
         });
-        mWalletbutton.setOnClickListener(new View.OnClickListener() {
+        mWalletPrivateSeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
                 bundle = new Bundle();
-                bundle.putString("button_clicked","Wallet");
+                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                ((NavigationActivity) getActivity()).pushFragment(frag);
             }
         });
 

@@ -228,7 +228,8 @@ public class WalletsFragment extends Fragment
             @Override
             public void onClick(View view) {
                 switchBarInfo(true);
-                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+                mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = true;
             }
         });
@@ -236,14 +237,16 @@ public class WalletsFragment extends Fragment
             @Override
             public void onClick(View view) {
                 switchBarInfo(false);
-                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+                mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = false;
             }
         });
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+                mLatestWalletAdapter.notifyDataSetChanged();
                 if(mOnBitcoinMode){
                     switchBarInfo(false);
                     mOnBitcoinMode = false;
