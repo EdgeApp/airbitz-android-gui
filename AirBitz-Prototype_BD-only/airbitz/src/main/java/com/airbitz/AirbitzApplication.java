@@ -12,7 +12,7 @@ public class AirbitzApplication extends Application {
 
     public static final boolean DEBUG_LOGGING = true;
 
-    public static boolean AUTOLOGIN = true;
+    public static boolean AUTOLOGIN = false;
     private static String loginName = "testjbvffvj"; private static String loginPassword = "Aaaaaaaa1@";
 //    private static String loginName = "matt104"; private static String loginPassword = "O@21grapes";
 
