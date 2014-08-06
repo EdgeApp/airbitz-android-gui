@@ -16,7 +16,7 @@ import com.airbitz.utils.Common;
 /**
  * Created on 3/4/14.
  */
-public class HelpActivity extends Activity implements GestureDetector.OnGestureListener{
+public class HelpActivity extends BaseActivity {
     private Button mQuestion1;
     private Button mQuestion2;
     private Button mQuestion3;
@@ -41,15 +41,12 @@ public class HelpActivity extends Activity implements GestureDetector.OnGestureL
     private boolean mQuestion3Clicked = false;
     private boolean mQuestion4Clicked = false;
 
-    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-
-        mGestureDetector = new GestureDetector(this);
 
         mQuestion1 = (Button) findViewById(R.id.button_question_1);
         mQuestion2 = (Button) findViewById(R.id.button_question_2);
@@ -189,62 +186,12 @@ public class HelpActivity extends Activity implements GestureDetector.OnGestureL
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
     public void initializeDrawable(){
 
         mQuestion1.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_dropdown, 0);
         mQuestion2.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_dropdown, 0);
         mQuestion3.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_dropdown, 0);
         mQuestion4.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_dropdown, 0);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
     }
 
     @Override

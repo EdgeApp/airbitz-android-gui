@@ -30,6 +30,7 @@ import com.airbitz.R;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ import java.util.Map;
  * Also, following questions in the same category don't repeat earlier questions.
  */
 public class PasswordRecoveryActivity extends BaseActivity {
+    private final String TAG = getClass().getSimpleName();
+
     public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
     public static final String FORGOT_PASSWORD = "com.airbitz.passwordrecoveryactivity.forgot_password";
 
@@ -156,7 +159,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         String answers = "";
 
         if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
-            ShowMessageAlert("Please enter your correct password so your answers can be changed.");
+            showOkMessageDialog("Please enter your correct password so your answers can be changed.");
             return;
         }
 
@@ -186,10 +189,10 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                 mSaveQuestionsTask.execute((Void) null);
             } else {
-                ShowMessageAlert(getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                showOkMessageDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ShowMessageAlert(getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            showOkMessageDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -224,7 +227,10 @@ public class PasswordRecoveryActivity extends BaseActivity {
     public class GetRecoveryQuestions extends AsyncTask<Void, Void, Boolean> {
         CoreAPI.QuestionChoice[] mChoices;
 
-        GetRecoveryQuestions() { }
+        @Override
+        public void onPreExecute() {
+            showModalProgress(true);
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -255,13 +261,14 @@ public class PasswordRecoveryActivity extends BaseActivity {
                     currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
                     return true;
                 } else {
-                    System.err.println("No Questions");
+                    Common.LogD(TAG, "No Questions");
                     return false;
                 }
             }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            showModalProgress(false);
             mFetchAllQuestionsTask = null;
 
             if (success) {
@@ -285,7 +292,11 @@ public class PasswordRecoveryActivity extends BaseActivity {
     public class GetQuestionChoicesTask extends AsyncTask<Void, Void, Boolean> {
         CoreAPI.QuestionChoice[] mChoices;
 
-        GetQuestionChoicesTask() { }
+
+        @Override
+        public void onPreExecute() {
+            showModalProgress(true);
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -316,13 +327,14 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
-                System.err.println("No Questions");
+                Common.LogD(TAG, "No Questions");
                 return false;
             }
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            showModalProgress(false);
             mFetchAllQuestionsTask = null;
 
             if (success) {
@@ -367,7 +379,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
             mSaveQuestionsTask = null;
             showModalProgress(false);
             if (!success) {
-                ShowMessageAlert("Save recovery answers failed.");
+                showOkMessageDialog("Save recovery answers failed.");
             } else {
                 ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
             }
@@ -377,10 +389,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
         protected void onCancelled() {
             mSaveQuestionsTask = null;
         }
-    }
-
-    private void CloseActivity() {
-        PasswordRecoveryActivity.this.finish();
     }
 
     private class QuestionView extends LinearLayout {
@@ -611,7 +619,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        CloseActivity();
+                        finish();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
@@ -624,34 +632,5 @@ public class PasswordRecoveryActivity extends BaseActivity {
         alertDialog.show();
     }
 
-    private void ShowMessageAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private void ShowMessageAlertAndExit(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                CloseActivity();
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
 }
 
