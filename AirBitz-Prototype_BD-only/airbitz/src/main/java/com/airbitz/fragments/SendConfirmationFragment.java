@@ -430,9 +430,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     }
 
     private void showPINkeyboard() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
     }
 
 

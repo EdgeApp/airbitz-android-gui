@@ -367,6 +367,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public void onPreviewFrame(byte[] bytes, Camera camera) {
         CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
         if(info!=null && info.getSzAddress()!=null) {
+            stopCamera();
             GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
         }
     }
