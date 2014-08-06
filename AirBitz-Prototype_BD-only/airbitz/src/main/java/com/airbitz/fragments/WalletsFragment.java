@@ -439,7 +439,7 @@ public class WalletsFragment extends Fragment
         bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
     }
 
     public void addNewWallet(String name, int currencyNum){
@@ -539,7 +539,7 @@ public class WalletsFragment extends Fragment
                 int[] nums = mCoreAPI.getCurrencyNumbers();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
             } else {
-                ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment());
+                ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());
             }
             mAddWalletNameEditText.setText("");
 //                mAddWalletCurrencySpinner.setSelection(1);
@@ -611,10 +611,10 @@ public class WalletsFragment extends Fragment
         if(bundle.getString(FROM_SOURCE).equals("REQUEST") || bundle.getString(FROM_SOURCE).equals("SEND")){
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag);
+            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             Fragment frag2 = new TransactionDetailFragment();
             frag2.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag2);
+            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
         }
     }
 

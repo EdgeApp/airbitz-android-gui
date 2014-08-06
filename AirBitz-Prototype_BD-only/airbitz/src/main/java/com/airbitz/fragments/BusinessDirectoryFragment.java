@@ -315,7 +315,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
             }
         });
 
@@ -327,7 +327,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
             }
         });
 
@@ -339,7 +339,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
             }
         });
 
@@ -535,7 +535,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     bundle.putString(BUSINESSTYPE, mBusinessType);
                     Fragment fragment = new MapBusinessDirectoryFragment();
                     fragment.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(fragment);
+                    ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
                     if (mBusinessLayout.getVisibility() == View.GONE) {
                         mDummyFocusLayout.requestFocus();
@@ -566,7 +566,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     bundle.putString(BUSINESSTYPE, mBusinessType);
                     Fragment fragment = new MapBusinessDirectoryFragment();
                     fragment.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(fragment);
+                    ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
                     if (mBusinessLayout.getVisibility() == View.GONE) {
                         mDummyFocusLayout.requestFocus();
@@ -654,7 +654,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         bundle.putString(DirectoryDetailFragment.BIZNAME, business.getName());
                         Fragment fragment = new DirectoryDetailFragment();
                         fragment.setArguments(bundle);
-                        ((NavigationActivity) getActivity()).pushFragment(fragment);
+                        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
                     } else {
                         CacheUtil.writeCachedBusinessSearchData(getActivity(),
                                 businessSearchAdapter.getItem(position));
@@ -912,7 +912,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                             bundle.putString(BUSINESSTYPE, "category");
                             Fragment fragment = new MapBusinessDirectoryFragment();
                             fragment.setArguments(bundle);
-                            ((NavigationActivity) getActivity()).pushFragment(fragment);
+                            ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
                         }
                     }
 

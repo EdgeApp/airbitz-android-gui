@@ -1,7 +1,5 @@
 package com.airbitz.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -12,7 +10,6 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -86,7 +83,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
 
-    private int mNavFragmentId;
+    private int mNavThreadId;
     private Fragment[] mNavFragments = {
             new BusinessDirectoryFragment(),
             new RequestFragment(),
@@ -144,15 +141,15 @@ implements NavigationBarFragment.OnScreenSelectedListener,
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     hideNavBar();
                     keyBoardUp = true;
-                    if(mNavStacks[mNavFragmentId].peek() instanceof CategoryFragment){
-                        ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).hideDoneCancel();
+                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment){
+                        ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
                     }
                 } else {
                     if(keyBoardUp) {
                         showNavBar();
                     }
-                    if(mNavStacks[mNavFragmentId].peek() instanceof CategoryFragment && keyBoardUp){
-                        ((CategoryFragment)mNavStacks[mNavFragmentId].get(mNavStacks[mNavFragmentId].size()-1)).showDoneCancel();
+                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment && keyBoardUp){
+                        ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
                     }
                     keyBoardUp = false;
                 }
@@ -243,10 +240,10 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     }
 
     public void switchFragmentThread(int id) {
-        mNavBarFragment.unselectTab(mNavFragmentId);
+        mNavBarFragment.unselectTab(mNavThreadId);
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
-        mNavFragmentId = id;
+        mNavThreadId = id;
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commitAllowingStateLoss();
@@ -258,23 +255,28 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         switchFragmentThread(id);
     }
 
-    public void pushFragment(Fragment fragment) {
+    public void pushFragment(Fragment fragment, int threadID) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(mNavStacks[mNavFragmentId].size()!=0){
-            transaction.setCustomAnimations(R.anim.slide_in_from_right,R.anim.slide_out_left,R.anim.slide_in_from_right, R.anim.slide_out_left);
+
+        mNavStacks[threadID].push(fragment);
+
+        // Only show visually if we're displaying the thread
+        if(mNavThreadId==threadID) {
+            if (mNavStacks[threadID].size() != 0) {
+                transaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_left, R.anim.slide_in_from_right, R.anim.slide_out_left);
+            }
+            transaction.replace(R.id.activityLayout, fragment);
+            transaction.commitAllowingStateLoss();
         }
-        transaction.replace(R.id.activityLayout, fragment);
-        mNavStacks[mNavFragmentId].push(fragment);
-        transaction.commitAllowingStateLoss();
     }
 
     public void popFragment() {
-        mNavStacks[mNavFragmentId].pop();
+        mNavStacks[mNavThreadId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(mNavStacks[mNavFragmentId].size()!=0){
+        if(mNavStacks[mNavThreadId].size()!=0){
             transaction.setCustomAnimations(R.anim.slide_in_from_left,R.anim.slide_out_right,R.anim.slide_in_from_left,R.anim.slide_out_right);
         }
-        transaction.replace(R.id.activityLayout, mNavStacks[mNavFragmentId].peek());
+        transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
         transaction.commitAllowingStateLoss();
     }
 
@@ -324,14 +326,14 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         if(mCalculatorLayout.getVisibility()==View.VISIBLE){
             hideCalculator();
         } else {
-            if (mNavStacks[mNavFragmentId].size() == 1) {
+            if (mNavStacks[mNavThreadId].size() == 1) {
                 // This emulates user pressing Home button, rather than finish this activity
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(homeIntent);
             } else {
-                if(mNavStacks[mNavFragmentId].peek() instanceof RequestQRCodeFragment){
+                if(mNavStacks[mNavThreadId].peek() instanceof RequestQRCodeFragment){
                     popFragment();
                     showNavBar();
                 }else {//needed or show nav before switching fragments
@@ -353,16 +355,16 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         registerServiceReceiver();
         startAirbitzService();
 
-        mNavFragmentId = AirbitzApplication.getLastNavTab();
+        mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
             DisplayLoginOverlay(mDataUri!=null);
-            mNavFragmentId = Tabs.BD.ordinal();
+            mNavThreadId = Tabs.BD.ordinal();
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
         }
-        switchFragmentThread(mNavFragmentId);
+        switchFragmentThread(mNavThreadId);
         mCoreAPI.startAllAsyncUpdates();
     }
 
@@ -376,26 +378,26 @@ implements NavigationBarFragment.OnScreenSelectedListener,
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
             switchFragmentThread(Tabs.WALLET.ordinal());
-            mNavFragmentId = Tabs.WALLET.ordinal();
-            while (!mNavStacks[mNavFragmentId].isEmpty()){
-                mNavStacks[mNavFragmentId].pop();
+            mNavThreadId = Tabs.WALLET.ordinal();
+            while (!mNavStacks[mNavThreadId].isEmpty()){
+                mNavStacks[mNavThreadId].pop();
             }
             Fragment frag = new WalletsFragment();
             bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
             bundle.putBoolean(WalletsFragment.CREATE, true);
             frag.setArguments(bundle);
-            pushFragment(frag);
+            pushFragment(frag, Tabs.WALLET.ordinal());
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
             switchFragmentThread(Tabs.WALLET.ordinal());
-            mNavFragmentId = Tabs.WALLET.ordinal();
-            while (!mNavStacks[mNavFragmentId].isEmpty()){
-                mNavStacks[mNavFragmentId].pop();
+            mNavThreadId = Tabs.WALLET.ordinal();
+            while (!mNavStacks[mNavThreadId].isEmpty()){
+                mNavStacks[mNavThreadId].pop();
             }
             Fragment frag = new WalletsFragment();
             bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
             bundle.putBoolean(WalletsFragment.CREATE, true);
             frag.setArguments(bundle);
-            pushFragment(frag);
+            pushFragment(frag, Tabs.WALLET.ordinal());
         }
     }
 
@@ -410,7 +412,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         }
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
-        if(mNavFragmentId!=Tabs.SEND.ordinal()) {
+        if(mNavThreadId !=Tabs.SEND.ordinal()) {
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, "URI");
             bundle.putString(URI, dataUri.toString());
@@ -431,7 +433,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
         mUUID = walletUUID;
         mTxId = txId;
         /* If showing QR code, launch receiving screen*/
-        Fragment f = mNavStacks[mNavFragmentId].peek();
+        Fragment f = mNavStacks[mNavThreadId].peek();
         if( f instanceof RequestQRCodeFragment) {
             startReceivedSuccess();
         } else {
@@ -472,7 +474,7 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
         Fragment frag = new ReceivedSuccessFragment();
         frag.setArguments(bundle);
-        pushFragment(frag);
+        pushFragment(frag, mNavThreadId);
 
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }

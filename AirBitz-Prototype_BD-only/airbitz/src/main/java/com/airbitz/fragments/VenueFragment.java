@@ -321,7 +321,7 @@ public class VenueFragment extends Fragment implements
         bundle.putString("", distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
-        ((NavigationActivity) mActivity).pushFragment(fragment);
+        ((NavigationActivity) mActivity).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
     }
 
 

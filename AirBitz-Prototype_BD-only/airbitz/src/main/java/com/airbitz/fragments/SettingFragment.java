@@ -177,7 +177,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CategoryFragment();
-                ((NavigationActivity)getActivity()).pushFragment(fragment);
+                ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 

@@ -581,7 +581,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         bundle.putString(DirectoryDetailFragment.BIZDISTANCE, distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment);
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
     }
 
 

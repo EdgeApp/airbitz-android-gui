@@ -503,7 +503,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         bundle.putString(FROM_WALLET_NAME, ((Wallet) walletSpinner.getSelectedItem()).getName());
         fragment.setArguments(bundle);
         if(mActivity!=null)
-            mActivity.pushFragment(fragment);
+            mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
     }
 
     @Override
