@@ -65,7 +65,6 @@
             android:id="@+id/textview_sending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/received_success_sending_title"
             android:textColor="@android:color/white"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"

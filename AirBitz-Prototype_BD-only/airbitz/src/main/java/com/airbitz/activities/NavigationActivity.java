@@ -38,7 +38,7 @@ import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.ReceivedSuccessFragment;
+import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
@@ -471,11 +471,11 @@ implements NavigationBarFragment.OnScreenSelectedListener,
 
     private void startReceivedSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
         bundle.putString(Transaction.TXID, mTxId);
         bundle.putString(Wallet.WALLET_UUID, mUUID);
 
-        Fragment frag = new ReceivedSuccessFragment();
+        Fragment frag = new SuccessFragment();
         frag.setArguments(bundle);
         pushFragment(frag, mNavThreadId);
 
