@@ -274,7 +274,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
         if(info!=null && info.getSzAddress()!=null) {
             Fragment fragment = new WalletPasswordFragment();
-            ((NavigationActivity) getActivity()).pushFragment(fragment);
+            ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
         }
 
     }
@@ -297,7 +297,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
             CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
             if(info!=null && info.getSzAddress()!=null) {
                 Fragment fragment = new WalletPasswordFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
     }

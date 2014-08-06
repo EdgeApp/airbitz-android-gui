@@ -658,7 +658,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
                 Fragment frag = new ReceivedSuccessFragment();
                 frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(frag);
+                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 

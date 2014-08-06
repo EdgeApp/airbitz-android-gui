@@ -347,7 +347,7 @@ public class WalletFragment extends Fragment
             @Override
             public void onClick(View view) {
                 Fragment fragment = new ExportFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
         mRequestButton.setOnClickListener(new View.OnClickListener() {
@@ -377,7 +377,7 @@ public class WalletFragment extends Fragment
                 bundle.putString(Transaction.TXID, trans.getID());
                 Fragment fragment = new TransactionDetailFragment();
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 

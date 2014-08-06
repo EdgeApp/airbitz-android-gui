@@ -209,7 +209,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(frag);
+                    ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
                 }
             }
         });
@@ -218,7 +218,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             @Override
             public void onClick(View view) {
                 Fragment frag = new ImportFragment();
-                ((NavigationActivity) getActivity()).pushFragment(frag);
+                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 

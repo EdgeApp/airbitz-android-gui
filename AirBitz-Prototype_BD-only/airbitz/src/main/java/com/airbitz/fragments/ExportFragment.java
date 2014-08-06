@@ -78,7 +78,7 @@ public class ExportFragment extends Fragment{
                 bundle = new Bundle();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.CSV.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
         mQuickenButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +88,7 @@ public class ExportFragment extends Fragment{
                 bundle = new Bundle();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quicken.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
         mQuickBooksButton.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +98,7 @@ public class ExportFragment extends Fragment{
                 bundle = new Bundle();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
         mPdfbutton.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +108,7 @@ public class ExportFragment extends Fragment{
                 bundle = new Bundle();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PDF.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag);
+                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
         mWalletPrivateSeed.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +118,7 @@ public class ExportFragment extends Fragment{
                 bundle = new Bundle();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal());
                 frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(frag);
+                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
