@@ -47,11 +47,16 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.item_password_recovery_spinner_dropdown, parent, false);
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_question);
+        TextView textView = (TextView) convertView.findViewById(R.id.textview_dropdown_question);
         textView.setText(mQuestions.get(position));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        textView.setSingleLine(false);
-        textView.setHeight((int)mContext.getResources().getDimension(R.dimen.drop_down_height));
+        final TextView finalTextView = textView;
+        textView.post(new Runnable() {
+            @Override
+            public void run() {
+                finalTextView.setSingleLine(false);
+            }
+        });
         return convertView;
     }
 
@@ -63,7 +68,6 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
         TextView textView = (TextView) convertView.findViewById(R.id.textview_question);
         textView.setText(mQuestions.get(position));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        textView.setSingleLine(false);
         return convertView;
     }
 }
