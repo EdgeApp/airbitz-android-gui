@@ -17,7 +17,7 @@ import com.airbitz.utils.Common;
 /**
  * Created on 3/4/14.
  */
-public class SecurityActivity extends Activity implements GestureDetector.OnGestureListener{
+public class SecurityActivity extends BaseActivity {
     private Button mDisplayButton;
     private Button mSecurityButton;
     private Button mLanguageButton;
@@ -32,7 +32,6 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
     private RelativeLayout mParentLayout;
     private RelativeLayout mNavigationLayout;
 
-    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,6 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
         mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
-
-        mGestureDetector = new GestureDetector(this);
 
         mParentLayout = (RelativeLayout) findViewById(R.id.layout_root);
         mNavigationLayout = (RelativeLayout) findViewById(R.id.navigation_layout);
@@ -126,56 +123,6 @@ public class SecurityActivity extends Activity implements GestureDetector.OnGest
             }
         });
 
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mGestureDetector.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent start, MotionEvent finish, float v, float v2) {
-        if(start != null & finish != null){
-
-            float yDistance = Math.abs(finish.getY() - start.getY());
-
-            if((finish.getRawX()>start.getRawX()) && (yDistance < 15)){
-                float xDistance = Math.abs(finish.getRawX() - start.getRawX());
-
-                if(xDistance > 50){
-                    finish();
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
     }
 
     @Override
