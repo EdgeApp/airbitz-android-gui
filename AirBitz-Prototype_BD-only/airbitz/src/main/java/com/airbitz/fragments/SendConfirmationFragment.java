@@ -626,11 +626,11 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 Log.d("SendConfirmationFragment", "Send or Transfer failed");
             } else {
                 Bundle bundle = new Bundle();
-                bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
+                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
                 bundle.putString(Transaction.TXID, txid);
                 bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
 
-                Fragment frag = new ReceivedSuccessFragment();
+                Fragment frag = new SuccessFragment();
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.SEND.ordinal());
             }
