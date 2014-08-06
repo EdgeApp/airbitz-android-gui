@@ -1,18 +1,14 @@
 package com.airbitz.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,11 +44,9 @@ import java.util.Map;
  */
 public class PasswordRecoveryActivity extends Activity {
     public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
-
-    private String mUsername, mPassword;
+    public static final String FORGOT_PASSWORD = "com.airbitz.passwordrecoveryactivity.forgot_password";
 
     private View dummyFocus;
-    private View dummyCover;
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
@@ -62,7 +55,7 @@ public class PasswordRecoveryActivity extends Activity {
     private LinearLayout mPasswordRecoveryListView;
     private List<View> mQuestionViews;
 
-    private FetchQuestionsTask mFetchQuestionsTask;
+    private GetRecoveryQuestions mFetchAllQuestionsTask;
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> currentStringCategory1;
     private List<String> currentStringCategory2;
@@ -77,6 +70,7 @@ public class PasswordRecoveryActivity extends Activity {
 
     private CoreAPI mCoreAPI;
     private boolean mChangeQuestions;
+    private boolean mForgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,31 +81,28 @@ public class PasswordRecoveryActivity extends Activity {
         mCoreAPI = CoreAPI.getApi();
 
         Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+        mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mSkipStepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowSkipQuestionsAlert();
+            }
+        });
+
         mPasswordEditText = (EditText) findViewById(R.id.activity_password_recovery_password_edittext);
         Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
 
         mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
-        if(mChangeQuestions) {
-            //TODO question changes flow, user already logged in
-            mUsername = AirbitzApplication.getUsername();
-            mPassword = AirbitzApplication.getPassword();
+        mForgotPassword = getIntent().getBooleanExtra(FORGOT_PASSWORD, false);
 
+        if(mChangeQuestions) {
             mSkipStepButton.setVisibility(View.INVISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
             mBackButton.setVisibility(View.VISIBLE);
             mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
-        } else {
-            mUsername = getIntent().getStringExtra(SignUpActivity.KEY_USERNAME);
-            mPassword = getIntent().getStringExtra(SignUpActivity.KEY_PASSWORD);
+        } else if(mForgotPassword) {
 
-            mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-            mSkipStepButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ShowSkipQuestionsAlert();
-                }
-            });
         }
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -133,12 +124,11 @@ public class PasswordRecoveryActivity extends Activity {
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
-        dummyCover = findViewById(R.id.activity_recovery_dummy_cover);
 
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CompleteSignup();
+                AttemptSignupOrChange();
             }
         });
 
@@ -154,19 +144,18 @@ public class PasswordRecoveryActivity extends Activity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        mFetchQuestionsTask = new FetchQuestionsTask();
-        mFetchQuestionsTask.execute((Void) null);
+        mFetchAllQuestionsTask = new GetRecoveryQuestions();
+        mFetchAllQuestionsTask.execute((Void) null);
     }
 
-    private void CompleteSignup() {
+    private void AttemptSignupOrChange() {
         //verify that all six questions have been selected
-        dummyCover.setVisibility(View.VISIBLE);
         boolean allQuestionsSelected = true;
         boolean allAnswersValid = true;
         String questions = "";
         String answers = "";
 
-        if(!mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+        if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
             ShowMessageAlert("Please enter your correct password so your answers can be changed.");
             return;
         }
@@ -229,52 +218,17 @@ public class PasswordRecoveryActivity extends Activity {
         mPasswordRecoveryListView.invalidate();
     }
 
-    public void ShowSkipQuestionsAlert(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
-                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        SuccessfulSignup();
-                    }
-                })
-                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    private void ShowMessageAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dummyCover.setVisibility(View.GONE);
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     /**
      * Represents an asynchronous question fetch task
      */
-    public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
+    public class GetRecoveryQuestions extends AsyncTask<Void, Void, Boolean> {
         CoreAPI.QuestionChoice[] mChoices;
 
-        FetchQuestionsTask() { }
+        GetRecoveryQuestions() { }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            mChoices = mCoreAPI.GetRecoveryQuestions();
+            mChoices = mCoreAPI.GetQuestionChoices();
                 if(mChoices.length > 0) {
 
                     for(CoreAPI.QuestionChoice choice : mChoices) {
@@ -308,7 +262,7 @@ public class PasswordRecoveryActivity extends Activity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mFetchQuestionsTask = null;
+            mFetchAllQuestionsTask = null;
 
             if (success) {
                 InitializeQuestionViews();
@@ -319,7 +273,68 @@ public class PasswordRecoveryActivity extends Activity {
 
         @Override
         protected void onCancelled() {
-            mFetchQuestionsTask = null;
+            mFetchAllQuestionsTask = null;
+        }
+
+    }
+
+
+    /**
+     * Represents an asynchronous question fetch task
+     */
+    public class GetQuestionChoicesTask extends AsyncTask<Void, Void, Boolean> {
+        CoreAPI.QuestionChoice[] mChoices;
+
+        GetQuestionChoicesTask() { }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            mChoices = mCoreAPI.GetQuestionChoices();
+            if(mChoices.length > 0) {
+
+                for(CoreAPI.QuestionChoice choice : mChoices) {
+                    String category = choice.getCategory();
+                    if(category.equals("string")) {
+                        mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        currentStringCategory1.add(choice.getQuestion());
+                        currentStringCategory2.add(choice.getQuestion());
+                    } else if(category.equals("numeric")) {
+                        mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        currentNumericCategory1.add(choice.getQuestion());
+                        currentNumericCategory2.add(choice.getQuestion());
+                    } else if(category.equals("address")) {
+                        mAddressCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        currentAddressCategory1.add(choice.getQuestion());
+                        currentAddressCategory2.add(choice.getQuestion());
+                    }
+                }
+                currentStringCategory1.add(getString(R.string.activity_recovery_question_default));
+                currentStringCategory2.add(getString(R.string.activity_recovery_question_default));
+                currentNumericCategory1.add(getString(R.string.activity_recovery_question_default));
+                currentNumericCategory2.add(getString(R.string.activity_recovery_question_default));
+                currentAddressCategory1.add(getString(R.string.activity_recovery_question_default));
+                currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
+                return true;
+            } else {
+                System.err.println("No Questions");
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mFetchAllQuestionsTask = null;
+
+            if (success) {
+                InitializeQuestionViews();
+            }
+
+            dummyFocus.requestFocus();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mFetchAllQuestionsTask = null;
         }
 
     }
@@ -351,11 +366,10 @@ public class PasswordRecoveryActivity extends Activity {
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
             showProgress(false);
-            dummyCover.setVisibility(View.GONE);
             if (!success) {
                 ShowMessageAlert("Save recovery answers failed.");
             } else {
-                ShowMessageAlert(getString(R.string.activity_recovery_done_details));
+                ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
             }
         }
 
@@ -365,7 +379,7 @@ public class PasswordRecoveryActivity extends Activity {
         }
     }
 
-    private void SuccessfulSignup() {
+    private void CloseActivity() {
         PasswordRecoveryActivity.this.finish();
     }
 
@@ -604,7 +618,54 @@ public class PasswordRecoveryActivity extends Activity {
         }
     }
 
+    public void ShowSkipQuestionsAlert(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
+                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        CloseActivity();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
+    private void ShowMessageAlert(String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void ShowMessageAlertAndExit(String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                CloseActivity();
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }
 
