@@ -162,6 +162,7 @@ public class SignUpActivity extends Activity {
             }
         });
 
+//        mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         mWithdrawalPinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -482,7 +483,11 @@ public class SignUpActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             if (mMode == CHANGE_PASSWORD) {
+                mCoreAPI.stopWatchers();
+                //TODO stopQueues();
                 success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
+                mCoreAPI.startWatchers();
+                //TODO startQueues();
             }
             else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                 success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
@@ -499,6 +504,7 @@ public class SignUpActivity extends Activity {
         protected void onPostExecute(final Boolean success) {
             showProgress(false);
             if (success) {
+                AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
                     showMessageAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
