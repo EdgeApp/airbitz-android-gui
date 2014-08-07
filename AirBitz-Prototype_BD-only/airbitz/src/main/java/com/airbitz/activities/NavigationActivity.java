@@ -47,6 +47,7 @@ import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
+import com.airbitz.objects.ConnectionAsyncTask;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
@@ -569,8 +570,8 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void attemptLogin(String username, String password) {
-        mUserLoginTask = new UserLoginTask(username, password);
-        mUserLoginTask.execute();
+        mUserLoginTask = new UserLoginTask(this);
+        mUserLoginTask.execute(username, password);
     }
 
     /**
@@ -578,38 +579,26 @@ public class NavigationActivity extends BaseActivity
      * the user.
      */
     private UserLoginTask mUserLoginTask;
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends ConnectionAsyncTask {
+        String mUsername, mPassword;
 
-        private final String mUsername;
-        private final String mPassword;
-
-        UserLoginTask(String username, String password) {
-            mUsername = username;
-            mPassword = password;
+        protected UserLoginTask(Context c) {
+            super.ConnectionAsyncTask(c);
         }
 
         @Override
-        public void onPreExecute() {
-            showModalProgress(true);
+        protected Boolean doInBackground(Object... params) {
+            mUsername = (String) params[0];
+            mPassword = (String) params[1];
+            return mCoreAPI.SignIn(mUsername, mPassword);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            tABC_Error pError = new tABC_Error();
-            tABC_RequestResults pResults = new tABC_RequestResults();
-            SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
-
-            tABC_CC result = core.ABC_SignIn(mUsername, mPassword, null, pVoid, pError);
-
-            return result == tABC_CC.ABC_CC_Ok;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Object success) {
+            super.onPostExecute(success);
             mUserLoginTask = null;
 
-            showModalProgress(false);
-            if (success){
+            if ((Boolean) success){
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
             } else {
@@ -619,8 +608,9 @@ public class NavigationActivity extends BaseActivity
 
         @Override
         protected void onCancelled() {
+            super.onCancelled();
             mUserLoginTask = null;
-            showModalProgress(false);
+            showOkMessageDialog("SignIn cancelled unexpectedly.");
         }
     }
 

@@ -24,6 +24,7 @@
     <!-- Connectivity -->
     <string name="string_no_connection_title">No connection</string>
     <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
+    <string name="string_no_connection_response">There is a problem reaching the server. Please try again.</string>
 
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
