@@ -570,7 +570,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void attemptLogin(String username, String password) {
-        mUserLoginTask = new UserLoginTask(this);
+        mUserLoginTask = new UserLoginTask();
         mUserLoginTask.execute(username, password);
     }
 
@@ -579,13 +579,13 @@ public class NavigationActivity extends BaseActivity
      * the user.
      */
     private UserLoginTask mUserLoginTask;
-    public class UserLoginTask extends ConnectionAsyncTask {
+    public class UserLoginTask extends AsyncTask {
         String mUsername, mPassword;
 
-        protected UserLoginTask(Context c) {
-            super.ConnectionAsyncTask(c);
+        @Override
+        protected void onPreExecute() {
+            showModalProgress(true);
         }
-
         @Override
         protected Boolean doInBackground(Object... params) {
             mUsername = (String) params[0];
@@ -595,7 +595,7 @@ public class NavigationActivity extends BaseActivity
 
         @Override
         protected void onPostExecute(final Object success) {
-            super.onPostExecute(success);
+            showModalProgress(false);
             mUserLoginTask = null;
 
             if ((Boolean) success){
@@ -608,7 +608,6 @@ public class NavigationActivity extends BaseActivity
 
         @Override
         protected void onCancelled() {
-            super.onCancelled();
             mUserLoginTask = null;
             showOkMessageDialog("SignIn cancelled unexpectedly.");
         }
