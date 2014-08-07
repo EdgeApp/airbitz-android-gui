@@ -379,7 +379,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
             if (!success) {
                 showOkMessageDialog("Save recovery answers failed.");
             } else {
-                ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
+                showOkMessageDialogAndExit(getString(R.string.activity_recovery_done_details));
             }
         }
 

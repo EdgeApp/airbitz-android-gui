@@ -43,7 +43,7 @@ public class BaseActivity extends FragmentActivity {
         alert.show();
     }
 
-    public void ShowMessageAlertAndExit(String reason) {
+    public void showOkMessageDialogAndExit(String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setCancelable(false)

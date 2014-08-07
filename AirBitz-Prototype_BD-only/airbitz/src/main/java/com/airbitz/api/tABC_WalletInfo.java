@@ -67,12 +67,12 @@ public class tABC_WalletInfo {
     return coreJNI.tABC_WalletInfo_currencyNum_get(swigCPtr, this);
   }
 
-  public void setAttributes(long value) {
-    coreJNI.tABC_WalletInfo_attributes_set(swigCPtr, this, value);
+  public void setArchived(long value) {
+    coreJNI.tABC_WalletInfo_archived_set(swigCPtr, this, value);
   }
 
-  public long getAttributes() {
-    return coreJNI.tABC_WalletInfo_attributes_get(swigCPtr, this);
+  public long getArchived() {
+    return coreJNI.tABC_WalletInfo_archived_get(swigCPtr, this);
   }
 
   public void setBalanceSatoshi(SWIGTYPE_p_int64_t value) {

@@ -60,11 +60,12 @@ void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
 
 // Custom initialization to handle callbacks
 JNIEXPORT jint JNICALL
-Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jfile, jstring jseed, jlong jseedLength, jlong jerrorp) {
+Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jrootDir, jstring jcertDir, jstring jseed, jlong jseedLength, jlong jerrorp) {
   jint jresult = 0 ;
-  char *arg1 = (char *) 0 ;
-  tABC_BitCoin_Event_Callback arg2 = (tABC_BitCoin_Event_Callback) 0 ;
-  void *arg3 = (void *) 0 ;
+  char *root = (char *) 0 ;
+  char *cert = (char *) 0 ;
+  tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
+  void *bcInfo = (void *) 0 ;
   unsigned char *seed = (unsigned char *) 0 ;
   unsigned int seedLength ;
   tABC_Error *errorp = (tABC_Error *) 0 ;
@@ -73,13 +74,18 @@ Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring j
   (void)jenv;
   (void)jcls;
 
-  arg1 = 0;
-  if (jfile) {
-    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jfile, 0);
-    if (!arg1) return 0;
+  root = 0;
+  if (jrootDir) {
+    root = (char *)(*jenv)->GetStringUTFChars(jenv, jrootDir, 0);
+    if (!root) return 0;
   }
-  arg2 = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jarg2;
-  arg3 = *(void **)&bitcoinInfo;    // holds bitcoinInfo
+  cert = 0;
+  if (jcertDir) {
+    cert = (char *)(*jenv)->GetStringUTFChars(jenv, jcertDir, 0);
+    if (!cert) return 0;
+  }
+  callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
+  bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
   seed = 0;
   if (jseed) {
     seed = (unsigned char *)(*jenv)->GetStringUTFChars(jenv, jseed, 0);
@@ -87,9 +93,9 @@ Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring j
   }
   seedLength = (unsigned int)jseedLength;
   errorp = *(tABC_Error **)&jerrorp;
-  result = (tABC_CC)ABC_Initialize((char const *)arg1,arg2,arg3,(unsigned char const *)seed,seedLength,errorp);
+  result = (tABC_CC)ABC_Initialize((char const *)root, (char const *)cert, callback, bcInfo, (unsigned char const *)seed, seedLength, errorp);
   jresult = (jint)result;
-  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jfile, (const char *)arg1);
+  if (root) (*jenv)->ReleaseStringUTFChars(jenv, jrootDir, (const char *)root);
   if (seed) (*jenv)->ReleaseStringUTFChars(jenv, jseed, (const char *)seed);
   return jresult;
 }

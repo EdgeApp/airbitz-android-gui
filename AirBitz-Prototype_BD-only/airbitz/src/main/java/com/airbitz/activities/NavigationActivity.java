@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -110,7 +111,8 @@ public class NavigationActivity extends BaseActivity
 
         mCoreAPI = CoreAPI.getApi();
         String seed = mCoreAPI.getSeedData();
-        mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
+
+        mCoreAPI.Initialize(this, seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
         mCoreAPI.setOnOnDataSyncListener(this);
