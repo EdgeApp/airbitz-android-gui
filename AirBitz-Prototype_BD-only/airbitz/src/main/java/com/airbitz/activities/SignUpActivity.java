@@ -477,7 +477,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            showProgress(true);
+            showModalProgress(true);
         }
 
         @Override
@@ -502,7 +502,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showProgress(false);
+            showModalProgress(false);
             if (success) {
                 AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
@@ -526,7 +526,7 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mChangeTask = null;
-            showProgress(false);
+            showModalProgress(false);
         }
     }
 
@@ -547,7 +547,7 @@ public class SignUpActivity extends BaseActivity {
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            showProgress(true);
+            showModalProgress(true);
         }
 
         @Override
@@ -565,7 +565,7 @@ public class SignUpActivity extends BaseActivity {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
-                showProgress(false);
+                showModalProgress(false);
                 ShowReasonAlert(mFailureReason);
             }
         }
@@ -573,7 +573,7 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
+            showModalProgress(false);
         }
     }
 
@@ -592,7 +592,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            showProgress(true);
+            showModalProgress(true);
         }
 
         @Override
@@ -605,7 +605,7 @@ public class SignUpActivity extends BaseActivity {
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
             if (!success) {
-                showProgress(false);
+                showModalProgress(false);
                 ShowReasonAlert("Create wallet failed");
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
@@ -616,7 +616,7 @@ public class SignUpActivity extends BaseActivity {
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
                 mIntent.putExtra(KEY_WITHDRAWAL, mPin);
 
-                showProgress(false);
+                showModalProgress(false);
                 startActivity(mIntent);
                 finish();
             }
@@ -678,21 +678,6 @@ public class SignUpActivity extends BaseActivity {
         mAuthTask = new CreateAccountTask(username, password, pin);
         mAuthTask.execute((Void) null);
     }
-
-    private ProgressDialog mProgressDialog;
-    public void showProgress(final boolean show) {
-        if(show) {
-            mProgressDialog = ProgressDialog.show(this, null, null);
-            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
-            mProgressDialog.setCancelable(false);
-        } else {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
-    }
-
 
     @Override
     public void onBackPressed(){

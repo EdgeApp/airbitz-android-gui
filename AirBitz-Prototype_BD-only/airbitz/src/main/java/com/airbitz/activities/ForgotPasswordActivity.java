@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Created on 2/10/14.
  */
-public class ForgotPasswordActivity extends Activity {
+public class ForgotPasswordActivity extends BaseActivity {
 
     private Button mSubmitButton;
 
