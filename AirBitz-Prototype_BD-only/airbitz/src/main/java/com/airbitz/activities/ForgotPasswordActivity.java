@@ -1,15 +1,10 @@
 package com.airbitz.activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,17 +12,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_void;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_QuestionChoices;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created on 2/10/14.
@@ -43,10 +28,10 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     private LinearLayout mItemsLayout;
 
-    private Map mRecoveryQA;
-
     private String mUsername;
     private FetchQuestionsTask mFetchQuestionsTask;
+    CoreAPI.QuestionChoice[] mQuestionChoices;
+
 
     private CoreAPI mCoreAPI;
 
@@ -76,7 +61,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(answersCorrect(mRecoveryQA)) {
+                if(answersCorrect(mQuestionChoices)) {
                    startActivity(new Intent(ForgotPasswordActivity.this, NavigationActivity.class));
                    finish();
                 }
@@ -104,22 +89,22 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     }
 
-    private boolean answersCorrect(Map<String, String> map) {
+    private boolean answersCorrect(CoreAPI.QuestionChoice[] map) {
         boolean truth = true;
         for(int i=0; i<mItemsLayout.getChildCount(); i++) {
             View v = mItemsLayout.getChildAt(i);
-            String question = ((TextView) ((ViewGroup)v).getChildAt(0)).getText().toString();
-            String userAnswer = ((TextView) ((ViewGroup)v).getChildAt(1)).getText().toString();
-            String realAnswer = map.get(question);
-            if(!userAnswer.equals(realAnswer))
-                truth = false;
+//            String question = ((TextView) ((ViewGroup)v).getChildAt(0)).getText().toString();
+//            String userAnswer = ((TextView) ((ViewGroup)v).getChildAt(1)).getText().toString();
+//            String realAnswer = map.get(question);
+//            if(!userAnswer.equals(realAnswer))
+//                truth = false;
         }
         return truth;
     }
 
-    private void populateQuestions(Map<String, String> map) {
-        for(String s: map.keySet()) {
-            mItemsLayout.addView(getQueryView(s));
+    private void populateQuestions(CoreAPI.QuestionChoice[] map) {
+        for(CoreAPI.QuestionChoice s: map) {
+            mItemsLayout.addView(getQueryView(s.getQuestion()));
         }
     }
 
@@ -143,46 +128,24 @@ public class ForgotPasswordActivity extends BaseActivity {
      */
     public class FetchQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername;
-        Map<String, String> questionMap = new HashMap<String, String>();
-
-        tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pData = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
-
         FetchQuestionsTask(String username) {
             mUsername = username;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
-            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-
-            if(success) {
-                QuestionChoices qc = new QuestionChoices(pData.getPRetData());
-                long num = qc.getNumChoices();
-
-                if(num>0) {
-                    //TODO setup the map of questions and answers.
-
-                } else {
-                    success = false;
-                }
-            }
-            return success;
+            mQuestionChoices = mCoreAPI.GetQuestionChoices();
+            return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mFetchQuestionsTask = null;
-            populateQuestions(mRecoveryQA);
 
             if (success) {
-                populateQuestions(questionMap);
+                populateQuestions(mQuestionChoices);
             } else {
-                showNoQuestionsDialog();
+                showOkMessageDialogAndExit(getResources().getString(R.string.activity_forgot_no_questions));
             }
         }
 
@@ -191,42 +154,4 @@ public class ForgotPasswordActivity extends BaseActivity {
             mFetchQuestionsTask = null;
         }
     }
-
-
-    private class QuestionChoices extends tABC_QuestionChoices {
-        private boolean ok=true;
-        public QuestionChoices(SWIGTYPE_p_void pv) {
-            super(PVoid.getPtr(pv), false);
-            if(PVoid.getPtr(pv)==0) {
-                ok = false;
-            }
-        }
-        public long getNumChoices() {
-            if(ok)
-                return super.getNumChoices();
-            else
-                return 0;
-        }
-
-    }
-
-    private static class PVoid extends SWIGTYPE_p_void {
-        public static long getPtr(SWIGTYPE_p_void p) { return getCPtr(p); }
-    }
-
-    private void showNoQuestionsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.activity_forgot_no_questions))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                ForgotPasswordActivity.this.finish();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
 }

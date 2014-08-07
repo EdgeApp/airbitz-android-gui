@@ -1,23 +1,31 @@
 package com.airbitz.api;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.fragments.WalletPasswordFragment;
+import com.airbitz.R;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +36,8 @@ import java.util.Random;
  */
 public class CoreAPI {
     private static String TAG = CoreAPI.class.getSimpleName();
+
+    private final String CERT_FILENAME = "ca_certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
     private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
     public static int ABC_DENOMINATION_BTC = 0;
@@ -61,16 +71,54 @@ public class CoreAPI {
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
-    public native void coreInitialize(String jfile, String jseed, long jseedLength, long jerrorp);
+    public native void coreInitialize(String jfilePath, String jcertPath, String jseed, long jseedLength, long jerrorp);
     public native void RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
 
-    public void Initialize(String file, String seed, long seedLength){
+    public void Initialize(Context context, String seed, long seedLength){
         if(!initialized) {
             tABC_Error error = new tABC_Error();
             RegisterAsyncCallback();
-            coreInitialize(file, seed, seedLength, error.getCPtr(error));
+            File rootPath = context.getFilesDir();
+            List<String> files = Arrays.asList(rootPath.list());
+            if(!files.contains(CERT_FILENAME)) {
+                InputStream certStream = context.getResources().openRawResource(R.raw.ca_certificates);
+                copyStreamToFile(certStream, new File(context.getFilesDir(), CERT_FILENAME));
+            }
+
+            coreInitialize(rootPath.toString(), rootPath.toString(), seed, seedLength, error.getCPtr(error));
             initialized = true;
+        }
+    }
+
+    /**
+     * copy file from source to destination
+     *
+     * @param src source
+     * @param dst destination
+     * @throws java.io.IOException in case of any problems
+     */
+    void copyStreamToFile(InputStream src, File dst) {
+        final byte[] largeBuffer = new byte[1024 * 4];
+        int bytesRead;
+
+        try {
+            final OutputStream outputStream = new FileOutputStream(dst);
+
+            while ((bytesRead = src.read(largeBuffer)) > 0) {
+                if (largeBuffer.length == bytesRead) {
+                    outputStream.write(largeBuffer);
+                } else {
+                    final byte[] shortBuffer = new byte[bytesRead];
+                    System.arraycopy(largeBuffer, 0, shortBuffer, 0, bytesRead);
+                    outputStream.write(shortBuffer);
+                }
+            }
+            outputStream.flush();
+            outputStream.close();
+            src.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -294,7 +342,7 @@ public class CoreAPI {
     public boolean setWalletAttributes(Wallet wallet) {
         tABC_Error Error = new tABC_Error();
         if(AirbitzApplication.isLoggedIn()) {
-            tABC_CC result = core.ABC_SetWalletAttributes(AirbitzApplication.getUsername(),
+            tABC_CC result = core.ABC_SetWalletArchived(AirbitzApplication.getUsername(),
                     AirbitzApplication.getPassword(), wallet.getUUID(), wallet.getAttributes(), Error);
             if (result == tABC_CC.ABC_CC_Ok) {
                 return true;
@@ -553,13 +601,13 @@ public class CoreAPI {
 
         QuestionChoice[] mChoices = null;
         tABC_Error pError = new tABC_Error();
-        QuestionResults pData = new QuestionResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
+        SWIGTYPE_p_long plong = core.new_longp();
+        SWIGTYPE_p_p_sABC_QuestionChoices ppQuestionChoices = core.longp_to_ppQuestionChoices(plong);
 
 
-        tABC_CC result = core.ABC_GetQuestionChoices(AirbitzApplication.getUsername(), null, pVoid, pError);
+        tABC_CC result = core.ABC_GetQuestionChoices(ppQuestionChoices, pError);
         if (result == tABC_CC.ABC_CC_Ok) {
-            QuestionChoices qcs = new QuestionChoices(pData.getPtrPtr());
+            QuestionChoices qcs = new QuestionChoices(ppQuestionChoices.getCPtr(ppQuestionChoices));
             long num = qcs.getNumChoices();
             mChoices = qcs.getChoices();
         }
@@ -1635,7 +1683,7 @@ public class CoreAPI {
         String mUUID;
         long mBalance;
         private int mCurrencyNum;
-        private long mAttributes;
+        private long mArchived;
         private List<Transaction> mTransactions = null;
 
         public WalletInfo(long pv) {
@@ -1647,7 +1695,7 @@ public class CoreAPI {
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mBalance = core.longp_value(p);
                 mCurrencyNum = super.getCurrencyNum();
-                mAttributes = super.getAttributes();
+                mArchived = super.getArchived();
             }
         }
 
@@ -1661,7 +1709,7 @@ public class CoreAPI {
 
         public long getBalance() {return mBalance; }
 
-        public long getAttributes() {return mAttributes; }
+        public long getAttributes() {return mArchived; }
 
         public int getCurrencyNum() {return mCurrencyNum; }
 
@@ -1766,7 +1814,7 @@ public class CoreAPI {
         SWIGTYPE_p_int pCount = core.new_intp();
         SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
-        tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), aszCategories, pUCount, Error);
+        tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), aszCategories, pUCount, Error);
 
         if(result!=tABC_CC.ABC_CC_Ok) {
             Common.LogD(TAG, "loadCategories failed:"+Error.getSzDescription());
@@ -1794,14 +1842,14 @@ public class CoreAPI {
             // add the category to the core
             Common.LogD(TAG, "Adding category: "+strCategory);
             tABC_Error Error = new tABC_Error();
-            core.ABC_AddCategory(AirbitzApplication.getUsername(), strCategory, Error);
+            core.ABC_AddCategory(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), strCategory, Error);
         }
     }
 
     public void removeCategory(String strCategory) {
         Common.LogD(TAG, "Remove category: "+strCategory);
         tABC_Error Error = new tABC_Error();
-        tABC_CC result = core.ABC_RemoveCategory(AirbitzApplication.getUsername(), strCategory, Error);
+        tABC_CC result = core.ABC_RemoveCategory(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), strCategory, Error);
         boolean test= result==tABC_CC.ABC_CC_Ok;
     }
 
