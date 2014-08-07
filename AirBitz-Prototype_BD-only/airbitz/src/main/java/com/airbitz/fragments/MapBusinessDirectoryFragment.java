@@ -1246,6 +1246,21 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     }
 
+    private ProgressDialog mProgressDialog;
+    private void showMessageProgress(String message, boolean visible) {
+        if(visible) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        } else {
+            mProgressDialog.dismiss();
+        }
+    }
+
+
     private class GetVenuesByLatLongTask extends AsyncTask<String, Void, String> {
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
@@ -1257,12 +1272,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venues list...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+            showMessageProgress("Getting venues list...", true);
         }
 
         @Override protected String doInBackground(String... params) {
@@ -1293,7 +1303,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 e.printStackTrace();
             }
 
-            mProgressDialog.dismiss();
+            showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
         }
     }
@@ -1309,13 +1319,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venues list...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
-        }
+            showMessageProgress("Getting venues list...", true);
+       }
 
         @Override protected String doInBackground(String... params) {
             String latLong = "";
@@ -1351,7 +1356,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 e.printStackTrace();
             }
 
-            mProgressDialog.dismiss();
+            showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
         }
     }
