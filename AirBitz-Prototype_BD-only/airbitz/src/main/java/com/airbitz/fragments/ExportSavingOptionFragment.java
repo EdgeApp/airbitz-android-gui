@@ -603,16 +603,15 @@ public class ExportSavingOptionFragment extends Fragment {
     }
 
     private void exportWithEmail(Wallet wallet, String data) {
-
         // Compose
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, "AirBitz Bitcoin Wallet Transactions");
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Attached are the transactions for the AirBitz Bitcoin Wallet: "+wallet.getName());
+        sb.append("Attached are the transactions for the AirBitz Bitcoin Wallet: "+wallet.getName()+"\n");
         if(mExportType == ExportTypes.PrivateSeed.ordinal()) {
-            sb.append("Private Seed: " + mPrivateSeed);
+            sb.append("\n\nPrivate Seed: " + mPrivateSeed);
         } else {
             // TODO attach file from mFilename
             String mimeType = mimeTypeFor(mExportType);
