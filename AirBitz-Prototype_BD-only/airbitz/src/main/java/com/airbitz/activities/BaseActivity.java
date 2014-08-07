@@ -30,6 +30,9 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public void showOkMessageDialog(String message) {
+        if(mProgressDialog!=null)
+            mProgressDialog.dismiss();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setCancelable(false)
@@ -44,6 +47,9 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public void ShowMessageAlertAndExit(String reason) {
+        if(mProgressDialog!=null)
+            mProgressDialog.dismiss();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setCancelable(false)
