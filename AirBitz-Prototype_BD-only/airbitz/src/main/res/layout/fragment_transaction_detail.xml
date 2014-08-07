@@ -76,7 +76,7 @@
                     android:layout_height="31.5dp"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_marginLeft="37.8dp"
                     android:layout_marginRight="37.8dp"
                     android:hint="Payee or Business Name"

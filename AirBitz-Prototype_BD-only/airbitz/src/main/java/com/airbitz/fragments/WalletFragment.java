@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -182,6 +183,7 @@ public class WalletFragment extends Fragment
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mWalletNameButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonBitcoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);

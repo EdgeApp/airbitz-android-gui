@@ -119,7 +119,7 @@
                 android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
