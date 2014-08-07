@@ -180,12 +180,12 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void v) {
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             mCreateBitmapTask = null;
             mBitcoinAddress.setText(mAddress);
             if (mQRBitmap != null) {
                 mQRView.setImageBitmap(mQRBitmap);
             }
-            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
         @Override
