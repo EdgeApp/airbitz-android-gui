@@ -1,22 +1,15 @@
 package com.airbitz.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +27,6 @@ import com.airbitz.R;
 import com.airbitz.activities.ForgotPasswordActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.activities.SignUpActivity;
-import com.airbitz.api.SWIGTYPE_p_void;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.objects.HighlightOnPressButton;
 
 public class LandingFragment extends Fragment {
@@ -118,7 +106,7 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(mUserNameEditText.getText().toString().isEmpty()){
-                    showMessageDialog(getResources().getString(R.string.fragment_forgot_no_username_details),
+                    ((NavigationActivity) getActivity()).showOkMessageDialog(
                             getResources().getString(R.string.fragment_forgot_no_username_title));
                 }else {
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
@@ -156,8 +144,7 @@ public class LandingFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), SignUpActivity.class);
                     startActivity(intent);
                 } else {
-                    showMessageDialog(getActivity().getString(R.string.string_no_connection_title),
-                            getActivity().getString(R.string.string_no_connection_message));
+                    ((NavigationActivity) getActivity()).showOkMessageDialog(getActivity().getString(R.string.string_no_connection_message));
                 }
             }
         });
@@ -240,21 +227,6 @@ public class LandingFragment extends Fragment {
     private boolean isPasswordValid(String password) {
         //TODO real logic for good mPassword
         return !password.isEmpty();
-    }
-
-    private void showMessageDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     @Override
