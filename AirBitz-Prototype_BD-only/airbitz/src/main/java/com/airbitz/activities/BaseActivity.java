@@ -9,21 +9,17 @@ import android.support.v4.app.FragmentActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+
 import com.airbitz.R;
 
 public class BaseActivity extends FragmentActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-    }
 
     private ProgressDialog mProgressDialog;
     public void showModalProgress(final boolean show) {
         if(show) {
             mProgressDialog = ProgressDialog.show(this, null, null);
-            mProgressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
+            mProgressDialog.setContentView(R.layout.layout_modal_indefinite_progress);
             mProgressDialog.setCancelable(false);
         } else {
             if(mProgressDialog!=null) {
