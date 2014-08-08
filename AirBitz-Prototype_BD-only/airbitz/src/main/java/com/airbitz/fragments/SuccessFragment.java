@@ -1,20 +1,14 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -42,8 +36,6 @@ public class SuccessFragment extends Fragment {
     private Bundle mBundle;
 
     private Handler mHandler = new Handler();
-
-    private String mBaseLabel;
 
     private View mView;
     private NavigationActivity mActivity;
@@ -95,18 +87,18 @@ public class SuccessFragment extends Fragment {
         String fromSource = mBundle.getString(WalletsFragment.FROM_SOURCE);
         if(fromSource.contains(TYPE_REQUEST)) {
             mTitleTextView.setText("Request Bitcoin");
-            mBaseLabel = "Receiving.";
+            mSendingTextView.setText("Receiving");
+            mHandler.post(mRequestAnimationRunner);
         } else if (fromSource.contains(TYPE_SEND)) {
             mTitleTextView.setText("Sending Bitcoin");
-            mBaseLabel = "Sending.";
+            mSendingTextView.setText("Sending");
+            mHandler.post(mSendAnimationRunner);
         }
-
-        mHandler.post(WaitingRunner);
 
         return mView;
     }
 
-    Runnable WaitingRunner = new Runnable() {
+    Runnable mSendAnimationRunner = new Runnable() {
         int count=0;
         @Override
         public void run() {
@@ -114,20 +106,40 @@ public class SuccessFragment extends Fragment {
             if(count<=10) {
                 if (count%3 == 1) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_1);
-                    mSendingTextView.setText(mBaseLabel);
                 } else if (count%3 == 2) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_2);
-                    mSendingTextView.setText(mBaseLabel+".");
                 } else if (count%3 == 0) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_3);
-                    mSendingTextView.setText(mBaseLabel+"..");
                 }
                 mHandler.postDelayed(this, 500);
             } else {
-                FragmentSourceEnum e = mBundle.getString(WalletsFragment.FROM_SOURCE).contains(TYPE_REQUEST) ? FragmentSourceEnum.REQUEST : FragmentSourceEnum.SEND;
+                FragmentSourceEnum e = FragmentSourceEnum.SEND;
                 mActivity.switchToWallets(e, mBundle);
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
             }
         }
     };
+
+    Runnable mRequestAnimationRunner = new Runnable() {
+        int count=0;
+        @Override
+        public void run() {
+            count++;
+            if(count<=10) {
+                if (count%3 == 1) {
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_3);
+                } else if (count%3 == 2) {
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_2);
+                } else if (count%3 == 0) {
+                    mLogoImageView.setImageResource(R.drawable.ico_sending_1);
+                }
+                mHandler.postDelayed(this, 500);
+            } else {
+                FragmentSourceEnum e = FragmentSourceEnum.REQUEST;
+                mActivity.switchToWallets(e, mBundle);
+                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+            }
+        }
+    };
+
 }

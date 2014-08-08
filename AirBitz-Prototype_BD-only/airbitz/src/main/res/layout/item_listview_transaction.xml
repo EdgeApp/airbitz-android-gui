@@ -9,13 +9,13 @@
     <LinearLayout
         android:id="@+id/layout_text"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/item_listview_transaction_creditdebit_layout"
         android:paddingTop="6.3dp"
         android:paddingBottom="6.3dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="14dp"
         android:orientation="vertical"
         android:weightSum="3">
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Dec 10 12:00 AM"
-            android:textColor="#005f96"
+            android:textColor="@color/dark_blue_text"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:text="1zf76dh4TG"
-            android:textColor="#2c2c2c"
+            android:textColor="@android:color/black"
             android:textSize="12sp" />
 
         <TextView
