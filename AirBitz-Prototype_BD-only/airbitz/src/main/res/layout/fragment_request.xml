@@ -83,7 +83,7 @@
                 <LinearLayout
                     android:id="@+id/layout_wallet"
                     android:layout_width="match_parent"
-                    android:layout_height="22.05dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_marginTop="4dp"
@@ -103,11 +103,13 @@
 
                     <com.airbitz.objects.HighlightOnPressSpinner
                         android:id="@+id/new_wallet_spinner"
+                        style="@style/BlackDropShadow"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_btn_blue_stretch"
                         android:layout_weight="1"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_btn_blue_stretch"
+                        android:gravity="center"
                         android:textColor="@android:color/white"/>
 
                 </LinearLayout>

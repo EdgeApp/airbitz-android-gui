@@ -154,8 +154,8 @@
 
     <!-- Strings for Send fragment -->
     <string name="send_title">Send Bitcoin</string>
-    <string name="send_from_title">Send From:</string>
-    <string name="send_to_title">Send To:</string>
+    <string name="send_from_title">From:</string>
+    <string name="send_to_title">To:</string>
     <string name="send_scan_text">Scan QR Code or use photo</string>
     <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawal PIN in order to proceed</string>
     <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
