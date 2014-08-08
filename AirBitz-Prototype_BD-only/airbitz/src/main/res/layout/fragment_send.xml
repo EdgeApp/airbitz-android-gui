@@ -30,7 +30,7 @@
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Bitcoin"
+            android:text="@string/send_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -122,7 +122,7 @@
                             android:gravity="right"
                             android:layout_marginRight="8dp"
                             android:textColor="@android:color/white"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             android:paddingRight="6.3dp"
                             android:textStyle="bold"/>
 
@@ -132,6 +132,7 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/bg_edittext"
                             android:gravity="center"
+                            android:fontFamily="sans-serif"
                             android:inputType="textAutoComplete|textNoSuggestions"
                             android:paddingLeft="6.3dp"
                             android:singleLine="true"
@@ -200,8 +201,7 @@
             android:layout_marginLeft="20dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/gallery_button"
-            android:layout_weight="1"/>
+            android:src="@drawable/gallery_button"/>
 
 
         <View
