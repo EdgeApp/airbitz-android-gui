@@ -21,6 +21,7 @@
 
         <TextView
             android:id="@+id/textview_date"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,6 +32,7 @@
 
         <TextView
             android:id="@+id/textview_name"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -42,6 +44,7 @@
 
         <TextView
             android:id="@+id/textview_confirmations"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,6 +71,7 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/textview_amount_kredit"
+                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
@@ -80,6 +84,7 @@
 
             <TextView
                 android:id="@+id/textview_amount_debit"
+                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
