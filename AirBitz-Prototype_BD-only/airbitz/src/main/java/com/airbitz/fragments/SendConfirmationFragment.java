@@ -540,16 +540,19 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);
 
-            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
+            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false);
+            mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
-
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
+            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee, false);
+            mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
+            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
         else
         {
             mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
