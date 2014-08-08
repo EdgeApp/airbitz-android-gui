@@ -138,6 +138,8 @@
                             android:paddingLeft="6.3dp"
                             android:singleLine="true"
                             android:textCursorDrawable="@drawable/bold_cursor_white"
+                            android:hint="@string/fragment_send_send_to_hint"
+                            android:textColorHint="@color/text_hint"
                             android:textColor="@android:color/white"
                             android:textSize="14dp"
                             android:imeOptions="actionDone"
