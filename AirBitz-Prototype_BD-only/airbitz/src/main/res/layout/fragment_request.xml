@@ -148,7 +148,7 @@
                         android:textSize="14sp"/>
                     <TextView
                         android:id="@+id/request_btc_denomination"
-                        android:layout_width="44.1dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
@@ -186,7 +186,7 @@
                     android:textSize="14sp"/>
                 <TextView
                     android:id="@+id/request_fiat_denomination"
-                    android:layout_width="37.8dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
