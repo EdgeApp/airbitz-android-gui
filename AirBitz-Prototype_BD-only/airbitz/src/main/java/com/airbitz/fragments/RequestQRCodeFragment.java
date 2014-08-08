@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,6 +39,8 @@ import java.util.Map;
 
 public class RequestQRCodeFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
+
+    private final double BORDER_THICKNESS = 0.03;
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -85,7 +90,7 @@ public class RequestQRCodeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
 
-        mView = inflater.inflate(R.layout.fragment_wallet_qrcode, container, false);
+        mView = inflater.inflate(R.layout.fragment_request_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
@@ -169,6 +174,7 @@ public class RequestQRCodeFragment extends Fragment {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Common.LogD(TAG, "Starting QRCodeBitmap at:"+System.currentTimeMillis());
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                    mQRBitmap = addWhiteBorder(mQRBitmap);
                     Common.LogD(TAG, "Ending QRCodeBitmap at:"+System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
                 }catch (Exception e){
@@ -193,6 +199,17 @@ public class RequestQRCodeFragment extends Fragment {
             mCreateBitmapTask = null;
             ((NavigationActivity)getActivity()).showModalProgress(false);
         }
+    }
+
+    private Bitmap addWhiteBorder(Bitmap inBitmap) {
+        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth()*(1+BORDER_THICKNESS*2)),
+                (int) (inBitmap.getHeight()*(1+BORDER_THICKNESS*2)), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(imageBitmap);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawPaint(p);
+        canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
+        return imageBitmap;
     }
 
     private void startSMS() {
