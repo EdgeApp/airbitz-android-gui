@@ -167,15 +167,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) { }
         });
-
-        Shader textShader=new LinearGradient(0, 0, 0, 20,
-                new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP);
-        mQRCodeTextView.getPaint().setShader(textShader);
 
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override

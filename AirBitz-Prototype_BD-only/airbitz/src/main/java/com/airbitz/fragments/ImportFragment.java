@@ -55,9 +55,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
     private Button mFromButton;
 
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mNavigationLayout;
-
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
@@ -65,8 +62,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
     private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
-
-    private OrientationEventListener orientationEventListener;
 
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -106,10 +101,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
-//        mScrollView = (ScrollView) findViewById(R.id.layout_scroll);
-
         mFromButton = (Button) mView.findViewById(R.id.button_from);
         mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
@@ -131,17 +122,9 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        Shader textShader=new LinearGradient(0, 0, 0, 20,
-                new int[]{Color.parseColor("#ffffff"),Color.parseColor("#addff1")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP);
-        mQRCodeTextView.getPaint().setShader(textShader);
-
         mFromButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mIntent = new Intent(ImportFragment.this, WalletActivity.class);
-//                mIntent.putExtra(RequestActivity.CLASSNAME, "ImportActivity");
-//                startActivity(mIntent);
             }
         });
 
