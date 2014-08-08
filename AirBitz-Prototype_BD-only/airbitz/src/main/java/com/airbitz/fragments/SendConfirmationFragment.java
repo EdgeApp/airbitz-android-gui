@@ -285,7 +285,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
@@ -307,7 +307,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
@@ -545,7 +545,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
             String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
 
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
         }
         else
         {
@@ -797,7 +797,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
         super.onResume();
     }
 
