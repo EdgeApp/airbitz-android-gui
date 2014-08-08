@@ -13,7 +13,7 @@
         android:layout_height="wrap_content" >
         <ImageView
             android:layout_width="82dp"
-            android:layout_height="70dp"
+            android:layout_height="82dp"
             android:scaleType="centerInside"
             android:id="@+id/popup_directory_button"
             android:background="@drawable/tab_popup_directory"
@@ -23,7 +23,7 @@
 
         <ImageView
             android:layout_width="92dp"
-            android:layout_height="70dp"
+            android:layout_height="82dp"
             android:scaleType="centerInside"
             android:id="@+id/popup_request_button"
             android:background="@drawable/tab_popup_request"
@@ -34,7 +34,7 @@
             />
         <ImageView
             android:layout_width="92dp"
-            android:layout_height="70dp"
+            android:layout_height="82dp"
             android:scaleType="centerInside"
             android:id="@+id/popup_send_button"
             android:background="@drawable/tab_popup_send"
@@ -44,7 +44,7 @@
             />
         <ImageView
             android:layout_width="92dp"
-            android:layout_height="70dp"
+            android:layout_height="82dp"
             android:scaleType="centerInside"
             android:id="@+id/popup_wallet_button"
             android:background="@drawable/tab_popup_wallet"
@@ -55,7 +55,7 @@
             />
         <ImageView
             android:layout_width="82dp"
-            android:layout_height="70dp"
+            android:layout_height="82dp"
             android:scaleType="centerInside"
             android:id="@+id/popup_setting_button"
             android:background="@drawable/tab_popup_settings"
