@@ -182,6 +182,10 @@
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
     <string name="request_wallet_title">Wallet:</string>
+    <string name="request_button_import">Import</string>
+    <string name="request_amount_hint">Amt (Optional)</string>
+    <string name="request_wallet_title">Wallet:</string>
+    <string name="request_wallet_title">Wallet:</string>
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>

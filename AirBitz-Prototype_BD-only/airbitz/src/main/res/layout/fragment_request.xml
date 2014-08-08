@@ -28,7 +28,7 @@
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Request Bitcoin"
+            android:text="@string/request_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -135,7 +135,7 @@
                         android:id="@+id/edittext_btc"
                         android:layout_width="match_parent"
                         android:layout_height="25.2dp"
-                        android:hint="Amt (Optional)"
+                        android:hint="@string/request_amount_hint"
                         android:textColorHint="@color/text_hint"
                         android:textColor="@android:color/white"
                         android:background="@drawable/bg_edittext"
@@ -145,17 +145,17 @@
                         android:layout_centerVertical="true"
                         android:paddingRight="50.4dp"
                         android:layout_marginBottom="9.45dp"
-                        android:textSize="14dp"/>
+                        android:textSize="14sp"/>
                     <TextView
                         android:id="@+id/request_btc_denomination"
                         android:layout_width="44.1dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:textAlignment="textEnd"
+                        android:layout_alignParentRight="true"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:text="mBTC"/>
                 </RelativeLayout>
 
@@ -174,7 +174,7 @@
                     android:id="@+id/edittext_dollar"
                     android:layout_width="match_parent"
                     android:layout_height="25.2dp"
-                    android:hint="Amt (Optional)"
+                    android:hint="@string/request_amount_hint"
                     android:textColorHint="@color/text_hint"
                     android:background="@drawable/bg_edittext"
                     android:textColor="@android:color/white"
@@ -183,17 +183,17 @@
                     android:paddingRight="44.1dp"
                     android:singleLine="true"
                     android:gravity="center_vertical"
-                    android:textSize="14dp"/>
+                    android:textSize="14sp"/>
                 <TextView
                     android:id="@+id/request_fiat_denomination"
                     android:layout_width="37.8dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:textAlignment="textEnd"
+                    android:layout_alignParentRight="true"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:text="USD"/>
                 </RelativeLayout>
 
@@ -207,13 +207,13 @@
                     android:layout_toRightOf="@+id/button_import_wallet"
                     android:gravity="center_horizontal"
                     android:layout_margin="5dp"
-                    android:textSize="12dp"/>
+                    android:textSize="12sp"/>
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="94.5dp"
                     android:layout_height="18.9dp"
                     android:id="@+id/button_import_wallet"
-                    android:text="Import"
+                    android:text="@string/request_button_import"
                     android:textColor="@android:color/white"
                     android:layout_below="@id/layout_fiat_fields"
                     android:background="@drawable/bg_btn_blue_stretch"/>
@@ -232,16 +232,4 @@
         android:id="@+id/fragment_request_dummy_focus"
         android:focusableInTouchMode="true"
         android:focusable="true" />
-
-    <!--<android.inputmethodservice.KeyboardView-->
-        <!--android:id="@+id/layout_calculator"-->
-        <!--android:background="@drawable/bg_calc"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:focusable="true"-->
-        <!--android:focusableInTouchMode="true"-->
-        <!--android:visibility="gone"/>-->
-
 </RelativeLayout>
