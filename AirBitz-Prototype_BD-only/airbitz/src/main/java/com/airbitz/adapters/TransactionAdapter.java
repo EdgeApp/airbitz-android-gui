@@ -113,36 +113,26 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
             viewHolder.debitAmountTextView.setText(fiatCurrency);
             if(transactionSatoshis >= 0){
-                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
-                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             }else{
-                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
-                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
         }else {
             if(transactionSatoshis >= 0){
-                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             }else{
-                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
             if (mIsBitcoin) {
                 String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
-                long totalSatoshisSoFar = 0;
-//                for(int i = position; i < mListTransaction.size();i++){
-//                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
-//                }
-//                String totalCurrency = mCoreAPI.FormatDefaultCurrency(totalSatoshisSoFar, true, false);
                 String totalCurrency = mCoreAPI.FormatDefaultCurrency(mRunningSatoshi[position], true, false);
 
                 viewHolder.creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + walletCurrency);
                 viewHolder.debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + totalCurrency);
             } else {
                 String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
-//                long totalSatoshisSoFar = 0;
-//                for(int i = position; i < mListTransaction.size();i++){
-//                    totalSatoshisSoFar+=mListTransaction.get(i).getAmountSatoshi();
-//                }
-//                String totalCurrency = mCoreAPI.FormatCurrency(totalSatoshisSoFar, mCurrencyNum, false, true);
                 String totalCurrency = mCoreAPI.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
@@ -150,17 +140,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             }
         }
         if(mSearch){
-//            debitAmountTextView.setText("$0.00");
             viewHolder.confirmationsTextView.setText(transaction.getCategory());
         }else {
-            viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             if(transaction.getConfirmations() == 0){
-                viewHolder.confirmationsTextView.setText("Unconfirmed");
-                viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
+                viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }else if(transaction.getConfirmations() >= 6){
-                viewHolder.confirmationsTextView.setText("Confirmed");
+                viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_confirmed));
             }else{
-                viewHolder.confirmationsTextView.setText(transaction.getConfirmations()+" confirmations");
+                viewHolder.confirmationsTextView.setText(transaction.getConfirmations()+mContext.getString(R.string.fragment_wallet_confirmations));
             }
         }
         return convertView;
