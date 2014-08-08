@@ -54,15 +54,11 @@ public class WalletsFragment extends Fragment
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
 
-    private static final int BTC = 0;
-    private static final int CURRENCY = 1;
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
     private RelativeLayout mParentLayout;
     private RelativeLayout mContainerLayout;
-
-    private String mCurrencyResourceString = "usd"; // whatever the currency selection is
 
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
@@ -87,10 +83,7 @@ public class WalletsFragment extends Fragment
 
     private boolean archiveClosed = false;
 
-    private RelativeLayout mBalanceTopLayout;
-    private RelativeLayout mBalanceBottomLayout;
     private RelativeLayout mBalanceSwitchLayout;
-    private RelativeLayout mBalanceContainer;
 
     private DynamicListView mLatestWalletListView;
 
@@ -109,7 +102,6 @@ public class WalletsFragment extends Fragment
 
     private WalletAdapter mLatestWalletAdapter;
 
-    private boolean mSwitchWordOne = true;
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
@@ -189,10 +181,7 @@ public class WalletsFragment extends Fragment
         mFiatBalanceButton = (Button) mView.findViewById(R.id.back_button_bottom);
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
 
-        mBalanceTopLayout = (RelativeLayout) mView.findViewById(R.id.top_switch);
-        mBalanceBottomLayout = (RelativeLayout) mView.findViewById(R.id.bottom_switch);
         mBalanceSwitchLayout = (RelativeLayout) mView.findViewById(R.id.switchable);
-        mBalanceContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_help_button);
         mAddButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_add_button);
