@@ -219,7 +219,16 @@
     <string name="export_print_title">Wallet Private Seed (advanced)</string>
 
     <!-- Strings for Export Saving fragment -->
-    <string name="export_saving_title">Title?</string>
+    <string name="export_saving_title">Export</string>
+    <string name="export_saving_wallet_label">Wallet:</string>
+    <string name="export_saving_from_label">From:</string>
+    <string name="export_saving_to_label">To:</string>
+    <string name="export_saving_print_label">Print</string>
+    <string name="export_saving_save_SD_label">Save to SD card</string>
+    <string name="export_saving_email_label">Email</string>
+    <string name="export_saving_google_drive_label">Google Drive</string>
+    <string name="export_saving_dropbox_label">Dropbox</string>
+    <string name="export_saving_view_label">View</string>
 
     <!-- Strings for Offline Wallet fragment -->
     <string name="offline_wallet_title">Offline Wallet</string>
