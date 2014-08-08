@@ -78,28 +78,27 @@
                         android:layout_width="match_parent"
                         android:layout_height="25.2dp"
                         android:orientation="horizontal"
-                        android:weightSum="3"
                         android:gravity="center_vertical|center_horizontal"
                         android:layout_marginBottom="9.45dp">
 
                         <TextView
                             android:id="@+id/textview_from"
-                            android:layout_width="match_parent"
+                            android:layout_width="60dp"
                             android:layout_height="match_parent"
-                            android:text="Send From:"
+                            android:text="@string/send_from_title"
                             android:gravity="center_vertical|right"
+                            android:layout_marginRight="8dp"
                             android:textColor="@android:color/white"
-                            android:textSize="14dp"
-                            android:layout_weight="2"
+                            android:textSize="14sp"
                             android:textStyle="bold"
                             android:paddingRight="6.3dp"/>
 
                         <com.airbitz.objects.HighlightOnPressSpinner
                             android:id="@+id/from_wallet_spinner"
+                            style="@style/BlackDropShadow"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             android:background="@drawable/bg_btn_blue_stretch"
                             android:gravity="center"
                             android:textColor="@android:color/white"/>
@@ -113,19 +112,18 @@
                         android:layout_height="28.35dp"
                         android:orientation="horizontal"
                         android:layout_below="@id/layout_from"
-                        android:weightSum="3"
                         android:gravity="center_vertical">
 
                         <TextView
                             android:id="@+id/textview_to"
-                            android:layout_width="match_parent"
+                            android:layout_width="60dp"
                             android:layout_height="wrap_content"
                             android:text="@string/send_to_title"
                             android:gravity="right"
+                            android:layout_marginRight="8dp"
                             android:textColor="@android:color/white"
                             android:textSize="14dp"
                             android:paddingRight="6.3dp"
-                            android:layout_weight="2"
                             android:textStyle="bold"/>
 
                         <EditText
@@ -133,7 +131,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/bg_edittext"
-                            android:gravity="left|center_vertical"
+                            android:gravity="center"
                             android:inputType="textAutoComplete|textNoSuggestions"
                             android:paddingLeft="6.3dp"
                             android:singleLine="true"
@@ -141,9 +139,8 @@
                             android:hint="@string/fragment_send_send_to_hint"
                             android:textColorHint="@color/text_hint"
                             android:textColor="@android:color/white"
-                            android:textSize="14dp"
-                            android:imeOptions="actionDone"
-                            android:layout_weight="1"/>
+                            android:textSize="14sp"
+                            android:imeOptions="actionDone"/>
                     </LinearLayout>
 
                 </RelativeLayout>
