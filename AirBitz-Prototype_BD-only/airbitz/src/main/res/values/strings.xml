@@ -167,6 +167,8 @@
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
+    <string name="fragment_wallets_list_wallets_title">WALLETS</string>
+    <string name="fragment_wallets_list_archive_title">ARCHIVE</string>
     <string name="fragment_wallets_balance_text">Total Balance</string>
     <string name="fragment_wallets_addwallet_name_hint">Name your new wallet</string>
     <string name="fragment_wallets_addwallet_currency_textview">Currency:</string>
