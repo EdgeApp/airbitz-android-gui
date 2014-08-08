@@ -121,18 +121,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     }
 
     private View mView;
-//    @Override public void onDestroyView() {
-//        super.onDestroyView();
-//        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-//        if( null != parentViewGroup ) {
-//            parentViewGroup.removeView( mView );
-//        }
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        if(mView!=null)
-//            return mView;
         mView = inflater.inflate(R.layout.fragment_request, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -327,7 +318,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
 
     private void setConversionText(int currencyNum) {
-        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum, true));
     }
 
     private void updateTextFieldContents(boolean btc)
@@ -349,6 +340,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
+            mBitcoinField.setText("0.00000");
         }else if(!btc && fiat.isEmpty()){
             String s = mCoreAPI.getDefaultBTCDenomination();
             if(s.equals("mBTC")) {
