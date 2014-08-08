@@ -103,11 +103,11 @@
 
                     <com.airbitz.objects.HighlightOnPressSpinner
                         android:id="@+id/new_wallet_spinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_btn_blue_stretch"
-                        android:gravity="center"
                         android:layout_weight="1"
+                        android:textSize="13sp"
                         android:textColor="@android:color/white"/>
 
                 </LinearLayout>
@@ -210,7 +210,7 @@
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="95dp"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/button_import_wallet"
                     android:text="@string/request_button_import"
                     android:textColor="@android:color/white"
