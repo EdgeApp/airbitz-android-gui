@@ -150,9 +150,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         dummyFocus = mView.findViewById(R.id.dummy_focus);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         walletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
