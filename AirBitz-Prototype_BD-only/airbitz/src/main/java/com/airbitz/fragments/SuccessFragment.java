@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class SuccessFragment extends Fragment {
 
     private String mBaseLabel;
 
+    private View mView;
+    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -53,9 +56,9 @@ public class SuccessFragment extends Fragment {
         if(mBundle == null){
             Common.LogD(TAG, "Bundle is null");
         }
+        mActivity = (NavigationActivity) getActivity();
     }
 
-    private View mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,8 +125,8 @@ public class SuccessFragment extends Fragment {
                 mHandler.postDelayed(this, 500);
             } else {
                 FragmentSourceEnum e = mBundle.getString(WalletsFragment.FROM_SOURCE).contains(TYPE_REQUEST) ? FragmentSourceEnum.REQUEST : FragmentSourceEnum.SEND;
-                ((NavigationActivity) getActivity()).switchToWallets(e, mBundle);
-                ((NavigationActivity) getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+                mActivity.switchToWallets(e, mBundle);
+                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
             }
         }
     };
