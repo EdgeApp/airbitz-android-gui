@@ -31,18 +31,16 @@
 
     <TextView
         android:id="@+id/fragment_category_textview_title"
+        style="@style/WhiteDropShadow"
         android:layout_width="wrap_content"
         android:layout_height="44.1dp"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/textview_amount"
         android:text="item"
-        android:textSize="14dp"
-        android:shadowColor="#FFFFFF"
-        android:shadowDy="3"
-        android:shadowRadius="1"
+        android:textSize="14sp"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textColor="#4c4c4c"/>
+        android:textColor="@color/gray_text"/>
 
     <ImageView
         android:id="@+id/imageview_icon"
@@ -60,16 +58,14 @@
 
     <TextView
         android:id="@+id/textview_amount"
+        style="@style/WhiteDropShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/imageview_icon"
         android:layout_marginRight="1mm"
         android:text="amount"
-        android:shadowColor="#FFFFFF"
-        android:shadowDy="3"
-        android:shadowRadius="1"
-        android:textColor="#005f96"
-        android:textSize="12dp"
+        android:textColor="@color/dark_blue_text"
+        android:textSize="12sp"
         android:layout_centerVertical="true"/>
 
 

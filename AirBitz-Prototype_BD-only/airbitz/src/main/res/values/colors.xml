@@ -4,9 +4,9 @@
     <color name="green_text_dark">#409000</color>
     <color name="blue_text">#0179b8</color>
     <color name="dark_blue_text">#006699</color>
-    <color name="gray_text">#656766</color>
     <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
+    <color name="gray_text">#4c4c4c</color>
 
     <color name="identifier_pink">#FF00FF</color>
     <color name="identifier_purple">#ff862eae</color>
