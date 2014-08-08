@@ -1042,10 +1042,13 @@ public class CoreAPI {
 
     //************************* Currency formatting
 
-    public String formatDefaultCurrency(double in) {
+    public String formatDefaultCurrency(double in, boolean withSymbol) {
         String pre = mBTCSymbols[mCoreSettings.getBitcoinDenomination().getDenominationType()];
         String out = String.format(" %.3f", in);
-        return pre+out;
+        if(withSymbol)
+            return pre+out;
+        else
+            return out;
     }
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {

@@ -46,11 +46,8 @@ import java.text.DecimalFormat;
  */
 public class SendConfirmationFragment extends Fragment implements View.OnClickListener {
 
-    private TextView mFromEdittext;
-    private TextView mToEdittext;
     private EditText mPinEdittext;
 
-    private TextView mTitleTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mSlideTextView;
@@ -130,7 +127,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
 //        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        TextView mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
         mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
@@ -150,8 +147,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
 
-        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
-        mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
+        TextView mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
+        TextView mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
@@ -183,7 +180,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mDF.setMaximumIntegerDigits(8);
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
-        mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
+        mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
@@ -540,16 +537,19 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);
 
-            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false) + " " + mCoreAPI.getUserCurrencyDenomination();
+            String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false);
+            mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee)+" "+mCoreAPI.getUserCurrencyAcronym();
-
+            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee, false);
+            mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
         else
         {
             mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
