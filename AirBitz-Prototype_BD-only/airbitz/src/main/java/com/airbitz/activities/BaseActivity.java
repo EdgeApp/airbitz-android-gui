@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import android.widget.RelativeLayout;
 import com.airbitz.R;
 
 public class BaseActivity extends FragmentActivity {
+    private final int DIALOG_TIMEOUT_MILLIS = 15000;
+    Handler mHandler;
 
     private ProgressDialog mProgressDialog;
     public void showModalProgress(final boolean show) {
@@ -21,6 +24,9 @@ public class BaseActivity extends FragmentActivity {
             mProgressDialog = ProgressDialog.show(this, null, null);
             mProgressDialog.setContentView(R.layout.layout_modal_indefinite_progress);
             mProgressDialog.setCancelable(false);
+            if(mHandler==null)
+                mHandler = new Handler();
+            mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
         } else {
             if(mProgressDialog!=null) {
                 mProgressDialog.dismiss();
@@ -28,6 +34,16 @@ public class BaseActivity extends FragmentActivity {
             }
         }
     }
+
+    Runnable mProgressDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if(mProgressDialog!=null) {
+                mProgressDialog.dismiss();
+                showOkMessageDialog(getResources().getString(R.string.string_no_connection_response));
+            }
+        }
+    };
 
     public void showOkMessageDialog(String message) {
         if(mProgressDialog!=null)

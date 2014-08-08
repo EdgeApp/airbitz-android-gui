@@ -309,6 +309,17 @@ public class CoreAPI {
 
     //************ Account Recovery
 
+    // Blocking call, wrap in AsyncTask
+    public boolean SignIn(String username, String password) {
+        tABC_Error pError = new tABC_Error();
+        tABC_RequestResults pResults = new tABC_RequestResults();
+        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+
+        tABC_CC result = core.ABC_SignIn(username, password, null, pVoid, pError);
+
+        return result == tABC_CC.ABC_CC_Ok;
+    }
+
     //************ Settings handling
     private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
     private String[] mFauxCurrencyDenomination = {"$", "¥", "₱", "€", "£", "$", "$"};
