@@ -45,7 +45,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         mContext = context;
         mWalletList = walletList;
         for(Wallet wallet: mWalletList){
-            if(wallet.getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
+            if(wallet.isArchiveHeader()){
                 archivePos = mWalletList.indexOf(wallet);
             }
             addWallet(wallet);
@@ -77,7 +77,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void swapWallets() {
         archivePos++;
         for (int i = 0; i < mWalletList.size(); ++i) {
-            if(mWalletList.get(i).getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
+            if(mWalletList.get(i).isArchiveHeader()){
                 archivePos = i;
             }
             if(!mIdMap.containsKey(mWalletList.get(i).getUUID())){
@@ -89,7 +89,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void updateArchive(){
         for (int i = 0; i < mWalletList.size(); ++i) {
-            if(mWalletList.get(i).getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd")){
+            if(mWalletList.get(i).isArchiveHeader()){
                 archivePos = i;
             }
         }
@@ -126,7 +126,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
             if(mWalletList.get(position).isArchiveHeader()) {
-                ((TextView) convertView).setText("ARCHIVE");
+                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
                 archivePos = position;
                 Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
                 img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
@@ -138,7 +138,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                     convertView.setVisibility(View.VISIBLE);
                 }
             }else{
-                ((TextView) convertView).setText("WALLETS");
+                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
                 if(hoverFirstHeader){
                     convertView.setVisibility(View.INVISIBLE);
                 }else {
@@ -151,7 +151,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
+            amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.NORMAL);
             titleTextView.setText(mWalletList.get(position).getName());
             if(mIsBitcoin) {
                 amountTextView.setText(mWalletList.get(position).getBalanceFormatted()
