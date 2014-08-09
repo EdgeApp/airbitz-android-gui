@@ -168,6 +168,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:layout_marginLeft="6.3dp"
+                    android:spinnerMode="dropdown"
                     android:background="@drawable/bg_btn_blue_stretch"/>
 
             </LinearLayout>

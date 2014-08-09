@@ -110,6 +110,7 @@
                         android:textSize="14sp"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
+                        android:spinnerMode="dropdown"
                         android:textColor="@android:color/white"/>
 
                 </LinearLayout>

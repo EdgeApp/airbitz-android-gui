@@ -35,8 +35,8 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
     public View getDropDownView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.item_currency_spinner_dropdown, parent, false);
-
         TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
+        textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         textView.setText(mCurrencies.get(position));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         textView.setSingleLine(false);
