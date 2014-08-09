@@ -25,14 +25,14 @@
             android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:src="@drawable/btn_back"
-            android:padding="12.6dp"
+            android:padding="12dp"
             android:contentDescription="@string/string_back_button"/>
 
         <TextView
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Export"
+            android:text="@string/export_saving_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -84,7 +84,7 @@
                 <RelativeLayout
                     android:id="@+id/layout_account"
                     android:layout_width="match_parent"
-                    android:layout_height="31.5dp"
+                    android:layout_height="31dp"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp">
@@ -93,12 +93,12 @@
                         android:id="@+id/textview_account"
                         android:layout_width="100.8dp"
                         android:layout_height="match_parent"
-                        android:text="Wallet:"
+                        android:text="@string/export_saving_wallet_label"
                         android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
                         android:layout_marginRight="12.6dp"
                         android:layout_marginLeft="6.3dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:layout_alignParentLeft="true"/>
 
                     <com.airbitz.objects.HighlightOnPressSpinner
@@ -111,16 +111,19 @@
                         android:gravity="center"
                         android:textColor="@android:color/white"
                         android:layout_marginRight="18.9dp"
-                        android:textSize="15dp"/>
+                        android:textSize="15sp"/>
 
                 </RelativeLayout>
 
-
+                <RelativeLayout
+                    android:id="@+id/fragment_export_date_entries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_account">
                 <RelativeLayout
                     android:id="@+id/layout_from"
                     android:layout_width="match_parent"
-                    android:layout_height="31.5dp"
-                    android:layout_below="@id/layout_account"
+                    android:layout_height="31dp"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp">
@@ -129,12 +132,12 @@
                         android:id="@+id/textview_from"
                         android:layout_width="100.8dp"
                         android:layout_height="match_parent"
-                        android:text="From:"
+                        android:text="@string/export_saving_from_label"
                         android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
                         android:layout_marginRight="12.6dp"
                         android:layout_marginLeft="6.3dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:layout_alignParentLeft="true"/>
 
                     <com.airbitz.objects.HighlightOnPressButton
@@ -150,7 +153,7 @@
                         android:paddingLeft="12.6dp"
                         android:drawablePadding="-25.2dp"
                         android:layout_marginRight="18.9dp"
-                        android:textSize="12dp"/>
+                        android:textSize="12sp"/>
 
 
                 </RelativeLayout>
@@ -158,7 +161,7 @@
                 <RelativeLayout
                     android:id="@+id/layout_to"
                     android:layout_width="match_parent"
-                    android:layout_height="31.5dp"
+                    android:layout_height="31dp"
                     android:layout_below="@id/layout_from"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="6.3dp"
@@ -168,12 +171,12 @@
                         android:id="@+id/textview_to"
                         android:layout_width="100.8dp"
                         android:layout_height="match_parent"
-                        android:text="To:"
+                        android:text="@string/export_saving_to_label"
                         android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"
                         android:layout_marginRight="12.6dp"
                         android:layout_marginLeft="6.3dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:layout_alignParentLeft="true"/>
 
 
@@ -190,10 +193,10 @@
                         android:paddingLeft="12.6dp"
                         android:drawablePadding="-25.2dp"
                         android:layout_marginRight="18.9dp"
-                        android:textSize="12dp"/>
+                        android:textSize="12sp"/>
 
                 </RelativeLayout>
-
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -216,7 +219,7 @@
                     android:textColor="@android:color/white"
                     android:id="@+id/button_yesterday"
                     android:layout_marginRight="6.3dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -227,9 +230,9 @@
                     android:text="@string/export_account_last_week"
                     android:textColor="@android:color/white"
                     android:id="@+id/button_last_week"
-                    android:textSize="15dp"
-                    android:layout_marginLeft="3.15dp"
-                    android:layout_marginRight="3.15dp"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -239,7 +242,7 @@
                     android:layout_height="match_parent"
                     android:text="@string/export_account_last_month"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:id="@+id/button_last_month"
                     android:layout_marginLeft="6.3dp"
                     android:gravity="center"
@@ -265,7 +268,7 @@
                     android:textColor="@android:color/white"
                     android:id="@+id/button_today"
                     android:layout_marginRight="6.3dp"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -276,9 +279,9 @@
                     android:text="@string/export_account_this_week"
                     android:textColor="@android:color/white"
                     android:id="@+id/button_this_week"
-                    android:textSize="15dp"
-                    android:layout_marginLeft="3.15dp"
-                    android:layout_marginRight="3.15dp"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:gravity="center"
                     android:background="@drawable/emboss_down"
                     android:layout_weight="1"/>
@@ -288,7 +291,7 @@
                     android:layout_height="match_parent"
                     android:text="@string/export_account_this_month"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:id="@+id/button_this_month"
                     android:layout_marginLeft="6.3dp"
                     android:gravity="center"
@@ -311,7 +314,7 @@
                     android:id="@+id/fragment_exportsaving_button_print"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="Print"
+                    android:text="@string/export_saving_print_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_top"
                     android:drawableRight="@drawable/arrow_right"
@@ -330,7 +333,7 @@
                     android:layout_below="@id/fragment_exportsaving_button_print"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="Save to SD card"
+                    android:text="@string/export_saving_save_SD_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
@@ -350,7 +353,7 @@
                     android:layout_below="@id/fragment_exportsaving_button_sd_card"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="Email"
+                    android:text="@string/export_saving_email_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
@@ -370,7 +373,7 @@
                     android:layout_below="@id/fragment_exportsaving_button_email"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="Google Drive"
+                    android:text="@string/export_saving_google_drive_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
@@ -390,7 +393,7 @@
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="Dropbox"
+                    android:text="@string/export_saving_dropbox_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
@@ -410,7 +413,7 @@
                     android:layout_below="@id/fragment_exportsaving_button_dropbox"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="View"
+                    android:text="@string/export_saving_view_label"
                     android:textColor="#005f96"
                     android:background="@drawable/wallet_list_bottom"
                     android:drawableRight="@drawable/arrow_right"

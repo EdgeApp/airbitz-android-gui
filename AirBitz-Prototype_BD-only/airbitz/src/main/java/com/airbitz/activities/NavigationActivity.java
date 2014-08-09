@@ -234,8 +234,8 @@ public class NavigationActivity extends BaseActivity
         } else {
             if (position != Tabs.BD.ordinal()) {
                 AirbitzApplication.setLastNavTab(position);
+                DisplayLoginOverlay(true);
             }
-            DisplayLoginOverlay(true);
         }
     }
 

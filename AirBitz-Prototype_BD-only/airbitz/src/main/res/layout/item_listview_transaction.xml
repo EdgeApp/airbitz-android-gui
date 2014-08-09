@@ -9,39 +9,42 @@
     <LinearLayout
         android:id="@+id/layout_text"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/item_listview_transaction_creditdebit_layout"
         android:paddingTop="6.3dp"
         android:paddingBottom="6.3dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="14dp"
         android:orientation="vertical"
         android:weightSum="3">
 
         <TextView
             android:id="@+id/textview_date"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Dec 10 12:00 AM"
-            android:textColor="#005f96"
+            android:textColor="@color/dark_blue_text"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_name"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="true"
             android:ellipsize="end"
             android:text="1zf76dh4TG"
-            android:textColor="#2c2c2c"
+            android:textColor="@android:color/black"
             android:textSize="12sp" />
 
         <TextView
             android:id="@+id/textview_confirmations"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,6 +71,7 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/textview_amount_kredit"
+                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
@@ -80,6 +84,7 @@
 
             <TextView
                 android:id="@+id/textview_amount_debit"
+                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"

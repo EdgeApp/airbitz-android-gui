@@ -60,9 +60,16 @@
 
 #define NETWORK_FAKE 0
 
+#define ABC_VERSION "0.1.0"
+
+#define ABC_MIN_USERNAME_LENGTH 3
+#define ABC_MIN_PIN_LENGTH 4
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    extern bool gbIsTestNet;
 
     /**
      * AirBitz Core Condition Codes
@@ -141,7 +148,9 @@ extern "C" {
         /** Not enough money to send transaction */
         ABC_CC_InsufficientFunds = 32,
         /** We are still sync-ing */
-        ABC_CC_Synchronizing = 33
+        ABC_CC_Synchronizing = 33,
+        /** Problem with the PIN */
+        ABC_CC_NonNumericPin = 34
     } tABC_CC;
 
     /**
@@ -290,8 +299,8 @@ extern "C" {
         char            *szUserName;
         /** wallet ISO 4217 currency code */
         int             currencyNum;
-        /** wallet attributes */
-        unsigned int    attributes;
+        /** true if the wallet is archived */
+        unsigned        archived;
         /** wallet balance */
         int64_t         balanceSatoshi;
     } tABC_WalletInfo;
@@ -355,6 +364,8 @@ extern "C" {
      */
     typedef struct sABC_TxDetails
     {
+        /** login of user who created the transaction **/
+        char *szLogin;
         /** amount of bitcoins in satoshi (including fees if any) */
         int64_t amountSatoshi;
         /** airbitz fees in satoshi */
@@ -548,6 +559,8 @@ extern "C" {
         char                        *szLastName;
         /** nickname (optional) */
         char                        *szNickname;
+        /** PIN */
+        char                        *szPIN;
         /** should name be listed on payments */
         bool                        bNameOnPayments;
         /** how many minutes before auto logout */
@@ -562,6 +575,8 @@ extern "C" {
         tABC_BitcoinDenomination    bitcoinDenomination;
         /** use advanced features (e.g., allow offline wallet creation) */
         bool                        bAdvancedFeatures;
+        /** fullname (readonly. Set by core based on first, last, nick names) */
+        char                        *szFullName;
     } tABC_AccountSettings;
 
     /**
@@ -584,6 +599,7 @@ extern "C" {
 
 
     tABC_CC ABC_Initialize(const char                   *szRootDir,
+                           const char                   *szCaCertPath,
                            tABC_BitCoin_Event_Callback  fAsyncBitCoinEventCallback,
                            void                         *pData,
                            const unsigned char          *pSeedData,
@@ -639,15 +655,18 @@ extern "C" {
                        tABC_Error *pError);
 
     tABC_CC ABC_GetCategories(const char *szUserName,
+                              const char *szPassword,
                               char ***paszCategories,
                               unsigned int *pCount,
                               tABC_Error *pError);
 
     tABC_CC ABC_AddCategory(const char *szUserName,
+                            const char *szPassword,
                             char *szCategory,
                             tABC_Error *pError);
 
     tABC_CC ABC_RemoveCategory(const char *szUserName,
+                               const char *szPassword,
                                char *szCategory,
                                tABC_Error *pError);
 
@@ -657,11 +676,11 @@ extern "C" {
                              const char *szNewWalletName,
                              tABC_Error *pError);
 
-    tABC_CC ABC_SetWalletAttributes(const char *szUserName,
-                                    const char *szPassword,
-                                    const char *szUUID,
-                                    unsigned int attributes,
-                                    tABC_Error *pError);
+    tABC_CC ABC_SetWalletArchived(const char *szUserName,
+                                  const char *szPassword,
+                                  const char *szUUID,
+                                  unsigned int archived,
+                                  tABC_Error *pError);
 
     tABC_CC ABC_CheckRecoveryAnswers(const char *szUserName,
                                      const char *szRecoveryAnswers,
@@ -683,6 +702,7 @@ extern "C" {
                                  tABC_Error *pError);
 
     tABC_CC ABC_GetWalletUUIDs(const char *szUserName,
+                               const char *szPassword,
                                char ***paWalletUUID,
                                unsigned int *pCount,
                                tABC_Error *pError);
@@ -702,9 +722,7 @@ extern "C" {
                                unsigned int countUUIDs,
                                tABC_Error *pError);
 
-    tABC_CC ABC_GetQuestionChoices(const char *szUserName,
-                                   tABC_Request_Callback fRequestCallback,
-                                   void *pData,
+    tABC_CC ABC_GetQuestionChoices(tABC_QuestionChoices **pOut,
                                    tABC_Error *pError);
 
     void ABC_FreeQuestionChoices(tABC_QuestionChoices *pQuestionChoices);
@@ -946,6 +964,8 @@ extern "C" {
                                           void *pData, tABC_Error *pError);
 
     tABC_CC ABC_IsTestNet(bool *pResult, tABC_Error *pError);
+
+    tABC_CC ABC_Version(char **szVersion, tABC_Error *pError);
 
     // temp functions
     void tempEventA();
