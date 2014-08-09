@@ -3,9 +3,7 @@ package com.airbitz.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -18,24 +16,20 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,6 +46,10 @@ public class ExportSavingOptionFragment extends Fragment {
     private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mFromButton;
     private HighlightOnPressButton mToButton;
+
+    private RelativeLayout mDatesLayout;
+    private LinearLayout mLastPeriodLayout;
+    private LinearLayout mThisPeriodLayout;
 
     private TextView mTitleTextView;
     private TextView mAccountTextView;
@@ -132,6 +130,9 @@ public class ExportSavingOptionFragment extends Fragment {
         mToButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
 
         mAccountTextView = (TextView) mView.findViewById(R.id.textview_account);
+        mDatesLayout = (RelativeLayout) mView.findViewById(R.id.fragment_export_date_entries);
+        mLastPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_last_period);
+        mThisPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_this_period);
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
 
@@ -420,6 +421,8 @@ public class ExportSavingOptionFragment extends Fragment {
             }
         });
 
+        setupUI(mExportType);
+
         return mView;
     }
 
@@ -562,6 +565,14 @@ public class ExportSavingOptionFragment extends Fragment {
             mPrivateSeed = mCoreApi.getPrivateSeed(wallet);
         } else {
             mFilepath = getExportFilepath(wallet, type);
+        }
+    }
+
+    private void setupUI(int type) {
+        if(type == ExportTypes.PrivateSeed.ordinal()) {
+            mDatesLayout.setVisibility(View.GONE);
+            mLastPeriodLayout.setVisibility(View.GONE);
+            mThisPeriodLayout.setVisibility(View.GONE);
         }
     }
 

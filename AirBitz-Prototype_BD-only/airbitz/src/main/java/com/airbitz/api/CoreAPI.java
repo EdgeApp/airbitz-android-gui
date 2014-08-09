@@ -1192,7 +1192,7 @@ public class CoreAPI {
         return ParseAmount(cleanAmount, decimalPlaces);
     }
 
-    public String BTCtoFiatConversion(int currencyNum) {
+    public String BTCtoFiatConversion(int currencyNum, boolean withSymbol) {
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         long satoshi = 100;
         int denomIndex = 0;
@@ -1208,7 +1208,7 @@ public class CoreAPI {
                 denomIndex = 2;
             }
         }
-        String currency = FormatDefaultCurrency(satoshi, false, false);
+        String currency = FormatDefaultCurrency(satoshi, false, withSymbol);
         String currencyLabel = mFauxCurrencyAcronyms[SettingsCurrencyIndex()];
         return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
     }

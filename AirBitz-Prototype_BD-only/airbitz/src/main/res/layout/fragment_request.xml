@@ -73,39 +73,41 @@
                 android:background="@drawable/emboss_down"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
-                android:layout_marginTop="12.6dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center_horizontal"
                 android:paddingTop="9.45dp"
-                android:paddingBottom="9.45dp"
+                android:paddingBottom="12dp"
                 android:paddingRight="15.75dp"
                 android:paddingLeft="15.75dp">
 
                 <LinearLayout
                     android:id="@+id/layout_wallet"
                     android:layout_width="match_parent"
-                    android:layout_height="22.05dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="10"
                     android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginBottom="9.45dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="6dp">
 
                     <TextView
                         android:id="@+id/textview_wallet"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/request_wallet_title"
-                        android:gravity="center_vertical|right"
+                        android:layout_gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:layout_weight="6"
+                        android:textSize="12sp"
                         android:textStyle="bold"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginRight="12.6dp"/>
 
                     <com.airbitz.objects.HighlightOnPressSpinner
                         android:id="@+id/new_wallet_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
+                        style="@style/BlackDropShadow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="14sp"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
                         android:textColor="@android:color/white"/>
@@ -128,8 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="6.3dp"
+                    android:layout_alignTop="@id/button_expand"
                     android:gravity="center_vertical">
                     <EditText
                         android:id="@+id/edittext_btc"
@@ -142,17 +143,17 @@
                         android:singleLine="true"
                         android:paddingLeft="9.45dp"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:layout_centerVertical="true"
                         android:paddingRight="50.4dp"
-                        android:layout_marginBottom="9.45dp"
                         android:textSize="14sp"/>
                     <TextView
                         android:id="@+id/request_btc_denomination"
+                        style="@style/BlackDropShadow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_marginRight="6dp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
@@ -167,8 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="6.3dp"
+                android:layout_alignParentBottom="true"
                 android:gravity="center_vertical">
                 <EditText
                     android:id="@+id/edittext_dollar"
@@ -186,41 +186,50 @@
                     android:textSize="14sp"/>
                 <TextView
                     android:id="@+id/request_fiat_denomination"
+                    style="@style/BlackDropShadow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="6dp"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:text="USD"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textview_converter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="1.00 BTC = $600.00 USD"
-                    android:textColor="@android:color/white"
-                    android:layout_below="@id/layout_fiat_fields"
-                    android:layout_toRightOf="@+id/button_import_wallet"
-                    android:gravity="center_horizontal"
-                    android:layout_margin="5dp"
-                    android:textSize="12sp"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_import"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="0dp">
 
                 <com.airbitz.objects.HighlightOnPressButton
-                    android:layout_width="94.5dp"
-                    android:layout_height="18.9dp"
+                    android:layout_width="95dp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/button_import_wallet"
                     android:text="@string/request_button_import"
                     android:textColor="@android:color/white"
-                    android:layout_below="@id/layout_fiat_fields"
+                    android:textSize="13sp"
                     android:background="@drawable/bg_btn_blue_stretch"/>
 
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/textview_converter"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1.00 BTC = $ 600.00 USD"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:textSize="12sp"/>
 
-
+            </LinearLayout>
 
         </LinearLayout>
 

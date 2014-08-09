@@ -46,8 +46,11 @@ import java.text.DecimalFormat;
  */
 public class SendConfirmationFragment extends Fragment implements View.OnClickListener {
 
+    private TextView mFromEdittext;
+    private TextView mToEdittext;
     private EditText mPinEdittext;
 
+    private TextView mTitleTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mSlideTextView;
@@ -127,7 +130,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
 
 //        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        TextView mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
         mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
@@ -147,8 +150,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
 
-        TextView mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
-        TextView mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
+        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
+        mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
@@ -180,7 +183,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mDF.setMaximumIntegerDigits(8);
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
-        mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
+        mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
@@ -282,7 +285,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
@@ -304,7 +307,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
@@ -543,7 +546,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
             String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee, false);
             mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), true));
         }
         else
         {
@@ -797,7 +800,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
         super.onResume();
     }
 

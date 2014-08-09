@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -38,13 +36,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
@@ -90,7 +87,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TextView mToFromName;
     private EditText mPayeeEditText;
     private TextView mBitcoinValueTextview;
-    private TextView mFeeTextview;
+    private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
 
     private View mDummyFocus;
@@ -123,12 +120,12 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
 
-    private RelativeLayout mSentDetailLayout;
+    private LinearLayout mSentDetailLayout;
     private RelativeLayout mNoteDetailLayout;
     private RelativeLayout mNameDetailLayout;
 
     private EditText mFiatValueEdittext;
-    private TextView mFiatDenominationLabel, mFiatDenominationAcronym;
+    private TextView mFiatDenominationLabel, mFiatFeeTextView;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
@@ -239,13 +236,13 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
         mToFromName = (TextView) view.findViewById(R.id.transaction_detail_textview_to_wallet);
         mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
-        mFeeTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_fee_value);
+        mBTCFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_btc_fee_value);
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
+        mFiatValueEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
-        mFiatDenominationAcronym = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_text);
+        mFiatFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_fiat_fee_value);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
@@ -254,7 +251,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_back);
         mHelpButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_help);
 
-        mSentDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_sent_detail);
+        mSentDetailLayout = (LinearLayout) view.findViewById(R.id.layout_sent_detail);
         mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
         mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
 
@@ -303,11 +300,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(),mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
-
-        Shader textShader=new LinearGradient(0, 0, 0, 20,
-                new int[]{Color.parseColor("#eef2f7"),Color.parseColor("#a9bfd6")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP);
-        mDateTextView.getPaint().setShader(textShader);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
@@ -781,12 +773,11 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
         if(mFromSend) {
-            String feeFormatted = "";
-            feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
-            mFeeTextview.setText(feeFormatted);
-            mFeeTextview.setVisibility(View.VISIBLE);
+            String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
+            mBTCFeeTextView.setText(feeFormatted);
+            mBTCFeeTextView.setVisibility(View.VISIBLE);
         } else {
-            mFeeTextview.setVisibility(View.INVISIBLE);
+            mBTCFeeTextView.setVisibility(View.INVISIBLE);
         }
         mSearchListView.setVisibility(View.GONE);
     }
