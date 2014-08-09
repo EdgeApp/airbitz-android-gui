@@ -6,8 +6,10 @@
     <color name="dark_blue_text">#006699</color>
     <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
+    <color name="gray_selection">#cccccc</color>
     <color name="gray_text">#4c4c4c</color>
     <color name="dark_gray_text">#2c2c2c</color>
+    <color name="blue_background">#0179b8</color>
 
     <color name="identifier_pink">#FF00FF</color>
     <color name="identifier_purple">#ff862eae</color>

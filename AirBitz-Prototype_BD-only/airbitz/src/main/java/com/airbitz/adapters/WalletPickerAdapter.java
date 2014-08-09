@@ -32,11 +32,10 @@ public class WalletPickerAdapter extends ArrayAdapter {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if(mSource == WalletPickerEnum.SendFrom || mSource == WalletPickerEnum.Request){
-            convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
-            TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
-            textView.setText(mWalletList.get(position).getName() + " ("+mWalletList.get(position).getBalanceFormatted()+")");
-        }
+        convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
+        TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
+        textView.setText(mWalletList.get(position).getName() + " ("+mWalletList.get(position).getBalanceFormatted()+")");
+        textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         return convertView;
     }
 
