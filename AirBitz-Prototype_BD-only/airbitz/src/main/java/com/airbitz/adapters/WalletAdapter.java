@@ -174,13 +174,14 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 if(position == mWalletList.size()-1){
                     convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archived));
                 }
             }else if(position == mWalletList.size()-1){
                 convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
             }else{
                 convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
             }
+
             convertView.setPadding((int)mContext.getResources().getDimension(R.dimen.two_mm),0,0,0);
         }
         if(archivePos < position && closeAfterArchive){
