@@ -180,7 +180,7 @@
     <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
     <string name="fragment_wallet_unconfirmed">Unconfirmed</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
-    <string name="fragment_wallet_confirmations"> confirmations</string>
+    <string name="fragment_wallet_confirmations">" confirmations"</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
