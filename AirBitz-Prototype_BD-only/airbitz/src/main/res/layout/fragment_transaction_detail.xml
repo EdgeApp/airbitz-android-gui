@@ -243,6 +243,7 @@
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_textfield"
                     android:gravity="center"
+                    android:inputType="none"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
