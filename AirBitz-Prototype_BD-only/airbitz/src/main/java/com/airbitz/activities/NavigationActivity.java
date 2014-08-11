@@ -460,6 +460,7 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void OnRemotePasswordChange() {
         showRemotePasswordChangeDialog();
+
     }
 
     private void startReceivedSuccess() {
@@ -505,16 +506,16 @@ public class NavigationActivity extends BaseActivity
 
     private void showIncomingBitcoinDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage("Bitcoin received. Tap Details to see them.")
-                .setTitle("Received Funds")
+        builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
+                .setTitle(getResources().getString(R.string.received_bitcoin_title))
                 .setCancelable(false)
-                .setPositiveButton("Details",
+                .setPositiveButton(getResources().getString(R.string.received_bitcoin_positive),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 gotoDetailsNow();
                             }
                         })
-                .setNegativeButton("Ignore",
+                .setNegativeButton(getResources().getString(R.string.received_bitcoin_negative),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
@@ -530,8 +531,8 @@ public class NavigationActivity extends BaseActivity
 
     private void showRemotePasswordChangeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage("The mPassword to this account was changed by another device. Please login using the new credentials.")
-                .setTitle("Password Change")
+        builder.setMessage(getResources().getString(R.string.remote_password_change_message))
+                .setTitle(getResources().getString(R.string.remote_password_change_title))
                 .setCancelable(false)
                 .setNegativeButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -596,14 +597,14 @@ public class NavigationActivity extends BaseActivity
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
             } else {
-                ShowOkMessageDialog(getResources().getString(R.string.error_invalid_credentials));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.error_invalid_credentials));
             }
         }
 
         @Override
         protected void onCancelled() {
             mUserLoginTask = null;
-            ShowOkMessageDialog("SignIn cancelled unexpectedly.");
+            ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
 
