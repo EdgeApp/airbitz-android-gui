@@ -373,7 +373,7 @@
             <ListView
                 android:id="@+id/listview_category"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="170dp"
                 android:layout_below="@+id/fragment_transactiondetail_listview_triangle"
                 android:divider="@color/gray_border"
                 android:dividerHeight="1px"
