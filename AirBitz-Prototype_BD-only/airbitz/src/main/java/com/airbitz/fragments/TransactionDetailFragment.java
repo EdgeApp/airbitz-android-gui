@@ -225,7 +225,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDF.setMaximumFractionDigits(6);
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
 
         popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
@@ -241,7 +240,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mFiatValueEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
         mFiatFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_fiat_fee_value);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
@@ -313,18 +311,18 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
-        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
-                    }
-                }
-            }
-        });
+//        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                if(hasFocus){
+//                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+//                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
+//                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        inputMethodManager.toggleSoftInput(0, 0);
+//                    }
+//                }
+//            }
+//        });
 
         getContactsList();
 
@@ -557,9 +555,25 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
+        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+            public boolean onTouch (View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.onTouchEvent(event);
+                edittext.setInputType(inType);
+                return true; // the listener has consumed the event
+            }
+        };
+
+        mFiatValueEdittext.setOnTouchListener(preventOSKeyboard);
         mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                EditText edittext = (EditText) view;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.setInputType(inType);
                 if (hasFocus) {
                     showCustomKeyboard(view);
                 } else {
@@ -910,6 +924,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         super.onResume();
 //        new BusinessCategoryAsyncTask().execute("name");
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 
     @Override
@@ -1014,6 +1029,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
     public void hideCustomKeyboard() {
         ((NavigationActivity) getActivity()).hideCalculator();
+        mDummyFocus.requestFocus();
     }
 
     public void showCustomKeyboard(View v) {
@@ -1056,23 +1072,5 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 mLocationManager.addLocationChangeListener(this);
             }
         }
-    }
-
-    public Categories getMoreBusinessCategory(Categories initial, String link){
-        while(!link.equalsIgnoreCase("null")){
-
-            String jSOnString = api.getRequest(link);
-            Categories jsonParsingResult = null;
-            try{
-                jsonParsingResult = new Categories(new JSONObject(jSOnString));
-                link = jsonParsingResult.getNextLink();
-                initial.addCategories(jsonParsingResult);
-            } catch(Exception e) {
-                link = "null";
-            }
-
-        }
-
-        return initial;
     }
 }
