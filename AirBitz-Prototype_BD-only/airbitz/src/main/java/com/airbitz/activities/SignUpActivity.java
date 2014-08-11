@@ -3,9 +3,7 @@ package com.airbitz.activities;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -364,7 +362,7 @@ public class SignUpActivity extends BaseActivity {
             if (mUserNameEditText.getText().toString().length() == 0)
             {
                 bUserNameFieldIsValid = false;
-                showOkMessageDialog(getResources().getString(R.string.activity_signup_enter_username));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
             }
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
@@ -373,7 +371,7 @@ public class SignUpActivity extends BaseActivity {
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                showOkMessageDialog(getResources().getString(R.string.activity_signup_incorrect_password));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -393,12 +391,12 @@ public class SignUpActivity extends BaseActivity {
             if (!mGoodPassword)
             {
                 bNewPasswordFieldsAreValid = false;
-                showOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_password));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
             }
             else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
             {
                 bNewPasswordFieldsAreValid = false;
-                showOkMessageDialog(getResources().getString(R.string.activity_signup_passwords_dont_match));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
             }
         }
 
@@ -420,7 +418,7 @@ public class SignUpActivity extends BaseActivity {
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
             {
                 bpinNameFieldIsValid = false;
-                showOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_pin));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
             }
         }
 
@@ -506,19 +504,19 @@ public class SignUpActivity extends BaseActivity {
             if (success) {
                 AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_good));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_pin_change_good));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_bad));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    showOkMessageDialogAndFinish(getResources().getString(R.string.activity_signup_pin_change_bad));
+                    ShowMessageAlertAndExit("Success", getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
@@ -554,7 +552,7 @@ public class SignUpActivity extends BaseActivity {
         protected Boolean doInBackground(Void... params) {
 
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
-            mFailureReason = pError.getSzDescription() + "; " + pError.getSzSourceFile() + pError.getSzSourceFunc() + "; " + pError.getNSourceLine();
+            mFailureReason = pError.getSzDescription();
             return code == tABC_CC.ABC_CC_Ok;
         }
 
@@ -566,7 +564,7 @@ public class SignUpActivity extends BaseActivity {
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
                 showModalProgress(false);
-                ShowReasonAlert(mFailureReason);
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
             }
         }
 
@@ -606,7 +604,7 @@ public class SignUpActivity extends BaseActivity {
             mCreateFirstWalletTask = null;
             if (!success) {
                 showModalProgress(false);
-                ShowReasonAlert("Create wallet failed");
+                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
                 CreateDefaultCategories();
@@ -638,21 +636,6 @@ public class SignUpActivity extends BaseActivity {
         if(cats.size()==0 || cats.get(0).equals(defaults)) {
             Log.d("SignupActivity", "Category creation failed");
         }
-    }
-
-    private void ShowReasonAlert(String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(getResources().getString(R.string.activity_recovery_alert_title))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     /**
@@ -691,17 +674,4 @@ public class SignUpActivity extends BaseActivity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
     }
 
-    private void showOkMessageDialogAndFinish(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                finish();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }}
+}

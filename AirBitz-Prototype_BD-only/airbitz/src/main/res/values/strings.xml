@@ -22,6 +22,7 @@
     <string name="string_add_button">Add button adds a new wallet</string>
 
     <!-- Connectivity -->
+    <string name="string_connection_problem_title">Connection Problem</string>
     <string name="string_no_connection_title">No connection</string>
     <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
     <string name="string_no_connection_response">There is a problem reaching the server. Please try again.</string>
@@ -56,6 +57,7 @@
 
     <!-- Strings for Signup -->
     <string name="activity_signup_title">Sign Up</string>
+    <string name="activity_signup_failed">Sign Up failed</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
@@ -87,6 +89,7 @@
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
     <string name="activity_signup_insufficient_pin">Withdrawl PIN must be 4 digits</string>
+    <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
     <string name="activity_signup_time_to_crack">Time to crack: </string>
     <string name="activity_signup_seconds">seconds</string>
     <string name="activity_signup_minutes">minutes</string>

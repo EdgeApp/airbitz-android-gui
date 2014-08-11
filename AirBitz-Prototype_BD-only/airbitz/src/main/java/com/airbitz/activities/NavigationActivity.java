@@ -27,11 +27,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_void;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.LandingFragment;
@@ -47,7 +42,6 @@ import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
-import com.airbitz.objects.ConnectionAsyncTask;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
@@ -602,14 +596,14 @@ public class NavigationActivity extends BaseActivity
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
             } else {
-                showOkMessageDialog(getResources().getString(R.string.error_invalid_credentials));
+                ShowOkMessageDialog(getResources().getString(R.string.error_invalid_credentials));
             }
         }
 
         @Override
         protected void onCancelled() {
             mUserLoginTask = null;
-            showOkMessageDialog("SignIn cancelled unexpectedly.");
+            ShowOkMessageDialog("SignIn cancelled unexpectedly.");
         }
     }
 
