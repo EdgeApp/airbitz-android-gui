@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -102,6 +103,7 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private long mAmountToSendSatoshi;
 
     private CoreAPI mCoreAPI;
+    private NavigationActivity mActivity;
     private Wallet mSourceWallet, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
@@ -110,6 +112,9 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
+
+
+        mActivity = (NavigationActivity) getActivity();
 
         bundle = this.getArguments();
         if (bundle == null) {
@@ -609,11 +614,13 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
-        }
 
-        @Override
-        public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+
+            Fragment frag = new SuccessFragment();
+            frag.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.SEND.ordinal());
         }
 
         @Override
@@ -624,7 +631,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         @Override
         protected void onPostExecute(final String txid) {
             mSendOrTransferTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
             if (txid == null) {
                 Log.d("SendConfirmationFragment", "Send or Transfer failed");
             } else {
@@ -632,10 +638,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                 bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
                 bundle.putString(Transaction.TXID, txid);
                 bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
+                FragmentSourceEnum e = FragmentSourceEnum.SEND;
 
-                Fragment frag = new SuccessFragment();
-                frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.SEND.ordinal());
+                mActivity.switchToWallets(e, bundle);
+                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 

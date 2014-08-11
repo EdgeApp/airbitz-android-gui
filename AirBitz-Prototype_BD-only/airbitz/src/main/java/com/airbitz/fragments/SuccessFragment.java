@@ -103,20 +103,14 @@ public class SuccessFragment extends Fragment {
         @Override
         public void run() {
             count++;
-            if(count<=10) {
-                if (count%3 == 1) {
+                if (count % 3 == 1) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_1);
-                } else if (count%3 == 2) {
+                } else if (count % 3 == 2) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_2);
-                } else if (count%3 == 0) {
+                } else if (count % 3 == 0) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_3);
                 }
                 mHandler.postDelayed(this, 500);
-            } else {
-                FragmentSourceEnum e = FragmentSourceEnum.SEND;
-                mActivity.switchToWallets(e, mBundle);
-                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
-            }
         }
     };
 
