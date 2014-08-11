@@ -47,6 +47,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/fragment_request_qrcode_qr_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9.45dp"
@@ -65,10 +66,11 @@
         android:layout_height="195.3dp"
         android:orientation="vertical"
         android:layout_marginBottom="15.75dp"
+        android:layout_marginTop="9.45dp"
         android:layout_marginRight="12.6dp"
         android:layout_marginLeft="12.6dp"
         android:background="@drawable/emboss_down"
-        android:layout_alignParentBottom="true">
+        android:layout_below="@id/fragment_request_qrcode_qr_container">
         
         <TextView
             android:id="@+id/textview_waiting"
@@ -76,7 +78,7 @@
             android:layout_height="wrap_content"
             android:text="Waiting for Payment..."
             android:textColor="@android:color/white"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginTop="12.6dp"
             android:gravity="center_horizontal"/>
         <TextView
@@ -85,7 +87,7 @@
             android:layout_height="wrap_content"
             android:text="mB 0"
             android:textColor="@android:color/white"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginTop="6.3dp"
             android:gravity="center_horizontal"/>
         <TextView
@@ -96,7 +98,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:textColor="@android:color/white"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:layout_marginRight="18.9dp"
             android:layout_marginLeft="18.9dp"
             android:layout_marginTop="6.3dp"
@@ -146,7 +148,7 @@
             android:id="@+id/fragment_qrcode_cancel_button"
             android:layout_width="245.7dp"
             android:layout_height="37.8dp"
-            android:text="Cancel"
+            android:text="@string/string_cancel"
             android:textColor="@android:color/white"
             android:background="@drawable/btn_blue"
             android:layout_gravity="center_horizontal"/>
