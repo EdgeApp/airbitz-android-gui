@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -590,8 +591,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        //setOnTouchListeners();
-
         if(mFromSend || mFromRequest){
             mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -599,22 +598,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
 
         UpdateView(mTransaction);
         return view;
-    }
-
-    private void setOnTouchListener(View touchView){
-        touchView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    view.setAlpha(.75f);
-                    return true;
-                }else if(motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
-                    view.setAlpha(1);
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     private void updateBlanks(String term){
@@ -926,6 +909,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     public void onResume() {
         super.onResume();
 //        new BusinessCategoryAsyncTask().execute("name");
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     @Override
@@ -937,7 +921,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mTransaction.setName(mPayeeEditText.getText().toString());
         mTransaction.setCategory(mCategoryEdittext.getText().toString());
         mTransaction.setNotes(mNoteEdittext.getText().toString());
-        mTransaction.setAmountFiat(Double.valueOf(mFiatValueEdittext.getText().toString()));
+
+        double amount;
+        try {
+            amount =  Double.valueOf(mFiatValueEdittext.getText().toString());
+        } catch (Exception e) {
+            amount = 0.0;
+        }
+        mTransaction.setAmountFiat(amount);
         mCoreAPI.storeTransaction(mTransaction);
     }
 

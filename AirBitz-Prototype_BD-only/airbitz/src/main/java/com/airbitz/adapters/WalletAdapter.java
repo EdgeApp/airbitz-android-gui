@@ -166,7 +166,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 if(2 == archivePos){
                     convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive));
                 }
             }else if(position == archivePos-1){
                 convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
@@ -174,7 +174,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 if(position == mWalletList.size()-1){
                     convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archived));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
                 }
             }else if(position == mWalletList.size()-1){
                 convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
