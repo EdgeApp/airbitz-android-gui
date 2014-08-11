@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
@@ -51,6 +52,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
     private EditText mBitcoinField;
     private EditText mFiatField;
+    private boolean mAutoUpdatingTextFields = false;
+
 
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
@@ -222,12 +225,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
             @Override
             public void afterTextChanged(Editable editable) {
-                updateTextFieldContents(true);
-                mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
+                if (!mAutoUpdatingTextFields) {
+                    updateTextFieldContents(true);
+                    mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
+                }
             }
         };
 
-        final TextWatcher mDollarTextWatcher = new TextWatcher() {
+        final TextWatcher mFiatTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
@@ -236,10 +241,15 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
             @Override
             public void afterTextChanged(Editable editable) {
-                updateTextFieldContents(false);
-                mFiatField.setSelection(mFiatField.getText().toString().length());
+                if(!mAutoUpdatingTextFields) {
+                    updateTextFieldContents(false);
+                    mFiatField.setSelection(mFiatField.getText().toString().length());
+                }
             }
         };
+
+        mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+        mFiatField.addTextChangedListener(mFiatTextWatcher);
 
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -249,10 +259,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     int inType = edittext.getInputType();
                     edittext.setInputType(InputType.TYPE_NULL);
                     edittext.setInputType(inType);
-                    mFiatField.removeTextChangedListener(mDollarTextWatcher);
-                    mBitcoinField.setText("");
+                    mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
-                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+                    mBitcoinField.setText("");
+                    mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
@@ -268,10 +278,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.setInputType(inType);
                 if (hasFocus) {
-                    mBitcoinField.removeTextChangedListener(mBTCTextWatcher);
+                    mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
-                    mFiatField.addTextChangedListener(mDollarTextWatcher);
+                    mAutoUpdatingTextFields = false;
                     showCustomKeyboard(view);
                 } else {
                     hideCustomKeyboard();
@@ -326,6 +336,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         double currency;
         long satoshi;
 
+        mAutoUpdatingTextFields = true;
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         Wallet wallet = mWallets.get(walletPosition);
         String bitcoin = mBitcoinField.getText().toString();
@@ -336,7 +347,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                 mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
             } else {
                 //TODO ???
-                Log.d("RequestFragment", "Too much bitcoin");
+                Common.LogD("RequestFragment", "Too much bitcoin");
             }
         }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
@@ -357,7 +368,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
                     mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
                 } else {
-                    Log.d("RequestFragment", "Too much fiat");
+                    Common.LogD("RequestFragment", "Too much fiat");
                 }
             }
             catch(NumberFormatException e)
@@ -365,6 +376,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                 //not a double, ignore
             }
         }
+        mAutoUpdatingTextFields = false;
     }
 
 
@@ -503,6 +515,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
         setConversionText(mSelectedWallet.getCurrencyNum());
         setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
+
         mCoreAPI.addExchangeRateChangeListener(this);
     }
 
