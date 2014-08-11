@@ -164,22 +164,22 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
             if(1 == position){
                 if(2 == archivePos){
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selector));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selector));
                 }
             }else if(position == archivePos-1){
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
             }else if(position == archivePos+1){
                 if(position == mWalletList.size()-1){
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_archive_selector));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selector));
                 }
             }else if(position == mWalletList.size()-1){
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
             }else{
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selector));
             }
 
             convertView.setPadding((int)mContext.getResources().getDimension(R.dimen.two_mm),0,0,0);

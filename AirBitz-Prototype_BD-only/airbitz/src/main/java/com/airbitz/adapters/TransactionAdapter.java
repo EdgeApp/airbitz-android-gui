@@ -92,7 +92,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         if(0 == position && mListTransaction.size() == 1){
             convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selector));
         }else if(0 == position){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selector));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selector));
         }else if(mListTransaction.size()-1 == position){
             convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
         }else{

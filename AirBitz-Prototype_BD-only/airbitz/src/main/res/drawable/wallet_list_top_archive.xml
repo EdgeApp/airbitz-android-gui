@@ -14,7 +14,7 @@
     </item>
     <item android:top="1dp" android:bottom="1dp" android:right=".5dp" android:left=".5dp">
         <shape>
-            <solid android:color="@color/blue_highlight" />
+            <solid android:color="@color/listitem_normal" />
             <corners android:topLeftRadius="6dp" android:topRightRadius="6dp"/>
         </shape>
     </item>
