@@ -1,17 +1,12 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
-import android.content.ClipboardManager;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,9 +24,9 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.CalculatorBrain;
@@ -45,7 +40,7 @@ import java.util.List;
  * Created on 2/13/14.
  */
 public class RequestFragment extends Fragment implements View.OnClickListener, CoreAPI.OnExchangeRatesChange {
-
+    private final String TAG = getClass().getSimpleName();
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
@@ -74,16 +69,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
 
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mNavigationLayout;
     private LinearLayout mFocusDistractorLayout;
-
-    private ScrollView mScrollView;
-
-    private Keyboard mKeyboard;
-    private KeyboardView mKeyboardView;
-
-    private ClipboardManager clipboard;
 
     private Boolean userIsInTheMiddleOfTypingANumber = false;
     private CalculatorBrain mCalculatorBrain;
@@ -131,12 +117,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
-        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
         mFocusDistractorLayout = (LinearLayout) mView.findViewById(R.id.layout_focus_distractor);
         mFocusDistractorLayout.requestFocus();
-
-        mScrollView = (ScrollView) mView.findViewById(R.id.layout_amount);
 
         mCalculatorBrain = new CalculatorBrain();
         mDF.setMinimumFractionDigits(0);
@@ -145,8 +127,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mDF.setMaximumIntegerDigits(8);
 
         dummyFocus = mView.findViewById(R.id.fragment_request_dummy_focus);
-
-        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
         mFiatField = (EditText) mView.findViewById(R.id.edittext_dollar);
@@ -347,7 +327,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                 mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
             } else {
                 //TODO ???
-                Common.LogD("RequestFragment", "Too much bitcoin");
+                Common.LogD(TAG, "Too much bitcoin");
             }
         }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
@@ -368,7 +348,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
                     mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
                 } else {
-                    Common.LogD("RequestFragment", "Too much fiat");
+                    Common.LogD(TAG, "Too much fiat");
                 }
             }
             catch(NumberFormatException e)
