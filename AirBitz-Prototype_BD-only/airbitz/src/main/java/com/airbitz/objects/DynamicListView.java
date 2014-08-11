@@ -45,7 +45,6 @@ import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,8 +78,6 @@ public class DynamicListView extends ListView {
 
     public List<Wallet> mWalletList;
     public List<Wallet> archivedWallets;
-
-    final DynamicListView dLV = this;
 
     private int mLastEventY = -1;
 
@@ -299,19 +296,9 @@ public class DynamicListView extends ListView {
                 mDownX = (int)event.getX();
                 mDownY = (int)event.getY();
                 mActivePointerId = event.getPointerId(0);
-                int[] listViewCoords = new int[2];
-                dLV.getLocationOnScreen(listViewCoords);
-                int x = (int) event.getRawX() - listViewCoords[0];
-                int y = (int) event.getRawY() - listViewCoords[1];
-                View child;
-                Rect rect = new Rect();
-                for (int i = 0; i < dLV.getChildCount(); i++) {
-                    child = dLV.getChildAt(i);
-                    child.getHitRect(rect);
-                    if (rect.contains(x, y)) {
-                        child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
-                        break;
-                    }
+                View child = FindItemFromEvent(event);
+                if(child!=null) {
+                    child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
                 }
 
                 break;
@@ -338,12 +325,15 @@ public class DynamicListView extends ListView {
 
                     return false;
                 }
+                this.deferNotifyDataSetChanged();
                 break;
             case MotionEvent.ACTION_UP:
                 touchEventsEnded();
+                this.deferNotifyDataSetChanged();
                 break;
             case MotionEvent.ACTION_CANCEL:
                 touchEventsCancelled();
+                this.deferNotifyDataSetChanged();
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 /* If a multitouch event took place and the original touch dictating
@@ -362,6 +352,25 @@ public class DynamicListView extends ListView {
         }
 
         return super.onTouchEvent(event);
+    }
+
+    private View FindItemFromEvent(MotionEvent event) {
+        int[] listViewCoords = new int[2];
+        this.getLocationOnScreen(listViewCoords);
+        int x = (int) event.getRawX() - listViewCoords[0];
+        int y = (int) event.getRawY() - listViewCoords[1];
+        View child = null;
+        View found = null;
+        Rect rect = new Rect();
+        for (int i = 0; i < this.getChildCount(); i++) {
+            child = this.getChildAt(i);
+            child.getHitRect(rect);
+            if (rect.contains(x, y)) {
+                found = child;
+                break;
+            }
+        }
+        return found;
     }
 
     public void setArchivedList(List<Wallet> wallets){
@@ -499,7 +508,7 @@ public class DynamicListView extends ListView {
                     setEnabled(true);
                     ((WalletAdapter)getAdapter()).updateArchive();
                     ((WalletAdapter)getAdapter()).notifyDataSetChanged();
-                    ListViewUtility.setWalletListViewHeightBasedOnChildren(dLV, mWalletList.size(), (Activity)getContext());
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(DynamicListView.this, mWalletList.size(), getContext());
                     invalidate();
                 }
             });

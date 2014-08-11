@@ -98,7 +98,7 @@
                         android:id="@+id/settings_denomination_buttons_bitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@drawable/wallet_list_top"
+                        android:background="@drawable/wallet_list_top_archive"
                         android:drawableRight="@android:drawable/btn_radio"
                         android:button="@null"
                         android:drawablePadding="15dp"
@@ -183,7 +183,7 @@
                         android:id="@+id/settings_button_change_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_top"
+                        android:background="@drawable/wallet_list_top_archive"
                         android:drawableRight="@drawable/arrow_right"
                         android:gravity="left"
                         android:paddingBottom="13dp"
@@ -261,7 +261,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_top"
+                        android:background="@drawable/wallet_list_top_archive"
                         android:orientation="horizontal" >
 
                         <Switch
@@ -392,7 +392,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo"
+                        android:background="@drawable/wallet_list_solo_archived"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_auto_logoff"
@@ -430,7 +430,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo"
+                        android:background="@drawable/wallet_list_solo_archived"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_language"
@@ -468,7 +468,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo"
+                        android:background="@drawable/wallet_list_solo_archived"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_currency"
@@ -506,7 +506,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo"
+                        android:background="@drawable/wallet_list_solo_archived"
                         android:id="@+id/category_container">
                         <TextView
                             android:id="@+id/settings_title_categories"
@@ -576,7 +576,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_top"
+                        android:background="@drawable/wallet_list_top_archive"
                         android:orientation="horizontal" >
                         <TextView
                             android:id="@+id/settings_title_usd"
