@@ -20,7 +20,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -113,6 +112,8 @@ public class DynamicListView extends ListView {
     private boolean mIsWaitingForScrollFinish = false;
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
+    private View mLastChild;
+
     public DynamicListView(Context context) {
         super(context);
         init(context);
@@ -145,8 +146,6 @@ public class DynamicListView extends ListView {
         img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
         archiveHeader.setCompoundDrawables(null, null, img, null);
         archiveHeader.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
-        //listArchiveHeader = (TextView)getAdapter().getView(0, listArchiveHeader, this);
-        //listWalletsHeader = (TextView)getChildAt(0);
     }
 
     /**
@@ -290,19 +289,26 @@ public class DynamicListView extends ListView {
 
     @Override
     public boolean onTouchEvent (MotionEvent event) {
+        View child = FindWalletViewFromEvent(event);
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mDownX = (int)event.getX();
                 mDownY = (int)event.getY();
                 mActivePointerId = event.getPointerId(0);
-                View child = FindItemFromEvent(event);
                 if(child!=null) {
                     child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
+                    mLastChild = child;
                 }
 
                 break;
             case MotionEvent.ACTION_MOVE:
+                 if(child!=null && mLastChild!=null && mLastChild!=child) {
+                    mLastChild.setBackgroundColor(getResources().getColor(R.color.listitem_normal));
+                    child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
+                    mLastChild = child;
+                }
+
                 if (mActivePointerId == INVALID_POINTER_ID) {
                     break;
                 }
@@ -325,15 +331,16 @@ public class DynamicListView extends ListView {
 
                     return false;
                 }
-                this.deferNotifyDataSetChanged();
+
                 break;
             case MotionEvent.ACTION_UP:
+                if(child!=null) {
+                    child.setBackgroundColor(getResources().getColor(R.color.listitem_normal));
+                }
                 touchEventsEnded();
-                this.deferNotifyDataSetChanged();
                 break;
             case MotionEvent.ACTION_CANCEL:
                 touchEventsCancelled();
-                this.deferNotifyDataSetChanged();
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 /* If a multitouch event took place and the original touch dictating
@@ -354,22 +361,25 @@ public class DynamicListView extends ListView {
         return super.onTouchEvent(event);
     }
 
-    private View FindItemFromEvent(MotionEvent event) {
+    private View FindWalletViewFromEvent(MotionEvent event) {
         int[] listViewCoords = new int[2];
         this.getLocationOnScreen(listViewCoords);
         int x = (int) event.getRawX() - listViewCoords[0];
         int y = (int) event.getRawY() - listViewCoords[1];
-        View child = null;
+        View child;
         View found = null;
         Rect rect = new Rect();
         for (int i = 0; i < this.getChildCount(); i++) {
             child = this.getChildAt(i);
             child.getHitRect(rect);
             if (rect.contains(x, y)) {
-                found = child;
-                break;
+                if(!mWalletList.get(i).isHeader() && !mWalletList.get(i).isArchiveHeader() && child!=listArchiveHeader) {
+                    found = child;
+                    break;
+                }
             }
         }
+
         return found;
     }
 
