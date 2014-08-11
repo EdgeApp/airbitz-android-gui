@@ -90,13 +90,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
 
         if(0 == position && mListTransaction.size() == 1){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selector));
         }else if(0 == position){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selector));
         }else if(mListTransaction.size()-1 == position){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
         }else{
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selector));
         }
 
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
