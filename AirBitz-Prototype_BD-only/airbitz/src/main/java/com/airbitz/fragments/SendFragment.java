@@ -1,16 +1,10 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -216,7 +209,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                         GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     } else {
                         hideKeyboard();
-                        ((NavigationActivity) getActivity()).showOkMessageDialog(getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
                     }
                     return true;
                 }

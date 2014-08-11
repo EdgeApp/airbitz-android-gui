@@ -1,16 +1,11 @@
 package com.airbitz.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.ContextThemeWrapper;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
 import com.airbitz.R;
 
@@ -40,17 +35,18 @@ public class BaseActivity extends FragmentActivity {
         public void run() {
             if(mProgressDialog!=null) {
                 mProgressDialog.dismiss();
-                showOkMessageDialog(getResources().getString(R.string.string_no_connection_response));
+                ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
             }
         }
     };
 
-    public void showOkMessageDialog(String message) {
+    public void ShowOkMessageDialog(String title, String message) {
         if(mProgressDialog!=null)
             mProgressDialog.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
+                .setTitle(title)
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -62,12 +58,13 @@ public class BaseActivity extends FragmentActivity {
         alert.show();
     }
 
-    public void ShowMessageAlertAndExit(String reason) {
+    public void ShowMessageAlertAndExit(String title, String reason) {
         if(mProgressDialog!=null)
             mProgressDialog.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
+                .setTitle(title)
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {

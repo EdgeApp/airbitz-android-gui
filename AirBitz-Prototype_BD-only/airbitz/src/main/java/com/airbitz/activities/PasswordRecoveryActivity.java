@@ -157,7 +157,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         String answers = "";
 
         if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
-            showOkMessageDialog("Please enter your correct password so your answers can be changed.");
+            ShowOkMessageDialog("Please enter your correct password so your answers can be changed.");
             return;
         }
 
@@ -187,10 +187,10 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                 mSaveQuestionsTask.execute((Void) null);
             } else {
-                showOkMessageDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            showOkMessageDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -377,7 +377,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
             mSaveQuestionsTask = null;
             showModalProgress(false);
             if (!success) {
-                showOkMessageDialog("Save recovery answers failed.");
+                ShowOkMessageDialog("Save recovery answers failed.");
             } else {
                 ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
             }
