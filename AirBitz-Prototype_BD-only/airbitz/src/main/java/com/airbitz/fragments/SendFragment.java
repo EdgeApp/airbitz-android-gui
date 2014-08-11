@@ -209,7 +209,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                         GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     } else {
                         hideKeyboard();
-                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
                     }
                     return true;
                 }

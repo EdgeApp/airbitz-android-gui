@@ -106,7 +106,7 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(mUserNameEditText.getText().toString().isEmpty()){
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("",
                             getResources().getString(R.string.fragment_forgot_no_username_title));
                 }else {
                     Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
@@ -144,7 +144,7 @@ public class LandingFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), SignUpActivity.class);
                     startActivity(intent);
                 } else {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(getActivity().getString(R.string.string_no_connection_message));
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
                 }
             }
         });

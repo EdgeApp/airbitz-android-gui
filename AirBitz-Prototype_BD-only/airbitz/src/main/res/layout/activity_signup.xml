@@ -33,13 +33,13 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16dp"/>
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="346.5dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/activity_signup_header_layout">
 
         <RelativeLayout
@@ -48,12 +48,14 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:layout_width="283.5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:paddingLeft="18.9dp"
-                android:paddingRight="18.9dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
                 android:layout_marginTop="25.2dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/emboss_up">
 
 
@@ -69,7 +71,7 @@
                     android:paddingRight="12.6dp"
                     android:ems="10"
                     android:textColorHint="#99DDDDDD"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:paddingLeft="12.6dp"
                     android:layout_marginTop="25.4dp"
                     android:focusable="true"
@@ -88,14 +90,16 @@
                 <TextView
                     android:id="@+id/activity_signup_password_help"
                     android:gravity="left|center_vertical"
-                    android:textSize="9dp"
+                    android:textSize="12sp"
                     android:layout_below="@id/activity_signup_username_edittext"
                     android:layout_width="match_parent"
-                    android:layout_height="50.4dp"
+                    android:layout_height="wrap_content"
                     android:text="@string/activity_signup_password_help"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/disabled_hint_color"
                     android:paddingLeft="6.3dp"
-                    android:paddingRight="6.3dp"/>
+                    android:paddingRight="6.3dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
 
                 <EditText
                     android:id="@+id/activity_signup_password_edittext"
@@ -111,7 +115,7 @@
                     android:ems="10"
                     android:textColor="@android:color/white"
                     android:textColorHint="#99DDDDDD"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:paddingLeft="12.6dp"
                     android:layout_marginBottom="6.3dp"/>
 
@@ -129,9 +133,9 @@
                     android:ems="10"
                     android:textColor="@android:color/white"
                     android:textColorHint="#99DDDDDD"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:paddingLeft="12.6dp"
-                    android:layout_marginTop="6.3dp"/>
+                    android:layout_marginTop="3dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,8 +153,7 @@
                         android:gravity="center"
                         android:text="@string/activity_signup_pin_label"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:layout_weight="1"/>
 
                     <EditText
@@ -168,24 +171,25 @@
                         android:layout_weight="1"
                         android:hint="@string/activity_signup_pin_hint"
                         android:textColorHint="#99DDDDDD"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:gravity="center" />
 
                 </LinearLayout>
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/activity_signup_next_button"
+                    style="@style/BlackDropShadow"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
                     android:text="@string/string_next_step"
-                    android:layout_marginTop="12.6dp"
-                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="30dp"
                     android:textStyle="bold"
                     android:textSize="15sp"
                     android:textColor="@android:color/white"
                     android:layout_below="@id/activity_signup_withdrawal_layout"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/btn_green"/>
+                    android:background="@drawable/btn_blue"/>
 
             </RelativeLayout>
 
@@ -221,7 +225,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_uppercase"
-                        android:textSize="12dp"
+                        android:textSize="12sp"
                         android:textColor="#FFFFFF"/>
                 </LinearLayout>
 
@@ -243,7 +247,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/activity_signup_switch_text_2"
                         android:text="@string/activity_signup_popup_lowercase"
-                        android:textSize="12dp"
+                        android:textSize="12sp"
                         android:textColor="#FFFFFF"/>
                 </LinearLayout>
 
@@ -265,7 +269,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/activity_signup_switch_text_3"
                         android:text="@string/activity_signup_popup_number"
-                        android:textSize="12dp"
+                        android:textSize="12sp"
                         android:textColor="#FFFFFF"/>
                 </LinearLayout>
 
@@ -287,7 +291,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/activity_signup_switch_text_4"
                         android:text="@string/activity_signup_popup_specialcharacter"
-                        android:textSize="12dp"
+                        android:textSize="12sp"
                         android:textColor="#FFFFFF"/>
                 </LinearLayout>
 
@@ -309,7 +313,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/activity_signup_switch_text_5"
                         android:text="@string/activity_signup_popup_length"
-                        android:textSize="12dp"
+                        android:textSize="12sp"
                         android:textColor="#FFFFFF"/>
                 </LinearLayout>
                 <TextView
@@ -319,7 +323,7 @@
                     android:paddingLeft="37.8dp"
                     android:layout_weight="1"
                     android:text="Time to crack: -- seconds"
-                    android:textSize="12dp"
+                    android:textSize="12sp"
                     android:textColor="#FFFFFF"/>
             </LinearLayout>
 
