@@ -241,6 +241,26 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             }
         });
 
+        mToEdittext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListviewContainer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mToEdittext.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if(mListviewContainer.getVisibility()==View.VISIBLE) {
+                        mListviewContainer.setVisibility(View.GONE);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         mListingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -324,27 +344,30 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
         mPreviewFrame.removeView(mPreview);
         mPreviewFrame.addView(mPreview);
         if(mCamera!=null)
             mCamera.setPreviewCallback(SendFragment.this);
         Camera.Parameters params = mCamera.getParameters();
-        List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-        if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        mCamera.setParameters(params);
+        if(params!=null) {
+            List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
+            if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            mCamera.setParameters(params);
+        }
 
     }
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
-        if(info!=null && info.getSzAddress()!=null) {
-            stopCamera();
-            GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+        if(mListviewContainer.getVisibility()==View.GONE) {
+            CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
+            if(info!=null && info.getSzAddress()!=null) {
+                stopCamera();
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            }
         }
     }
 
