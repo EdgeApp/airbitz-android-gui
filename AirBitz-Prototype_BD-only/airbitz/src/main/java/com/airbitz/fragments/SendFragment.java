@@ -203,17 +203,20 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     dummyFocus.requestFocus();
 
-                    boolean bIsUUID = false;
                     String strTo = mToEdittext.getText().toString();
-                    if(mCoreAPI.CheckURIResults(strTo)!=null) {
-                        GotoSendConfirmation(strTo, 0, "", bIsUUID);
-                    }
-                    else {
-                        if(strTo.length()>0)
-                            showMessageAlert("", getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
-                        else
-                            mListingListView.setVisibility(View.GONE);
+                    if(strTo==null || strTo.isEmpty()) {
                         hideKeyboard();
+                        mListviewContainer.setVisibility(View.GONE);
+                        return true;
+                    }
+
+                    boolean bIsUUID = false;
+                    CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
+                    if(results.address!=null) {
+                        GotoSendConfirmation(strTo, 0, "", bIsUUID);
+                    } else {
+                        hideKeyboard();
+                        ((NavigationActivity) getActivity()).showOkMessageDialog(getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
                     }
                     return true;
                 }
@@ -223,14 +226,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
         mToEdittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -307,11 +306,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     }
 
     private void hideKeyboard() {
-        final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-        if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(0, 0);
-        }
+        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     public void stopCamera() {
@@ -534,20 +530,4 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         super.onStop();
         stopCamera();
     }
-
-    private void showMessageAlert(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
 }
