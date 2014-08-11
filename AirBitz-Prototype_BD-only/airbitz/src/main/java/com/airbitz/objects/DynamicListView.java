@@ -299,6 +299,21 @@ public class DynamicListView extends ListView {
                 mDownX = (int)event.getX();
                 mDownY = (int)event.getY();
                 mActivePointerId = event.getPointerId(0);
+                int[] listViewCoords = new int[2];
+                dLV.getLocationOnScreen(listViewCoords);
+                int x = (int) event.getRawX() - listViewCoords[0];
+                int y = (int) event.getRawY() - listViewCoords[1];
+                View child;
+                Rect rect = new Rect();
+                for (int i = 0; i < dLV.getChildCount(); i++) {
+                    child = dLV.getChildAt(i);
+                    child.getHitRect(rect);
+                    if (rect.contains(x, y)) {
+                        child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
+                        break;
+                    }
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mActivePointerId == INVALID_POINTER_ID) {
