@@ -55,8 +55,10 @@
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_username_details">Please enter a User Name</string>
 
-    <!-- Strings for Signup -->
+    <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>
+    <string name="activity_navigation_signin_failed">Sign-in failed</string>
+    <string name="activity_navigation_signin_failed_unexpected">Sign-in failed unexpectedly</string>
     <string name="activity_signup_failed">Sign Up failed</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
@@ -246,19 +248,6 @@
     <string name="received_success_received_title">Received!</string>
     <string name="question">Question</string>
 
-    <string-array name="currency_selection">
-        <item>CAD</item>
-        <item>USD</item>
-    </string-array>
-    <string-array name="transaction_categories_list">
-        <item>Income:</item>
-        <item>Expense:</item>
-        <item>Transfer:</item>
-        <item>Exchange:</item>
-    </string-array>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!-- Errors -->
     <string name="error_invalid_recovery_title">Sign Up Failed</string>
     <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
@@ -270,5 +259,15 @@
     <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
     <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
     <string name="title_activity_base">BaseActivity</string>
+
+    <!-- Other -->
+    <string name="remote_password_change_title">Password Changed Remotely</string>
+    <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
+    <string name="received_bitcoin_title">Received Bitcoin</string>
+    <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
+    <string name="received_bitcoin_positive">Details</string>
+    <string name="received_bitcoin_negative">Ignore</string>
+
+
 
 </resources>

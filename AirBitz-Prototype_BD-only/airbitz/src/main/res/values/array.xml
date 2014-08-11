@@ -190,4 +190,11 @@
         <item>Transfer:Wallet:Dark Wallet</item>
     </array>
 
+    <string-array name="transaction_categories_list">
+        <item>Income:</item>
+        <item>Expense:</item>
+        <item>Transfer:</item>
+        <item>Exchange:</item>
+    </string-array>
+
 </resources>
