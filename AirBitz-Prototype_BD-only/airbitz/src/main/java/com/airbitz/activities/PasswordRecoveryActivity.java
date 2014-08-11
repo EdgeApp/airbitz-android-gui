@@ -157,7 +157,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         String answers = "";
 
         if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
-            ShowOkMessageDialog("Please enter your correct password so your answers can be changed.");
+            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
 
@@ -187,10 +187,10 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                 mSaveQuestionsTask.execute((Void) null);
             } else {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -377,9 +377,9 @@ public class PasswordRecoveryActivity extends BaseActivity {
             mSaveQuestionsTask = null;
             showModalProgress(false);
             if (!success) {
-                ShowOkMessageDialog("Save recovery answers failed.");
+                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                ShowMessageAlertAndExit(getString(R.string.activity_recovery_done_details));
+                ShowMessageAlertAndExit(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
             }
         }
 

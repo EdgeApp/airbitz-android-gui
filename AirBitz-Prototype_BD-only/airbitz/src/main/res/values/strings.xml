@@ -90,7 +90,7 @@
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
-    <string name="activity_signup_insufficient_pin">Withdrawl PIN must be 4 digits</string>
+    <string name="activity_signup_insufficient_pin">Withdrawal PIN must be 4 digits</string>
     <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
     <string name="activity_signup_time_to_crack">Time to crack: </string>
     <string name="activity_signup_seconds">seconds</string>
@@ -116,6 +116,9 @@
     <string name="item_recovery_spinner_arrow_description">Drop down arrow</string>
     <string name="activity_recovery_done_title">Recovery Questions Set</string>
     <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up. When recovering your password, your answers must match exactly in order to succeed.</string>
+    <string name="activity_recovery_error_title">Password Recovery failure</string>
+    <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
+    <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
@@ -169,6 +172,7 @@
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
+    <string name="fragment_send_failure_title">Send failure</string>
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
