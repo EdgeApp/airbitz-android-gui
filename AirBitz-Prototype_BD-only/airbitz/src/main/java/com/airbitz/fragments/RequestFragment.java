@@ -340,7 +340,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
             }
         }else if(btc && bitcoin.isEmpty()){
             mFiatField.setText("0.00");
-            mBitcoinField.setText("0.00000");
         }else if(!btc && fiat.isEmpty()){
             String s = mCoreAPI.getDefaultBTCDenomination();
             if(s.equals("mBTC")) {
