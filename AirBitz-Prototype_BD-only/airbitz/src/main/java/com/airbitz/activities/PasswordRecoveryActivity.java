@@ -58,14 +58,13 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
     private GetRecoveryQuestions mFetchAllQuestionsTask;
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
-    private List<String> currentStringCategory1;
+    private List<String> mStringQuestions;
     private List<String> currentStringCategory2;
+    private List<String> currentStringCategory3;
+    private List<String> currentStringCategory4;
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
-    private List<String> currentNumericCategory1;
+    private List<String> mNumericQuestions;
     private List<String> currentNumericCategory2;
-    private Map<String, Integer> mAddressCategory = new HashMap<String, Integer>(); // Question, MinLength
-    private List<String> currentAddressCategory1;
-    private List<String> currentAddressCategory2;
 
     private SaveQuestionsTask mSaveQuestionsTask;
 
@@ -112,12 +111,12 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         mLayoutRecovery = (RelativeLayout) findViewById(R.id.activity_recovery_container_layout);
 
-        currentStringCategory1 = new ArrayList<String>();
+        mStringQuestions = new ArrayList<String>();
         currentStringCategory2 = new ArrayList<String>();
-        currentNumericCategory1 = new ArrayList<String>();
+        currentStringCategory3 = new ArrayList<String>();
+        currentStringCategory4 = new ArrayList<String>();
+        mNumericQuestions = new ArrayList<String>();
         currentNumericCategory2 = new ArrayList<String>();
-        currentAddressCategory1 = new ArrayList<String>();
-        currentAddressCategory2 = new ArrayList<String>();
 
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
@@ -196,12 +195,12 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<View>();
-        View mQuestionViewString1 = new QuestionView(this, currentStringCategory1,currentStringCategory2, "string");
-        View mQuestionViewString2 = new QuestionView(this, currentStringCategory2,currentStringCategory1, "string");
-        View mQuestionViewString3 = new QuestionView(this, currentNumericCategory1,currentNumericCategory2, "numeric");
-        View mQuestionViewString4 = new QuestionView(this, currentNumericCategory2,currentNumericCategory1, "numeric");
-        View mQuestionViewString5 = new QuestionView(this, currentAddressCategory1,currentAddressCategory2, "address");
-        View mQuestionViewString6 = new QuestionView(this, currentAddressCategory2,currentAddressCategory1, "address");
+        View mQuestionViewString1 = new QuestionView(this, mStringQuestions,currentStringCategory2, "string");
+        View mQuestionViewString2 = new QuestionView(this, currentStringCategory2, mStringQuestions, "string");
+        View mQuestionViewString3 = new QuestionView(this, mStringQuestions,currentStringCategory2, "string");
+        View mQuestionViewString4 = new QuestionView(this, currentStringCategory2, mStringQuestions, "string");
+        View mQuestionViewString5 = new QuestionView(this, currentNumericCategory2, mNumericQuestions, "numeric");
+        View mQuestionViewString6 = new QuestionView(this, currentNumericCategory2, mNumericQuestions, "numeric");
         mQuestionViews.add(mQuestionViewString1);
         mQuestionViews.add(mQuestionViewString2);
         mQuestionViews.add(mQuestionViewString3);
@@ -239,24 +238,14 @@ public class PasswordRecoveryActivity extends BaseActivity {
                         String category = choice.getCategory();
                         if(category.equals("string")) {
                             mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                            currentStringCategory1.add(choice.getQuestion());
-                            currentStringCategory2.add(choice.getQuestion());
+                            mStringQuestions.add(choice.getQuestion());
                         } else if(category.equals("numeric")) {
                             mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                            currentNumericCategory1.add(choice.getQuestion());
-                            currentNumericCategory2.add(choice.getQuestion());
-                        } else if(category.equals("address")) {
-                            mAddressCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                            currentAddressCategory1.add(choice.getQuestion());
-                            currentAddressCategory2.add(choice.getQuestion());
+                            mNumericQuestions.add(choice.getQuestion());
                         }
                     }
-                    currentStringCategory1.add(getString(R.string.activity_recovery_question_default));
-                    currentStringCategory2.add(getString(R.string.activity_recovery_question_default));
-                    currentNumericCategory1.add(getString(R.string.activity_recovery_question_default));
-                    currentNumericCategory2.add(getString(R.string.activity_recovery_question_default));
-                    currentAddressCategory1.add(getString(R.string.activity_recovery_question_default));
-                    currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
+                    mStringQuestions.add(getString(R.string.activity_recovery_question_default));
+                    mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
                     return true;
                 } else {
                     Common.LogD(TAG, "No Questions");
@@ -298,36 +287,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            mChoices = mCoreAPI.GetQuestionChoices();
-            if(mChoices.length > 0) {
-
-                for(CoreAPI.QuestionChoice choice : mChoices) {
-                    String category = choice.getCategory();
-                    if(category.equals("string")) {
-                        mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        currentStringCategory1.add(choice.getQuestion());
-                        currentStringCategory2.add(choice.getQuestion());
-                    } else if(category.equals("numeric")) {
-                        mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        currentNumericCategory1.add(choice.getQuestion());
-                        currentNumericCategory2.add(choice.getQuestion());
-                    } else if(category.equals("address")) {
-                        mAddressCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        currentAddressCategory1.add(choice.getQuestion());
-                        currentAddressCategory2.add(choice.getQuestion());
-                    }
-                }
-                currentStringCategory1.add(getString(R.string.activity_recovery_question_default));
-                currentStringCategory2.add(getString(R.string.activity_recovery_question_default));
-                currentNumericCategory1.add(getString(R.string.activity_recovery_question_default));
-                currentNumericCategory2.add(getString(R.string.activity_recovery_question_default));
-                currentAddressCategory1.add(getString(R.string.activity_recovery_question_default));
-                currentAddressCategory2.add(getString(R.string.activity_recovery_question_default));
-                return true;
-            } else {
-                Common.LogD(TAG, "No Questions");
-                return false;
-            }
+            return false;
         }
 
         @Override
@@ -473,31 +433,31 @@ public class PasswordRecoveryActivity extends BaseActivity {
                                 }
                             }
                         }
-                    }else if(mType.compareTo("address")==0){
-                        for(String s: mAddressCategory.keySet()){
-                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
-                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mAddressCategory.get(s);
-                                    if(!chosenQuestion.isEmpty()) {
-                                        otherQuestionList.add(chosenQuestion);
-                                    }
-                                    chosenQuestion = s;
-                                    otherQuestionList.remove(s);
-                                    List<String> tempList = new ArrayList<String>();
-                                    for(String quest: mAddressCategory.keySet()){
-                                        if(otherQuestionList.contains(quest)){
-                                            tempList.add(quest);
-                                        }
-                                    }
-                                    tempList.add("Question");
-                                    otherQuestionList.clear();
-                                    otherQuestionList.addAll(tempList);
-                                    //mAdapter.notifyDataSetChanged();
-                                }else{
-                                    mCharLimit = 0;
-                                }
-                            }
-                        }
+//                    }else if(mType.compareTo("address")==0){
+//                        for(String s: mAddressCategory.keySet()){
+//                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
+//                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+//                                    mCharLimit = mAddressCategory.get(s);
+//                                    if(!chosenQuestion.isEmpty()) {
+//                                        otherQuestionList.add(chosenQuestion);
+//                                    }
+//                                    chosenQuestion = s;
+//                                    otherQuestionList.remove(s);
+//                                    List<String> tempList = new ArrayList<String>();
+//                                    for(String quest: mAddressCategory.keySet()){
+//                                        if(otherQuestionList.contains(quest)){
+//                                            tempList.add(quest);
+//                                        }
+//                                    }
+//                                    tempList.add("Question");
+//                                    otherQuestionList.clear();
+//                                    otherQuestionList.addAll(tempList);
+//                                    //mAdapter.notifyDataSetChanged();
+//                                }else{
+//                                    mCharLimit = 0;
+//                                }
+//                            }
+//                        }
                     }
                     if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
                         mText.setFocusableInTouchMode(true);  //if this is not already set
@@ -574,11 +534,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if(hasFocus) {
-                        int height = mLayoutRecovery.getRootView().getHeight() - mLayoutRecovery.getHeight();
-                        if (height > 100) {
-                            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                        }
+                        view.performClick();
                     }
                 }
             });
