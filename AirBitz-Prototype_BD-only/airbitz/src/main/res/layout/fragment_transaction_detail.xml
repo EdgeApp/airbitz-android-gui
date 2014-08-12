@@ -163,7 +163,6 @@
                     android:layout_height="25.2dp"
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal"
-                    android:layout_below="@id/transaction_detail_layout_sent_from"
                     android:gravity="center">
 
                     <TextView
@@ -186,7 +185,6 @@
                         style="@style/BlackDropShadow"
                         android:layout_width="180dp"
                         android:layout_height="28dp"
-                        android:hint="0.00014303"
                         android:layout_weight="10"
                         android:textColorHint="@android:color/white"
                         android:textStyle="bold"
@@ -201,13 +199,14 @@
                         style="@style/BlackDropShadow"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:text="+ 0.01"
-                        android:textStyle="bold"
                         android:layout_weight="1"
+                        android:text="+0.0001"
+                        android:singleLine="true"
+                        android:ellipsize="none"
                         android:textColor="@android:color/white"
                         android:background="@android:color/transparent"
                         android:layout_marginRight="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:layout_gravity="center_vertical"
                         android:textSize="16sp"/>
 
@@ -238,7 +237,6 @@
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:hint="0.08"
                     android:layout_weight="10"
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_textfield"
@@ -304,7 +302,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
-                    android:text="Transfer:Wallet:Spending Wallet"
                     android:imeOptions="actionDone"
                     android:textSize="16sp"
                     android:textCursorDrawable="@drawable/bold_cursor_white"

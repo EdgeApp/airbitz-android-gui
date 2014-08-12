@@ -317,10 +317,9 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void onButtonClick(View v) {
+        mCalculatorView.onButtonClick(v);
         if(v.getTag().toString().equals("done")) {
             hideCalculator();
-        } else {
-            mCalculatorView.onButtonClick(v);
         }
     }
 

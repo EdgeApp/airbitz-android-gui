@@ -308,7 +308,7 @@
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:password="true"
-                    android:inputType="phone"
+                    android:inputType="numberPassword"
                     android:hint=""
                     android:layout_weight="1"
                     android:textColorHint="@android:color/white"
