@@ -6,8 +6,9 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
-        maven { url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/' }
-
+        maven {
+            url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.+'
@@ -19,10 +20,7 @@ apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'http://download.crashlytics.com/maven'
-        }
-
+    maven { url 'http://download.crashlytics.com/maven' }
     maven {
         url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/'
     }
@@ -30,7 +28,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1"
+    buildToolsVersion '19.1'
 
     defaultConfig {
         minSdkVersion 16
