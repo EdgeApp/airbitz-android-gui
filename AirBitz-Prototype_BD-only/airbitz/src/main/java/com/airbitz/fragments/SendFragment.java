@@ -311,6 +311,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                         GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
                     }
                 }
+            } else {
+
             }
         }
 
