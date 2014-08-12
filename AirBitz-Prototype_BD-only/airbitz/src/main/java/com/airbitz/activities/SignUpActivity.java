@@ -120,7 +120,7 @@ public class SignUpActivity extends BaseActivity {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mHintTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
