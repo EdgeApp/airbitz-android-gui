@@ -17,12 +17,14 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -219,6 +221,20 @@ public class SendConfirmationFragment extends Fragment {
         };
         mPinEdittext.addTextChangedListener(mPINTextWatcher);
 
+        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d("SendConfirmationFragment", "PIN field focus changed");
+                if(hasFocus) {
+                    mAutoUpdatingTextFields = true;
+                    showPINkeyboard();
+                } else {
+                    mAutoUpdatingTextFields = false;
+                }
+            }
+        });
+
         mBTCTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
@@ -252,20 +268,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         };
         mFiatField.addTextChangedListener(mFiatTextWatcher);
-
-        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "PIN field focus changed");
-                if(hasFocus) {
-                    mAutoUpdatingTextFields = true;
-                    showPINkeyboard();
-                } else {
-                    mAutoUpdatingTextFields = false;
-                }
-            }
-        });
 
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -320,33 +322,46 @@ public class SendConfirmationFragment extends Fragment {
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.onTouchEvent(event);
                 edittext.setInputType(inType);
+                ((NavigationActivity) getActivity()).showCalculator();
                 return true; // the listener has consumed the event
             }
         };
 
+        View.OnKeyListener keyListener = new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if(keyEvent.getAction() == EditorInfo.IME_ACTION_DONE) {
+                    mPinEdittext.requestFocus();
+                }
+                return false;
+            }
+        };
+
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
+        mBitcoinField.setOnKeyListener(keyListener);
         mFiatField.setOnTouchListener(preventOSKeyboard);
-
-        Shader textShader = new LinearGradient(0, 0, 0, 20,
-                new int[]{Color.parseColor("#ffffff"), Color.parseColor("#addff1")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP);
-        mSlideTextView.getPaint().setShader(textShader);
-
-
-        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return false;
-            }
-        });
+        mFiatField.setOnKeyListener(keyListener);
+//
+//        Shader textShader = new LinearGradient(0, 0, 0, 20,
+//                new int[]{Color.BLACK, R.color.listitem_normal},
+//                new float[]{0, 1}, Shader.TileMode.CLAMP);
+//        mSlideTextView.getPaint().setShader(textShader);
 
 
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return false;
-            }
-        });
+//        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return false;
+//            }
+//        });
+//
+//
+//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return false;
+//            }
+//        });
 
         mSlideLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

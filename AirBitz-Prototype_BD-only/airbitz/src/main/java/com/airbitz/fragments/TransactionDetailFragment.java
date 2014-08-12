@@ -73,7 +73,7 @@ import java.util.List;
  * Created on 2/20/14.
  */
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
-
+    private final String TAG = getClass().getSimpleName();
     private HighlightOnPressButton mDoneButton;
     private HighlightOnPressButton mAdvanceDetailsButton;
     private TextView mAdvancedDetailTextView;
@@ -174,7 +174,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
             String txId = bundle.getString(Transaction.TXID);
             if (walletUUID.isEmpty()) {
-                Log.d("TransactionDetailFragement", "no detail info");
+                Common.LogD(TAG, "no detail info");
             } else {
                 mCoreAPI = CoreAPI.getApi();
                 mWallet = mCoreAPI.getWallet(walletUUID);
@@ -230,7 +230,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mFiatValueEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
         mFiatFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_fiat_fee_value);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
@@ -550,6 +550,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    mFiatValueEdittext.setText("");
                     mCalculator.setEditText(mFiatValueEdittext);
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
@@ -830,14 +831,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
     }
 
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        new BusinessCategoryAsyncTask().execute("name");
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -847,13 +840,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mTransaction.setName(mPayeeEditText.getText().toString());
         mTransaction.setCategory(mCategoryEdittext.getText().toString());
         mTransaction.setNotes(mNoteEdittext.getText().toString());
-        mTransaction.setAmountFiat(Double.valueOf(mFiatValueEdittext.getText().toString()));
+        double amountFiat;
+        try {
+            amountFiat = Double.valueOf(mFiatValueEdittext.getText().toString());
+        } catch (Exception e) {
+            amountFiat = 0.0;
+        }
+        mTransaction.setAmountFiat(amountFiat);
         mCoreAPI.storeTransaction(mTransaction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     public void getContactsList(){
