@@ -3,7 +3,9 @@ package com.airbitz.activities;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -40,7 +43,7 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpActivity extends BaseActivity {
-    private final String MESSAGE_TITLE = "Change Password";
+    private final String SUCCESS_TITLE = "Change Password";
 
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
@@ -120,7 +123,7 @@ public class SignUpActivity extends BaseActivity {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mHintTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -503,19 +506,19 @@ public class SignUpActivity extends BaseActivity {
             if (success) {
                 AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    ShowMessageAlertAndExit(MESSAGE_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
+                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
