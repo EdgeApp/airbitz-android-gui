@@ -747,7 +747,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
         if(mFromSend) {
-            String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
+            String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false);
             mBTCFeeTextView.setText(feeFormatted);
             mBTCFeeTextView.setVisibility(View.VISIBLE);
         } else {
