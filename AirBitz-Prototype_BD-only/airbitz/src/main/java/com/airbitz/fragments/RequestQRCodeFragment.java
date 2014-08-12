@@ -96,7 +96,7 @@ public class RequestQRCodeFragment extends Fragment {
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
-        mBitcoinAmount.setText(bundle.getString(RequestFragment.BITCOIN_VALUE));
+        mBitcoinAmount.setText(mCoreAPI.getDefaultBTCSymbol()+" "+bundle.getString(RequestFragment.BITCOIN_VALUE));
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 

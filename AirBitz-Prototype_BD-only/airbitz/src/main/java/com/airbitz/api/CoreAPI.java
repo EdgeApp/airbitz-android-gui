@@ -6,12 +6,9 @@ import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.fragments.WalletPasswordFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
@@ -365,7 +362,7 @@ public class CoreAPI {
         return mBTCDenominations[bitcoinDenomination.getDenominationType()];
     }
 
-    public String getUserBTCSymbol() {
+    public String getDefaultBTCSymbol() {
         tABC_AccountSettings settings = loadAccountSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
@@ -1125,7 +1122,7 @@ public class CoreAPI {
                 pretext += "-";
             }
             if(withSymbol) {
-                pretext += " "+ getUserBTCSymbol();
+                pretext += " "+ getDefaultBTCSymbol();
             }
             return pretext+pFormatted;
         }

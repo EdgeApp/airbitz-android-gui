@@ -109,7 +109,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         long transactionFees = transaction.getMinerFees() + transaction.getABFees();
         if(mSearch){
             String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
-            viewHolder.creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol()+" "+btcCurrency);
+            viewHolder.creditAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol()+" "+btcCurrency);
             String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
             viewHolder.debitAmountTextView.setText(fiatCurrency);
             if(transactionSatoshis >= 0){
@@ -129,8 +129,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
                 String totalCurrency = mCoreAPI.FormatDefaultCurrency(mRunningSatoshi[position], true, false);
 
-                viewHolder.creditAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + walletCurrency);
-                viewHolder.debitAmountTextView.setText(mCoreAPI.getUserBTCSymbol() + " " + totalCurrency);
+                viewHolder.creditAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol() + " " + walletCurrency);
+                viewHolder.debitAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol() + " " + totalCurrency);
             } else {
                 String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
                 String totalCurrency = mCoreAPI.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
