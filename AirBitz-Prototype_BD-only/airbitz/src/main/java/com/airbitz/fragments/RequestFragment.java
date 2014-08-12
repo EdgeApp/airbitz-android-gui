@@ -94,14 +94,19 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         if(bundle!=null && bundle.getString(FROM_UUID)!=null) {
             uuid = bundle.getString(FROM_UUID);
         }
-        for(int i=0; i<mWallets.size(); i++) {
-            if(!mWallets.get(i).isArchived()) {
-                mWalletNames.add(mWallets.get(i).getName());
-                if (mWallets.get(i).getUUID().equals(uuid)) {
-                    mFromIndex = i;
-                    mSelectedWallet = mWallets.get(i);
+        if(uuid!=null && mWallets!=null) {
+            for(int i=0; i<mWallets.size(); i++) {
+                if(!mWallets.get(i).isArchived()) {
+                    mWalletNames.add(mWallets.get(i).getName());
+                    if (mWallets.get(i).getUUID().equals(uuid)) {
+                        mFromIndex = i;
+                        mSelectedWallet = mWallets.get(i);
+                    }
                 }
             }
+        } else {
+            mFromIndex=0;
+            mSelectedWallet = mWallets.get(0);
         }
     }
 
