@@ -42,6 +42,7 @@ import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
+import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 import com.crashlytics.android.Crashlytics;
 
@@ -72,8 +73,7 @@ public class NavigationActivity extends BaseActivity
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
-    private LinearLayout mCalculatorView;
-    private RelativeLayout mCalculatorLayout;
+    private Calculator mCalculatorView;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
 
@@ -116,8 +116,7 @@ public class NavigationActivity extends BaseActivity
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mCalculatorView = (LinearLayout) findViewById(R.id.calculator_layout);
-        mCalculatorLayout = (RelativeLayout) findViewById(R.id.navigation_calculator_layout);
+        mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
 
         setTypeFaces();
 
@@ -295,14 +294,14 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
-    public LinearLayout getCalculatorView() {
+    public Calculator getCalculatorView() {
         return mCalculatorView;
     }
 
     public void hideCalculator() {
-        if(mCalculatorLayout.getVisibility()==View.VISIBLE) {
-            mCalculatorLayout.setVisibility(View.GONE);
-            mCalculatorLayout.setEnabled(false);
+        if(mCalculatorView.getVisibility()==View.VISIBLE) {
+            mCalculatorView.setVisibility(View.GONE);
+            mCalculatorView.setEnabled(false);
             showNavBar();
         }
     }
@@ -310,16 +309,24 @@ public class NavigationActivity extends BaseActivity
     public void showCalculator() {
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
 
-        if(mCalculatorLayout.getVisibility()!=View.VISIBLE) {
+        if(mCalculatorView.getVisibility()!=View.VISIBLE) {
             hideNavBar();
-            mCalculatorLayout.setVisibility(View.VISIBLE);
-            mCalculatorLayout.setEnabled(true);
+            mCalculatorView.setVisibility(View.VISIBLE);
+            mCalculatorView.setEnabled(true);
+        }
+    }
+
+    public void onButtonClick(View v) {
+        if(v.getTag().toString().equals("done")) {
+            hideCalculator();
+        } else {
+            mCalculatorView.onButtonClick(v);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(mCalculatorLayout.getVisibility()==View.VISIBLE){
+        if(mCalculatorView.getVisibility()==View.VISIBLE){
             hideCalculator();
         } else {
             if (mNavStacks[mNavThreadId].size() == 1) {
@@ -460,7 +467,6 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void OnRemotePasswordChange() {
         showRemotePasswordChangeDialog();
-
     }
 
     private void startReceivedSuccess() {
@@ -608,8 +614,7 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
-
-    //************************** Service support
+        //************************** Service support
 
     private void sendCredentialsToService(String username, String password) {
         final Intent intent = new Intent(AirbitzService.SET_CREDENTIALS);

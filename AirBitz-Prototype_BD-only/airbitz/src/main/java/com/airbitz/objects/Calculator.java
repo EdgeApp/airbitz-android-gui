@@ -1,10 +1,23 @@
-package com.airbitz.utils;
+package com.airbitz.objects;
+
+import android.content.Context;
+import android.text.Editable;
+import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import com.airbitz.R;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by tom on 5/7/14.
  * from http://innovativenetsolutions.com/2013/01/calculator-app/
  */
-public class CalculatorBrain {
+public class Calculator extends LinearLayout {
     // 3 + 6 = 9
     // 3 & 6 are called the operand.
     // The + is called the operator.
@@ -13,6 +26,14 @@ public class CalculatorBrain {
     private double mWaitingOperand;
     private String mWaitingOperator;
     private double mCalculatorMemory;
+
+    private EditText mEditText;
+    private Boolean userIsInTheMiddleOfTypingANumber = false;
+    DecimalFormat mDF = new DecimalFormat("@###########");
+
+    private static final String DIGITS = "0123456789.";
+
+    View mView;
 
     // operator types
     public static final String ADD = "+";
@@ -37,13 +58,37 @@ public class CalculatorBrain {
 
     // public static final String EQUALS = "=";
 
+    public Calculator(Context context) {
+        super(context);
+        init();
+    }
+
+    public Calculator(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public Calculator(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
     // constructor
-    public CalculatorBrain() {
-        // initialize variables upon start
+    private void init() {
+        mView = inflate(getContext(), R.layout.calculator, this);
+    }
+
+    // This is where the text enters and the results return
+    public void setEditText(EditText editText) {
+        mEditText = editText;
         mOperand = 0;
         mWaitingOperand = 0;
         mWaitingOperator = "";
         mCalculatorMemory = 0;
+        mDF.setMinimumFractionDigits(0);
+        mDF.setMaximumFractionDigits(6);
+        mDF.setMinimumIntegerDigits(1);
+        mDF.setMaximumIntegerDigits(8);
     }
 
     public void setOperand(double operand) {
@@ -140,4 +185,68 @@ public class CalculatorBrain {
             }
         }
     }
+
+    public void onButtonClick(View v) {
+        if(mEditText==null)
+            return;
+
+        Editable editable = mEditText.getText();
+        int start = mEditText.getSelectionStart();
+        // delete the selection, if chars are selected:
+        int end = mEditText.getSelectionEnd();
+        if (end > start) {
+            editable.delete(start, end);
+        }
+        String buttonTag = v.getTag().toString();
+
+        if(buttonTag.equals("back")) {
+            String s = mEditText.getText().toString();
+            if (s.length() == 1) { // 1 character, just set to 0
+                performOperation(Calculator.CLEAR);
+                mEditText.setText("");
+            } else if (s.length() > 1) {
+                mEditText.setText(s.substring(0, s.length() - 1));
+            }
+        } else if(buttonTag.equals("done")) {
+                mEditText.dispatchKeyEvent(new KeyEvent(EditorInfo.IME_ACTION_DONE, KeyEvent.KEYCODE_BACK));
+        } else if (DIGITS.contains(buttonTag)) {
+
+            // digit was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+                if (buttonTag.equals(".") && mEditText.getText().toString().contains(".")) {
+                    // ERROR PREVENTION
+                    // Eliminate entering multiple decimals
+                } else {
+                    mEditText.append(buttonTag);
+                }
+            } else {
+                if (buttonTag.equals(".")) {
+                    // ERROR PREVENTION
+                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                    // before the decimal
+                    mEditText.setText(0 + buttonTag);
+                } else {
+                    mEditText.setText(buttonTag);
+                }
+                userIsInTheMiddleOfTypingANumber = true;
+            }
+
+        } else {
+            // operation was pressed
+            if (userIsInTheMiddleOfTypingANumber) {
+                try {
+                    setOperand(Double.parseDouble(mEditText.getText().toString()));
+                } catch(NumberFormatException e) { // ignore any non-double
+                }
+                userIsInTheMiddleOfTypingANumber = false;
+            }
+
+            performOperation(buttonTag);
+            mEditText.setText(mDF.format(getResult()));
+            if(buttonTag.equals("=")) {
+            }
+        }
+
+    }
+
 }

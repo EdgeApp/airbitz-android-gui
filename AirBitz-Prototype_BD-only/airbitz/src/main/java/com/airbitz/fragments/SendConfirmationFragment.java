@@ -38,14 +38,12 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.utils.CalculatorBrain;
-
-import java.text.DecimalFormat;
+import com.airbitz.objects.Calculator;
 
 /**
  * Created on 2/21/14.
  */
-public class SendConfirmationFragment extends Fragment implements View.OnClickListener {
+public class SendConfirmationFragment extends Fragment {
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
@@ -79,14 +77,9 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
     private float dX = 0;
     private float rX = 0;
 
-    private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private CalculatorBrain mCalculatorBrain;
-    private static final String DIGITS = "0123456789.";
-
-    DecimalFormat mDF = new DecimalFormat("@###########");
+    private Calculator mCalculator;
 
     private RelativeLayout mSlideLayout;
-
 
     private RelativeLayout mParentLayout;
 
@@ -144,6 +137,8 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_back_button);
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
+        mCalculator = ((NavigationActivity)getActivity()).getCalculatorView();
+
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mSlideTextView = (TextView) mView.findViewById(R.id.textview_slide);
@@ -180,12 +175,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
-
-        mCalculatorBrain = new CalculatorBrain();
-        mDF.setMinimumFractionDigits(0);
-        mDF.setMaximumFractionDigits(6);
-        mDF.setMinimumIntegerDigits(1);
-        mDF.setMaximumIntegerDigits(8);
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
@@ -293,9 +282,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
-                    showCustomKeyboard(view);
+                    mCalculator.setEditText(mBitcoinField);
+                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    hideCustomKeyboard();
+                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });
@@ -315,9 +305,10 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
                     mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
                     mConversionTextView.setTextColor(Color.WHITE);
                     mAutoUpdatingTextFields = false;
-                    showCustomKeyboard(view);
+                    mCalculator.setEditText(mFiatField);
+                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    hideCustomKeyboard();
+                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });
@@ -668,128 +659,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         alert.show();
     }
 
-    private void setupCalculator(View l) {
-        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
-
-        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
-    }
-
-    private void removeCalculator(View l) {
-        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
-
-        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
-    }
-
-    @Override
-    public void onClick(View v) {
-        View focusCurrent = getActivity().getWindow().getCurrentFocus();
-        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
-        EditText display = (EditText) focusCurrent;
-        Editable editable = display.getText();
-        int start = display.getSelectionStart();
-        // delete the selection, if chars are selected:
-        int end = display.getSelectionEnd();
-        if (end > start) {
-            editable.delete(start, end);
-        }
-        String buttonTag = v.getTag().toString();
-
-        if(buttonTag.equals("done")) {
-            hideCustomKeyboard();
-            mPinEdittext.requestFocus();
-        } else if(buttonTag.equals("back")) {
-            String s = display.getText().toString();
-            if(s.length() == 1) { // 1 character, just set to 0
-                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
-                display.setText("0");
-            } else if (s.length() > 1) {
-                display.setText(s.substring(0, s.length()-1));
-            }
-
-        } else if (DIGITS.contains(buttonTag)) {
-
-            // digit was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
-                    // ERROR PREVENTION
-                    // Eliminate entering multiple decimals
-                } else {
-                    display.append(buttonTag);
-                }
-            } else {
-                if (buttonTag.equals(".")) {
-                    // ERROR PREVENTION
-                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
-                    // before the decimal
-                    display.setText(0 + buttonTag);
-                } else {
-                    display.setText(buttonTag);
-                }
-                userIsInTheMiddleOfTypingANumber = true;
-            }
-
-        } else {
-            // operation was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                try {
-                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
-                } catch(NumberFormatException e) { // ignore any non-double
-                }
-                userIsInTheMiddleOfTypingANumber = false;
-            }
-
-            mCalculatorBrain.performOperation(buttonTag);
-            display.setText(mDF.format(mCalculatorBrain.getResult()));
-            if(buttonTag.equals("=")) {
-//                updateTextFieldContents(display.equals(mBitcoinField));
-            }
-        }
-    }
-
-    public void hideCustomKeyboard() {
-        ((NavigationActivity) getActivity()).hideCalculator();
-    }
-
-    public void showCustomKeyboard(View v) {
-        ((NavigationActivity) getActivity()).showCalculator();
-    }
-
     @Override public void onResume() {
         mParentLayout.requestFocus(); //Take focus away first
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -805,7 +674,6 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
         mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
         super.onResume();
     }
@@ -814,6 +682,5 @@ public class SendConfirmationFragment extends Fragment implements View.OnClickLi
         super.onPause();
         if(mCalculateFeesTask !=null)
             mCalculateFeesTask.cancel(true);
-        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 }

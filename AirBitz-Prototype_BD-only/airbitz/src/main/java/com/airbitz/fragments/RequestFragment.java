@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -24,22 +23,21 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.CalculatorBrain;
+import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends Fragment implements View.OnClickListener, CoreAPI.OnExchangeRatesChange {
+public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
     private final String TAG = getClass().getSimpleName();
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
@@ -71,11 +69,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
 
     private LinearLayout mFocusDistractorLayout;
 
-    private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private CalculatorBrain mCalculatorBrain;
-    private static final String DIGITS = "0123456789.";
+    private ScrollView mScrollView;
 
-    DecimalFormat mDF = new DecimalFormat("@###########");
+    private Calculator mCalculator;
 
     private CoreAPI mCoreAPI;
     int mFromIndex =0;
@@ -120,11 +116,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mFocusDistractorLayout = (LinearLayout) mView.findViewById(R.id.layout_focus_distractor);
         mFocusDistractorLayout.requestFocus();
 
-        mCalculatorBrain = new CalculatorBrain();
-        mDF.setMinimumFractionDigits(0);
-        mDF.setMaximumFractionDigits(6);
-        mDF.setMinimumIntegerDigits(1);
-        mDF.setMaximumIntegerDigits(8);
+        mScrollView = (ScrollView) mView.findViewById(R.id.layout_amount);
+
+        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
         dummyFocus = mView.findViewById(R.id.fragment_request_dummy_focus);
 
@@ -164,8 +158,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
+                if (!mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString()) < 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
                     builder.setMessage("Invalid Amount")
                             .setCancelable(false)
                             .setNeutralButton(getResources().getString(R.string.string_ok),
@@ -173,13 +167,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
                                         }
-                                    });
+                                    }
+                            );
                     AlertDialog alert = builder.create();
                     alert.show();
-                }else{
+                } else {
                     Fragment frag = new RequestQRCodeFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString(Wallet.WALLET_NAME, ((Wallet)pickWalletSpinner.getSelectedItem()).getName());
+                    bundle.putString(Wallet.WALLET_NAME, ((Wallet) pickWalletSpinner.getSelectedItem()).getName());
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);
@@ -241,11 +236,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     edittext.setInputType(inType);
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
+                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+                    mCalculator.setEditText(mBitcoinField);
                     mBitcoinField.setText("");
                     mAutoUpdatingTextFields = false;
-                    showCustomKeyboard(view);
+                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    hideCustomKeyboard();
+                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });
@@ -261,10 +258,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
                     mBitcoinField.setText("");
+                    mFiatField.addTextChangedListener(mFiatTextWatcher);
+                    mCalculator.setEditText(mFiatField);
                     mAutoUpdatingTextFields = false;
-                    showCustomKeyboard(view);
+                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    hideCustomKeyboard();
+                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });
@@ -359,143 +358,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         mAutoUpdatingTextFields = false;
     }
 
-
-    private void setupCalculator(View l) {
-        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
-
-        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
-    }
-
-    private void removeCalculator(View l) {
-        l.findViewById(R.id.button_calc_0).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_1).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_2).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_3).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_4).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_5).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_6).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_7).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_8).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_9).setOnClickListener(null);
-
-        l.findViewById(R.id.button_calc_plus).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_minus).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_multiply).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_division).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_percent).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_equal).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_c).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_dot).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_done).setOnClickListener(null);
-        l.findViewById(R.id.button_calc_back).setOnClickListener(null);
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        View focusCurrent = getActivity().getWindow().getCurrentFocus();
-        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
-        EditText display = (EditText) focusCurrent;
-        Editable editable = display.getText();
-        int start = display.getSelectionStart();
-        // delete the selection, if chars are selected:
-        int end = display.getSelectionEnd();
-        if (end > start) {
-            editable.delete(start, end);
-        }
-        String buttonTag = v.getTag().toString();
-
-        if(buttonTag.equals("done")) {
-            hideCustomKeyboard();
-        } else if(buttonTag.equals("back")) {
-            String s = display.getText().toString();
-            if(s.length() == 1) { // 1 character, just set to 0
-                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
-                display.setText("");
-            } else if (s.length() > 1) {
-                display.setText(s.substring(0, s.length()-1));
-            }
-
-        } else if (DIGITS.contains(buttonTag)) {
-
-            // digit was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
-                    // ERROR PREVENTION
-                    // Eliminate entering multiple decimals
-                } else {
-                    display.append(buttonTag);
-                }
-            } else {
-                if (buttonTag.equals(".")) {
-                    // ERROR PREVENTION
-                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
-                    // before the decimal
-                    display.setText(0 + buttonTag);
-                } else {
-                    display.setText(buttonTag);
-                }
-                userIsInTheMiddleOfTypingANumber = true;
-            }
-
-        } else {
-            // operation was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                try {
-                    mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
-                } catch(NumberFormatException e) { // ignore any non-double
-                }
-                userIsInTheMiddleOfTypingANumber = false;
-            }
-
-            mCalculatorBrain.performOperation(buttonTag);
-            display.setText(mDF.format(mCalculatorBrain.getResult()));
-                if(buttonTag.equals("=")) {
-                    if(display.equals(mBitcoinField)) {
-                        updateTextFieldContents(true);
-                    } else {
-                        updateTextFieldContents(false);
-                    }
-                }
-        }
-
-    }
-
-    public void hideCustomKeyboard() {
-        ((NavigationActivity) getActivity()).hideCalculator();
-        dummyFocus.requestFocus();
-    }
-
-    public void showCustomKeyboard(View v) {
-        ((NavigationActivity) getActivity()).showCalculator();
-    }
-
     @Override public void onResume() {
         super.onResume();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
         setConversionText(mSelectedWallet.getCurrencyNum());
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
-
         mCoreAPI.addExchangeRateChangeListener(this);
     }
 
@@ -503,7 +371,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener, C
         super.onPause();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
-        removeCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 
     @Override
