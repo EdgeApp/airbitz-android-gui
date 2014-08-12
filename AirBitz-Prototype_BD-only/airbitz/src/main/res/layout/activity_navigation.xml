@@ -40,18 +40,15 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <com.airbitz.objects.Calculator
         android:id="@+id/navigation_calculator_layout"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
-        <include layout="@layout/keyboard_layout"
-            android:id="@+id/calculator_layout"/>
+        android:visibility="gone"/>
 
-    </RelativeLayout>
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.view.ViewPager
         android:id="@+id/navigation_view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

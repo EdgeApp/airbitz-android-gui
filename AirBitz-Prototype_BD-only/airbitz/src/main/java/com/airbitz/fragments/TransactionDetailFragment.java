@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -50,7 +49,6 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.Categories;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
@@ -58,14 +56,13 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.utils.CalculatorBrain;
+import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,8 +72,7 @@ import java.util.List;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements View.OnClickListener,
-        CurrentLocationManager.OnLocationChange{
+public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
 
     private HighlightOnPressButton mDoneButton;
     private HighlightOnPressButton mAdvanceDetailsButton;
@@ -150,10 +146,8 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     private TransactionDetailCategoryAdapter mCategoryAdapter;
     private AirbitzAPI api = AirbitzAPI.getApi();
 
-    DecimalFormat mDF = new DecimalFormat("@###########");
-    private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private CalculatorBrain mCalculatorBrain;
-    private static final String DIGITS = "0123456789.";
+    private Calculator mCalculator;
+
     private ClipboardManager clipboard;
 
     private CoreAPI mCoreAPI;
@@ -220,11 +214,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             locationEnabled = true;
         }
 
-        mCalculatorBrain = new CalculatorBrain();
-        mDF.setMinimumFractionDigits(0);
-        mDF.setMaximumFractionDigits(6);
-        mDF.setMinimumIntegerDigits(1);
-        mDF.setMaximumIntegerDigits(8);
+        mCalculator = ((NavigationActivity)getActivity()).getCalculatorView();
 
         popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
@@ -240,6 +230,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
+        mFiatValueEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
         mFiatFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_fiat_fee_value);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
@@ -311,18 +302,18 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
-//        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
-//                if(hasFocus){
-//                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-//                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
-//                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        inputMethodManager.toggleSoftInput(0, 0);
-//                    }
-//                }
-//            }
-//        });
+        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
+                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInput(0, 0);
+                    }
+                }
+            }
+        });
 
         getContactsList();
 
@@ -555,29 +546,14 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
             }
         });
 
-        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch (View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true; // the listener has consumed the event
-            }
-        };
-
-        mFiatValueEdittext.setOnTouchListener(preventOSKeyboard);
         mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                EditText edittext = (EditText) view;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.setInputType(inType);
                 if (hasFocus) {
-                    showCustomKeyboard(view);
+                    mCalculator.setEditText(mFiatValueEdittext);
+                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    hideCustomKeyboard();
+                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });
@@ -804,69 +780,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     }
 
     @Override
-    public void onClick(View v) {
-
-        View focusCurrent = getActivity().getWindow().getCurrentFocus();
-        if (focusCurrent == null || focusCurrent.getClass() != EditText.class) return;
-        EditText display = (EditText) focusCurrent;
-        Editable editable = display.getText();
-        int start = display.getSelectionStart();
-        // delete the selection, if chars are selected:
-        int end = display.getSelectionEnd();
-        if (end > start) {
-            editable.delete(start, end);
-        }
-        String buttonTag = v.getTag().toString();
-
-        if(buttonTag.equals("done")) {
-            hideCustomKeyboard();
-            mDummyFocus.requestFocus();
-        } else if(buttonTag.equals("back")) {
-            String s = display.getText().toString();
-            if(s.length() == 1) { // 1 character, just set to 0
-                mCalculatorBrain.performOperation(CalculatorBrain.CLEAR);
-                display.setText("0");
-            } else if (s.length() > 1) {
-                display.setText(s.substring(0, s.length()-1));
-            }
-
-        } else if (DIGITS.contains(buttonTag)) {
-
-            // digit was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                if (buttonTag.equals(".") && display.getText().toString().contains(".")) {
-                    // ERROR PREVENTION
-                    // Eliminate entering multiple decimals
-                } else {
-                    display.append(buttonTag);
-                }
-            } else {
-                if (buttonTag.equals(".")) {
-                    // ERROR PREVENTION
-                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
-                    // before the decimal
-                    display.setText(0 + buttonTag);
-                } else {
-                    display.setText(buttonTag);
-                }
-                userIsInTheMiddleOfTypingANumber = true;
-            }
-
-        } else {
-            // operation was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-
-                mCalculatorBrain.setOperand(Double.parseDouble(display.getText().toString()));
-                userIsInTheMiddleOfTypingANumber = false;
-            }
-
-            mCalculatorBrain.performOperation(buttonTag);
-            display.setText(mDF.format(mCalculatorBrain.getResult()));
-        }
-
-    }
-
-    @Override
     public void OnCurrentLocationChange(Location location) {
         mLocationManager.removeLocationChangeListener(this);
         mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
@@ -923,8 +836,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
     public void onResume() {
         super.onResume();
 //        new BusinessCategoryAsyncTask().execute("name");
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        setupCalculator(((NavigationActivity) getActivity()).getCalculatorView());
     }
 
     @Override
@@ -936,14 +847,7 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
         mTransaction.setName(mPayeeEditText.getText().toString());
         mTransaction.setCategory(mCategoryEdittext.getText().toString());
         mTransaction.setNotes(mNoteEdittext.getText().toString());
-
-        double amount;
-        try {
-            amount =  Double.valueOf(mFiatValueEdittext.getText().toString());
-        } catch (Exception e) {
-            amount = 0.0;
-        }
-        mTransaction.setAmountFiat(amount);
+        mTransaction.setAmountFiat(Double.valueOf(mFiatValueEdittext.getText().toString()));
         mCoreAPI.storeTransaction(mTransaction);
     }
 
@@ -1025,39 +929,6 @@ public class TransactionDetailFragment extends Fragment implements View.OnClickL
                 mContactNames.remove(0);
             }
         }
-    }
-
-    public void hideCustomKeyboard() {
-        ((NavigationActivity) getActivity()).hideCalculator();
-        mDummyFocus.requestFocus();
-    }
-
-    public void showCustomKeyboard(View v) {
-        ((NavigationActivity) getActivity()).showCalculator();
-    }
-
-    private void setupCalculator(View l) {
-        l.findViewById(R.id.button_calc_0).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_1).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_2).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_3).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_4).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_5).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_6).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_7).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_8).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_9).setOnClickListener(this);
-
-        l.findViewById(R.id.button_calc_plus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_minus).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_multiply).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_division).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_percent).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_equal).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_c).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_dot).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_done).setOnClickListener(this);
-        l.findViewById(R.id.button_calc_back).setOnClickListener(this);
     }
 
     public void goSearch(){

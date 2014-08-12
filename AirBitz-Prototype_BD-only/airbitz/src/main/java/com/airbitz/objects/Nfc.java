@@ -1,4 +1,4 @@
-package com.airbitz.utils;
+package com.airbitz.objects;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
