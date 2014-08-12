@@ -90,7 +90,7 @@
                 <TextView
                     android:id="@+id/activity_signup_password_help"
                     android:gravity="left|center_vertical"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:layout_below="@id/activity_signup_username_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
