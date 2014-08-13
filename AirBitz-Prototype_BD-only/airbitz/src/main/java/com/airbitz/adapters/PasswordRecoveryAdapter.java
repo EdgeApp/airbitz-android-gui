@@ -32,6 +32,10 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
         mQuestions = questions;
     }
 
+    public void addQuestions(List<String> questions) {
+        mQuestions = questions;
+    }
+
     @Override
     public int getCount() {
         return mQuestions.size()-1;

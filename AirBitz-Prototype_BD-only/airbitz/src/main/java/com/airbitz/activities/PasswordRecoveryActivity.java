@@ -47,6 +47,10 @@ public class PasswordRecoveryActivity extends BaseActivity {
     public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
     public static final String FORGOT_PASSWORD = "com.airbitz.passwordrecoveryactivity.forgot_password";
 
+    private enum QuestionType { STRING, NUMERIC }
+    public final String UNSELECTED_QUESTION = "Question";
+    private boolean ignoreSelected = false;
+
     private View dummyFocus;
 
     private ImageButton mBackButton;
@@ -54,17 +58,13 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
     private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
-    private List<View> mQuestionViews;
+    private ArrayList<QuestionView> mQuestionViews;
 
     private GetRecoveryQuestions mFetchAllQuestionsTask;
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mStringQuestions;
-    private List<String> currentStringCategory2;
-    private List<String> currentStringCategory3;
-    private List<String> currentStringCategory4;
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mNumericQuestions;
-    private List<String> currentNumericCategory2;
 
     private SaveQuestionsTask mSaveQuestionsTask;
 
@@ -112,11 +112,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         mLayoutRecovery = (RelativeLayout) findViewById(R.id.activity_recovery_container_layout);
 
         mStringQuestions = new ArrayList<String>();
-        currentStringCategory2 = new ArrayList<String>();
-        currentStringCategory3 = new ArrayList<String>();
-        currentStringCategory4 = new ArrayList<String>();
         mNumericQuestions = new ArrayList<String>();
-        currentNumericCategory2 = new ArrayList<String>();
 
         TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
 
@@ -163,7 +159,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         int count = 0;
         for (View view : mQuestionViews) {
             QuestionView qaView = (QuestionView) view;
-            if (qaView.getQuestion().equals(getString(R.string.activity_recovery_question_default))) {
+            if (qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default))) {
                 allQuestionsSelected = false;
                 break;
             }
@@ -176,7 +172,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                     questions += "\n";
                     answers += "\n";
                 }
-                questions += qaView.getQuestion();
+                questions += qaView.getSelectedQuestion();
                 answers += qaView.getText();
             }
             count++;
@@ -194,29 +190,23 @@ public class PasswordRecoveryActivity extends BaseActivity {
     }
 
     private void InitializeQuestionViews() {
-        mQuestionViews = new ArrayList<View>();
-        View mQuestionViewString1 = new QuestionView(this, mStringQuestions,currentStringCategory2, "string");
-        View mQuestionViewString2 = new QuestionView(this, currentStringCategory2, mStringQuestions, "string");
-        View mQuestionViewString3 = new QuestionView(this, mStringQuestions,currentStringCategory2, "string");
-        View mQuestionViewString4 = new QuestionView(this, currentStringCategory2, mStringQuestions, "string");
-        View mQuestionViewString5 = new QuestionView(this, currentNumericCategory2, mNumericQuestions, "numeric");
-        View mQuestionViewString6 = new QuestionView(this, currentNumericCategory2, mNumericQuestions, "numeric");
-        mQuestionViews.add(mQuestionViewString1);
-        mQuestionViews.add(mQuestionViewString2);
-        mQuestionViews.add(mQuestionViewString3);
-        mQuestionViews.add(mQuestionViewString4);
-        mQuestionViews.add(mQuestionViewString5);
-        mQuestionViews.add(mQuestionViewString6);
-        populateQuestionViews();
-    }
+        ignoreSelected = true;
+        mQuestionViews = new ArrayList<QuestionView>();
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions,QuestionType.STRING));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
+        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC));
+        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC));
 
-    private void populateQuestionViews() {
         mPasswordRecoveryListView.removeAllViews();
         for (View v : mQuestionViews) {
             mPasswordRecoveryListView.addView(v);
         }
         mPasswordRecoveryListView.invalidate();
+        ignoreSelected = false;
     }
+
 
     /**
      * Represents an asynchronous question fetch task
@@ -349,27 +339,58 @@ public class PasswordRecoveryActivity extends BaseActivity {
         }
     }
 
+    private List<String> getUnchosenQuestions(List<String> questions) {
+        List<String> unusedQuestions = new ArrayList<String>(questions);
+
+        if (!questions.isEmpty()) {
+            for (QuestionView qv : mQuestionViews) {
+                String selected = qv.getSelectedQuestion();
+                if (!selected.equals(UNSELECTED_QUESTION)) {
+                    unusedQuestions.remove(selected);
+                }
+            }
+        }
+
+        return unusedQuestions;
+    }
+
+    private void updateQuestionLists(QuestionView notThis) {
+        ignoreSelected = true;
+        for (QuestionView qv : mQuestionViews) {
+            if (qv!=notThis) {
+                List<String> unchosen;
+                if(qv.mType==QuestionType.STRING) {
+                    unchosen = getUnchosenQuestions(mStringQuestions);
+                } else  {
+                    unchosen = getUnchosenQuestions(mNumericQuestions);
+                }
+                if(!qv.getSelectedQuestion().equals(UNSELECTED_QUESTION)) {
+                    unchosen.add(0, qv.getSelectedQuestion());
+                }
+                qv.setAvailableQuestions(unchosen);
+            }
+        }
+        ignoreSelected = false;
+    }
+
     private class QuestionView extends LinearLayout {
         Context mContext;
-        private String mType;
-        private String chosenQuestion = "";
+        public QuestionType mType;
+        public String chosenQuestion = "";
         private int mCharLimit = 0;
         private Spinner mSpinner;
-        private Button mCover;
         private EditText mText;
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
-        private List<String> otherQuestionList;
         int pos;
 
         private QuestionView me = this;
 
-        public QuestionView(Context context, List<String> questions,List<String> otherQuestions, String type) {
+        public QuestionView(Context context, List<String> questions, QuestionType type) {
             super(context);
             mContext = context;
-            this.mType = type;
+            mType = type;
             currentQuestionList = questions;
-            otherQuestionList = otherQuestions;
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
@@ -383,82 +404,18 @@ public class PasswordRecoveryActivity extends BaseActivity {
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(mType.compareTo("string")==0){
-                        for(String s: mStringCategory.keySet()){
-                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
-                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mStringCategory.get(s);
-                                    if(!chosenQuestion.isEmpty()) {
-                                        otherQuestionList.add(chosenQuestion);
-                                    }
-                                    chosenQuestion = s;
-                                    otherQuestionList.remove(s);
-                                    List<String> tempList = new ArrayList<String>();
-                                    for(String quest: mStringCategory.keySet()){
-                                        if(otherQuestionList.contains(quest)){
-                                            tempList.add(quest);
-                                        }
-                                    }
-                                    tempList.add("Question");
-                                    otherQuestionList.clear();
-                                    otherQuestionList.addAll(tempList);
-                                    //mAdapter.notifyDataSetChanged();
-                                }else{
-                                    mCharLimit = 0;
-                                }
-                            }
-                        }
-                    }else if(mType.compareTo("numeric")==0){
-                        for(String s: mNumericCategory.keySet()){
-                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
-                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                                    mCharLimit = mNumericCategory.get(s);
-                                    if(!chosenQuestion.isEmpty()) {
-                                        otherQuestionList.add(chosenQuestion);
-                                    }
-                                    chosenQuestion = s;
-                                    otherQuestionList.remove(s);
-                                    List<String> tempList = new ArrayList<String>();
-                                    for(String quest: mNumericCategory.keySet()){
-                                        if(otherQuestionList.contains(quest)){
-                                            tempList.add(quest);
-                                        }
-                                    }
-                                    tempList.add("Question");
-                                    otherQuestionList.clear();
-                                    otherQuestionList.addAll(tempList);
-                                    //mAdapter.notifyDataSetChanged();
-                                }else{
-                                    mCharLimit = 0;
-                                }
-                            }
-                        }
-//                    }else if(mType.compareTo("address")==0){
-//                        for(String s: mAddressCategory.keySet()){
-//                            if(s.compareTo((String)mSpinner.getSelectedItem())==0){
-//                                if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-//                                    mCharLimit = mAddressCategory.get(s);
-//                                    if(!chosenQuestion.isEmpty()) {
-//                                        otherQuestionList.add(chosenQuestion);
-//                                    }
-//                                    chosenQuestion = s;
-//                                    otherQuestionList.remove(s);
-//                                    List<String> tempList = new ArrayList<String>();
-//                                    for(String quest: mAddressCategory.keySet()){
-//                                        if(otherQuestionList.contains(quest)){
-//                                            tempList.add(quest);
-//                                        }
-//                                    }
-//                                    tempList.add("Question");
-//                                    otherQuestionList.clear();
-//                                    otherQuestionList.addAll(tempList);
-//                                    //mAdapter.notifyDataSetChanged();
-//                                }else{
-//                                    mCharLimit = 0;
-//                                }
-//                            }
-//                        }
+                    if(ignoreSelected) return;
+
+                    if(mType==QuestionType.STRING) {
+                        chosenQuestion = getSelectedQuestion();
+                        if(mStringCategory.containsKey(chosenQuestion))
+                            mCharLimit = mStringCategory.get(chosenQuestion);
+                    } else if(mType==QuestionType.NUMERIC){
+                        chosenQuestion = getSelectedQuestion();
+                        if(mNumericCategory.containsKey(chosenQuestion))
+                            mCharLimit = mNumericCategory.get(chosenQuestion);
                     }
+                    updateQuestionLists(me);
                     if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
                         mText.setFocusableInTouchMode(true);  //if this is not already set
                         mText.requestFocus();  //to move the cursor
@@ -469,9 +426,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
+                public void onNothingSelected(AdapterView<?> adapterView) { }
             });
 
             mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
@@ -480,9 +435,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
             mText.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-                }
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -498,9 +451,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
 
                 @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
+                public void afterTextChanged(Editable editable) { }
             });
 
             mText.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -517,8 +468,8 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         if (pos != mQuestionViews.size() - 1) {
-                            ((QuestionView) mQuestionViews.get(pos + 1)).getSpinner().performClick();
-                            ((QuestionView) mQuestionViews.get(pos + 1)).getSpinner().requestFocus();
+                            (mQuestionViews.get(pos + 1)).getSpinner().performClick();
+                            (mQuestionViews.get(pos + 1)).getSpinner().requestFocus();
                         }else {
                             dummyFocus.requestFocus();
                             final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -539,11 +490,20 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
             });
 
-            mSpinner.setSelection(mAdapter.getCount());
+            chosenQuestion = UNSELECTED_QUESTION;
+            mSpinner.setSelection(currentQuestionList.size() - 1);
         }
 
-        public String getQuestion() {
+        public String getSelectedQuestion() {
             return ((TextView) mSpinner.getSelectedView()).getText().toString();
+        }
+
+        public void setAvailableQuestions(List<String> questions) {
+            if(mAdapter!=null) {
+                mAdapter.addQuestions(questions);
+                if(questions.contains(chosenQuestion))
+                    mSpinner.setSelection(questions.indexOf(chosenQuestion));
+            }
         }
 
         public Spinner getSpinner(){
