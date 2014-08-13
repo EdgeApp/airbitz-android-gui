@@ -735,7 +735,7 @@ SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_ABC_1VERSION_1get(JNIEnv
   
   (void)jenv;
   (void)jcls;
-  result = (char *)("0.1.0");
+  result = (char *)("1.1.2");
   if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
   return jresult;
 }
@@ -1202,6 +1202,18 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1NonNumericPin_1get
   (void)jenv;
   (void)jcls;
   result = (enum eABC_CC)ABC_CC_NonNumericPin;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1NoAvailableAddress_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  enum eABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (enum eABC_CC)ABC_CC_NoAvailableAddress;
   jresult = (jint)result; 
   return jresult;
 }
@@ -7267,6 +7279,57 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1Version(JNIEnv *jenv, 
   arg1 = *(char ***)&jarg1; 
   arg2 = *(tABC_Error **)&jarg2; 
   result = (tABC_CC)ABC_Version(arg1,arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1FilterExportData(JNIEnv *jenv, jclass jcls, jstring jarg1, jint jarg2, jint jarg3, jlong jarg4, jlong jarg5, jlong jarg6, jobject jarg6_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  tABC_TxInfo ***arg4 = (tABC_TxInfo ***) 0 ;
+  int *arg5 = (int *) 0 ;
+  tABC_Error *arg6 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg6_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = *(tABC_TxInfo ****)&jarg4; 
+  arg5 = *(int **)&jarg5; 
+  arg6 = *(tABC_Error **)&jarg6; 
+  result = (tABC_CC)ABC_FilterExportData((char const *)arg1,arg2,arg3,arg4,arg5,arg6);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1ExportFormatCsv(JNIEnv *jenv, jclass jcls, jlong jarg1, jint jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  tABC_TxInfo **arg1 = (tABC_TxInfo **) 0 ;
+  int arg2 ;
+  char **arg3 = (char **) 0 ;
+  tABC_Error *arg4 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = *(tABC_TxInfo ***)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = *(char ***)&jarg3; 
+  arg4 = *(tABC_Error **)&jarg4; 
+  result = (tABC_CC)ABC_ExportFormatCsv(arg1,arg2,arg3,arg4);
   jresult = (jint)result; 
   return jresult;
 }

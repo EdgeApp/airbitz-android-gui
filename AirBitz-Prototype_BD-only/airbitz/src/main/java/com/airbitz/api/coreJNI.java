@@ -76,6 +76,7 @@ public class coreJNI {
   public final static native int ABC_CC_InsufficientFunds_get();
   public final static native int ABC_CC_Synchronizing_get();
   public final static native int ABC_CC_NonNumericPin_get();
+  public final static native int ABC_CC_NoAvailableAddress_get();
   public final static native int ABC_RequestType_AccountSignIn_get();
   public final static native int ABC_RequestType_CreateAccount_get();
   public final static native int ABC_RequestType_SetAccountRecoveryQuestions_get();
@@ -379,6 +380,8 @@ public class coreJNI {
   public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_Version(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_FilterExportData(String jarg1, int jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
+  public final static native int ABC_ExportFormatCsv(long jarg1, int jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native long p64_t_to_long_ptr(long jarg1);
   public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);
