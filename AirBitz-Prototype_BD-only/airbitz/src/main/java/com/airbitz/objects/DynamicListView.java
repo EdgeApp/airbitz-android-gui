@@ -37,6 +37,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -97,7 +98,7 @@ public class DynamicListView extends ListView {
     private long mBelowItemId = INVALID_ID;
 
     private TextView walletsHeader;
-    private TextView archiveHeader;
+    private RelativeLayout archiveHeader;
 
     private TextView listWalletsHeader;
     private TextView listArchiveHeader;
@@ -111,8 +112,6 @@ public class DynamicListView extends ListView {
 
     private boolean mIsWaitingForScrollFinish = false;
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
-
-    private View mLastChild;
 
     public DynamicListView(Context context) {
         super(context);
@@ -137,15 +136,15 @@ public class DynamicListView extends ListView {
         mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
     }
 
-    public void setHeaders(TextView wallets, TextView archive){
+    public void setHeaders(TextView wallets, RelativeLayout archive){
         walletsHeader = wallets;
-        walletsHeader.setText("WALLETS");
+//        walletsHeader.setText("WALLETS");
         archiveHeader = archive;
-        archiveHeader.setText("ARCHIVE");
-        Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
-        img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
-        archiveHeader.setCompoundDrawables(null, null, img, null);
-        archiveHeader.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
+//        archiveHeader.setText("ARCHIVE");
+//        Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
+//        img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
+//        archiveHeader.setCompoundDrawables(null, null, img, null);
+//        archiveHeader.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
     }
 
     /**
@@ -296,18 +295,9 @@ public class DynamicListView extends ListView {
                 mDownX = (int)event.getX();
                 mDownY = (int)event.getY();
                 mActivePointerId = event.getPointerId(0);
-                if(child!=null) {
-                    child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
-                    mLastChild = child;
-                }
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                 if(child!=null && mLastChild!=null && mLastChild!=child) {
-                    mLastChild.setBackgroundColor(getResources().getColor(R.color.listitem_normal));
-                    child.setBackgroundColor(getResources().getColor(R.color.gray_selection));
-                    mLastChild = child;
-                }
 
                 if (mActivePointerId == INVALID_POINTER_ID) {
                     break;

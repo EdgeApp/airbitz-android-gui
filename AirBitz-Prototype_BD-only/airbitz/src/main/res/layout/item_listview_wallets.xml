@@ -15,8 +15,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
-    android:background="#addff1"
-    android:paddingLeft="12.6dp">
+    android:background="@color/listitem_normal">
 
     <ImageView
         android:id="@+id/imageview_dots"
@@ -35,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="44.1dp"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/textview_amount"
+        android:layout_marginLeft="12.6dp"
         android:text="item"
         android:textSize="14sp"
         android:gravity="center_vertical"

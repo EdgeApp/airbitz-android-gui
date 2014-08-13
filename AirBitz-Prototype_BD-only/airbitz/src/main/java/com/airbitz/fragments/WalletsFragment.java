@@ -65,7 +65,7 @@ public class WalletsFragment extends Fragment
     private Button mButtonMover;
 
     private TextView walletsHeader;
-    private TextView archiveHeader;
+    private RelativeLayout archiveHeader;
 
     private LinearLayout mAddWalletLayout;
     private EditText mAddWalletNameEditText;
@@ -193,7 +193,7 @@ public class WalletsFragment extends Fragment
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
         walletsHeader = (TextView) mView.findViewById(R.id.fragment_wallets_wallets_header);
-        archiveHeader = (TextView) mView.findViewById(R.id.fragment_wallets_archive_header);
+        archiveHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_archive_header);
 
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,14 +335,15 @@ public class WalletsFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
+                a.selectItem(view, i);
                 Wallet wallet = a.getList().get(i);
-                if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
+                if (!wallet.isArchiveHeader() && !wallet.isHeader()) {
                     showWalletFragment(a.getList().get(i).getUUID());
-                }else if(wallet.isArchiveHeader()){
+                } else if (wallet.isArchiveHeader()) {
                     int pos = a.getPosition(wallet);
                     a.switchCloseAfterArchive(pos);
                     mLatestWalletAdapter.notifyDataSetChanged();
-                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
                     archiveClosed = !archiveClosed;
                     mLatestWalletListView.setArchiveClosed(archiveClosed);
                 }
