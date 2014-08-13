@@ -52,6 +52,7 @@ public class SignUpActivity extends BaseActivity {
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mPasswordConfirmationEditText;
+    private EditText mPasswordForPINEditText;
     private EditText mWithdrawalPinEditText;
     private TextView mWithdrawalLabel;
     private Button mNextButton;
@@ -243,11 +244,11 @@ public class SignUpActivity extends BaseActivity {
         setupUI(getIntent().getExtras());
     }
 
-    private void setupUI(Bundle b) {
-        if(b==null)
+    private void setupUI(Bundle bundle) {
+        if(bundle==null)
             return;
         //Hide some elements if this is not a fresh signup
-        mMode = b.getInt(MODE);
+        mMode = bundle.getInt(MODE);
         if(mMode==CHANGE_PASSWORD) {
             // Reuse mUserNameEditText for old mPassword too
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
@@ -274,8 +275,9 @@ public class SignUpActivity extends BaseActivity {
             mUserNameEditText.setVisibility(View.GONE);
         } else if(mMode==CHANGE_PIN) {
             // hide both mPassword fields
-            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password_hint));
-            mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordForPINEditText = mUserNameEditText;
+            mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password_hint));
+            mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordEditText.setVisibility(View.GONE);
             mPasswordConfirmationEditText.setVisibility(View.GONE);
             mWithdrawalPinEditText.setHint(getResources().getString(R.string.activity_signup_new_pin));
@@ -485,7 +487,7 @@ public class SignUpActivity extends BaseActivity {
             if (mMode == CHANGE_PASSWORD) {
                 mCoreAPI.stopWatchers();
                 //TODO stopQueues();
-                success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
+                success = mCoreAPI.ChangePassword(mPasswordForPINEditText.getText().toString());
                 mCoreAPI.startWatchers();
                 //TODO startQueues();
             }
@@ -504,7 +506,6 @@ public class SignUpActivity extends BaseActivity {
         protected void onPostExecute(final Boolean success) {
             showModalProgress(false);
             if (success) {
-                AirbitzApplication.Login(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString());
                 if (mMode == CHANGE_PASSWORD) {
                     ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
@@ -552,7 +553,6 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
             tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
             mFailureReason = pError.getSzDescription();
             return code == tABC_CC.ABC_CC_Ok;
