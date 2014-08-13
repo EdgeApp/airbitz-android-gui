@@ -199,7 +199,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             if(position == mWalletList.size()-1){
                 view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
             }else{
-                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selected));
+                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selected));
             }
         }else if(position == mWalletList.size()-1){
             view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
