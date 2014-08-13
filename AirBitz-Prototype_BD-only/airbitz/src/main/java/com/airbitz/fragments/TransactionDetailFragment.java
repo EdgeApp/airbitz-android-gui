@@ -548,7 +548,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    mFiatValueEdittext.setText("");
                     mCalculator.setEditText(mFiatValueEdittext);
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
