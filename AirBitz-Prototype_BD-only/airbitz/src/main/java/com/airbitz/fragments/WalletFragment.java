@@ -373,6 +373,8 @@ public class WalletFragment extends Fragment
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TransactionAdapter a = (TransactionAdapter) adapterView.getAdapter();
+                a.selectItem(view, i);
                 Bundle bundle = new Bundle();
                 bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
                 Transaction trans = mTransactions.get(i);

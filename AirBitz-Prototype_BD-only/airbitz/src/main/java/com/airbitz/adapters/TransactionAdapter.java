@@ -90,13 +90,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
 
         if(0 == position && mListTransaction.size() == 1){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selector));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
         }else if(0 == position){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selector));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive));
         }else if(mListTransaction.size()-1 == position){
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
         }else{
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selector));
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
         }
 
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
@@ -106,7 +106,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         viewHolder.nameTextView.setText(transaction.getName());
         long transactionSatoshis = transaction.getAmountSatoshi();
-        long transactionFees = transaction.getMinerFees() + transaction.getABFees();
         if(mSearch){
             String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
             viewHolder.creditAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol()+" "+btcCurrency);
@@ -153,5 +152,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             }
         }
         return convertView;
+    }
+
+    public void selectItem(View convertView, int position) {
+        if(0 == position && mListTransaction.size() == 1){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
+        }else if(0 == position){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selected));
+        }else if(mListTransaction.size()-1 == position){
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
+        }else{
+            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selected));
+        }
     }
 }

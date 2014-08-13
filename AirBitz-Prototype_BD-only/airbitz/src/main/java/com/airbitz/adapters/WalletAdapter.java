@@ -71,7 +71,6 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             mIdMap.put(wallet.getUUID(), nextId);
             nextId++;
         }
-        //mWalletList.add(wallet);
     }
 
     public void swapWallets() {
@@ -95,12 +94,6 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
     }
 
-
-    public void removeWallet(Wallet wallet){
-        mArchivedIdMap.put(wallet.getUUID(),mIdMap.get(wallet.getUUID()));
-        mIdMap.remove(wallet.getUUID());
-    }
-
     public void switchCloseAfterArchive(int pos){
         archivePos = pos;
         closeAfterArchive = !closeAfterArchive;
@@ -116,8 +109,6 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     public int getArchivePos(){ return archivePos; }
-
-    public void incArchivePos(){ archivePos++;}
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -164,22 +155,22 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
             if(1 == position){
                 if(2 == archivePos){
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selector));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selector));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top));
                 }
             }else if(position == archivePos-1){
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
             }else if(position == archivePos+1){
                 if(position == mWalletList.size()-1){
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_archive_selector));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
                 }else{
-                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selector));
+                    convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive));
                 }
             }else if(position == mWalletList.size()-1){
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selector));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
             }else{
-                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selector));
+                convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
             }
 
             convertView.setPadding((int)mContext.getResources().getDimension(R.dimen.two_mm),0,0,0);
@@ -193,6 +184,28 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
 
         return convertView;
+    }
+
+    public void selectItem(View view, int position) {
+        if(1 == position){
+            if(2 == archivePos){
+                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
+            }else{
+                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selected));
+            }
+        }else if(position == archivePos-1){
+            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
+        }else if(position == archivePos+1){
+            if(position == mWalletList.size()-1){
+                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
+            }else{
+                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selected));
+            }
+        }else if(position == mWalletList.size()-1){
+            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
+        }else{
+            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selected));
+        }
     }
 
     public int getMapSize(){ return mIdMap.size();}
