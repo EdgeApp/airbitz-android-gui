@@ -10,7 +10,7 @@ import android.view.ContextThemeWrapper;
 import com.airbitz.R;
 
 public class BaseActivity extends FragmentActivity {
-    private final int DIALOG_TIMEOUT_MILLIS = 15000;
+    private final int DIALOG_TIMEOUT_MILLIS = 120000;
     Handler mHandler;
 
     private ProgressDialog mProgressDialog;
