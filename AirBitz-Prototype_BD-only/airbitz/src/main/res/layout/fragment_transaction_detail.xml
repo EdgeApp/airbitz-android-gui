@@ -240,7 +240,7 @@
                     android:background="@drawable/bg_textfield"
                     android:selectAllOnFocus="true"
                     android:gravity="center"
-                    android:inputType="none"
+                    android:inputType="text"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
@@ -350,9 +350,7 @@
                     android:maxLines="2"
                     android:background="@drawable/bg_textfield"/>
 
-
             </RelativeLayout>
-
 
             <ListView
                 android:id="@+id/listview_category"
@@ -375,7 +373,6 @@
                 android:layout_marginTop="31.7dp"
                 android:background="@drawable/blue_triangle"
                 android:visibility="gone"/>
-
 
         </RelativeLayout>
 
