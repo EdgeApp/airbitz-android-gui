@@ -397,6 +397,14 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_Version(SWIGTYPE_p_p_char.getCPtr(szVersion), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_FilterExportData(String szWalletId, int iStartDate, int iEndDate, SWIGTYPE_p_p_p_sABC_TxInfo pTransactions, SWIGTYPE_p_int iNumOfTransactions, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_FilterExportData(szWalletId, iStartDate, iEndDate, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(pTransactions), SWIGTYPE_p_int.getCPtr(iNumOfTransactions), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_ExportFormatCsv(SWIGTYPE_p_p_sABC_TxInfo pTransactions, int iTransactionCount, SWIGTYPE_p_p_char szCsvData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_ExportFormatCsv(SWIGTYPE_p_p_sABC_TxInfo.getCPtr(pTransactions), iTransactionCount, SWIGTYPE_p_p_char.getCPtr(szCsvData), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static SWIGTYPE_p_long p64_t_to_long_ptr(SWIGTYPE_p_int64_t x) {
     long cPtr = coreJNI.p64_t_to_long_ptr(SWIGTYPE_p_int64_t.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_long(cPtr, false);

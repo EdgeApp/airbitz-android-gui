@@ -60,7 +60,7 @@
 
 #define NETWORK_FAKE 1
 
-#define ABC_VERSION "0.1.0"
+#define ABC_VERSION "1.1.2"
 
 #define ABC_MIN_USERNAME_LENGTH 3
 #define ABC_MIN_PIN_LENGTH 4
@@ -150,7 +150,9 @@ extern "C" {
         /** We are still sync-ing */
         ABC_CC_Synchronizing = 33,
         /** Problem with the PIN */
-        ABC_CC_NonNumericPin = 34
+        ABC_CC_NonNumericPin = 34,
+        /** Unable to find an address */
+        ABC_CC_NoAvailableAddress = 35
     } tABC_CC;
 
     /**
@@ -966,6 +968,19 @@ extern "C" {
     // temp functions
 //    void tempEventA();
 //    void tempEventB();
+
+    tABC_CC ABC_FilterExportData(const char *szWalletId,
+                                 const int iStartDate,
+                                 const int iEndDate,
+                                 tABC_TxInfo ***pTransactions,
+                                 int *iNumOfTransactions,
+                                 tABC_Error *pError);
+
+
+    tABC_CC ABC_ExportFormatCsv(tABC_TxInfo **pTransactions,
+                                int iTransactionCount,
+                                char **szCsvData,
+                                tABC_Error *pError);
 
 #ifdef __cplusplus
 }
