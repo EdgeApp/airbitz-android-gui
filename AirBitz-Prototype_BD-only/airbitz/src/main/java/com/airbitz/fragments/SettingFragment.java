@@ -556,7 +556,10 @@ public class SettingFragment extends Fragment {
         frag.show();
     }
 
+    AlertDialog mDefaultExchangeDialog;
     private void showSelectorDialog(final Button button, final String[] items, String title, int index) {
+        if(mDefaultExchangeDialog!=null && mDefaultExchangeDialog.isShowing())
+            return;
 
         LinearLayout linearLayout = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -585,9 +588,10 @@ public class SettingFragment extends Fragment {
 
         linearLayout.addView(mTextPicker);
 
-        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
+        mDefaultExchangeDialog = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
                 .setTitle(title)
                 .setView(linearLayout)
+                .setCancelable(false)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -608,7 +612,7 @@ public class SettingFragment extends Fragment {
                         }
                 )
                 .create();
-        frag.show();
+        mDefaultExchangeDialog.show();
     }
 
     @Override
