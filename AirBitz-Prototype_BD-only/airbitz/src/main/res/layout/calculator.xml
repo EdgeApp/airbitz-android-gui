@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="290dp"
+    android:layout_height="wrap_content"
     android:background="@color/gray_selection" >
 
-    <LinearLayout
+    <TableRow
         android:id="@+id/row1"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -60,9 +60,9 @@
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonPercent" />
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
+    <TableRow
         android:id="@+id/row2"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -116,9 +116,9 @@
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonMultiply" />
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
+    <TableRow
         android:id="@+id/row3"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -175,9 +175,9 @@
                 android:layout_margin="4dp"
                 android:id="@+id/imageButtonBack" />
 
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
+    <TableRow
         android:id="@+id/row4"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -231,6 +231,6 @@
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonDone" />
-    </LinearLayout>
+    </TableRow>
 
-</LinearLayout>
+</TableLayout>
