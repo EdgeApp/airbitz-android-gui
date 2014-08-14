@@ -69,7 +69,7 @@
 
             <RelativeLayout
                 android:id="@+id/transaction_detail_layout_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/transaction_detail_textview_date"
                 android:background="@android:color/transparent" >
@@ -97,8 +97,8 @@
 
                 <ListView
                     android:id="@+id/listview_search"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_below="@id/transaction_detail_edittext_name"
                     android:divider="@color/gray_border"
                     android:dividerHeight="1px"
@@ -238,9 +238,7 @@
                     android:layout_weight="10"
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_textfield"
-                    android:selectAllOnFocus="true"
                     android:gravity="center"
-                    android:inputType="text"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
