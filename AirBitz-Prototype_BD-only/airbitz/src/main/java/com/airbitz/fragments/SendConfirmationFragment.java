@@ -269,16 +269,7 @@ public class SendConfirmationFragment extends Fragment {
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d("SendConfirmationFragment", "Bitcoin field focus changed");
                 if (hasFocus) {
-                    EditText edittext = (EditText) view;
-                    int inType = edittext.getInputType();
-                    edittext.setInputType(InputType.TYPE_NULL);
-                    edittext.setInputType(inType);
-                    mAutoUpdatingTextFields = true;
-                    mFiatField.setText("");
-                    mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
-                    mConversionTextView.setTextColor(Color.WHITE);
-                    mAutoUpdatingTextFields = false;
+                    resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mBitcoinField);
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
@@ -291,17 +282,8 @@ public class SendConfirmationFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d("SendConfirmationFragment", "Fiat field focus changed");
-                EditText edittext = (EditText) view;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.setInputType(inType);
                 if (hasFocus) {
-                    mAutoUpdatingTextFields = true;
-                    mFiatField.setText("");
-                    mBitcoinField.setText("");
-                    mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
-                    mConversionTextView.setTextColor(Color.WHITE);
-                    mAutoUpdatingTextFields = false;
+                    resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
@@ -321,20 +303,21 @@ public class SendConfirmationFragment extends Fragment {
             }
         };
 
-        mBitcoinField.setRawInputType(InputType.TYPE_NULL);
-        mBitcoinField.setOnEditorActionListener(tvListener);
-        mFiatField.setRawInputType(InputType.TYPE_NULL);
-        mFiatField.setOnEditorActionListener(tvListener);
-
-        View.OnKeyListener keyListener = new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == EditorInfo.IME_ACTION_DONE) {
-                    mPinEdittext.requestFocus();
-                }
-                return false;
+        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+            public boolean onTouch (View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.onTouchEvent(event);
+                edittext.setInputType(inType);
+                return true; // the listener has consumed the event, no keyboard popup
             }
         };
+
+        mBitcoinField.setOnTouchListener(preventOSKeyboard);
+        mFiatField.setOnTouchListener(preventOSKeyboard);
+        mBitcoinField.setOnEditorActionListener(tvListener);
+        mFiatField.setOnEditorActionListener(tvListener);
 
         mSlideLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -411,6 +394,17 @@ public class SendConfirmationFragment extends Fragment {
             inputMethodManager.showSoftInput(mPinEdittext, InputMethodManager.SHOW_FORCED);
         }
         return mView;
+    }
+
+    private void resetFiatAndBitcoinFields() {
+        mAutoUpdatingTextFields = true;
+        mFiatField.setText("");
+        mBitcoinField.setText("");
+        mConversionTextView.setTextColor(Color.WHITE);
+        mBitcoinField.setTextColor(Color.WHITE);
+        mFiatField.setTextColor(Color.WHITE);
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
+        mAutoUpdatingTextFields = false;
     }
 
     private void showPINkeyboard() {
