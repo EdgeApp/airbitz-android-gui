@@ -174,8 +174,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.length()>=4) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(mWithdrawalPinEditText.getWindowToken(), 0);
+                    hideSoftKeyboard(mWithdrawalPinEditText);
                     mParentLayout.requestFocus();
                 }
             }

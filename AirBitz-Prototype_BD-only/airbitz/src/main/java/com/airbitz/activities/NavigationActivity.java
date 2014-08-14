@@ -223,6 +223,7 @@ public class NavigationActivity extends BaseActivity
      */
     public void onNavBarSelected(int position) {
         if(AirbitzApplication.isLoggedIn()) {
+            hideSoftKeyboard(mFragmentLayout);
             switchFragmentThread(position);
         } else {
             if (position != Tabs.BD.ordinal()) {
@@ -316,7 +317,7 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
-    public void onButtonClick(View v) {
+    public void onCalculatorButtonClick(View v) {
         mCalculatorView.onButtonClick(v);
         if(v.getTag().toString().equals("done")) {
             hideCalculator();
