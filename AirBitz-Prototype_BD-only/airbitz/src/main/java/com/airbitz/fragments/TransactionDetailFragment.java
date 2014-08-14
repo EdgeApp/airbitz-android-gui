@@ -523,11 +523,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        mFiatValueEdittext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationActivity) getActivity()).showCalculator();
+            }
+        });
+
+
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-
             }
         });
 
