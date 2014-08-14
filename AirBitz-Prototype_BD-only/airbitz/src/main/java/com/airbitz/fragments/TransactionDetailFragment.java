@@ -148,7 +148,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private CoreAPI mCoreAPI;
     private Wallet mWallet;
     private Transaction mTransaction;
-    private int mCurrencyIndex;
 
     private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
 
@@ -174,7 +173,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mCoreAPI = CoreAPI.getApi();
                 mWallet = mCoreAPI.getWallet(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
-                mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
 
                 if(mTransaction.getCategory().isEmpty()) {
                     currentType = defaultCat.toString()+":";
@@ -327,6 +325,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 showPayeeSearch(hasFocus);
+                mPayeeEditText.selectAll();
             }
         });
 
@@ -558,11 +557,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (keyEvent!=null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER) {
-                    if(mFromSend || mFromRequest) {
-                        mCategoryEdittext.requestFocus();
-                    } else {
-                        mDummyFocus.requestFocus();
-                    }
+                    mDummyFocus.requestFocus();
                     return true;
                 }
                 return false;
@@ -592,13 +587,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        UpdateView(mTransaction);
+        mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if(mFromSend || mFromRequest){
-            mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            mPayeeEditText.requestFocus();
         }
 
-        UpdateView(mTransaction);
         return view;
     }
 
