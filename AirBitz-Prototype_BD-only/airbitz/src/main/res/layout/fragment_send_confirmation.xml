@@ -52,16 +52,10 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/layout_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/fragment_category_layout_header"
-        android:layout_above="@id/bottom_padding">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_category_layout_header"
             android:paddingTop="18.9dp"
             android:paddingLeft="18.9dp"
             android:paddingRight="18.9dp">
@@ -347,10 +341,7 @@
                 android:layout_alignTop="@id/layout_slide"
                 android:background="@drawable/left_arrow"/>
 
-
         </RelativeLayout>
-
-    </ScrollView>
 
     <View
         android:layout_width="0dp"

@@ -27,6 +27,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -222,7 +223,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
 
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
@@ -551,8 +551,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        mFiatValueEdittext.setRawInputType(InputType.TYPE_NULL);
-        mFiatValueEdittext.setSelectAllOnFocus(true);
+        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+            public boolean onTouch (View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();
+                edittext.setInputType(InputType.TYPE_NULL);
+                edittext.onTouchEvent(event);
+                edittext.setInputType(inType);
+                edittext.selectAll();
+                return true; // the listener has consumed the event, no keyboard popup
+            }
+        };
+
+        mFiatValueEdittext.setOnTouchListener(preventOSKeyboard);
         mFiatValueEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
