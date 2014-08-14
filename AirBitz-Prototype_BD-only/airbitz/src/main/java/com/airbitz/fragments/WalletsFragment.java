@@ -335,9 +335,9 @@ public class WalletsFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                a.selectItem(view, i);
                 Wallet wallet = a.getList().get(i);
                 if (!wallet.isArchiveHeader() && !wallet.isHeader()) {
+                    a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
                     int pos = a.getPosition(wallet);
