@@ -43,7 +43,7 @@
     <com.airbitz.objects.Calculator
         android:id="@+id/navigation_calculator_layout"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone"/>
 
