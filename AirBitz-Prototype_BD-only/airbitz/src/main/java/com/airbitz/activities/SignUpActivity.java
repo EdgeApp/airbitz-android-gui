@@ -164,17 +164,23 @@ public class SignUpActivity extends BaseActivity {
         });
 
         mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        mWithdrawalPinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    return true;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length()>=4) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mWithdrawalPinEditText.getWindowToken(), 0);
+                    mParentLayout.requestFocus();
                 }
-                return false;
             }
-        });
+        };
+        mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
 
         mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
