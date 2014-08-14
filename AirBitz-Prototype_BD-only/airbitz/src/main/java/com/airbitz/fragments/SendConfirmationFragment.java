@@ -83,8 +83,6 @@ public class SendConfirmationFragment extends Fragment {
 
     private RelativeLayout mParentLayout;
 
-    private ScrollView mScrollView;
-
     private int mRightThreshold;
     private int mLeftThreshold;
 
@@ -172,7 +170,6 @@ public class SendConfirmationFragment extends Fragment {
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
-        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
@@ -313,17 +310,21 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch (View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                ((NavigationActivity) getActivity()).showCalculator();
-                return true; // the listener has consumed the event
+        TextView.OnEditorActionListener tvListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (keyEvent!=null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER) {
+                    mPinEdittext.requestFocus();
+                    return true;
+                }
+                return false;
             }
         };
+
+        mBitcoinField.setRawInputType(InputType.TYPE_NULL);
+        mBitcoinField.setOnEditorActionListener(tvListener);
+        mFiatField.setRawInputType(InputType.TYPE_NULL);
+        mFiatField.setOnEditorActionListener(tvListener);
 
         View.OnKeyListener keyListener = new View.OnKeyListener() {
             @Override
@@ -334,32 +335,6 @@ public class SendConfirmationFragment extends Fragment {
                 return false;
             }
         };
-
-        mBitcoinField.setOnTouchListener(preventOSKeyboard);
-        mBitcoinField.setOnKeyListener(keyListener);
-        mFiatField.setOnTouchListener(preventOSKeyboard);
-        mFiatField.setOnKeyListener(keyListener);
-//
-//        Shader textShader = new LinearGradient(0, 0, 0, 20,
-//                new int[]{Color.BLACK, R.color.listitem_normal},
-//                new float[]{0, 1}, Shader.TileMode.CLAMP);
-//        mSlideTextView.getPaint().setShader(textShader);
-
-
-//        mParentLayout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return false;
-//            }
-//        });
-//
-//
-//        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return false;
-//            }
-//        });
 
         mSlideLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
