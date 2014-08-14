@@ -318,9 +318,6 @@ public class DynamicListView extends ListView {
 
                 break;
             case MotionEvent.ACTION_UP:
-                if(child!=null) {
-                    child.setBackgroundColor(getResources().getColor(R.color.listitem_normal));
-                }
                 touchEventsEnded();
                 break;
             case MotionEvent.ACTION_CANCEL:
