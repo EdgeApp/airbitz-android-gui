@@ -368,7 +368,6 @@ public class SendConfirmationFragment extends Fragment {
             public void onClick(View view) {
                 if(mMaxAmountTask!=null)
                     mMaxAmountTask.cancel(true);
-
                 mMaxAmountTask = new MaxAmountTask();
                 mMaxAmountTask.execute();
             }
@@ -377,11 +376,6 @@ public class SendConfirmationFragment extends Fragment {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-                    final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.toggleSoftInput(0, 0);
-                }
                 getActivity().onBackPressed();
             }
         });
@@ -390,8 +384,6 @@ public class SendConfirmationFragment extends Fragment {
 
         if(mAmountToSendSatoshi>0) {
             mPinEdittext.requestFocus();
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.showSoftInput(mPinEdittext, InputMethodManager.SHOW_FORCED);
         }
         return mView;
     }
