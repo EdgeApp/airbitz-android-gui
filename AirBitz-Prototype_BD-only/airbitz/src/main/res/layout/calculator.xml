@@ -13,45 +13,50 @@
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_1"
             android:tag="1"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton1" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_2"
             android:tag="2"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton2" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_3"
             android:tag="3"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton3" />
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_plus"
             android:tag="+"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonPlus" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_percent"
             android:tag="%"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonPercent" />
@@ -64,45 +69,50 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_4"
             android:tag="4"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton4" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_5"
             android:tag="5"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton5" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_6"
             android:tag="6"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton6" />
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_minus"
             android:tag="-"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonMinus" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_multi"
             android:tag="*"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonMultiply" />
@@ -115,64 +125,56 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_7"
             android:tag="7"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton7" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_8"
             android:tag="8"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton8" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_9"
             android:tag="9"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton9" />
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_division"
             android:tag="/"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonDivide" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
             <ImageButton
-                android:layout_width="68dp"
-                android:layout_height="60dp"
-                android:background="@drawable/bg_btn_orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_calc_back"
                 android:textColor="@android:color/white"
                 android:tag="back"
+                android:layout_weight="1"
                 android:onClick="onButtonClick"
                 android:layout_margin="4dp"
                 android:id="@+id/imageButtonBack" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="&lt; Del"
-                android:textStyle="bold"
-                android:clickable="false"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"/>
-            </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -182,45 +184,50 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_c"
             android:tag="C"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonClear" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_0"
             android:tag="0"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButton0" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_dot"
             android:tag="."
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonDot" />
 
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_equals"
             android:tag="="
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonEquals" />
         <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/btn_calc_done"
             android:tag="done"
+            android:layout_weight="1"
             android:layout_margin="4dp"
             android:onClick="onButtonClick"
             android:id="@+id/imageButtonDone" />
