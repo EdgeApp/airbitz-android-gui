@@ -61,6 +61,7 @@ import com.airbitz.utils.ListViewUtility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,8 +95,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private String mCategoryOld = "";
 
-    private int businessCount;
-
     private String currentType = "";
     private boolean doEdit = false;
     private boolean catSelected = false;
@@ -120,7 +119,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private RelativeLayout mNameDetailLayout;
 
     private EditText mFiatValueEdittext;
-    private TextView mFiatDenominationLabel, mFiatFeeTextView;
+    private String mFiatValue;
+    private TextView mFiatDenominationLabel;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
@@ -226,7 +226,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
         mFiatValueEdittext.setInputType(InputType.TYPE_NULL);
         mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
-        mFiatFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_fiat_fee_value);
         mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
         mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
@@ -302,8 +301,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if(hasFocus){
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(activityRootView.getWindowToken(), 0);
+                        hideSoftKeyboard(activityRootView);
                     }
                 }
             }
@@ -370,8 +368,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     mCategoryEdittext.requestFocus();
                     return true;
-                }else if(actionId == EditorInfo.IME_ACTION_DONE){
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     showPayeeSearch(false);
+                    hideSoftKeyboard(mPayeeEditText);
                     return true;
                 }
                 return false;
@@ -425,7 +424,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     combineMatchLists();
                 }
                 mSearchAdapter.notifyDataSetChanged();
-                ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView, mCombined.size(), getActivity());
+//                ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView, mCombined.size(), getActivity());
             }
         });
 
@@ -468,9 +467,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mSearchAdapter.getItem(i) instanceof BusinessSearchResult){
+                if (mSearchAdapter.getItem(i) instanceof BusinessSearchResult) {
                     mPayeeEditText.setText(((BusinessSearchResult) mSearchAdapter.getItem(i)).getName());
-                }else{
+                } else {
                     mPayeeEditText.setText((String) mSearchAdapter.getItem(i));
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
@@ -478,9 +477,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mSentDetailLayout.setVisibility(View.VISIBLE);
                 mNoteDetailLayout.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.GONE);
-                if(mFromRequest || mFromSend) {
+                if (mFromRequest || mFromSend) {
                     mCategoryEdittext.requestFocus();
-                }else{
+                } else {
                     mDummyFocus.requestFocus();
                 }
             }
@@ -511,13 +510,36 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        final TextWatcher mBTCTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mFiatValue = mFiatValueEdittext.getText().toString(); // global save
+                mFiatValueEdittext.setSelection(mFiatValue.length());
+            }
+        };
+
+        mFiatValueEdittext.addTextChangedListener(mBTCTextWatcher);
         mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mCalculator.setEditText(mFiatValueEdittext);
+                    mFiatValueEdittext.selectAll();
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
+                    mFiatValueEdittext.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFiatValueEdittext.setText(mFiatValue);
+                        }
+                    }, 1000);
                     ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
@@ -527,6 +549,23 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onClick(View view) {
                 ((NavigationActivity) getActivity()).showCalculator();
+            }
+        });
+
+        mFiatValueEdittext.setRawInputType(InputType.TYPE_NULL);
+        mFiatValueEdittext.setSelectAllOnFocus(true);
+        mFiatValueEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (keyEvent!=null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER) {
+                    if(mFromSend || mFromRequest) {
+                        mCategoryEdittext.requestFocus();
+                    } else {
+                        mDummyFocus.requestFocus();
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -561,6 +600,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         UpdateView(mTransaction);
         return view;
+    }
+
+    private void hideSoftKeyboard(View view) {
+        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void showPayeeSearch(boolean hasFocus) {
@@ -748,7 +792,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
         String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
-        mFiatValueEdittext.setText(currencyValue.substring(0, currencyValue.indexOf('.') + Math.min(3, currencyValue.length() - currencyValue.indexOf('.'))));
+        mFiatValue = currencyValue;
+        mFiatValueEdittext.setText(currencyValue);
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
@@ -809,7 +854,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mCombined.clear();
                 mOriginalBusinesses.clear();
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
-                businessCount = results.getCountValue();
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
                 mOriginalBusinesses.addAll(mBusinesses);
                 if(mPayeeEditText.getText().toString().isEmpty()){
@@ -827,7 +871,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 this.cancel(true);
             }
             mSearchAdapter.notifyDataSetChanged();
-            ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
+//            ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
         }
 
         @Override
