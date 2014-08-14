@@ -138,13 +138,7 @@ public class DynamicListView extends ListView {
 
     public void setHeaders(TextView wallets, RelativeLayout archive){
         walletsHeader = wallets;
-//        walletsHeader.setText("WALLETS");
         archiveHeader = archive;
-//        archiveHeader.setText("ARCHIVE");
-//        Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
-//        img.setBounds(0,0,(int)mContext.getResources().getDimension(R.dimen.three_mm),(int)mContext.getResources().getDimension(R.dimen.three_mm));
-//        archiveHeader.setCompoundDrawables(null, null, img, null);
-//        archiveHeader.setPadding((int)(mContext.getResources().getDimension(R.dimen.two_mm)+mContext.getResources().getDimension(R.dimen.three_mm)),0,(int)mContext.getResources().getDimension(R.dimen.two_mm),0);
     }
 
     /**
