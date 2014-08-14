@@ -302,12 +302,12 @@
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:imeOptions="actionDone"
+                    android:singleLine="true"
                     android:textSize="16sp"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:paddingLeft="6.3dp"/>
-
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_notes"

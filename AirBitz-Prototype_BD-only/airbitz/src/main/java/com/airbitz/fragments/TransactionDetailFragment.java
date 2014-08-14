@@ -142,11 +142,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private ListView mCategoryListView;
     private TransactionDetailSearchAdapter mSearchAdapter;
     private TransactionDetailCategoryAdapter mCategoryAdapter;
-    private AirbitzAPI api = AirbitzAPI.getApi();
 
     private Calculator mCalculator;
-
-    private ClipboardManager clipboard;
 
     private CoreAPI mCoreAPI;
     private Wallet mWallet;
@@ -162,11 +159,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         bundle = getArguments();
         if(bundle!=null) {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")){
-                System.out.println("SEND");
+                Common.LogD(TAG, "SEND");
                 mFromSend = true;
             } else if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("REQUEST")) {
                 mFromRequest = true;
-                System.out.println("REQUEST");
+                Common.LogD(TAG, "REQUEST");
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
@@ -202,7 +199,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
-        ((NavigationActivity)getActivity()).showNavBar();
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -307,7 +303,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
                         final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
+                        inputMethodManager.hideSoftInputFromWindow(activityRootView.getWindowToken(), 0);
                     }
                 }
             }
@@ -325,7 +321,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mXButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDummyFocus.requestFocus();
                 mAdvancedDetailsPopup.setVisibility(View.GONE);
             }
         });
@@ -333,45 +328,21 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mPayeeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    mAdvanceDetailsButton.setVisibility(View.GONE);
-                    mSentDetailLayout.setVisibility(View.GONE);
-                    mNoteDetailLayout.setVisibility(View.GONE);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                } else {
-                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
-                    mSentDetailLayout.setVisibility(View.VISIBLE);
-                    mNoteDetailLayout.setVisibility(View.VISIBLE);
-                    mSearchListView.setVisibility(View.GONE);
-                }
+                showPayeeSearch(hasFocus);
             }
         });
 
         mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                showCategoryPopup(hasFocus);
                 if (hasFocus) {
-                    mDateTextView.setVisibility(View.GONE);
-                    mNameDetailLayout.setVisibility(View.GONE);
-                    mAdvanceDetailsButton.setVisibility(View.GONE);
-                    mSentDetailLayout.setVisibility(View.GONE);
-                    mDoneButton.setVisibility(View.GONE);
-                    mCategoryListView.setVisibility(View.VISIBLE);
-                    popupTriangle.setVisibility(View.VISIBLE);
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
                     }
                     updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     mCategoryAdapter.notifyDataSetChanged();
-                } else {
-                    mDateTextView.setVisibility(View.VISIBLE);
-                    mNameDetailLayout.setVisibility(View.VISIBLE);
-                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
-                    mSentDetailLayout.setVisibility(View.VISIBLE);
-                    mDoneButton.setVisibility(View.VISIBLE);
-                    mCategoryListView.setVisibility(View.GONE);
-                    popupTriangle.setVisibility(View.GONE);
                 }
             }
         });
@@ -400,7 +371,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mCategoryEdittext.requestFocus();
                     return true;
                 }else if(actionId == EditorInfo.IME_ACTION_DONE){
-                    mDummyFocus.requestFocus();
+                    showPayeeSearch(false);
                     return true;
                 }
                 return false;
@@ -534,13 +505,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 doEdit = false;
                 if(i==baseIncomePosition || i==baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition){
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
-                }else {
-                    if(mFromSend || mFromRequest) {
-                        mNoteEdittext.requestFocus();
-                    }else{
-                        mDummyFocus.requestFocus();
-                    }
                 }
+                mDummyFocus.requestFocus();
+                showCategoryPopup(false);
             }
         });
 
@@ -579,6 +546,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if(mFromSend || mFromRequest){
             mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -587,6 +555,40 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         UpdateView(mTransaction);
         return view;
     }
+
+    private void showPayeeSearch(boolean hasFocus) {
+        if (hasFocus) {
+            mAdvanceDetailsButton.setVisibility(View.GONE);
+            mSentDetailLayout.setVisibility(View.GONE);
+            mNoteDetailLayout.setVisibility(View.GONE);
+            mSearchListView.setVisibility(View.VISIBLE);
+        } else {
+            mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+            mSentDetailLayout.setVisibility(View.VISIBLE);
+            mNoteDetailLayout.setVisibility(View.VISIBLE);
+            mSearchListView.setVisibility(View.GONE);
+        }
+    }
+
+    private void showCategoryPopup(boolean hasFocus) {
+        if (hasFocus) {
+            mDateTextView.setVisibility(View.GONE);
+            mNameDetailLayout.setVisibility(View.GONE);
+            mAdvanceDetailsButton.setVisibility(View.GONE);
+            mSentDetailLayout.setVisibility(View.GONE);
+            mDoneButton.setVisibility(View.GONE);
+            mCategoryListView.setVisibility(View.VISIBLE);
+            popupTriangle.setVisibility(View.VISIBLE);
+        } else {
+            mDateTextView.setVisibility(View.VISIBLE);
+            mNameDetailLayout.setVisibility(View.VISIBLE);
+            mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+            mSentDetailLayout.setVisibility(View.VISIBLE);
+            mDoneButton.setVisibility(View.VISIBLE);
+            mCategoryListView.setVisibility(View.GONE);
+            popupTriangle.setVisibility(View.GONE);        }
+    }
+
 
     private void updateBlanks(String term){
         if(baseIncomePosition < mCategories.size()) {
