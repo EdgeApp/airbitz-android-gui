@@ -198,7 +198,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
                     String strTo = mToEdittext.getText().toString();
                     if(strTo==null || strTo.isEmpty()) {
-                        hideKeyboard();
+                        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
                         mListviewContainer.setVisibility(View.GONE);
                         return true;
                     }
@@ -208,7 +208,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                     if(results.address!=null) {
                         GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     } else {
-                        hideKeyboard();
+                        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
                         ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
                     }
                     return true;
@@ -266,7 +266,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dummyFocus.requestFocus();
                 mListviewContainer.setVisibility(View.GONE);
-                hideKeyboard();
+                ((NavigationActivity)getActivity()).hideSoftKeyboard(mListingListView);
                 Wallet w = mCurrentListing.get(i);
 
                 GotoSendConfirmation(w.getUUID(), 0, " ", true);
@@ -318,11 +318,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
 
         return mView;
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     public void stopCamera() {

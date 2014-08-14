@@ -299,7 +299,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if(hasFocus){
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
-                        hideSoftKeyboard(activityRootView);
+                        ((NavigationActivity)getActivity()).hideSoftKeyboard(activityRootView);
                     }
                 }
             }
@@ -369,7 +369,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     return true;
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     showPayeeSearch(false);
-                    hideSoftKeyboard(mPayeeEditText);
+                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mPayeeEditText);
                     return true;
                 }
                 return false;
@@ -597,11 +597,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
 
         return view;
-    }
-
-    private void hideSoftKeyboard(View view) {
-        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void showPayeeSearch(boolean hasFocus) {

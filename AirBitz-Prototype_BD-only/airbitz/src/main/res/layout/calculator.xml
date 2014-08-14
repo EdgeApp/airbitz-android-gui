@@ -19,7 +19,7 @@
             android:tag="1"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton1" />
 
         <ImageButton
@@ -29,7 +29,7 @@
             android:tag="2"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton2" />
 
         <ImageButton
@@ -39,7 +39,7 @@
             android:tag="3"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton3" />
         <ImageButton
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:tag="+"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonPlus" />
 
         <ImageButton
@@ -58,7 +58,7 @@
             android:tag="%"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonPercent" />
     </TableRow>
 
@@ -75,7 +75,7 @@
             android:tag="4"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton4" />
 
         <ImageButton
@@ -85,7 +85,7 @@
             android:tag="5"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton5" />
 
         <ImageButton
@@ -95,7 +95,7 @@
             android:tag="6"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton6" />
         <ImageButton
             android:layout_width="wrap_content"
@@ -104,7 +104,7 @@
             android:tag="-"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonMinus" />
 
         <ImageButton
@@ -114,7 +114,7 @@
             android:tag="*"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonMultiply" />
     </TableRow>
 
@@ -131,7 +131,7 @@
             android:tag="7"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton7" />
 
         <ImageButton
@@ -141,7 +141,7 @@
             android:tag="8"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton8" />
 
         <ImageButton
@@ -151,7 +151,7 @@
             android:tag="9"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton9" />
         <ImageButton
             android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
             android:tag="/"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonDivide" />
 
 
@@ -171,7 +171,7 @@
                 android:textColor="@android:color/white"
                 android:tag="back"
                 android:layout_weight="1"
-                android:onClick="onButtonClick"
+                android:onClick="onCalculatorButtonClick"
                 android:layout_margin="4dp"
                 android:id="@+id/imageButtonBack" />
 
@@ -190,7 +190,7 @@
             android:tag="C"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonClear" />
 
         <ImageButton
@@ -200,7 +200,7 @@
             android:tag="0"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButton0" />
 
         <ImageButton
@@ -210,7 +210,7 @@
             android:tag="."
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonDot" />
 
         <ImageButton
@@ -220,7 +220,7 @@
             android:tag="="
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonEquals" />
         <ImageButton
             android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
             android:tag="done"
             android:layout_weight="1"
             android:layout_margin="4dp"
-            android:onClick="onButtonClick"
+            android:onClick="onCalculatorButtonClick"
             android:id="@+id/imageButtonDone" />
     </TableRow>
 
