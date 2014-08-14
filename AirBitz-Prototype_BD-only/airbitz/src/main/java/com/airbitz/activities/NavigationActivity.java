@@ -197,7 +197,7 @@ public class NavigationActivity extends BaseActivity
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // Disappear if transparent page shows
                 if (position == 0 || position == 2) {
-                    //mViewPager.setVisibility(View.GONE);
+                    mViewPager.setVisibility(View.GONE);
                 }
             }
 
@@ -360,7 +360,9 @@ public class NavigationActivity extends BaseActivity
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
-            DisplayLoginOverlay(mDataUri!=null);
+            if(mDataUri!=null)
+                DisplayLoginOverlay(true);
+
             mNavThreadId = Tabs.BD.ordinal();
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
@@ -373,7 +375,7 @@ public class NavigationActivity extends BaseActivity
     @Override public void onPause() {
         super.onPause();
         unregisterReceiver(AirbitzServiceReceiver);
-        mViewPager.setVisibility(View.VISIBLE);
+        DisplayLoginOverlay(true);
         mCoreAPI.stopAllAsyncUpdates();
     }
 
