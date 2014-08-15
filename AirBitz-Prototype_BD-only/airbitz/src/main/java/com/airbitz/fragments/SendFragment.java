@@ -264,12 +264,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mListingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                dummyFocus.requestFocus();
-                mListviewContainer.setVisibility(View.GONE);
-                ((NavigationActivity)getActivity()).hideSoftKeyboard(mListingListView);
-                Wallet w = mCurrentListing.get(i);
-
-                GotoSendConfirmation(w.getUUID(), 0, " ", true);
+                GotoSendConfirmation(mCurrentListing.get(i).getUUID(), 0, " ", true);
             }
         });
 
