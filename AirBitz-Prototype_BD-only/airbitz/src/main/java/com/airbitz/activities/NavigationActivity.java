@@ -1,6 +1,7 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -234,6 +235,11 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchFragmentThread(int id) {
+        Fragment frag = mNavStacks[id].peek();
+        if(frag.isAdded()) {
+            Common.LogD("NavFrag", "Fragment already added");
+            return;
+        }
         mNavBarFragment.unselectTab(mNavThreadId);
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
