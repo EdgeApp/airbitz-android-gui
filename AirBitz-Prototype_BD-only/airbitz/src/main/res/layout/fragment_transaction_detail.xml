@@ -298,6 +298,7 @@
                     android:layout_alignParentLeft="true"
                     android:background="@drawable/bg_textfield"
                     android:text="Transfer:Wallet:TestCAD"
+                    android:selectAllOnFocus="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
@@ -424,7 +425,7 @@
             android:src="@drawable/logo" />
 
         <Button
-            android:id="@+id/x_button"
+            android:id="@+id/transaction_details_close_advanced_button"
             android:layout_width="31.5dp"
             android:layout_height="31.5dp"
             android:layout_alignParentTop="true"
