@@ -395,7 +395,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
             mSpinner = (Spinner)findViewById(R.id.item_recovery_question_spinner);
-            mSpinner.setDropDownWidth((int) getResources().getDimension(R.dimen.spinner_width_password));
             mSpinner.setFocusable(true);
             mSpinner.setFocusableInTouchMode(true);
             mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
