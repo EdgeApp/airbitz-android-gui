@@ -71,7 +71,7 @@ public class WalletFragment extends Fragment
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
-    private ImageView mBottomCoin;
+//    private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
 
@@ -90,7 +90,6 @@ public class WalletFragment extends Fragment
 
     private RelativeLayout switchable;
     private RelativeLayout switchContainer;
-    //private SeekBar mSeekBar;
 
     private boolean mOnBitcoinMode = true;
 
@@ -106,7 +105,6 @@ public class WalletFragment extends Fragment
     private String mWalletName;
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
-    private int mFiatCurrencyNum;
     private int mCurrencyIndex;
 
     @Override
@@ -168,7 +166,7 @@ public class WalletFragment extends Fragment
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
-        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
+//        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
@@ -183,11 +181,11 @@ public class WalletFragment extends Fragment
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mWalletNameButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+        mWalletNameButton.setTypeface(NavigationActivity.latoBlackTypeFace);
         mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonBitcoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
         mWalletNameButton.setText(mWalletName);
 
@@ -542,7 +540,7 @@ public class WalletFragment extends Fragment
         for(Transaction transaction : mTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
-        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);//todo
+//        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mButtonBitcoinBalance.setText(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));

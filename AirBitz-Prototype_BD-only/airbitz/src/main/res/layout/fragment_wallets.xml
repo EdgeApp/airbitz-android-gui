@@ -72,7 +72,7 @@
             <TextView
                 android:id="@+id/fragment_wallets_balance_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="63dp"
+                android:layout_height="34dp"
                 android:text="@string/fragment_wallets_balance_text"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/fragment_wallets_data_layout"
-            android:layout_marginTop="12.6dp">
+            android:layout_marginTop="18dp">
 
             <com.airbitz.objects.DynamicListView
                 android:id="@+id/fragment_wallets_listview"

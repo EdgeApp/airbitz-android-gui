@@ -11,6 +11,7 @@
     <color name="dark_gray_text">#2c2c2c</color>
     <color name="blue_highlight">#ff59ddff</color>
     <color name="listitem_normal">#ffaddff1</color>
+    <color name="semi_black_text">#99000000</color>
 
     <color name="identifier_pink">#FF00FF</color>
     <color name="identifier_purple">#ff862eae</color>
