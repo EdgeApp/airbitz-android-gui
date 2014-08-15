@@ -53,6 +53,7 @@
             android:id="@+id/fragment_transactiondetail_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:layout_below="@id/fragment_category_layout_header">
 
             <TextView
@@ -89,7 +90,7 @@
                     android:singleLine="true"
                     android:gravity="center"
                     android:imeOptions="actionDone"
-                    android:inputType="textAutoComplete|textNoSuggestions"
+                    android:inputType="textAutoComplete|textNoSuggestions|textCapWords"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
                     android:background="@drawable/bg_edittext"
@@ -235,11 +236,11 @@
                 <EditText
                     android:id="@+id/transaction_detail_edittext_dollar_value"
                     android:layout_width="180dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="26dp"
                     android:textSize="16sp"
                     android:layout_weight="10"
                     android:textColorHint="@android:color/white"
-                    android:background="@drawable/bg_textfield"
+                    android:background="@drawable/bg_edittext"
                     android:gravity="center"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
@@ -294,13 +295,14 @@
                     android:id="@+id/transaction_detail_edittext_category"
                     android:layout_below="@+id/transaction_detail_textview_category"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="26dp"
                     android:layout_alignParentLeft="true"
-                    android:background="@drawable/bg_textfield"
+                    android:background="@drawable/bg_edittext"
                     android:text="Transfer:Wallet:TestCAD"
                     android:selectAllOnFocus="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:inputType="textCapWords|textCapSentences"
                     android:gravity="center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
@@ -346,7 +348,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@drawable/bg_textfield"/>
+                    android:background="@drawable/bg_edittext"/>
 
             </RelativeLayout>
 

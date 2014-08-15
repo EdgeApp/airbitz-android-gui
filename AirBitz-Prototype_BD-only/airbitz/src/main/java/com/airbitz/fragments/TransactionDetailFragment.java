@@ -332,6 +332,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         highlightEditableText(mCategoryEdittext);
+                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
                     updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
@@ -435,14 +436,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
