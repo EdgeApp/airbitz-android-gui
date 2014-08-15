@@ -77,16 +77,17 @@
         <RelativeLayout
             android:id="@+id/fragment_wallet_export_layout"
             android:layout_width="match_parent"
-            android:layout_height="63dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="-12.6dp"
             android:layout_marginRight="-12.6dp">
 
             <com.airbitz.objects.HighlightOnPressImageButton
                 android:id="@+id/fragment_wallet_export_button"
-                android:layout_width="63dp"
-                android:layout_height="63dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
-                android:padding="15.75dp"
+                android:padding="12dp"
+                android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
@@ -95,10 +96,11 @@
 
             <com.airbitz.objects.HighlightOnPressImageButton
                 android:id="@+id/fragment_wallet_search_button"
-                android:layout_width="63dp"
-                android:layout_height="63dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:padding="15.75dp"
+                android:padding="12dp"
+                android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
@@ -107,12 +109,12 @@
             <EditText
                 android:id="@+id/fragment_wallet_walletname_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="37.8dp"
+                android:layout_height="34dp"
                 android:layout_centerVertical="true"
                 android:imeOptions="actionDone"
                 android:text="Wallet"
                 android:selectAllOnFocus="true"
-                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:inputType="textCapWords|textNoSuggestions"
                 android:layout_toLeftOf="@id/fragment_wallet_search_button"
                 android:layout_toRightOf="@id/fragment_wallet_export_button"
                 android:background="@drawable/emboss_down"
@@ -129,7 +131,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="18.9dp"
+            android:layout_marginTop="14dp"
             android:id="@+id/fragment_wallet_scrollview">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,7 +142,7 @@
                     android:id="@+id/fragment_wallet_sendrequest_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="9.45dp"
+                    android:layout_marginBottom="6dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 

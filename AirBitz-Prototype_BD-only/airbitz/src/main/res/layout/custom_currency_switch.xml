@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_balance"
     android:layout_width="match_parent"
-    android:layout_height="75.6dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/emboss_down_deep">
 
     <RelativeLayout
@@ -24,8 +24,8 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:text="B110.015"
-            android:textColor="#99000000"
-            android:textSize="20dp" />
+            android:textColor="@color/semi_black_text"
+            android:textSize="16sp" />
         <TextView
             android:id="@+id/top_type"
             android:layout_width="wrap_content"
@@ -33,9 +33,9 @@
             android:padding="9.45dp"
             android:layout_alignParentRight="true"
             android:text="BTC"
-            android:textSize="13dp"
+            android:textSize="12sp"
             android:gravity="center"
-            android:textColor="#99000000"/>
+            android:textColor="@color/semi_black_text"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -43,12 +43,6 @@
         android:layout_height="37.8dp"
         android:id="@+id/bottom_switch"
         android:layout_below="@id/top_switch">
-        <ImageView
-            android:id="@+id/bottom_coin"
-            android:layout_width="37.8dp"
-            android:layout_height="37.8dp"
-            android:padding="9.45dp"
-            android:src="@drawable/ico_coin_usd_dark"/>
         <Button
             android:id="@+id/back_button_bottom"
             android:layout_width="match_parent"
@@ -56,16 +50,16 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:text="$1050.67"
-            android:textColor="#99000000"
-            android:textSize="20sp"/>
+            android:textColor="@color/semi_black_text"
+            android:textSize="16sp"/>
         <TextView
             android:id="@+id/bottom_type"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:padding="9.45dp"
             android:layout_alignParentRight="true"
-            android:textSize="13sp"
-            android:textColor="#99000000"
+            android:textSize="12sp"
+            android:textColor="@color/semi_black_text"
             android:text="USD"/>
     </RelativeLayout>
 
@@ -86,7 +80,7 @@
             android:shadowDy="4"
             android:shadowRadius="1"
             android:textColor="@android:color/white"
-            android:textSize="22dp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
         <ImageView
@@ -102,7 +96,7 @@
             android:padding="9.45dp"
             android:layout_alignParentRight="true"
             android:text="BTC"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textColor="@android:color/white"
             android:shadowColor="#000000"
             android:shadowDy="3"

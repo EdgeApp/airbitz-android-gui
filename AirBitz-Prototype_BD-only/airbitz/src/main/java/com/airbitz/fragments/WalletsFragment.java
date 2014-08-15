@@ -5,6 +5,7 @@ import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -92,7 +93,7 @@ public class WalletsFragment extends Fragment
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
-    private ImageView mBottomCoin;
+//    private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
 
@@ -188,7 +189,7 @@ public class WalletsFragment extends Fragment
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
-        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
+//        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
@@ -317,7 +318,7 @@ public class WalletsFragment extends Fragment
         mBalanceLabel.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
         archiveHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -366,7 +367,7 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalanceSatoshi();
         }
-        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
+//        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
