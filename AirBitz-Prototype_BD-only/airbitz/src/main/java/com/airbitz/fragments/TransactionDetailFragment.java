@@ -386,6 +386,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        mCategoryEdittext.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    mDummyFocus.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -595,6 +606,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         UpdateView(mTransaction);
         mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if(mFromSend || mFromRequest){
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
