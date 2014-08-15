@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,12 +55,10 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.ListViewUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +73,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private HighlightOnPressButton mDoneButton;
     private HighlightOnPressButton mAdvanceDetailsButton;
     private TextView mAdvancedDetailTextView;
-    private Button mXButton;
+    private Button mCloseAdvancedDetailsButton;
 
     private TextView mDateTextView;
     private TextView mTitleTextView;
@@ -213,7 +209,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_advanced);
-        mXButton = (Button) view.findViewById(R.id.x_button);
+        mCloseAdvancedDetailsButton = (Button) view.findViewById(R.id.transaction_details_close_advanced_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
         mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
@@ -296,10 +292,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
                     if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 30) {
-                        ((NavigationActivity)getActivity()).hideSoftKeyboard(activityRootView);
+                        ((NavigationActivity) getActivity()).hideSoftKeyboard(activityRootView);
                     }
                 }
             }
@@ -310,14 +306,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShowAdvancedDetails();
+                ShowAdvancedDetails(true);
             }
         });
 
-        mXButton.setOnClickListener(new View.OnClickListener() {
+        mCloseAdvancedDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAdvancedDetailsPopup.setVisibility(View.GONE);
+                ShowAdvancedDetails(false);
             }
         });
 
@@ -335,7 +331,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 showCategoryPopup(hasFocus);
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
-                        mCategoryEdittext.setSelection(currentType.length(), mCategoryEdittext.getText().toString().length());
+                        highlightEditableText(mCategoryEdittext);
                     }
                     updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
@@ -423,7 +419,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     combineMatchLists();
                 }
                 mSearchAdapter.notifyDataSetChanged();
-//                ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView, mCombined.size(), getActivity());
             }
         });
 
@@ -640,9 +635,21 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mDoneButton.setVisibility(View.VISIBLE);
             mCategoryListView.setVisibility(View.GONE);
-            popupTriangle.setVisibility(View.GONE);        }
+            popupTriangle.setVisibility(View.GONE);
+        }
     }
 
+    private void highlightEditableText(EditText editText) {
+        if(editText.getText().toString().startsWith("Income:")) {
+            editText.setSelection(7, editText.length());
+        }else if(editText.getText().toString().startsWith("Expense:")){
+            editText.setSelection(8, editText.length());
+        }else if(editText.getText().toString().startsWith("Transfer:")){
+            editText.setSelection(9, editText.length());
+        }else if(editText.getText().toString().startsWith("Exchange:")){
+            editText.setSelection(9, editText.length());
+        }
+    }
 
     private void updateBlanks(String term){
         if(baseIncomePosition < mCategories.size()) {
@@ -672,109 +679,113 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mOriginalCategories.add(originalBaseExchangePosition, "Exchange:" + term);
     }
 
-    private void ShowAdvancedDetails()
+    private void ShowAdvancedDetails(boolean hasFocus)
     {
-        mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
+        if(hasFocus) {
+            mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
 
-        SpannableStringBuilder inAddresses = new SpannableStringBuilder();
-        SpannableStringBuilder outAddresses = new SpannableStringBuilder();
-        String baseUrl = "";
-        if (mCoreAPI.isTestNet()) { // TESTNET
-            baseUrl += "https://blockexplorer.com/testnet/";
-        } else { // LIVE
-            baseUrl += "https://blockchain.info/";
-        }
+            SpannableStringBuilder inAddresses = new SpannableStringBuilder();
+            SpannableStringBuilder outAddresses = new SpannableStringBuilder();
+            String baseUrl = "";
+            if (mCoreAPI.isTestNet()) { // TESTNET
+                baseUrl += "https://blockexplorer.com/testnet/";
+            } else { // LIVE
+                baseUrl += "https://blockchain.info/";
+            }
 
-        int start = 0;
-        int end = 0;
-        for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
-            String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
-            SpannableString html = new SpannableString(val+"\n");
-            end = val.length();
-            final String url = baseUrl + t.getSzAddress();
-            ClickableSpan span = new ClickableSpan() {
+            int start = 0;
+            int end = 0;
+            for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
+                String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
+                SpannableString html = new SpannableString(val + "\n");
+                end = val.length();
+                final String url = baseUrl + t.getSzAddress();
+                ClickableSpan span = new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                    }
+                };
+                html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                if (t.getInput()) {
+                    inAddresses.append(html);
+                } else {
+                    outAddresses.append(html);
+                }
+            }
+
+            SpannableStringBuilder s = new SpannableStringBuilder();
+            start = 0;
+            end = 0;
+            s.append("Transaction ID").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
+
+            start = s.length();
+            s.append(mTransaction.getID());
+            end = s.length();
+            final String finalBaseUrl = baseUrl;
+            ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    Intent i = new Intent( Intent.ACTION_VIEW );
-                    i.setData(Uri.parse(url));
-                    startActivity( i );
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(finalBaseUrl + mTransaction.getID()));
+                    startActivity(i);
                 }
             };
-            html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n\n");
 
-            if (t.getInput()) {
-                inAddresses.append(html);
-            } else {
-                outAddresses.append(html);
-            }
-        }
+            //Total Sent - formatSatoshi
+            start = s.length();
+            s.append("Total Sent").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
 
-        SpannableStringBuilder s = new SpannableStringBuilder();
-        start = 0;
-        end=0;
-        s.append("Transaction ID").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n");
-
-        start = s.length();
-        s.append(mTransaction.getID());
-        end = s.length();
-        final String finalBaseUrl = baseUrl;
-        ClickableSpan url = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent i = new Intent( Intent.ACTION_VIEW );
-                i.setData( Uri.parse(finalBaseUrl + mTransaction.getID()) );
-                startActivity( i );
-            }
-        };
-        s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n\n");
-
-        //Total Sent - formatSatoshi
-        start = s.length();
-        s.append("Total Sent").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n");
-
-        long feesSatoshi = mTransaction.getABFees()+mTransaction.getMinerFees();
-        long total = mTransaction.getAmountSatoshi() + feesSatoshi;
-        s.append(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(total, true, false))
-                .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n\n");
+            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
+            long total = mTransaction.getAmountSatoshi() + feesSatoshi;
+            s.append(mCoreAPI.getDefaultBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(total, true, false))
+                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n\n");
 
 
-        //Source - inAddresses
-        start = s.length();
-        s.append("Source").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n");
-        s.append(inAddresses);
-        s.append("\n\n");
+            //Source - inAddresses
+            start = s.length();
+            s.append("Source").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
+            s.append(inAddresses);
+            s.append("\n\n");
 
-        //Destination - outAddresses
-        start = s.length();
-        s.append("Destination").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n");
-        s.append(outAddresses);
-        s.append("\n\n");
+            //Destination - outAddresses
+            start = s.length();
+            s.append("Destination").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
+            s.append(outAddresses);
+            s.append("\n\n");
 
 
-        //Miner Fee - formatSatoshi
-        start = s.length();
-        s.append("Miner Fee").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.append("\n");
+            //Miner Fee - formatSatoshi
+            start = s.length();
+            s.append("Miner Fee").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
 
-        start = s.length();
-        s.append(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
-                .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            start = s.length();
+            s.append(mCoreAPI.getDefaultBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
+                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        mAdvancedDetailTextView.setText(s);
-        mAdvancedDetailTextView.setMovementMethod( LinkMovementMethod.getInstance() );
+            mAdvancedDetailTextView.setText(s);
+            mAdvancedDetailTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        } else {
+            mDummyFocus.requestFocus();
+            mAdvancedDetailsPopup.setVisibility(View.GONE);        }
     }
 
     private void UpdateView(Transaction transaction) {
