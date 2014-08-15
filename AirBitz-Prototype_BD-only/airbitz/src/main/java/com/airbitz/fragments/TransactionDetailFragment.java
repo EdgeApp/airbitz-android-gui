@@ -283,14 +283,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryListView.setAdapter(mCategoryAdapter);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
-        mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
-        mPayeeEditText.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-        mCategoryEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPayeeEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mNoteEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
 
-        mNoteEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
 
         mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -800,13 +800,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
-        if(mFromSend) {
-            String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false);
-            mBTCFeeTextView.setText(feeFormatted);
-            mBTCFeeTextView.setVisibility(View.VISIBLE);
-        } else {
-            mBTCFeeTextView.setVisibility(View.INVISIBLE);
-        }
+        String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
+        mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
     }
 
