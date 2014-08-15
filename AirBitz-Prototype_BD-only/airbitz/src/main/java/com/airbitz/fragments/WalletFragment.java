@@ -355,6 +355,7 @@ public class WalletFragment extends Fragment
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mSendButton.setEnabled(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
                 ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
@@ -364,6 +365,7 @@ public class WalletFragment extends Fragment
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mRequestButton.setEnabled(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(SendFragment.UUID, mWallet.getUUID());
                 ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), bundle);
@@ -530,6 +532,8 @@ public class WalletFragment extends Fragment
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
         UpdateWalletTotalBalance();
+        mRequestButton.setEnabled(true);
+        mSendButton.setEnabled(true);
     }
 
     // Sum all transactions and show in total
