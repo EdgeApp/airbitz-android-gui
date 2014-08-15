@@ -56,7 +56,7 @@ public class NavigationBarFragment extends Fragment {
 
         mView = inflater.inflate(R.layout.fragment_navigation_bar, container, false);
 
-        mButtons = (View) mView.findViewById(R.id.normal_navigation_bar);
+        mButtons = mView.findViewById(R.id.normal_navigation_bar);
 
         mContainerLayout = (LinearLayout) mView.findViewById(R.id.nav_bar_container);
 
@@ -73,6 +73,8 @@ public class NavigationBarFragment extends Fragment {
 
         mButtons.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                if(event.getPointerCount()>1)
+                    return false;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
