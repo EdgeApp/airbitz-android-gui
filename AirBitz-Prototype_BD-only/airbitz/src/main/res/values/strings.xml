@@ -132,6 +132,8 @@
     <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0.001 Bitcoin)</string>
     <string name="settings_denomination_buttons_ubitcoin">μBitcoin = (0.000001 Bitcoin)</string>
     <string name="settings_account_title">ACCOUNT</string>
+    <string name="settings_options_title">OPTIONS</string>
+    <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change withdrawal PIN</string>
     <string name="settings_button_recovery">Change recovery questions</string>

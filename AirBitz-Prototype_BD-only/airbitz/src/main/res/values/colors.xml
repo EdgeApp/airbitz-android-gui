@@ -12,6 +12,9 @@
     <color name="blue_highlight">#ff59ddff</color>
     <color name="listitem_normal">#ffaddff1</color>
     <color name="semi_black_text">#99000000</color>
+    <color name="settings_button_text">#CC333333</color>
+    <color name="settings_edit_text">#FF999999</color>
+    <color name="settings_edit_hint">#FFDDDDDD</color>
 
     <color name="identifier_pink">#FF00FF</color>
     <color name="identifier_purple">#ff862eae</color>
