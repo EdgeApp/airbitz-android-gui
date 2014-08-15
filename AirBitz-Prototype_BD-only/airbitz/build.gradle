@@ -33,8 +33,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 45
-        versionName "1.0.45f"
+        versionCode 46
+        versionName "1.0.46f"
     }
     buildTypes {
         release {
