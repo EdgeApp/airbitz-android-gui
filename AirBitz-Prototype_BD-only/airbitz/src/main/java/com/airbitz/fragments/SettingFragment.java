@@ -68,7 +68,6 @@ public class SettingFragment extends Fragment {
     private EditText mNicknameEditText;
 
     private HighlightOnPressButton mAutoLogoffButton;
-    private HighlightOnPressButton mLanguageButton;
     private HighlightOnPressButton mDefaultCurrencyButton;
 
     private TextView mAccountTitle;
@@ -162,7 +161,6 @@ public class SettingFragment extends Fragment {
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
         mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
-        mLanguageButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_language);
         mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
 
         mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
@@ -228,13 +226,6 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showAutoLogoffDialog();
-            }
-        });
-
-        mLanguageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showSelectorDialog(mLanguageButton, mLanguageItems, "Select an item", 0);
             }
         });
 
@@ -348,12 +339,6 @@ public class SettingFragment extends Fragment {
         }
         mAutoLogoffButton.setText(timeText);
 
-        // Language
-        String language = settings.getSzLanguage();
-        if(language==null)
-            language = "";
-        mLanguageButton.setText(language);
-
         // Default Currency
         mCurrencyNum = mCoreSettings.getCurrencyNum();
         mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
@@ -447,9 +432,6 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
-
-        // Language
-        mCoreSettings.setSzLanguage(mLanguageButton.getText().toString());
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);

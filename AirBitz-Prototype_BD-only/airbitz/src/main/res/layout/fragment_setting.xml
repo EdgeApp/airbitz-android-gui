@@ -81,7 +81,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_denomination_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <RadioGroup
                     android:id="@+id/settings_denomination_denomination_group"
@@ -109,7 +109,7 @@
                         android:paddingTop="13dp"
                         android:checked="true"
                         android:text="@string/settings_denomination_buttons_bitcoin"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                     <RadioButton
@@ -126,7 +126,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_denomination_buttons_mbitcoin"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                     <RadioButton
@@ -142,7 +142,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_denomination_buttons_ubitcoin"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                 </RadioGroup>
@@ -166,7 +166,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_account_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/credentials_buttons"
@@ -191,7 +191,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_change_password"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                     <com.airbitz.objects.HighlightOnPressButton
@@ -206,7 +206,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_pin"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                     <com.airbitz.objects.HighlightOnPressButton
@@ -221,7 +221,7 @@
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
                         android:text="@string/settings_button_recovery"
-                        android:textColor="#CC333333"
+                        android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -245,7 +245,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_user_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/user_buttons"
@@ -272,7 +272,7 @@
                             android:textOn=""
                             android:textOff=""
                             android:text="@string/settings_button_send_user_info"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="10dp"
@@ -303,8 +303,8 @@
                             android:layout_marginTop="3.15dp"
                             android:paddingLeft="9.45dp"
                             android:hint="@string/settings_edit_first_name"
-                            android:textColorHint="#DDDDDD"
-                            android:textColor="#999999"
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textColor="@color/settings_edit_text"
                             android:textSize="14sp"
                             android:singleLine="true"/>
                     </LinearLayout>
@@ -326,8 +326,8 @@
                             android:layout_marginTop="3.15dp"
                             android:paddingLeft="9.45dp"
                             android:hint="@string/settings_edit_last_name"
-                            android:textColorHint="#DDDDDD"
-                            android:textColor="#999999"
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textColor="@color/settings_edit_text"
                             android:textSize="14sp"
                             android:singleLine="true" />
                     </LinearLayout>
@@ -349,8 +349,8 @@
                             android:enabled="false"
                             android:paddingLeft="9.45dp"
                             android:hint="@string/settings_edit_nick_name"
-                            android:textColorHint="#DDDDDD"
-                            android:textColor="#999999"
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textColor="@color/settings_edit_text"
                             android:textSize="14sp"
                             android:singleLine="true" />
                     </LinearLayout>
@@ -374,9 +374,9 @@
                     android:paddingBottom="2dp"
                     android:paddingLeft="28dp"
                     android:paddingTop="2dp"
-                    android:text="OPTIONS"
+                    android:text="@string/settings_options_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18dp"/>
+                    android:textSize="18sp"/>
 
                 <LinearLayout
                     android:id="@+id/misc_views"
@@ -407,7 +407,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_auto_logoff"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -418,44 +418,6 @@
                             android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal" >
-                        <TextView
-                            android:id="@+id/settings_title_language"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:gravity="left"
-                            android:layout_weight="1"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_title_language"
-                            android:textColor="#CC333333"
-                            android:textSize="13sp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_language"
-                            android:layout_width="100dp"
-                            android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:textColor="@android:color/white"
                             android:background="@drawable/bg_btn_blue_stretch"/>
                     </LinearLayout>
 
@@ -483,7 +445,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_currency"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -522,8 +484,8 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
-                            android:text="Change Categories"
-                            android:textColor="#CC333333"
+                            android:text="@string/settings_button_change_categories"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -560,7 +522,7 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_exchange_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/exchange_views"
@@ -591,7 +553,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_usd"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -623,7 +585,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_canadian"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -655,7 +617,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_euro"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -687,7 +649,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_peso"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -719,7 +681,7 @@
                             android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_yuan"
-                            android:textColor="#CC333333"
+                            android:textColor="@color/settings_button_text"
                             android:textSize="13sp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
@@ -743,7 +705,7 @@
                 android:text="@string/settings_button_logout"
                 android:textColor="@android:color/white"
                 android:textStyle="normal"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
@@ -755,7 +717,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_settings_debug_info"
                 android:textColor="@android:color/black"
-                android:textSize="12dp"/>
+                android:textSize="12sp"/>
 
         </LinearLayout>
     </ScrollView>
