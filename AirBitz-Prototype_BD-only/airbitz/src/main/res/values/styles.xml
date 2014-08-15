@@ -100,14 +100,14 @@
         <item name="android:shadowColor">@android:color/white</item>
         <item name="android:shadowRadius">1</item>
         <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">3</item>
+        <item name="android:shadowDy">1</item>
     </style>
 
     <style name="BlackDropShadow">
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowRadius">1</item>
         <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">3</item>
+        <item name="android:shadowDy">1</item>
     </style>
 
 </resources>
