@@ -71,7 +71,6 @@ public class WalletFragment extends Fragment
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
-//    private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
 
@@ -105,7 +104,6 @@ public class WalletFragment extends Fragment
     private String mWalletName;
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
-    private int mCurrencyIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -123,7 +121,6 @@ public class WalletFragment extends Fragment
                     mWallet = mCoreAPI.getWallet(walletUUID);
                     mWalletName = mWallet.getName();
                     mTransactions = mCoreAPI.loadTransactions(mWallet);
-                    mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
                 }
             }
         }
@@ -193,20 +190,11 @@ public class WalletFragment extends Fragment
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() <= 100) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
-                    }
+                    ((NavigationActivity)getActivity()).showSoftKeyboard(mWalletNameButton);
                 }else {
                     if(!mWalletNameButton.getText().toString().trim().isEmpty()) {
                         mWallet.setName(mWalletNameButton.getText().toString());
                         mCoreAPI.renameWallet(mWallet);
-                    }
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() >= 100) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
                     }
                 }
             }
@@ -216,11 +204,7 @@ public class WalletFragment extends Fragment
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() <= 100) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
-                    }
+                    ((NavigationActivity)getActivity()).showSoftKeyboard(mSearchField);
                 }
             }
         });
@@ -302,15 +286,10 @@ public class WalletFragment extends Fragment
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus) {
-                    final View activityRootView = getActivity().findViewById(R.id.activity_navigation_root);
-                    if (activityRootView.getRootView().getHeight() - activityRootView.getHeight() > 100) {
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, 0);
-                    }
+                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mDummyFocus);
                 }
             }
         });
-
 
         mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,10 +325,12 @@ public class WalletFragment extends Fragment
         mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mDummyFocus.requestFocus();
                 Fragment fragment = new ExportFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
+
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -373,6 +354,7 @@ public class WalletFragment extends Fragment
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mDummyFocus.requestFocus();
                 TransactionAdapter a = (TransactionAdapter) adapterView.getAdapter();
                 a.selectItem(view, i);
                 Bundle bundle = new Bundle();
