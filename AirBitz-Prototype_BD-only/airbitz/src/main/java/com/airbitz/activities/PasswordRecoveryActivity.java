@@ -329,7 +329,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
             if (!success) {
                 ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                ShowMessageAlertAndExit(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
+                ShowMessageDialogAndExit(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
             }
         }
 

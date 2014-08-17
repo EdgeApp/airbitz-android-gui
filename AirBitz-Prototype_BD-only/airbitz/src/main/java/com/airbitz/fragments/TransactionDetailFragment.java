@@ -72,8 +72,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private final String TAG = getClass().getSimpleName();
     private HighlightOnPressButton mDoneButton;
     private HighlightOnPressButton mAdvanceDetailsButton;
-    private TextView mAdvancedDetailTextView;
-    private Button mCloseAdvancedDetailsButton;
 
     private TextView mDateTextView;
     private TextView mTitleTextView;
@@ -121,7 +119,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
-    private RelativeLayout mAdvancedDetailsPopup;
 
     private List<BusinessSearchResult> mBusinesses;
     private List<BusinessSearchResult> mOriginalBusinesses;
@@ -209,7 +206,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_advanced);
-        mCloseAdvancedDetailsButton = (Button) view.findViewById(R.id.transaction_details_close_advanced_button);
+//        mCloseAdvancedDetailsButton = (Button) view.findViewById(R.id.transaction_details_close_advanced_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
         mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
@@ -233,9 +230,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
 
         mDummyFocus = view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
-
-        mAdvancedDetailsPopup = (RelativeLayout) view.findViewById(R.id.advanced_details_popup);
-        mAdvancedDetailTextView = (TextView) view.findViewById(R.id.fragment_transactiondetail_textview);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
@@ -307,13 +301,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onClick(View view) {
                 ShowAdvancedDetails(true);
-            }
-        });
-
-        mCloseAdvancedDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowAdvancedDetails(false);
             }
         });
 
@@ -691,8 +678,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private void ShowAdvancedDetails(boolean hasFocus)
     {
         if(hasFocus) {
-            mAdvancedDetailsPopup.setVisibility(View.VISIBLE);
-
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String baseUrl = "";
@@ -790,11 +775,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            mAdvancedDetailTextView.setText(s);
-            mAdvancedDetailTextView.setMovementMethod(LinkMovementMethod.getInstance());
+            ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mDummyFocus.requestFocus();
-            mAdvancedDetailsPopup.setVisibility(View.GONE);        }
+        }
     }
 
     private void UpdateView(Transaction transaction) {
@@ -889,7 +873,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 this.cancel(true);
             }
             mSearchAdapter.notifyDataSetChanged();
-//            ListViewUtility.setTransactionDetailListViewHeightBasedOnChildren(mSearchListView,mCombined.size(),getActivity());
         }
 
         @Override
