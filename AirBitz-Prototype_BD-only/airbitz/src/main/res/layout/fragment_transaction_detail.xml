@@ -4,6 +4,7 @@
     android:id="@+id/transaction_detail_layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@drawable/bg_app">
 
     <RelativeLayout
@@ -53,7 +54,6 @@
             android:id="@+id/fragment_transactiondetail_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:layout_below="@id/fragment_category_layout_header">
 
             <TextView
@@ -399,65 +399,5 @@
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:id="@+id/fragment_transactiondetail_dummy_focus"/>
-
-
-    <RelativeLayout
-        android:id="@+id/advanced_details_popup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="31.5dp"
-        android:layout_marginRight="31.5dp"
-        android:layout_marginLeft="31.5dp"
-        android:layout_marginBottom="31.5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:background="@drawable/advanced_details_bg"
-        android:layout_below="@id/fragment_category_layout_header"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="63dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/logo" />
-
-        <Button
-            android:id="@+id/transaction_details_close_advanced_button"
-            android:layout_width="31.5dp"
-            android:layout_height="31.5dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/two_mm"
-            android:layout_marginTop="9.45dp"
-            android:background="@drawable/btn_x_rnd"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/logo"
-            android:background="@drawable/advanced_details_box"
-            android:layout_marginRight="@dimen/two_mm"
-            android:layout_marginLeft="@dimen/two_mm"
-            android:layout_marginBottom="18.9dp">
-
-            <TextView
-                android:id="@+id/fragment_transactiondetail_textview"
-                android:bufferType="spannable"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="6.3dp"
-                android:paddingBottom="6.3dp"
-                android:paddingRight="6.3dp"
-                android:paddingTop="9.45dp"
-                android:paddingLeft="9.45dp"/>
-
-        </LinearLayout>
-
-
-
-    </RelativeLayout>
 
 </RelativeLayout>

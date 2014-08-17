@@ -184,7 +184,6 @@
     <string name="send_confirmation_enter_send_pin">Enter Send Pin</string>
     <string name="send_confirmation_slide_to_confirm">Slide to Confirm</string>
 
-
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
@@ -282,7 +281,6 @@
     <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
-
-
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

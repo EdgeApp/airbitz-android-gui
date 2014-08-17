@@ -1,16 +1,22 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Spanned;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.airbitz.R;
+import com.airbitz.fragments.HelpDialog;
+
+import java.io.File;
 
 public class BaseActivity extends FragmentActivity {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
@@ -61,7 +67,7 @@ public class BaseActivity extends FragmentActivity {
         alert.show();
     }
 
-    public void ShowMessageAlertAndExit(String title, String reason) {
+    public void ShowMessageDialogAndExit(String title, String reason) {
         if(mProgressDialog!=null)
             mProgressDialog.dismiss();
 

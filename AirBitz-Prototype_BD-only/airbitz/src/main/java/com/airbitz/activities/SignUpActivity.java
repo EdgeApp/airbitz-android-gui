@@ -3,9 +3,7 @@ package com.airbitz.activities;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,10 +11,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -512,19 +507,19 @@ public class SignUpActivity extends BaseActivity {
             showModalProgress(false);
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    ShowMessageAlertAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
+                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
