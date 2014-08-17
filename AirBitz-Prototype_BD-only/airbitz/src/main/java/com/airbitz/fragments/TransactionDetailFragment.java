@@ -576,7 +576,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Transaction Detail", "Transaction Detail info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 

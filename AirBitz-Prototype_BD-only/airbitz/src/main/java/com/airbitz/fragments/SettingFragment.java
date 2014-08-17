@@ -182,7 +182,7 @@ public class SettingFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.SETTINGS), NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 

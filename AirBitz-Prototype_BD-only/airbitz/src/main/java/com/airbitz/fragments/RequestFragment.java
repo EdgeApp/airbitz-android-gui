@@ -290,7 +290,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
