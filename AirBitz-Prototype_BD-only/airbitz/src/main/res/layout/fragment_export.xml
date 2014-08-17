@@ -74,7 +74,7 @@
                 android:layout_height="44.1dp"
                 android:text="@string/export_csv_title"
                 android:textColor="#005f96"
-                android:background="@drawable/wallet_list_top"
+                android:background="@drawable/wallet_list_top_archive"
                 android:drawableRight="@drawable/arrow_right"
                 android:gravity="center_vertical"
                 android:paddingRight="18.9dp"
