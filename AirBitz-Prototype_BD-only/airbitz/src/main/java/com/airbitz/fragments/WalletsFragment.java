@@ -40,7 +40,6 @@ import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class WalletsFragment extends Fragment
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
-    private RelativeLayout mParentLayout;
+    private RelativeLayout mDummyFocus;
     private RelativeLayout mContainerLayout;
 
     private Button mBitCoinBalanceButton;
@@ -110,7 +109,6 @@ public class WalletsFragment extends Fragment
 
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
-    private int mFiatCurrencyNum;
     private int mCurrencyIndex;
 
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
@@ -118,16 +116,15 @@ public class WalletsFragment extends Fragment
     public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
-    public static int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
-            R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
-            R.drawable.ico_usd_white, R.drawable.ico_usd_white};
-    public static int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
-            R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
-    public static int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
-            R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
+//    public static int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+//            R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
+//            R.drawable.ico_usd_white, R.drawable.ico_usd_white};
+//    public static int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
+//            R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
+//    public static int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
+//            R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
 
     private AddWalletTask mAddWalletTask;
-    private boolean fragmentsCreated = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -154,7 +151,7 @@ public class WalletsFragment extends Fragment
 
         mOnBitcoinMode = true;
 
-        mParentLayout = (RelativeLayout) mView;
+        mDummyFocus = (RelativeLayout) mView;
         mContainerLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_container);
 
         mCurrencyList = new ArrayList<String>();
@@ -189,7 +186,6 @@ public class WalletsFragment extends Fragment
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
-//        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
@@ -214,7 +210,6 @@ public class WalletsFragment extends Fragment
             @Override
             public void onClick(View view) {
                 switchBarInfo(true);
-//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
                 mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = true;
             }
@@ -223,7 +218,6 @@ public class WalletsFragment extends Fragment
             @Override
             public void onClick(View view) {
                 switchBarInfo(false);
-//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
                 mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = false;
             }
@@ -231,7 +225,6 @@ public class WalletsFragment extends Fragment
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mLatestWalletListView.setAdapter(mLatestWalletAdapter);
                 mLatestWalletAdapter.notifyDataSetChanged();
                 if(mOnBitcoinMode){
                     switchBarInfo(false);
@@ -326,7 +319,7 @@ public class WalletsFragment extends Fragment
                 int pos = mLatestWalletAdapter.getArchivePos();
                 mLatestWalletAdapter.switchCloseAfterArchive(pos);
                 mLatestWalletAdapter.notifyDataSetChanged();
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
                 archiveClosed = !archiveClosed;
                 mLatestWalletListView.setArchiveClosed(archiveClosed);
             }
@@ -338,6 +331,7 @@ public class WalletsFragment extends Fragment
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (!wallet.isArchiveHeader() && !wallet.isHeader()) {
+                    mDummyFocus.requestFocus();
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
@@ -350,6 +344,28 @@ public class WalletsFragment extends Fragment
                 }
             }
         });
+
+        mAddWalletNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    ((NavigationActivity) getActivity()).showSoftKeyboard(mAddWalletNameEditText);
+                } else {
+                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
+                }
+            }
+        });
+
+        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
+                }
+            }
+        });
+
+
         UpdateBalances();
 
         return mView;
@@ -367,7 +383,6 @@ public class WalletsFragment extends Fragment
             if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis+=wallet.getBalanceSatoshi();
         }
-//        mBottomCoin.setImageResource(mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
@@ -515,8 +530,6 @@ public class WalletsFragment extends Fragment
             mAddWalletLayout.setVisibility(View.VISIBLE);
             mInvisibleCover.setVisibility(View.VISIBLE);
             mAddWalletNameEditText.requestFocus();
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
     }
 
@@ -529,7 +542,6 @@ public class WalletsFragment extends Fragment
                 ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());
             }
             mAddWalletNameEditText.setText("");
-//                mAddWalletCurrencySpinner.setSelection(1);
             mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
             mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
             mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
@@ -543,16 +555,13 @@ public class WalletsFragment extends Fragment
             mContainerLayout.setLayoutTransition(lt);
             mAddWalletLayout.setVisibility(View.GONE);
             mInvisibleCover.setVisibility(View.GONE);
-            if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>200){
-                final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-            }
+        } else {
+            goCancel();
         }
     }
 
     private void goCancel() { //CANCEL
         mAddWalletNameEditText.setText("");
-//            mAddWalletCurrencySpinner.setSelection(1);
         mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
         mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
         mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
@@ -565,10 +574,6 @@ public class WalletsFragment extends Fragment
         mContainerLayout.setLayoutTransition(lt);
         mAddWalletLayout.setVisibility(View.GONE);
         mInvisibleCover.setVisibility(View.GONE);
-        if((mParentLayout.getRootView().getHeight()-mParentLayout.getHeight())>100){
-            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
     }
 
     @Override
