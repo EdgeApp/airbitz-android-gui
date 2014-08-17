@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 
 /**
  * Created by tom 8/16/2014
@@ -65,6 +66,8 @@ public class HelpDialog extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(v);
 
         return v;
     }
