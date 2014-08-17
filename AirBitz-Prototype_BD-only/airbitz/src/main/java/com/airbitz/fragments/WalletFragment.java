@@ -399,7 +399,7 @@ public class WalletFragment extends Fragment
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Wallet info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.TRANSACTIONS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 

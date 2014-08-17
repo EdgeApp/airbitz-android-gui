@@ -33,7 +33,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/btn_x_rnd"/>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/logo"
@@ -47,8 +47,19 @@
                 android:paddingBottom="6.3dp"
                 android:paddingRight="9.45dp"
                 android:paddingTop="9.45dp"
-                android:paddingLeft="9.45dp"/>
+                android:paddingLeft="9.45dp"
+                android:visibility="gone"/>
 
-        </LinearLayout>
+            <WebView
+                android:id="@+id/dialog_help_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="6.3dp"
+                android:paddingRight="9.45dp"
+                android:paddingTop="9.45dp"
+                android:paddingLeft="9.45dp"
+                android:visibility="gone"/>
+
+        </FrameLayout>
 
 </RelativeLayout>

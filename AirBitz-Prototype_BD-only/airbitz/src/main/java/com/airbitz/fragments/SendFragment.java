@@ -271,7 +271,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Send", "Send info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.SEND), NavigationActivity.Tabs.SEND.ordinal());
             }
         });
 

@@ -191,7 +191,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Common.showHelpInfo(ImportFragment.this, "Info", "Business directory info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.IMPORT_WALLET), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
