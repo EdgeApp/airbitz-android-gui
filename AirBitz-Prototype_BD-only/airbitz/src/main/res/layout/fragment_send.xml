@@ -104,6 +104,7 @@
                             android:spinnerMode="dropdown"
                             android:dropDownWidth="300dp"
                             android:dropDownHorizontalOffset="-50dp"
+                            android:dropDownVerticalOffset="0dp"
                             android:popupBackground="@drawable/rounded_edge_white_bg"
                             android:textColor="@android:color/white"/>
 
