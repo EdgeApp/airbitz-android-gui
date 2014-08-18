@@ -51,7 +51,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
 
-    private View dummyFocus;
 
     private List<Wallet> mWallets;
     private List<String> mWalletNames;
@@ -66,8 +65,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private TextView mConverterTextView;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
-
-    private LinearLayout mFocusDistractorLayout;
 
     private ScrollView mScrollView;
 
@@ -118,14 +115,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mFocusDistractorLayout = (LinearLayout) mView.findViewById(R.id.layout_focus_distractor);
-        mFocusDistractorLayout.requestFocus();
-
         mScrollView = (ScrollView) mView.findViewById(R.id.layout_amount);
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
-
-        dummyFocus = mView.findViewById(R.id.fragment_request_dummy_focus);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
         mFiatField = (EditText) mView.findViewById(R.id.edittext_dollar);
