@@ -36,12 +36,6 @@ android {
         versionCode 47
         versionName "1.0.47f"
     }
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
 
     productFlavors {
 
