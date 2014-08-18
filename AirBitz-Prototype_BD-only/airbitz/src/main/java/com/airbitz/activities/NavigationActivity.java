@@ -333,16 +333,18 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (mCalculatorView.getVisibility() == View.VISIBLE) {
-            hideCalculator();
-        }
+        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
+
+        hideCalculator();
 
         if (mNavStacks[mNavThreadId].size() == 1) {
-            // This emulates user pressing Home button, rather than finish this activity
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-            homeIntent.addCategory(Intent.CATEGORY_HOME);
-            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(homeIntent);
+            if(!calcVisible) {
+                // This emulates user pressing Home button, rather than finish this activity
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+            }
         } else {
             if (mNavStacks[mNavThreadId].peek() instanceof RequestQRCodeFragment) {
                 popFragment();
