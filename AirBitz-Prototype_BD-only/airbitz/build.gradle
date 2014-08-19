@@ -33,8 +33,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 47
-        versionName "1.0.47f"
+        versionCode 48
+        versionName "1.0.48f"
     }
 
     productFlavors {
