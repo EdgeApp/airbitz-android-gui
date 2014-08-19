@@ -160,7 +160,7 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(getActivity(), true);
         }
 
         @Override
@@ -186,7 +186,7 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void v) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(getActivity(), false);
             mCreateBitmapTask = null;
             mBitcoinAddress.setText(mAddress);
             if (mQRBitmap != null) {
@@ -197,7 +197,7 @@ public class RequestQRCodeFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(getActivity(), false);
         }
     }
 

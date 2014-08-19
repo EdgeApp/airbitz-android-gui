@@ -596,7 +596,7 @@ public class NavigationActivity extends BaseActivity
 
         @Override
         protected void onPreExecute() {
-            showModalProgress(true);
+            showModalProgress(NavigationActivity.this, true);
         }
         @Override
         protected Boolean doInBackground(Object... params) {
@@ -607,7 +607,7 @@ public class NavigationActivity extends BaseActivity
 
         @Override
         protected void onPostExecute(final Object success) {
-            showModalProgress(false);
+            showModalProgress(NavigationActivity.this, false);
             mUserLoginTask = null;
 
             if ((Boolean) success){
