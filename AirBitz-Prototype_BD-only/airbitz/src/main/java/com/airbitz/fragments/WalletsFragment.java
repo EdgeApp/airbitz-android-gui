@@ -490,7 +490,7 @@ public class WalletsFragment extends Fragment
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(getActivity(), true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -507,7 +507,7 @@ public class WalletsFragment extends Fragment
             } else {
                 refreshWalletList(mCoreAPI.loadWallets());
             }
-            ((NavigationActivity)getActivity()).showModalProgress(getActivity(), false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
         @Override

@@ -84,7 +84,7 @@ public class SecurityActivity extends BaseActivity {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(SecurityActivity.this, "Info", "Business directory info");
+
             }
         });
 

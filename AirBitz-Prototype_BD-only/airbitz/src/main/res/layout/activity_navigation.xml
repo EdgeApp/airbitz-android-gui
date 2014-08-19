@@ -54,4 +54,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible" />
 
+    <include layout="@layout/layout_modal_indefinite_progress"
+        android:id="@+id/modal_indefinite_progress"
+        android:visibility="gone" />
 </RelativeLayout>

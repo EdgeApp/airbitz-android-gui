@@ -172,7 +172,7 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
+
             }
         });
 

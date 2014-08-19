@@ -22,37 +22,27 @@ public class BaseActivity extends FragmentActivity {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     Handler mHandler;
 
-    private ProgressDialog mProgressDialog;
-    public void showModalProgress(Context context, final boolean show) {
+    public void showModalProgress(final boolean show) {
         if(show) {
-            mProgressDialog = ProgressDialog.show(context, null, null);
-            mProgressDialog.setContentView(R.layout.layout_modal_indefinite_progress);
-            mProgressDialog.setCancelable(false);
+            findViewById(R.id.modal_indefinite_progress).setVisibility(View.VISIBLE);
             if(mHandler==null)
                 mHandler = new Handler();
             mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
         } else {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
+            mHandler.removeCallbacks(mProgressDialogKiller);
+            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
         }
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
         @Override
         public void run() {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
-            }
+            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
+            ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
         }
     };
 
     public void ShowOkMessageDialog(String title, String message) {
-        if(mProgressDialog!=null)
-            mProgressDialog.dismiss();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(title)
@@ -68,9 +58,6 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public void ShowMessageDialogAndExit(String title, String reason) {
-        if(mProgressDialog!=null)
-            mProgressDialog.dismiss();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setTitle(title)
