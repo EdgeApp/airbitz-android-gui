@@ -203,7 +203,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(PasswordRecoveryActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -232,7 +232,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress(PasswordRecoveryActivity.this, false);
+            showModalProgress(false);
 
             if (success) {
                 InitializeQuestionViews();
@@ -259,7 +259,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(PasswordRecoveryActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -269,7 +269,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress(PasswordRecoveryActivity.this, false);
+            showModalProgress(false);
             mFetchAllQuestionsTask = null;
 
             if (success) {
@@ -298,7 +298,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(PasswordRecoveryActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -310,7 +310,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
-            showModalProgress(PasswordRecoveryActivity.this, false);
+            showModalProgress(false);
             if (!success) {
                 ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {

@@ -3,10 +3,12 @@ package com.airbitz.activities;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -30,6 +32,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -479,7 +482,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            showModalProgress(SignUpActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -487,7 +490,7 @@ public class SignUpActivity extends BaseActivity {
             if (mMode == CHANGE_PASSWORD) {
                 mCoreAPI.stopWatchers();
                 //TODO stopQueues();
-                success = mCoreAPI.ChangePassword(mPasswordForPINEditText.getText().toString());
+                success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
                 mCoreAPI.startWatchers();
                 //TODO startQueues();
             }
@@ -504,7 +507,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress(SignUpActivity.this, false);
+            showModalProgress( false);
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
                     ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
@@ -527,7 +530,7 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mChangeTask = null;
-            showModalProgress(SignUpActivity.this, false);
+            showModalProgress(false);
         }
     }
 
@@ -548,7 +551,7 @@ public class SignUpActivity extends BaseActivity {
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            showModalProgress(SignUpActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -565,7 +568,7 @@ public class SignUpActivity extends BaseActivity {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
-                showModalProgress(SignUpActivity.this, false);
+                showModalProgress(false);
                 ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
             }
         }
@@ -573,7 +576,7 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showModalProgress(SignUpActivity.this, false);
+            showModalProgress(false);
         }
     }
 
@@ -592,7 +595,7 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            showModalProgress(SignUpActivity.this, true);
+            showModalProgress(true);
         }
 
         @Override
@@ -605,7 +608,7 @@ public class SignUpActivity extends BaseActivity {
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
             if (!success) {
-                showModalProgress(SignUpActivity.this, false);
+                showModalProgress(false);
                 ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
@@ -616,7 +619,7 @@ public class SignUpActivity extends BaseActivity {
                 mIntent.putExtra(KEY_PASSWORD, mPassword);
                 mIntent.putExtra(KEY_WITHDRAWAL, mPin);
 
-                showModalProgress(SignUpActivity.this, false);
+                showModalProgress(false);
                 startActivity(mIntent);
                 finish();
             }

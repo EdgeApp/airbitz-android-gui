@@ -141,7 +141,7 @@ public class WalletPasswordFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Business directory info");
+
             }
         });
 
