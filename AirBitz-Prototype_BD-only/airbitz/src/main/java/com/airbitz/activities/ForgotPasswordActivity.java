@@ -93,7 +93,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(ForgotPasswordActivity.this, "Info", "Business directory info");
+
             }
         });
 
