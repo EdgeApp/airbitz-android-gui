@@ -365,6 +365,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_WatcherStart(szUserName, szPassword, szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_WatcherLoop(String szWalletUUID, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WatcherLoop(szWalletUUID, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_WatchAddresses(String szUsername, String szPassword, String szWalletUUID, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_WatchAddresses(szUsername, szPassword, szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
@@ -373,8 +377,8 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_WatcherStop(szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_WatcherRestart(String szUserName, String szPassword, String szWalletUUID, boolean clearCache, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_WatcherRestart(szUserName, szPassword, szWalletUUID, clearCache, tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_WatcherDelete(String szWalletUUID, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WatcherDelete(szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_TxHeight(String szWalletUUID, String szTxId, SWIGTYPE_p_unsigned_int height, tABC_Error pError) {

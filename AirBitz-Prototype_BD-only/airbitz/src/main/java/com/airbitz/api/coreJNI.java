@@ -38,6 +38,7 @@ public class coreJNI {
   public final static native int NETWORK_FAKE_get();
   public final static native String ABC_VERSION_get();
   public final static native int ABC_MIN_USERNAME_LENGTH_get();
+  public final static native int ABC_MIN_PASS_LENGTH_get();
   public final static native int ABC_MIN_PIN_LENGTH_get();
   public final static native void gbIsTestNet_set(boolean jarg1);
   public final static native boolean gbIsTestNet_get();
@@ -372,9 +373,10 @@ public class coreJNI {
   public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_WatcherStatus(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_WatcherLoop(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatchAddresses(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);
-  public final static native int ABC_WatcherRestart(String jarg1, String jarg2, String jarg3, boolean jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_WatcherDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_TxHeight(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_BlockHeight(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);

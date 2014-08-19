@@ -18,5 +18,6 @@ public interface coreConstants {
   public final static int NETWORK_FAKE = coreJNI.NETWORK_FAKE_get();
   public final static String ABC_VERSION = coreJNI.ABC_VERSION_get();
   public final static int ABC_MIN_USERNAME_LENGTH = coreJNI.ABC_MIN_USERNAME_LENGTH_get();
+  public final static int ABC_MIN_PASS_LENGTH = coreJNI.ABC_MIN_PASS_LENGTH_get();
   public final static int ABC_MIN_PIN_LENGTH = coreJNI.ABC_MIN_PIN_LENGTH_get();
 }
