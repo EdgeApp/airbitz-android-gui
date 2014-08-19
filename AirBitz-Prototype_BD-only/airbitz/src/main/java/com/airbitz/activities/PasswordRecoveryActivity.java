@@ -35,9 +35,6 @@ import java.util.Map;
 
 /**
  * Created on 2/10/14.
- * 6/11/14 twb: iPhone implements 6 questions, or skip this step. Two are String,
- * two are Numeric, and two are Address, in that order. See PasswordRecoveryViewcontroller.m.
- * Also, following questions in the same category don't repeat earlier questions.
  */
 public class PasswordRecoveryActivity extends BaseActivity {
     private final String TAG = getClass().getSimpleName();
@@ -441,6 +438,15 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
             });
 
+            mText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (hasFocus) {
+                        showSoftKeyboard(mText);
+                    }
+                }
+            });
+
 
             mText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -471,6 +477,9 @@ public class PasswordRecoveryActivity extends BaseActivity {
                     if (actionId == EditorInfo.IME_ACTION_NEXT) {
                         if (mPosition < mQuestionViews.size() - 1) {
                             mQuestionViews.get(mPosition + 1).getSpinner().requestFocus();
+                            return true;
+                        } else if(mPosition == mQuestionViews.size()-1) {
+                            hideSoftKeyboard(mText);
                             return true;
                         }
                     }
