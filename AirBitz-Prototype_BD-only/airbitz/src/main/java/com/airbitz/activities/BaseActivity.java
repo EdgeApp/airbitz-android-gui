@@ -23,9 +23,9 @@ public class BaseActivity extends FragmentActivity {
     Handler mHandler;
 
     private ProgressDialog mProgressDialog;
-    public void showModalProgress(final boolean show) {
+    public void showModalProgress(Context context, final boolean show) {
         if(show) {
-            mProgressDialog = ProgressDialog.show(this.getWindow().getContext(), null, null);
+            mProgressDialog = ProgressDialog.show(context, null, null);
             mProgressDialog.setContentView(R.layout.layout_modal_indefinite_progress);
             mProgressDialog.setCancelable(false);
             if(mHandler==null)
