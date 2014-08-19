@@ -80,7 +80,7 @@ public class SuccessFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.showHelpInfo(getActivity(), "Info", "Info description");
+
             }
         });
 
@@ -132,6 +132,7 @@ public class SuccessFragment extends Fragment {
                 FragmentSourceEnum e = FragmentSourceEnum.REQUEST;
                 mActivity.switchToWallets(e, mBundle);
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+                ((NavigationActivity)getActivity()).showNavBar();
             }
         }
     };
