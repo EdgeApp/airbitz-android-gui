@@ -11,9 +11,7 @@ import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,9 +47,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
     private enum QuestionType { STRING, NUMERIC }
     public final String UNSELECTED_QUESTION = "Question";
-    private boolean ignoreSelected = false;
 
-    private View dummyFocus;
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
@@ -105,7 +101,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         }
 
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         this.overridePendingTransition(R.anim.nothing, R.anim.slide_in_from_right);
 
@@ -118,8 +113,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-
-        dummyFocus = findViewById(R.id.activity_recovery_dummy_focus);
 
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +130,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
         });
 
         mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.activity_recovery_question_listview);
-
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         mFetchAllQuestionsTask = new GetRecoveryQuestions();
         mFetchAllQuestionsTask.execute((Void) null);
@@ -190,21 +181,20 @@ public class PasswordRecoveryActivity extends BaseActivity {
     }
 
     private void InitializeQuestionViews() {
-        ignoreSelected = true;
         mQuestionViews = new ArrayList<QuestionView>();
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions,QuestionType.STRING));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING));
-        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC));
-        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC));
+        int position = 0;
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions,QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC, position++));
 
         mPasswordRecoveryListView.removeAllViews();
         for (View v : mQuestionViews) {
             mPasswordRecoveryListView.addView(v);
         }
         mPasswordRecoveryListView.invalidate();
-        ignoreSelected = false;
     }
 
 
@@ -246,13 +236,13 @@ public class PasswordRecoveryActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             showModalProgress(false);
-            mFetchAllQuestionsTask = null;
 
             if (success) {
                 InitializeQuestionViews();
             }
 
-            dummyFocus.requestFocus();
+            mPasswordEditText.requestFocus();
+            mFetchAllQuestionsTask = null;
         }
 
         @Override
@@ -288,8 +278,6 @@ public class PasswordRecoveryActivity extends BaseActivity {
             if (success) {
                 InitializeQuestionViews();
             }
-
-            dummyFocus.requestFocus();
         }
 
         @Override
@@ -342,20 +330,17 @@ public class PasswordRecoveryActivity extends BaseActivity {
     private List<String> getUnchosenQuestions(List<String> questions) {
         List<String> unusedQuestions = new ArrayList<String>(questions);
 
-        if (!questions.isEmpty()) {
             for (QuestionView qv : mQuestionViews) {
-                String selected = qv.getSelectedQuestion();
+                String selected = qv.chosenQuestion;
                 if (!selected.equals(UNSELECTED_QUESTION)) {
                     unusedQuestions.remove(selected);
                 }
             }
-        }
 
         return unusedQuestions;
     }
 
     private void updateQuestionLists(QuestionView notThis) {
-        ignoreSelected = true;
         for (QuestionView qv : mQuestionViews) {
             if (qv!=notThis) {
                 List<String> unchosen;
@@ -364,15 +349,23 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 } else  {
                     unchosen = getUnchosenQuestions(mNumericQuestions);
                 }
-                if(!qv.getSelectedQuestion().equals(UNSELECTED_QUESTION)) {
-                    unchosen.add(0, qv.getSelectedQuestion());
-                }
                 qv.setAvailableQuestions(unchosen);
+
+                if(!qv.chosenQuestion.equals(UNSELECTED_QUESTION)) {
+                    unchosen.add(0, qv.chosenQuestion);
+                    qv.mSpinner.setSelection(0);
+                } else {
+                    qv.setAvailableQuestions(unchosen);
+                    int index = unchosen.indexOf(UNSELECTED_QUESTION);
+                    qv.mSpinner.setSelection(index);
+                }
             }
         }
-        ignoreSelected = false;
     }
 
+
+
+    boolean ignoreSelected = false;
     private class QuestionView extends LinearLayout {
         Context mContext;
         public QuestionType mType;
@@ -382,45 +375,52 @@ public class PasswordRecoveryActivity extends BaseActivity {
         private EditText mText;
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
-        int pos;
+        int mPosition;
 
         private QuestionView me = this;
 
-        public QuestionView(Context context, List<String> questions, QuestionType type) {
+        public QuestionView(Context context, List<String> questions, QuestionType type, int position) {
             super(context);
             mContext = context;
             mType = type;
+            mPosition = position;
             currentQuestionList = questions;
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
-            mSpinner = (Spinner)findViewById(R.id.item_recovery_question_spinner);
+
+            mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
+            final View redRing = findViewById(R.id.item_recovery_answer_redring);
+            mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+            mText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+            mSpinner = (Spinner) findViewById(R.id.item_recovery_question_spinner);
             mSpinner.setFocusable(true);
             mSpinner.setFocusableInTouchMode(true);
             mAdapter = new PasswordRecoveryAdapter(context, currentQuestionList);
             mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
             mSpinner.setAdapter(mAdapter);
+
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(ignoreSelected) return;
+                    Common.LogD(TAG, "spinner selection");
+                    if (ignoreSelected) return;
 
-                    if(mType==QuestionType.STRING) {
-                        chosenQuestion = getSelectedQuestion();
-                        if(mStringCategory.containsKey(chosenQuestion))
+                    chosenQuestion = currentQuestionList.get(i);
+                    Common.LogD(TAG, "spinner selection not ignored="+chosenQuestion);
+                    if (mType == QuestionType.STRING) {
+                        if (mStringCategory.containsKey(chosenQuestion))
                             mCharLimit = mStringCategory.get(chosenQuestion);
-                    } else if(mType==QuestionType.NUMERIC){
-                        chosenQuestion = getSelectedQuestion();
-                        if(mNumericCategory.containsKey(chosenQuestion))
+                    } else if (mType == QuestionType.NUMERIC) {
+                        if (mNumericCategory.containsKey(chosenQuestion))
                             mCharLimit = mNumericCategory.get(chosenQuestion);
                     }
-                    updateQuestionLists(me);
-                    if(mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
-                        mText.setFocusableInTouchMode(true);  //if this is not already set
-                        mText.requestFocus();  //to move the cursor
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(mText, InputMethodManager.SHOW_FORCED);
-                        mText.setCursorVisible(true);
+
+                    if (mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
+                        QuestionView qv = mQuestionViews.get(mPosition);
+                        qv.mText.setFocusableInTouchMode(true);
+                        qv.mText.requestFocus();
                     }
                 }
 
@@ -428,13 +428,24 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 public void onNothingSelected(AdapterView<?> adapterView) { }
             });
 
-            mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
-            final View redRing = findViewById(R.id.item_recovery_answer_redring);
-            mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+            mSpinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (hasFocus) {
+                        ignoreSelected = false;
+                        mSpinner.performClick();
+                    } else {
+                        ignoreSelected = true;
+                        updateQuestionLists(me);
+                    }
+                }
+            });
+
 
             mText.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -450,42 +461,20 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
 
                 @Override
-                public void afterTextChanged(Editable editable) { }
-            });
-
-            mText.setOnFocusChangeListener(new OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if (hasFocus) {
-                        pos = mQuestionViews.indexOf(me);
-                    }
+                public void afterTextChanged(Editable editable) {
                 }
             });
 
-            mText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            mText.setOnEditorActionListener(new TextView.OnEditorActionListener()  {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        if (pos != mQuestionViews.size() - 1) {
-                            (mQuestionViews.get(pos + 1)).getSpinner().performClick();
-                            (mQuestionViews.get(pos + 1)).getSpinner().requestFocus();
-                        }else {
-                            dummyFocus.requestFocus();
-                            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        if (mPosition < mQuestionViews.size() - 1) {
+                            mQuestionViews.get(mPosition + 1).getSpinner().requestFocus();
+                            return true;
                         }
-                        return true;
                     }
                     return false;
-                }
-            });
-
-            mSpinner.setOnFocusChangeListener(new OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if(hasFocus) {
-                        view.performClick();
-                    }
                 }
             });
 
@@ -494,18 +483,19 @@ public class PasswordRecoveryActivity extends BaseActivity {
         }
 
         public String getSelectedQuestion() {
-            return ((TextView) mSpinner.getSelectedView()).getText().toString();
+            return chosenQuestion;
         }
 
         public void setAvailableQuestions(List<String> questions) {
-            if(mAdapter!=null) {
-                mAdapter.addQuestions(questions);
-                if(questions.contains(chosenQuestion))
-                    mSpinner.setSelection(questions.indexOf(chosenQuestion));
+            if (mAdapter != null) {
+                currentQuestionList = questions;
+                mAdapter = new PasswordRecoveryAdapter(mContext, currentQuestionList);
+                mAdapter.setDropDownViewResource(R.layout.item_password_recovery_spinner_dropdown);
+                mSpinner.setAdapter(mAdapter);
             }
         }
 
-        public Spinner getSpinner(){
+        public Spinner getSpinner() {
             return mSpinner;
         }
 

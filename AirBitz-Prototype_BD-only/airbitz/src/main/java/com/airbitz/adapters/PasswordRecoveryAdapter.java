@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created on 3/6/14.
  */
-public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Filterable {
+public class PasswordRecoveryAdapter extends ArrayAdapter<String> {
 
     private Context mContext;
     private List<String> mQuestions;
@@ -29,10 +29,6 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> implements Fil
     public PasswordRecoveryAdapter(Context context, List<String> questions){
         super(context, R.layout.item_password_recovery_spinner, questions);
         mContext = context;
-        mQuestions = questions;
-    }
-
-    public void addQuestions(List<String> questions) {
         mQuestions = questions;
     }
 
