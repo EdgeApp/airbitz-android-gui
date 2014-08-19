@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -57,7 +56,7 @@ public class WalletsFragment extends Fragment
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
-    private RelativeLayout mDummyFocus;
+    private RelativeLayout mParentLayout;
     private RelativeLayout mContainerLayout;
 
     private Button mBitCoinBalanceButton;
@@ -151,7 +150,7 @@ public class WalletsFragment extends Fragment
 
         mOnBitcoinMode = true;
 
-        mDummyFocus = (RelativeLayout) mView;
+        mParentLayout = (RelativeLayout) mView;
         mContainerLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_container);
 
         mCurrencyList = new ArrayList<String>();
@@ -222,6 +221,7 @@ public class WalletsFragment extends Fragment
                 mOnBitcoinMode = false;
             }
         });
+
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,6 +243,8 @@ public class WalletsFragment extends Fragment
             }
         });
         mAddWalletLayout.setVisibility(View.GONE);
+        mAddWalletLayout.setFocusableInTouchMode(true);
+
         mAddWalletNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -255,8 +257,6 @@ public class WalletsFragment extends Fragment
         });
 
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(getActivity(), mCurrencyList);
-
-
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
         int settingIndex = mCoreAPI.SettingsCurrencyIndex();
         mAddWalletCurrencySpinner.setSelection(settingIndex);
@@ -331,7 +331,7 @@ public class WalletsFragment extends Fragment
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (!wallet.isArchiveHeader() && !wallet.isHeader()) {
-                    mDummyFocus.requestFocus();
+                    mParentLayout.requestFocus();
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
@@ -350,13 +350,11 @@ public class WalletsFragment extends Fragment
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     ((NavigationActivity) getActivity()).showSoftKeyboard(mAddWalletNameEditText);
-                } else {
-                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
                 }
             }
         });
 
-        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mParentLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -534,6 +532,7 @@ public class WalletsFragment extends Fragment
     }
 
     private void goDone(){
+        ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
         if(!mAddWalletNameEditText.getText().toString().isEmpty() && mAddWalletNameEditText.getText().toString().trim().length() > 0) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
                 int[] nums = mCoreAPI.getCurrencyNumbers();
@@ -561,6 +560,7 @@ public class WalletsFragment extends Fragment
     }
 
     private void goCancel() { //CANCEL
+        ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
         mAddWalletNameEditText.setText("");
         mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
         mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
