@@ -16,7 +16,7 @@ void *bitcoinInfo;
 void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 	JNIEnv * g_env;
 	// double check it's all ok
-//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Entering bitcoinCallback");
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Entering bitcoinCallback");
 	int getEnvStat = (*g_vm)->GetEnv(g_vm, (void **)&g_env, JNI_VERSION_1_6);
 	if (getEnvStat == JNI_EDETACHED) {
 //        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: not attached");
@@ -41,21 +41,6 @@ void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
 {
     bitcoinCallback(pInfo);
-//    if (pInfo->eventType == ABC_AsyncEventType_IncomingBitCoin)
-//    {
-////        NSString *walletUUID = [NSString stringWithUTF8String:pInfo->szWalletUUID];
-////        NSString *txId = [NSString stringWithUTF8String:pInfo->szTxID];
-////        NSArray *params = [NSArray arrayWithObjects: walletUUID, txId, nil];
-////        [mainId performSelectorOnMainThread:@selector(launchReceiving:) withObject:params waitUntilDone:NO];
-//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "incoming bitcoin received");
-//    } else if (pInfo->eventType == ABC_AsyncEventType_BlockHeightChange) {
-//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Block Height change received");
-////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_BLOCK_HEIGHT_CHANGE object:mainId];
-//    } else if (pInfo->eventType == ABC_AsyncEventType_ExchangeRateUpdate) {
-//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Exchange Rate Update received");
-////        NSLog(@"Exchange rate change fired!!!!!!!!!!!");
-////        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXCHANGE_RATE_CHANGE object:mainId];
-//    }
 }
 
 // Custom initialization to handle callbacks
