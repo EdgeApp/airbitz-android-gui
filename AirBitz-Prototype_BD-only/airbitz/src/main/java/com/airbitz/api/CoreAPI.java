@@ -27,8 +27,12 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by tom on 6/20/14.
@@ -37,7 +41,7 @@ import java.util.Random;
 public class CoreAPI {
     private static String TAG = CoreAPI.class.getSimpleName();
 
-    private final String CERT_FILENAME = "ca_certificates.crt";
+    private final String CERT_FILENAME = "ca-certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
     private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
     public static int ABC_DENOMINATION_BTC = 0;
@@ -79,14 +83,19 @@ public class CoreAPI {
         if(!initialized) {
             tABC_Error error = new tABC_Error();
             RegisterAsyncCallback();
-            File rootPath = context.getFilesDir();
-            List<String> files = Arrays.asList(rootPath.list());
+            File filesDir = context.getFilesDir();
+            List<String> files = Arrays.asList(filesDir.list());
+            OutputStream outputStream = null;
             if(!files.contains(CERT_FILENAME)) {
                 InputStream certStream = context.getResources().openRawResource(R.raw.ca_certificates);
-                copyStreamToFile(certStream, new File(context.getFilesDir(), CERT_FILENAME));
+                try {
+                    outputStream = context.openFileOutput(CERT_FILENAME, Context.MODE_WORLD_READABLE);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                copyStreamToFile(certStream, outputStream);
             }
-
-            coreInitialize(rootPath.toString(), rootPath.toString(), seed, seedLength, error.getCPtr(error));
+            coreInitialize(filesDir.getPath(), filesDir.getPath()+"/"+CERT_FILENAME, seed, seedLength, error.getCPtr(error));
             initialized = true;
         }
     }
@@ -95,16 +104,14 @@ public class CoreAPI {
      * copy file from source to destination
      *
      * @param src source
-     * @param dst destination
+     * @param outputStream destination
      * @throws java.io.IOException in case of any problems
      */
-    void copyStreamToFile(InputStream src, File dst) {
+    void copyStreamToFile(InputStream src, OutputStream outputStream) {
         final byte[] largeBuffer = new byte[1024 * 4];
         int bytesRead;
 
         try {
-            final OutputStream outputStream = new FileOutputStream(dst);
-
             while ((bytesRead = src.read(largeBuffer)) > 0) {
                 if (largeBuffer.length == bytesRead) {
                     outputStream.write(largeBuffer);
@@ -145,10 +152,15 @@ public class CoreAPI {
             else
                 Common.LogD(TAG, "data sync event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
-            if(mOnDataSync!=null)
-                mPeriodicTaskHandler.post(DataSyncUpdater);
+            if(mOnRemotePasswordChange!=null)
+                mPeriodicTaskHandler.post(RemotePasswordChangeUpdater);
             else
-                Common.LogD(TAG, "data sync event has no listener");
+                Common.LogD(TAG, "remote password event has no listener");
+        }else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
+            if(mExchangeRateSources!=null && !mExchangeRateSources.isEmpty())
+                mPeriodicTaskHandler.post(ExchangeRateUpdater);
+            else
+                Common.LogD(TAG, "exchange rate event has no listener");
         }
     }
 
@@ -190,7 +202,6 @@ public class CoreAPI {
         public void run() { mOnDataSync.OnDataSync(); }
     };
 
-
     // Callback interface when a remote mPassword change is received
     private OnRemotePasswordChange mOnRemotePasswordChange;
     public interface OnRemotePasswordChange {
@@ -203,6 +214,13 @@ public class CoreAPI {
         public void run() { mOnRemotePasswordChange.OnRemotePasswordChange(); }
     };
 
+    final Runnable ExchangeRateUpdater = new Runnable() {
+        public void run() {
+            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
+            updateExchangeRates();
+        }
+    };
+
     //***************** Wallet handling
     private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x0; // BIT0 is the archive bit
 
@@ -212,16 +230,16 @@ public class CoreAPI {
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
-        Wallet headerWallet = new Wallet("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
-        headerWallet.setUUID("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
+        Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
+        headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
         list.add(headerWallet);//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1 && wallet.getName()!=null)
                 list.add(wallet);
         }
-        Wallet archiveWallet = new Wallet("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
-        archiveWallet.setUUID("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
+        Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
+        archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
         list.add(archiveWallet); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
@@ -1489,13 +1507,6 @@ public class CoreAPI {
         stopFileSyncUpdates();
     }
 
-    final Runnable ExchangeRateUpdater = new Runnable() {
-        public void run() {
-            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
-            updateExchangeRates();
-        }
-    };
-
     public void updateExchangeRates()
     {
         if (AirbitzApplication.isLoggedIn())
@@ -1606,9 +1617,8 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn())
         {
             mSyncDataTask = new SyncDataTask();
-
-//            Common.LogD(TAG, "File sync initiated.");
             mSyncDataTask.execute();
+            Common.LogD(TAG, "File sync initiated.");
         }
     }
 
@@ -1916,18 +1926,17 @@ public class CoreAPI {
 
     public void startWatchers()
     {
-        Common.LogD(TAG, "startWatchers");
-
-        mStartWatchersTask = new StartWatchersTask();
-        mStartWatchersTask.execute();
-
-        // Once watchers start, tell views to redraw
-//        dispatch_async(watcherQueue, ^{
-//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-//                        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_BLOCK_HEIGHT_CHANGE object:self];
+        if(mStartWatchersTask==null) {
+            Common.LogD(TAG, "startWatchers");
+            mStartWatchersTask = new StartWatchersTask();
+            mStartWatchersTask.execute();
+        } else {
+            Common.LogD(TAG, "startWatchers already running!");
+        }
     }
 
     private StartWatchersTask mStartWatchersTask;
+    private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
     public class StartWatchersTask extends AsyncTask<Void, Void, Void> {
         StartWatchersTask() { }
 
@@ -1935,25 +1944,43 @@ public class CoreAPI {
         protected Void doInBackground(Void... params) {
             List<Wallet> wallets = getCoreWallets();
             for (Wallet w : wallets) {
-                startWatcher(w.getUUID());
+                if(!mWatcherTasks.containsKey(w.getUUID())) {
+                    StartWatcherTask watcherTask = new StartWatcherTask();
+                    mWatcherTasks.put(w.getUUID(), watcherTask);
+                    watcherTask.execute(w.getUUID());
+                }
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
+            Common.LogD(TAG, "StartWatchersTask completed");
             mStartWatchersTask = null;
         }
     }
 
-    private void startWatcher(String walletUUID)
-    {
-        tABC_Error Error = new tABC_Error();
-        Common.LogD(TAG, "ABC_WatcherStart("+walletUUID+")");
+    public class StartWatcherTask extends AsyncTask<String, Void, Void> {
+        public String uuid;
+        StartWatcherTask() { }
 
-        core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, Error);
-        core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, Error);
-        Common.LogD(TAG, Error.getSzDescription()+";"+Error.getSzSourceFile()+";"+Error.getSzSourceFunc()+";"+Error.getNSourceLine());
+        @Override
+        protected Void doInBackground(String... params) {
+            uuid = params[0];
+            tABC_Error Error = new tABC_Error();
+            Common.LogD(TAG, "ABC_WatcherStart("+uuid+")");
+
+            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, Error);
+            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, Error);
+            core.ABC_WatcherLoop(uuid, Error);
+            Common.LogD(TAG, Error.getSzDescription() + ";" + Error.getSzSourceFile() + ";" + Error.getSzSourceFunc() + ";" + Error.getNSourceLine());
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void v) {
+            Common.LogD(TAG, "Watcher for uuid="+uuid+" finished");
+            mWatcherTasks.remove(uuid);
+        }
     }
 
     public void stopWatchers()
@@ -1969,18 +1996,19 @@ public class CoreAPI {
         @Override
         protected Void doInBackground(Void... params) {
             tABC_Error Error = new tABC_Error();
-            Common.LogD(TAG, "startWatchers");
-            List<Wallet> wallets = getCoreWallets();
-
-            for(Wallet w : wallets)
-            {
-                core.ABC_WatcherStop(w.getUUID() , Error);
+            Common.LogD(TAG, "StopWatchersTask called");
+            Set set = mWatcherTasks.keySet();
+            Iterator i = set.iterator();
+            while(i.hasNext()) {
+                String uuid = (String)i.next();
+                core.ABC_WatcherStop(uuid , Error);
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
+            Common.LogD(TAG, "StopWatchersTask finished");
             mStopWatchersTask = null;
         }
     }
