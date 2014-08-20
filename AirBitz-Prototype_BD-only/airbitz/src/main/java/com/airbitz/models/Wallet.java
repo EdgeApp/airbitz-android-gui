@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class Wallet {
 
+    public static final String WALLET_HEADER_ID = "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL";
+    public static final String WALLET_ARCHIVE_HEADER_ID = "SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd";
+
     // Strings for argument passing in bundles
     public static final String WALLET_NAME = "com.airbitz.models.wallet.wallet_name";
     public static final String WALLET_AMOUNT_SATOSHI = "com.airbitz.models.wallet.wallet_amount_satoshi";
@@ -41,11 +44,11 @@ public class Wallet {
     }
 
     public boolean isHeader() {
-        return getName().equals("xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL");
+        return getName().equals(WALLET_HEADER_ID);
     }
 
     public boolean isArchiveHeader() {
-        return getName().equals("SDCMMLlsdkmsdclmLSsmcwencJSSKDWlmckeLSDlnnsAMd");
+        return getName().equals(WALLET_ARCHIVE_HEADER_ID);
     }
 
     public boolean isArchived() {
