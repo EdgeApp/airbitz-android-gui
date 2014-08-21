@@ -83,7 +83,6 @@ public class SettingFragment extends Fragment {
     private int mAutoLogoffMinutes;
     private String[] mAutoLogoffStrings = { "Day(s)", "Hour(s)", "Minute(s)" };
 
-    private String[] mLanguageItems;
     private String[] mCurrencyItems;
     private int mCurrencyNum;
     private List<CoreAPI.ExchangeRateSource> mExchanges;
@@ -105,7 +104,6 @@ public class SettingFragment extends Fragment {
         mCoreAPI = CoreAPI.getApi();
         mCoreSettings = mCoreAPI.loadAccountSettings();
 
-        mLanguageItems = getResources().getStringArray(R.array.language_array);
         mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
         mUSDExchangeItems = getResources().getStringArray(R.array.usd_exchange_array);
         mCanadianExchangeItems = getResources().getStringArray(R.array.canadian_exchange_array);
