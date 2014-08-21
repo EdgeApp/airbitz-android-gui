@@ -56,7 +56,7 @@
                 android:layout_marginTop="25.2dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/emboss_up">
+                android:background="@drawable/rounded_edge_blue_bg">
 
 
                 <EditText
