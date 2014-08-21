@@ -1,20 +1,18 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +23,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
@@ -32,7 +31,6 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -40,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 2/10/14.
  */
-public class SignUpActivity extends BaseActivity {
+public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
     private final String SUCCESS_TITLE = "Change Password";
 
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
@@ -85,8 +83,6 @@ public class SignUpActivity extends BaseActivity {
     private CreateFirstWalletTask mCreateFirstWalletTask;
 
     public static String KEY_USERNAME = "KEY_USERNAME";
-    public static String KEY_PASSWORD = "KEY_PASSWORD";
-    public static String KEY_WITHDRAWAL = "KEY_WITHDRAWAL";
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;
     public static int CHANGE_PASSWORD=1;
@@ -96,29 +92,31 @@ public class SignUpActivity extends BaseActivity {
     private CoreAPI mCoreAPI;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
+    }
 
-        setContentView(R.layout.activity_signup);
-        overridePendingTransition(R.anim.slide_in_from_right,R.anim.nothing);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
+        View mView = inflater.inflate(R.layout.activity_signup, container, false);
 
-        mParentLayout = (RelativeLayout) findViewById(R.id.activity_signup_parent_layout);
-        mNextButton = (Button) findViewById(R.id.activity_signup_next_button);
+        mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
+        mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
 
-        mUserNameRedRingCover = findViewById(R.id.activity_signup_username_redring);
-        mDummyFocus = findViewById(R.id.activity_signup_dummy_focus);
+        mUserNameRedRingCover = mView.findViewById(R.id.activity_signup_username_redring);
+        mDummyFocus = mView.findViewById(R.id.activity_signup_dummy_focus);
 
-        mUserNameEditText = (EditText) findViewById(R.id.activity_signup_username_edittext);
-        mPasswordEditText = (EditText) findViewById(R.id.activity_signup_password_edittext);
-        mPasswordConfirmationEditText = (EditText) findViewById(R.id.activity_signup_repassword_edittext);
-        mWithdrawalPinEditText = (EditText) findViewById(R.id.activity_signup_withdrawal_edittext);
-        mTitleTextView = (TextView) findViewById(R.id.activity_signup_title_textview);
-        TextView mHintTextView = (TextView) findViewById(R.id.activity_signup_password_help);
-        mWithdrawalLabel = (TextView) findViewById(R.id.activity_signup_withdrawal_textview);
+        mUserNameEditText = (EditText) mView.findViewById(R.id.activity_signup_username_edittext);
+        mPasswordEditText = (EditText) mView.findViewById(R.id.activity_signup_password_edittext);
+        mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.activity_signup_repassword_edittext);
+        mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
+        mTitleTextView = (TextView) mView.findViewById(R.id.activity_signup_title_textview);
+        TextView mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
+        mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -128,29 +126,28 @@ public class SignUpActivity extends BaseActivity {
         mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        ImageButton mBackButton = (ImageButton) findViewById(R.id.activity_signup_back_button);
+        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.activity_signup_back_button);
 
-        mSwitchImage1 = (ImageView) findViewById(R.id.activity_signup_switch_image_1);
-        mSwitchImage2 = (ImageView) findViewById(R.id.activity_signup_switch_image_2);
-        mSwitchImage3 = (ImageView) findViewById(R.id.activity_signup_switch_image_3);
-        mSwitchImage4 = (ImageView) findViewById(R.id.activity_signup_switch_image_4);
-        mSwitchImage5 = (ImageView) findViewById(R.id.activity_signup_switch_image_5);
-        mQuestion1 = (TextView) findViewById(R.id.activity_signup_switch_text_1);
-        mQuestion2 = (TextView) findViewById(R.id.activity_signup_switch_text_2);
-        mQuestion3 = (TextView) findViewById(R.id.activity_signup_switch_text_3);
-        mQuestion4 = (TextView) findViewById(R.id.activity_signup_switch_text_4);
-        mQuestion5 = (TextView) findViewById(R.id.activity_signup_switch_text_5);
+        mSwitchImage1 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_1);
+        mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
+        mSwitchImage3 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_3);
+        mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
+        mSwitchImage5 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_5);
+        mQuestion1 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_1);
+        mQuestion2 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_2);
+        mQuestion3 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_3);
+        mQuestion4 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_4);
+        mQuestion5 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_5);
 
-        mTimeTextView = (TextView) findViewById(R.id.activity_signup_time_textview);
+        mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mPopupContainer = (LinearLayout) findViewById(R.id.activity_signup_popup_layout);
+        mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-                overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
+                getActivity().onBackPressed();
             }
         });
 
@@ -172,7 +169,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.length()>=4) {
-                    hideSoftKeyboard(mWithdrawalPinEditText);
+                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mWithdrawalPinEditText);
                     mParentLayout.requestFocus();
                 }
             }
@@ -222,9 +219,6 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-
-                    /*mParentLayout.setLayoutTransition();
-                    mParentLayout.animation*/
                     LayoutTransition lt = new LayoutTransition();
                     Animator animator = ObjectAnimator.ofFloat(null,"translationY",-(getResources().getDimension(R.dimen.activity_signup_popup_height)),0);
                     lt.setAnimator(LayoutTransition.APPEARING,animator);
@@ -244,7 +238,9 @@ public class SignUpActivity extends BaseActivity {
             }
         });
 
-        setupUI(getIntent().getExtras());
+        setupUI(getArguments());
+        
+        return mView;
     }
 
     private void setupUI(Bundle bundle) {
@@ -341,8 +337,6 @@ public class SignUpActivity extends BaseActivity {
     private void goNext() {
         // if they entered a valid mUsername or old mPassword
         if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid()) {
-            tABC_CC result = tABC_CC.ABC_CC_Ok;
-
             // if we are signing up a new account
             if (mMode == SIGNUP) {
                 attemptSignUp();
@@ -369,7 +363,7 @@ public class SignUpActivity extends BaseActivity {
             if (mUserNameEditText.getText().toString().length() == 0)
             {
                 bUserNameFieldIsValid = false;
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
             }
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
@@ -378,7 +372,7 @@ public class SignUpActivity extends BaseActivity {
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -398,12 +392,12 @@ public class SignUpActivity extends BaseActivity {
             if (!mGoodPassword)
             {
                 bNewPasswordFieldsAreValid = false;
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
             }
             else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
             {
                 bNewPasswordFieldsAreValid = false;
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
             }
         }
 
@@ -425,7 +419,7 @@ public class SignUpActivity extends BaseActivity {
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
             {
                 bpinNameFieldIsValid = false;
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
             }
         }
 
@@ -477,22 +471,29 @@ public class SignUpActivity extends BaseActivity {
      * Represents an asynchronous account creation task
      */
     private ChangeTask mChangeTask;
+
+    @Override
+    public void onBackPress() {
+        ((NavigationActivity)getActivity()).popFragment();
+        if(AirbitzApplication.isLoggedIn()) {
+            ((NavigationActivity) getActivity()).showNavBar();
+        }
+    }
+
     public class ChangeTask extends AsyncTask<Void, Void, Boolean> {
         tABC_CC success;
 
         @Override
         protected void onPreExecute() {
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             if (mMode == CHANGE_PASSWORD) {
                 mCoreAPI.stopWatchers();
-                //TODO stopQueues();
                 success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
                 mCoreAPI.startWatchers();
-                //TODO startQueues();
             }
             else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                 success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
@@ -507,22 +508,22 @@ public class SignUpActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress( false);
+            ((NavigationActivity)getActivity()).showModalProgress( false);
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
@@ -530,7 +531,7 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mChangeTask = null;
-            showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
 
@@ -551,7 +552,7 @@ public class SignUpActivity extends BaseActivity {
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -564,19 +565,19 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             if (success) {
-                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
+                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword);
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
-                showModalProgress(false);
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
 
@@ -585,17 +586,16 @@ public class SignUpActivity extends BaseActivity {
      */
     public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername, mPassword, mPin;
+        private final String mUsername, mPassword;
 
-        CreateFirstWalletTask(String username, String password, String pin) {
+        CreateFirstWalletTask(String username, String password) {
             mUsername = username;
             mPassword = password;
-            mPin = pin;
         }
 
         @Override
         protected void onPreExecute() {
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -607,27 +607,26 @@ public class SignUpActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             if (!success) {
-                showModalProgress(false);
-                ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
                 CreateDefaultCategories();
 
-                Intent mIntent = new Intent(SignUpActivity.this, PasswordRecoveryActivity.class);
-                mIntent.putExtra(KEY_USERNAME, mUsername);
-                mIntent.putExtra(KEY_PASSWORD, mPassword);
-                mIntent.putExtra(KEY_WITHDRAWAL, mPin);
-
-                showModalProgress(false);
-                startActivity(mIntent);
-                finish();
+                Fragment frag = new PasswordRecoveryFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.SIGN_UP);
+                frag.setArguments(bundle);
+                ((NavigationActivity) getActivity()).popFragment();
+                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.BD.ordinal());
             }
         }
 
         @Override
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
 
@@ -668,15 +667,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        View activityRootView = findViewById(R.id.activity_signup_container_layout);
-        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-        if(heightDiff > 100){
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-        super.onBackPressed();
-        overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
+    public void onResume() {
+        super.onResume();
     }
-
 }

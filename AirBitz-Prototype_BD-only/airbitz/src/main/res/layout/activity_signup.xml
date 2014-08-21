@@ -336,8 +336,4 @@
         android:focusableInTouchMode="true"
         android:id="@+id/activity_signup_dummy_focus"/>
 
-    <include layout="@layout/layout_modal_indefinite_progress"
-        android:id="@+id/modal_indefinite_progress"
-        android:visibility="gone" />
-
 </RelativeLayout>
