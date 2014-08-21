@@ -13,7 +13,7 @@ public class AirbitzApplication extends Application {
     public static final boolean DEBUG_LOGGING = true;
 
     public static boolean AUTOLOGIN = false;
-    private static String loginName = "tbtest"; private static String loginPassword = "Aaaaaaaa1@";
+    public static String autologinName = "tbtest"; public static String autologinPassword = "Aaaaaaaa1@";
 
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
@@ -32,10 +32,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Login(String uname, String password) {
-        if(AUTOLOGIN) {
-            airbitzLogin.setUsername(loginName);
-            airbitzLogin.setPassword(loginPassword);
-        } else if(uname!=null && password!=null) {
+        if(uname!=null && password!=null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
