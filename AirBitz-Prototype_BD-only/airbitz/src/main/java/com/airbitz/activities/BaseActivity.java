@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Spanned;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -19,12 +20,19 @@ import com.airbitz.fragments.HelpDialog;
 import java.io.File;
 
 public class BaseActivity extends FragmentActivity {
-    private final int DIALOG_TIMEOUT_MILLIS = 120000;
+    private final int DIALOG_TIMEOUT_MILLIS = 60000;
     Handler mHandler;
 
     public void showModalProgress(final boolean show) {
         if(show) {
-            findViewById(R.id.modal_indefinite_progress).setVisibility(View.VISIBLE);
+            View v = findViewById(R.id.modal_indefinite_progress);
+            v.setVisibility(View.VISIBLE);
+            v.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true; // intercept all touches
+                }
+            });
             if(mHandler==null)
                 mHandler = new Handler();
             mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
