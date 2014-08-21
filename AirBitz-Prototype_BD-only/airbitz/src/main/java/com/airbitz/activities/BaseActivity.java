@@ -65,7 +65,7 @@ public class BaseActivity extends FragmentActivity {
         alert.show();
     }
 
-    public void ShowMessageDialogAndExit(String title, String reason) {
+    public void ShowMessageDialogBackPress(String title, String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setTitle(title)
@@ -73,7 +73,7 @@ public class BaseActivity extends FragmentActivity {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                finish();
+                                BaseActivity.this.onBackPressed();
                             }
                         });
         AlertDialog alert = builder.create();
