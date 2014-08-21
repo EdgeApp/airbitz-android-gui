@@ -1154,6 +1154,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onPostExecute(List<Business> businesses) {
+            if(getActivity() == null)
+                return;
+
             mBusinessList.clear();
             if (businesses == null) {
                 mBusinessList.add(new Business("No Results Found", "", ""));
@@ -1184,7 +1187,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
-        ProgressDialog mProgressDialog;
 
         public GetVenuesByBoundTask(Context context) {
             mContext = context;
@@ -1211,6 +1213,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onPostExecute(String searchResult) {
+            if(getActivity() == null)
+                return;
+
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 System.out.println("New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
@@ -1249,14 +1254,19 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private ProgressDialog mProgressDialog;
     private void showMessageProgress(String message, boolean visible) {
         if(visible) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage(message);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+            if(mProgressDialog==null) {
+                mProgressDialog = new ProgressDialog(getActivity());
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.setMessage(message);
+                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+            }
         } else {
-            mProgressDialog.dismiss();
+            if(mProgressDialog!=null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
         }
     }
 
@@ -1265,7 +1275,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
-        ProgressDialog mProgressDialog;
 
         public GetVenuesByLatLongTask(Context context) {
             mContext = context;
@@ -1280,12 +1289,15 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
+            showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
         @Override protected void onPostExecute(String searchResult) {
+            if(getActivity() == null)
+                return;
+
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
@@ -1312,7 +1324,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
-        ProgressDialog mProgressDialog;
 
         public GetVenuesByBusinessAndLocation(Context context) {
             mContext = context;
@@ -1333,12 +1344,15 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         @Override protected void onCancelled() {
-            mProgressDialog.dismiss();
+            showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
         @Override protected void onPostExecute(String searchResult) {
+            if(getActivity() == null)
+                return;
+
             try {
                 SearchResult result = new SearchResult(new JSONObject(searchResult));
                 mVenues = result.getBusinessSearchObjectArray();
