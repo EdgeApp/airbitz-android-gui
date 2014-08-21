@@ -76,20 +76,22 @@ public class CoreAPI {
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native void coreInitialize(String jfilePath, String jcertPath, String jseed, long jseedLength, long jerrorp);
-    public native void RegisterAsyncCallback ();
+    public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
 
     public void Initialize(Context context, String seed, long seedLength){
         if(!initialized) {
             tABC_Error error = new tABC_Error();
-            RegisterAsyncCallback();
+            if(RegisterAsyncCallback()) {
+                Common.LogD(TAG, "Registered for core callbacks");
+            }
             File filesDir = context.getFilesDir();
             List<String> files = Arrays.asList(filesDir.list());
             OutputStream outputStream = null;
             if(!files.contains(CERT_FILENAME)) {
                 InputStream certStream = context.getResources().openRawResource(R.raw.ca_certificates);
                 try {
-                    outputStream = context.openFileOutput(CERT_FILENAME, Context.MODE_WORLD_READABLE);
+                    outputStream = context.openFileOutput(CERT_FILENAME, Context.MODE_PRIVATE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -133,6 +135,7 @@ public class CoreAPI {
     public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
+        Common.LogD(TAG, "asyncBitCoinInfo callback = "+type.toString());
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
             if(mOnIncomingBitcoin!=null) {
                 mIncomingBitcoinUUID = info.getSzWalletUUID();
@@ -195,7 +198,7 @@ public class CoreAPI {
     public interface OnDataSync {
         public void OnDataSync();
     }
-    public void setOnOnDataSyncListener(OnDataSync listener) {
+    public void setOnDataSyncListener(OnDataSync listener) {
         mOnDataSync = listener;
     }
     final Runnable DataSyncUpdater = new Runnable() {
@@ -837,7 +840,8 @@ public class CoreAPI {
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
                 SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
                 mOutputs = new TxOutput[(int) mCountOutputs];
-                long base = a.getCPtr(a);
+                SWIGTYPE_p_long p2 = new pLong(a.getCPtr(a));
+                long base = core.longp_value(p2);
                 for (int i = 0; i < mCountOutputs; ++i)
                 {
                     mOutputs[i] = new TxOutput(base + i*4);
@@ -868,7 +872,7 @@ public class CoreAPI {
             super(pv, false);
             if (pv != 0) {
 //                mInput = super.getInput();
-                mAddress = super.getSzAddress();
+                mAddress = super.getSzAddress(); // FIXME
                 mTxId = super.getSzTxId();
                 mValue = get64BitLongAtPtr(pv + 1);
                 mIndex = get64BitLongAtPtr(pv + 17);
@@ -1513,7 +1517,7 @@ public class CoreAPI {
         {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
-//            Common.LogD(TAG, "Exchange Rate Update initiated.");
+            Common.LogD(TAG, "Exchange Rate Update initiated.");
             mUpdateExchangeRateTask.execute();
         }
     }
@@ -1616,9 +1620,11 @@ public class CoreAPI {
     {
         if (AirbitzApplication.isLoggedIn())
         {
-            mSyncDataTask = new SyncDataTask();
-            mSyncDataTask.execute();
-            Common.LogD(TAG, "File sync initiated.");
+            if(mSyncDataTask==null) {
+                mSyncDataTask = new SyncDataTask();
+                mSyncDataTask.execute();
+                Common.LogD(TAG, "File sync initiated.");
+            }
         }
     }
 
@@ -1631,6 +1637,11 @@ public class CoreAPI {
             tABC_Error error = new tABC_Error();
             tABC_CC val = core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mSyncDataTask = null;
         }
     }
 
