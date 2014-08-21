@@ -23,6 +23,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_QuestionChoices;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         if(intent !=null) {
-            mUsername = intent.getStringExtra(SignUpActivity.KEY_USERNAME);
+            mUsername = intent.getStringExtra(SignUpFragment.KEY_USERNAME);
         }
 
         if(mCoreAPI==null)

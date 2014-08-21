@@ -3,7 +3,6 @@ package com.airbitz.fragments;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,9 +23,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.activities.ForgotPasswordActivity;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.SignUpActivity;
 import com.airbitz.objects.HighlightOnPressButton;
 
 public class LandingFragment extends Fragment {
@@ -109,9 +106,10 @@ public class LandingFragment extends Fragment {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("",
                             getResources().getString(R.string.fragment_forgot_no_username_title));
                 }else {
-                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameEditText.getText().toString());
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
+//                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameEditText.getText().toString());
+//                    startActivity(intent);
+                    // TODO
                 }
             }
         });
@@ -141,8 +139,7 @@ public class LandingFragment extends Fragment {
                     InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
                     mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
-                    Intent intent = new Intent(getActivity(), SignUpActivity.class);
-                    startActivity(intent);
+                    ((NavigationActivity) getActivity()).startSignUp();
                 } else {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
                 }

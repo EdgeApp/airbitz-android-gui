@@ -1,16 +1,18 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
@@ -36,11 +39,13 @@ import java.util.Map;
 /**
  * Created on 2/10/14.
  */
-public class PasswordRecoveryActivity extends BaseActivity {
+public class PasswordRecoveryFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
-    public static final String CHANGE_QUESTIONS = "com.airbitz.passwordrecoveryactivity.change_questions";
-    public static final String FORGOT_PASSWORD = "com.airbitz.passwordrecoveryactivity.forgot_password";
+    public static final String MODE = "com.airbitz.passwordrecovery.type";
+    public static int SIGN_UP=0;
+    public static int CHANGE_QUESTIONS = 1;
+    public static int FORGOT_PASSWORD = 2;
 
     private enum QuestionType { STRING, NUMERIC }
     public final String UNSELECTED_QUESTION = "Question";
@@ -66,14 +71,19 @@ public class PasswordRecoveryActivity extends BaseActivity {
     private boolean mForgotPassword;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_password_recovery);
-
         mCoreAPI = CoreAPI.getApi();
+    }
 
-        Button mSkipStepButton = (Button) findViewById(R.id.activity_recovery_skip_button);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View mView = inflater.inflate(R.layout.activity_password_recovery, container, false);
+
+        Button mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,31 +92,28 @@ public class PasswordRecoveryActivity extends BaseActivity {
             }
         });
 
-        mPasswordEditText = (EditText) findViewById(R.id.activity_password_recovery_password_edittext);
-        Button mDoneSignUpButton = (Button) findViewById(R.id.activity_recovery_complete_button);
-        mBackButton = (ImageButton) findViewById(R.id.activity_password_recovery_back_button);
+        mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
+        Button mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
+        mBackButton = (ImageButton) mView.findViewById(R.id.activity_password_recovery_back_button);
 
-        mChangeQuestions = getIntent().getBooleanExtra(CHANGE_QUESTIONS, false);
-        mForgotPassword = getIntent().getBooleanExtra(FORGOT_PASSWORD, false);
-
-        if(mChangeQuestions) {
-            mSkipStepButton.setVisibility(View.INVISIBLE);
-            mPasswordEditText.setVisibility(View.VISIBLE);
-            mBackButton.setVisibility(View.VISIBLE);
-            mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
-        } else if(mForgotPassword) {
-
+        if(getArguments() != null) {
+            int type = getArguments().getInt(MODE);
+            if(type == CHANGE_QUESTIONS) {
+                mSkipStepButton.setVisibility(View.INVISIBLE);
+                mPasswordEditText.setVisibility(View.VISIBLE);
+                mBackButton.setVisibility(View.VISIBLE);
+                mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
+            } else if(mForgotPassword) {
+                //TODO set
+            }
         }
 
-        this.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        this.overridePendingTransition(R.anim.nothing, R.anim.slide_in_from_right);
-
-        mLayoutRecovery = (RelativeLayout) findViewById(R.id.activity_recovery_container_layout);
+        mLayoutRecovery = (RelativeLayout) mView.findViewById(R.id.activity_recovery_container_layout);
 
         mStringQuestions = new ArrayList<String>();
         mNumericQuestions = new ArrayList<String>();
 
-        TextView mTitleTextView = (TextView) findViewById(R.id.activity_recovery_title_textview);
+        TextView mTitleTextView = (TextView) mView.findViewById(R.id.activity_recovery_title_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -121,15 +128,16 @@ public class PasswordRecoveryActivity extends BaseActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-                overridePendingTransition(R.anim.nothing, R.anim.slide_out_right);
+                getActivity().onBackPressed();
             }
         });
 
-        mPasswordRecoveryListView = (LinearLayout) findViewById(R.id.activity_recovery_question_listview);
+        mPasswordRecoveryListView = (LinearLayout) mView.findViewById(R.id.activity_recovery_question_listview);
 
         mFetchAllQuestionsTask = new GetRecoveryQuestions();
         mFetchAllQuestionsTask.execute((Void) null);
+
+        return mView;
     }
 
     private void AttemptSignupOrChange() {
@@ -140,7 +148,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         String answers = "";
 
         if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
-            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
 
@@ -170,22 +178,22 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                 mSaveQuestionsTask.execute((Void) null);
             } else {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions,QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(this, mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(this, mNumericQuestions, QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, QuestionType.NUMERIC, position++));
 
         mPasswordRecoveryListView.removeAllViews();
         for (View v : mQuestionViews) {
@@ -203,7 +211,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -232,7 +240,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
 
             if (success) {
                 InitializeQuestionViews();
@@ -245,6 +253,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mFetchAllQuestionsTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
     }
@@ -259,7 +268,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -269,7 +278,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             mFetchAllQuestionsTask = null;
 
             if (success) {
@@ -280,6 +289,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         @Override
         protected void onCancelled() {
             mFetchAllQuestionsTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
     }
@@ -298,7 +308,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
 
         @Override
         public void onPreExecute() {
-            showModalProgress(true);
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -310,17 +320,18 @@ public class PasswordRecoveryActivity extends BaseActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
-            showModalProgress(false);
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             if (!success) {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                ShowMessageDialogAndExit(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
+                ((NavigationActivity)getActivity()).ShowMessageDialogAndExit(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
             }
         }
 
         @Override
         protected void onCancelled() {
             mSaveQuestionsTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
 
@@ -341,7 +352,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
         for (QuestionView qv : mQuestionViews) {
             if (qv!=notThis) {
                 List<String> unchosen;
-                if(qv.mType==QuestionType.STRING) {
+                if(qv.mType== QuestionType.STRING) {
                     unchosen = getUnchosenQuestions(mStringQuestions);
                 } else  {
                     unchosen = getUnchosenQuestions(mNumericQuestions);
@@ -425,7 +436,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 public void onNothingSelected(AdapterView<?> adapterView) { }
             });
 
-            mSpinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            mSpinner.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if (hasFocus) {
@@ -438,11 +449,11 @@ public class PasswordRecoveryActivity extends BaseActivity {
                 }
             });
 
-            mText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            mText.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if (hasFocus) {
-                        showSoftKeyboard(mText);
+                        ((NavigationActivity)getActivity()).showSoftKeyboard(mText);
                     }
                 }
             });
@@ -479,7 +490,7 @@ public class PasswordRecoveryActivity extends BaseActivity {
                             mQuestionViews.get(mPosition + 1).getSpinner().requestFocus();
                             return true;
                         } else if(mPosition == mQuestionViews.size()-1) {
-                            hideSoftKeyboard(mText);
+                            ((NavigationActivity)getActivity()).hideSoftKeyboard(mText);
                             return true;
                         }
                     }
@@ -517,20 +528,15 @@ public class PasswordRecoveryActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public void onBackPressed(){
-        if(mChangeQuestions)
-            super.onBackPressed();
-    }
-
     public void ShowSkipQuestionsAlert(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
                 .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        finish();
+                        ((NavigationActivity)getActivity()).popFragment();
+                        ((NavigationActivity)getActivity()).showNavBar();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {

@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,8 +25,6 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.activities.PasswordRecoveryActivity;
-import com.airbitz.activities.SignUpActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -35,7 +32,6 @@ import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.utils.Common;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,11 +88,6 @@ public class SettingFragment extends Fragment {
     private int mCurrencyNum;
     private List<CoreAPI.ExchangeRateSource> mExchanges;
 
-    //TODO Move to strings.xml as these will depend on translations there
-    private static final String[] ARRAY_LANG_CHOICES = {"English", "Spanish", "German", "French", "Italian", "Chinese", "Portuguese", "Japanese"};
-    private static final String[] ARRAY_LANG_CODES = {"en", "es", "de", "fr", "it", "zh", "pt", "ja"};
-
-
     private String[] mUSDExchangeItems;
     private String[] mCanadianExchangeItems;
     private String[] mEuroExchangeItems;
@@ -115,7 +106,7 @@ public class SettingFragment extends Fragment {
         mCoreSettings = mCoreAPI.loadAccountSettings();
 
         mLanguageItems = getResources().getStringArray(R.array.language_array);
-        mCurrencyItems = mCoreAPI.getCurrencyAcronyms(); //getResources().getStringArray(R.array.default_currency_array);
+        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
         mUSDExchangeItems = getResources().getStringArray(R.array.usd_exchange_array);
         mCanadianExchangeItems = getResources().getStringArray(R.array.canadian_exchange_array);
         mEuroExchangeItems = getResources().getStringArray(R.array.euro_exchange_array);
@@ -123,20 +114,10 @@ public class SettingFragment extends Fragment {
         mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
-            return mView;
-        mView = inflater.inflate(R.layout.fragment_setting, container, false);
+        View mView = inflater.inflate(R.layout.fragment_setting, container, false);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);
@@ -189,27 +170,33 @@ public class SettingFragment extends Fragment {
         mChangePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(getActivity(), SignUpActivity.class);
-                mIntent.putExtra(SignUpActivity.MODE, SignUpActivity.CHANGE_PASSWORD);
-                startActivity(mIntent);
+                Fragment fragment = new SignUpFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD);
+                fragment.setArguments(bundle);
+                ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 
         mChangePINButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(getActivity(), SignUpActivity.class);
-                mIntent.putExtra(SignUpActivity.MODE, SignUpActivity.CHANGE_PIN);
-                startActivity(mIntent);
+                Fragment fragment = new SignUpFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PIN);
+                fragment.setArguments(bundle);
+                ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 
         mChangeRecoveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(getActivity(), PasswordRecoveryActivity.class);
-                mIntent.putExtra(PasswordRecoveryActivity.CHANGE_QUESTIONS, true);
-                startActivity(mIntent);
+                Fragment fragment = new PasswordRecoveryFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.CHANGE_QUESTIONS);
+                fragment.setArguments(bundle);
+                ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 

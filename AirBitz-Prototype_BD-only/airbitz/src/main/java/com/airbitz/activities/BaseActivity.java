@@ -24,8 +24,8 @@ public class BaseActivity extends FragmentActivity {
     Handler mHandler;
 
     public void showModalProgress(final boolean show) {
+        View v = findViewById(R.id.modal_indefinite_progress);
         if(show) {
-            View v = findViewById(R.id.modal_indefinite_progress);
             v.setVisibility(View.VISIBLE);
             v.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -38,7 +38,7 @@ public class BaseActivity extends FragmentActivity {
             mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
         } else {
             mHandler.removeCallbacks(mProgressDialogKiller);
-            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
+            v.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -32,6 +32,8 @@ import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpDialog;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
+import com.airbitz.fragments.PasswordRecoveryFragment;
+import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.SendFragment;
@@ -96,13 +98,16 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
+    // For Fragments to implement if they need to customize on back presses
+    public interface OnBackPress {
+        public void onBackPress();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mCoreAPI = CoreAPI.getApi();
         String seed = mCoreAPI.getSeedData();
@@ -124,7 +129,7 @@ public class NavigationActivity extends BaseActivity
             mNavStacks[i].push(mNavFragments[i]);
         }
 
-        // for keyboard hide and show
+        //for keyboard hide and show
         final View activityRootView = findViewById(R.id.activity_navigation_root);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -137,7 +142,7 @@ public class NavigationActivity extends BaseActivity
                         ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
                     }
                 } else {
-                    if(keyBoardUp) {
+                    if(keyBoardUp && AirbitzApplication.isLoggedIn()) {
                         showNavBar();
                     }
                     if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment && keyBoardUp){
@@ -272,6 +277,17 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
+    public void pushFragmentNoAnimation(Fragment fragment, int threadID) {
+        mNavStacks[threadID].push(fragment);
+
+        // Only show visually if we're displaying the thread
+        if(mNavThreadId==threadID) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.activityLayout, fragment);
+            transaction.commitAllowingStateLoss();
+        }
+    }
+
     public void popFragment() {
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -334,6 +350,12 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        Fragment fragment = mNavStacks[mNavThreadId].peek();
+        if(fragment instanceof OnBackPress) {
+            ((OnBackPress) fragment).onBackPress();
+            return;
+        }
+
         boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
 
         hideCalculator();
@@ -347,7 +369,7 @@ public class NavigationActivity extends BaseActivity
                 startActivity(homeIntent);
             }
         } else {
-            if (mNavStacks[mNavThreadId].peek() instanceof RequestQRCodeFragment) {
+            if (fragment instanceof RequestQRCodeFragment) {
                 popFragment();
                 showNavBar();
             } else {//needed or show nav before switching fragments
@@ -566,6 +588,7 @@ public class NavigationActivity extends BaseActivity
 
     public void UserJustLoggedIn() {
         DisplayLoginOverlay(false);
+        showNavBar();
         if(mDataUri!=null) {
             onBitcoinUri(mDataUri);
             mDataUri = null;
@@ -574,6 +597,13 @@ public class NavigationActivity extends BaseActivity
         }
 
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+    }
+
+    public void startSignUp() {
+        hideNavBar();
+        Fragment frag = new SignUpFragment();
+        pushFragmentNoAnimation(frag, mNavThreadId);
+        DisplayLoginOverlay(false);
     }
 
     public void Logout() {
