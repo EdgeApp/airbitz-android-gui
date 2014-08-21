@@ -16,7 +16,7 @@ void *bitcoinInfo;
 void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 	JNIEnv * g_env;
 	// double check it's all ok
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Entering bitcoinCallback");
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "Entering bitcoinCallback");
 	int getEnvStat = (*g_vm)->GetEnv(g_vm, (void **)&g_env, JNI_VERSION_1_6);
 	if (getEnvStat == JNI_EDETACHED) {
 //        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: not attached");
@@ -45,7 +45,7 @@ void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
 
 // Custom initialization to handle callbacks
 JNIEXPORT jint JNICALL
-Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jrootDir, jstring jcertDir, jstring jseed, jlong jseedLength, jlong jerrorp) {
+Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jrootDir, jstring jcertFilepath, jstring jseed, jlong jseedLength, jlong jerrorp) {
   jint jresult = 0 ;
   char *root = (char *) 0 ;
   char *cert = (char *) 0 ;
@@ -65,8 +65,8 @@ Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring j
     if (!root) return 0;
   }
   cert = 0;
-  if (jcertDir) {
-    cert = (char *)(*jenv)->GetStringUTFChars(jenv, jcertDir, 0);
+  if (jcertFilepath) {
+    cert = (char *)(*jenv)->GetStringUTFChars(jenv, jcertFilepath, 0);
     if (!cert) return 0;
   }
   callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
@@ -81,6 +81,7 @@ Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring j
   result = (tABC_CC)ABC_Initialize((char const *)root, (char const *)cert, callback, bcInfo, (unsigned char const *)seed, seedLength, errorp);
   jresult = (jint)result;
   if (root) (*jenv)->ReleaseStringUTFChars(jenv, jrootDir, (const char *)root);
+  if (root) (*jenv)->ReleaseStringUTFChars(jenv, jcertFilepath, (const char *)cert);
   if (seed) (*jenv)->ReleaseStringUTFChars(jenv, jseed, (const char *)seed);
   return jresult;
 }
@@ -88,7 +89,6 @@ Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring j
 JNIEXPORT jboolean JNICALL
 Java_com_airbitz_api_CoreAPI_RegisterAsyncCallback (JNIEnv * env, jobject obj)
 {
-        bool returnValue = true;
 		// convert local to global reference
         // (local will die after this method call)
 		g_obj = (*env)->NewGlobalRef(env, obj);
@@ -97,20 +97,23 @@ Java_com_airbitz_api_CoreAPI_RegisterAsyncCallback (JNIEnv * env, jobject obj)
         int status = (*env)->GetJavaVM(env, &g_vm);
         if(status != 0) {
             __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback global vm fail");
+            return false;
         }
 
 		// save refs for callback
 		jclass g_clazz = (*env)->GetObjectClass(env, g_obj);
 		if (g_clazz == NULL) {
             __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback failed to find class");
+            return false;
 		}
 
 		g_mid_callback = (*env)->GetMethodID(env, g_clazz, "callbackAsyncBitcoinInfo", "(J)V");
 		if (g_mid_callback == NULL) {
             __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "RegisterAsyncCallback unable to get method ref");
+            return false;
 		}
 
-		return (jboolean)returnValue;
+		return true;
 }
 
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -64,6 +63,7 @@ public class NavigationActivity extends BaseActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
+        CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
 
     public static final String URI = "com.airbitz.navigation.uri";
@@ -115,7 +115,9 @@ public class NavigationActivity extends BaseActivity
         mCoreAPI.Initialize(this, seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnOnDataSyncListener(this);
+        mCoreAPI.setOnDataSyncListener(this);
+        mCoreAPI.setOnBlockHeightChangeListener(this);
+        mCoreAPI.setOnOnRemotePasswordChangeListener(this);
 
         AirbitzApplication.Login(null, null); // try auto login
 
@@ -465,7 +467,14 @@ public class NavigationActivity extends BaseActivity
     }
 
     @Override
+    public void onBlockHeightChange() {
+        Common.LogD("NavigationActivity", "Block Height received");
+
+    }
+
+    @Override
     public void OnRemotePasswordChange() {
+        Common.LogD("NavigationActivity", "Remote Password received");
         showRemotePasswordChangeDialog();
     }
 
@@ -561,6 +570,7 @@ public class NavigationActivity extends BaseActivity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
 
+        mCoreAPI.startAllAsyncUpdates();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 

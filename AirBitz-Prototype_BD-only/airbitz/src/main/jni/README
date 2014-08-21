@@ -17,4 +17,6 @@ Here's a working swig command issued from the main airbitz directory: swig -java
 
 See SignUpActivity for how to wrap an async task around a core library blocking call.
 
+Core builds
 on MacOS, use "make abc.build-android-arm"
+for testnet, use "./make-testnet abc"
