@@ -267,7 +267,7 @@
                 android:id="@+id/transaction_detail_layout_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/emboss_up_final"
+                android:background="@drawable/rounded_edge_blue_bg"
                 android:layout_marginLeft="@dimen/two_mm"
                 android:layout_marginRight="@dimen/two_mm"
                 android:layout_marginTop="6.3dp"

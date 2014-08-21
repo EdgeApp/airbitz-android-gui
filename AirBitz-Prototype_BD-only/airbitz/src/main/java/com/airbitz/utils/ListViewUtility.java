@@ -23,7 +23,7 @@ public class ListViewUtility {
 
         int totalHeight = 0;
         totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-        for (int i = 0; i <= position; i++) {
+        for (int i = 0; i < position; i++) {
             View listItem = listAdapter.getView(i, null, listView);
             if (listItem instanceof ViewGroup) {
                 listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -34,7 +34,7 @@ public class ListViewUtility {
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount()));
         listView.setLayoutParams(params);
     }
 
@@ -103,6 +103,7 @@ public class ListViewUtility {
             return;
         }
 
+
         int totalHeight = 0;
         totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
         for (int i = 0; i < size; i++) {
@@ -136,19 +137,21 @@ public class ListViewUtility {
 
     public static void setTransactionListViewHeightBasedOnChildren(ListView listView, int size, Context context) {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
+        if (listAdapter == null || size<1) {
             return;
         }
 
-        int totalHeight = 0;
-        totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-        for (int i = 0; i < size; i++) {
-            int height = (int) context.getResources().getDimension(R.dimen.transaction_list_view_height);
-            totalHeight += height;
+        View listItem = listAdapter.getView(0, null, listView);
+        if (listItem instanceof ViewGroup) {
+            listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
         }
+        listItem.measure(0, 0);
+
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom() + size * listItem.getMeasuredHeight();
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        params.height = totalHeight + (listView.getDividerHeight() * size);
         listView.setLayoutParams(params);
     }
 }

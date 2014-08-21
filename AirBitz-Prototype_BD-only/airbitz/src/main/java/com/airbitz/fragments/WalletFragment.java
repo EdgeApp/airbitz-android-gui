@@ -175,7 +175,7 @@ public class WalletFragment extends Fragment
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size(), getActivity());
+        ListViewUtility.setListViewHeightBasedOnChildren(mListTransaction, mTransactions.size());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletNameButton.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -498,7 +498,7 @@ public class WalletFragment extends Fragment
         mTransactions.addAll(transactions);
         mTransactionAdapter.notifyDataSetChanged();
         mTransactionAdapter.createRunningSatoshi();
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, transactions.size(), getActivity());
+        ListViewUtility.setListViewHeightBasedOnChildren(mListTransaction, transactions.size());
     }
 
     @Override public void onPause() {
