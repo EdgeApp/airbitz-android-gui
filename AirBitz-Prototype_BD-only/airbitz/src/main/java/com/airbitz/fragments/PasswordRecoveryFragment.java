@@ -81,7 +81,7 @@ public class PasswordRecoveryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View mView = inflater.inflate(R.layout.activity_password_recovery, container, false);
+        View mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
 
         Button mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -103,6 +103,7 @@ public class PasswordRecoveryFragment extends Fragment {
                 mPasswordEditText.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
+                mPasswordEditText.requestFocus();
             } else if(mForgotPassword) {
                 //TODO set
             }

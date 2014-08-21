@@ -52,7 +52,6 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
     private Button mPrintButton;
 
     private RelativeLayout mRootLayout;
-    private RelativeLayout mNavigationLayout;
 
     private ScrollView mScrollView;
 
@@ -89,7 +88,6 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mRootLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
-        mNavigationLayout = (RelativeLayout) mView.findViewById(R.id.navigation_layout);
         mAddressTextView = (TextView) mView.findViewById(R.id.textview_address);
 
         Shader textShader=new LinearGradient(0, 0, 0, 20,
@@ -98,21 +96,6 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mAddressTextView.getPaint().setShader(textShader);
 
         mAddressTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-
-        mRootLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = mRootLayout.getRootView().getHeight() - mRootLayout.getHeight();
-                if (heightDiff > 100) {
-                    mNavigationLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    mNavigationLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
 
         mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
