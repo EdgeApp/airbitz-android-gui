@@ -1,7 +1,6 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -112,8 +111,6 @@ public class NavigationActivity extends BaseActivity
         mCoreAPI.setOnIncomingBitcoinListener(this);
         mCoreAPI.setOnOnDataSyncListener(this);
 
-        AirbitzApplication.Login(null, null); // try auto login
-
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
@@ -168,6 +165,10 @@ public class NavigationActivity extends BaseActivity
             mNavBarFragmentLayout.invalidate();
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
+        }
+
+        if(AirbitzApplication.AUTOLOGIN) {
+            attemptLogin(AirbitzApplication.autologinName, AirbitzApplication.autologinPassword);
         }
     }
 
@@ -377,9 +378,9 @@ public class NavigationActivity extends BaseActivity
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
+            mCoreAPI.startAllAsyncUpdates();
         }
         switchFragmentThread(mNavThreadId);
-        mCoreAPI.startAllAsyncUpdates();
     }
 
     @Override public void onPause() {
