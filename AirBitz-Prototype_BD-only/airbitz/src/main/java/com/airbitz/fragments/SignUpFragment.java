@@ -476,9 +476,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     @Override
     public void onBackPress() {
         ((NavigationActivity)getActivity()).popFragment();
-        if(AirbitzApplication.isLoggedIn()) {
-            ((NavigationActivity) getActivity()).showNavBar();
-        }
+        ((NavigationActivity) getActivity()).showNavBar();
     }
 
     public class ChangeTask extends AsyncTask<Void, Void, Boolean> {
