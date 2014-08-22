@@ -15,7 +15,6 @@ import com.airbitz.R;
 public class ListViewUtility {
 
     public static void setListViewHeightBasedOnChildren(ListView listView, int position) {
-        // position = position+1;
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             return;
@@ -135,7 +134,7 @@ public class ListViewUtility {
         listView.setLayoutParams(params);
     }
 
-    public static void setTransactionListViewHeightBasedOnChildren(ListView listView, int size, Context context) {
+    public static void setTransactionListViewHeightBasedOnChildren(ListView listView, int size) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null || size<1) {
             return;

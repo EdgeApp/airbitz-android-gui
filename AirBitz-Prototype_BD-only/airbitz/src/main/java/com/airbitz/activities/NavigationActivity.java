@@ -18,7 +18,6 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,14 +31,13 @@ import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpDialog;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.PasswordRecoveryFragment;
-import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.RequestFragment;
+import com.airbitz.fragments.RequestQRCodeFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
+import com.airbitz.fragments.SignUpFragment;
+import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
-import com.airbitz.fragments.RequestQRCodeFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
@@ -47,7 +45,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
-import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,10 +104,9 @@ public class NavigationActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
 
         mCoreAPI = CoreAPI.getApi();
-        String seed = mCoreAPI.getSeedData();
+        String seed = CoreAPI.getSeedData();
         mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
