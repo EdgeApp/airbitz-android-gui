@@ -346,11 +346,13 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        // If fragments want the back key, they can have it
         Fragment fragment = mNavStacks[mNavThreadId].peek();
         if(fragment instanceof OnBackPress) {
             ((OnBackPress) fragment).onBackPress();
             return;
         }
+
 
         boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
 
