@@ -1019,7 +1019,9 @@ public class CoreAPI {
         } else {
             transaction.setAddress("1zf76dh4TG");
         }
-        transaction.setOutputs(txInfo.getOutputs());
+        TxOutput[] txo = txInfo.getOutputs();
+        if(txo != null)
+        transaction.setOutputs(txo);
 
     }
 
