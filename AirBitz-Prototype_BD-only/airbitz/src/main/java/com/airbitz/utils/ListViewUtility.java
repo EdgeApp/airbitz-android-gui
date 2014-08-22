@@ -140,14 +140,8 @@ public class ListViewUtility {
             return;
         }
 
-        View listItem = listAdapter.getView(0, null, listView);
-        if (listItem instanceof ViewGroup) {
-            listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-        listItem.measure(0, 0);
-
-        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom() + size * listItem.getMeasuredHeight();
+        int height = (int) listView.getContext().getResources().getDimension(R.dimen.transaction_list_view_height);
+        int totalHeight = height * size + listView.getPaddingTop() + listView.getPaddingBottom();
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * size);
