@@ -397,7 +397,6 @@ public class NavigationActivity extends BaseActivity
             mNavThreadId = Tabs.BD.ordinal();
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
-            DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
         }
         switchFragmentThread(mNavThreadId);
@@ -406,7 +405,6 @@ public class NavigationActivity extends BaseActivity
     @Override public void onPause() {
         super.onPause();
         unregisterReceiver(AirbitzServiceReceiver);
-        DisplayLoginOverlay(true);
         mCoreAPI.stopAllAsyncUpdates();
     }
 
@@ -607,6 +605,7 @@ public class NavigationActivity extends BaseActivity
     public void Logout() {
         sendCredentialsToService(null, null);
         AirbitzApplication.Logout();
+        DisplayLoginOverlay(false);
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
