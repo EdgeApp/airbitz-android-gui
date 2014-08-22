@@ -108,7 +108,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.squareup.picasso:picasso:2.2.0'
-    compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
