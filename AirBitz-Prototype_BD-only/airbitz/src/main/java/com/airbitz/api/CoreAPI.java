@@ -95,7 +95,7 @@ public class CoreAPI {
                 }
                 copyStreamToFile(certStream, outputStream);
             }
-            core.ABC_Initialize(filesDir.getPath(), filesDir.getPath()+"/"+CERT_FILENAME, seed, seedLength, error);
+            core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
         }
     }
@@ -805,7 +805,6 @@ public class CoreAPI {
         {
             Common.LogD(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
         }
-//        core.ABC_FreeTransactions(aTransactions, tCount);
         return listTransactions;
     }
 
@@ -836,13 +835,15 @@ public class CoreAPI {
 
                 tABC_TxDetails txd = super.getPDetails();
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
-                SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
-                mOutputs = new TxOutput[(int) mCountOutputs];
-                SWIGTYPE_p_long p2 = new pLong(a.getCPtr(a));
-                long base = core.longp_value(p2);
-                for (int i = 0; i < mCountOutputs; ++i)
-                {
-                    mOutputs[i] = new TxOutput(base + i*4);
+
+                if(mCountOutputs>0) {
+                    SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
+                    mOutputs = new TxOutput[(int) mCountOutputs];
+                    SWIGTYPE_p_long p2 = new pLong(a.getCPtr(a));
+                    long base = core.longp_value(p2);
+                    for (int i = 0; i < mCountOutputs; ++i) {
+                        mOutputs[i] = new TxOutput(base + i * 4);
+                    }
                 }
             }
         }
