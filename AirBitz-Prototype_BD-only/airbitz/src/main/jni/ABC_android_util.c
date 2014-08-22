@@ -35,7 +35,7 @@ void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 //		(*g_env)->ExceptionDescribe(g_env);
 //	}
 
-	(*g_vm)->DetachCurrentThread(g_vm);
+//	(*g_vm)->DetachCurrentThread(g_vm);
 }
 
 void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
