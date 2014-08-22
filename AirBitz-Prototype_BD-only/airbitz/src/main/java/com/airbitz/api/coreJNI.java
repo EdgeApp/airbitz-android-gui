@@ -100,6 +100,8 @@ public class coreJNI {
   public final static native long tABC_AsyncBitCoinInfo_pData_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
   public final static native void tABC_AsyncBitCoinInfo_eventType_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, int jarg2);
   public final static native int tABC_AsyncBitCoinInfo_eventType_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
+  public final static native void tABC_AsyncBitCoinInfo_status_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, long jarg2, tABC_Error jarg2_);
+  public final static native long tABC_AsyncBitCoinInfo_status_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
   public final static native void tABC_AsyncBitCoinInfo_szWalletUUID_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, String jarg2);
   public final static native String tABC_AsyncBitCoinInfo_szWalletUUID_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
   public final static native void tABC_AsyncBitCoinInfo_szTxID_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, String jarg2);
@@ -308,7 +310,7 @@ public class coreJNI {
   public final static native String tABC_AccountSettings_szFullName_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long new_tABC_AccountSettings();
   public final static native void delete_tABC_AccountSettings(long jarg1);
-  public final static native int ABC_Initialize(String jarg1, String jarg2, long jarg3, long jarg4, String jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_Initialize(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_Terminate();
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_SignIn(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
@@ -370,10 +372,10 @@ public class coreJNI {
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
-  public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_WatcherStatus(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
-  public final static native int ABC_WatcherLoop(String jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_WatcherLoop(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatchAddresses(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherDelete(String jarg1, long jarg2, tABC_Error jarg2_);

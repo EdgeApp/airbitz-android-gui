@@ -16,14 +16,11 @@ import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,7 +72,8 @@ public class CoreAPI {
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
-    public native void coreInitialize(String jfilePath, String jcertPath, String jseed, long jseedLength, long jerrorp);
+    public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
+    public native int coreWatcherLoop(String juuid, long jerrorp);
     public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
 
@@ -97,7 +95,7 @@ public class CoreAPI {
                 }
                 copyStreamToFile(certStream, outputStream);
             }
-            coreInitialize(filesDir.getPath(), filesDir.getPath()+"/"+CERT_FILENAME, seed, seedLength, error.getCPtr(error));
+            core.ABC_Initialize(filesDir.getPath(), filesDir.getPath()+"/"+CERT_FILENAME, seed, seedLength, error);
             initialized = true;
         }
     }
@@ -1635,7 +1633,7 @@ public class CoreAPI {
         @Override
         protected Void doInBackground(Void... voids) {
             tABC_Error error = new tABC_Error();
-            tABC_CC val = core.ABC_DataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), error);
+            int result = coreDataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
             return null;
         }
 
@@ -1978,13 +1976,12 @@ public class CoreAPI {
         @Override
         protected Void doInBackground(String... params) {
             uuid = params[0];
-            tABC_Error Error = new tABC_Error();
+            tABC_Error error = new tABC_Error();
             Common.LogD(TAG, "ABC_WatcherStart("+uuid+")");
 
-            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, Error);
-            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, Error);
-            core.ABC_WatcherLoop(uuid, Error);
-            Common.LogD(TAG, Error.getSzDescription() + ";" + Error.getSzSourceFile() + ";" + Error.getSzSourceFunc() + ";" + Error.getNSourceLine());
+            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
             return null;
         }
         @Override

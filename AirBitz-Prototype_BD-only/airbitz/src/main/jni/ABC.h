@@ -58,7 +58,7 @@
 #define ABC_DENOMINATION_MBTC 1
 #define ABC_DENOMINATION_UBTC 2
 
-#define NETWORK_FAKE 1
+#define NETWORK_FAKE 0
 
 #define ABC_VERSION "1.1.2"
 
@@ -214,7 +214,8 @@ extern "C" {
         ABC_AsyncEventType_BlockHeightChange,
         ABC_AsyncEventType_ExchangeRateUpdate,
         ABC_AsyncEventType_DataSyncUpdate,
-        ABC_AsyncEventType_RemotePasswordChange
+        ABC_AsyncEventType_RemotePasswordChange,
+        ABC_AsyncEventType_SentFunds,
     } tABC_AsyncEventType;
 
     /**
@@ -231,6 +232,9 @@ extern "C" {
 
         /** type of event that occured */
         tABC_AsyncEventType eventType;
+
+        /* Return status of call */
+        tABC_Error status;
 
         /** if the event involved a wallet, this is its ID */
         char *szWalletUUID;
@@ -599,8 +603,6 @@ extern "C" {
 
     tABC_CC ABC_Initialize(const char                   *szRootDir,
                            const char                   *szCaCertPath,
-                           tABC_BitCoin_Event_Callback  fAsyncBitCoinEventCallback,
-                           void                         *pData,
                            const unsigned char          *pSeedData,
                            unsigned int                 seedLength,
                            tABC_Error                   *pError);
@@ -933,7 +935,11 @@ extern "C" {
 
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
-    tABC_CC ABC_DataSyncAll(const char *szUserName, const char *szPassword, tABC_Error *pError);
+    tABC_CC ABC_DataSyncAll(const char *szUserName,
+                            const char *szPassword,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
 
     tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
 
@@ -942,7 +948,10 @@ extern "C" {
                                 const char *szWalletUUID,
                                 tABC_Error *pError);
 
-    tABC_CC ABC_WatcherLoop(const char *szWalletUUID, tABC_Error *pError);
+    tABC_CC ABC_WatcherLoop(const char *szWalletUUID,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
 
     tABC_CC ABC_WatchAddresses(const char *szUsername, const char *szPassword,
                                const char *szWalletUUID, tABC_Error *pError);
