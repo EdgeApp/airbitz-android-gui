@@ -1519,7 +1519,7 @@ public class CoreAPI {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Common.LogD(TAG, "Exchange Rate Update initiated.");
-            mUpdateExchangeRateTask.execute();
+            mUpdateExchangeRateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -1623,7 +1623,7 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn()) {
             if(mSyncDataTask==null) {
                 mSyncDataTask = new SyncDataTask();
-                mSyncDataTask.execute();
+                mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 Common.LogD(TAG, "File sync initiated.");
             }
         }
@@ -1956,7 +1956,7 @@ public class CoreAPI {
 //            if(!mWatcherTasks.containsKey(w.getUUID())) {
 //                StartWatcherTask watcherTask = new StartWatcherTask();
 //                mWatcherTasks.put(w.getUUID(), watcherTask);
-//                watcherTask.execute(w.getUUID());
+//                watcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, w.getUUID());
 //                Common.LogD(TAG, "Started watcher for "+w.getUUID());
 //            }
 //        }
@@ -1989,7 +1989,7 @@ public class CoreAPI {
     public void stopWatchers()
     {
         mStopWatchersTask = new StopWatchersTask();
-        mStopWatchersTask.execute();
+        mStopWatchersTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private StopWatchersTask mStopWatchersTask;
