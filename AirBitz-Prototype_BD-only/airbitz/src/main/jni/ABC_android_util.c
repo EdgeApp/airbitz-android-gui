@@ -43,46 +43,66 @@ void ABC_BitCoin_Event_Callback(const tABC_AsyncBitCoinInfo *pInfo)
     bitcoinCallback(pInfo);
 }
 
-// Custom initialization to handle callbacks
+// For Data Syncing
 JNIEXPORT jint JNICALL
-Java_com_airbitz_api_CoreAPI_coreInitialize(JNIEnv *jenv, jclass jcls, jstring jrootDir, jstring jcertFilepath, jstring jseed, jlong jseedLength, jlong jerrorp) {
+Java_com_airbitz_api_CoreAPI_coreDataSyncAll(JNIEnv *jenv, jclass jcls, jstring jusername, jstring jpassword, jlong jerrorp) {
   jint jresult = 0 ;
-  char *root = (char *) 0 ;
-  char *cert = (char *) 0 ;
+  char *username = (char *) 0 ;
+  char *password = (char *) 0 ;
   tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
   void *bcInfo = (void *) 0 ;
-  unsigned char *seed = (unsigned char *) 0 ;
-  unsigned int seedLength ;
   tABC_Error *errorp = (tABC_Error *) 0 ;
   tABC_CC result;
 
   (void)jenv;
   (void)jcls;
 
-  root = 0;
-  if (jrootDir) {
-    root = (char *)(*jenv)->GetStringUTFChars(jenv, jrootDir, 0);
-    if (!root) return 0;
+  username = 0;
+  if (jusername) {
+    username = (char *)(*jenv)->GetStringUTFChars(jenv, jusername, 0);
+    if (!username) return 0;
   }
-  cert = 0;
-  if (jcertFilepath) {
-    cert = (char *)(*jenv)->GetStringUTFChars(jenv, jcertFilepath, 0);
-    if (!cert) return 0;
+  password = 0;
+  if (jpassword) {
+    password = (char *)(*jenv)->GetStringUTFChars(jenv, jpassword, 0);
+    if (!password) return 0;
   }
   callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
   bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
-  seed = 0;
-  if (jseed) {
-    seed = (unsigned char *)(*jenv)->GetStringUTFChars(jenv, jseed, 0);
-    if (!seed) return 0;
-  }
-  seedLength = (unsigned int)jseedLength;
   errorp = *(tABC_Error **)&jerrorp;
-  result = (tABC_CC)ABC_Initialize((char const *)root, (char const *)cert, callback, bcInfo, (unsigned char const *)seed, seedLength, errorp);
+  result = (tABC_CC)ABC_DataSyncAll((char const *)username, (char const *)password, callback, bcInfo, errorp);
   jresult = (jint)result;
-  if (root) (*jenv)->ReleaseStringUTFChars(jenv, jrootDir, (const char *)root);
-  if (root) (*jenv)->ReleaseStringUTFChars(jenv, jcertFilepath, (const char *)cert);
-  if (seed) (*jenv)->ReleaseStringUTFChars(jenv, jseed, (const char *)seed);
+  if (username) (*jenv)->ReleaseStringUTFChars(jenv, jusername, (const char *)username);
+  if (password) (*jenv)->ReleaseStringUTFChars(jenv, jpassword, (const char *)password);
+  return jresult;
+}
+
+
+JNIEXPORT jint JNICALL
+Java_com_airbitz_api_CoreAPI_coreWatcherLoop(JNIEnv *jenv, jclass jcls, jstring juuid, jlong jerrorp) {
+  jint jresult = 0 ;
+  char *uuid = (char *) 0 ;
+  tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
+  void *bcInfo = (void *) 0 ;
+  tABC_Error *errorp = (tABC_Error *) 0 ;
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+  uuid = 0;
+  if (juuid) {
+    uuid = (char *)(*jenv)->GetStringUTFChars(jenv, juuid, 0);
+    if (!uuid) return 0;
+  }
+
+  callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
+  bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
+
+  errorp = *(tABC_Error **)&jerrorp;
+  result = (tABC_CC)ABC_WatcherLoop((char const *)uuid, callback, bcInfo, errorp);
+  jresult = (jint)result;
+  if (uuid) (*jenv)->ReleaseStringUTFChars(jenv, juuid, (const char *)uuid);
   return jresult;
 }
 
