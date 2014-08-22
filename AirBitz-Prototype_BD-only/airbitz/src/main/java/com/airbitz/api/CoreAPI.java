@@ -1603,6 +1603,7 @@ public class CoreAPI {
     final Runnable FileSyncUpdater = new Runnable() {
         public void run() {
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_SYNC_REFRESH_INTERVAL_SECONDS);
+            Common.LogD(TAG, "Starting file sync");
             syncAllData();
         }
     };
@@ -1619,8 +1620,7 @@ public class CoreAPI {
 
     public void syncAllData()
     {
-        if (AirbitzApplication.isLoggedIn())
-        {
+        if (AirbitzApplication.isLoggedIn()) {
             if(mSyncDataTask==null) {
                 mSyncDataTask = new SyncDataTask();
                 mSyncDataTask.execute();
@@ -1634,6 +1634,11 @@ public class CoreAPI {
         SyncDataTask() { }
 
         @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "coreDataSyncAll called");
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             tABC_Error error = new tABC_Error();
             int result = coreDataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
@@ -1642,6 +1647,13 @@ public class CoreAPI {
 
         @Override
         protected void onPostExecute(Void v) {
+            Common.LogD(TAG, "coreDataSyncAll returned");
+            mSyncDataTask = null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            Common.LogD(TAG, "coreDataSyncAll cancelled");
             mSyncDataTask = null;
         }
     }
@@ -1894,7 +1906,7 @@ public class CoreAPI {
 
     public static String getSeedData()
     {
-        String strSeed = new String();
+        String strSeed = "";
 
         strSeed += Build.MANUFACTURER;
         strSeed += Build.DEVICE;
@@ -1936,61 +1948,41 @@ public class CoreAPI {
         return result;
     }
 
+    private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
     public void startWatchers()
     {
-        if(mStartWatchersTask==null) {
-            Common.LogD(TAG, "startWatchers");
-            mStartWatchersTask = new StartWatchersTask();
-            mStartWatchersTask.execute();
-        } else {
-            Common.LogD(TAG, "startWatchers already running!");
-        }
+//        List<Wallet> wallets = getCoreWallets();
+//        for (Wallet w : wallets) {
+//            if(!mWatcherTasks.containsKey(w.getUUID())) {
+//                StartWatcherTask watcherTask = new StartWatcherTask();
+//                mWatcherTasks.put(w.getUUID(), watcherTask);
+//                watcherTask.execute(w.getUUID());
+//                Common.LogD(TAG, "Started watcher for "+w.getUUID());
+//            }
+//        }
     }
 
-    private StartWatchersTask mStartWatchersTask;
-    private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
-    public class StartWatchersTask extends AsyncTask<Void, Void, Void> {
-        StartWatchersTask() { }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            List<Wallet> wallets = getCoreWallets();
-            for (Wallet w : wallets) {
-                if(!mWatcherTasks.containsKey(w.getUUID())) {
-                    StartWatcherTask watcherTask = new StartWatcherTask();
-                    mWatcherTasks.put(w.getUUID(), watcherTask);
-                    watcherTask.execute(w.getUUID());
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            Common.LogD(TAG, "StartWatchersTask completed");
-            mStartWatchersTask = null;
-        }
-    }
-
+    // This async task never returns from the background. It must be cancelled
     public class StartWatcherTask extends AsyncTask<String, Void, Void> {
         public String uuid;
         StartWatcherTask() { }
 
         @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "StartWatcherTask starting");
+        }
+
+        @Override
         protected Void doInBackground(String... params) {
             uuid = params[0];
             tABC_Error error = new tABC_Error();
-            Common.LogD(TAG, "ABC_WatcherStart("+uuid+")");
 
+            Common.LogD(TAG, "Going to call WatcherStart");
             core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            Common.LogD(TAG, "Going to call WatchAddresses");
             core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
             int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
             return null;
-        }
-        @Override
-        protected void onPostExecute(Void v) {
-            Common.LogD(TAG, "Watcher for uuid="+uuid+" finished");
-            mWatcherTasks.remove(uuid);
         }
     }
 
@@ -2013,6 +2005,8 @@ public class CoreAPI {
             while(i.hasNext()) {
                 String uuid = (String)i.next();
                 core.ABC_WatcherStop(uuid , Error);
+                mWatcherTasks.get(uuid).cancel(true);
+                mWatcherTasks.remove(uuid);
             }
             return null;
         }
@@ -2020,6 +2014,7 @@ public class CoreAPI {
         @Override
         protected void onPostExecute(Void v) {
             Common.LogD(TAG, "StopWatchersTask finished");
+            mWatcherTasks.clear();
             mStopWatchersTask = null;
         }
     }

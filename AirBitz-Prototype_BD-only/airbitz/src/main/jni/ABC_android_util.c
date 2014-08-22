@@ -28,7 +28,9 @@ void bitcoinCallback(const tABC_AsyncBitCoinInfo *pInfo) {
 //        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "GetEnv: version not supported");
 	}
 
-    (*g_env)->CallVoidMethod(g_env, g_obj, g_mid_callback, (void *) pInfo); //walletUUID, txId);
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "bitcoinCallback calling Java");
+    (*g_env)->CallVoidMethod(g_env, g_obj, g_mid_callback, (void *) pInfo);
+//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "bitcoinCallback java Called");
 
 //
 //	if ((*g_env)->ExceptionCheck(g_env)) {
@@ -100,7 +102,10 @@ Java_com_airbitz_api_CoreAPI_coreWatcherLoop(JNIEnv *jenv, jclass jcls, jstring 
   bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
 
   errorp = *(tABC_Error **)&jerrorp;
+
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "coreWatcherLoop: starting a watcher");
   result = (tABC_CC)ABC_WatcherLoop((char const *)uuid, callback, bcInfo, errorp);
+//  __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "coreWatcherLoop: loop returned! Not good");
   jresult = (jint)result;
   if (uuid) (*jenv)->ReleaseStringUTFChars(jenv, juuid, (const char *)uuid);
   return jresult;
