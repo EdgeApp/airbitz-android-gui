@@ -368,9 +368,10 @@ public class NavigationActivity extends BaseActivity
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
+            mCoreAPI.startAllAsyncUpdates();
+            mCoreAPI.startWatchers();
         }
         switchFragmentThread(mNavThreadId);
-        mCoreAPI.startAllAsyncUpdates();
     }
 
     @Override public void onPause() {
@@ -469,7 +470,6 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void onBlockHeightChange() {
         Common.LogD("NavigationActivity", "Block Height received");
-
     }
 
     @Override
@@ -571,6 +571,7 @@ public class NavigationActivity extends BaseActivity
         }
 
         mCoreAPI.startAllAsyncUpdates();
+        mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 
