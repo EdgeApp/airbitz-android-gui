@@ -29,7 +29,6 @@ public class SuccessFragment extends Fragment {
     private TextView mTitleTextView;
 
     private ImageButton mBackButton;
-    private ImageButton mHelpButton;
 
     private ImageView mLogoImageView;
 
@@ -49,6 +48,7 @@ public class SuccessFragment extends Fragment {
             Common.LogD(TAG, "Bundle is null");
         }
         mActivity = (NavigationActivity) getActivity();
+        mActivity.hideNavBar();
     }
 
 
@@ -66,7 +66,6 @@ public class SuccessFragment extends Fragment {
         mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
 
         mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -74,13 +73,6 @@ public class SuccessFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 
