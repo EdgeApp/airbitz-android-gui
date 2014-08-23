@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/transaction_list_view_height"
+    android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:gravity="center_vertical">
 
@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/item_listview_transaction_creditdebit_layout"
-        android:paddingTop="6.3dp"
-        android:paddingBottom="6.3dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="14dp"
         android:orientation="vertical"
@@ -106,6 +106,4 @@
                 android:src="@drawable/arrow_right" />
 
     </LinearLayout>
-
-
 </RelativeLayout>
