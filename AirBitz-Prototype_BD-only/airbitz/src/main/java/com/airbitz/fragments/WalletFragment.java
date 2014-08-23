@@ -520,7 +520,6 @@ public class WalletFragment extends Fragment
         for(Transaction transaction : mAllTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
-//        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mButtonBitcoinBalance.setText(mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));

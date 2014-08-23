@@ -136,15 +136,16 @@ public class ListViewUtility {
 
     public static void setTransactionListViewHeightBasedOnChildren(ListView listView, int size) {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null || size<1) {
+        if (listAdapter == null || listAdapter.getCount()<1) {
             return;
         }
-
-        int height = (int) listView.getContext().getResources().getDimension(R.dimen.transaction_list_view_height);
-        int totalHeight = height * size + listView.getPaddingTop() + listView.getPaddingBottom();
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
+        View listItem = listAdapter.getView(0, null, listView);
+        listItem.measure(0, 0);
+        totalHeight += (listItem.getMeasuredHeight() + listView.getDividerHeight()) * listAdapter.getCount();
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * size);
+        params.height = totalHeight;
         listView.setLayoutParams(params);
     }
 }
