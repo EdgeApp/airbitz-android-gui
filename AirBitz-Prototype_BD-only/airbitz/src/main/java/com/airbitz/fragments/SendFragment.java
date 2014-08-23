@@ -15,12 +15,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -62,7 +60,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
-    public static final String FROM_WALLET_NAME = "com.airbitz.Sendfragment_FROM_WALLET_NAME";
+    public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
 
     private Handler mHandler;
     private EditText mToEdittext;
@@ -88,7 +86,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private View dummyFocus;
 
     private HighlightOnPressSpinner walletSpinner;
-    private List<String> mWalletList;//NAMES
+    private List<Wallet> mWalletOtherList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private String mSpinnerWalletName;
@@ -111,6 +109,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             mCoreAPI = CoreAPI.getApi();
 
         mActivity = (NavigationActivity) getActivity();
+        mWallets = mCoreAPI.getCoreWallets();
     }
 
     @Override
@@ -118,8 +117,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         View mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        addWalletNamesToList();
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_send_help_button);
 
@@ -155,8 +152,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSpinnerWalletName = mWalletList.get(i);
-                goAutoCompleteListing();
+                mSpinnerWalletName = mWalletOtherList.get(i).getName();
+                goAutoCompleteWalletListing();
             }
 
             @Override
@@ -226,7 +223,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                goAutoCompleteListing();
+                goAutoCompleteWalletListing();
             }
         });
 
@@ -234,7 +231,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    goAutoCompleteListing();
+                    goAutoCompleteWalletListing();
                 }else{
                     mListviewContainer.setVisibility(View.GONE);
                 }
@@ -278,6 +275,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
+
+        mFromWallet = mWallets.get(0);
         Bundle bundle = getArguments();
         if(bundle!=null) {
             String uuid = bundle.getString(UUID); // From a wallet with this UUID
@@ -306,11 +305,10 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                         GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
                     }
                 }
-            } else {
-
             }
         }
 
+        updateWalletOtherList();
 
         return mView;
     }
@@ -456,7 +454,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
-        bundle.putString(FROM_WALLET_NAME, ((Wallet) walletSpinner.getSelectedItem()).getName());
+        bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
         if(mActivity!=null)
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
@@ -489,37 +487,35 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         public void run() { startCamera(BACK_CAMERA_INDEX); }
     };
 
-    public void addWalletNamesToList(){
-        List<Wallet> temp = mCoreAPI.getCoreWallets();
-        mWallets = new ArrayList<Wallet>();
-        mWalletList = new ArrayList<String>();
-        for(Wallet wallet: temp){
-            if(!wallet.isArchived()){
-                mWallets.add(wallet);
-                mWalletList.add(wallet.getName());
+    public void updateWalletOtherList(){
+        mWallets = mCoreAPI.getCoreWallets(); // always refresh
+        mWalletOtherList = new ArrayList<Wallet>();
+        for(Wallet wallet: mWallets){
+            if(!wallet.isArchived() && !wallet.getUUID().equals(mFromWallet.getUUID())){
+                mWalletOtherList.add(wallet);
             }
         }
     }
 
-    public void goAutoCompleteListing(){
+    public void goAutoCompleteWalletListing(){
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
-        if(text.isEmpty()){
-            for(Wallet w : mWallets){
-                if(!w.getName().equals(mSpinnerWalletName) && !w.isArchived()){
+        if(text.isEmpty()) {
+            for(Wallet w : mWalletOtherList) {
+                if(!w.isArchived()){
                     mCurrentListing.add(w);
                 }
             }
-        }else {
-            for (Wallet w : mWallets) {
-                if (!w.getName().equals(mSpinnerWalletName) && !w.isArchived() && w.getName().toLowerCase().contains(text.toLowerCase())) {
+        } else {
+            for (Wallet w : mWalletOtherList) {
+                if (!w.isArchived() && w.getName().toLowerCase().contains(text.toLowerCase())) {
                     mCurrentListing.add(w);
                 }
             }
         }
-        if(mCurrentListing.isEmpty() || !mToEdittext.hasFocus()){
+        if(mCurrentListing.isEmpty() || !mToEdittext.hasFocus()) {
             mListviewContainer.setVisibility(View.GONE);
-        }else{
+        } else {
             mListviewContainer.setVisibility(View.VISIBLE);
         }
         listingAdapter.notifyDataSetChanged();

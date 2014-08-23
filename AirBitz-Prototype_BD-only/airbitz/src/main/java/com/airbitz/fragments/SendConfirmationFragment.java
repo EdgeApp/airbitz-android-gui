@@ -22,12 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -115,7 +113,7 @@ public class SendConfirmationFragment extends Fragment {
             mLabel = bundle.getString(SendFragment.LABEL);
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            mSourceWallet = mCoreAPI.getWalletFromName(bundle.getString(SendFragment.FROM_WALLET_NAME));
+            mSourceWallet = mCoreAPI.getWallet(bundle.getString(SendFragment.FROM_WALLET_UUID));
         }
     }
 
@@ -123,8 +121,6 @@ public class SendConfirmationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
-
-//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
