@@ -152,7 +152,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSpinnerWalletName = mWalletOtherList.get(i).getName();
+                mFromWallet = mWallets.get(i);
+                mSpinnerWalletName = mFromWallet.getName();
+                updateWalletOtherList();
                 goAutoCompleteWalletListing();
             }
 
