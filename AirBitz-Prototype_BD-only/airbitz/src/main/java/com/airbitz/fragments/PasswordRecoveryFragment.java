@@ -46,6 +46,7 @@ public class PasswordRecoveryFragment extends Fragment {
     public static int SIGN_UP=0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
+    private int mType;
 
     private enum QuestionType { STRING, NUMERIC }
     public final String UNSELECTED_QUESTION = "Question";
@@ -67,8 +68,6 @@ public class PasswordRecoveryFragment extends Fragment {
     private SaveQuestionsTask mSaveQuestionsTask;
 
     private CoreAPI mCoreAPI;
-    private boolean mChangeQuestions;
-    private boolean mForgotPassword;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -97,14 +96,14 @@ public class PasswordRecoveryFragment extends Fragment {
         mBackButton = (ImageButton) mView.findViewById(R.id.activity_password_recovery_back_button);
 
         if(getArguments() != null) {
-            int type = getArguments().getInt(MODE);
-            if(type == CHANGE_QUESTIONS) {
+            mType = getArguments().getInt(MODE);
+            if(mType == CHANGE_QUESTIONS) {
                 mSkipStepButton.setVisibility(View.INVISIBLE);
                 mPasswordEditText.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
                 mPasswordEditText.requestFocus();
-            } else if(mForgotPassword) {
+            } else if(mType == FORGOT_PASSWORD) {
                 //TODO set
             }
         }
@@ -148,7 +147,7 @@ public class PasswordRecoveryFragment extends Fragment {
         String questions = "";
         String answers = "";
 
-        if(mChangeQuestions && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+        if(mType==CHANGE_QUESTIONS && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
