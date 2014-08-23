@@ -69,6 +69,7 @@ public class SendConfirmationFragment extends Fragment {
     private EditText mBitcoinField;
 
     private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mHelpButton;
     private ImageButton mConfirmSwipeButton;
 
     private float mConfirmCenter;
@@ -129,6 +130,7 @@ public class SendConfirmationFragment extends Fragment {
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_back_button);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_help_button);
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mCalculator = ((NavigationActivity)getActivity()).getCalculatorView();
@@ -373,6 +375,13 @@ public class SendConfirmationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
+            }
+        });
+
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.SEND_CONFIRMATION), NavigationActivity.Tabs.SEND.ordinal());
             }
         });
 

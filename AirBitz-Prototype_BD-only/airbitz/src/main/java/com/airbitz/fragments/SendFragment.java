@@ -274,7 +274,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             }
         });
 
-
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
 
