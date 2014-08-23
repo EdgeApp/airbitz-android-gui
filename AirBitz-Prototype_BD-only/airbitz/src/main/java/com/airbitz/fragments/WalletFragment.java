@@ -372,6 +372,7 @@ public class WalletFragment extends Fragment
             public void onClick(View view) {
                 if(searchPage){
                     SetSearchVisibility(false);
+                    mTransactionAdapter.setSearch(false);
                     UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
                 }else{
                     getActivity().onBackPressed();

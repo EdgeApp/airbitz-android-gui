@@ -83,7 +83,7 @@
                 android:shadowColor="#00000000" />
 
             <TextView
-                android:id="@+id/textview_amount_debit"
+                android:id="@+id/textview_amount_running_total"
                 style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:text="B 25.000"
-                android:textColor="#6c6b6c"
+                android:textColor="@color/gray_text"
                 android:textSize="12sp" />
 
         </LinearLayout>
