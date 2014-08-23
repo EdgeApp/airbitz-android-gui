@@ -53,7 +53,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
 
     private List<Wallet> mWallets;
-    private List<String> mWalletNames;
     private Wallet mSelectedWallet;
 
     private HighlightOnPressSpinner pickWalletSpinner;
@@ -65,8 +64,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private TextView mConverterTextView;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
-
-    private ScrollView mScrollView;
 
     private Calculator mCalculator;
 
@@ -85,7 +82,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 mWallets.add(wallet);
             }
         }
-        mWalletNames = new ArrayList<String>();
         String uuid = null;
         Bundle bundle = getArguments();
         if(bundle!=null && bundle.getString(FROM_UUID)!=null) {
@@ -94,7 +90,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         if(uuid!=null && mWallets!=null) {
             for(int i=0; i<mWallets.size(); i++) {
                 if(!mWallets.get(i).isArchived()) {
-                    mWalletNames.add(mWallets.get(i).getName());
                     if (mWallets.get(i).getUUID().equals(uuid)) {
                         mFromIndex = i;
                         mSelectedWallet = mWallets.get(i);
@@ -110,10 +105,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_request, container, false);
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        mScrollView = (ScrollView) mView.findViewById(R.id.layout_amount);
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
