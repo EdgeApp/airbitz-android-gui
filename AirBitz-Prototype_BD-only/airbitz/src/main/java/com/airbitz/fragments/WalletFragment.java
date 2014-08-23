@@ -521,7 +521,7 @@ public class WalletFragment extends Fragment
     // Sum all transactions and show in total
     private void UpdateWalletTotalBalance() {
         long totalSatoshis = 0;
-        for(Transaction transaction : mTransactions) {
+        for(Transaction transaction : mAllTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
         }
 //        mBottomCoin.setImageResource(WalletsFragment.mCurrencyCoinDarkDrawables[mCurrencyIndex]);
