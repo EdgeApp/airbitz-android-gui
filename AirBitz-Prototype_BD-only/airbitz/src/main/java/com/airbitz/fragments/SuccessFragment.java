@@ -124,7 +124,7 @@ public class SuccessFragment extends Fragment {
                 FragmentSourceEnum e = FragmentSourceEnum.REQUEST;
                 mActivity.switchToWallets(e, mBundle);
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
-                ((NavigationActivity)getActivity()).showNavBar();
+                mActivity.showNavBar();
             }
         }
     };
