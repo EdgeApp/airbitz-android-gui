@@ -131,6 +131,7 @@ public class WalletFragment extends Fragment
         View mView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mOnBitcoinMode = true;
+        searchPage=false;
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
@@ -163,7 +164,6 @@ public class WalletFragment extends Fragment
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
-//        mBottomCoin = (ImageView) mView.findViewById(R.id.bottom_coin);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
