@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by tom on 6/20/14.
@@ -1521,7 +1519,7 @@ public class CoreAPI {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Common.LogD(TAG, "Exchange Rate Update initiated.");
-            mUpdateExchangeRateTask.execute();
+            mUpdateExchangeRateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -1625,7 +1623,7 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn()) {
             if(mSyncDataTask==null) {
                 mSyncDataTask = new SyncDataTask();
-                mSyncDataTask.execute();
+                mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 Common.LogD(TAG, "File sync initiated.");
             }
         }
@@ -1958,35 +1956,16 @@ public class CoreAPI {
 //            if(!mWatcherTasks.containsKey(w.getUUID())) {
 //                StartWatcherTask watcherTask = new StartWatcherTask();
 //                mWatcherTasks.put(w.getUUID(), watcherTask);
-//                watcherTask.execute(w.getUUID());
+//                watcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, w.getUUID());
 //                Common.LogD(TAG, "Started watcher for "+w.getUUID());
 //            }
 //        }
     }
 
-//    // This async task never returns from the background. It must be cancelled
-//    public class StartWatcherTask extends AsyncTask<String, Void, Void> {
-//        public String uuid;
-//        StartWatcherTask() { }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            Common.LogD(TAG, "StartWatcherTask starting");
-//        }
-//
-//        @Override
-//        protected Void doInBackground(String... params) {
-//            uuid = params[0];
-//            tABC_Error error = new tABC_Error();
-//
-//            Common.LogD(TAG, "Going to call WatcherStart");
-//            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-//            Common.LogD(TAG, "Going to call WatchAddresses");
-//            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-//            int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
-//            return null;
-//        }
-//    }
+    // This async task never returns from the background. It must be cancelled
+    public class StartWatcherTask extends AsyncTask<String, Void, Void> {
+        public String uuid;
+        StartWatcherTask() { }
 
         @Override
         protected void onPreExecute() {
@@ -2010,7 +1989,7 @@ public class CoreAPI {
     public void stopWatchers()
     {
         mStopWatchersTask = new StopWatchersTask();
-        mStopWatchersTask.execute();
+        mStopWatchersTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private StopWatchersTask mStopWatchersTask;
@@ -2026,7 +2005,7 @@ public class CoreAPI {
             while(i.hasNext()) {
                 String uuid = (String)i.next();
                 core.ABC_WatcherStop(uuid , Error);
-                mWatcherTasks.get(uuid).interrupt();
+                mWatcherTasks.get(uuid).cancel(true);
                 mWatcherTasks.remove(uuid);
             }
             return null;
