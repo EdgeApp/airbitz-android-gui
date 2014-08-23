@@ -60,7 +60,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     static class ViewHolderItem {
         TextView dateTextView;
         TextView nameTextView;
-        TextView debitAmountTextView;
+        TextView runningTotalTextView;
         TextView creditAmountTextView;
         TextView confirmationsTextView;
     }
@@ -75,12 +75,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder = new ViewHolderItem();
             viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.textview_date);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.textview_name);
-            viewHolder.debitAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_debit);
+            viewHolder.runningTotalTextView = (TextView) convertView.findViewById(R.id.textview_amount_running_total);
             viewHolder.creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
             viewHolder.confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
             viewHolder.dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
             viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-            viewHolder.debitAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.runningTotalTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             // store the holder with the view.
             convertView.setTag(viewHolder);
@@ -110,15 +110,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshis, true, false);
             viewHolder.creditAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol()+" "+btcCurrency);
             String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
-            viewHolder.debitAmountTextView.setText(fiatCurrency);
+            viewHolder.runningTotalTextView.setText(fiatCurrency);
             if(transactionSatoshis >= 0){
-                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
+                viewHolder.runningTotalTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             }else{
-                viewHolder.debitAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
+                viewHolder.runningTotalTextView.setTextColor(mContext.getResources().getColor(R.color.red));
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
         }else {
+            viewHolder.runningTotalTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
             if(transactionSatoshis >= 0){
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             }else{
@@ -129,13 +130,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 String totalCurrency = mCoreAPI.FormatDefaultCurrency(mRunningSatoshi[position], true, false);
 
                 viewHolder.creditAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol() + " " + walletCurrency);
-                viewHolder.debitAmountTextView.setText(mCoreAPI.getDefaultBTCSymbol() + " " + totalCurrency);
+                viewHolder.runningTotalTextView.setText(mCoreAPI.getDefaultBTCSymbol() + " " + totalCurrency);
             } else {
                 String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
                 String totalCurrency = mCoreAPI.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
-                viewHolder.debitAmountTextView.setText(totalCurrency);
+                viewHolder.runningTotalTextView.setText(totalCurrency);
             }
         }
         if(mSearch){
