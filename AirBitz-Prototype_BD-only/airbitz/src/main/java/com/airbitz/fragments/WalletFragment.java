@@ -435,13 +435,13 @@ public class WalletFragment extends Fragment
             exportLayout.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    exportLayout.setVisibility(View.GONE);
+                    exportLayout.setVisibility(View.INVISIBLE);
                 }
             });
             sendRequestLayout.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    sendRequestLayout.setVisibility(View.INVISIBLE);
+                    sendRequestLayout.setVisibility(View.GONE);
                 }
             });
             mScrollView.animate().translationY(-getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height)).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
@@ -460,21 +460,18 @@ public class WalletFragment extends Fragment
                     mSearchLayout.setVisibility(View.GONE);
                 }
             });
-            switchContainer.setVisibility(View.VISIBLE);
             switchContainer.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     switchContainer.setVisibility(View.VISIBLE);
                 }
             });
-            exportLayout.setVisibility(View.VISIBLE);
             exportLayout.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     exportLayout.setVisibility(View.VISIBLE);
                 }
             });
-            sendRequestLayout.setVisibility(View.VISIBLE);
             sendRequestLayout.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -488,7 +485,6 @@ public class WalletFragment extends Fragment
                     mScrollView.setVisibility(View.VISIBLE);
                 }
             });
-            mScrollView.setVisibility(View.VISIBLE);
         }
         searchPage = visible;
         mTransactionAdapter.setSearch(visible);
