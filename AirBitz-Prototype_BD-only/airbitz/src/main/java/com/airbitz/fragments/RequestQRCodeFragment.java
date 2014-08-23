@@ -146,7 +146,7 @@ public class RequestQRCodeFragment extends Fragment {
         super.onResume();
         if(mQRBitmap==null) {
             mCreateBitmapTask = new CreateBitmapTask();
-            mCreateBitmapTask.execute();
+            mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 

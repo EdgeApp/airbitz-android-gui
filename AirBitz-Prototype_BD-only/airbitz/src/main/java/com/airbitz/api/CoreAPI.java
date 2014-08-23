@@ -1950,24 +1950,15 @@ public class CoreAPI {
         return result;
     }
 
-    ExecutorService mExecutorService = Executors.newFixedThreadPool(100);
-    private Map<String, Thread> mWatcherTasks = new HashMap<String, Thread>();
+    private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
     public void startWatchers()
     {
 //        List<Wallet> wallets = getCoreWallets();
 //        for (Wallet w : wallets) {
 //            if(!mWatcherTasks.containsKey(w.getUUID())) {
-//                final String uuid = w.getUUID();
-//                Thread thread = new Thread(new Runnable() {
-//                    public void run() {
-//                        tABC_Error error = new tABC_Error();
-//                        core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-//                        core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-//                        int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
-//                    }
-//                });
-//                mWatcherTasks.put(w.getUUID(), thread);
-//                mExecutorService.execute(thread);
+//                StartWatcherTask watcherTask = new StartWatcherTask();
+//                mWatcherTasks.put(w.getUUID(), watcherTask);
+//                watcherTask.execute(w.getUUID());
 //                Common.LogD(TAG, "Started watcher for "+w.getUUID());
 //            }
 //        }
@@ -1996,6 +1987,25 @@ public class CoreAPI {
 //            return null;
 //        }
 //    }
+
+        @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "StartWatcherTask starting");
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            uuid = params[0];
+            tABC_Error error = new tABC_Error();
+
+            Common.LogD(TAG, "Going to call WatcherStart");
+            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            Common.LogD(TAG, "Going to call WatchAddresses");
+            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
+            return null;
+        }
+    }
 
     public void stopWatchers()
     {
