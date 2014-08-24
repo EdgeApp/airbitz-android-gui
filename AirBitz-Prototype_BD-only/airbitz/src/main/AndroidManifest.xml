@@ -44,7 +44,7 @@
             android:value="@string/google_maps_api_key" />
 
         <activity
-            android:name=".activities.ForgotPasswordActivity"
+            android:name=".fragments.ForgotPasswordFragment"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>

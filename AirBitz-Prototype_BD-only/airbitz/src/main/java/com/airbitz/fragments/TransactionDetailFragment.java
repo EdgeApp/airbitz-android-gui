@@ -741,7 +741,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
             long total = mTransaction.getAmountSatoshi() + feesSatoshi;
-            s.append(mCoreAPI.getDefaultBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(total, true, false))
+            s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(total, true, false))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -771,7 +771,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.append("\n");
 
             start = s.length();
-            s.append(mCoreAPI.getDefaultBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
+            s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 

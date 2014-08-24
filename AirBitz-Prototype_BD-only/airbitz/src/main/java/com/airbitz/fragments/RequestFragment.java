@@ -293,7 +293,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
 
     private void setConversionText(int currencyNum) {
-        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum, true));
+        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
     }
 
     private void updateTextFieldContents(boolean btc)

@@ -171,7 +171,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        String balance = mCoreAPI.getDefaultBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
+        String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
             mToWallet = mCoreAPI.getWallet(mUUIDorURI);
@@ -400,7 +400,7 @@ public class SendConfirmationFragment extends Fragment {
         mConversionTextView.setTextColor(Color.WHITE);
         mBitcoinField.setTextColor(Color.WHITE);
         mFiatField.setTextColor(Color.WHITE);
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         mAutoUpdatingTextFields = false;
     }
 
@@ -519,9 +519,9 @@ public class SendConfirmationFragment extends Fragment {
             mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee, false);
+            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee);
             mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), true));
+            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
         else
         {
@@ -639,6 +639,7 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     @Override public void onResume() {
+        mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -649,11 +650,11 @@ public class SendConfirmationFragment extends Fragment {
         } else if(mPinEdittext.getText().toString().isEmpty()) {
             mPinEdittext.requestFocus();
         }
-        mBTCSignTextview.setText(mCoreAPI.getDefaultBTCSymbol());
+        mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
         mFiatSignTextView.setText(mCoreAPI.getUserCurrencyDenomination());
-        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum(), false));
+        mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         super.onResume();
     }
 
