@@ -297,13 +297,7 @@ public class WalletsFragment extends Fragment
 
         mLatestWalletListView = (DynamicListView) mView.findViewById(R.id.fragment_wallets_listview);
 
-        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        mLatestWalletListView.setWalletList(mLatestWalletList);
-        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchivedList(archivedWalletList);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
-        mLatestWalletListView.setOnListReorderedListener(this);
+        setupLatestWalletListView();
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
 
@@ -363,10 +357,18 @@ public class WalletsFragment extends Fragment
             }
         });
 
-
         UpdateBalances();
 
         return mView;
+    }
+
+    private void setupLatestWalletListView() {
+        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+        mLatestWalletListView.setWalletList(mLatestWalletList);
+        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletListView.setOnListReorderedListener(this);
     }
 
     @Override
@@ -460,10 +462,8 @@ public class WalletsFragment extends Fragment
     }
 
     private void refreshWalletList(List<Wallet> list) {
-        mLatestWalletList.clear();
-        mLatestWalletList.addAll(list);
-        mLatestWalletAdapter.swapWallets();
-        mLatestWalletAdapter.notifyDataSetChanged();
+        mLatestWalletList = list;
+        setupLatestWalletListView();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
 
@@ -586,8 +586,9 @@ public class WalletsFragment extends Fragment
             archiveHeader.performClick();
         }
         mLatestWalletListView.setHeaderVisibilityOnReturn();
-        mCoreAPI.addExchangeRateChangeListener(this);
+        refreshWalletList(mCoreAPI.loadWallets());
         UpdateBalances();
+        mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
     }
 

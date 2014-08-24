@@ -237,7 +237,7 @@ public class CoreAPI {
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1 && wallet.getName()!=null)
-                list.add(wallet);
+                list.add(getWallet(wallet.getUUID()));
         }
         Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
         archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
@@ -245,7 +245,7 @@ public class CoreAPI {
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
             if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1 && wallet.getName()!=null)
-                list.add(wallet);
+                list.add(getWallet(wallet.getUUID()));
         }
         return list;
     }
@@ -1720,7 +1720,6 @@ public class CoreAPI {
         public long getPtr(SWIGTYPE_p_p_sABC_WalletInfo p, long i) {
             return getCPtr(p) + i;
         }
-
     }
 
     private class WalletInfo extends tABC_WalletInfo {
@@ -1962,15 +1961,15 @@ public class CoreAPI {
     private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
     public void startWatchers()
     {
-//        List<Wallet> wallets = getCoreWallets();
-//        for (Wallet w : wallets) {
-//            if(!mWatcherTasks.containsKey(w.getUUID())) {
-//                StartWatcherTask watcherTask = new StartWatcherTask();
-//                mWatcherTasks.put(w.getUUID(), watcherTask);
-//                watcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, w.getUUID());
-//                Common.LogD(TAG, "Started watcher for "+w.getUUID());
-//            }
-//        }
+        List<Wallet> wallets = getCoreWallets();
+        for (Wallet w : wallets) {
+            if(!mWatcherTasks.containsKey(w.getUUID())) {
+                StartWatcherTask watcherTask = new StartWatcherTask();
+                mWatcherTasks.put(w.getUUID(), watcherTask);
+                watcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, w.getUUID());
+                Common.LogD(TAG, "Started watcher for "+w.getUUID());
+            }
+        }
     }
 
     // This async task never returns from the background. It must be cancelled

@@ -723,7 +723,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_NETWORK_1FAKE_1get(JNIEnv *
   
   (void)jenv;
   (void)jcls;
-  result = (int)(1);
+  result = (int)(0);
   jresult = (jint)result; 
   return jresult;
 }
