@@ -77,7 +77,6 @@ public class DynamicListView extends ListView {
     private Context mContext;
 
     public List<Wallet> mWalletList;
-    public List<Wallet> archivedWallets;
 
     private int mLastEventY = -1;
 
@@ -362,10 +361,6 @@ public class DynamicListView extends ListView {
         }
 
         return found;
-    }
-
-    public void setArchivedList(List<Wallet> wallets){
-        archivedWallets = wallets;
     }
 
     /**
