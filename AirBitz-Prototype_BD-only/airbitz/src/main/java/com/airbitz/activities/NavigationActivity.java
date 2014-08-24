@@ -497,6 +497,7 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void OnDataSync() {
         Common.LogD("NavigationActivity", "Data Sync received");
+        updateWalletListener();
         mCoreAPI.startWatchers();
     }
 
