@@ -45,6 +45,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
+import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,7 @@ public class NavigationActivity extends BaseActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
+        CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
 
     public static final String URI = "com.airbitz.navigation.uri";
@@ -106,11 +108,14 @@ public class NavigationActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        String seed = CoreAPI.getSeedData();
-        mCoreAPI.Initialize(this.getFilesDir().toString(), seed, seed.length());
+        String seed = mCoreAPI.getSeedData();
+
+        mCoreAPI.Initialize(this, seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnOnDataSyncListener(this);
+        mCoreAPI.setOnDataSyncListener(this);
+        mCoreAPI.setOnBlockHeightChangeListener(this);
+        mCoreAPI.setOnOnRemotePasswordChangeListener(this);
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
@@ -125,7 +130,7 @@ public class NavigationActivity extends BaseActivity
             mNavStacks[i].push(mNavFragments[i]);
         }
 
-        //for keyboard hide and show
+        // for keyboard hide and show
         final View activityRootView = findViewById(R.id.activity_navigation_root);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -397,7 +402,9 @@ public class NavigationActivity extends BaseActivity
             mNavThreadId = Tabs.BD.ordinal();
             askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
+            DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
+            mCoreAPI.startWatchers();
         }
         switchFragmentThread(mNavThreadId);
     }
@@ -495,7 +502,13 @@ public class NavigationActivity extends BaseActivity
     }
 
     @Override
+    public void onBlockHeightChange() {
+        Common.LogD("NavigationActivity", "Block Height received");
+    }
+
+    @Override
     public void OnRemotePasswordChange() {
+        Common.LogD("NavigationActivity", "Remote Password received");
         showRemotePasswordChangeDialog();
     }
 
@@ -592,6 +605,8 @@ public class NavigationActivity extends BaseActivity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
 
+        mCoreAPI.startAllAsyncUpdates();
+        mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 

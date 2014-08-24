@@ -32,7 +32,7 @@
  *  either expressed or implied, of the Airbitz Project.
  *
  *  @author See AUTHORS
- * @version 1.0
+ *  @version 1.0
  */
 
 #ifndef ABC_h
@@ -58,11 +58,19 @@
 #define ABC_DENOMINATION_MBTC 1
 #define ABC_DENOMINATION_UBTC 2
 
-#define NETWORK_FAKE 0
+#define NETWORK_FAKE 1
+
+#define ABC_VERSION "1.1.2"
+
+#define ABC_MIN_USERNAME_LENGTH 3
+#define ABC_MIN_PASS_LENGTH 10
+#define ABC_MIN_PIN_LENGTH 4
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    extern bool gbIsTestNet;
 
     /**
      * AirBitz Core Condition Codes
@@ -141,7 +149,11 @@ extern "C" {
         /** Not enough money to send transaction */
         ABC_CC_InsufficientFunds = 32,
         /** We are still sync-ing */
-        ABC_CC_Synchronizing = 33
+        ABC_CC_Synchronizing = 33,
+        /** Problem with the PIN */
+        ABC_CC_NonNumericPin = 34,
+        /** Unable to find an address */
+        ABC_CC_NoAvailableAddress = 35
     } tABC_CC;
 
     /**
@@ -162,8 +174,6 @@ extern "C" {
         ABC_RequestType_SetAccountRecoveryQuestions = 2,
         /** Create wallet request */
         ABC_RequestType_CreateWallet = 3,
-        /** Get Recovery Question Choices request */
-        ABC_RequestType_GetQuestionChoices = 4,
         /** Change password request */
         ABC_RequestType_ChangePassword = 5,
         /** Send bitcoin request */
@@ -204,7 +214,8 @@ extern "C" {
         ABC_AsyncEventType_BlockHeightChange,
         ABC_AsyncEventType_ExchangeRateUpdate,
         ABC_AsyncEventType_DataSyncUpdate,
-        ABC_AsyncEventType_RemotePasswordChange
+        ABC_AsyncEventType_RemotePasswordChange,
+        ABC_AsyncEventType_SentFunds,
     } tABC_AsyncEventType;
 
     /**
@@ -221,6 +232,9 @@ extern "C" {
 
         /** type of event that occured */
         tABC_AsyncEventType eventType;
+
+        /* Return status of call */
+        tABC_Error status;
 
         /** if the event involved a wallet, this is its ID */
         char *szWalletUUID;
@@ -290,8 +304,8 @@ extern "C" {
         char            *szUserName;
         /** wallet ISO 4217 currency code */
         int             currencyNum;
-        /** wallet attributes */
-        unsigned int    attributes;
+        /** true if the wallet is archived */
+        unsigned        archived;
         /** wallet balance */
         int64_t         balanceSatoshi;
     } tABC_WalletInfo;
@@ -548,6 +562,8 @@ extern "C" {
         char                        *szLastName;
         /** nickname (optional) */
         char                        *szNickname;
+        /** PIN */
+        char                        *szPIN;
         /** should name be listed on payments */
         bool                        bNameOnPayments;
         /** how many minutes before auto logout */
@@ -562,6 +578,8 @@ extern "C" {
         tABC_BitcoinDenomination    bitcoinDenomination;
         /** use advanced features (e.g., allow offline wallet creation) */
         bool                        bAdvancedFeatures;
+        /** fullname (readonly. Set by core based on first, last, nick names) */
+        char                        *szFullName;
     } tABC_AccountSettings;
 
     /**
@@ -584,8 +602,7 @@ extern "C" {
 
 
     tABC_CC ABC_Initialize(const char                   *szRootDir,
-                           tABC_BitCoin_Event_Callback  fAsyncBitCoinEventCallback,
-                           void                         *pData,
+                           const char                   *szCaCertPath,
                            const unsigned char          *pSeedData,
                            unsigned int                 seedLength,
                            tABC_Error                   *pError);
@@ -639,15 +656,18 @@ extern "C" {
                        tABC_Error *pError);
 
     tABC_CC ABC_GetCategories(const char *szUserName,
+                              const char *szPassword,
                               char ***paszCategories,
                               unsigned int *pCount,
                               tABC_Error *pError);
 
     tABC_CC ABC_AddCategory(const char *szUserName,
+                            const char *szPassword,
                             char *szCategory,
                             tABC_Error *pError);
 
     tABC_CC ABC_RemoveCategory(const char *szUserName,
+                               const char *szPassword,
                                char *szCategory,
                                tABC_Error *pError);
 
@@ -657,11 +677,11 @@ extern "C" {
                              const char *szNewWalletName,
                              tABC_Error *pError);
 
-    tABC_CC ABC_SetWalletAttributes(const char *szUserName,
-                                    const char *szPassword,
-                                    const char *szUUID,
-                                    unsigned int attributes,
-                                    tABC_Error *pError);
+    tABC_CC ABC_SetWalletArchived(const char *szUserName,
+                                  const char *szPassword,
+                                  const char *szUUID,
+                                  unsigned int archived,
+                                  tABC_Error *pError);
 
     tABC_CC ABC_CheckRecoveryAnswers(const char *szUserName,
                                      const char *szRecoveryAnswers,
@@ -683,6 +703,7 @@ extern "C" {
                                  tABC_Error *pError);
 
     tABC_CC ABC_GetWalletUUIDs(const char *szUserName,
+                               const char *szPassword,
                                char ***paWalletUUID,
                                unsigned int *pCount,
                                tABC_Error *pError);
@@ -702,9 +723,7 @@ extern "C" {
                                unsigned int countUUIDs,
                                tABC_Error *pError);
 
-    tABC_CC ABC_GetQuestionChoices(const char *szUserName,
-                                   tABC_Request_Callback fRequestCallback,
-                                   void *pData,
+    tABC_CC ABC_GetQuestionChoices(tABC_QuestionChoices **pOut,
                                    tABC_Error *pError);
 
     void ABC_FreeQuestionChoices(tABC_QuestionChoices *pQuestionChoices);
@@ -916,7 +935,11 @@ extern "C" {
 
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
-    tABC_CC ABC_DataSyncAll(const char *szUserName, const char *szPassword, tABC_Error *pError);
+    tABC_CC ABC_DataSyncAll(const char *szUserName,
+                            const char *szPassword,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
 
     tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
 
@@ -925,16 +948,17 @@ extern "C" {
                                 const char *szWalletUUID,
                                 tABC_Error *pError);
 
+    tABC_CC ABC_WatcherLoop(const char *szWalletUUID,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
+
     tABC_CC ABC_WatchAddresses(const char *szUsername, const char *szPassword,
                                const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_WatcherStop(const char *szWalletUUID, tABC_Error *pError);
 
-    tABC_CC ABC_WatcherRestart(const char *szUserName,
-                               const char *szPassword,
-                               const char *szWalletUUID,
-                               bool clearCache,
-                               tABC_Error *pError);
+    tABC_CC ABC_WatcherDelete(const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_TxHeight(const char *szWalletUUID, const char *szTxId, unsigned int *height, tABC_Error *pError);
 
@@ -947,9 +971,24 @@ extern "C" {
 
     tABC_CC ABC_IsTestNet(bool *pResult, tABC_Error *pError);
 
+    tABC_CC ABC_Version(char **szVersion, tABC_Error *pError);
+
     // temp functions
 //    void tempEventA();
 //    void tempEventB();
+
+    tABC_CC ABC_FilterExportData(const char *szWalletId,
+                                 const int iStartDate,
+                                 const int iEndDate,
+                                 tABC_TxInfo ***pTransactions,
+                                 int *iNumOfTransactions,
+                                 tABC_Error *pError);
+
+
+    tABC_CC ABC_ExportFormatCsv(tABC_TxInfo **pTransactions,
+                                int iTransactionCount,
+                                char **szCsvData,
+                                tABC_Error *pError);
 
 #ifdef __cplusplus
 }
