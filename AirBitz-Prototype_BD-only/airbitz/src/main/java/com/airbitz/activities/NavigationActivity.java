@@ -45,7 +45,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
-import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
