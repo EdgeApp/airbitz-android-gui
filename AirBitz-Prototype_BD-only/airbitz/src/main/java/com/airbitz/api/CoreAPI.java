@@ -149,7 +149,7 @@ public class CoreAPI {
                 Common.LogD(TAG, "block exchange event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
             if(mOnDataSync!=null)
-                mPeriodicTaskHandler.post(DataSyncUpdater);
+                mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
             else
                 Common.LogD(TAG, "data sync event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
@@ -223,7 +223,6 @@ public class CoreAPI {
     };
 
     //***************** Wallet handling
-    private static final int WALLET_ATTRIBUTE_ARCHIVE_BIT = 0x0; // BIT0 is the archive bit
 
     public List<Wallet> loadWallets() {
         List<Wallet> list = new ArrayList<Wallet>();
@@ -236,16 +235,16 @@ public class CoreAPI {
         list.add(headerWallet);//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) != 1 && wallet.getName()!=null)
-                list.add(getWallet(wallet.getUUID()));
+            if (!wallet.isArchived() && wallet.getName()!=null)
+                list.add(wallet);
         }
         Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
         archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
         list.add(archiveWallet); //Archive HEADER
         // Loop through and find archived wallets now
         for (Wallet wallet : coreList) {
-            if ((wallet.getAttributes() & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT)) == 1 && wallet.getName()!=null)
-                list.add(getWallet(wallet.getUUID()));
+            if (wallet.isArchived() && wallet.getName()!=null)
+                list.add(wallet);
         }
         return list;
     }
@@ -637,7 +636,7 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_GetQuestionChoices(ppQuestionChoices, pError);
         if (result == tABC_CC.ABC_CC_Ok) {
-            QuestionChoices qcs = new QuestionChoices(ppQuestionChoices.getCPtr(ppQuestionChoices));
+            QuestionChoices qcs = new QuestionChoices(SWIGTYPE_p_p_sABC_QuestionChoices.getCPtr(ppQuestionChoices));
             long num = qcs.getNumChoices();
             mChoices = qcs.getChoices();
         }
@@ -840,7 +839,7 @@ public class CoreAPI {
             if (pv != 0) {
                 mID = super.getSzID();
                 mCountOutputs = super.getCountOutputs();
-                SWIGTYPE_p_int64_t temp = super.getTimeCreation();
+                SWIGTYPE_p_int64_t temp = super.getTimeCreation(); //FIXME
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mCreationTime = core.longp_value(p);
 
@@ -1324,7 +1323,7 @@ public class CoreAPI {
     public long CurrencyToSatoshi(double currency, int currencyNum) {
         tABC_Error error = new tABC_Error();
         tABC_CC result;
-        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
+        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp(); //FIXME
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
 
         result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -1735,7 +1734,7 @@ public class CoreAPI {
             if (pv != 0) {
                 mName = super.getSzName();
                 mUUID = super.getSzUUID();
-                SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi();
+                SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi(); // FIXME - use custom 64 bit retrieve
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 mBalance = core.longp_value(p);
                 mCurrencyNum = super.getCurrencyNum();
@@ -2035,7 +2034,7 @@ public class CoreAPI {
     {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
-        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false);
+        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false); // FIXME
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
         core.ABC_MaxSpendable(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID,
             destAddress, bTransfer, result, Error);
@@ -2072,7 +2071,7 @@ public class CoreAPI {
         if (uri.getPtr(uri) != 0)
         {
             String uriAddress = uri.getSzAddress();
-            SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi();
+            SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi(); //FIXME
             SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
             long amountSatoshi = core.longp_value(p);
 
@@ -2107,7 +2106,7 @@ public class CoreAPI {
             if (pv != 0) {
                 address = super.getSzAddress();
                 label = super.getSzLabel();
-                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi();
+                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi(); // FIXME
                 SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
                 amountSatoshi = core.longp_value(p);
                 message = super.getSzMessage();
