@@ -1,11 +1,11 @@
-package com.airbitz.activities;
+package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,24 +16,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_QuestionChoices;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.utils.Common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created on 2/10/14.
  */
-public class ForgotPasswordActivity extends BaseActivity {
+public class ForgotPasswordFragment extends Fragment {
 
     private Button mSubmitButton;
 
@@ -52,24 +49,29 @@ public class ForgotPasswordActivity extends BaseActivity {
     private CoreAPI mCoreAPI;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        if(intent !=null) {
-            mUsername = intent.getStringExtra(SignUpFragment.KEY_USERNAME);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_forgot_password, container, false);
+
+        Bundle bundle = getArguments();
+        if(bundle !=null) {
+            mUsername = bundle.getString(SignUpFragment.KEY_USERNAME);
         }
 
         if(mCoreAPI==null)
             mCoreAPI = CoreAPI.getApi();
 
-        setContentView(R.layout.activity_forgot_password);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        mSubmitButton = (Button)findViewById(R.id.submitButton);
-        mBackButton = (ImageButton) findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) findViewById(R.id.fragment_category_button_help);
+        mSubmitButton = (Button)view.findViewById(R.id.submitButton);
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
 
-        mTitleTextView = (TextView) findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mSubmitButton.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -78,8 +80,8 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if(answersCorrect(mRecoveryQA)) {
-                   startActivity(new Intent(ForgotPasswordActivity.this, NavigationActivity.class));
-                   finish();
+//                   startActivity(new Intent(ForgotPasswordFragment.this, NavigationActivity.class));
+//                   finish();
                 }
             }
         });
@@ -87,7 +89,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                getActivity().onBackPressed();
             }
         });
 
@@ -98,11 +100,12 @@ public class ForgotPasswordActivity extends BaseActivity {
             }
         });
 
-        mItemsLayout = (LinearLayout) findViewById(R.id.forgot_questions_layout);
+        mItemsLayout = (LinearLayout) view.findViewById(R.id.forgot_questions_layout);
 
         mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
         mFetchQuestionsTask.execute((Void) null);
 
+        return view;
     }
 
     private boolean answersCorrect(Map<String, String> map) {
@@ -124,14 +127,8 @@ public class ForgotPasswordActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        super.onResume();
-    }
-
     private View getQueryView(String question) {
-        LayoutInflater inflater = getLayoutInflater();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.item_password_forgot, null);
         TextView questionTextView = (TextView)view.findViewById(R.id.item_password_forgot_question);
         questionTextView.setText(question);
@@ -158,21 +155,22 @@ public class ForgotPasswordActivity extends BaseActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
-            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
-
-            if(success) {
-                QuestionChoices qc = new QuestionChoices(pData.getPRetData());
-                long num = qc.getNumChoices();
-
-                if(num>0) {
-                    //TODO setup the map of questions and answers.
-
-                } else {
-                    success = false;
-                }
-            }
-            return success;
+//            tABC_CC result = core.ABC_GetQuestionChoices(mUsername, null, pVoid, pError);
+//            boolean success = result == tABC_CC.ABC_CC_Ok? true: false;
+//
+//            if(success) {
+//                QuestionChoices qc = new QuestionChoices(pData.getPRetData());
+//                long num = qc.getNumChoices();
+//
+//                if(num>0) {
+//                    //TODO setup the map of questions and answers.
+//
+//                } else {
+//                    success = false;
+//                }
+//            }
+//            return success;
+            return false;
         }
 
         @Override
@@ -216,14 +214,14 @@ public class ForgotPasswordActivity extends BaseActivity {
     }
 
     private void showNoQuestionsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.activity_forgot_no_questions))
                 .setCancelable(false)
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-                                ForgotPasswordActivity.this.finish();
+                                getActivity().onBackPressed();
                             }
                         });
         AlertDialog alert = builder.create();
