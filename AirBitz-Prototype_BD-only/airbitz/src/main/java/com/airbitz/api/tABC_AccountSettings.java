@@ -59,6 +59,14 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_szNickname_get(swigCPtr, this);
   }
 
+  public void setSzPIN(String value) {
+    coreJNI.tABC_AccountSettings_szPIN_set(swigCPtr, this, value);
+  }
+
+  public String getSzPIN() {
+    return coreJNI.tABC_AccountSettings_szPIN_get(swigCPtr, this);
+  }
+
   public void setBNameOnPayments(boolean value) {
     coreJNI.tABC_AccountSettings_bNameOnPayments_set(swigCPtr, this, value);
   }
@@ -115,6 +123,14 @@ public class tABC_AccountSettings {
 
   public boolean getBAdvancedFeatures() {
     return coreJNI.tABC_AccountSettings_bAdvancedFeatures_get(swigCPtr, this);
+  }
+
+  public void setSzFullName(String value) {
+    coreJNI.tABC_AccountSettings_szFullName_set(swigCPtr, this, value);
+  }
+
+  public String getSzFullName() {
+    return coreJNI.tABC_AccountSettings_szFullName_get(swigCPtr, this);
   }
 
   public tABC_AccountSettings() {

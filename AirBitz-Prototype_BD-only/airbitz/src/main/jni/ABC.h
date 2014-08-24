@@ -60,9 +60,10 @@
 
 #define NETWORK_FAKE 0
 
-#define ABC_VERSION "0.1.0"
+#define ABC_VERSION "1.1.2"
 
 #define ABC_MIN_USERNAME_LENGTH 3
+#define ABC_MIN_PASS_LENGTH 10
 #define ABC_MIN_PIN_LENGTH 4
 
 #ifdef __cplusplus
@@ -150,7 +151,9 @@ extern "C" {
         /** We are still sync-ing */
         ABC_CC_Synchronizing = 33,
         /** Problem with the PIN */
-        ABC_CC_NonNumericPin = 34
+        ABC_CC_NonNumericPin = 34,
+        /** Unable to find an address */
+        ABC_CC_NoAvailableAddress = 35
     } tABC_CC;
 
     /**
@@ -171,8 +174,6 @@ extern "C" {
         ABC_RequestType_SetAccountRecoveryQuestions = 2,
         /** Create wallet request */
         ABC_RequestType_CreateWallet = 3,
-        /** Get Recovery Question Choices request */
-        ABC_RequestType_GetQuestionChoices = 4,
         /** Change password request */
         ABC_RequestType_ChangePassword = 5,
         /** Send bitcoin request */
@@ -213,7 +214,8 @@ extern "C" {
         ABC_AsyncEventType_BlockHeightChange,
         ABC_AsyncEventType_ExchangeRateUpdate,
         ABC_AsyncEventType_DataSyncUpdate,
-        ABC_AsyncEventType_RemotePasswordChange
+        ABC_AsyncEventType_RemotePasswordChange,
+        ABC_AsyncEventType_SentFunds,
     } tABC_AsyncEventType;
 
     /**
@@ -230,6 +232,9 @@ extern "C" {
 
         /** type of event that occured */
         tABC_AsyncEventType eventType;
+
+        /* Return status of call */
+        tABC_Error status;
 
         /** if the event involved a wallet, this is its ID */
         char *szWalletUUID;
@@ -364,8 +369,6 @@ extern "C" {
      */
     typedef struct sABC_TxDetails
     {
-        /** login of user who created the transaction **/
-        char *szLogin;
         /** amount of bitcoins in satoshi (including fees if any) */
         int64_t amountSatoshi;
         /** airbitz fees in satoshi */
@@ -600,8 +603,6 @@ extern "C" {
 
     tABC_CC ABC_Initialize(const char                   *szRootDir,
                            const char                   *szCaCertPath,
-                           tABC_BitCoin_Event_Callback  fAsyncBitCoinEventCallback,
-                           void                         *pData,
                            const unsigned char          *pSeedData,
                            unsigned int                 seedLength,
                            tABC_Error                   *pError);
@@ -934,7 +935,11 @@ extern "C" {
 
     void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
-    tABC_CC ABC_DataSyncAll(const char *szUserName, const char *szPassword, tABC_Error *pError);
+    tABC_CC ABC_DataSyncAll(const char *szUserName,
+                            const char *szPassword,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
 
     tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
 
@@ -943,16 +948,17 @@ extern "C" {
                                 const char *szWalletUUID,
                                 tABC_Error *pError);
 
+    tABC_CC ABC_WatcherLoop(const char *szWalletUUID,
+                            tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
+                            void *pData,
+                            tABC_Error *pError);
+
     tABC_CC ABC_WatchAddresses(const char *szUsername, const char *szPassword,
                                const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_WatcherStop(const char *szWalletUUID, tABC_Error *pError);
 
-    tABC_CC ABC_WatcherRestart(const char *szUserName,
-                               const char *szPassword,
-                               const char *szWalletUUID,
-                               bool clearCache,
-                               tABC_Error *pError);
+    tABC_CC ABC_WatcherDelete(const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_TxHeight(const char *szWalletUUID, const char *szTxId, unsigned int *height, tABC_Error *pError);
 
@@ -970,6 +976,19 @@ extern "C" {
     // temp functions
     void tempEventA();
     void tempEventB();
+
+    tABC_CC ABC_FilterExportData(const char *szWalletId,
+                                 const int iStartDate,
+                                 const int iEndDate,
+                                 tABC_TxInfo ***pTransactions,
+                                 int *iNumOfTransactions,
+                                 tABC_Error *pError);
+
+
+    tABC_CC ABC_ExportFormatCsv(tABC_TxInfo **pTransactions,
+                                int iTransactionCount,
+                                char **szCsvData,
+                                tABC_Error *pError);
 
 #ifdef __cplusplus
 }

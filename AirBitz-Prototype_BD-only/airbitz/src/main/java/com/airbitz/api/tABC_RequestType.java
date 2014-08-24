@@ -13,7 +13,6 @@ public final class tABC_RequestType {
   public final static tABC_RequestType ABC_RequestType_CreateAccount = new tABC_RequestType("ABC_RequestType_CreateAccount", coreJNI.ABC_RequestType_CreateAccount_get());
   public final static tABC_RequestType ABC_RequestType_SetAccountRecoveryQuestions = new tABC_RequestType("ABC_RequestType_SetAccountRecoveryQuestions", coreJNI.ABC_RequestType_SetAccountRecoveryQuestions_get());
   public final static tABC_RequestType ABC_RequestType_CreateWallet = new tABC_RequestType("ABC_RequestType_CreateWallet", coreJNI.ABC_RequestType_CreateWallet_get());
-  public final static tABC_RequestType ABC_RequestType_GetQuestionChoices = new tABC_RequestType("ABC_RequestType_GetQuestionChoices", coreJNI.ABC_RequestType_GetQuestionChoices_get());
   public final static tABC_RequestType ABC_RequestType_ChangePassword = new tABC_RequestType("ABC_RequestType_ChangePassword", coreJNI.ABC_RequestType_ChangePassword_get());
   public final static tABC_RequestType ABC_RequestType_SendBitcoin = new tABC_RequestType("ABC_RequestType_SendBitcoin", coreJNI.ABC_RequestType_SendBitcoin_get());
 
@@ -51,7 +50,7 @@ public final class tABC_RequestType {
     swigNext = this.swigValue+1;
   }
 
-  private static tABC_RequestType[] swigValues = { ABC_RequestType_AccountSignIn, ABC_RequestType_CreateAccount, ABC_RequestType_SetAccountRecoveryQuestions, ABC_RequestType_CreateWallet, ABC_RequestType_GetQuestionChoices, ABC_RequestType_ChangePassword, ABC_RequestType_SendBitcoin };
+  private static tABC_RequestType[] swigValues = { ABC_RequestType_AccountSignIn, ABC_RequestType_CreateAccount, ABC_RequestType_SetAccountRecoveryQuestions, ABC_RequestType_CreateWallet, ABC_RequestType_ChangePassword, ABC_RequestType_SendBitcoin };
   private static int swigNext = 0;
   private final int swigValue;
   private final String swigName;
