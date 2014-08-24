@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +49,7 @@ import java.util.List;
 public class WalletFragment extends Fragment
         implements CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
+    private final String TAG = getClass().getSimpleName();
 
     private EditText mSearchField;
     private LinearLayout mSearchLayout;
@@ -92,7 +91,7 @@ public class WalletFragment extends Fragment
 
     private boolean mOnBitcoinMode = true;
 
-    private EditText mWalletNameButton;
+    private EditText mWalletNameEditText;
 
     private ListView mListTransaction;
 
@@ -101,7 +100,6 @@ public class WalletFragment extends Fragment
     private List<Transaction> mTransactions;
     private List<Transaction> mAllTransactions;
 
-    private String mWalletName;
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
 
@@ -119,7 +117,6 @@ public class WalletFragment extends Fragment
                     Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWallet(walletUUID);
-                    mWalletName = mWallet.getName();
                     mTransactions = mCoreAPI.loadTransactions(mWallet);
                 }
             }
@@ -149,7 +146,7 @@ public class WalletFragment extends Fragment
 
         mSendButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_request_button);
-        mWalletNameButton = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
+        mWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
         mExportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
@@ -178,22 +175,22 @@ public class WalletFragment extends Fragment
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size());
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mWalletNameButton.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mWalletNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace);
         mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonBitcoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
-        mWalletNameButton.setText(mWalletName);
+        mWalletNameEditText.setText(mWallet.getName());
 
-        mWalletNameButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mWalletNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
-                    ((NavigationActivity)getActivity()).showSoftKeyboard(mWalletNameButton);
-                }else {
-                    if(!mWalletNameButton.getText().toString().trim().isEmpty()) {
-                        mWallet.setName(mWalletNameButton.getText().toString());
+                if (hasFocus) {
+                    ((NavigationActivity) getActivity()).showSoftKeyboard(mWalletNameEditText);
+                } else {
+                    if (!mWalletNameEditText.getText().toString().trim().isEmpty()) {
+                        mWallet.setName(mWalletNameEditText.getText().toString());
                         mCoreAPI.renameWallet(mWallet);
                     }
                 }
@@ -203,8 +200,8 @@ public class WalletFragment extends Fragment
         mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
-                    ((NavigationActivity)getActivity()).showSoftKeyboard(mSearchField);
+                if (hasFocus) {
+                    ((NavigationActivity) getActivity()).showSoftKeyboard(mSearchField);
                 }
             }
         });
@@ -217,11 +214,16 @@ public class WalletFragment extends Fragment
         });
 
         mSearchField.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
                 if (mSearchLayout.getVisibility() == View.GONE) {
                     return;
@@ -229,12 +231,12 @@ public class WalletFragment extends Fragment
 
                 try {
                     // Only include cached searches if text is empty.
-                    if(mSearchTask != null && mSearchTask.getStatus()== AsyncTask.Status.RUNNING){
+                    if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mSearchTask.cancel(true);
                     }
-                    if(editable.toString().isEmpty()){
+                    if (editable.toString().isEmpty()) {
                         UpdateTransactionsListView(mAllTransactions);
-                    }else {
+                    } else {
                         mSearchTask = new SearchTask();
                         mSearchTask.execute(editable.toString());
                     }
@@ -255,12 +257,12 @@ public class WalletFragment extends Fragment
             }
         });
 
-        mWalletNameButton.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mWalletNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
-                    if(mWalletNameButton.getText().toString().trim().isEmpty()){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom));
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (mWalletNameEditText.getText().toString().trim().isEmpty()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
                         builder.setMessage(getResources().getString(R.string.error_invalid_wallet_name_description))
                                 .setTitle(getString(R.string.error_invalid_wallet_name_title))
                                 .setCancelable(false)
@@ -269,11 +271,12 @@ public class WalletFragment extends Fragment
                                             public void onClick(DialogInterface dialog, int id) {
                                                 dialog.cancel();
                                             }
-                                        });
+                                        }
+                                );
                         AlertDialog alert = builder.create();
                         alert.show();
                         return false;
-                    }else{
+                    } else {
                         mDummyFocus.requestFocus();
                         return true;
                     }
@@ -584,7 +587,11 @@ public class WalletFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
-        if(mWallet!=null)
+        if(mWallet!=null) {
+            Common.LogD(TAG, "Reloading wallet");
+            mCoreAPI.reloadWallet(mWallet);
+            mWalletNameEditText.setText(mWallet.getName());
             UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
+        }
     }
 }

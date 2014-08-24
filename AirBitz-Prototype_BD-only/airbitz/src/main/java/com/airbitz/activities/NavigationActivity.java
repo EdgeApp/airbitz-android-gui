@@ -496,19 +496,19 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void OnDataSync() {
-        Common.LogD("NavigationActivity", "Data Sync received");
+        Common.LogD(TAG, "Data Sync received");
         updateWalletListener();
         mCoreAPI.startWatchers();
     }
 
     @Override
     public void onBlockHeightChange() {
-        Common.LogD("NavigationActivity", "Block Height received");
+        Common.LogD(TAG, "Block Height received");
     }
 
     @Override
     public void OnRemotePasswordChange() {
-        Common.LogD("NavigationActivity", "Remote Password received");
+        Common.LogD(TAG, "Remote Password received");
         showRemotePasswordChangeDialog();
     }
 

@@ -39,6 +39,7 @@ import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class WalletsFragment extends Fragment
         implements DynamicListView.OnListReordered,
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
-
+    public final String TAG = getClass().getSimpleName();
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
 
@@ -449,7 +450,7 @@ public class WalletsFragment extends Fragment
             mAddWalletTask = new AddWalletTask(name, currencyNum);
             mAddWalletTask.execute((Void) null);
         } else {
-            Log.d("WalletsFragment", "not logged in");
+            Common.LogD(TAG, "not logged in");
         }
     }
 
@@ -469,6 +470,7 @@ public class WalletsFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
+        Common.LogD(TAG, "Updating wallets");
         refreshWalletList(mCoreAPI.loadWallets());
         UpdateBalances();
     }
@@ -501,7 +503,7 @@ public class WalletsFragment extends Fragment
         protected void onPostExecute(final Boolean success) {
             mAddWalletTask = null;
             if (!success) {
-                Log.d("WalletsFragment", "AddWalletTask failed");
+                Common.LogD(TAG, "AddWalletTask failed");
             } else {
                 refreshWalletList(mCoreAPI.loadWallets());
             }
