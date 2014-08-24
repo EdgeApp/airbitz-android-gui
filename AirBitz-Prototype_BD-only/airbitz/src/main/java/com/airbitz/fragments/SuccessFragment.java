@@ -90,19 +90,25 @@ public class SuccessFragment extends Fragment {
         return mView;
     }
 
+    public void revokeSend(String error) {
+        mHandler.removeCallbacks(mSendAnimationRunner);
+        ((NavigationActivity)getActivity()).ShowMessageDialogBackPress("Error during send", error);
+    }
+
     Runnable mSendAnimationRunner = new Runnable() {
-        int count=0;
+        int count = 0;
+
         @Override
         public void run() {
             count++;
-                if (count % 3 == 1) {
-                    mLogoImageView.setImageResource(R.drawable.ico_sending_1);
-                } else if (count % 3 == 2) {
-                    mLogoImageView.setImageResource(R.drawable.ico_sending_2);
-                } else if (count % 3 == 0) {
-                    mLogoImageView.setImageResource(R.drawable.ico_sending_3);
-                }
-                mHandler.postDelayed(this, 500);
+            if (count % 3 == 1) {
+                mLogoImageView.setImageResource(R.drawable.ico_sending_1);
+            } else if (count % 3 == 2) {
+                mLogoImageView.setImageResource(R.drawable.ico_sending_2);
+            } else if (count % 3 == 0) {
+                mLogoImageView.setImageResource(R.drawable.ico_sending_3);
+            }
+            mHandler.postDelayed(this, 500);
         }
     };
 

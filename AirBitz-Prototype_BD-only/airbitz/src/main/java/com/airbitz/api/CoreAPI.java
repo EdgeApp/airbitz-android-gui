@@ -1406,9 +1406,22 @@ public class CoreAPI {
         }
     }
 
+    public class TxResult {
+        private String txid;
+        public String getString() { return txid; }
+
+        public void setTxid(String txid) { this.txid = txid; }
+
+        private tABC_CC error;
+        public tABC_CC getError() { return error; }
+
+        public void setError(tABC_CC error) { this.error = error; }
+    }
+
     //this is a blocking call
-    public String InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
-        String txid = null;
+    public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+        TxResult txResult = new TxResult();
+
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWallet(destinationAddress);
         if (satoshi > 0) {
@@ -1453,17 +1466,20 @@ public class CoreAPI {
                 result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                         sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
             }
+
             if (result != tABC_CC.ABC_CC_Ok) {
                 Common.LogD(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
                         error.getSzSourceFunc() + " " + error.getNSourceLine());
+                txResult.setError(result);
+                txResult.setTxid(error.getSzDescription());
             } else {
-                txid = getStringAtPtr(core.longp_value(lp));
-                Common.LogD(TAG, "TxID:  " + txid);
+                txResult.setTxid(getStringAtPtr(core.longp_value(lp)));
+                Common.LogD(TAG, "TxID:  " + txResult.getString());
             }
         } else {
             Common.LogD(TAG, "Initiate transfer - nothing to send");
         }
-        return txid;
+        return txResult;
     }
 
     public long calcSendFees(String walletUUID, String sendTo, long sendAmount, boolean transferOnly)
@@ -1473,9 +1489,9 @@ public class CoreAPI {
         tABC_TxDetails details = new tABC_TxDetails();
         tABC_CC result;
 
-        set64BitLongAtPtr(details.getCPtr(details)+0, sendAmount);
-        set64BitLongAtPtr(details.getCPtr(details)+8, 0);
-        set64BitLongAtPtr(details.getCPtr(details)+16, 0);
+        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+0, sendAmount);
+        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+8, 0);
+        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+16, 0);
 
         details.setAmountCurrency(0);
         details.setSzName("");
@@ -1496,7 +1512,7 @@ public class CoreAPI {
             }
             return -1; //TODO is this ok for insufficient funds?
         }
-        totalFees = get64BitLongAtPtr(fees.getCPtr(fees));
+        totalFees = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(fees));
         return totalFees;
     }
 

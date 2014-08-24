@@ -2,9 +2,7 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -14,7 +12,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,9 +28,8 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.FragmentSourceEnum;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.Calculator;
@@ -542,17 +538,17 @@ public class SendConfirmationFragment extends Fragment {
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if( !mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0) {
             resetSlider();
-            showMessageAlert("Invalid Amount", "Invalid Amount");
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog("Invalid Amount", "Invalid Amount");
         }else if(mAmountToSendSatoshi==0) {
             resetSlider();
-            showMessageAlert(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.execute();
             finishSlider();
         } else {
             resetSlider();
-            showMessageAlert(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
         }
     }
 
@@ -575,10 +571,13 @@ public class SendConfirmationFragment extends Fragment {
      */
     private SendOrTransferTask mSendOrTransferTask;
 
-    public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
+    public class SendOrTransferTask extends AsyncTask<Void, Void, CoreAPI.TxResult> {
         private Wallet mFromWallet;
         private final String mAddress;
         private final long mSatoshi;
+        private SuccessFragment mSuccessFragment;
+        private String failInsufficientMessage = getResources().getString(R.string.fragment_send_failure_insufficient_funds);
+        private String failOtherMessage = getResources().getString(R.string.fragment_send_failure_other_error);
 
         SendOrTransferTask(Wallet fromWallet, String address, long amount) {
             mFromWallet = fromWallet;
@@ -588,30 +587,40 @@ public class SendConfirmationFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
 
-            Fragment frag = new SuccessFragment();
-            frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.SEND.ordinal());
+            mSuccessFragment = new SuccessFragment();
+            mSuccessFragment.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected CoreAPI.TxResult doInBackground(Void... params) {
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
         @Override
-        protected void onPostExecute(final String txid) {
+        protected void onPostExecute(final CoreAPI.TxResult txResult) {
             mSendOrTransferTask = null;
-            if (txid == null) {
-                Log.d("SendConfirmationFragment", "Send or Transfer failed");
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-                bundle.putString(Transaction.TXID, txid);
-                bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
-                FragmentSourceEnum e = FragmentSourceEnum.SEND;
+            tABC_CC result = txResult.getError();
+            String message;
+            if (txResult.getError() != null) {
+                if (result == tABC_CC.ABC_CC_InsufficientFunds) {
+                    message = failInsufficientMessage;
+                } else if (result == tABC_CC.ABC_CC_ServerError) {
+                    message = (txResult.getString());
+                } else {
+                    message = failOtherMessage;
+                }
 
-                mActivity.switchToWallets(e, bundle);
-                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+                mSuccessFragment.revokeSend(message);
+            } else {
+//                Bundle bundle = new Bundle();
+//                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+//                bundle.putString(Transaction.TXID, txResult.getString());
+//                bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
+//                FragmentSourceEnum e = FragmentSourceEnum.SEND;
+//
+//                mActivity.switchToWallets(e, bundle);
+//                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 
@@ -619,23 +628,6 @@ public class SendConfirmationFragment extends Fragment {
         protected void onCancelled() {
             mSendOrTransferTask = null;
         }
-    }
-
-
-
-    private void showMessageAlert(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     @Override public void onResume() {

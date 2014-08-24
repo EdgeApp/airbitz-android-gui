@@ -175,8 +175,10 @@
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
+    <string name="fragment_send_failure_insufficient_funds">You do not have enough funds to send this transaction.</string>
+    <string name="fragment_send_failure_other_error">There was an error when we were trying to send the funds. Please try again later.</string>
 
-    <!-- Strings for Send fragment -->
+    <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
     <string name="send_confirmation_from_title">Send From:</string>
     <string name="send_confirmation_to_title">Send To:</string>
