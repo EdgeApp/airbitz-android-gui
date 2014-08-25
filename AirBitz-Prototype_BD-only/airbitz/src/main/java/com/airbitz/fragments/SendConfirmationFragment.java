@@ -542,7 +542,7 @@ public class SendConfirmationFragment extends Fragment {
         }else if(mAmountToSendSatoshi==0) {
             resetSlider();
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (userPIN!=null && userPIN.equals(enteredPIN)) {
+        } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.execute();
             finishSlider();
