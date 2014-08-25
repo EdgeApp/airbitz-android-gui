@@ -81,6 +81,8 @@
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
     <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
     <string name="activity_signup_pin_change_bad">PIN could not be changed.</string>
+    <string name="activity_signup_pin_change_title">Change Withdrawal PIN</string>
+    <string name="activity_signup_password_change_title">Change Password</string>
     <string name="activity_signup_password_change_good">Password successfully changed.</string>
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
     <string name="activity_signup_password_change_via_questions_good">Password successfully changed.</string>
