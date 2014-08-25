@@ -740,7 +740,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(finalBaseUrl + "/tx/" + mTransaction.getID()));
+                    i.setData(Uri.parse(finalBaseUrl + "tx/" + mTransaction.getmMalleableID()));
                     mActivity.startActivity(i);
                 }
             };
