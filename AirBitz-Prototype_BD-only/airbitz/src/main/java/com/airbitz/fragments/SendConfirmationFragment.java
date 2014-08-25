@@ -515,7 +515,7 @@ public class SendConfirmationFragment extends Fragment {
             mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mSourceWallet.getCurrencyNum());
-            String fiatFeeString = "+ "+mCoreAPI.formatDefaultCurrency(fiatFee);
+            String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee, mSourceWallet.getCurrencyNum(), false);
             mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
