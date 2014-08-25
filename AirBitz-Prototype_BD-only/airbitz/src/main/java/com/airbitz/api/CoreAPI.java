@@ -415,30 +415,11 @@ public class CoreAPI {
     private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
 
     public String GetUserPIN() {
-        tABC_Error error = new tABC_Error();
-        tABC_CC result;
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        String szPIN = null;
-
-        result = core.ABC_GetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                ppChar, error);
-
-        if (result == tABC_CC.ABC_CC_Ok)
-        {
-            return getStringAtPtr(core.longp_value(lp));
-        }
-        String message = result.toString() + "," + error.getSzDescription() + ", " +
-                error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-        Common.LogD(TAG, message);
-        return null;
+        return mCoreSettings.getSzPIN();
     }
 
-    public tABC_CC SetUserPIN(String pin) {
-        tABC_Error error = new tABC_Error();
-
-        return core.ABC_SetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                pin, error);
+    public void SetUserPIN(String pin) {
+        mCoreSettings.setSzPIN(pin);
     }
 
     public String getDefaultBTCDenomination() {
