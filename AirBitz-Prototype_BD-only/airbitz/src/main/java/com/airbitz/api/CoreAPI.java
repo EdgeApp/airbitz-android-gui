@@ -655,7 +655,8 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_GetQuestionChoices(ppQuestionChoices, pError);
         if (result == tABC_CC.ABC_CC_Ok) {
-            QuestionChoices qcs = new QuestionChoices(SWIGTYPE_p_p_sABC_QuestionChoices.getCPtr(ppQuestionChoices));
+            long lp = core.longp_value(plong);
+            QuestionChoices qcs = new QuestionChoices(lp);
             long num = qcs.getNumChoices();
             mChoices = qcs.getChoices();
         }
