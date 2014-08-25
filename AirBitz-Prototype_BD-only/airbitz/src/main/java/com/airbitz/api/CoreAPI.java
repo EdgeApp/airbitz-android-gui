@@ -912,6 +912,7 @@ public class CoreAPI {
             }
         }
 
+        public boolean getmInput() {return mInput; }
         public long getmValue() {return mValue; }
         public String getAddress() {return mAddress; }
         public String getTxId() {return mTxId; }
@@ -1030,7 +1031,6 @@ public class CoreAPI {
             transaction.setmMalleableID(txInfo.getSzMalleableTxId());
         }
 
-
         boolean bSyncing = false;
         transaction.setConfirmations(calcTxConfirmations(wallet, transaction.getmMalleableID()));
         transaction.setConfirmed(false);
@@ -1041,7 +1041,6 @@ public class CoreAPI {
         } else {
             transaction.setAddress("");
         }
-
 
         if (!transaction.getName().isEmpty()) {
             transaction.setAddress(transaction.getName());

@@ -718,7 +718,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 full.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 full.append("\n");
 
-                if (output.getInput()) {
+                if (output.getmInput()) {
                     inAddresses.append(full);
                 } else {
                     outAddresses.append(full);
