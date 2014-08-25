@@ -58,6 +58,7 @@ import java.util.Stack;
 public class NavigationActivity extends BaseActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
+        CoreAPI.OnSentFunds,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
@@ -112,6 +113,7 @@ public class NavigationActivity extends BaseActivity
         mCoreAPI.Initialize(this, seed, seed.length());
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
+        mCoreAPI.setOnSentFundsListener(this);
         mCoreAPI.setOnDataSyncListener(this);
         mCoreAPI.setOnBlockHeightChangeListener(this);
         mCoreAPI.setOnOnRemotePasswordChangeListener(this);
@@ -478,6 +480,22 @@ public class NavigationActivity extends BaseActivity
         } else {
             showIncomingBitcoinDialog();
         }
+    }
+
+    // callback for funds sent
+    @Override
+    public void onSentFunds(String walletUUID, String txId) {
+        mUUID = walletUUID;
+        mTxId = txId;
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+        bundle.putString(Transaction.TXID, txId);
+        bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        FragmentSourceEnum e = FragmentSourceEnum.SEND;
+
+        switchToWallets(e, bundle);
+        resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+
     }
 
     // Callback interface when a wallet could be updated

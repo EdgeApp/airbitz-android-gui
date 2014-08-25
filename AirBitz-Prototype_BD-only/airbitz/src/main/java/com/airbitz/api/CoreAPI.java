@@ -135,13 +135,20 @@ public class CoreAPI {
         tABC_AsyncEventType type = info.getEventType();
         Common.LogD(TAG, "asyncBitCoinInfo callback = "+type.toString());
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
-            if(mOnIncomingBitcoin!=null) {
-                mIncomingBitcoinUUID = info.getSzWalletUUID();
-                mIncomingBitcoinTxID = info.getSzTxID();
+            if (mOnIncomingBitcoin != null) {
+                mIncomingUUID = info.getSzWalletUUID();
+                mIncomingTxID = info.getSzTxID();
                 mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
-            }
-            else
+            } else
                 Common.LogD(TAG, "incoming bitcoin event has no listener");
+        } else if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds) {
+                if(mOnSentFunds!=null) {
+                    mIncomingUUID = info.getSzWalletUUID();
+                    mIncomingTxID = info.getSzTxID();
+                    mPeriodicTaskHandler.post(SentFundsUpdater);
+                }
+                else
+                    Common.LogD(TAG, "sent funds event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
@@ -165,9 +172,9 @@ public class CoreAPI {
         }
     }
 
+    private String mIncomingUUID, mIncomingTxID;
     // Callback interface when an incoming bitcoin is received
     private OnIncomingBitcoin mOnIncomingBitcoin;
-    private String mIncomingBitcoinUUID, mIncomingBitcoinTxID;
     public interface OnIncomingBitcoin {
         public void onIncomingBitcoin(String walletUUID, String txId);
     }
@@ -175,7 +182,19 @@ public class CoreAPI {
         mOnIncomingBitcoin = listener;
     }
     final Runnable IncomingBitcoinUpdater = new Runnable() {
-        public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingBitcoinUUID, mIncomingBitcoinTxID); }
+        public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID); }
+    };
+
+    // Callback interface when an incoming bitcoin is received
+    private OnSentFunds mOnSentFunds;
+    public interface OnSentFunds {
+        public void onSentFunds(String walletUUID, String txId);
+    }
+    public void setOnSentFundsListener(OnSentFunds listener) {
+        mOnSentFunds = listener;
+    }
+    final Runnable SentFundsUpdater = new Runnable() {
+        public void run() { mOnSentFunds.onSentFunds(mIncomingUUID, mIncomingTxID); }
     };
 
 
