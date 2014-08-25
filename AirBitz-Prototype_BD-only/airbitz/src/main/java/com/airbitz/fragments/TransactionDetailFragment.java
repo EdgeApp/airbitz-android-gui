@@ -690,24 +690,26 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             int start = 0;
             int end = 0;
             for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
-                String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
-                SpannableString html = new SpannableString(val + "\n");
-                end = val.length();
-                final String url = baseUrl + t.getSzAddress();
-                ClickableSpan span = new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(url));
-                        startActivity(i);
-                    }
-                };
-                html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                if(t.getAddress()!=null) {
+                    String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
+                    SpannableString html = new SpannableString(val + "\n");
+                    end = val.length();
+                    final String url = baseUrl + t.getAddress();
+                    ClickableSpan span = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(url));
+                            startActivity(i);
+                        }
+                    };
+                    html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                if (t.getInput()) {
-                    inAddresses.append(html);
-                } else {
-                    outAddresses.append(html);
+                    if (t.getInput()) {
+                        inAddresses.append(html);
+                    } else {
+                        outAddresses.append(html);
+                    }
                 }
             }
 
