@@ -683,6 +683,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private void ShowAdvancedDetails(boolean hasFocus) {
         if (hasFocus) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
+            long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String baseUrl;
             if (mCoreAPI.isTestNet()) {
@@ -715,15 +716,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 full.append("\n");
                 start = full.length();
                 full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                full.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 full.append("\n");
 
                 if (output.getmInput()) {
                     inAddresses.append(full);
+                    inSum += output.getmValue();
                 } else {
                     outAddresses.append(full);
                 }
             }
+
+            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
+            long netSum = inSum - feesSatoshi;
 
             SpannableStringBuilder s = new SpannableStringBuilder();
             start = 0;
@@ -753,7 +757,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
-            s.append(mCoreAPI.formatSatoshi(mTransaction.getAmountSatoshi()))
+            s.append(mCoreAPI.formatSatoshi(netSum))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -783,7 +787,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.append("\n");
 
             start = s.length();
-            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
             s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
