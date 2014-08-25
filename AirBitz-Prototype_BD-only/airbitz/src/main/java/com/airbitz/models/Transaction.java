@@ -11,6 +11,7 @@ public class Transaction {
     private String mWalletUUID;
     private String mWalletName;
     private String mID;
+    private String mMalleableID;
     private long mDate;
     private String mName;
     private String mAddress;
@@ -18,6 +19,7 @@ public class Transaction {
     private String mNotes;
     private CoreAPI.TxOutput[] mOutputs;
     private boolean mConfirmed;
+    private boolean mSyncing;
     private int mConfirmations;
     private long mAmountSatoshi;
     private double mAmountFiat;
@@ -31,6 +33,7 @@ public class Transaction {
 
     public Transaction() {
         mID = "";
+        mMalleableID="";
         mWalletUUID = "";
         mWalletName = "";
         mName = "";
@@ -69,6 +72,9 @@ public class Transaction {
     public String getID() { return mID; }
     public void setID(String mID) { this.mID = mID; }
 
+    public String getmMalleableID() { return mMalleableID; }
+    public void setmMalleableID(String mID) { this.mMalleableID = mID; }
+
     public long getDate() { return mDate; }
     public void setDate(long mDate) { this.mDate = mDate; }
 
@@ -89,6 +95,9 @@ public class Transaction {
 
     public boolean isConfirmed() { return mConfirmed; }
     public void setConfirmed(boolean mConfirmed) { this.mConfirmed = mConfirmed; }
+
+    public boolean isSyncing() { return mSyncing; }
+    public void setSyncing(boolean syncing) { this.mSyncing = syncing; }
 
     public int getConfirmations() { return mConfirmations; }
     public void setConfirmations(int mConfirmations) { this.mConfirmations = mConfirmations; }

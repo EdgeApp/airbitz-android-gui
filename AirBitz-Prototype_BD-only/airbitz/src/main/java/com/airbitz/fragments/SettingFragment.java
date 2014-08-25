@@ -161,7 +161,7 @@ public class SettingFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.SETTINGS), NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
 

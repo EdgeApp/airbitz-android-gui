@@ -41,6 +41,7 @@ public class CoreAPI {
     private final String CERT_FILENAME = "ca-certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
     private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
+    private static int CONFIRMED_CONFIRMATION_COUNT = 3;
     public static int ABC_DENOMINATION_BTC = 0;
     public static int ABC_DENOMINATION_MBTC = 1;
     public static int ABC_DENOMINATION_UBTC = 2;
@@ -494,11 +495,11 @@ public class CoreAPI {
 //            int mCount = core.intp_value(pCount);
 //            arrayCurrencies = new String[mCount];
 //
-//            long start = core.longp_value(lp);
-//
+//            long base = core.longp_value(lp);
 //            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
 //            {
-//                tABC_Currency txd = new Currency(start + i * 4);
+//                long start = core.longp_value(new pLong(base + i * 4));
+//                tABC_Currency txd = new Currency(start);
 //                arrayCurrencies[i] = txd.getSzCode();
 //            }
 //        }
@@ -866,12 +867,12 @@ public class CoreAPI {
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
 
                 if(mCountOutputs>0) {
-                    SWIGTYPE_p_p_sABC_TxOutput a = super.getAOutputs();
                     mOutputs = new TxOutput[(int) mCountOutputs];
-                    SWIGTYPE_p_long p2 = new pLong(a.getCPtr(a));
-                    long base = core.longp_value(p2);
+                    SWIGTYPE_p_p_sABC_TxOutput outputs = super.getAOutputs();
+                    long base = SWIGTYPE_p_p_sABC_TxOutput.getCPtr(outputs);
                     for (int i = 0; i < mCountOutputs; i++) {
-                        mOutputs[i] = new TxOutput(base + i * 4);
+                        long start = core.longp_value(new pLong(base + i * 4));
+                        mOutputs[i] = new TxOutput(start);
                     }
                 }
             }
@@ -902,8 +903,12 @@ public class CoreAPI {
                 mInput = super.getInput();
                 mAddress = super.getSzAddress();
                 mTxId = super.getSzTxId();
-                mValue = get64BitLongAtPtr(pv + 1);
-                mIndex = get64BitLongAtPtr(pv + 17);
+                mValue = get64BitLongAtPtr(pv + 8);
+//                mIndex = get64BitLongAtPtr(pv + 17);
+//                for(int j=0; j<20; j++) {
+//                    long temp = get64BitLongAtPtr(pv + j);
+//                    long temp2 = temp;
+//                }
             }
         }
 
@@ -1021,18 +1026,62 @@ public class CoreAPI {
         transaction.setAmountFiat(txInfo.getDetails().getmAmountCurrency());
         transaction.setWalletName(wallet.getName());
         transaction.setWalletUUID(wallet.getUUID());
-        transaction.setConfirmations(3);
+        if(txInfo.getSzMalleableTxId()!=null) {
+            transaction.setmMalleableID(txInfo.getSzMalleableTxId());
+        }
+
+
+        boolean bSyncing = false;
+        transaction.setConfirmations(calcTxConfirmations(wallet, transaction.getmMalleableID()));
         transaction.setConfirmed(false);
+        transaction.setConfirmed(transaction.getConfirmations() >= CONFIRMED_CONFIRMATION_COUNT);
+        transaction.setSyncing(bSyncing);
+        if (!transaction.getName().isEmpty()) {
+            transaction.setAddress(transaction.getName());
+        } else {
+            transaction.setAddress("");
+        }
+
 
         if (!transaction.getName().isEmpty()) {
             transaction.setAddress(transaction.getName());
         } else {
-            transaction.setAddress("1zf76dh4TG");
+            transaction.setAddress("");
         }
         TxOutput[] txo = txInfo.getOutputs();
-        if(txo != null)
-        transaction.setOutputs(txo);
+        if(txo != null) {
+            transaction.setOutputs(txo);
+        }
 
+    }
+
+    private boolean mSyncing;
+    public int calcTxConfirmations(Wallet wallet, String txId)
+    {
+        tABC_Error Error = new tABC_Error();
+
+        SWIGTYPE_p_int th = core.new_intp();
+        SWIGTYPE_p_int bh = core.new_intp();
+
+        mSyncing = false;
+        if (wallet.getUUID().length() == 0 || txId.length() == 0) {
+            return 0;
+        }
+        if (core.ABC_TxHeight(wallet.getUUID(), txId, core.int_to_uint(th), Error) != tABC_CC.ABC_CC_Ok) {
+            mSyncing = true;
+            return 0;
+        }
+        if (core.ABC_BlockHeight(wallet.getUUID(), core.int_to_uint(bh), Error) != tABC_CC.ABC_CC_Ok) {
+            mSyncing = true;
+            return 0;
+        }
+
+        int txHeight = core.intp_value(th);
+        int blockHeight = core.intp_value(bh);
+        if (txHeight == 0 || blockHeight == 0) {
+            return 0;
+        }
+        return (blockHeight - txHeight) + 1;
     }
 
     public tABC_CC SaveTransaction(Transaction transaction, tABC_TxDetails details) {

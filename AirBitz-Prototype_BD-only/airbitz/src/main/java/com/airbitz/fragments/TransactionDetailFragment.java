@@ -20,7 +20,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -31,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,9 +49,9 @@ import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.defaultCategoryEnum;
+import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
 import org.json.JSONException;
@@ -144,17 +142,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
 
     private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
+    private NavigationActivity mActivity;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
-        if(bundle!=null) {
-            if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")){
+        if (bundle != null) {
+            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")) {
                 Common.LogD(TAG, "SEND");
                 mFromSend = true;
-            } else if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("REQUEST")) {
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("REQUEST")) {
                 mFromRequest = true;
                 Common.LogD(TAG, "REQUEST");
             }
@@ -168,23 +166,25 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mWallet = mCoreAPI.getWallet(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
-                if(mTransaction.getCategory().isEmpty()) {
-                    currentType = defaultCat.toString()+":";
-                }else if(mTransaction.getCategory().startsWith("Income:")){
+                if (mTransaction.getCategory().isEmpty()) {
+                    currentType = defaultCat.toString() + ":";
+                } else if (mTransaction.getCategory().startsWith("Income:")) {
                     currentType = "Income:";
                     catSelected = true;
-                }else if(mTransaction.getCategory().startsWith("Expense:")){
+                } else if (mTransaction.getCategory().startsWith("Expense:")) {
                     currentType = "Expense:";
                     catSelected = true;
-                }else if(mTransaction.getCategory().startsWith("Transfer:")){
+                } else if (mTransaction.getCategory().startsWith("Transfer:")) {
                     currentType = "Transfer:";
                     catSelected = true;
-                }else if(mTransaction.getCategory().startsWith("Exchange:")){
+                } else if (mTransaction.getCategory().startsWith("Exchange:")) {
                     currentType = "Exchange:";
                     catSelected = true;
                 }
             }
         }
+
+        mActivity = (NavigationActivity) getActivity();
     }
 
     @Override
@@ -196,11 +196,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
             Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             locationEnabled = true;
         }
 
-        mCalculator = ((NavigationActivity)getActivity()).getCalculatorView();
+        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
         popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
@@ -237,7 +237,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mContactNames = new ArrayList<String>();
         mCombined = new ArrayList<Object>();
         mContactPhotos = new LinkedHashMap<String, Uri>();
-        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(),mBusinesses, mContactNames,mCombined,mContactPhotos);
+        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mCombined, mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
 
         goSearch();
@@ -246,21 +246,21 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCategories = mCoreAPI.loadCategories();
         mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
-        for(int index=0; index<mCategories.size(); index++) {
+        for (int index = 0; index < mCategories.size(); index++) {
             String cat = mCategories.get(index);
-            if(cat.equals("Income:")) {
+            if (cat.equals("Income:")) {
                 baseIncomePosition = index;
                 originalBaseIncomePosition = index;
             }
-            if(cat.equals("Expense:")) {
+            if (cat.equals("Expense:")) {
                 baseExpensePosition = index;
                 originalBaseExpensePosition = index;
             }
-            if(cat.equals("Transfer:")) {
+            if (cat.equals("Transfer:")) {
                 baseTransferPosition = index;
                 originalBaseTransferPosition = index;
             }
-            if(cat.equals("Exchange:")) {
+            if (cat.equals("Exchange:")) {
                 baseExchangePosition = index;
                 originalBaseExchangePosition = index;
             }
@@ -269,7 +269,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mOriginalCategories.addAll(mCategories);
 
 
-        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(),mCategories);
+        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
@@ -321,8 +321,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                         highlightEditableText(mCategoryEdittext);
                         mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
-                    updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
-                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':')+1));
+                    updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':') + 1));
+                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':') + 1));
                     mCategoryAdapter.notifyDataSetChanged();
                 }
             }
@@ -353,7 +353,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     return true;
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     showPayeeSearch(false);
-                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mPayeeEditText);
+                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mPayeeEditText);
                     return true;
                 }
                 return false;
@@ -366,7 +366,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     mNoteEdittext.requestFocus();
                     return true;
-                }else if(actionId == EditorInfo.IME_ACTION_DONE){
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -388,7 +388,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -423,10 +423,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -478,20 +480,20 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 catSelected = true;
-                if(mCategories.get(i).startsWith("Income:")){
+                if (mCategories.get(i).startsWith("Income:")) {
                     currentType = "Income:";
-                }else if(mCategories.get(i).startsWith("Expense:")){
+                } else if (mCategories.get(i).startsWith("Expense:")) {
                     currentType = "Expense:";
-                }else if(mCategories.get(i).startsWith("Transfer:")){
+                } else if (mCategories.get(i).startsWith("Transfer:")) {
                     currentType = "Transfer:";
-                }else if(mCategories.get(i).startsWith("Exchange:")){
+                } else if (mCategories.get(i).startsWith("Exchange:")) {
                     currentType = "Exchange:";
                 }
                 //TODO move the strings around depending on negative/positive value
                 doEdit = true;
                 mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
                 doEdit = false;
-                if(i==baseIncomePosition || i==baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition){
+                if (i == baseIncomePosition || i == baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition) {
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
                 }
                 mDummyFocus.requestFocus();
@@ -501,10 +503,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -542,7 +546,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch (View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
@@ -557,7 +561,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatValueEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (keyEvent!=null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -576,7 +580,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
@@ -592,7 +596,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        if(mFromSend || mFromRequest){
+        if (mFromSend || mFromRequest) {
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             mPayeeEditText.requestFocus();
@@ -636,37 +640,37 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void highlightEditableText(EditText editText) {
-        if(editText.getText().toString().startsWith("Income:")) {
+        if (editText.getText().toString().startsWith("Income:")) {
             editText.setSelection(7, editText.length());
-        }else if(editText.getText().toString().startsWith("Expense:")){
+        } else if (editText.getText().toString().startsWith("Expense:")) {
             editText.setSelection(8, editText.length());
-        }else if(editText.getText().toString().startsWith("Transfer:")){
+        } else if (editText.getText().toString().startsWith("Transfer:")) {
             editText.setSelection(9, editText.length());
-        }else if(editText.getText().toString().startsWith("Exchange:")){
+        } else if (editText.getText().toString().startsWith("Exchange:")) {
             editText.setSelection(9, editText.length());
         }
     }
 
-    private void updateBlanks(String term){
-        if(baseIncomePosition < mCategories.size()) {
+    private void updateBlanks(String term) {
+        if (baseIncomePosition < mCategories.size()) {
             mCategories.remove(baseIncomePosition);
             mCategories.add(baseIncomePosition, "Income:" + term);
         }
-        if(baseExpensePosition < mCategories.size()) {
+        if (baseExpensePosition < mCategories.size()) {
             mCategories.remove(baseExpensePosition);
             mCategories.add(baseExpensePosition, "Expense:" + term);
         }
-        if(baseTransferPosition < mCategories.size()){
+        if (baseTransferPosition < mCategories.size()) {
             mCategories.remove(baseTransferPosition);
             mCategories.add(baseTransferPosition, "Transfer:" + term);
         }
-        if(baseExchangePosition < mCategories.size()) {
+        if (baseExchangePosition < mCategories.size()) {
             mCategories.remove(baseExchangePosition);
             mCategories.add(baseExchangePosition, "Exchange:" + term);
         }
 
         mOriginalCategories.remove(originalBaseIncomePosition);
-        mOriginalCategories.add(originalBaseIncomePosition,"Income:" + term);
+        mOriginalCategories.add(originalBaseIncomePosition, "Income:" + term);
         mOriginalCategories.remove(originalBaseExpensePosition);
         mOriginalCategories.add(originalBaseExpensePosition, "Expense:" + term);
         mOriginalCategories.remove(originalBaseTransferPosition);
@@ -675,41 +679,47 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mOriginalCategories.add(originalBaseExchangePosition, "Exchange:" + term);
     }
 
-    private void ShowAdvancedDetails(boolean hasFocus)
-    {
-        if(hasFocus) {
+    private void ShowAdvancedDetails(boolean hasFocus) {
+        if (hasFocus) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
-            String baseUrl = "";
-            if (mCoreAPI.isTestNet()) { // TESTNET
-                baseUrl += "https://blockexplorer.com/testnet/";
+            String baseUrl;
+            if (mCoreAPI.isTestNet()) {
+                baseUrl = "https://blockexplorer.com/testnet/";
             } else { // LIVE
-                baseUrl += "https://blockchain.info/";
+                baseUrl = "https://blockchain.info/";
             }
 
             int start = 0;
             int end = 0;
-            for (CoreAPI.TxOutput t : mTransaction.getOutputs()) {
-                if(t.getAddress()!=null) {
-                    String val = mCoreAPI.FormatDefaultCurrency(t.getmValue(), true, false);
-                    SpannableString html = new SpannableString(val + "\n");
-                    end = val.length();
-                    final String url = baseUrl + t.getAddress();
-                    ClickableSpan span = new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse(url));
-                            startActivity(i);
-                        }
-                    };
-                    html.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    if (t.getInput()) {
-                        inAddresses.append(html);
-                    } else {
-                        outAddresses.append(html);
+            for (CoreAPI.TxOutput output : mTransaction.getOutputs()) {
+                start = 0;
+                end = 0;
+                SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
+                SpannableString address = new SpannableString(output.getAddress());
+                end = address.length();
+                final String url = baseUrl + "/address/" + output.getAddress();
+                ClickableSpan span = new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        mActivity.startActivity(i);
                     }
+                };
+                address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableStringBuilder full = new SpannableStringBuilder();
+                full.append(address);
+                full.append("\n");
+                start = full.length();
+                full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                full.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                full.append("\n");
+
+                if (output.getInput()) {
+                    inAddresses.append(full);
+                } else {
+                    outAddresses.append(full);
                 }
             }
 
@@ -721,7 +731,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.append("\n");
 
             start = s.length();
-            s.append(mTransaction.getID());
+            s.append(mTransaction.getmMalleableID());
             end = s.length();
             final String finalBaseUrl = baseUrl;
             ClickableSpan url = new ClickableSpan() {
@@ -729,7 +739,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(finalBaseUrl + mTransaction.getID()));
-                    startActivity(i);
+                    mActivity.startActivity(i);
                 }
             };
             s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -741,9 +751,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
-            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
-            long total = mTransaction.getAmountSatoshi() + feesSatoshi;
-            s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(total, true, false))
+            s.append(mCoreAPI.formatSatoshi(mTransaction.getAmountSatoshi()))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -773,23 +781,24 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.append("\n");
 
             start = s.length();
+            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
             s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(s), NavigationActivity.Tabs.WALLET.ordinal());
+            ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mDummyFocus.requestFocus();
         }
     }
 
     private void UpdateView(Transaction transaction) {
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate()*1000);
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
         mDateTextView.setText(dateString);
 
         String pretext = mFromSend ? getActivity().getResources().getString(R.string.transaction_details_from) :
                 getActivity().getResources().getString(R.string.transaction_details_to);
-        mToFromName.setText(pretext+transaction.getWalletName());
+        mToFromName.setText(pretext + transaction.getWalletName());
 
         mPayeeEditText.setText(transaction.getName());
         mNoteEdittext.setText(transaction.getNotes());
@@ -797,7 +806,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryEdittext.setText(transaction.getCategory());
         doEdit = false;
 
-        long coinValue = transaction.getAmountSatoshi()+transaction.getMinerFees()+transaction.getABFees();
+        long coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
         String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
@@ -806,28 +815,28 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
-        String feeFormatted = "+"+mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false)+" fee";
+        String feeFormatted = "+" + mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false) + " fee";
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
     }
 
-    public void goCreateCategoryList( String term ){
+    public void goCreateCategoryList(String term) {
         mCategories.clear();
-        for(int i = 0; i < mOriginalCategories.size();i++){
+        for (int i = 0; i < mOriginalCategories.size(); i++) {
             String s = mOriginalCategories.get(i);
-            if(s.toLowerCase().substring(s.indexOf(':')+1).contains(term.toLowerCase())){
-                if(!mCategories.contains(s)) {
+            if (s.toLowerCase().substring(s.indexOf(':') + 1).contains(term.toLowerCase())) {
+                if (!mCategories.contains(s)) {
                     mCategories.add(s);
-                    if(i == originalBaseIncomePosition){
+                    if (i == originalBaseIncomePosition) {
                         baseIncomePosition = mCategories.indexOf(s);
                     }
-                    if(i == originalBaseTransferPosition){
+                    if (i == originalBaseTransferPosition) {
                         baseTransferPosition = mCategories.indexOf(s);
                     }
-                    if(i == originalBaseExpensePosition){
+                    if (i == originalBaseExpensePosition) {
                         baseExpensePosition = mCategories.indexOf(s);
                     }
-                    if(i == originalBaseExchangePosition){
+                    if (i == originalBaseExchangePosition) {
                         baseExchangePosition = mCategories.indexOf(s);
                     }
                 }
@@ -842,17 +851,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
     }
 
-    class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String>{
+    class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
         private AirbitzAPI api = AirbitzAPI.getApi();
 
         public BusinessSearchAsyncTask() {
         }
 
-        @Override protected String doInBackground(String... strings) {
+        @Override
+        protected String doInBackground(String... strings) {
             return api.getSearchByRadius("16093", "", strings[0], "", "1");
         }
 
-        @Override protected void onPostExecute(String searchResult) {
+        @Override
+        protected void onPostExecute(String searchResult) {
             try {
                 mBusinesses.clear();
                 mCombined.clear();
@@ -860,14 +871,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
                 mOriginalBusinesses.addAll(mBusinesses);
-                if(mPayeeEditText.getText().toString().isEmpty()){
+                if (mPayeeEditText.getText().toString().isEmpty()) {
                     mCombined.addAll(mBusinesses);
-                }else{
+                } else {
                     getMatchedContactsList(mPayeeEditText.getText().toString());
                     getMatchedBusinessList(mPayeeEditText.getText().toString());
                     combineMatchLists();
                 }
-            }catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
                 this.cancel(true);
             } catch (Exception e) {
@@ -878,7 +889,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
 
         @Override
-        protected void onCancelled(){
+        protected void onCancelled() {
             mBusinessSearchAsyncTask = null;
             super.onCancelled();
         }
@@ -887,7 +898,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     @Override
     public void onPause() {
         super.onPause();
-        if(mBusinessSearchAsyncTask != null){
+        if (mBusinessSearchAsyncTask != null) {
             mBusinessSearchAsyncTask.cancel(true);
         }
         mTransaction.setName(mPayeeEditText.getText().toString());
@@ -903,9 +914,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCoreAPI.storeTransaction(mTransaction);
     }
 
-    public void getContactsList(){
+    public void getContactsList() {
         ContentResolver cr = getActivity().getContentResolver();
-        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME};
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 columns, null, null, null);
         if (cur.getCount() > 0) {
@@ -917,76 +928,76 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         cur.close();
     }
 
-    public void getMatchedContactsList(String searchTerm){
+    public void getMatchedContactsList(String searchTerm) {
         ContentResolver cr = getActivity().getContentResolver();
-        String columns[] ={ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                columns, ContactsContract.Contacts.DISPLAY_NAME+" LIKE "+DatabaseUtils.sqlEscapeString("%"+searchTerm+"%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+                columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
         if (cur.getCount() > 0) {
             mContactNames.clear();
             mContactPhotos.clear();
             while (cur.moveToNext()) {
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                if(photoURI!=null) {
+                if (photoURI != null) {
                     Uri thumbUri = Uri.parse(photoURI);
                     mContactPhotos.put(name, thumbUri);
                 }
             }
-            for(String s: mContactPhotos.keySet()){
+            for (String s : mContactPhotos.keySet()) {
                 mContactNames.add(s);
             }
         }
         cur.close();
     }
 
-    public void getMatchedBusinessList(String searchTerm){
+    public void getMatchedBusinessList(String searchTerm) {
         mBusinesses.clear();
-        for(int i=0; i < mOriginalBusinesses.size();i++) {
-            if(mOriginalBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())){
+        for (int i = 0; i < mOriginalBusinesses.size(); i++) {
+            if (mOriginalBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
                 int j = 0;
                 boolean flag = false;
-                while(!flag && j !=mBusinesses.size()){
-                    if(mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase())>0){
+                while (!flag && j != mBusinesses.size()) {
+                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase()) > 0) {
                         mBusinesses.add(j, mOriginalBusinesses.get(i));
                         flag = true;
                     }
                     j++;
                 }
-                if(j == mBusinesses.size() && !flag){
+                if (j == mBusinesses.size() && !flag) {
                     mBusinesses.add(mOriginalBusinesses.get(i));
                 }
             }
         }
     }
 
-    public void combineMatchLists(){
-        while(!mBusinesses.isEmpty() | !mContactNames.isEmpty()){
-            if(mBusinesses.isEmpty()){
+    public void combineMatchLists() {
+        while (!mBusinesses.isEmpty() | !mContactNames.isEmpty()) {
+            if (mBusinesses.isEmpty()) {
                 mCombined.add(mContactNames.get(0));
                 mContactNames.remove(0);
-            }else if(mContactNames.isEmpty()){
+            } else if (mContactNames.isEmpty()) {
                 mCombined.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
-            }else if(mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase())<0){
+            } else if (mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase()) < 0) {
                 mCombined.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
-            }else{
+            } else {
                 mCombined.add(mContactNames.get(0));
                 mContactNames.remove(0);
             }
         }
     }
 
-    public void goSearch(){
+    public void goSearch() {
         mCombined.clear();
         mOriginalBusinesses.clear();
         mBusinesses.clear();
-        if(locationEnabled) {
-            if(mLocationManager.getLocation() != null) {
+        if (locationEnabled) {
+            if (mLocationManager.getLocation() != null) {
                 mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
                 mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
-            }else{
+            } else {
                 mLocationManager.addLocationChangeListener(this);
             }
         }

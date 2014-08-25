@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.airbitz.R;
-import com.airbitz.fragments.HelpDialog;
 
 import java.io.File;
 
