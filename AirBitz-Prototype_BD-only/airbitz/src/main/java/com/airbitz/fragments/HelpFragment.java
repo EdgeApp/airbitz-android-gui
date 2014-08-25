@@ -3,6 +3,7 @@ package com.airbitz.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import com.airbitz.activities.NavigationActivity;
 /**
  * Created by tom 8/16/2014
  */
-public class HelpDialog extends Fragment {
+public class HelpFragment extends Fragment {
     public static final String INFO = "file:///android_asset/html/info.html";
     public static final String EXPORT_WALLET = "file:///android_asset/html/infoExportWallet.html";
     public static final String EXPORT_WALLET_OPTIONS = "file:///android_asset/html/infoExportWalletOptions.html";
@@ -34,13 +35,13 @@ public class HelpDialog extends Fragment {
     Spanned mHtml=null;
     String mFilePath=null;
 
-    public HelpDialog() {}
+    public HelpFragment() {}
 
-    public HelpDialog(Spanned html) {
+    public HelpFragment(Spanned html) {
         mHtml = html;
     }
 
-    public HelpDialog(String file) {
+    public HelpFragment(String file) {
             mFilePath = file;
     }
 
@@ -52,6 +53,7 @@ public class HelpDialog extends Fragment {
 
         if(mHtml!=null) {
             TextView tv = (TextView) v.findViewById(R.id.dialog_help_textview);
+            tv.setMovementMethod(LinkMovementMethod.getInstance());
             tv.setVisibility(View.VISIBLE);
             tv.setText(mHtml);
         } else {
