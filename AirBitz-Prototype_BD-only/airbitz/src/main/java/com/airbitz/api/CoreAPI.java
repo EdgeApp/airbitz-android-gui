@@ -2126,6 +2126,7 @@ public class CoreAPI {
         }
         else {
             Common.LogD(TAG, "URI parse failed!");
+            uri = null;
         }
 
         return uri;
