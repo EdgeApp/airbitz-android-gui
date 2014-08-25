@@ -340,6 +340,7 @@ public class WalletFragment extends Fragment
                 mSendButton.setEnabled(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
+                ((NavigationActivity) getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
                 ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
             }
         });
