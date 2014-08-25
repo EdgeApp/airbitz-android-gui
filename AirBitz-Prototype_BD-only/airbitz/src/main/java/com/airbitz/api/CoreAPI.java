@@ -859,9 +859,8 @@ public class CoreAPI {
             if (pv != 0) {
                 mID = super.getSzID();
                 mCountOutputs = super.getCountOutputs();
-                SWIGTYPE_p_int64_t temp = super.getTimeCreation(); //FIXME
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                mCreationTime = core.longp_value(p);
+                SWIGTYPE_p_int64_t temp = super.getTimeCreation();
+                mCreationTime = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(temp));
 
                 tABC_TxDetails txd = super.getPDetails();
                 mDetails = new TxDetails(tABC_TxDetails.getCPtr(txd));
@@ -871,7 +870,7 @@ public class CoreAPI {
                     mOutputs = new TxOutput[(int) mCountOutputs];
                     SWIGTYPE_p_long p2 = new pLong(a.getCPtr(a));
                     long base = core.longp_value(p2);
-                    for (int i = 0; i < mCountOutputs; ++i) {
+                    for (int i = 0; i < mCountOutputs; i++) {
                         mOutputs[i] = new TxOutput(base + i * 4);
                     }
                 }
@@ -900,8 +899,8 @@ public class CoreAPI {
         public TxOutput(long pv) {
             super(pv, false);
             if (pv != 0) {
-//                mInput = super.getInput();
-                mAddress = super.getSzAddress(); // FIXME
+                mInput = super.getInput();
+                mAddress = super.getSzAddress();
                 mTxId = super.getSzTxId();
                 mValue = get64BitLongAtPtr(pv + 1);
                 mIndex = get64BitLongAtPtr(pv + 17);
@@ -945,31 +944,12 @@ public class CoreAPI {
 
 
         public long getmAmountSatoshi() { return mAmountSatoshi; }
-        public void setmAmountSatoshi(long mAmountSatoshi) { this.mAmountSatoshi = mAmountSatoshi; }
 
         public long getmAmountFeesAirbitzSatoshi() { return mAmountFeesAirbitzSatoshi; }
-        public void setmAmountFeesAirbitzSatoshi(long mAmountFeesAirbitzSatoshi) { this.mAmountFeesAirbitzSatoshi = mAmountFeesAirbitzSatoshi; }
 
         public long getmAmountFeesMinersSatoshi() { return mAmountFeesMinersSatoshi; }
-        public void setmAmountFeesMinersSatoshi(long mAmountFeesMinersSatoshi) { this.mAmountFeesMinersSatoshi = mAmountFeesMinersSatoshi; }
 
         public double getmAmountCurrency() { return mAmountCurrency; }
-        public void setmAmountCurrency(double mAmountCurrency) { this.mAmountCurrency = mAmountCurrency; }
-
-        public String getmName() { return mName; }
-        public void setmName(String mName) { this.mName = mName; }
-
-        public long getmBizId() { return mBizId; }
-        public void setmBizId(int mBizId) { this.mBizId = mBizId; }
-
-        public String getmCategory() { return mCategory; }
-        public void setmCategory(String mCategory) { this.mCategory = mCategory; }
-
-        public String getmNotes() { return mNotes; }
-        public void setmNotes(String mNotes) { this.mNotes = mNotes; }
-
-        public int getmAttributes() { return mAttributes; }
-        public void setmAttributes(int mAttributes) { this.mAttributes = mAttributes; }
     }
 
     public double GetPasswordSecondsToCrack(String password) {
@@ -1055,11 +1035,11 @@ public class CoreAPI {
 
     }
 
-    public boolean SaveTransaction(Transaction transaction, tABC_TxDetails details) {
+    public tABC_CC SaveTransaction(Transaction transaction, tABC_TxDetails details) {
         tABC_Error Error = new tABC_Error();
         tABC_CC results = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 transaction.getWalletUUID(), transaction.getID(), details, Error);
-        return results==tABC_CC.ABC_CC_Ok;
+        return results;
     }
 
     public List<Transaction> searchTransactionsIn(Wallet wallet, String searchText) {
@@ -1118,8 +1098,7 @@ public class CoreAPI {
         details.setSzNotes(transaction.getNotes());
         details.setAmountCurrency(transaction.getAmountFiat());
 
-        result = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                transaction.getWalletUUID(), transaction.getID(), details, Error);
+        result = SaveTransaction(transaction, details);
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
@@ -1343,7 +1322,7 @@ public class CoreAPI {
     public long CurrencyToSatoshi(double currency, int currencyNum) {
         tABC_Error error = new tABC_Error();
         tABC_CC result;
-        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp(); //FIXME
+        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
 
         result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
@@ -1770,9 +1749,7 @@ public class CoreAPI {
             if (pv != 0) {
                 mName = super.getSzName();
                 mUUID = super.getSzUUID();
-                SWIGTYPE_p_int64_t temp = super.getBalanceSatoshi(); // FIXME - use custom 64 bit retrieve
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                mBalance = core.longp_value(p);
+                mBalance = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(super.getBalanceSatoshi()));
                 mCurrencyNum = super.getCurrencyNum();
                 mArchived = super.getArchived();
             }
@@ -2070,7 +2047,7 @@ public class CoreAPI {
     {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
-        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false); // FIXME
+        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false);
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
         core.ABC_MaxSpendable(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID,
             destAddress, bTransfer, result, Error);
@@ -2107,9 +2084,7 @@ public class CoreAPI {
         if (uri.getPtr(uri) != 0)
         {
             String uriAddress = uri.getSzAddress();
-            SWIGTYPE_p_int64_t temp = uri.getAmountSatoshi(); //FIXME
-            SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-            long amountSatoshi = core.longp_value(p);
+            long amountSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(uri.getAmountSatoshi()));
 
             if (uriAddress!=null) {
                 Common.LogD(TAG, "BitcoinURI address: "+uriAddress);
@@ -2143,9 +2118,7 @@ public class CoreAPI {
             if (pv != 0) {
                 address = super.getSzAddress();
                 label = super.getSzLabel();
-                SWIGTYPE_p_int64_t temp = super.getAmountSatoshi(); // FIXME
-                SWIGTYPE_p_long p = core.p64_t_to_long_ptr(temp);
-                amountSatoshi = core.longp_value(p);
+                amountSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(super.getAmountSatoshi()));
                 message = super.getSzMessage();
             }
         }
