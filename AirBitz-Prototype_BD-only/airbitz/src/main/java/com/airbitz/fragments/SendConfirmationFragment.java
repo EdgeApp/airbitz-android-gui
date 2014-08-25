@@ -612,15 +612,6 @@ public class SendConfirmationFragment extends Fragment {
                 }
 
                 mSuccessFragment.revokeSend(message);
-            } else {
-//                Bundle bundle = new Bundle();
-//                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-//                bundle.putString(Transaction.TXID, txResult.getString());
-//                bundle.putString(Wallet.WALLET_UUID, mFromWallet.getUUID());
-//                FragmentSourceEnum e = FragmentSourceEnum.SEND;
-//
-//                mActivity.switchToWallets(e, bundle);
-//                mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 
