@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
-    private final String SUCCESS_TITLE = "Change Password";
 
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
@@ -510,19 +509,19 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             ((NavigationActivity)getActivity()).showModalProgress(false);
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_via_questions_good));
                 } else {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_good));
+                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD) {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_bad));
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(SUCCESS_TITLE, getResources().getString(R.string.activity_signup_pin_change_bad));
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
         }
