@@ -498,7 +498,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                         mWithdrawalPinEditText.getText().toString(), "");
             }
             else {
-                success = mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+                mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+                success = tABC_CC.ABC_CC_Ok;
             }
 
             return success == tABC_CC.ABC_CC_Ok;
@@ -565,7 +566,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mAuthTask = null;
             ((NavigationActivity)getActivity()).showModalProgress(false);
             if (success) {
-                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword);
+                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.execute((Void) null);
             } else {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
@@ -584,11 +585,12 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
      */
     public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername, mPassword;
+        private final String mUsername, mPassword, mPin;
 
-        CreateFirstWalletTask(String username, String password) {
+        CreateFirstWalletTask(String username, String password, String pin) {
             mUsername = username;
             mPassword = password;
+            mPin = pin;
         }
 
         @Override
@@ -610,6 +612,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
+                mCoreAPI.SetUserPIN(mPin);
                 CreateDefaultCategories();
 
                 Fragment frag = new PasswordRecoveryFragment();
