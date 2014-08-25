@@ -237,7 +237,7 @@ public class ExportSavingOptionFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
+                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 

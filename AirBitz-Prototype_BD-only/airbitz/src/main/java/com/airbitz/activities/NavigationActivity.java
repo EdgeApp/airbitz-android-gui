@@ -28,7 +28,7 @@ import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
-import com.airbitz.fragments.HelpDialog;
+import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.RequestFragment;
@@ -271,7 +271,7 @@ public class NavigationActivity extends BaseActivity
         if(mNavThreadId==threadID) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpDialog)) {
+            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_left, R.anim.slide_in_from_right, R.anim.slide_out_left);
             }
             transaction.replace(R.id.activityLayout, fragment);
@@ -293,7 +293,7 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(mNavStacks[mNavThreadId].size()!=0 && !(fragment instanceof HelpDialog)) {
+        if(mNavStacks[mNavThreadId].size()!=0 && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_right, R.anim.slide_in_from_left, R.anim.slide_out_right);
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());

@@ -140,7 +140,7 @@ public class RequestQRCodeFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpDialog(HelpDialog.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
+                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
