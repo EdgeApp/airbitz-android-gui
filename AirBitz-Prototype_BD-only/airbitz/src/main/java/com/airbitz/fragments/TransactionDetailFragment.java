@@ -22,6 +22,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -708,6 +709,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     }
                 };
                 address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 SpannableStringBuilder full = new SpannableStringBuilder();
                 full.append(address);
                 full.append("\n");
@@ -738,7 +740,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(finalBaseUrl + mTransaction.getID()));
+                    i.setData(Uri.parse(finalBaseUrl + "/tx/" + mTransaction.getID()));
                     mActivity.startActivity(i);
                 }
             };
