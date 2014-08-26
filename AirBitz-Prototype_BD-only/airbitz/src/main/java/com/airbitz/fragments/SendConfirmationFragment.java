@@ -491,12 +491,14 @@ public class SendConfirmationFragment extends Fragment {
 
         @Override
         protected Long doInBackground(Void... params) {
+            Common.LogD(TAG, "Fee calculation started");
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
             return mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
         }
 
         @Override
         protected void onPostExecute(final Long fees) {
+            Common.LogD(TAG, "Fee calculation ended");
             if(getActivity()==null)
                 return;
             mCalculateFeesTask = null;
@@ -512,7 +514,12 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
-            Common.LogD(TAG, "Fee calculation error");
+            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+            mConversionTextView.setTextColor(Color.RED);
+            mBitcoinField.setTextColor(Color.RED);
+            mFiatField.setTextColor(Color.RED);
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
@@ -527,15 +534,6 @@ public class SendConfirmationFragment extends Fragment {
             String fiatFeeString = "+ "+mCoreAPI.formatCurrency(fiatFee, mSourceWallet.getCurrencyNum(), false);
             mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
-        }
-        else
-        {
-            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
-            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
-            mConversionTextView.setTextColor(Color.RED);
-            mBitcoinField.setTextColor(Color.RED);
-            mFiatField.setTextColor(Color.RED);
         }
         mAutoUpdatingTextFields = false;
     }
