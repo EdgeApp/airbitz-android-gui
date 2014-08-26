@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -95,6 +94,7 @@ public class SendConfirmationFragment extends Fragment {
     private Wallet mSourceWallet, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
+    private boolean mInsufficientFunds = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -514,6 +514,7 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
+            mInsufficientFunds=true;
             mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
@@ -523,6 +524,7 @@ public class SendConfirmationFragment extends Fragment {
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
+            mInsufficientFunds=false;
             mConversionTextView.setTextColor(Color.WHITE);
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);
@@ -543,10 +545,9 @@ public class SendConfirmationFragment extends Fragment {
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        if( !mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0) {
-            resetSlider();
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog("Invalid Amount", "Invalid Amount");
-        }else if(mAmountToSendSatoshi==0) {
+        if(mInsufficientFunds) {
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+        } else if (mAmountToSendSatoshi==0) {
             resetSlider();
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
@@ -590,13 +591,6 @@ public class SendConfirmationFragment extends Fragment {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
-
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-
-            mSuccessFragment = new SuccessFragment();
-            mSuccessFragment.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
         }
 
         @Override
@@ -624,8 +618,13 @@ public class SendConfirmationFragment extends Fragment {
                 } else {
                     message = failOtherMessage;
                 }
-
-                mSuccessFragment.revokeSend(message);
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
+            } else {
+                mSuccessFragment = new SuccessFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+                mSuccessFragment.setArguments(bundle);
+                ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 
