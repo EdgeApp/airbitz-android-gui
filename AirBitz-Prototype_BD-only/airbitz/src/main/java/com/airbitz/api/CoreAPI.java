@@ -1143,13 +1143,13 @@ public class CoreAPI {
 
     public String formatDefaultCurrency(double in) {
         String pre = mBTCSymbols[mCoreSettings.getBitcoinDenomination().getDenominationType()];
-        String out = String.format(" %.3f", in);
+        String out = String.format("%.3f", in);
         return pre+out;
     }
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
         String pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
-        String out = String.format(" %.3f", in);
+        String out = String.format("%.3f", in);
         return pre+out;
     }
 
