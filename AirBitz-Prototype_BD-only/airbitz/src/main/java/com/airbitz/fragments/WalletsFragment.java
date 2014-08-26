@@ -445,7 +445,7 @@ public class WalletsFragment extends Fragment
     public void addNewWallet(String name, int currencyNum){
         if(AirbitzApplication.isLoggedIn()) {
             mAddWalletTask = new AddWalletTask(name, currencyNum);
-            mAddWalletTask.execute((Void) null);
+            mAddWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
             Common.LogD(TAG, "not logged in");
         }

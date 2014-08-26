@@ -853,7 +853,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public void OnCurrentLocationChange(Location location) {
         mLocationManager.removeLocationChangeListener(this);
         mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
-        mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+        mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
     }
 
     class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
@@ -1001,7 +1001,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if (locationEnabled) {
             if (mLocationManager.getLocation() != null) {
                 mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
-                mBusinessSearchAsyncTask.execute(mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+                mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
             } else {
                 mLocationManager.addLocationChangeListener(this);
             }

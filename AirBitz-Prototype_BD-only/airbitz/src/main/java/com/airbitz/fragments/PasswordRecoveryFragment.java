@@ -135,7 +135,7 @@ public class PasswordRecoveryFragment extends Fragment {
         mPasswordRecoveryListView = (LinearLayout) mView.findViewById(R.id.activity_recovery_question_listview);
 
         mFetchAllQuestionsTask = new GetRecoveryQuestions();
-        mFetchAllQuestionsTask.execute((Void) null);
+        mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
         return mView;
     }
@@ -176,7 +176,7 @@ public class PasswordRecoveryFragment extends Fragment {
         if (allQuestionsSelected) {
             if (allAnswersValid) {
                 mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
-                mSaveQuestionsTask.execute((Void) null);
+                mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }

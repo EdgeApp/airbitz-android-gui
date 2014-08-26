@@ -352,7 +352,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 attemptSignUp();
             } else {
                 mChangeTask = new ChangeTask();
-                mChangeTask.execute((Void) null);
+                mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
         }
     }
@@ -576,7 +576,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             ((NavigationActivity)getActivity()).showModalProgress(false);
             if (success) {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
-                mCreateFirstWalletTask.execute((Void) null);
+                mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
             }
@@ -674,7 +674,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mWithdrawalPinEditText.setError(null);
 
         mAuthTask = new CreateAccountTask(username, password, pin);
-        mAuthTask.execute((Void) null);
+        mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     @Override
