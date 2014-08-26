@@ -244,7 +244,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchFragmentThread(int id) {
-        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE) {
+        if(!bdonly) {
             showNavBar();
         }
         Fragment frag = mNavStacks[id].peek();
@@ -362,7 +362,9 @@ public class NavigationActivity extends BaseActivity
             return;
         }
 
-
+        if(!bdonly) {
+            showNavBar();
+        }
         boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
 
         hideCalculator();
@@ -374,13 +376,6 @@ public class NavigationActivity extends BaseActivity
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(homeIntent);
-            }
-        } else {
-            if (fragment instanceof RequestQRCodeFragment) {
-                popFragment();
-                showNavBar();
-            } else {//needed or show nav before switching fragments
-                popFragment();
             }
         }
     }
