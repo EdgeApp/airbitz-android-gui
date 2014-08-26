@@ -237,6 +237,15 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             }
         });
 
+        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    ((NavigationActivity)getActivity()).showSoftKeyboard(mUserNameEditText);
+                }
+            }
+        });
+
         setupUI(getArguments());
 
         mUserNameEditText.requestFocus();
@@ -612,6 +621,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 AirbitzApplication.Login(mUsername, mPassword);
+                mCoreAPI.loadAccountSettings();
                 mCoreAPI.SetUserPIN(mPin);
                 CreateDefaultCategories();
 
