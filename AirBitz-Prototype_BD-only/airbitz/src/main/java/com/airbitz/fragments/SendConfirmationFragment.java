@@ -33,11 +33,13 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.Calculator;
+import com.airbitz.utils.Common;
 
 /**
  * Created on 2/21/14.
  */
 public class SendConfirmationFragment extends Fragment {
+    private final String TAG = getClass().getSimpleName();
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
@@ -214,7 +216,7 @@ public class SendConfirmationFragment extends Fragment {
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "PIN field focus changed");
+                Common.LogD(TAG, "PIN field focus changed");
                 if(hasFocus) {
                     mAutoUpdatingTextFields = true;
                     showPINkeyboard();
@@ -261,7 +263,7 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "Bitcoin field focus changed");
+                Common.LogD(TAG, "Bitcoin field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mBitcoinField);
@@ -275,7 +277,7 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "Fiat field focus changed");
+                Common.LogD(TAG, "Fiat field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
@@ -451,16 +453,23 @@ public class SendConfirmationFragment extends Fragment {
         MaxAmountTask() { }
 
         @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "Max calculation called");
+        }
+
+        @Override
         protected Long doInBackground(Void... params) {
+            Common.LogD(TAG, "Max calculation started");
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
             return mCoreAPI.maxSpendable(mSourceWallet.getUUID(), dest, mIsUUID);
         }
 
         @Override
         protected void onPostExecute(final Long max) {
+            Common.LogD(TAG, "Max calculation finished");
             mMaxAmountTask = null;
             if(max<0) {
-                Log.d("SendConfirmationFragment", "Max calculation error");
+                Common.LogD(TAG, "Max calculation error");
             }
             mAmountToSendSatoshi = max;
             mAutoUpdatingTextFields = true;
@@ -503,7 +512,7 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
-            Log.d("SendConfirmationFragment", "Fee calculation error");
+            Common.LogD(TAG, "Fee calculation error");
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
@@ -593,12 +602,19 @@ public class SendConfirmationFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "SEND called");
+        }
+
+        @Override
         protected CoreAPI.TxResult doInBackground(Void... params) {
+            Common.LogD(TAG, "Initiating SEND");
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
         @Override
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
+            Common.LogD(TAG, "SEND done");
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
