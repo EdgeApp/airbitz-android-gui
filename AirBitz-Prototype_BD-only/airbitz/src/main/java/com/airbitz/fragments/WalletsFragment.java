@@ -105,7 +105,6 @@ public class WalletsFragment extends Fragment
     private boolean mOnBitcoinMode = true;
 
     private List<Wallet> mLatestWalletList;
-    private List<Wallet> archivedWalletList;
 
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
@@ -131,10 +130,8 @@ public class WalletsFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
-        mLatestWalletList = mCoreAPI.loadWallets();
-        archivedWalletList = new ArrayList<Wallet>();
 
-        mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
+        mLatestWalletList = mCoreAPI.loadWallets();
     }
 
     @Override
@@ -457,13 +454,11 @@ public class WalletsFragment extends Fragment
     // Callback when the listview was reordered by the user
     @Override
     public void onListReordered() {
-        List<Wallet> list = mLatestWalletListView.mWalletList;
-        mCoreAPI.setWalletOrder(list);
+        mCoreAPI.setWalletOrder(mLatestWalletList);
         UpdateBalances();
     }
 
-    private void refreshWalletList(List<Wallet> list) {
-        mLatestWalletList = list;
+    private void refreshWalletList() {
         setupLatestWalletListView();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
@@ -471,7 +466,7 @@ public class WalletsFragment extends Fragment
     @Override
     public void onWalletUpdated() {
         Common.LogD(TAG, "Updating wallets");
-        refreshWalletList(mCoreAPI.loadWallets());
+        refreshWalletList();
         UpdateBalances();
     }
 
@@ -505,7 +500,8 @@ public class WalletsFragment extends Fragment
             if (!success) {
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
-                refreshWalletList(mCoreAPI.loadWallets());
+                mLatestWalletList = mCoreAPI.loadWallets();
+                refreshWalletList();
             }
             ((NavigationActivity)getActivity()).showModalProgress(false);
         }
@@ -587,8 +583,10 @@ public class WalletsFragment extends Fragment
             archiveClosed = false;
             archiveHeader.performClick();
         }
+
+        mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
-        refreshWalletList(mCoreAPI.loadWallets());
+        refreshWalletList();
         UpdateBalances();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);

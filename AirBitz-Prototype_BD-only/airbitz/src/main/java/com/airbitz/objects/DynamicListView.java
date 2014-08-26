@@ -499,12 +499,12 @@ public class DynamicListView extends ListView {
                 }
             });
             hoverViewAnimator.start();
+            // send the callback that the list was reordered
+            if(mOnListReordered!=null)
+                mOnListReordered.onListReordered();
         } else {
             touchEventsCancelled();
         }
-        // send the callback that the list was reordered
-        if(mOnListReordered!=null)
-            mOnListReordered.onListReordered();
     }
 
     // Callback interface when the list has been reordered
