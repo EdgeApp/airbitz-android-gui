@@ -483,8 +483,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
     @Override
     public void onBackPress() {
-        ((NavigationActivity)getActivity()).popFragment();
-        ((NavigationActivity) getActivity()).showNavBar();
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(getView());
+        ((NavigationActivity)getActivity()).Logout();
     }
 
     public class ChangeTask extends AsyncTask<Void, Void, Boolean> {
