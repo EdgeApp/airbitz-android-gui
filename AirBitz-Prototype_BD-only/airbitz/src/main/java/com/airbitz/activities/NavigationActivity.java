@@ -244,6 +244,9 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchFragmentThread(int id) {
+        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE) {
+            showNavBar();
+        }
         Fragment frag = mNavStacks[id].peek();
         if(frag.isAdded()) {
             Common.LogD("NavFrag", "Fragment already added");
@@ -293,7 +296,7 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(mNavStacks[mNavThreadId].size()!=0 && !(fragment instanceof HelpFragment)) {
+        if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_right, R.anim.slide_in_from_left, R.anim.slide_out_right);
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
