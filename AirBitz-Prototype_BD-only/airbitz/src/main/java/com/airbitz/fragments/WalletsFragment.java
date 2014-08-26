@@ -497,13 +497,13 @@ public class WalletsFragment extends Fragment
         @Override
         protected void onPostExecute(final Boolean success) {
             mAddWalletTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             if (!success) {
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
                 mLatestWalletList = mCoreAPI.loadWallets();
                 refreshWalletList();
             }
-            ((NavigationActivity)getActivity()).showModalProgress(false);
         }
 
         @Override
