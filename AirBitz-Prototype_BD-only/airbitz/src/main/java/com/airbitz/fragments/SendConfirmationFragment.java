@@ -439,7 +439,7 @@ public class SendConfirmationFragment extends Fragment {
         if(mCalculateFeesTask != null)
             mCalculateFeesTask.cancel(true);
         mCalculateFeesTask = new CalculateFeesTask();
-        mCalculateFeesTask.execute();
+        mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -544,7 +544,7 @@ public class SendConfirmationFragment extends Fragment {
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
-            mSendOrTransferTask.execute();
+            mSendOrTransferTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             finishSlider();
         } else {
             resetSlider();
