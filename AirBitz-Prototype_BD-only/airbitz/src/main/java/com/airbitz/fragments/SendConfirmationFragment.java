@@ -363,7 +363,7 @@ public class SendConfirmationFragment extends Fragment {
                 if(mMaxAmountTask!=null)
                     mMaxAmountTask.cancel(true);
                 mMaxAmountTask = new MaxAmountTask();
-                mMaxAmountTask.execute();
+                mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
