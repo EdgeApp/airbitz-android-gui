@@ -56,6 +56,8 @@
                 android:layout_marginTop="25.2dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:background="@drawable/rounded_edge_blue_bg">
 
 
@@ -70,12 +72,10 @@
                     android:inputType="textVisiblePassword"
                     android:paddingRight="12.6dp"
                     android:ems="10"
-                    android:textColorHint="#99DDDDDD"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="14sp"
                     android:paddingLeft="12.6dp"
-                    android:layout_marginTop="25.4dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"/>
+                    android:layout_marginTop="25.4dp"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:ems="10"
                     android:textColor="@android:color/white"
-                    android:textColorHint="#99DDDDDD"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="14sp"
                     android:paddingLeft="12.6dp"
                     android:layout_marginBottom="6.3dp"/>
@@ -132,7 +132,7 @@
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:ems="10"
                     android:textColor="@android:color/white"
-                    android:textColorHint="#99DDDDDD"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="14sp"
                     android:paddingLeft="12.6dp"
                     android:layout_marginTop="3dp"/>
@@ -162,6 +162,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="37.8dp"
                         android:textColor="@android:color/white"
+                        android:paddingLeft="12.6dp"
                         android:paddingRight="12.6dp"
                         android:selectAllOnFocus="true"
                         android:password="true"
@@ -170,7 +171,7 @@
                         android:background="@drawable/bg_edittext"
                         android:layout_weight="1"
                         android:hint="@string/activity_signup_pin_hint"
-                        android:textColorHint="#99DDDDDD"
+                        android:textColorHint="@color/text_hint"
                         android:textSize="14sp"
                         android:gravity="center" />
 
