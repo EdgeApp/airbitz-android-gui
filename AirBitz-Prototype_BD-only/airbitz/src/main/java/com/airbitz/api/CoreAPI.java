@@ -2066,21 +2066,14 @@ public class CoreAPI {
 
     public boolean recoveryAnswers(String strAnswers, String strUserName)
     {
-        boolean bValid = false;
-        boolean bABCValid = false;
-
-        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_int lp = core.new_intp();
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
         tABC_Error error = new tABC_Error();
         tABC_CC result = core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
         if (tABC_CC.ABC_CC_Ok == result)
         {
-            if (false) //need pbool result here
-            {
-                return true;
-            }
-            return false;
+            return core.intp_value(lp)==1;
         }
         else
         {
@@ -2090,10 +2083,9 @@ public class CoreAPI {
     }
 
 
-    public tABC_CC ChangePasswordWithRecoveryAnswers(String password, String pin, String recoveryAnswers) {
+    public tABC_CC ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers, String password, String pin) {
         tABC_Error Error = new tABC_Error();
-        return core.ABC_ChangePasswordWithRecoveryAnswers(AirbitzApplication.getUsername(),
-        recoveryAnswers, password, pin, null, null, Error);
+        return core.ABC_ChangePasswordWithRecoveryAnswers(username, recoveryAnswers, password, pin, null, null, Error);
     }
 
     public BitcoinURIInfo CheckURIResults(String results)

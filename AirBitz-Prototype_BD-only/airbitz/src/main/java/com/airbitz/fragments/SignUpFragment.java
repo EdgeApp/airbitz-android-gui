@@ -3,6 +3,8 @@ package com.airbitz.fragments;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -353,7 +356,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             } else {
                 if(mChangeTask==null) {
                     mChangeTask = new ChangeTask();
-                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getArguments().getString(PasswordRecoveryFragment.ANSWERS),
+                            getArguments().getString(PasswordRecoveryFragment.USERNAME));
                 }
             }
         }
@@ -492,7 +496,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             ((NavigationActivity)getActivity()).popFragment();
     }
 
-    public class ChangeTask extends AsyncTask<Void, Void, Boolean> {
+    public class ChangeTask extends AsyncTask<String, Void, Boolean> {
         tABC_CC success;
 
         @Override
@@ -501,15 +505,17 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(String... params) {
+            String answers=params[0];
+            String username=params[1];
             if (mMode == CHANGE_PASSWORD) {
                 mCoreAPI.stopWatchers();
                 success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
                 mCoreAPI.startWatchers();
             }
             else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mPasswordEditText.getText().toString(),
-                        mWithdrawalPinEditText.getText().toString(), "");
+                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(username, answers, mPasswordEditText.getText().toString(),
+                        mWithdrawalPinEditText.getText().toString());
             }
             else {
                 mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
@@ -524,18 +530,14 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             ((NavigationActivity)getActivity()).showModalProgress(false);
             mChangeTask=null;
             if (success) {
-                if (mMode == CHANGE_PASSWORD) {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
-                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_via_questions_good));
+                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else {
-                    ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
+                    ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
-                if (mMode == CHANGE_PASSWORD) {
+                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
-                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_via_questions_bad));
                 } else {
                     ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
@@ -683,8 +685,23 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void ShowMessageDialogSuccess(String title, String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                AirbitzApplication.Login(getArguments().getString(PasswordRecoveryFragment.USERNAME), mPasswordEditText.getText().toString());
+                                ((NavigationActivity)getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.BD.ordinal());
+                                ((NavigationActivity)getActivity()).UserJustLoggedIn();
+
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
+
+
 }

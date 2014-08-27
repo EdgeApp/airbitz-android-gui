@@ -190,7 +190,7 @@ public class LandingFragment extends Fragment {
             } else { // Some message or questions
                 String[] questions = questionString.split("\n");
                 if(questions.length > 1) { // questions came back
-                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString);
+                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if(questions.length == 1) { // Error string
                     Common.LogD(TAG, questionString);
                 }
