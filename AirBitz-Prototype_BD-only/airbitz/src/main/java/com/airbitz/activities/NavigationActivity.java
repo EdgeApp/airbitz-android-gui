@@ -638,6 +638,11 @@ public class NavigationActivity extends BaseActivity
         DisplayLoginOverlay(false);
     }
 
+    public void finishSignup() {
+        showNavBar();
+        switchFragmentThread(AirbitzApplication.getLastNavTab());
+    }
+
     public void Logout() {
         sendCredentialsToService(null, null);
         AirbitzApplication.Logout();
