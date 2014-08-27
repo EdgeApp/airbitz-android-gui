@@ -10,6 +10,7 @@
 %pointer_functions(long, longp);
 %pointer_functions(int64_t, int64_tp);
 %pointer_functions(double, doublep);
+%pointer_functions(bool, boolp);
 
 %include typemaps.i
 %apply char * { unsigned char * }

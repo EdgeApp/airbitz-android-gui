@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,7 +55,7 @@ public class ForgotPasswordFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_forgot_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
 
         Bundle bundle = getArguments();
         if(bundle !=null) {

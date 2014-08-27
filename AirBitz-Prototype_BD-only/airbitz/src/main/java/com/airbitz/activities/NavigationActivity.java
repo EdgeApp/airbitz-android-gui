@@ -31,6 +31,7 @@ import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
+import com.airbitz.fragments.PasswordRecoveryFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.RequestQRCodeFragment;
 import com.airbitz.fragments.SendFragment;
@@ -629,6 +630,17 @@ public class NavigationActivity extends BaseActivity
         mCoreAPI.startAllAsyncUpdates();
         mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+    }
+
+    public void startRecoveryQuestions(String questions) {
+        hideNavBar();
+        Bundle bundle = new Bundle();
+        bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
+        bundle.putString(PasswordRecoveryFragment.QUESTIONS,  questions);
+        Fragment frag = new PasswordRecoveryFragment();
+        frag.setArguments(bundle);
+        pushFragmentNoAnimation(frag, mNavThreadId);
+        DisplayLoginOverlay(false);
     }
 
     public void startSignUp() {

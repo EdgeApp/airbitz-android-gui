@@ -351,8 +351,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (mMode == SIGNUP) {
                 attemptSignUp();
             } else {
-                mChangeTask = new ChangeTask();
-                mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                if(mChangeTask==null) {
+                    mChangeTask = new ChangeTask();
+                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                }
             }
         }
     }
@@ -520,6 +522,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onPostExecute(final Boolean success) {
             ((NavigationActivity)getActivity()).showModalProgress(false);
+            mChangeTask=null;
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
                     ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
