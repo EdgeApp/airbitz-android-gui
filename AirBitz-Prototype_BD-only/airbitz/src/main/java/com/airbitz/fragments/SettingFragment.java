@@ -33,8 +33,12 @@ import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 2/12/14.
@@ -103,13 +107,6 @@ public class SettingFragment extends Fragment {
 
         mCoreAPI = CoreAPI.getApi();
         mCoreSettings = mCoreAPI.loadAccountSettings();
-
-        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
-        mUSDExchangeItems = getResources().getStringArray(R.array.usd_exchange_array);
-        mCanadianExchangeItems = getResources().getStringArray(R.array.canadian_exchange_array);
-        mEuroExchangeItems = getResources().getStringArray(R.array.euro_exchange_array);
-        mPesoExchangeItems = getResources().getStringArray(R.array.peso_exchange_array);
-        mYuanExchangeItems = getResources().getStringArray(R.array.yuan_exchange_array);
     }
 
 
@@ -330,22 +327,22 @@ public class SettingFragment extends Fragment {
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
-        String[] exchangeSources = new String[mExchanges.size()];
+        Set<String> exchangeSources = new HashSet<String>();
         for(int i=0; i<mExchanges.size(); i++) {
-            exchangeSources[i] = mExchanges.get(i).getSource();
+            exchangeSources.add(mExchanges.get(i).getSource());
         }
+        String[] exchanges = exchangeSources.toArray(new String[exchangeSources.size()]);
 
-        //TODO for all exhange buttons, sub core call for default for 0
         mUSDollarButton.setText(exchangeForCurrencyNum(840));
-        mUSDExchangeItems = exchangeSources;
+        mUSDExchangeItems = exchanges;
         mCanadianDollarButton.setText(exchangeForCurrencyNum(124));
-        mCanadianExchangeItems = exchangeSources;
+        mCanadianExchangeItems = exchanges;;
         mEuroButton.setText(exchangeForCurrencyNum(978));
-        mEuroExchangeItems = exchangeSources;
+        mEuroExchangeItems = exchanges;;
         mPesoButton.setText(exchangeForCurrencyNum(484));
-        mPesoExchangeItems = exchangeSources;
+        mPesoExchangeItems = exchanges;;
         mYuanButton.setText(exchangeForCurrencyNum(156));
-        mYuanExchangeItems = exchangeSources;
+        mYuanExchangeItems = exchanges;;
     }
 
     // searches the exchanges in the settings for the exchange associated with the given currency number
