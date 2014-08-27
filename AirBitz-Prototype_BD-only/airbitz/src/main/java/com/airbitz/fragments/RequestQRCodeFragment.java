@@ -2,6 +2,9 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -114,6 +117,13 @@ public class RequestQRCodeFragment extends Fragment {
             }
         });
 
+        mCopyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                copyToClipboard();
+            }
+        });
+
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,6 +220,12 @@ public class RequestQRCodeFragment extends Fragment {
         canvas.drawPaint(p);
         canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
         return imageBitmap;
+    }
+
+    private void copyToClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("bitcoin address", mAddress);
+        clipboard.setPrimaryClip(clip);
     }
 
     private void startSMS() {
