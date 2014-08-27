@@ -599,8 +599,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if (mFromSend || mFromRequest) {
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mPayeeEditText.requestFocus();
         }
 
         return view;
