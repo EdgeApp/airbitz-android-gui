@@ -537,7 +537,7 @@ public class PasswordRecoveryFragment extends Fragment {
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ((NavigationActivity)getActivity()).popFragment();
-                        ((NavigationActivity)getActivity()).showNavBar();
+                        ((NavigationActivity)getActivity()).finishSignup();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
