@@ -88,6 +88,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mLabel;
     private Boolean mIsUUID;
     private long mAmountToSendSatoshi;
+    private long mFees;
 
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -432,7 +433,7 @@ public class SendConfirmationFragment extends Fragment {
                 currency = Double.valueOf(mFiatField.getText().toString());
                 satoshi = mCoreAPI.CurrencyToSatoshi(currency, mSourceWallet.getCurrencyNum());
                 mAmountToSendSatoshi = satoshi;
-                int currencyDecimalPlaces = 2; //TODO where does this come from?
+                int currencyDecimalPlaces = 2;
                 mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
             }
             catch(NumberFormatException e) {  } //not a double, ignore
@@ -487,7 +488,10 @@ public class SendConfirmationFragment extends Fragment {
     private CalculateFeesTask mCalculateFeesTask;
     public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
 
-        CalculateFeesTask() { }
+        @Override
+        protected void onPreExecute() {
+            mSlideLayout.setEnabled(false);
+        }
 
         @Override
         protected Long doInBackground(Void... params) {
@@ -502,7 +506,9 @@ public class SendConfirmationFragment extends Fragment {
             if(getActivity()==null)
                 return;
             mCalculateFeesTask = null;
+            mFees = fees;
             UpdateFeeFields(fees);
+            mSlideLayout.setEnabled(true);
         }
 
         @Override
@@ -545,7 +551,7 @@ public class SendConfirmationFragment extends Fragment {
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        if(mInsufficientFunds) {
+        if((mFees+mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
         } else if (mAmountToSendSatoshi==0) {
