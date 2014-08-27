@@ -378,7 +378,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
                 ((NavigationActivity)getActivity()).UserJustLoggedIn();
-                ((NavigationActivity)getActivity()).ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_error_title), getString(R.string.activity_recovery_done_details));
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
             }
         }
 
@@ -626,7 +626,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     @Override
     public void onResume() {
         super.onResume();
-        mQuestionViews.get(0).requestFocus();
+        if(mQuestionViews!=null && !mQuestionViews.isEmpty())
+            mQuestionViews.get(0).requestFocus();
     }
 }
 
