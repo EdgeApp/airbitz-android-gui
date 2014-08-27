@@ -150,8 +150,8 @@
                     android:background="@drawable/btn_blue"/>
 
                 <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_landing_forgot_password_layout"
-                    android:visibility="gone"
+                    android:id="@+id/fragment_landing_forgot_password_button"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

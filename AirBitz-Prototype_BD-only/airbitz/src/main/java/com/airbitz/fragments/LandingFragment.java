@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,9 +24,12 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.utils.Common;
 
 public class LandingFragment extends Fragment {
+    private final String TAG = getClass().getSimpleName();
 
     private RelativeLayout mLandingLayout;
 
@@ -41,17 +44,18 @@ public class LandingFragment extends Fragment {
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
 
+    private CoreAPI mCoreAPI;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
 
@@ -65,8 +69,7 @@ public class LandingFragment extends Fragment {
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
         HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
-//        TextView mForgotPasswordTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_password_textview);
-        HighlightOnPressButton mForgotPasswordLayout = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_layout);
+        HighlightOnPressButton mForgotPasswordButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_button);
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
         mLeftArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowleft_imageview);
@@ -77,8 +80,6 @@ public class LandingFragment extends Fragment {
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-//        mForgotPasswordTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-
 
         final View activityRootView = view.findViewById(R.id.fragment_landing_container);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -88,7 +89,7 @@ public class LandingFragment extends Fragment {
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     mDetailTextView.setVisibility(View.GONE);
                     mSwipeTextLayout.setVisibility(View.GONE);
-                    if(activityRootView.getHeight() < (int)getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)){
+                    if (activityRootView.getHeight() < (int) getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)) {
                         mLogoImageView.setVisibility(View.GONE);
                     }
                 } else {
@@ -99,17 +100,14 @@ public class LandingFragment extends Fragment {
             }
         });
 
-        mForgotPasswordLayout.setOnClickListener(new View.OnClickListener() {
+        mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mUserNameEditText.getText().toString().isEmpty()){
+                if (mUserNameEditText.getText().toString().isEmpty()) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("",
                             getResources().getString(R.string.fragment_forgot_no_username_title));
-                }else {
-//                    Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
-//                    intent.putExtra(SignUpActivity.KEY_USERNAME, mUserNameEditText.getText().toString());
-//                    startActivity(intent);
-                    // TODO
+                } else {
+                    attemptForgotPassword();
                 }
             }
         });
@@ -117,11 +115,8 @@ public class LandingFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(!mPasswordEditText.getText().toString().isEmpty() && !mUserNameEditText.getText().toString().isEmpty()){
-                    mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
-                    mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
-                }
+                ((NavigationActivity)getActivity()).hideSoftKeyboard(mPasswordEditText);
+                ((NavigationActivity)getActivity()).hideSoftKeyboard(mUserNameEditText);
                 attemptLogin();
             }
         });
@@ -162,6 +157,55 @@ public class LandingFragment extends Fragment {
 
         return view;
     }
+
+    private void attemptForgotPassword() {
+        mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
+        mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
+    }
+
+    /**
+     * Represents an asynchronous question fetch task
+     */
+    private GetRecoveryQuestionsTask mRecoveryQuestionsTask;
+    public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        public void onPreExecute() {
+            ((NavigationActivity)getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String questionString) {
+            ((NavigationActivity)getActivity()).showModalProgress(false);
+
+            mRecoveryQuestionsTask = null;
+
+            if(questionString==null) {
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog("No Recovery Questions", "This user does not have any recovery questions set!");
+            } else { // Some message or questions
+                String[] questions = questionString.split("\n");
+                if(questions.length > 1) { // questions came back
+                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString);
+                } else if(questions.length == 1) { // Error string
+                    Common.LogD(TAG, questionString);
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mRecoveryQuestionsTask = null;
+            ((NavigationActivity)getActivity()).showModalProgress(false);
+        }
+
+    }
+
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.

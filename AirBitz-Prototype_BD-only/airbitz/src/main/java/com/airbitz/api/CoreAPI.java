@@ -640,25 +640,24 @@ public class CoreAPI {
         if (result == tABC_CC.ABC_CC_Ok) {
             long lp = core.longp_value(plong);
             QuestionChoices qcs = new QuestionChoices(lp);
-            long num = qcs.getNumChoices();
             mChoices = qcs.getChoices();
         }
         return mChoices;
     }
 
-    public QuestionChoice[] GetRecoveryQuestions() {
-
-        QuestionChoice[] mChoices = null;
+    public String GetRecoveryQuestionsForUser(String username) {
         tABC_Error pError = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        tABC_CC result = core.ABC_GetRecoveryQuestions(AirbitzApplication.getUsername(), ppChar, pError);
-        if (result == tABC_CC.ABC_CC_Ok) {
-            String questions = getStringAtPtr(core.longp_value(lp));
+        tABC_CC result = core.ABC_GetRecoveryQuestions(username, ppChar, pError);
+        String questionString = getStringAtPtr(core.longp_value(lp));
+        if (result == tABC_CC.ABC_CC_Ok || result == tABC_CC.ABC_CC_NoRecoveryQuestions) {
+            return questionString; // will be null for NoRecoveryQuestions
+        } else {
+            return pError.getSzDescription() +";"+ pError.getSzSourceFile() +";"+ pError.getSzSourceFunc() +";"+ pError.getNSourceLine();
         }
-        return mChoices;
     }
 
     public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers) {
@@ -2064,6 +2063,32 @@ public class CoreAPI {
         return core.ABC_ChangePassword(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
             password, oldPIN, null, null, Error);
     }
+
+    public boolean recoveryAnswers(String strAnswers, String strUserName)
+    {
+        boolean bValid = false;
+        boolean bABCValid = false;
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+        tABC_Error error = new tABC_Error();
+        tABC_CC result = core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
+        if (tABC_CC.ABC_CC_Ok == result)
+        {
+            if (false) //need pbool result here
+            {
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            Common.LogD(TAG, error.toString());
+            return false;
+        }
+    }
+
 
     public tABC_CC ChangePasswordWithRecoveryAnswers(String password, String pin, String recoveryAnswers) {
         tABC_Error Error = new tABC_Error();
