@@ -316,7 +316,7 @@
                     android:layout_height="44.1dp"
                     android:text="@string/export_saving_print_label"
                     android:textColor="#005f96"
-                    android:background="@drawable/wallet_list_top"
+                    android:background="@drawable/wallet_list_top_archive"
                     android:drawableRight="@drawable/arrow_right"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
