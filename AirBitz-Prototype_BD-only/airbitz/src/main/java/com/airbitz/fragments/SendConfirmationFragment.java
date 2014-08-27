@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,11 +32,13 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.Calculator;
+import com.airbitz.utils.Common;
 
 /**
  * Created on 2/21/14.
  */
 public class SendConfirmationFragment extends Fragment {
+    private final String TAG = getClass().getSimpleName();
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
@@ -93,6 +94,7 @@ public class SendConfirmationFragment extends Fragment {
     private Wallet mSourceWallet, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
+    private boolean mInsufficientFunds = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -214,7 +216,7 @@ public class SendConfirmationFragment extends Fragment {
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "PIN field focus changed");
+                Common.LogD(TAG, "PIN field focus changed");
                 if(hasFocus) {
                     mAutoUpdatingTextFields = true;
                     showPINkeyboard();
@@ -261,7 +263,7 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "Bitcoin field focus changed");
+                Common.LogD(TAG, "Bitcoin field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mBitcoinField);
@@ -275,7 +277,7 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d("SendConfirmationFragment", "Fiat field focus changed");
+                Common.LogD(TAG, "Fiat field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
@@ -363,7 +365,7 @@ public class SendConfirmationFragment extends Fragment {
                 if(mMaxAmountTask!=null)
                     mMaxAmountTask.cancel(true);
                 mMaxAmountTask = new MaxAmountTask();
-                mMaxAmountTask.execute();
+                mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -439,7 +441,7 @@ public class SendConfirmationFragment extends Fragment {
         if(mCalculateFeesTask != null)
             mCalculateFeesTask.cancel(true);
         mCalculateFeesTask = new CalculateFeesTask();
-        mCalculateFeesTask.execute();
+        mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -451,16 +453,23 @@ public class SendConfirmationFragment extends Fragment {
         MaxAmountTask() { }
 
         @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "Max calculation called");
+        }
+
+        @Override
         protected Long doInBackground(Void... params) {
+            Common.LogD(TAG, "Max calculation started");
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
             return mCoreAPI.maxSpendable(mSourceWallet.getUUID(), dest, mIsUUID);
         }
 
         @Override
         protected void onPostExecute(final Long max) {
+            Common.LogD(TAG, "Max calculation finished");
             mMaxAmountTask = null;
             if(max<0) {
-                Log.d("SendConfirmationFragment", "Max calculation error");
+                Common.LogD(TAG, "Max calculation error");
             }
             mAmountToSendSatoshi = max;
             mAutoUpdatingTextFields = true;
@@ -482,12 +491,14 @@ public class SendConfirmationFragment extends Fragment {
 
         @Override
         protected Long doInBackground(Void... params) {
+            Common.LogD(TAG, "Fee calculation started");
             String dest = mIsUUID ? mToWallet.getUUID() : mUUIDorURI;
             return mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
         }
 
         @Override
         protected void onPostExecute(final Long fees) {
+            Common.LogD(TAG, "Fee calculation ended");
             if(getActivity()==null)
                 return;
             mCalculateFeesTask = null;
@@ -503,10 +514,17 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
-            Log.d("SendConfirmationFragment", "Fee calculation error");
+            mInsufficientFunds=true;
+            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
+            mConversionTextView.setTextColor(Color.RED);
+            mBitcoinField.setTextColor(Color.RED);
+            mFiatField.setTextColor(Color.RED);
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
+            mInsufficientFunds=false;
             mConversionTextView.setTextColor(Color.WHITE);
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);
@@ -519,15 +537,6 @@ public class SendConfirmationFragment extends Fragment {
             mFiatDenominationTextView.setText(fiatFeeString+" "+mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mSourceWallet.getCurrencyNum()));
         }
-        else
-        {
-            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
-            mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-            mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
-            mConversionTextView.setTextColor(Color.RED);
-            mBitcoinField.setTextColor(Color.RED);
-            mFiatField.setTextColor(Color.RED);
-        }
         mAutoUpdatingTextFields = false;
     }
 
@@ -536,15 +545,14 @@ public class SendConfirmationFragment extends Fragment {
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        if( !mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString())<0) {
-            resetSlider();
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog("Invalid Amount", "Invalid Amount");
-        }else if(mAmountToSendSatoshi==0) {
+        if(mInsufficientFunds) {
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+        } else if (mAmountToSendSatoshi==0) {
             resetSlider();
             ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
-            mSendOrTransferTask.execute();
+            mSendOrTransferTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             finishSlider();
         } else {
             resetSlider();
@@ -583,22 +591,22 @@ public class SendConfirmationFragment extends Fragment {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
+        }
 
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-
-            mSuccessFragment = new SuccessFragment();
-            mSuccessFragment.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
+        @Override
+        protected void onPreExecute() {
+            Common.LogD(TAG, "SEND called");
         }
 
         @Override
         protected CoreAPI.TxResult doInBackground(Void... params) {
+            Common.LogD(TAG, "Initiating SEND");
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
         @Override
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
+            Common.LogD(TAG, "SEND done");
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
@@ -610,8 +618,13 @@ public class SendConfirmationFragment extends Fragment {
                 } else {
                     message = failOtherMessage;
                 }
-
-                mSuccessFragment.revokeSend(message);
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
+            } else {
+                mSuccessFragment = new SuccessFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+                mSuccessFragment.setArguments(bundle);
+                ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 

@@ -238,7 +238,7 @@ public class WalletFragment extends Fragment
                         UpdateTransactionsListView(mAllTransactions);
                     } else {
                         mSearchTask = new SearchTask();
-                        mSearchTask.execute(editable.toString());
+                        mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, editable.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
