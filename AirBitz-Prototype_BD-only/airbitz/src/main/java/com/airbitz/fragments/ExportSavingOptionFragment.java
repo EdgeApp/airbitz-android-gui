@@ -114,8 +114,6 @@ public class ExportSavingOptionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         today = Calendar.getInstance();
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
