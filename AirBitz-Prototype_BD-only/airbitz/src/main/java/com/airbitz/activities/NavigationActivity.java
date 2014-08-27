@@ -632,11 +632,12 @@ public class NavigationActivity extends BaseActivity
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 
-    public void startRecoveryQuestions(String questions) {
+    public void startRecoveryQuestions(String questions, String username) {
         hideNavBar();
         Bundle bundle = new Bundle();
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
-        bundle.putString(PasswordRecoveryFragment.QUESTIONS,  questions);
+        bundle.putString(PasswordRecoveryFragment.ANSWERS, questions);
+        bundle.putString(PasswordRecoveryFragment.USERNAME,  username);
         Fragment frag = new PasswordRecoveryFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);

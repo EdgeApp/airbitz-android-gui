@@ -104,7 +104,8 @@
     <string name="activity_signup_years">years</string>
 
     <!-- Strings for PasswordRecovery -->
-    <string name="activity_recovery_title">Password Recovery Setup</string>
+    <string name="activity_recovery_setup_title">Password Recovery Setup</string>
+    <string name="activity_recovery_title">Password Recovery</string>
     <string name="activity_recovery_skip_button_text">Skip This Step</string>
     <string name="activity_recovery_complete_button">Complete Sign Up</string>
     <string name="activity_recovery_complete_button_change_questions">Done</string>

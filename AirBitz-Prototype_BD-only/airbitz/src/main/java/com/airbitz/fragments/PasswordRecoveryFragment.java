@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -44,7 +43,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private final String TAG = getClass().getSimpleName();
 
     public static final String MODE = "com.airbitz.passwordrecovery.type";
-    public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
+    public static final String ANSWERS = "com.airbitz.passwordrecovery.questions";
+    public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static int SIGN_UP=0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
@@ -52,7 +52,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     private enum QuestionType { STRING, NUMERIC }
     public final String UNSELECTED_QUESTION = "Question";
-
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
@@ -128,11 +127,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mMode==SIGN_UP || mMode==CHANGE_QUESTIONS) {
-                    AttemptSignupOrChange();
-                } else {
-                    AttemptRecoverPassword();
-                }
+                AttemptSignupOrChange();
             }
         });
 
@@ -149,9 +144,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             mFetchAllQuestionsTask = new GetRecoveryQuestions();
             mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
-            String questions = getArguments().getString(QUESTIONS);
-            if(questions!=null) {
-                String[] choices = questions.split("\n");
+            mTitleTextView.setText(getString(R.string.activity_recovery_title));
+            String answers = getArguments().getString(ANSWERS);
+            if(answers!=null) {
+                String[] choices = answers.split("\n");
                 InitializeRecoveryViews(choices);
             }
         }
@@ -208,7 +204,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
                     mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 } else {
-                    recoverWithAnswers(answers);
+                    AttemptAnswerVerificationTask task = new AttemptAnswerVerificationTask();
+                    task.execute(answers, getArguments().getString(USERNAME));
                 }
             } else {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
@@ -218,9 +215,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
     }
 
-    private void recoverWithAnswers(String answers) {
-
-    }
 
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<QuestionView>();
@@ -257,39 +251,46 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mPasswordRecoveryListView.invalidate();
     }
 
-    private void AttemptRecoverPassword() {
-//        //verify that all six questions have been selected
-//        boolean allQuestionsSelected = true;
-//        boolean allAnswersValid = true;
-//        String answers = "";
-//
-//        int count = 0;
-//        for (View view : mQuestionViews) {
-//            //verify that all six answers have achieved their minimum character limit
-//            if (qaView.getText().length() < qaView.getMinimumCharacters()) {
-//                allAnswersValid = false;
-//            } else {
-//                //add question and answer to arrays
-//                if (count != 0) {
-//                    questions += "\n";
-//                    answers += "\n";
-//                }
-//                questions += qaView.getSelectedQuestion();
-//                answers += qaView.getText();
-//            }
-//            count++;
-//        }
-//        if (allQuestionsSelected) {
-//            if (allAnswersValid) {
-//                mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
-//                mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-//            } else {
-//                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
-//            }
-//        } else {
-//            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
-//        }
+    /**
+     * Attempt to verify answers
+     */
+    public class AttemptAnswerVerificationTask extends AsyncTask<String, Void, Boolean> {
+        private String username;
+        private String answers;
+        @Override
+        public void onPreExecute() {
+            ((NavigationActivity)getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            answers = params[0];
+            username = params[1];
+            boolean result = mCoreAPI.recoveryAnswers(answers, username);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            ((NavigationActivity)getActivity()).showModalProgress(false);
+
+            if (success) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_VIA_QUESTIONS);
+                bundle.putString(PasswordRecoveryFragment.ANSWERS,  answers);
+                bundle.putString(PasswordRecoveryFragment.USERNAME,  getArguments().getString(USERNAME));
+                Fragment frag = new SignUpFragment();
+                frag.setArguments(bundle);
+                ((NavigationActivity)getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
+            } else {
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog("Wrong Answers", "The given answers were incorrect. Please try again.");
+            }
+        }
+
+        @Override
+        protected void onCancelled() { ((NavigationActivity)getActivity()).showModalProgress(false); }
     }
+
 
     /**
      * Represents an asynchronous question fetch task
@@ -622,5 +623,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         alertDialog.show();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQuestionViews.get(0).requestFocus();
+    }
 }
 
