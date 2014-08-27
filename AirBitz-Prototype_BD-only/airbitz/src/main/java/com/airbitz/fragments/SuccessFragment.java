@@ -90,11 +90,6 @@ public class SuccessFragment extends Fragment {
         return mView;
     }
 
-    public void revokeSend(String error) {
-        mHandler.removeCallbacks(mSendAnimationRunner);
-        ((NavigationActivity)getActivity()).ShowMessageDialogBackPress("Error during send", error);
-    }
-
     Runnable mSendAnimationRunner = new Runnable() {
         int count = 0;
 

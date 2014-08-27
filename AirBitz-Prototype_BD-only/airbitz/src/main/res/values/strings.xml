@@ -173,8 +173,6 @@
     <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
-    <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_failure_insufficient_funds">You do not have enough funds to send this transaction.</string>
@@ -187,6 +185,10 @@
     <string name="send_confirmation_max_button_title">Max</string>
     <string name="send_confirmation_enter_send_pin">Enter Send Pin</string>
     <string name="send_confirmation_slide_to_confirm">Slide to Confirm</string>
+    <string name="fragment_send_confirmation_send_error_title">Error during send</string>
+    <string name="fragment_send_confirmation_insufficient_funds">You do not have enough funds to send this transaction.</string>
+    <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
+
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>

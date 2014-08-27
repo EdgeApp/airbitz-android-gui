@@ -103,7 +103,7 @@ public class ForgotPasswordFragment extends Fragment {
         mItemsLayout = (LinearLayout) view.findViewById(R.id.forgot_questions_layout);
 
         mFetchQuestionsTask = new FetchQuestionsTask(mUsername);
-        mFetchQuestionsTask.execute((Void) null);
+        mFetchQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
         return view;
     }

@@ -1143,13 +1143,13 @@ public class CoreAPI {
 
     public String formatDefaultCurrency(double in) {
         String pre = mBTCSymbols[mCoreSettings.getBitcoinDenomination().getDenominationType()];
-        String out = String.format(" %.3f", in);
+        String out = String.format("%.3f", in);
         return pre+out;
     }
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
         String pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
-        String out = String.format(" %.3f", in);
+        String out = String.format("%.3f", in);
         return pre+out;
     }
 
@@ -2000,77 +2000,47 @@ public class CoreAPI {
         return result;
     }
 
-    private Map<String, StartWatcherTask> mWatcherTasks = new HashMap<String, StartWatcherTask>();
+    private Map<String, Thread> mWatcherTasks = new HashMap<String, Thread>();
     public void startWatchers()
     {
         List<Wallet> wallets = getCoreWallets();
         for (Wallet w : wallets) {
             if(!mWatcherTasks.containsKey(w.getUUID())) {
-                StartWatcherTask watcherTask = new StartWatcherTask();
-                mWatcherTasks.put(w.getUUID(), watcherTask);
-                watcherTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, w.getUUID());
+                Thread thread = new Thread(new WatcherRunnable(w.getUUID()));
+                mWatcherTasks.put(w.getUUID(), thread);
+                thread.start();
                 Common.LogD(TAG, "Started watcher for "+w.getUUID());
             }
         }
     }
 
-    // This async task never returns from the background. It must be cancelled
-    public class StartWatcherTask extends AsyncTask<String, Void, Void> {
-        public String uuid;
-        StartWatcherTask() { }
+    private class WatcherRunnable implements Runnable {
+        private final String uuid;
 
-        @Override
-        protected void onPreExecute() {
-            Common.LogD(TAG, "StartWatcherTask starting");
+        WatcherRunnable(final String uuid) {
+            this.uuid = uuid;
         }
 
-        @Override
-        protected Void doInBackground(String... params) {
-            uuid = params[0];
+        public void run() {
             tABC_Error error = new tABC_Error();
 
-            Common.LogD(TAG, "Going to call WatcherStart");
             core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-            Common.LogD(TAG, "Going to call WatchAddresses");
             core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-            Common.LogD(TAG, "Going to call WatcherLoop");
             int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
-            Common.LogD(TAG, "Returned from WatcherLoop");
-            return null;
         }
     }
 
     public void stopWatchers()
     {
-        mStopWatchersTask = new StopWatchersTask();
-        mStopWatchersTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private StopWatchersTask mStopWatchersTask;
-    public class StopWatchersTask extends AsyncTask<Void, Void, Void> {
-        StopWatchersTask() { }
-
-        @Override
-        protected Void doInBackground(Void... params) {
             tABC_Error Error = new tABC_Error();
-            Common.LogD(TAG, "StopWatchersTask called");
             Set set = mWatcherTasks.keySet();
             Iterator i = set.iterator();
             while(i.hasNext()) {
                 String uuid = (String)i.next();
                 core.ABC_WatcherStop(uuid , Error);
-                mWatcherTasks.get(uuid).cancel(true);
+                mWatcherTasks.get(uuid).interrupt();
                 mWatcherTasks.remove(uuid);
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            Common.LogD(TAG, "StopWatchersTask finished");
-            mWatcherTasks.clear();
-            mStopWatchersTask = null;
-        }
     }
 
     public long maxSpendable(String walletUUID, String destAddress, boolean bTransfer)
