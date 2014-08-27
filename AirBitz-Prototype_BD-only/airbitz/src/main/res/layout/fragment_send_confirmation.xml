@@ -56,14 +56,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_category_layout_header"
-            android:paddingTop="18.9dp"
-            android:paddingLeft="18.9dp"
-            android:paddingRight="18.9dp">
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <RelativeLayout
                 android:id="@+id/layout_send_confirmation"
                 android:layout_width="match_parent"
-                android:layout_height="195.3dp"
+                android:layout_height="180dp"
                 android:paddingTop="12.6dp"
                 android:background="@drawable/emboss_down"
                 android:gravity="center_horizontal">
@@ -71,7 +71,7 @@
                 <LinearLayout
                     android:id="@+id/layout_from"
                     android:layout_width="match_parent"
-                    android:layout_height="18.9dp"
+                    android:layout_height="19dp"
                     android:orientation="horizontal"
                     android:weightSum="3"
                     android:gravity="center_vertical">
@@ -85,10 +85,10 @@
                         android:textColor="@android:color/white"
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:layout_weight="2"
                         android:layout_gravity="right"
-                        android:textStyle="bold"/>
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/textview_from_name"
@@ -97,11 +97,11 @@
                         android:text="My Wallet"
                         android:singleLine="true"
                         android:textColorHint="@android:color/white"
-                        android:textStyle="bold"
+                        android:textStyle="normal"
                         android:background="@android:color/transparent"
                         android:gravity="left|center_vertical"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:layout_weight="1"/>
 
                 </LinearLayout>
@@ -113,8 +113,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="18.9dp"
                     android:orientation="horizontal"
-                    android:layout_marginTop="12.6dp"
-                    android:layout_marginBottom="12.6dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="11dp"
                     android:weightSum="3"
                     android:gravity="center_vertical">
 
@@ -127,10 +127,10 @@
                         android:textColor="@android:color/white"
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:layout_weight="2"
                         android:layout_gravity="right"
-                        android:textStyle="bold"/>
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/textview_to_name"
@@ -139,11 +139,11 @@
                         android:text="John"
                         android:singleLine="true"
                         android:textColorHint="@android:color/white"
-                        android:textStyle="bold"
+                        android:textStyle="normal"
                         android:background="@android:color/transparent"
                         android:gravity="left|center_vertical"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:layout_weight="1"/>
 
                 </LinearLayout>
@@ -155,20 +155,20 @@
                     android:layout_height="34.65dp"
                     android:orientation="horizontal"
                     android:layout_marginTop="0dp"
-                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginBottom="6.0dp"
                     android:layout_marginRight="12.6dp"
                     android:layout_marginLeft="12.6dp"
                     android:background="@drawable/bg_edittext"
                     android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/send_confirmation_btc_sign"
-                        android:layout_width="wrap_content"
+                        android:layout_width="42dp"
                         android:layout_height="34.65dp"
                         android:gravity="center_vertical|left"
-                        android:paddingLeft="8dp"
+                        android:paddingLeft="10dp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:textSize="22sp"
+                        android:textSize="17sp"
                         android:text="B"/>
                     <TextView
                         android:id="@+id/send_confirmation_btc_denomination"
@@ -191,11 +191,11 @@
                         android:layout_toRightOf="@id/send_confirmation_btc_sign"
                         android:layout_toLeftOf="@id/send_confirmation_btc_denomination"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:paddingLeft="6.3dp"
+                        android:paddingLeft="4dp"
                         android:paddingRight="6.3dp"
                         android:textColor="@android:color/white"
                         android:background="@android:color/transparent"
-                        android:gravity="center"/>
+                        android:gravity="center_vertical|left"/>
 
                 </RelativeLayout>
 
@@ -213,13 +213,13 @@
                     android:gravity="center_vertical">
                     <TextView
                         android:id="@+id/send_confirmation_fiat_sign"
-                        android:layout_width="wrap_content"
+                        android:layout_width="42dp"
                         android:layout_height="34.65dp"
                         android:gravity="center_vertical|left"
-                        android:paddingLeft="8dp"
+                        android:paddingLeft="10dp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:textSize="22sp"
+                        android:textSize="17sp"
                         android:text="$"/>
                     <TextView
                         android:id="@+id/send_confirmation_fiat_denomination"
@@ -242,11 +242,11 @@
                         android:layout_toRightOf="@id/send_confirmation_fiat_sign"
                         android:layout_toLeftOf="@id/send_confirmation_fiat_denomination"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:paddingLeft="6.3dp"
+                        android:paddingLeft="4dp"
                         android:paddingRight="6.3dp"
                         android:textColor="@android:color/white"
                         android:background="@android:color/transparent"
-                        android:gravity="center"/>
+                        android:gravity="center_vertical|left"/>
                 </RelativeLayout>
 
                 <TextView
@@ -258,8 +258,8 @@
                     android:singleLine="true"
                     android:gravity="center_vertical"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3.15dp"
+                    android:textSize="15sp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="25.4dp"/>
 
                 <com.airbitz.objects.HighlightOnPressButton
@@ -268,10 +268,11 @@
                     android:layout_height="18.9dp"
                     android:layout_below="@+id/layout_to"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="12.6dp"
+                    android:layout_marginRight="16dp"
                     android:textColor="@android:color/white"
                     android:text="@string/send_confirmation_max_button_title"
                     android:textSize="12sp"
+                    android:layout_marginBottom="2dp"
                     android:background="@drawable/bg_btn_green"/>
 
 
@@ -296,7 +297,7 @@
                     android:textColor="@android:color/white"
                     android:paddingRight="20dp"
                     android:gravity="center_vertical|right"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:layout_weight="1"/>
 
                 <EditText
