@@ -2037,9 +2037,9 @@ public class CoreAPI {
             Iterator i = set.iterator();
             while(i.hasNext()) {
                 String uuid = (String)i.next();
-                core.ABC_WatcherStop(uuid , Error);
-                mWatcherTasks.get(uuid).interrupt();
-                mWatcherTasks.remove(uuid);
+//                core.ABC_WatcherStop(uuid , Error); // Causes thread crash on Android
+//                mWatcherTasks.get(uuid).interrupt();
+//                mWatcherTasks.remove(uuid);
             }
     }
 
