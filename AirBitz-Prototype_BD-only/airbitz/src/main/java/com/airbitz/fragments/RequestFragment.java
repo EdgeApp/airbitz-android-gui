@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -77,6 +78,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         mWallets = new ArrayList<Wallet>();
         List<Wallet> temp = mCoreAPI.getCoreWallets();
+        FakeBitmapTask task = new FakeBitmapTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         for(Wallet wallet: temp){
             if(!wallet.isArchived()){
                 mWallets.add(wallet);
@@ -364,6 +367,15 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         if(mSelectedWallet!=null) {
             setConversionText(mSelectedWallet.getCurrencyNum());
             updateTextFieldContents(true);
+        }
+    }
+
+    // THis is here only because the first call takes a long time, so making a faux call before QR code gets it
+    public class FakeBitmapTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", "0");
+            return null;
         }
     }
 }

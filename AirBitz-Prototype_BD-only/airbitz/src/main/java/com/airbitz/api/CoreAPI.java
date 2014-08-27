@@ -1538,7 +1538,7 @@ public class CoreAPI {
             {
                 Common.LogD(TAG, "CalcSendFees error: "+error.getSzDescription());
             }
-            return -1; //TODO is this ok for insufficient funds?
+            return -1; // Insufficient funds or error
         }
         totalFees = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(fees));
         return totalFees;
