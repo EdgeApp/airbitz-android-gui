@@ -77,15 +77,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-        mWallets = new ArrayList<Wallet>();
-        List<Wallet> temp = mCoreAPI.getCoreWallets();
         FakeBitmapTask task = new FakeBitmapTask();
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        for(Wallet wallet: temp){
-            if(!wallet.isArchived()){
-                mWallets.add(wallet);
-            }
-        }
+        loadNonArchivedWallets();
         String uuid = null;
         Bundle bundle = getArguments();
         if(bundle!=null && bundle.getString(FROM_UUID)!=null) {
@@ -355,7 +349,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     @Override public void onResume() {
         super.onResume();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        loadNonArchivedWallets();
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
         setConversionText(mSelectedWallet.getCurrencyNum());
@@ -384,6 +378,19 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", "0");
             }
             return null;
+        }
+    }
+
+    private void loadNonArchivedWallets() {
+        mWallets = new ArrayList<Wallet>();
+        List<Wallet> temp = mCoreAPI.getCoreWallets();
+        for(Wallet wallet: temp){
+            if(!wallet.isArchived()){
+                mWallets.add(wallet);
+            }
+        }
+        if( pickWalletSpinner!=null && pickWalletSpinner.getAdapter() != null) {
+            ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
         }
     }
 }
