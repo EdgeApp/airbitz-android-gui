@@ -130,7 +130,7 @@ public class WalletFragment extends Fragment
             mView = inflater.inflate(R.layout.fragment_wallet, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
-            return mView;
+//            return mView;
         }
 
         mOnBitcoinMode = true;
@@ -518,8 +518,11 @@ public class WalletFragment extends Fragment
 
     @Override public void onResume(){
         super.onResume();
+        mCoreAPI = CoreAPI.getNewInstance();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
+        mWallet = mCoreAPI.getWallet(mWallet.getUUID());
+        UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
         UpdateWalletTotalBalance();
         mRequestButton.setEnabled(true);
         mSendButton.setEnabled(true);

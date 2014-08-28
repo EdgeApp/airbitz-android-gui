@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +91,6 @@ public class WalletsFragment extends Fragment
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
-//    private ImageView mBottomCoin;
     private TextView mBottomType;
     private TextView mTopType;
 
@@ -116,13 +114,6 @@ public class WalletsFragment extends Fragment
     public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
             R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
-//    public static int[] mCurrencyTypeWhiteDrawables = {R.drawable.ico_usd_white, R.drawable.ico_usd_white,
-//            R.drawable.ico_usd_white, R.drawable.ico_usd_white, R.drawable.ico_usd_white,
-//            R.drawable.ico_usd_white, R.drawable.ico_usd_white};
-//    public static int[] mCurrencyCoinDarkDrawables = {R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark,
-//            R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark, R.drawable.ico_coin_usd_dark};
-//    public static int[] mCurrencyTypeDarkDrawables = {R.drawable.ico_usd_dark, R.drawable.ico_usd_dark,
-//            R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark, R.drawable.ico_usd_dark};
 
     private AddWalletTask mAddWalletTask;
 
@@ -148,7 +139,7 @@ public class WalletsFragment extends Fragment
             mView = inflater.inflate(R.layout.fragment_wallets, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
-            return mView;
+//            return mView;
         }
 
         mOnBitcoinMode = true;
@@ -158,8 +149,6 @@ public class WalletsFragment extends Fragment
 
         mCurrencyList = new ArrayList<String>();
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestWalletList);
 
@@ -463,7 +452,7 @@ public class WalletsFragment extends Fragment
         UpdateBalances();
     }
 
-    private void refreshWalletList() {
+    private void refreshWalletListView() {
         setupLatestWalletListView();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
@@ -471,7 +460,7 @@ public class WalletsFragment extends Fragment
     @Override
     public void onWalletUpdated() {
         Common.LogD(TAG, "Updating wallets");
-        refreshWalletList();
+        refreshWalletListView();
         UpdateBalances();
     }
 
@@ -507,7 +496,7 @@ public class WalletsFragment extends Fragment
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
                 mLatestWalletList = mCoreAPI.loadWallets();
-                refreshWalletList();
+                refreshWalletListView();
             }
         }
 
@@ -589,9 +578,12 @@ public class WalletsFragment extends Fragment
             archiveHeader.performClick();
         }
 
+        mCoreAPI = CoreAPI.getNewInstance();
+        mLatestWalletList = mCoreAPI.loadWallets();
+        mLatestWalletAdapter.notifyDataSetChanged();
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
-        refreshWalletList();
+        refreshWalletListView();
         UpdateBalances();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);

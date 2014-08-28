@@ -66,6 +66,10 @@ public class CoreAPI {
         return mInstance;
     }
 
+    public static CoreAPI getNewInstance() {
+        return new CoreAPI();
+    }
+
     public native String getStringAtPtr(long pointer);
     public native byte[] getBytesAtPtr(long pointer, int length);
     public native long get64BitLongAtPtr(long pointer);
