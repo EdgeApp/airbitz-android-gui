@@ -158,6 +158,13 @@
     <string name="settings_button_logout">Log Out</string>
     <string name="settings_button_cancel">Cancel</string>
     <string name="settings_button_done">Done</string>
+    <string name="settings_categories_add_new">Add New</string>
+
+    <string name="settings_categories_expense">Expense:</string>
+    <string name="settings_categories_income">Income:</string>
+    <string name="settings_categories_transfer">Transfer:</string>
+    <string name="settings_categories_exchange">Exchange:</string>
+
 
     <!-- Strings for AutoLogoff Dialog -->
     <string name="dialog_days">Days</string>

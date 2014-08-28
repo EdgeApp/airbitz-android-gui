@@ -58,16 +58,10 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
 
         final int pos = position;
 
-        /*if(pos == needFocusPosition && needFocus){
-            mCategoryName.requestFocus();
-        }*/
-
         mCategoryName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    //needFocus = true;
-                    //needFocusPosition = pos;
                     System.out.println("Cat name has focus");
                     mPopUpViews.get(0).setText(mCurrentCategories.get(pos));
                     mPopUpViews.get(0).requestFocus();
@@ -78,28 +72,10 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
                             mCurrentPosPopUp.add(mCategories.indexOf(s));
                         }
                     }
-                }else{
-
                 }
             }
         });
 
-        mCategoryName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
         HighlightOnPressButton mDeleteButton = (HighlightOnPressButton) convertView.findViewById(R.id.category_delete);
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
