@@ -92,6 +92,7 @@ public class DirectoryDetailFragment extends Fragment {
 
     private GetBusinessDetailTask mTask;
 
+    View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -105,7 +106,11 @@ public class DirectoryDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+        }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
