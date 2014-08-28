@@ -47,6 +47,8 @@ public class ForgotPasswordFragment extends Fragment {
 
     private CoreAPI mCoreAPI;
 
+    View view;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -55,7 +57,12 @@ public class ForgotPasswordFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        if(view==null) {
+            view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        } else {
+            ((ViewGroup) view.getParent()).removeView(view);
+            return view;
+        }
 
         Bundle bundle = getArguments();
         if(bundle !=null) {

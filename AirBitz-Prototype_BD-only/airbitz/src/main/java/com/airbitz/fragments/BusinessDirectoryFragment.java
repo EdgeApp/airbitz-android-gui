@@ -179,6 +179,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             view = inflater.inflate(R.layout.fragment_business_directory, container, false);
         } else {
             ((ViewGroup) view.getParent()).removeView(view);
+            return view;
         }
 
         checkLocationManager();

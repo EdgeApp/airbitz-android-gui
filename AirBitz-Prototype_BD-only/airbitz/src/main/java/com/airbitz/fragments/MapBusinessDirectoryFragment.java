@@ -72,7 +72,7 @@ import java.util.List;
  * Created by Thomas Baker on 4/22/14.
  */
 public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener,
-        CurrentLocationManager.OnLocationChange {//implements GestureDetector.OnGestureListener {
+        CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
 
     private GoogleMap mGoogleMap;
@@ -95,10 +95,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     int mapHeight;
 
     private LinearLayout mDragLayout;
-    private FrameLayout mFrameLayout;
     private TextView mTitleTextView;
     private ListView mSearchListView;
-    //private ViewAnimator mViewAnimator;
 
     private LinearLayout mMapLayout;
 
@@ -129,8 +127,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private String mBusinessType;
     private Bundle mVenueBundle;
 
-    //private GestureDetector mGestureDetector;
-
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
     private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
     private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
@@ -151,7 +147,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
-
 
     VenueFragment mFragmentVenue;
 
@@ -189,16 +184,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         } else {
             ((ViewGroup) view.getParent()).removeView(view);
             reloaded = true;
-        }
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        checkLocationManager();
-        if(locationEnabled && mLocationManager.getLocation() != null){
-            System.out.println("!YaY! Location isn't null!");
-            mCurrentLocation = mLocationManager.getLocation();
-        }else{
-            System.out.println("!BOO! Location is null!");
         }
 
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
@@ -456,10 +441,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
         });
 
-        if(!reloaded) {
-            search();
-        }
-
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
@@ -675,6 +656,15 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     @Override
     public void onResume(){
         checkLocationManager();
+        if(locationEnabled && mLocationManager.getLocation() != null){
+            Common.LogD(TAG, "!YaY! Location isn't null!");
+            mCurrentLocation = mLocationManager.getLocation();
+        }else{
+            Common.LogD(TAG, "!BOO! Location is null!");
+        }
+        if(!reloaded) {
+            search();
+        }
         super.onResume();
     }
 
@@ -687,14 +677,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             locationEnabled = true;
         }
     }
-
-//    @Override public void onBackPressed() {
-//        if (mViewAnimator.getDisplayedChild() == 1) {
-//            showViewAnimatorChild(0);
-//        } else {
-////            super.onBackPressed();
-//        }
-//    }
 
     private void initializeMap(){//MapView mapView) {//todo
         //if (mGoogleMap == null) {
@@ -826,7 +808,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override public void onCameraChange(CameraPosition cameraPosition) {
-                System.out.println("");
                 if (mCameraChangeListenerEnabled) {
                     LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     LatLng southWestLatLng = latLngBounds.southwest;
@@ -1218,7 +1199,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
-                System.out.println("New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
+                Common.LogD(TAG, "New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     mVenues = results.getBusinessSearchObjectArray();
                     if(mGoogleMap == null){

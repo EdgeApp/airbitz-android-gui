@@ -98,6 +98,7 @@ public class SettingFragment extends Fragment {
     private String[] mYuanExchangeItems;
 
     private CoreAPI mCoreAPI;
+    private View mView;
     private tABC_AccountSettings mCoreSettings;
 
     @Override
@@ -113,7 +114,12 @@ public class SettingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_setting, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_setting, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);

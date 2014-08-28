@@ -54,9 +54,12 @@ public class SuccessFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_received_success, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
             return mView;
-        mView = inflater.inflate(R.layout.fragment_received_success, container, false);
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

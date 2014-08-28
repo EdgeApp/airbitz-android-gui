@@ -95,7 +95,8 @@ public class SendConfirmationFragment extends Fragment {
     private Wallet mSourceWallet, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
-    private boolean mInsufficientFunds = true;
+
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +121,12 @@ public class SendConfirmationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
@@ -520,7 +526,6 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
-            mInsufficientFunds=true;
             mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
@@ -530,7 +535,6 @@ public class SendConfirmationFragment extends Fragment {
         }
         else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
         {
-            mInsufficientFunds=false;
             mConversionTextView.setTextColor(Color.WHITE);
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);

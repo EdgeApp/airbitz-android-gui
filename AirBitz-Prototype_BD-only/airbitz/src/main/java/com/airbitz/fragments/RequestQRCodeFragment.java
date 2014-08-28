@@ -78,6 +78,7 @@ public class RequestQRCodeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
+        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
     }
 
     @Override
@@ -91,9 +92,13 @@ public class RequestQRCodeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_request_qrcode, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
-        mView = inflater.inflate(R.layout.fragment_request_qrcode, container, false);
         ((NavigationActivity)getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);

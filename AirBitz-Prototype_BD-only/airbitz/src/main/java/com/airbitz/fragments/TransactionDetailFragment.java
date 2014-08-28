@@ -138,11 +138,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private Calculator mCalculator;
 
-    private CoreAPI mCoreAPI;
     private Wallet mWallet;
     private Transaction mTransaction;
 
     private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
+
+    private CoreAPI mCoreAPI;
+    private View mView;
     private NavigationActivity mActivity;
 
     @Override
@@ -190,7 +192,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -203,35 +210,35 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
-        popupTriangle = view.findViewById(R.id.fragment_transactiondetail_listview_triangle);
+        popupTriangle = mView.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
-        mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
-        mAdvanceDetailsButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_advanced);
+        mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
+        mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
-        mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
-        mToFromName = (TextView) view.findViewById(R.id.transaction_detail_textview_to_wallet);
-        mBitcoinValueTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_value);
-        mBTCFeeTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_btc_fee_value);
-        mDateTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_date);
+        mTitleTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_title);
+        mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
+        mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
+        mBitcoinValueTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_value);
+        mBTCFeeTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_btc_fee_value);
+        mDateTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_date);
 
-        mFiatValueEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_dollar_value);
-        mFiatDenominationLabel = (TextView) view.findViewById(R.id.transaction_detail_textview_currency_sign);
-        mBitcoinSignTextview = (TextView) view.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
+        mFiatValueEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_dollar_value);
+        mFiatDenominationLabel = (TextView) mView.findViewById(R.id.transaction_detail_textview_currency_sign);
+        mBitcoinSignTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
-        mNoteEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_notes);
-        mCategoryEdittext = (EditText) view.findViewById(R.id.transaction_detail_edittext_category);
+        mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
+        mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
 
-        mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_back);
-        mHelpButton = (HighlightOnPressImageButton) view.findViewById(R.id.transaction_detail_button_help);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_back);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_help);
 
-        mSentDetailLayout = (LinearLayout) view.findViewById(R.id.layout_sent_detail);
-        mNoteDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_note);
-        mNameDetailLayout = (RelativeLayout) view.findViewById(R.id.transaction_detail_layout_name);
+        mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
+        mNoteDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_note);
+        mNameDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
 
-        mDummyFocus = view.findViewById(R.id.fragment_transactiondetail_dummy_focus);
+        mDummyFocus = mView.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
-        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
+        mSearchListView = (ListView) mView.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
         mOriginalBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
@@ -242,7 +249,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         goSearch();
 
-        mCategoryListView = (ListView) view.findViewById(R.id.listview_category);
+        mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
 
         mCategories = mCoreAPI.loadCategories();
         mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
@@ -600,7 +607,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         }
 
-        return view;
+        return mView;
     }
 
     private void showPayeeSearch(boolean hasFocus) {
