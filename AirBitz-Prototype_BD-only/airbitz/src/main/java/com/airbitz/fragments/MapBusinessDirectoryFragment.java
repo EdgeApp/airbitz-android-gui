@@ -15,7 +15,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -109,7 +108,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private float aPosY;
     int aPosBottom=-10000;
 
-    private float dY;
     private static final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
 
@@ -120,7 +118,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private LocationAdapter mLocationAdapter;
 
-    private Intent mIntent = null;
     private int[] locSticky = {0,0};
     private int[] locFrame = {0,0};
 
@@ -138,7 +135,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
     private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
 
-    private int mWindowHeight = 0;
 
     private List<BusinessSearchResult> mVenues;
     private static String mLocationWords = "";
@@ -146,7 +142,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private boolean mCameraChangeListenerEnabled = false;
 
     private List<LatLng> mMarkersLatLngList;
-    private float mDragBarThreshold;
 
     private CurrentLocationManager mLocationManager;
 
@@ -160,9 +155,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     VenueFragment mFragmentVenue;
 
-    private double mDensity;
-
     int dragBarHeight = 0;
+    private boolean reloaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -186,10 +180,16 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mLocationManager.addLocationChangeListener(this);
     }
 
+    View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map_business_directory_2, container, false);
+        if(view==null) {
+            view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
+        } else {
+            ((ViewGroup) view.getParent()).removeView(view);
+            reloaded = true;
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -456,9 +456,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             }
         });
 
-        //initializeMap();//(MapView) view.findViewById(R.id.map_view));
-
-        search();
+        if(!reloaded) {
+            search();
+        }
 
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -507,12 +507,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         //Common.LogD(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
-                        dY = event.getY(0);
 
                         Display display = getActivity().getWindowManager().getDefaultDisplay();
                         Point size = new Point();
                         display.getSize(size);
-                        mWindowHeight = size.y;
 
                         aPosY = llListContainer.getHeight();
                         aPosBottom = llListContainer.getBottom();
@@ -593,7 +591,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
 
     private void search() {
-        int timeout = 15000;
         if (mLocationName.equalsIgnoreCase("Current Location")) {
             if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                 mGetVenuesAsyncTask.cancel(true);
@@ -617,7 +614,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         mGetVenuesAsyncTask.cancel(true);
                     }
                 }
-            }, timeout);
+            }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
         } else {
             if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                 mGetVenuesAsyncTask.cancel(true);
@@ -634,7 +631,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-            }, timeout);
+            }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
         }
         mDummyFocus.requestFocus();
     }
@@ -671,6 +668,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
+        //TODO save locations
         super.onPause();
     }
 
@@ -697,11 +695,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 ////            super.onBackPressed();
 //        }
 //    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 
     private void initializeMap(){//MapView mapView) {//todo
         //if (mGoogleMap == null) {

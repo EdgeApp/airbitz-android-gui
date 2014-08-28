@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -58,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Thomas Baker on 4/22/14.
+ * Created by tom on 4/22/14.
  */
 public class BusinessDirectoryFragment extends Fragment implements
         ObservableScrollView.ScrollViewListener,
@@ -80,13 +79,11 @@ public class BusinessDirectoryFragment extends Fragment implements
     private TextView mNearYouTextView;
     private TextView mNearYouTextViewSticky;
 
-    private boolean wentSettings = false;
 
     private LinearLayout mBusinessLayout;
     private LinearLayout mNearYouContainer;
 
     private boolean mLoadingVisible = true;
-    private boolean mSearchVisible = true;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -98,7 +95,6 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private boolean locationEnabled = false;
 
-    private RelativeLayout mParentLayout;
 
     private RelativeLayout mVenueFragmentLayout;
 
@@ -122,12 +118,10 @@ public class BusinessDirectoryFragment extends Fragment implements
     private static String mLocationWords = "";
     private static String mBusinessType = "business";
 
-    private Intent mIntent;
 
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private LocationAdapter mLocationAdapter;
 
-    public final static String CATEGORY = "CATEGORY";
     public final static String LOCATION = "LOCATION";
     public final static String BUSINESS = "BUSINESS";
     public final static String BUSINESSTYPE = "BUSINESSTYPE";
@@ -155,9 +149,7 @@ public class BusinessDirectoryFragment extends Fragment implements
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
-    private ProgressDialog mProgressDialog;
     private ProgressDialog mMoreCategoriesProgressDialog;
-    private boolean mIsMoreCategoriesProgressRunning = false;
 
     private BusinessScrollListener mBusinessScrollListener;
 
@@ -165,7 +157,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         void onScrollEnded();
     }
 
-    public boolean getSearchVisible(){ return mSearchVisible; }
+    protected static int CATEGORY_TIMEOUT = 15000;
+    Handler mHandler = new Handler();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -177,13 +171,17 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
+    View view;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_business_directory, container, false);
+        if(view==null) {
+            view = inflater.inflate(R.layout.fragment_business_directory, container, false);
+        } else {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
 
         checkLocationManager();
-
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -231,8 +229,6 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
         }
 
-
-
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scroll_view);
         mScrollView.setScrollViewListener(this);
         mScrollView.setContext(getActivity());
@@ -252,7 +248,6 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mNearYouTextView = (TextView) view.findViewById(R.id.textview_nearyou);
         mNearYouTextViewSticky = (TextView) view.findViewById(R.id.textview_nearyou_sticky);
-        mParentLayout = (RelativeLayout) view.findViewById(R.id.layout_parent);
 
         mViewGroupLoading = (ViewGroup) view.findViewById(R.id.ViewGroup_loading);
         mLoadingText = (TextView) view.findViewById(R.id.TextView_loading);
@@ -269,12 +264,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         mNearYouTextViewSticky.setTypeface(montserratRegularTypeFace);
         mLoadingText.setTypeface(montserratRegularTypeFace);
 
-        mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
-        mMoreCategoriesProgressDialog = new ProgressDialog(getActivity());
-
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                mIsMoreCategoriesProgressRunning = true;
+                mMoreCategoriesProgressDialog = new ProgressDialog(getActivity());
                 mMoreCategoriesProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mMoreCategoriesProgressDialog.setMessage("Retrieving data...");
                 mMoreCategoriesProgressDialog.setIndeterminate(true);
@@ -284,31 +276,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         });
 
         try {
-            mBusinessCategoryAsynctask.execute("level");
+            mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
+            mBusinessCategoryAsynctask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "level");
+            mHandler.postDelayed(mProgressTimeout, CATEGORY_TIMEOUT);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        int timeout = 15000;
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            @Override public void run() {
-                if (mIsMoreCategoriesProgressRunning) {
-                    mMoreCategoriesProgressDialog.dismiss();
-                }
-                // mMoreButton.setOnClickListener(new View.OnClickListener() {
-                // @Override public void onClick(View view) {
-                // Toast.makeText(getApplicationContext(),
-                // "No categories retrieved from server",
-                // Toast.LENGTH_LONG).show();
-                // }
-                // });
-            }
-        }, timeout);
-
         mRestaurantButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(BUSINESS, ((TextView) view).getText().toString());
                 bundle.putString(LOCATION, "");
@@ -372,7 +349,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
                     mBackButton.setVisibility(View.VISIBLE);
-                    mSearchVisible=true;
 
                     // mBusinessList.clear();
                     // mBusinessSearchAdapter.notifyDataSetChanged();
@@ -442,7 +418,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
                 mLocationField.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
-                mSearchVisible=true;
                 mBackButton.setVisibility(View.VISIBLE);
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
@@ -487,7 +462,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mSearchListView.setAdapter(mLocationAdapter);
                     mSearchListView.setVisibility(View.VISIBLE);
                     mBackButton.setVisibility(View.VISIBLE);
-                    mSearchVisible=true;
 
                     // Search
 
@@ -541,7 +515,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                         mDummyFocusLayout.requestFocus();
                         mLocationField.setVisibility(View.GONE);
                         mSearchListView.setVisibility(View.GONE);
-                        mSearchVisible=false;
                         mBackButton.setVisibility(View.GONE);
                         mBusinessLayout.setVisibility(View.VISIBLE);
                         mNearYouContainer.setVisibility(View.VISIBLE);
@@ -572,7 +545,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                         mDummyFocusLayout.requestFocus();
                         mLocationField.setVisibility(View.GONE);
                         mSearchListView.setVisibility(View.GONE);
-                        mSearchVisible=false;
                         mBackButton.setVisibility(View.GONE);
                         mBusinessLayout.setVisibility(View.VISIBLE);
                         mNearYouContainer.setVisibility(View.VISIBLE);
@@ -605,7 +577,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
-                mSearchVisible=true;
                 mBusinessLayout.setVisibility(View.GONE);
                 mNearYouContainer.setVisibility(View.GONE);
                 mViewGroupLoading.setVisibility(View.GONE);
@@ -685,6 +656,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         return view;
     }
 
+    Runnable mProgressTimeout = new Runnable()
+    {
+        @Override public void run() {
+            if (mMoreCategoriesProgressDialog!=null && mMoreCategoriesProgressDialog.isShowing()) {
+                mMoreCategoriesProgressDialog.dismiss();
+            }
+            mMoreCategoriesProgressDialog=null;
+        }
+    };
+
     @Override
     public void OnCurrentLocationChange(Location location) {
         // TODO - anything to do here?
@@ -758,7 +739,6 @@ public class BusinessDirectoryFragment extends Fragment implements
             mDummyFocusLayout.requestFocus();
             mLocationField.setVisibility(View.GONE);
             mSearchListView.setVisibility(View.GONE);
-            mSearchVisible=false;
             mBusinessLayout.setVisibility(View.VISIBLE);
             mNearYouContainer.setVisibility(View.VISIBLE);
             mBackButton.setVisibility(View.GONE);
@@ -921,14 +901,14 @@ public class BusinessDirectoryFragment extends Fragment implements
                 });
                 mMoreButton.setClickable(true);
 
-                if (mIsMoreCategoriesProgressRunning) {
+                if (mMoreCategoriesProgressDialog!=null && mMoreCategoriesProgressDialog.isShowing()) {
                     if (categories == null) {
                         Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
                                 Toast.LENGTH_LONG).show();
                     }
-                    mIsMoreCategoriesProgressRunning = false;
-
                     mMoreCategoriesProgressDialog.dismiss();
+                    mMoreCategoriesProgressDialog = null;
+
 
                     mMoreSpinner.setVisibility(View.INVISIBLE);
                     mMoreSpinner.performClick();
