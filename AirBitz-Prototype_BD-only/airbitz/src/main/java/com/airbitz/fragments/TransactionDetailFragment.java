@@ -207,7 +207,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mDoneButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) view.findViewById(R.id.transaction_detail_button_advanced);
-//        mCloseAdvancedDetailsButton = (Button) view.findViewById(R.id.transaction_details_close_advanced_button);
 
         mTitleTextView = (TextView) view.findViewById(R.id.transaction_detail_textview_title);
         mPayeeEditText = (EditText) view.findViewById(R.id.transaction_detail_edittext_name);
