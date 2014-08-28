@@ -452,17 +452,20 @@ public class WalletsFragment extends Fragment
         UpdateBalances();
     }
 
-    private void refreshWalletListView() {
-        setupLatestWalletListView();
+    private void refreshWalletListView(List<Wallet> list) {
+        mLatestWalletList.clear();
+        mLatestWalletList.addAll(list);
+        mLatestWalletAdapter.swapWallets();
+        mLatestWalletAdapter.notifyDataSetChanged();
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
 
     @Override
     public void onWalletUpdated() {
-        Common.LogD(TAG, "Updating wallets");
-        refreshWalletListView();
+        refreshWalletListView(mCoreAPI.loadWallets());
         UpdateBalances();
     }
+
 
     /**
      * Represents an asynchronous creation of the first wallet
@@ -495,8 +498,7 @@ public class WalletsFragment extends Fragment
             if (!success) {
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
-                mLatestWalletList = mCoreAPI.loadWallets();
-                refreshWalletListView();
+                refreshWalletListView(mCoreAPI.loadWallets());
             }
         }
 
@@ -578,12 +580,8 @@ public class WalletsFragment extends Fragment
             archiveHeader.performClick();
         }
 
-        mCoreAPI = CoreAPI.getNewInstance();
-        mLatestWalletList = mCoreAPI.loadWallets();
-        mLatestWalletAdapter.notifyDataSetChanged();
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
-        refreshWalletListView();
         UpdateBalances();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
