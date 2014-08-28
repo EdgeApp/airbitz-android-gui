@@ -107,6 +107,7 @@ public class SettingFragment extends Fragment {
 
         mCoreAPI = CoreAPI.getApi();
         mCoreSettings = mCoreAPI.loadAccountSettings();
+        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
     }
 
 
