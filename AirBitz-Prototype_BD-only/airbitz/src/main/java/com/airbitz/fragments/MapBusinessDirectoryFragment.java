@@ -49,6 +49,7 @@ import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.BusinessVenue;
 import com.airbitz.utils.CacheUtil;
+import com.airbitz.utils.Common;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -73,7 +74,7 @@ import java.util.List;
  */
 public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener,
         CurrentLocationManager.OnLocationChange {//implements GestureDetector.OnGestureListener {
-    private static final String TAG = MapBusinessDirectoryFragment.class.getSimpleName();
+    private final String TAG = getClass().getSimpleName();
 
     private GoogleMap mGoogleMap;
     private ImageButton mLocateMeButton;
@@ -106,6 +107,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private ArrayList<BusinessVenue> mBusinessVenueList;
 
     private float aPosY;
+    int aPosBottom=-10000;
+
     private float dY;
     private static final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -501,7 +504,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 int action = MotionEventCompat.getActionMasked(event);
                 switch (action) {
                     case (MotionEvent.ACTION_DOWN):
-                        //Log.d(TAG, "action down");
+                        //Common.LogD(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
                         dY = event.getY(0);
@@ -512,10 +515,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         mWindowHeight = size.y;
 
                         aPosY = llListContainer.getHeight();
+                        aPosBottom = llListContainer.getBottom();
                         return true;
 
                     case (MotionEvent.ACTION_MOVE):
-                        //Log.d(TAG, "action move");
+                        //Common.LogD(TAG, "action move");
                         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) flMapContainer.getLayoutParams();
                         int currentHeight = param.height;
 
@@ -532,9 +536,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         int barY = (int)mDragLayout.getY();
 
                         if (param.height <= 0 || (barY + dragBarHeight >= aPosY && yMove > 0)) {
-                            Log.d(TAG, "height is out of bounds.");
-                            Log.d(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" yMove: "+yMove);
+//                            Common.LogD(TAG, "height is out of bounds.");
+//                            Common.LogD(TAG, "Height: " + (barY + dragBarHeight) + " aPosY: " + aPosY + " param height: " + param.height + " yMove: " + yMove);
                             param.height = currentHeight;
+                        } else if (param.height > (aPosBottom - dragBarHeight - 10)) {
+                            param.height = currentHeight;
+//                            Common.LogD(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" bottom: "+aPosBottom);
                         }
 
                         flMapContainer.setLayoutParams(param);
@@ -767,7 +774,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             if(locationEnabled) {
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 10);
                 mGoogleMap.animateCamera(cameraUpdate);
-                Log.d("TAG LOC",
+                Common.LogD("TAG LOC",
                         "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
             }
 
@@ -789,7 +796,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mLocateMeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("TAG_LOC",
+                    Common.LogD("TAG_LOC",
                             "CUR LOC: " + mCurrentLocation.getLatitude()
                                     + "; "
                                     + mCurrentLocation.getLongitude()
@@ -960,7 +967,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     protected void initializeMarkerWithBusinessSearchResult() {
 
-        Log.d(TAG, "initializeMarkerWithBusinessSearchResult");
+        Common.LogD(TAG, "initializeMarkerWithBusinessSearchResult");
 
         mMarkersLatLngList = new ArrayList<LatLng>();
         Marker firstMarker = null;
@@ -1020,7 +1027,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     protected void initializeMarkerWithBoundSearchResult() {
 
-        Log.d(TAG, "initializeMarkerWithBoundSearchResult");
+        Common.LogD(TAG, "initializeMarkerWithBoundSearchResult");
 
         Marker firstMarker = null;
         mMarkerId.put(null, 0);
@@ -1202,7 +1209,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
         @Override protected String doInBackground(String... params) {
 
-            Log.d(TAG, "GetVenuesByBoundTask params: " + params);
+            Common.LogD(TAG, "GetVenuesByBoundTask params: " + params);
             if (mBusinessType.equalsIgnoreCase("category")) {
 
                 return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], "", "", "");
