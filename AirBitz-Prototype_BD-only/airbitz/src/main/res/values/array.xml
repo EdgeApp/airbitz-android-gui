@@ -34,31 +34,6 @@
         <item>Yaun</item>
     </array>
 
-    <array name="usd_exchange_array">
-        <item>Mt. Gox</item>
-        <item>NSA</item>
-    </array>
-
-    <array name="canadian_exchange_array">
-        <item>Mt. Gox</item>
-        <item>NSA</item>
-    </array>
-
-    <array name="euro_exchange_array">
-        <item>Mt. Gox</item>
-        <item>NSA</item>
-    </array>
-
-    <array name="peso_exchange_array">
-        <item>Mt. Gox</item>
-        <item>NSA</item>
-    </array>
-
-    <array name="yuan_exchange_array">
-        <item>Mt. Gox</item>
-        <item>NSA</item>
-    </array>
-    
     <array name="category_defaults">
         <item>Expense:Air Travel</item>
         <item>Expense:Alcohol &amp; Bars</item>
