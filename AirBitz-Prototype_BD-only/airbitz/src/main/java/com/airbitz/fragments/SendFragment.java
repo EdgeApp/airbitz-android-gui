@@ -474,6 +474,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         if(mHandler==null)
             mHandler = new Handler();
         mHandler.postDelayed(cameraDelayRunner, 500);
+
+
+        mWallets = mCoreAPI.getCoreWallets();
+        if(walletSpinner != null && walletSpinner.getAdapter()!=null) {
+            ((WalletPickerAdapter)walletSpinner.getAdapter()).notifyDataSetChanged();
+        }
     }
 
     @Override
