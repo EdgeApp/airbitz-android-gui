@@ -69,6 +69,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private SaveQuestionsTask mSaveQuestionsTask;
 
     private CoreAPI mCoreAPI;
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -80,8 +81,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
+        if(mView==null) {
+             mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         Button mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);

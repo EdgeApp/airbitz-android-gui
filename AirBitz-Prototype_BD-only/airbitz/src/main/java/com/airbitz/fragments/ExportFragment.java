@@ -32,6 +32,8 @@ public class ExportFragment extends Fragment{
 
     private Bundle bundle;
 
+    View mView;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -40,7 +42,12 @@ public class ExportFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_export, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_export, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

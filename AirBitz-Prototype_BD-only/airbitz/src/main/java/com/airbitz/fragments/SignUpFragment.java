@@ -92,6 +92,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public static int CHANGE_PIN = 3;
 
     private CoreAPI mCoreAPI;
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -103,8 +104,12 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View mView = inflater.inflate(R.layout.fragment_signup, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_signup, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);

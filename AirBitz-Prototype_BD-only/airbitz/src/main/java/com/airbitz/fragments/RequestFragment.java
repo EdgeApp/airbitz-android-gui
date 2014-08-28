@@ -70,6 +70,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     private CoreAPI mCoreAPI;
     int mFromIndex =0;
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,12 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_request, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_request, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
@@ -374,7 +380,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     public class FakeBitmapTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", "0");
+            if(mWallets!=null && mWallets.size()>0) {
+                String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", "0");
+            }
             return null;
         }
     }

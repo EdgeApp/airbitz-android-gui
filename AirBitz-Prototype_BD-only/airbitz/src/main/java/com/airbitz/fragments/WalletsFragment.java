@@ -108,6 +108,7 @@ public class WalletsFragment extends Fragment
 
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
+    private View mView;
     private int mCurrencyIndex;
 
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
@@ -143,8 +144,12 @@ public class WalletsFragment extends Fragment
             buildFragments();
         }
 
-        View mView;
-        mView = inflater.inflate(R.layout.fragment_wallets, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_wallets, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         mOnBitcoinMode = true;
 

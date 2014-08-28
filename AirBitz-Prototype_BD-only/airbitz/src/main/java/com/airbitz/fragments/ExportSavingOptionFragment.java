@@ -93,6 +93,8 @@ public class ExportSavingOptionFragment extends Fragment {
     private String mFilepath; // for filetypes
     private int mExportType;
 
+    View mView;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -112,7 +114,12 @@ public class ExportSavingOptionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
+        if(mView==null) {
+             mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         today = Calendar.getInstance();
 

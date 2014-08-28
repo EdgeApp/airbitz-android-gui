@@ -110,6 +110,7 @@ public class DirectoryDetailFragment extends Fragment {
             mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
         }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);

@@ -99,6 +99,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private boolean mFlashOn = false;
 
     private CoreAPI mCoreAPI;
+    private View mView;
     private NavigationActivity mActivity;
 
     @Override
@@ -114,7 +115,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_send, container, false);
+        if(mView==null) {
+            mView = inflater.inflate(R.layout.fragment_send, container, false);
+        } else {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+            return mView;
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
