@@ -602,6 +602,7 @@ public class SendConfirmationFragment extends Fragment {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
+            ((NavigationActivity)getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -618,6 +619,7 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
@@ -641,6 +643,7 @@ public class SendConfirmationFragment extends Fragment {
 
         @Override
         protected void onCancelled() {
+            ((NavigationActivity)getActivity()).showModalProgress(false);
             mSendOrTransferTask = null;
         }
     }
