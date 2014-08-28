@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -72,7 +73,6 @@ public class CategoryFragment extends Fragment {
     private boolean doEdit = false;
     private boolean popupDoEdit = false;
 
-
     private String currentType = "";
     private String mCategoryOld = "";
     private String mPopUpCurrentType = "";
@@ -82,11 +82,10 @@ public class CategoryFragment extends Fragment {
     private SettingsCategoryAdapter mCategoryAdapter;
     private List<String> mCategories;
     private List<String> mCurrentCategories;
-    private List<Integer> currentPosPopUp;//O - currentpos
+    private List<Integer> currentPosPopUp;
     Activity mParentActivity;
 
     private boolean mKeyboardUp = false;
-    private boolean mKeyboardHiding = false;
 
     CoreAPI mCoreAPI;
 

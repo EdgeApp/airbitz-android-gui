@@ -27,7 +27,7 @@
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categories"
+            android:text="@string/transaction_details_category_title"
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -64,10 +64,10 @@
             android:layout_height="28.35dp"
             android:layout_marginRight="12.6dp"
             android:layout_marginLeft="12.6dp"
-            android:hint="Search"
-            android:textSize="16dp"
-            android:textColor="#000000"
-            android:textColorHint="#44000000"
+            android:hint="@string/string_search"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/text_hint"
             android:imeOptions="actionDone"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:drawableLeft="@drawable/ico_search"
@@ -88,10 +88,10 @@
                 android:id="@+id/add_field"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Add New"
-                android:textSize="16dp"
+                android:hint="@string/settings_categories_add_new"
+                android:textSize="16sp"
                 android:paddingLeft="12.6dp"
-                android:textColor="#000000"
+                android:textColor="@android:color/black"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textNoSuggestions"
                 android:textColorHint="#44000000"
@@ -119,7 +119,7 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="#DD000000"
+            android:divider="@color/mostly_opaque_black"
             android:dividerHeight="1px"
             android:id="@+id/category_list_view"/>
         
@@ -141,7 +141,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="6.3dp"
             android:background="@drawable/btn_orange"
-            android:text="Cancel"
+            android:text="@string/string_cancel"
             android:textColor="#FFFFFF"/>
 
         <com.airbitz.objects.HighlightOnPressButton
@@ -150,7 +150,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="6.3dp"
             android:background="@drawable/btn_green"
-            android:text="Done"
+            android:text="@string/string_done"
             android:textColor="#FFFFFF"/>
 
     </LinearLayout>
@@ -197,48 +197,48 @@
             android:id="@+id/add_popup_expense"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
-            android:text="Expense:"
+            android:text="@string/settings_categories_expense"
             android:background="#FFFFFF"
-            android:textColor="#000000"
+            android:textColor="@android:color/black"
             android:gravity="center_vertical"
             android:paddingLeft="12.6dp"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="#DD000000"/>
+            android:background="@color/mostly_opaque_black"/>
         <TextView
             android:id="@+id/add_popup_income"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:text="Income:"
-            android:textColor="#000000"
+            android:text="@string/settings_categories_income"
+            android:textColor="@android:color/black"
             android:gravity="center_vertical"
             android:paddingLeft="12.6dp"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="#DD000000"/>
+            android:background="@color/mostly_opaque_black"/>
         <TextView
             android:id="@+id/add_popup_transfer"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:textColor="#000000"
-            android:text="Transfer:"
+            android:textColor="@android:color/black"
+            android:text="@string/settings_categories_transfer"
             android:gravity="center_vertical"
             android:paddingLeft="12.6dp"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="#DD000000"/>
+            android:background="@color/mostly_opaque_black"/>
         <TextView
             android:id="@+id/add_popup_exchange"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:textColor="#000000"
-            android:text="Exchange:"
+            android:textColor="@android:color/black"
+            android:text="@string/settings_categories_exchange"
             android:gravity="center_vertical"
             android:paddingLeft="12.6dp"/>
 
@@ -251,83 +251,14 @@
         android:layout_below="@+id/layout_header"
         android:background="@android:color/transparent"
         android:visibility="gone">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:background="@drawable/category_popup"
-            android:paddingTop="6.3dp"
-            android:layout_above="@+id/item_popup_listview_triangle">
-            <LinearLayout
-                android:id="@+id/item_popup_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="12.6dp"
-                android:paddingRight="12.6dp">
 
-                <TextView
-                    android:id="@+id/item_popup_expense"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:text="Expense:"
-                    android:background="@android:color/transparent"
-                    android:textColor="#000000"
-                    android:gravity="center_vertical"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="#DD000000"/>
-                <TextView
-                    android:id="@+id/item_popup_income"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:text="Income:"
-                    android:textColor="#000000"
-                    android:gravity="center_vertical"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="#DD000000"/>
-                <TextView
-                    android:id="@+id/item_popup_transfer"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:textColor="#000000"
-                    android:text="Transfer:"
-                    android:gravity="center_vertical"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="#DD000000"/>
-                <TextView
-                    android:id="@+id/item_popup_exchange"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:textColor="#000000"
-                    android:text="Exchange:"
-                    android:gravity="center_vertical"/>
-
-            </LinearLayout>
-        </ScrollView>
         <View
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:focusableInTouchMode="true"
             android:focusable="true"
             android:clickable="true"
-            android:background="@android:color/transparent"
-            android:layout_above="@+id/item_popup_edittext_container"/>
-        <View
-            android:id="@+id/item_popup_listview_triangle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:rotation="180"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="-25dp"
-            android:background="@drawable/blue_triangle"
+            android:background="@color/listitem_normal"
             android:layout_above="@+id/item_popup_edittext_container"/>
         <RelativeLayout
             android:id="@+id/item_popup_edittext_container"
@@ -338,14 +269,14 @@
             android:paddingLeft="9.45dp"
             android:paddingRight="9.45dp"
             android:layout_alignParentBottom="true"
-            android:background="#addff1">
+            android:background="@color/listitem_normal">
 
             <EditText
                 android:id="@+id/item_popup_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingLeft="12.6dp"
-                android:textSize="12dp"
+                android:textSize="16sp"
                 android:imeOptions="actionDone"
                 android:inputType="textVisiblePassword|textNoSuggestions"
                 android:layout_toLeftOf="@+id/item_popup_delete"
@@ -363,5 +294,79 @@
                 android:id="@+id/settings_category_list_item_dummy_focus" />
 
         </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/category_popup"
+            android:paddingTop="6.3dp"
+            android:layout_above="@+id/item_popup_listview_triangle">
+            <LinearLayout
+                android:id="@+id/item_popup_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="12.6dp"
+                android:paddingRight="12.6dp">
+
+                <TextView
+                    android:id="@+id/item_popup_expense"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:text="@string/settings_categories_expense"
+                    android:textSize="18sp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/mostly_opaque_black"/>
+                <TextView
+                    android:id="@+id/item_popup_income"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:text="@string/settings_categories_income"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/mostly_opaque_black"/>
+                <TextView
+                    android:id="@+id/item_popup_transfer"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@android:color/black"
+                    android:text="@string/settings_categories_transfer"
+                    android:textSize="18sp"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/mostly_opaque_black"/>
+                <TextView
+                    android:id="@+id/item_popup_exchange"
+                    android:layout_width="match_parent"
+                    android:layout_height="44.1dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@android:color/black"
+                    android:text="@string/settings_categories_exchange"
+                    android:textSize="18sp"
+                    android:gravity="center_vertical"/>
+
+            </LinearLayout>
+        </ScrollView>        <View
+            android:id="@+id/item_popup_listview_triangle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:rotation="180"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-25dp"
+            android:background="@drawable/blue_triangle"
+            android:layout_above="@+id/item_popup_edittext_container"/>
+
     </RelativeLayout>
 </RelativeLayout>
