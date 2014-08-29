@@ -353,7 +353,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     }
 
     /**
-     * Represents an asynchronous question save task
+     * Save Questions if Signing up or Changing questions
      */
     public class SaveQuestionsTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -382,8 +382,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             if (!success) {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                ((NavigationActivity)getActivity()).UserJustLoggedIn();
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                if(mMode==SIGN_UP) {
+                    ((NavigationActivity) getActivity()).UserJustLoggedIn();
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                } else if(mMode==CHANGE_QUESTIONS) {
+                    ((NavigationActivity) getActivity()).popFragment();
+                }
             }
         }
 
