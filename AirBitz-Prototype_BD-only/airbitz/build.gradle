@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 2014082802
-        versionName "2014082802, 1.1 with core 1.1.12_20140828-02_ios"
+        versionCode 2014082901
+        versionName "2014082901, 1.1 with core 1.1.12_20140828-02_ios"
     }
 
     productFlavors {
