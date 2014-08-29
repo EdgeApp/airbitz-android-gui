@@ -80,7 +80,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
     private static final String passwordPattern = ".*[" + Pattern.quote(specialChar) + "].*";
 
-    private CreateAccountTask mAuthTask;
+    private CreateAccountTask mCreateAccountTask;
 
     private CreateFirstWalletTask mCreateFirstWalletTask;
 
@@ -585,7 +585,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+            mCreateAccountTask = null;
             ((NavigationActivity)getActivity()).showModalProgress(false);
             if (success) {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
@@ -597,7 +597,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            mCreateAccountTask = null;
             ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
@@ -672,7 +672,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
      * errors are presented and no actual login attempt is made.
      */
     public void attemptSignUp() {
-        if (mAuthTask != null) {
+        if (mCreateAccountTask != null) {
             return;
         }
 
@@ -686,8 +686,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mPasswordConfirmationEditText.setError(null);
         mWithdrawalPinEditText.setError(null);
 
-        mAuthTask = new CreateAccountTask(username, password, pin);
-        mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        mCreateAccountTask = new CreateAccountTask(username, password, pin);
+        mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     public void ShowMessageDialogSuccess(String title, String reason) {
@@ -698,15 +698,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                AirbitzApplication.Login(getArguments().getString(PasswordRecoveryFragment.USERNAME), mPasswordEditText.getText().toString());
-                                ((NavigationActivity)getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.BD.ordinal());
-                                ((NavigationActivity)getActivity()).UserJustLoggedIn();
-
+                                ((NavigationActivity)getActivity()).popFragment();
                             }
                         });
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-
 }
