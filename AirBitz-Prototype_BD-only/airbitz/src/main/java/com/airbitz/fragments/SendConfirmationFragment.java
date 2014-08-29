@@ -596,7 +596,6 @@ public class SendConfirmationFragment extends Fragment {
         private final long mSatoshi;
         private SuccessFragment mSuccessFragment;
         private String failInsufficientMessage = getResources().getString(R.string.fragment_send_failure_insufficient_funds);
-        private String failOtherMessage = getResources().getString(R.string.fragment_send_failure_other_error);
 
         SendOrTransferTask(Wallet fromWallet, String address, long amount) {
             mFromWallet = fromWallet;
@@ -626,10 +625,8 @@ public class SendConfirmationFragment extends Fragment {
             if (txResult.getError() != null) {
                 if (result == tABC_CC.ABC_CC_InsufficientFunds) {
                     message = failInsufficientMessage;
-                } else if (result == tABC_CC.ABC_CC_ServerError) {
-                    message = (txResult.getString());
                 } else {
-                    message = failOtherMessage;
+                    message = (txResult.getString());
                 }
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
             } else {
