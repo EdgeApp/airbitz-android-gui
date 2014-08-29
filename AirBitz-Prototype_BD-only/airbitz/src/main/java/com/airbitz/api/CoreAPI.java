@@ -521,14 +521,13 @@ public class CoreAPI {
 
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings loadAccountSettings() {
-        if(mCoreSettings!=null)
-            return mCoreSettings;
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
 
+        Common.LogD(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 pAccountSettings, Error);
 
@@ -550,11 +549,9 @@ public class CoreAPI {
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
+        Common.LogD(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 settings, Error);
-        if(result==tABC_CC.ABC_CC_Ok) {
-
-        }
     }
 
     public List<ExchangeRateSource> getExchangeRateSources(tABC_ExchangeRateSources sources) {
