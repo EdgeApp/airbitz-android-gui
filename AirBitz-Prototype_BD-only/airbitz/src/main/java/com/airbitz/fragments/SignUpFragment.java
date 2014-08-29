@@ -34,6 +34,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
+    private final String TAG = getClass().getSimpleName();
 
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
@@ -504,22 +506,28 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
         tABC_CC success;
 
+        String mUsername, mPassword;
+
         @Override
         protected void onPreExecute() {
             ((NavigationActivity)getActivity()).showModalProgress(true);
+            mCoreAPI.stopAllAsyncUpdates();
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             String answers=params[0];
-            String username=params[1];
+            mUsername=params[1];
             if (mMode == CHANGE_PASSWORD) {
+                mPassword = mPasswordEditText.getText().toString();
+                mUsername = AirbitzApplication.getUsername();
+                Common.LogD(TAG, "changing password to "+mPassword);
                 mCoreAPI.stopWatchers();
-                success = mCoreAPI.ChangePassword(mPasswordEditText.getText().toString());
+                success = mCoreAPI.ChangePassword(mPassword);
                 mCoreAPI.startWatchers();
             }
             else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(username, answers, mPasswordEditText.getText().toString(),
+                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword,
                         mWithdrawalPinEditText.getText().toString());
             }
             else {
@@ -536,6 +544,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mChangeTask=null;
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    AirbitzApplication.Login(mUsername, mPassword);
                     ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else {
                     ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
@@ -547,6 +556,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
+            mCoreAPI.startAllAsyncUpdates();
         }
 
         @Override

@@ -2061,6 +2061,7 @@ public class CoreAPI {
 
         String oldPIN = GetUserPIN();
 
+        Common.LogD(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         return core.ABC_ChangePassword(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
             password, oldPIN, null, null, Error);
     }

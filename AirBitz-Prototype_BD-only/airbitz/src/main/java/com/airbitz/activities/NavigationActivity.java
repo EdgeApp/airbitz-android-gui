@@ -532,7 +532,9 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void OnRemotePasswordChange() {
         Common.LogD(TAG, "Remote Password received");
-        showRemotePasswordChangeDialog();
+        if(!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
+            showRemotePasswordChangeDialog();
+        }
     }
 
     private void startReceivedSuccess() {
