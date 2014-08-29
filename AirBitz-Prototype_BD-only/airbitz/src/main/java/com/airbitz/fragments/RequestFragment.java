@@ -106,7 +106,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             mView = inflater.inflate(R.layout.fragment_request, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
-            return mView;
+//            return mView;
         }
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();

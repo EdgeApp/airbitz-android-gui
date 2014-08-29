@@ -288,7 +288,6 @@ public class WalletsFragment extends Fragment
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_wallets_title_textview);
 
         mLatestWalletListView = (DynamicListView) mView.findViewById(R.id.fragment_wallets_listview);
-
         setupLatestWalletListView();
 
         ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
@@ -571,11 +570,11 @@ public class WalletsFragment extends Fragment
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
-        archiveClosed = prefs.getBoolean("archiveClosed",false);
-        if(archiveClosed){
+        archiveClosed = prefs.getBoolean("archiveClosed", false);
+        if (archiveClosed) {
             archiveClosed = false;
             archiveHeader.performClick();
         }
