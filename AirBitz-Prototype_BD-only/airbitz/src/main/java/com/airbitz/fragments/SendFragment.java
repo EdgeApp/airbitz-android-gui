@@ -119,7 +119,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             mView = inflater.inflate(R.layout.fragment_send, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
-            return mView;
+//            return mView;
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
