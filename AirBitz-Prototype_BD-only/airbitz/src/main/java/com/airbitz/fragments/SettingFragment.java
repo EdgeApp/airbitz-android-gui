@@ -107,8 +107,6 @@ public class SettingFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mCoreSettings = mCoreAPI.loadAccountSettings();
-        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
     }
 
 
@@ -118,8 +116,9 @@ public class SettingFragment extends Fragment {
             mView = inflater.inflate(R.layout.fragment_setting, container, false);
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
-            return mView;
+//            return mView;
         }
+        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);
@@ -268,7 +267,7 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mAccountTitle.setText(mAccountTitle.getText().toString()+": "+AirbitzApplication.getUsername());
+        mAccountTitle.setText("Account: "+AirbitzApplication.getUsername());
         try {
             String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
             TextView debugInfo = (TextView) mView.findViewById(R.id.fragment_settings_debug_info);
@@ -279,6 +278,8 @@ public class SettingFragment extends Fragment {
 
         setUserNameState(mSendNameSwitch.isChecked());
 
+        mCoreSettings = mCoreAPI.loadAccountSettings();
+        loadSettings(mCoreSettings);
         return mView;
     }
 
@@ -430,7 +431,9 @@ public class SettingFragment extends Fragment {
 
         //Advanced Settings TODO
 
-        mCoreAPI.saveAccountSettings(mCoreSettings);
+        if(AirbitzApplication.isLoggedIn()) {
+            mCoreAPI.saveAccountSettings(mCoreSettings);
+        }
     }
 
 
@@ -589,13 +592,13 @@ public class SettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadSettings(mCoreSettings);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        saveCurrentSettings();
+        if(AirbitzApplication.isLoggedIn()) {
+            saveCurrentSettings();
+        }
     }
-
 }
