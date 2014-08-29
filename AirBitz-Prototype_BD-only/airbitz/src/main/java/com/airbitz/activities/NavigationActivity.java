@@ -157,12 +157,6 @@ public class NavigationActivity extends BaseActivity
         });
 
         // Setup top screen - the Landing - that swipes away if no login
-        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
-
-        mOverlayFragments.add(new TransparentFragment());
-        mOverlayFragments.add(new LandingFragment());
-        mOverlayFragments.add(new TransparentFragment());
-
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getSupportFragmentManager().findFragmentById(R.id.navigationFragment);
@@ -200,6 +194,12 @@ public class NavigationActivity extends BaseActivity
     }
 
     private void setViewPager() {
+        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
+
+        mOverlayFragments.add(new TransparentFragment());
+        mOverlayFragments.add(new LandingFragment());
+        mOverlayFragments.add(new TransparentFragment());
+
         NavigationAdapter pageAdapter = new NavigationAdapter(getSupportFragmentManager(), mOverlayFragments);
         mViewPager.setAdapter(pageAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -695,6 +695,7 @@ public class NavigationActivity extends BaseActivity
             if ((Boolean) success){
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
+                setViewPager();
             } else {
                 ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.error_invalid_credentials));
             }
