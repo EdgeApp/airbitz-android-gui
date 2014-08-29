@@ -250,16 +250,17 @@ public class NavigationActivity extends BaseActivity
         }
         Fragment frag = mNavStacks[id].peek();
         if(frag.isAdded()) {
-            Common.LogD("NavFrag", "Fragment already added");
+            Common.LogD(TAG, "Fragment already added");
             return;
         }
         mNavBarFragment.unselectTab(mNavThreadId);
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
-        mNavThreadId = id;
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mNavStacks[id].peek()).commitAllowingStateLoss();
+        transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
+        transaction.commit();
+        mNavThreadId = id;
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -618,7 +619,6 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void UserJustLoggedIn() {
-        DisplayLoginOverlay(false);
         showNavBar();
         if(mDataUri!=null) {
             onBitcoinUri(mDataUri);
@@ -627,6 +627,7 @@ public class NavigationActivity extends BaseActivity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
 
+        DisplayLoginOverlay(false);
         mCoreAPI.startAllAsyncUpdates();
         mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
