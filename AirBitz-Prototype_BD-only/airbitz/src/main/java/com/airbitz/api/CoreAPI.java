@@ -2008,7 +2008,7 @@ public class CoreAPI {
     {
         List<Wallet> wallets = getCoreWallets();
         for (Wallet w : wallets) {
-            if(!mWatcherTasks.containsKey(w.getUUID())) {
+            if(w.getUUID()!=null && !mWatcherTasks.containsKey(w.getUUID())) {
                 Thread thread = new Thread(new WatcherRunnable(w.getUUID()));
                 mWatcherTasks.put(w.getUUID(), thread);
                 thread.start();
