@@ -296,6 +296,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void popFragment() {
+        hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
