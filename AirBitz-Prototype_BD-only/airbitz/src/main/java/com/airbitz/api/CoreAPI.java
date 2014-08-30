@@ -2116,12 +2116,11 @@ public class CoreAPI {
                 }
             }
             else {
-                Common.LogD(TAG, "BitcoinURI no address");
+                Common.LogD(TAG, "BitcoinURI not a bitcoin address");
             }
         }
         else {
-            Common.LogD(TAG, "URI parse failed!");
-            uri = null;
+            Common.LogD(TAG, "BitcoinURI not a bitcoin address!");
         }
 
         return uri;

@@ -1,6 +1,8 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -361,9 +364,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public void onPreviewFrame(byte[] bytes, Camera camera) {
         if(mListviewContainer.getVisibility()==View.GONE) {
             CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
-            if(info!=null && info.getSzAddress()!=null) {
+            if(info!=null && info.address!=null) {
+                Common.LogD(TAG, "Bitcoin found");
+                    stopCamera();
+                    GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            } else if(info!=null) {
                 stopCamera();
-                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                ShowMessageAndStartCameraDialog("Send Bitcoin", "Invalid bitcoin address");
             }
         }
     }
@@ -386,8 +393,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
             CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
-            if(info!=null && info.getSzAddress()!=null) {
+            if(info!=null && info.address!=null) {
+                Common.LogD(TAG, "Bitcoin found");
+                stopCamera();
                 GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            } else if(info!=null) {
+                stopCamera();
+                ShowMessageAndStartCameraDialog("Send Bitcoin", "Invalid bitcoin address");
             }
         }
     }
@@ -416,11 +428,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             }
         }
         if(rawResult!=null) {
+            Common.LogD(TAG, "QR code found "+rawResult.getText());
             return mCoreAPI.CheckURIResults(rawResult.getText());
         } else {
             Common.LogD(TAG, "No QR code found");
+            return null;
         }
-        return null;
     }
 
     private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
@@ -446,6 +459,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 }
             }
             if(rawResult!=null) {
+                Common.LogD(TAG, "QR code found "+rawResult.getText());
                 return mCoreAPI.CheckURIResults(rawResult.getText());
             } else {
                 Common.LogD(TAG, "No QR code found");
@@ -547,4 +561,21 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         super.onStop();
         stopCamera();
     }
+
+    public void ShowMessageAndStartCameraDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startCamera(BACK_CAMERA_INDEX);
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 }
