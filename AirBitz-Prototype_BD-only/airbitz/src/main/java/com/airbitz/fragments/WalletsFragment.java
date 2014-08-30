@@ -461,6 +461,7 @@ public class WalletsFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
+        Common.LogD(TAG, "wallet list updated");
         refreshWalletListView(mCoreAPI.loadWallets());
         UpdateBalances();
     }

@@ -108,10 +108,7 @@ public class NavigationActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
-        String seed = mCoreAPI.getSeedData();
-
-        mCoreAPI.Initialize(this, seed, seed.length());
+        initiateCore();
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
         mCoreAPI.setOnSentFundsListener(this);
@@ -172,6 +169,12 @@ public class NavigationActivity extends BaseActivity
         if(AirbitzApplication.AUTOLOGIN) {
             attemptLogin(AirbitzApplication.autologinName, AirbitzApplication.autologinPassword);
         }
+    }
+
+    public void initiateCore() {
+        mCoreAPI = CoreAPI.getApi();
+        String seed = mCoreAPI.getSeedData();
+        mCoreAPI.Initialize(this, seed, seed.length());
     }
 
     @Override
