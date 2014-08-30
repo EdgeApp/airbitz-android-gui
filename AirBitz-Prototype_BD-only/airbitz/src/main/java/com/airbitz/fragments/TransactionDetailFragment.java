@@ -815,7 +815,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryEdittext.setText(transaction.getCategory());
         doEdit = false;
 
-        long coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
+        long coinValue = 0;
+        String feeFormatted;
+        if (transaction.getAmountSatoshi() < 0)
+        {
+            coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
+            feeFormatted = "+" + mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false) + " fee";
+        }
+        else
+        {
+            coinValue = transaction.getAmountSatoshi();
+            feeFormatted = "";
+        }
+
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
         String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
@@ -824,7 +836,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
-        String feeFormatted = "+" + mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false) + " fee";
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
     }
