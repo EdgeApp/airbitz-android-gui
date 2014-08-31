@@ -2,7 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
@@ -21,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -116,9 +115,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private LocationAdapter mLocationAdapter;
 
-    private int[] locSticky = {0,0};
-    private int[] locFrame = {0,0};
-
     private LinearLayout mapView;
     private CustomMapFragment mapFragment;
 
@@ -172,7 +168,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     public void onMapReady() {
         mGoogleMap = mapFragment.getMap();
         initializeMap();
-        mLocationManager.addLocationChangeListener(this);
+        if(mLocationManager!=null) {
+            mLocationManager.addLocationChangeListener(this);
+        }
     }
 
     View view;
@@ -183,7 +181,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
         } else {
             ((ViewGroup) view.getParent()).removeView(view);
-            reloaded = true;
         }
 
         mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
@@ -272,8 +269,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
                         String latLong = "";
                         if(locationEnabled) {
-                            latLong = String.valueOf(getLatFromSharedPreference());
-                            latLong += "," + String.valueOf(getLonFromSharedPreference());
+                            latLong = String.valueOf(mCurrentLocation.getLatitude());
+                            latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                         }
                         if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                             mBusinessAutoCompleteAsyncTask.cancel(true);
@@ -314,8 +311,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                 String latLong = "";
                 if(locationEnabled) {
-                    latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    latLong = String.valueOf(mCurrentLocation.getLatitude());
+                    latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
 
                 try {
@@ -350,8 +347,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                     // Search
                     String latLong = "";
                     if(locationEnabled) {
-                        latLong = String.valueOf(getLatFromSharedPreference());
-                        latLong += "," + String.valueOf(getLonFromSharedPreference());
+                        latLong = String.valueOf(mCurrentLocation.getLatitude());
+                        latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                     }
                     mLocationWords = "";
 
@@ -422,8 +419,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                 String latLong = "";
                 if(locationEnabled) {
-                    latLong = String.valueOf(getLatFromSharedPreference());
-                    latLong += "," + String.valueOf(getLonFromSharedPreference());
+                    latLong = String.valueOf(mCurrentLocation.getLatitude());
+                    latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
 
                 try {
@@ -570,7 +567,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
     }
 
-
     private void search() {
         if (mLocationName.equalsIgnoreCase("Current Location")) {
             if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
@@ -579,7 +575,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mGetVenuesAsyncTask = new GetVenuesByLatLongTask(getActivity());
             String latlong = "";
             if(locationEnabled){
-                latlong += getLatFromSharedPreference() + "," + getLonFromSharedPreference();
+                latlong += mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
             }
             if (mBusinessType.equalsIgnoreCase("business")) {
                 mGetVenuesAsyncTask.execute(latlong, mBusinessName, "");
@@ -636,7 +632,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     @Override
     public void onPause(){
-        mLocationManager.removeLocationChangeListener(this);
+        if(mLocationManager!=null) {
+            mLocationManager.removeLocationChangeListener(this);
+        }
         if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
             mGetVenuesAsyncTask.cancel(true);
         }
@@ -649,22 +647,21 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
-        //TODO save locations
         super.onPause();
     }
 
     @Override
     public void onResume(){
         checkLocationManager();
-        if(locationEnabled && mLocationManager.getLocation() != null){
-            Common.LogD(TAG, "!YaY! Location isn't null!");
-            mCurrentLocation = mLocationManager.getLocation();
-        }else{
-            Common.LogD(TAG, "!BOO! Location is null!");
-        }
-        if(!reloaded) {
+//        if(locationEnabled && mLocationManager.getLocation() != null) {
+//            Common.LogD(TAG, "!YaY! Location isn't null!");
+//            mCurrentLocation = mLocationManager.getLocation();
+//        }else{
+//            Common.LogD(TAG, "!BOO! Location is null!");
+//        }
+//        if(!reloaded) {
             search();
-        }
+//        }
         super.onResume();
     }
 
@@ -678,14 +675,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
-    private void initializeMap(){//MapView mapView) {//todo
-        //if (mGoogleMap == null) {
-            //mapView.onCreate(null);
-
-            // Gets to GoogleMap from the MapView and does initialization stuff
-            //mGoogleMap = mapView.getMap();
-
-            //mGoogleMap = mapFragment.getMap();
+    private void initializeMap() {
         if (mGoogleMap == null) {
             Toast.makeText(getActivity().getApplicationContext(), "Sorry! unable to create maps, check for updates to Google Play Services", Toast.LENGTH_SHORT)
                     .show();
@@ -740,9 +730,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         } else {
                 mCurrentLocation = new Location("dummyProvider");
             if(locationEnabled) {
-                mCurrentLocation.setLatitude(getLatFromSharedPreference());
-                mCurrentLocation.setLongitude(getLonFromSharedPreference());
-                currentLatLng = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
+                mCurrentLocation.setLatitude(mCurrentLocation.getLatitude());
+                mCurrentLocation.setLongitude(mCurrentLocation.getLongitude());
+                currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             }
         }
         try {
@@ -855,7 +845,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             if (location != null) {
                 currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
             } else {
-                currentPosition = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
+                currentPosition = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             }
             if (mGoogleMap == null) {
                 initializeMap();
@@ -876,7 +866,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mUserLocationMarker.remove();
         }
         if (location == null) {
-            location = new LatLng(getLatFromSharedPreference(), getLonFromSharedPreference());
+            location = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
         if(mGoogleMap == null){
             initializeMap();
@@ -891,35 +881,32 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
-    protected void initializeMarker() {
-
-        mMarkersLatLngList = new ArrayList<LatLng>();
-        if (mBusinessVenueList.size() > 0) {
-
-            LatLng currentLatLng = new LatLng(0, 0);
-            for (BusinessVenue businessVenue : mBusinessVenueList) {
-                mMarkersLatLngList.add(businessVenue.getLocation());
-                currentLatLng = businessVenue.getLocation();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.addMarker(new MarkerOptions()
-                                    .position(businessVenue.getLocation())
-                                    .title(businessVenue.getName())
-                                    .snippet(businessVenue.getAddress())
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                    )
-                            .showInfoWindow();
-                }
-            }
-        }
-
-        drawCurrentLocationMarker(mCurrentLocation);
-        mUserLocationMarker.showInfoWindow();
-
-        zoomToContainAllMarkers();
-    }
+//    protected void initializeMarker() {
+//        mMarkersLatLngList = new ArrayList<LatLng>();
+//        if (mBusinessVenueList.size() > 0) {
+//
+//            for (BusinessVenue businessVenue : mBusinessVenueList) {
+//                mMarkersLatLngList.add(businessVenue.getLocation());
+//                if(mGoogleMap == null){
+//                    initializeMap();
+//                }
+//                if(mGoogleMap != null) {
+//                    mGoogleMap.addMarker(new MarkerOptions()
+//                                    .position(businessVenue.getLocation())
+//                                    .title(businessVenue.getName())
+//                                    .snippet(businessVenue.getAddress())
+//                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+//                    )
+//                            .showInfoWindow();
+//                }
+//            }
+//        }
+//
+//        drawCurrentLocationMarker(mCurrentLocation);
+//        mUserLocationMarker.showInfoWindow();
+//
+//        zoomToContainAllMarkers();
+//    }
 
     private void zoomToContainAllMarkers() {
 
@@ -944,7 +931,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         Common.LogD(TAG, "initializeMarkerWithBusinessSearchResult");
 
         mMarkersLatLngList = new ArrayList<LatLng>();
-        Marker firstMarker = null;
         mMarkerId.put(null, 0);
         mMarkerDistances.put(null, "");
         getMarkerImageLink().put(null, "");
@@ -955,7 +941,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
         if (mVenues.size() > 0) {
 
-            LatLng currentLatLng = new LatLng(0, 0);
             boolean first = true;
             for (BusinessSearchResult businessSearchResult : mVenues) {
 
@@ -975,8 +960,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                     if (first) {
                         first = false;
-                        currentLatLng = locationLatLng;
-                        firstMarker = marker;
                     }
                     mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
                     mMarkerDistances.put(marker, businessSearchResult.getDistance());
@@ -1013,7 +996,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mMarkerDistances.clear();
         }
         if (mVenues.size() > 0) {
-            LatLng currentLatLng = new LatLng(0, 0);
             boolean first = true;
             for (BusinessSearchResult businessSearchResult : mVenues) {
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
@@ -1031,7 +1013,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
                     if (first) {
                         first = false;
-                        currentLatLng = locationLatLng;
                         firstMarker = marker;
                     }
                     mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
@@ -1317,8 +1298,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         @Override protected String doInBackground(String... params) {
             String latLong = "";
             if(locationEnabled) {
-                latLong = String.valueOf(getLatFromSharedPreference())
-                        + "," + String.valueOf(getLonFromSharedPreference());
+                latLong = String.valueOf(mCurrentLocation.getLatitude())
+                        + "," + String.valueOf(mCurrentLocation.getLongitude());
             }
             return mApi.getSearchByCategoryOrBusinessAndLocation(params[0], params[1], "", "", "1",
                     params[2], latLong);
@@ -1355,19 +1336,4 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mGetVenuesAsyncTask = null;
         }
     }
-
-    private double getLatFromSharedPreference() {
-        if(mCurrentLocation!=null)
-            return mCurrentLocation.getLatitude();
-        else
-            return 0.0;
-    }
-
-    private double getLonFromSharedPreference() {
-        if(mCurrentLocation!=null)
-            return mCurrentLocation.getLongitude();
-        else
-            return 0.0;
-    }
-
 }
