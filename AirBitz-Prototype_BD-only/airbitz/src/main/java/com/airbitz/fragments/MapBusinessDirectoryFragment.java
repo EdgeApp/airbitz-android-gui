@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +8,7 @@ import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -134,6 +137,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private boolean mCameraChangeListenerEnabled = false;
 
     private List<LatLng> mMarkersLatLngList;
+    private String mLastSearchResult;
 
     private CurrentLocationManager mLocationManager;
 
@@ -147,7 +151,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     VenueFragment mFragmentVenue;
 
     int dragBarHeight = 0;
-    private boolean reloaded = false;
+    boolean alreadyLoaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -160,7 +164,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
 
         if(mLocationManager==null) {
+            alreadyLoaded = false;
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
+        } else {
+            alreadyLoaded = true;
         }
     }
 
@@ -168,7 +175,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     public void onMapReady() {
         mGoogleMap = mapFragment.getMap();
         initializeMap();
-        if(mLocationManager!=null) {
+        if(!alreadyLoaded) {
             mLocationManager.addLocationChangeListener(this);
         }
     }
@@ -543,6 +550,27 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mDragLayout.setVisibility(View.GONE);
             flMapContainer.setVisibility(View.GONE);
         }
+
+        // to tell when the view is finished layout
+        if (mapView.getViewTreeObserver().isAlive()) {
+            mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressWarnings("deprecation")
+                // We use the new method when supported
+                @SuppressLint("NewApi")
+                // We check which build version we are using.
+                @Override
+                public void onGlobalLayout() {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    // Send notification that map-loading has completed.
+                    onMapFinishedLoading();
+                }
+            });
+        }
+
         return view;
     }
 
@@ -659,9 +687,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 //        }else{
 //            Common.LogD(TAG, "!BOO! Location is null!");
 //        }
-//        if(!reloaded) {
+        if(!alreadyLoaded) {
             search();
-//        }
+        }
         super.onResume();
     }
 
@@ -672,6 +700,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
         }else{
             locationEnabled = true;
+        }
+    }
+
+    private void onMapFinishedLoading() {
+        if(alreadyLoaded && mMarkersLatLngList!=null && mLastSearchResult!=null) {
+            zoomToContainAllMarkers(mMarkersLatLngList);
+            updateVenueResults(mLastSearchResult);
         }
     }
 
@@ -718,10 +753,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         int padding = (int) getResources().getDimension(R.dimen.map_padding);
 
         mGoogleMap.setPadding(0, padding, 0, padding);
-
-//        if(locationEnabled) {
-//            mCurrentLocation = mLocationManager.getLocation();
-//        }
 
         LatLng currentLatLng = null;
 
@@ -908,13 +939,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 //        zoomToContainAllMarkers();
 //    }
 
-    private void zoomToContainAllMarkers() {
+    private void zoomToContainAllMarkers(List<LatLng> markers) {
 
-        if (mMarkersLatLngList.size() > 0) {
+        if (markers.size() > 0) {
 
             LatLngBounds.Builder bc = new LatLngBounds.Builder();
 
-            for (LatLng item : mMarkersLatLngList) {
+            for (LatLng item : markers) {
                 bc.include(item);
             }
             if(mGoogleMap == null){
@@ -967,7 +998,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 }
             }
 
-            zoomToContainAllMarkers();
+            zoomToContainAllMarkers(mMarkersLatLngList);
 
 //            if (firstMarker != null) {
 //                firstMarker.showInfoWindow();
@@ -982,55 +1013,55 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     }
 
-    protected void initializeMarkerWithBoundSearchResult() {
-
-        Common.LogD(TAG, "initializeMarkerWithBoundSearchResult");
-
-        Marker firstMarker = null;
-        mMarkerId.put(null, 0);
-        mMarkerDistances.put(null, "");
-        getMarkerImageLink().put(null, "");
-        if (!mMarkerId.isEmpty()) {
-            mMarkerId.clear();
-            mMarkerImageLink.clear();
-            mMarkerDistances.clear();
-        }
-        if (mVenues.size() > 0) {
-            boolean first = true;
-            for (BusinessSearchResult businessSearchResult : mVenues) {
-                LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
-                        businessSearchResult.getLocationObject().getLongitude());
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                    .position(locationLatLng)
-                                    .title(businessSearchResult.getName())
-                                    .snippet(businessSearchResult.getAddress())
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                    );
-
-                    if (first) {
-                        first = false;
-                        firstMarker = marker;
-                    }
-                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
-                }
-            }
-
-            if (firstMarker == null) {//TODO
-                drawCurrentLocationMarker(mCurrentLocation);
-                mUserLocationMarker.showInfoWindow();
-            }
-        } else {//TODO
-            drawCurrentLocationMarker(mCurrentLocation);
-            mUserLocationMarker.showInfoWindow();
-        }
-
-    }
+//    protected void initializeMarkerWithBoundSearchResult() {
+//
+//        Common.LogD(TAG, "initializeMarkerWithBoundSearchResult");
+//
+//        Marker firstMarker = null;
+//        mMarkerId.put(null, 0);
+//        mMarkerDistances.put(null, "");
+//        getMarkerImageLink().put(null, "");
+//        if (!mMarkerId.isEmpty()) {
+//            mMarkerId.clear();
+//            mMarkerImageLink.clear();
+//            mMarkerDistances.clear();
+//        }
+//        if (mVenues.size() > 0) {
+//            boolean first = true;
+//            for (BusinessSearchResult businessSearchResult : mVenues) {
+//                LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
+//                        businessSearchResult.getLocationObject().getLongitude());
+//                if(mGoogleMap == null){
+//                    initializeMap();
+//                }
+//                if(mGoogleMap != null) {
+//                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+//                                    .position(locationLatLng)
+//                                    .title(businessSearchResult.getName())
+//                                    .snippet(businessSearchResult.getAddress())
+//                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
+//                    );
+//
+//                    if (first) {
+//                        first = false;
+//                        firstMarker = marker;
+//                    }
+//                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
+//                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
+//                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
+//                }
+//            }
+//
+//            if (firstMarker == null) {//TODO
+//                drawCurrentLocationMarker(mCurrentLocation);
+//                mUserLocationMarker.showInfoWindow();
+//            }
+//        } else {//TODO
+//            drawCurrentLocationMarker(mCurrentLocation);
+//            mUserLocationMarker.showInfoWindow();
+//        }
+//
+//    }
 
     @Override
     public void OnCurrentLocationChange(Location location) {
@@ -1182,19 +1213,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 Common.LogD(TAG, "New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
-                    mVenues = results.getBusinessSearchObjectArray();
-                    if(mGoogleMap == null){
-                        initializeMap();
-                    }
-                    if(mGoogleMap != null) {
-                        mGoogleMap.clear();
-                        initializeMarkerWithBoundSearchResult();
-                    }
-                    mFragmentVenue.setListView(searchResult);
+                    updateVenueResults(searchResult);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
                 e.printStackTrace();
             }
             mGetVenuesByBoundAsyncTask = null;
@@ -1202,7 +1223,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     }
 
     private boolean isNewVenuesAdded(List<BusinessSearchResult> newVenues) {
-
         for (BusinessSearchResult item : newVenues) {
             if (!mVenues.contains(item)) {
                 return true;
@@ -1210,7 +1230,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
         return false;
-
     }
 
     private ProgressDialog mProgressDialog;
@@ -1260,22 +1279,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             if(getActivity() == null)
                 return;
 
-            try {
-                SearchResult result = new SearchResult(new JSONObject(searchResult));
-                mVenues = result.getBusinessSearchObjectArray();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    initializeMarkerWithBusinessSearchResult();
-                }
-                mFragmentVenue.setListView(searchResult);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            updateVenueResults(searchResult);
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
@@ -1315,25 +1319,30 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             if(getActivity() == null)
                 return;
 
-            try {
-                SearchResult result = new SearchResult(new JSONObject(searchResult));
-                mVenues = result.getBusinessSearchObjectArray();
-                if(mGoogleMap == null){
-                    initializeMap();
-                }
-                if(mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    initializeMarkerWithBusinessSearchResult();
-                }
-                mFragmentVenue.setListView(searchResult);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            updateVenueResults(searchResult);
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
+        }
+    }
+
+    private void updateVenueResults(String searchResult) {
+        try {
+            mLastSearchResult = searchResult;
+            SearchResult result = new SearchResult(new JSONObject(searchResult));
+            mVenues = result.getBusinessSearchObjectArray();
+            if(mGoogleMap == null){
+                initializeMap();
+            }
+            if(mGoogleMap != null) {
+                mGoogleMap.clear();
+                initializeMarkerWithBusinessSearchResult();
+            }
+            mFragmentVenue.setListView(searchResult);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
