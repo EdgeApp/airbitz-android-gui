@@ -3,7 +3,6 @@ package com.airbitz.fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
@@ -566,7 +565,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                     // Send notification that map-loading has completed.
-                    onMapFinishedLoading();
+                    onLayoutFinished();
                 }
             });
         }
@@ -681,12 +680,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     @Override
     public void onResume(){
         checkLocationManager();
-//        if(locationEnabled && mLocationManager.getLocation() != null) {
-//            Common.LogD(TAG, "!YaY! Location isn't null!");
-//            mCurrentLocation = mLocationManager.getLocation();
-//        }else{
-//            Common.LogD(TAG, "!BOO! Location is null!");
-//        }
         if(!alreadyLoaded) {
             search();
         }
@@ -703,7 +696,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
-    private void onMapFinishedLoading() {
+    private void onLayoutFinished() {
         if(alreadyLoaded && mMarkersLatLngList!=null && mLastSearchResult!=null) {
             zoomToContainAllMarkers(mMarkersLatLngList);
             updateVenueResults(mLastSearchResult);
@@ -1065,9 +1058,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        mCurrentLocation = mLocationManager.getLocation();
         mLocationManager.removeLocationChangeListener(this);
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 7));
+        if(!alreadyLoaded) {
+            mCurrentLocation = mLocationManager.getLocation();
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 7));
+        }
     }
 
     public HashMap<Marker, String> getMarkerImageLink() {

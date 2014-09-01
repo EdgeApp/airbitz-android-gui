@@ -41,6 +41,7 @@ import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
+import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
@@ -97,6 +98,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
 
     private RelativeLayout mVenueFragmentLayout;
+    List<BusinessSearchResult> mVenuesLoaded;
 
     private LinearLayout mDummyFocusLayout;
 
@@ -159,15 +161,18 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     protected static int CATEGORY_TIMEOUT = 15000;
     Handler mHandler = new Handler();
-
+    boolean alreadyLoaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if(mLocationManager==null) {
+            alreadyLoaded = false;
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
             mLocationManager.addLocationChangeListener(this);
+        } else {
+            alreadyLoaded = true;
         }
     }
 
@@ -183,8 +188,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
 
         checkLocationManager();
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -747,9 +750,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mViewGroupLoading.setVisibility(View.VISIBLE);
             }
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
-        } else {
-            System.out.println("Backing out of App");
-//            super.onBackPressed();
         }
     }
 
@@ -758,6 +758,9 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         checkLocationManager();
+        if(alreadyLoaded && mVenueFragment!=null && mVenuesLoaded!=null) {
+            mVenueFragment.setListView(mVenuesLoaded);
+        }
         super.onResume();
     }
 
@@ -780,6 +783,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
         mFirstLoad = true;
+        mVenuesLoaded = mVenueFragment.getVenues();
+
         super.onPause();
     }
 
