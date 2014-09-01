@@ -141,6 +141,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
         if(mSearch){
             viewHolder.confirmationsTextView.setText(transaction.getCategory());
+            viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
         }else {
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             if(transaction.getConfirmations() == 0){
