@@ -58,7 +58,6 @@ public class VenueFragment extends Fragment implements
     private Activity mActivity;
 
     private boolean locationEnabled;
-//    private View mLoadingFooterView;
 
     private String mLocationName;
     private String mBusinessName;
@@ -73,11 +72,9 @@ public class VenueFragment extends Fragment implements
     private GetMoreVenuesTask mGetMoreVenuesTask;
     private GetRemainingFirstVenuesTask mGetRemainingFirstVenuesTask;
 
-//    private GestureDetector mGestureDetector;
 
     private boolean mIsInBusinessDirectory = false;
     private boolean mIsInMapBusinessDirectory = false;
-
 
     public boolean getIsBusinessDirectory() {
         return mIsInBusinessDirectory;
@@ -105,6 +102,7 @@ public class VenueFragment extends Fragment implements
         mIsInMapBusinessDirectory = !mIsInBusinessDirectory;
         mActivity = getActivity();
     }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_venue, container, false);
@@ -138,14 +136,13 @@ public class VenueFragment extends Fragment implements
     }
 
     private void updateView(Location location) {
-        mIsInBusinessDirectory = false;
-        mIsInMapBusinessDirectory = false;
+//        mIsInBusinessDirectory = false;
+//        mIsInMapBusinessDirectory = false;
         String latLon = "";
         if(location!=null)
             latLon = "" + location.getLatitude() + "," + location.getLongitude();
 
-        if (getParentFragment().getClass().toString().equalsIgnoreCase(BusinessDirectoryFragment.class.toString())) {
-            mIsInBusinessDirectory = true;
+        if (mIsInBusinessDirectory) {
             if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
                 mGetVenuesTask.cancel(true);
             }
@@ -153,8 +150,7 @@ public class VenueFragment extends Fragment implements
             mGetVenuesTask.execute(latLon);
             ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
 
-        } else if (getParentFragment().getClass().toString().equalsIgnoreCase(MapBusinessDirectoryFragment.class.toString()))  {
-            mIsInMapBusinessDirectory = true;
+        } else if (mIsInMapBusinessDirectory)  {
             mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
             mBusinessType = getArguments().getString(BusinessDirectoryFragment.BUSINESSTYPE);
             mBusinessName = getArguments().getString(BusinessDirectoryFragment.BUSINESS);
@@ -226,21 +222,23 @@ public class VenueFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        updateView(mLocationManager.getLocation());
-        mLocationManager.removeLocationChangeListener(this);
+        if(mIsInBusinessDirectory) {
+            updateView(mLocationManager.getLocation());
+            mLocationManager.removeLocationChangeListener(this);
 
-        int timeout = 15000;
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            @Override public void run() {
-                if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING && getActivity()!=null) {
-                    Toast.makeText(getActivity(), "Can not retrieve data",
-                            Toast.LENGTH_LONG).show();
-                    mGetVenuesTask.cancel(true);
+            int timeout = 15000;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING && getActivity() != null) {
+                        Toast.makeText(getActivity(), "Can not retrieve data",
+                                Toast.LENGTH_LONG).show();
+                        mGetVenuesTask.cancel(true);
+                    }
                 }
-            }
-        }, timeout);
+            }, timeout);
+        }
     }
 
     private class GetVenuesTask extends AsyncTask<String, Void, String> {
@@ -253,7 +251,6 @@ public class VenueFragment extends Fragment implements
         }
 
         @Override protected void onPreExecute() {
-//            mVenueListView.addFooterView(mLoadingFooterView);
             if (mIsInBusinessDirectory) {
                 ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
             }
@@ -281,7 +278,6 @@ public class VenueFragment extends Fragment implements
         }
 
         @Override protected void onCancelled() {
-//            mVenueListView.removeFooterView(mLoadingFooterView);
             mNoResultView.setVisibility(View.VISIBLE);
             hideLoadingIndicator();
             mGetVenuesTask = null;
@@ -289,7 +285,6 @@ public class VenueFragment extends Fragment implements
         }
 
         @Override protected void onPostExecute(String searchResult) {
-//            mProgressDialog.dismiss();
             try {
                 mVenues.clear();
                 processSearchResults(searchResult);
@@ -326,7 +321,6 @@ public class VenueFragment extends Fragment implements
 
 
     public void setListView(String searchResults) {
-
         try {
             processSearchResults(searchResults);
             setListView(mVenues);
@@ -342,10 +336,18 @@ public class VenueFragment extends Fragment implements
         }
     }
 
-    private void setListView(List<BusinessSearchResult> venues) {
+    public void setListView(List<BusinessSearchResult> venues) {
         mVenueListView.setVisibility(View.VISIBLE);
-        mVenueAdapter = new VenueAdapter(mActivity, venues);
-        mVenueListView.setAdapter(mVenueAdapter);
+        if(mVenues.isEmpty())
+            mVenues.addAll(venues);
+        if(mVenueAdapter==null) {
+            mVenueAdapter = new VenueAdapter(mActivity, mVenues);
+        } else {
+            mVenueAdapter.notifyDataSetChanged();
+        }
+        if(mVenueListView.getAdapter()==null) {
+            mVenueListView.setAdapter(mVenueAdapter);
+        }
         preloadVenueImages();
 
         Log.d(TAG, "items in list view: " + String.valueOf(mVenueAdapter.getCount()));
@@ -514,25 +516,13 @@ public class VenueFragment extends Fragment implements
 
     private class GetRemainingFirstVenuesTask extends AsyncTask<String, Void, List<BusinessSearchResult>> {
 
-        AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
-//        ProgressDialog mProgressDialog;
 
         public GetRemainingFirstVenuesTask(Context context) {
             mContext = context;
         }
 
         @Override protected void onPreExecute() {
-//            mProgressDialog = new ProgressDialog(mContext);
-//            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            mProgressDialog.setMessage("Getting more venues list...");
-//            mProgressDialog.setIndeterminate(true);
-//            // mProgressDialog.setCancelable(false);
-//            if (mIsInBusinessDirectory) {
-//                mProgressDialog.show();
-//            } else {
-//                mProgressDialog.show();
-//            }
         }
 
         @Override protected List<BusinessSearchResult> doInBackground(String... params) {
@@ -540,7 +530,6 @@ public class VenueFragment extends Fragment implements
         }
 
         @Override protected void onCancelled() {
-//            mProgressDialog.dismiss();
             mNoResultView.setVisibility(View.VISIBLE);
             hideLoadingIndicator();
             mGetRemainingFirstVenuesTask = null;
@@ -549,30 +538,20 @@ public class VenueFragment extends Fragment implements
 
         @Override protected void onPostExecute(List<BusinessSearchResult> searchResult) {
             if (!searchResult.isEmpty()) {
-
-                mVenues.addAll(mTempVenues);
-                mVenueAdapter.notifyDataSetChanged();
-                preloadVenueImages();
-                if (mIsInBusinessDirectory) {
-                    ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mContext);
-                }
+                refreshVenueList();
+                mVenues.addAll(searchResult);
             }
-//            mProgressDialog.dismiss();
             mGetRemainingFirstVenuesTask = null;
         }
+
     }
 
-    private float getStateFromSharedPreferences(String key) {
-        if(mActivity == null){
-            System.out.println("WTF MY ACTIVITY KILLED ITSELF");
+    public void refreshVenueList() {
+        mVenueAdapter.notifyDataSetChanged();
+        preloadVenueImages();
+        if (mIsInBusinessDirectory) {
+            ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mActivity);
         }
-        Activity a = mActivity;
-        if(a!=null) {
-            SharedPreferences pref = a.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
-                    Context.MODE_PRIVATE);
-            return pref.getFloat(key, -1);
-        }
-        return -1;
     }
 
     private double getLatFromSharedPreference() {
@@ -582,5 +561,4 @@ public class VenueFragment extends Fragment implements
     private double getLonFromSharedPreference() {
         return mLocationManager.getLocation().getLongitude();
     }
-
 }
