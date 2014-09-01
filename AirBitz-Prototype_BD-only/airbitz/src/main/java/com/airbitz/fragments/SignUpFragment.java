@@ -329,7 +329,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             }
             //TODO variable length list of items instead of fixed # of items
             int resource = passed ? R.drawable.green_check : R.drawable.red_x;
-            mQuestion1.setText(description);
             switch(i) {
                 case 0:
                     mSwitchImage1.setImageResource(resource);
