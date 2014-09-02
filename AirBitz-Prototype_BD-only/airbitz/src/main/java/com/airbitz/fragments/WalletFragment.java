@@ -118,7 +118,7 @@ public class WalletFragment extends Fragment
                     Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWallet(walletUUID);
-                    mTransactions = mCoreAPI.loadTransactions(mWallet);
+                    mTransactions = mCoreAPI.loadAllTransactions(mWallet);
                 }
             }
         }
@@ -383,7 +383,7 @@ public class WalletFragment extends Fragment
                 if(searchPage){
                     SetSearchVisibility(false);
                     mTransactionAdapter.setSearch(false);
-                    UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
+                    UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
                 }else{
                     getActivity().onBackPressed();
                 }
@@ -520,7 +520,7 @@ public class WalletFragment extends Fragment
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
         mWallet = mCoreAPI.getWallet(mWallet.getUUID());
-        UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
+        UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
         UpdateWalletTotalBalance();
         mRequestButton.setEnabled(true);
         mSendButton.setEnabled(true);
@@ -600,7 +600,7 @@ public class WalletFragment extends Fragment
             Common.LogD(TAG, "Reloading wallet");
             mCoreAPI.reloadWallet(mWallet);
             mWalletNameEditText.setText(mWallet.getName());
-            UpdateTransactionsListView(mCoreAPI.loadTransactions(mWallet));
+            UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
         }
     }
 }

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by tom on 6/20/14.
@@ -74,7 +75,7 @@ public class CoreAPI {
     public native byte[] getBytesAtPtr(long pointer, int length);
     public native long get64BitLongAtPtr(long pointer);
     public native void set64BitLongAtPtr(long pointer, long value);
-    public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, long perror);
+    public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, boolean addSign, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
@@ -552,6 +553,9 @@ public class CoreAPI {
         Common.LogD(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 settings, Error);
+        if(result==tABC_CC.ABC_CC_Ok) {
+
+        }
     }
 
     public List<ExchangeRateSource> getExchangeRateSources(tABC_ExchangeRateSources sources) {
@@ -769,12 +773,12 @@ public class CoreAPI {
         }
         else
         {
-            Common.LogD(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.loadAllTransactions: "+ Error.getSzDescription());
         }
         return transaction;
     }
 
-    public List<Transaction> loadTransactions(Wallet wallet) {
+    public List<Transaction> loadTransactionsRange(Wallet wallet, long start, long end) {
         List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
 
@@ -784,8 +788,14 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_p_sABC_TxInfo paTxInfo = core.longp_to_pppTxInfo(lp);
 
+        SWIGTYPE_p_int64_t startTime = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(startTime), start); //0 means all transactions
+
+        SWIGTYPE_p_int64_t endTime = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(endTime), end); //0 means all transactions
+
         tABC_CC result = core.ABC_GetTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                wallet.getUUID(), paTxInfo, puCount, Error);
+                wallet.getUUID(), startTime, endTime, paTxInfo, puCount, Error);
 
         if (result==tABC_CC.ABC_CC_Ok)
         {
@@ -795,8 +805,7 @@ public class CoreAPI {
 
             for (int i = count-1; i >= 0 ; i--) {
                 pLong temp = new pLong(base.getPtr(base, i * 4));
-                long start = core.longp_value(temp);
-                TxInfo txi = new TxInfo(start);
+                TxInfo txi = new TxInfo(core.longp_value(temp));
 
                 Transaction in = new Transaction();
                 setTransaction(wallet, in, txi);
@@ -816,9 +825,13 @@ public class CoreAPI {
         }
         else
         {
-            Common.LogD(TAG, "Error: CoreBridge.loadTransactions: "+ Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.loadAllTransactions: "+ Error.getSzDescription());
         }
         return listTransactions;
+    }
+
+    public List<Transaction> loadAllTransactions(Wallet wallet) {
+        return loadTransactionsRange(wallet, 0, 0);
     }
 
     private class ppTxInfo extends SWIGTYPE_p_p_sABC_TxInfo {
@@ -1208,7 +1221,7 @@ public class CoreAPI {
         boolean negative = amount < 0;
         if(negative)
             amount = -amount;
-        int result = FormatAmount(amount, ppChar.getCPtr(ppChar), decimalPlaces, error.getCPtr(error));
+        int result = FormatAmount(amount, SWIGTYPE_p_p_char.getCPtr(ppChar), decimalPlaces, false, tABC_Error.getCPtr(error));
         if ( result != 0)
         {
             return "";
@@ -1565,6 +1578,7 @@ public class CoreAPI {
     public void stopAllAsyncUpdates() {
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
+        stopWatchers();
     }
 
     public void updateExchangeRates()
@@ -2000,20 +2014,32 @@ public class CoreAPI {
         return result;
     }
 
-    private Map<String, Thread> mWatcherTasks = new HashMap<String, Thread>();
+    private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
     public void startWatchers()
     {
+        tABC_Error error = new tABC_Error();
         List<Wallet> wallets = getCoreWallets();
         for (Wallet w : wallets) {
-            if(w.getUUID()!=null && !mWatcherTasks.containsKey(w.getUUID())) {
-                Thread thread = new Thread(new WatcherRunnable(w.getUUID()));
-                mWatcherTasks.put(w.getUUID(), thread);
+            String uuid = w.getUUID();
+            if(uuid!=null && !mWatcherTasks.containsKey(uuid)) {
+                core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+                Thread thread = new Thread(new WatcherRunnable(uuid));
+                mWatcherTasks.put(uuid, thread);
+                thread.getState();
                 thread.start();
-                Common.LogD(TAG, "Started watcher for "+w.getUUID());
+
+                while(!thread.isAlive()) { } // wait for thread to start before calling the next two methods
+
+                core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+                core.ABC_WatcherConnect(uuid, error);
+                Common.LogD(TAG, "Started watcher for "+uuid);
             }
         }
     }
 
+    /*
+     * This thread will block forever
+     */
     private class WatcherRunnable implements Runnable {
         private final String uuid;
 
@@ -2024,23 +2050,34 @@ public class CoreAPI {
         public void run() {
             tABC_Error error = new tABC_Error();
 
-            core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-            core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
             int result = coreWatcherLoop(uuid, tABC_Error.getCPtr(error));
         }
     }
 
-    public void stopWatchers()
-    {
-            tABC_Error Error = new tABC_Error();
-            Set set = mWatcherTasks.keySet();
-            Iterator i = set.iterator();
-            while(i.hasNext()) {
-                String uuid = (String)i.next();
-//                core.ABC_WatcherStop(uuid , Error); // Causes thread crash on Android
-//                mWatcherTasks.get(uuid).interrupt();
-//                mWatcherTasks.remove(uuid);
+    public void stopWatchers() {
+        tABC_Error Error = new tABC_Error();
+        Set set = mWatcherTasks.keySet();
+        Iterator i = set.iterator();
+        while (i.hasNext()) {
+            String uuid = (String) i.next();
+            core.ABC_WatcherStop(uuid, Error);
+        }
+        // Wait for all of the threads to finish.
+        for (Thread thread : mWatcherTasks.values()) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
+
+        i = set.iterator();
+        while (i.hasNext()) {
+            String uuid = (String) i.next();
+            core.ABC_WatcherDelete(uuid, Error);
+        }
+
+        mWatcherTasks.clear();
     }
 
     public long maxSpendable(String walletUUID, String destAddress, boolean bTransfer)

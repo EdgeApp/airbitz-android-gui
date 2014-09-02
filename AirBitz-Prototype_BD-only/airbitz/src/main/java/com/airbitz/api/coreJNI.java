@@ -40,6 +40,7 @@ public class coreJNI {
   public final static native int ABC_MIN_USERNAME_LENGTH_get();
   public final static native int ABC_MIN_PASS_LENGTH_get();
   public final static native int ABC_MIN_PIN_LENGTH_get();
+  public final static native int ABC_GET_TX_ALL_TIMES_get();
   public final static native void gbIsTestNet_set(boolean jarg1);
   public final static native boolean gbIsTestNet_get();
   public final static native int ABC_CC_Ok_get();
@@ -345,7 +346,7 @@ public class coreJNI {
   public final static native int ABC_SatoshiToCurrency(String jarg1, String jarg2, long jarg3, long jarg4, int jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_CurrencyToSatoshi(String jarg1, String jarg2, double jarg3, int jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_ParseAmount(String jarg1, long jarg2, long jarg3);
-  public final static native int ABC_FormatAmount(long jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_FormatAmount(long jarg1, long jarg2, long jarg3, boolean jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CreateReceiveRequest(String jarg1, String jarg2, String jarg3, long jarg4, tABC_TxDetails jarg4_, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_ModifyReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_FinalizeReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
@@ -356,7 +357,7 @@ public class coreJNI {
   public final static native int ABC_CalcSendFees(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, tABC_TxDetails jarg6_, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_MaxSpendable(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
+  public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native void ABC_FreeTransaction(long jarg1, tABC_TxInfo jarg1_);
   public final static native void ABC_FreeTransactions(long jarg1, long jarg2);
@@ -376,7 +377,9 @@ public class coreJNI {
   public final static native int ABC_WatcherStatus(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherLoop(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_WatcherConnect(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatchAddresses(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_PrioritizeAddress(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_TxHeight(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
@@ -384,8 +387,8 @@ public class coreJNI {
   public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_Version(long jarg1, long jarg2, tABC_Error jarg2_);
-  public final static native int ABC_FilterExportData(String jarg1, int jarg2, int jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_ExportFormatCsv(long jarg1, int jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_UploadLogs(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_CsvExport(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native long p64_t_to_long_ptr(long jarg1);
   public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);

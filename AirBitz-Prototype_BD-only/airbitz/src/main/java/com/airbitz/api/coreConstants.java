@@ -20,4 +20,5 @@ public interface coreConstants {
   public final static int ABC_MIN_USERNAME_LENGTH = coreJNI.ABC_MIN_USERNAME_LENGTH_get();
   public final static int ABC_MIN_PASS_LENGTH = coreJNI.ABC_MIN_PASS_LENGTH_get();
   public final static int ABC_MIN_PIN_LENGTH = coreJNI.ABC_MIN_PIN_LENGTH_get();
+  public final static int ABC_GET_TX_ALL_TIMES = coreJNI.ABC_GET_TX_ALL_TIMES_get();
 }
