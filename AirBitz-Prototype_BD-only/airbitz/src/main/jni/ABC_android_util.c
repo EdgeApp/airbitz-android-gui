@@ -240,11 +240,12 @@ Java_com_airbitz_api_CoreAPI_ParseAmount(JNIEnv *jenv, jclass jcls, jstring jarg
  * Proper conversion without SWIG problems
 */
 JNIEXPORT jint JNICALL
-Java_com_airbitz_api_CoreAPI_FormatAmount(JNIEnv *jenv, jclass jcls, jlong satoshi, jlong ppchar, jlong decimalplaces, jlong perror) {
+Java_com_airbitz_api_CoreAPI_FormatAmount(JNIEnv *jenv, jclass jcls, jlong satoshi, jlong ppchar, jlong decimalplaces, jboolean addSign, jlong perror) {
   jint jresult = 0 ;
   int64_t arg1 = satoshi;
   char **arg2 = (char **) 0 ;
   unsigned int arg3 ;
+  unsigned int arg4 ;
   tABC_Error *argError = (tABC_Error *) 0 ;
   tABC_CC result;
 
@@ -253,13 +254,14 @@ Java_com_airbitz_api_CoreAPI_FormatAmount(JNIEnv *jenv, jclass jcls, jlong satos
 
   arg2 = *(char ***)&ppchar;
   arg3 = (unsigned int)decimalplaces;
+  arg4 = addSign==false? 0 : 1;
   argError = *(tABC_Error **)&perror;
 
 //    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "satoshi=%llx", arg1);
 //    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "ppchar=%p", (void *) arg2);
 //    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "decimals=%d", arg3);
 //    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_FormatAmount", "perror=%p", (void *) argError);
-  result = (tABC_CC)ABC_FormatAmount(arg1,arg2,arg3,argError);
+  result = (tABC_CC)ABC_FormatAmount(arg1,arg2,arg3,arg4,argError);
   jresult = (jint)result;
   return jresult;
 }

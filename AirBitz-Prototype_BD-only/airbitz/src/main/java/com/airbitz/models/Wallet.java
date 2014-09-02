@@ -99,7 +99,7 @@ public class Wallet {
 
     public List<Transaction> getTransactions() {
         if(mTransactions==null || mTransactions.size()==0) {
-            mTransactions = mCoreAPI.loadTransactions(this);
+            mTransactions = mCoreAPI.loadAllTransactions(this);
         }
         return mTransactions;
     }

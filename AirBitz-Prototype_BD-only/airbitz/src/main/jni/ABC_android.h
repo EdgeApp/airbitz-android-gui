@@ -66,6 +66,8 @@
 #define ABC_MIN_PASS_LENGTH 10
 #define ABC_MIN_PIN_LENGTH 4
 
+#define ABC_GET_TX_ALL_TIMES 0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -776,9 +778,10 @@ extern "C" {
                             uint64_t *pAmountOut,
                             unsigned decimalPlaces);
 
-    tABC_CC ABC_FormatAmount(uint64_t amount,
+    tABC_CC ABC_FormatAmount(int64_t amount,
                              char **pszAmountOut,
                              unsigned decimalPlaces,
+                             bool bAddSign,
                              tABC_Error *pError);
 
     tABC_CC ABC_CreateReceiveRequest(const char *szUserName,
@@ -860,6 +863,8 @@ extern "C" {
     tABC_CC ABC_GetTransactions(const char *szUserName,
                                 const char *szPassword,
                                 const char *szWalletUUID,
+                                int64_t startTime,
+                                int64_t endTime,
                                 tABC_TxInfo ***paTransactions,
                                 unsigned int *pCount,
                                 tABC_Error *pError);
@@ -953,8 +958,14 @@ extern "C" {
                             void *pData,
                             tABC_Error *pError);
 
+    tABC_CC ABC_WatcherConnect(const char *szWalletUUID, tABC_Error *pError);
+
     tABC_CC ABC_WatchAddresses(const char *szUsername, const char *szPassword,
                                const char *szWalletUUID, tABC_Error *pError);
+
+    tABC_CC ABC_PrioritizeAddress(const char *szUserName, const char *szPassword,
+                                  const char *szWalletUUID, const char *szAddress,
+                                  tABC_Error *pError);
 
     tABC_CC ABC_WatcherStop(const char *szWalletUUID, tABC_Error *pError);
 
@@ -977,18 +988,18 @@ extern "C" {
 //    void tempEventA();
 //    void tempEventB();
 
-    tABC_CC ABC_FilterExportData(const char *szWalletId,
-                                 const int iStartDate,
-                                 const int iEndDate,
-                                 tABC_TxInfo ***pTransactions,
-                                 int *iNumOfTransactions,
-                                 tABC_Error *pError);
+    tABC_CC ABC_UploadLogs(const char *szUserName,
+                           const char *szPassword,
+                           tABC_Error *pError);
 
 
-    tABC_CC ABC_ExportFormatCsv(tABC_TxInfo **pTransactions,
-                                int iTransactionCount,
-                                char **szCsvData,
-                                tABC_Error *pError);
+    tABC_CC ABC_CsvExport(const char *szUserName,
+                          const char *szPassword,
+                          const char *szUUID,
+                          int64_t startTime,
+                          int64_t endTime,
+                          char **szCsvData,
+                          tABC_Error *pError);
 
 #ifdef __cplusplus
 }
