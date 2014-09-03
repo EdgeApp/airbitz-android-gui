@@ -354,6 +354,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     }
 
     private void goNext() {
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(mParentLayout);
         // if they entered a valid mUsername or old mPassword
         if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid()) {
             // if we are signing up a new account
@@ -707,7 +708,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                ((NavigationActivity)getActivity()).popFragment();
+                            ((NavigationActivity)getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.BD.ordinal());
+                            ((NavigationActivity)getActivity()).switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
                             }
                         });
         AlertDialog alert = builder.create();
