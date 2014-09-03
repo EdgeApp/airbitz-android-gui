@@ -64,7 +64,7 @@ public class CoreAPI {
             mInstance = new CoreAPI();
             Common.LogD(TAG, "New CoreAPI");
         }
-        return new CoreAPI();
+        return mInstance;
     }
 
     public void resetCore() {
