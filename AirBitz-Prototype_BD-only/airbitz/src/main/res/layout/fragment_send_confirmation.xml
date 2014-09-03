@@ -296,7 +296,7 @@
                     android:text="@string/send_confirmation_enter_send_pin"
                     android:textColor="@android:color/white"
                     android:paddingRight="20dp"
-                    android:gravity="center_vertical|right"
+                    android:gravity="center_vertical|end"
                     android:textSize="16sp"
                     android:layout_weight="1"/>
 
@@ -309,7 +309,7 @@
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:singleLine="true"
-                    android:password="true"
+                    android:selectAllOnFocus="true"
                     android:inputType="numberPassword"
                     android:hint=""
                     android:layout_weight="1"
