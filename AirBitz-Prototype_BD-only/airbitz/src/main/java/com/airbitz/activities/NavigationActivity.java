@@ -634,6 +634,7 @@ public class NavigationActivity extends BaseActivity
         }
 
         DisplayLoginOverlay(false);
+        mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
@@ -667,6 +668,7 @@ public class NavigationActivity extends BaseActivity
         sendCredentialsToService(null, null);
         AirbitzApplication.Logout();
         DisplayLoginOverlay(false);
+        mCoreAPI.resetCore();
         startActivity(new Intent(this, NavigationActivity.class));
     }
 

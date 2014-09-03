@@ -33,9 +33,7 @@ import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -278,7 +276,7 @@ public class SettingFragment extends Fragment {
 
         setUserNameState(mSendNameSwitch.isChecked());
 
-        mCoreSettings = mCoreAPI.loadAccountSettings();
+        mCoreSettings = mCoreAPI.coreSettings();
         loadSettings(mCoreSettings);
         return mView;
     }

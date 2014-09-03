@@ -24,7 +24,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +62,13 @@ public class CoreAPI {
     public static CoreAPI getApi() {
         if (mInstance == null) {
             mInstance = new CoreAPI();
+            Common.LogD(TAG, "New CoreAPI");
         }
-        return mInstance;
+        return new CoreAPI();
     }
 
-    public static CoreAPI getNewInstance() {
-        return new CoreAPI();
+    public void resetCore() {
+        mInstance = null;
     }
 
     public native String getStringAtPtr(long pointer);
@@ -104,6 +104,10 @@ public class CoreAPI {
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
         }
+    }
+
+    public void setupAccountSettings() {
+        coreSettings();
     }
 
     /**
@@ -420,16 +424,16 @@ public class CoreAPI {
     private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
 
     public String GetUserPIN() {
-        return mCoreSettings.getSzPIN();
+        return coreSettings().getSzPIN();
     }
 
     public void SetUserPIN(String pin) {
-        mCoreSettings.setSzPIN(pin);
-        saveAccountSettings(mCoreSettings);
+        coreSettings().setSzPIN(pin);
+        saveAccountSettings(coreSettings());
     }
 
     public String getDefaultBTCDenomination() {
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Common.LogD(TAG, "Bad bitcoin denomination from core settings");
@@ -439,7 +443,7 @@ public class CoreAPI {
     }
 
     public String getUserBTCSymbol() {
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Common.LogD(TAG, "Bad bitcoin denomination from core settings");
@@ -515,13 +519,11 @@ public class CoreAPI {
         public String getDescription() { return mDescription; }
     }
 
-    private static class ppCurrency extends SWIGTYPE_p_p_sABC_Currency {
-        public static long getPtr(SWIGTYPE_p_p_sABC_Currency p) { return getCPtr(p); }
-        public static long getPtr(SWIGTYPE_p_p_sABC_Currency p, long i) { return getCPtr(p)+i; }
-    }
-
     private tABC_AccountSettings mCoreSettings;
-    public tABC_AccountSettings loadAccountSettings() {
+    public tABC_AccountSettings coreSettings() {
+        if(mCoreSettings!=null)
+            return mCoreSettings;
+
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -625,8 +627,8 @@ public class CoreAPI {
         newSource.setSzSource(name);
         newSource.setCurrencyNum(currencyNumber);
 
-        tABC_ExchangeRateSources sources = mCoreSettings.getExchangeRateSources();
-        List<ExchangeRateSource> list = getExchangeRateSources(mCoreSettings.getExchangeRateSources());
+        tABC_ExchangeRateSources sources = coreSettings().getExchangeRateSources();
+        List<ExchangeRateSource> list = getExchangeRateSources(coreSettings().getExchangeRateSources());
         list.add(newSource);
 //        sources.setASources();
     }
@@ -1155,7 +1157,7 @@ public class CoreAPI {
     //************************* Currency formatting
 
     public String formatDefaultCurrency(double in) {
-        String pre = mBTCSymbols[mCoreSettings.getBitcoinDenomination().getDenominationType()];
+        String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
         String out = String.format("%.3f", in);
         return pre+out;
     }
@@ -1186,7 +1188,7 @@ public class CoreAPI {
 
     public int maxDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination != null) {
             int label = bitcoinDenomination.getDenominationType();
@@ -1242,7 +1244,7 @@ public class CoreAPI {
 
     public int SettingsCurrencyIndex() {
         int index = -1;
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         int currencyNum = settings.getCurrencyNum();
         int[] currencyNumbers = getCurrencyNumbers();
 
@@ -1259,7 +1261,7 @@ public class CoreAPI {
 
     public int CurrencyIndex(int currencyNum) {
         int index = -1;
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         int[] currencyNumbers = getCurrencyNumbers();
 
         for(int i=0; i<currencyNumbers.length; i++) {
@@ -1274,12 +1276,12 @@ public class CoreAPI {
     }
 
     public void SaveCurrencyNumber(int currencyNum) {
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         settings.setCurrencyNum(currencyNum);
     }
 
     public int BitcoinDenominationLabel() {
-        tABC_AccountSettings settings = loadAccountSettings();
+        tABC_AccountSettings settings = coreSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         return bitcoinDenomination.getDenominationType();
     }
@@ -1302,7 +1304,7 @@ public class CoreAPI {
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
         long satoshi = 100;
         int denomIndex = 0;
         if(denomination != null) {
@@ -1324,7 +1326,7 @@ public class CoreAPI {
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
-        int currencyNumber = mCoreSettings.getCurrencyNum();
+        int currencyNumber = coreSettings().getCurrencyNum();
         return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
     }
 
@@ -1344,7 +1346,7 @@ public class CoreAPI {
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {
-        int num = mCoreSettings.getCurrencyNum();
+        int num = coreSettings().getCurrencyNum();
         return SatoshiToCurrency(satoshi, num);
     }
 
@@ -1359,7 +1361,7 @@ public class CoreAPI {
     }
 
     public long DefaultCurrencyToSatoshi(double currency) {
-        return CurrencyToSatoshi(currency, mCoreSettings.getCurrencyNum());
+        return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
     }
 
     public long CurrencyToSatoshi(double currency, int currencyNum) {
@@ -1383,7 +1385,7 @@ public class CoreAPI {
         } catch(NumberFormatException e) { // ignore any non-double
         }
 
-        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
         if(denomination != null) {
             if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
                 val = val * SATOSHI_PER_BTC;
@@ -1614,7 +1616,7 @@ public class CoreAPI {
     public void startExchangeRateUpdates() {
         if(AirbitzApplication.isLoggedIn()) {
             if(mExchangeRateSources==null) {
-                tABC_AccountSettings settings = loadAccountSettings();
+                tABC_AccountSettings settings = coreSettings();
                 mExchangeRateSources = getExchangeRateSources(settings.getExchangeRateSources());
             }
             mPeriodicTaskHandler.post(ExchangeRateUpdater);
