@@ -122,7 +122,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     private ObservableScrollView mScrollView;
 
     private ViewGroup mViewGroupLoading;
-    private TextView mLoadingText;
     private TextView mNoResultView;
 
     private static String mLocationWords = "";
@@ -250,7 +249,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         mNearYouTextViewSticky = (TextView) view.findViewById(R.id.textview_nearyou_sticky);
 
         mViewGroupLoading = (ViewGroup) view.findViewById(R.id.ViewGroup_loading);
-        mLoadingText = (TextView) view.findViewById(R.id.TextView_loading);
 
         mTitleTextView.setTypeface(montserratBoldTypeFace);
         mSearchField.setTypeface(montserratRegularTypeFace);
@@ -262,7 +260,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         mMoreButton.setTypeface(montserratRegularTypeFace);
         mNearYouTextView.setTypeface(montserratRegularTypeFace);
         mNearYouTextViewSticky.setTypeface(montserratRegularTypeFace);
-        mLoadingText.setTypeface(montserratRegularTypeFace);
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
