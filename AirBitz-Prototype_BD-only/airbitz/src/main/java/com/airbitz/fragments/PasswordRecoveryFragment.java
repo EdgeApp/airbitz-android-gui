@@ -383,8 +383,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
                 if(mMode==SIGN_UP) {
-                    ((NavigationActivity) getActivity()).UserJustLoggedIn();
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                    ((NavigationActivity) getActivity()).UserJustLoggedIn();
                 } else if(mMode==CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
                 }
