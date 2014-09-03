@@ -518,8 +518,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         protected Boolean doInBackground(String... params) {
             String answers=params[0];
             mUsername=params[1];
+            mPassword = mPasswordEditText.getText().toString();
             if (mMode == CHANGE_PASSWORD) {
-                mPassword = mPasswordEditText.getText().toString();
                 mUsername = AirbitzApplication.getUsername();
                 Common.LogD(TAG, "changing password to "+mPassword);
                 mCoreAPI.stopWatchers();
