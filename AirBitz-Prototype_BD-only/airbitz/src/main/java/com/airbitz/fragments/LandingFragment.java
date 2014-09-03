@@ -9,11 +9,14 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,8 +34,6 @@ import com.airbitz.utils.Common;
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
-    private RelativeLayout mLandingLayout;
-
     private ImageView mLogoImageView;
 
     private TextView mDetailTextView;
@@ -45,6 +46,9 @@ public class LandingFragment extends Fragment {
     private EditText mPasswordEditText;
 
     private CoreAPI mCoreAPI;
+    View activityRootView;
+
+    boolean keyboardUp = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -56,8 +60,6 @@ public class LandingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
-
-        mLandingLayout = (RelativeLayout) view.findViewById(R.id.fragment_landing_main_layout);
 
         mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
 
@@ -81,22 +83,46 @@ public class LandingFragment extends Fragment {
         mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        final View activityRootView = view.findViewById(R.id.fragment_landing_container);
+        activityRootView = view.findViewById(R.id.fragment_landing_container);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                boolean oldKeyboardState = keyboardUp;
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    mDetailTextView.setVisibility(View.GONE);
-                    mSwipeTextLayout.setVisibility(View.GONE);
-                    if (activityRootView.getHeight() < (int) getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)) {
-                        mLogoImageView.setVisibility(View.GONE);
-                    }
+                if(heightDiff < 100) {
+                    keyboardUp = false;
                 } else {
-                    mDetailTextView.setVisibility(View.VISIBLE);
-                    mSwipeTextLayout.setVisibility(View.VISIBLE);
-                    mLogoImageView.setVisibility(View.VISIBLE);
+                    keyboardUp = true;
                 }
+                if(oldKeyboardState && !keyboardUp) {
+                    collapseVertically(false);
+                } else {
+
+                }
+            }
+        });
+
+        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                collapseVertically(hasFocus);
+            }
+        });
+
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                collapseVertically(hasFocus);
+            }
+        });
+
+        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()  {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    collapseVertically(false);
+                }
+                return false;
             }
         });
 
@@ -156,6 +182,20 @@ public class LandingFragment extends Fragment {
         rightBounce.start();
 
         return view;
+    }
+
+    void collapseVertically(boolean collapse) {
+        if (collapse) {
+            mDetailTextView.setVisibility(View.GONE);
+            mSwipeTextLayout.setVisibility(View.GONE);
+            if (activityRootView.getHeight() < (int) getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)) {
+                mLogoImageView.setVisibility(View.GONE);
+            }
+        } else {
+            mDetailTextView.setVisibility(View.VISIBLE);
+            mSwipeTextLayout.setVisibility(View.VISIBLE);
+            mLogoImageView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void attemptForgotPassword() {

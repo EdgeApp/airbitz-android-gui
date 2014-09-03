@@ -7,18 +7,18 @@
     tools:ignore="MergeRootFrame"
     android:background="@drawable/bg_app">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/fragment_landing_main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:visibility="visible"
         android:background="@android:color/transparent">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="100.8dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="6.3dp"
             android:contentDescription="@string/fragment_landing_logo_description"
             android:src="@drawable/img_logo"
@@ -28,21 +28,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/fragment_landing_detail_textview"
+            android:textSize="15sp"
+            android:gravity="center"
             android:layout_marginTop="31.5dp"
             android:layout_marginBottom="31.5dp"
-            android:textSize="15dp"
-            android:layout_below="@id/fragment_landing_logo_imageview"
-            android:gravity="center"
             android:textColor="@android:color/white"
             android:text="@string/fragment_landing_detail_text"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:id="@+id/fragment_landing_swipe_layout"
-            android:orientation="horizontal"
-            android:layout_below="@+id/fragment_landing_detail_textview">
+            android:layout_marginBottom="31.5dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_landing_swipe_textview"
                 android:padding="6.3dp"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:textColor="@android:color/white"
                 android:text="@string/fragment_landing_swipe_text"/>
 
@@ -68,12 +68,12 @@
                 android:contentDescription="@string/fragment_landing_arrow_description"/>
         </LinearLayout>
 
+
         <ScrollView
             android:id="@+id/fragment_landing_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6.3dp"
-            android:layout_alignParentBottom="true">
+            android:layout_marginBottom="6.3dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,9 +89,9 @@
                     android:singleLine="true"
                     android:nextFocusDown="@+id/fragment_landing_password_edittext"
                     android:textColor="@android:color/white"
-                    android:textColorHint="#DDDDDDDD"
+                    android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:id="@+id/fragment_landing_username_edittext"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
@@ -105,11 +105,11 @@
                     android:inputType="textPassword|textNoSuggestions"
                     android:hint="@string/fragment_landing_password_hint"
                     android:textColor="@android:color/white"
-                    android:textColorHint="#DDDDDDDD"
+                    android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:ems="10"
                     android:selectAllOnFocus="true"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:imeOptions="actionDone"
                     android:id="@+id/fragment_landing_password_edittext"
                     android:layout_marginBottom="6.3dp"
@@ -123,7 +123,7 @@
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signin_button"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:textColor="#DDFFFFFF"
                     android:id="@+id/fragment_landing_signin_button"
                     android:shadowDy="4"
@@ -138,7 +138,7 @@
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
                     android:text="@string/fragment_landing_signup_button"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:textColor="#DDFFFFFF"
                     android:id="@+id/fragment_landing_signup_button"
                     android:shadowDy="4"
@@ -160,13 +160,13 @@
                     android:text="@string/fragment_landing_forgot_text"
                     android:paddingRight="6.3dp"
                     android:paddingLeft="6.3dp"
-                    android:textSize="11dp"
+                    android:textSize="11sp"
                     android:textColor="@android:color/white"
                     android:drawableRight="@drawable/ico_forgot"
                     android:background="@drawable/bg_btn_blue_stretch" />
             </LinearLayout>
         </ScrollView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
