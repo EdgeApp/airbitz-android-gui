@@ -966,6 +966,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         mLoadingVisible = false;
     }
 
+    public void showLoadingIndicator() {
+        mViewGroupLoading.setVisibility(View.VISIBLE);
+        mLoadingVisible = true;
+    }
+
     public Categories getMoreBusinessCategory(Categories initial, String link) {
         while (!link.equalsIgnoreCase("null")) {
 
@@ -1070,7 +1075,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         if(venues!=null) {
             mVenueListView.setVisibility(View.VISIBLE);
             mNoResultView.setVisibility(View.GONE);
-            hideLoadingIndicator();
         } else {
             mVenueListView.setVisibility(View.GONE);
             mNoResultView.setVisibility(View.VISIBLE);
