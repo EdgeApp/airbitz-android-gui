@@ -138,7 +138,7 @@ public class SendConfirmationFragment extends Fragment {
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_help_button);
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
-        mCalculator = ((NavigationActivity)getActivity()).getCalculatorView();
+        mCalculator = mActivity.getCalculatorView();
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
@@ -210,7 +210,7 @@ public class SendConfirmationFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.length()>=4) {
-                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                    InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
                     mParentLayout.requestFocus();
@@ -274,9 +274,9 @@ public class SendConfirmationFragment extends Fragment {
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mBitcoinField);
-                    ((NavigationActivity) getActivity()).showCalculator();
+                    mActivity.showCalculator();
                 } else {
-                    ((NavigationActivity) getActivity()).hideCalculator();
+                    mActivity.hideCalculator();
                 }
             }
         });
@@ -288,9 +288,9 @@ public class SendConfirmationFragment extends Fragment {
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
-                    ((NavigationActivity) getActivity()).showCalculator();
+                    mActivity.showCalculator();
                 } else {
-                    ((NavigationActivity) getActivity()).hideCalculator();
+                    mActivity.hideCalculator();
                 }
             }
         });
@@ -379,14 +379,14 @@ public class SendConfirmationFragment extends Fragment {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                mActivity.onBackPressed();
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION), NavigationActivity.Tabs.SEND.ordinal());
+                mActivity.pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION), NavigationActivity.Tabs.SEND.ordinal());
             }
         });
 
@@ -410,7 +410,7 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void showPINkeyboard() {
-        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
+        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
     }
 
 
@@ -509,7 +509,7 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPostExecute(final Long fees) {
             Common.LogD(TAG, "Fee calculation ended");
-            if(getActivity()==null)
+            if(mActivity==null)
                 return;
             mCalculateFeesTask = null;
             mFees = fees;
@@ -526,7 +526,7 @@ public class SendConfirmationFragment extends Fragment {
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
         if(fees<0) {
-            mConversionTextView.setText(getActivity().getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getUserCurrencyAcronym());
             mConversionTextView.setTextColor(Color.RED);
@@ -556,18 +556,18 @@ public class SendConfirmationFragment extends Fragment {
         String userPIN = mCoreAPI.GetUserPIN();
         mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if((mFees+mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
+            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
         } else if (mAmountToSendSatoshi==0) {
             resetSlider();
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
+            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             finishSlider();
         } else {
             resetSlider();
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
         }
     }
 
@@ -601,7 +601,7 @@ public class SendConfirmationFragment extends Fragment {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -618,7 +618,7 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
@@ -628,19 +628,19 @@ public class SendConfirmationFragment extends Fragment {
                 } else {
                     message = (txResult.getString());
                 }
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
             } else {
                 mSuccessFragment = new SuccessFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
                 mSuccessFragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
+                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 
         @Override
         protected void onCancelled() {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             mSendOrTransferTask = null;
         }
     }
@@ -648,7 +648,7 @@ public class SendConfirmationFragment extends Fragment {
     @Override public void onResume() {
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         String btc = mBitcoinField.getText().toString();
         String fiat = mFiatField.getText().toString();
