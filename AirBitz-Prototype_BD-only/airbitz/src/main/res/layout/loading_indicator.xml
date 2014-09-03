@@ -8,17 +8,8 @@
 
     <ProgressBar
         android:id="@+id/ProgressBar_loading"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginRight="@dimen/content_padding" />
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
-    <TextView
-        android:id="@+id/TextView_loading"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@id/ProgressBar_loading"
-        android:textColor="@color/blue_text"
-        android:text="@string/loading" />
 
 </RelativeLayout>
