@@ -905,33 +905,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
-//    protected void initializeMarker() {
-//        mMarkersLatLngList = new ArrayList<LatLng>();
-//        if (mBusinessVenueList.size() > 0) {
-//
-//            for (BusinessVenue businessVenue : mBusinessVenueList) {
-//                mMarkersLatLngList.add(businessVenue.getLocation());
-//                if(mGoogleMap == null){
-//                    initializeMap();
-//                }
-//                if(mGoogleMap != null) {
-//                    mGoogleMap.addMarker(new MarkerOptions()
-//                                    .position(businessVenue.getLocation())
-//                                    .title(businessVenue.getName())
-//                                    .snippet(businessVenue.getAddress())
-//                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-//                    )
-//                            .showInfoWindow();
-//                }
-//            }
-//        }
-//
-//        drawCurrentLocationMarker(mCurrentLocation);
-//        mUserLocationMarker.showInfoWindow();
-//
-//        zoomToContainAllMarkers();
-//    }
-
     private void zoomToContainAllMarkers(List<LatLng> markers) {
 
         if (markers.size() > 0) {
@@ -1005,56 +978,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
 
     }
-
-//    protected void initializeMarkerWithBoundSearchResult() {
-//
-//        Common.LogD(TAG, "initializeMarkerWithBoundSearchResult");
-//
-//        Marker firstMarker = null;
-//        mMarkerId.put(null, 0);
-//        mMarkerDistances.put(null, "");
-//        getMarkerImageLink().put(null, "");
-//        if (!mMarkerId.isEmpty()) {
-//            mMarkerId.clear();
-//            mMarkerImageLink.clear();
-//            mMarkerDistances.clear();
-//        }
-//        if (mVenues.size() > 0) {
-//            boolean first = true;
-//            for (BusinessSearchResult businessSearchResult : mVenues) {
-//                LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
-//                        businessSearchResult.getLocationObject().getLongitude());
-//                if(mGoogleMap == null){
-//                    initializeMap();
-//                }
-//                if(mGoogleMap != null) {
-//                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-//                                    .position(locationLatLng)
-//                                    .title(businessSearchResult.getName())
-//                                    .snippet(businessSearchResult.getAddress())
-//                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-//                    );
-//
-//                    if (first) {
-//                        first = false;
-//                        firstMarker = marker;
-//                    }
-//                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-//                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
-//                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
-//                }
-//            }
-//
-//            if (firstMarker == null) {//TODO
-//                drawCurrentLocationMarker(mCurrentLocation);
-//                mUserLocationMarker.showInfoWindow();
-//            }
-//        } else {//TODO
-//            drawCurrentLocationMarker(mCurrentLocation);
-//            mUserLocationMarker.showInfoWindow();
-//        }
-//
-//    }
 
     @Override
     public void OnCurrentLocationChange(Location location) {

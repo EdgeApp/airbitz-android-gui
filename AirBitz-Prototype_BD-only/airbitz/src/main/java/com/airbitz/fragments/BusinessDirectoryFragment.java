@@ -2,7 +2,9 @@ package com.airbitz.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -11,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,9 +21,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MoreCategoryAdapter;
+import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
@@ -46,11 +48,15 @@ import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
+import com.airbitz.models.SearchResult;
 import com.airbitz.objects.ObservableScrollView;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -61,6 +67,7 @@ import java.util.List;
  * Created by tom on 4/22/14.
  */
 public class BusinessDirectoryFragment extends Fragment implements
+        NavigationActivity.OnBackPress,
         ObservableScrollView.ScrollViewListener,
         CurrentLocationManager.OnLocationChange {
 
@@ -99,16 +106,16 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private RelativeLayout mVenueFragmentLayout;
     List<BusinessSearchResult> mVenuesLoaded;
+    private List<BusinessSearchResult> mTempVenues;
 
     private LinearLayout mDummyFocusLayout;
 
     private LinearLayout mStickyLayout;
 
-    private LinearLayout mVenueFragmentLayoutInner;
+    private ListView mVenueListView;
+    private VenueAdapter mVenueAdapter;
 
     private Spinner mMoreSpinner;
-
-    //private LocationManager mLocationManager;
 
     private CurrentLocationManager mLocationManager;
 
@@ -116,6 +123,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private ViewGroup mViewGroupLoading;
     private TextView mLoadingText;
+    private TextView mNoResultView;
 
     private static String mLocationWords = "";
     private static String mBusinessType = "business";
@@ -135,15 +143,21 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     private MoreCategoryAdapter mMoreCategoryAdapter;
 
-    private VenueFragment mVenueFragment;
-
     private AirbitzAPI api = AirbitzAPI.getApi();
 
     private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
 
+    private GetVenuesTask mGetVenuesTask;
+    private GetMoreVenuesTask mGetMoreVenuesTask;
+    private GetRemainingFirstVenuesTask mGetRemainingFirstVenuesTask;
+
+    private boolean isGettingMoreVenueFinished = true;
     private boolean mFirstLoad = true;
+    private int venueAmount = 0;
+    private boolean mLoadFlag = false;
+    private boolean isFirstLoad = true;
 
     public static Typeface montserratBoldTypeFace;
     public static Typeface montserratRegularTypeFace;
@@ -152,12 +166,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     public static Typeface helveticaNeueTypeFace;
 
     private ProgressDialog mMoreCategoriesProgressDialog;
-
-    private BusinessScrollListener mBusinessScrollListener;
-
-    public interface BusinessScrollListener {
-        void onScrollEnded();
-    }
 
     protected static int CATEGORY_TIMEOUT = 15000;
     Handler mHandler = new Handler();
@@ -217,21 +225,9 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mNearYouContainer = (LinearLayout) view.findViewById(R.id.layout_near_you);
         mVenueFragmentLayout = (RelativeLayout) view.findViewById(R.id.fragment_layout_container);
-        mVenueFragmentLayoutInner = (LinearLayout) view.findViewById(R.id.fragment_layout);
-
-        if(mVenueFragment == null) {
-            mVenueFragment = new VenueFragment();
-        }
-        if(mVenueFragmentLayoutInner.getChildCount()<=0) {
-            if(getChildFragmentManager().findFragmentByTag("venue") == null) {
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                Bundle tempBundle = new Bundle();
-                tempBundle.putBoolean("from_business",true);
-                tempBundle.putBoolean("locationEnabled",locationEnabled);
-                mVenueFragment.setArguments(tempBundle);
-                transaction.add(R.id.fragment_layout, mVenueFragment, "venue").commit();
-            }
-        }
+        mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
+        mVenueAdapter = new VenueAdapter(getActivity(), mVenuesLoaded);
+        mNoResultView = (TextView) view.findViewById(R.id.business_fragment_no_result_view);
 
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scroll_view);
         mScrollView.setScrollViewListener(this);
@@ -353,22 +349,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                     mLocationField.setVisibility(View.VISIBLE);
                     mSearchListView.setVisibility(View.VISIBLE);
                     mBackButton.setVisibility(View.VISIBLE);
-
-                    // mBusinessList.clear();
-                    // mBusinessSearchAdapter.notifyDataSetChanged();
-
-                    // if (getCachedBusinessSearchData() != null) {
-                    // // mBusinessList.clear();
-                    // final List<Business> cachedBusinesses =
-                    // getCachedBusinessSearchData();
-                    // for (Business business : cachedBusinesses) {
-                    // if (!mBusinessList.contains(business)) {
-                    // mBusinessList.add(business);
-                    // }
-                    // }
-                    // mBusinessSearchAdapter.notifyDataSetChanged();
-                    // ListViewUtility.setListViewHeightBasedOnChildren(mSearchListView);
-                    // }
 
                     // Start search
                     try {
@@ -672,18 +652,42 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        // TODO - anything to do here?
-       mLocationManager.removeLocationChangeListener(this);
+        String latLon = "";
+        if (location != null)
+            latLon = "" + location.getLatitude() + "," + location.getLongitude();
+
+        if (mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mGetVenuesTask.cancel(true);
+        }
+        mGetVenuesTask = new GetVenuesTask(getActivity());
+        mGetVenuesTask.execute(latLon);
+
+        mLocationManager.removeLocationChangeListener(this);
     }
 
     @Override public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-        if (mBusinessLayout.getVisibility() == View.VISIBLE) {
-            mBusinessScrollListener.onScrollEnded();
+        if (isFirstLoad) {
+            isFirstLoad = false;
+            if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                mGetRemainingFirstVenuesTask.cancel(true);
+            }
+            mGetRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(getActivity());
+            mGetRemainingFirstVenuesTask.execute("");
+            venueAmount = 20;
+        } else {
+            if( venueAmount < 100) {
+                if (isGettingMoreVenueFinished) {
+                    isGettingMoreVenueFinished = false;
+                    if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+                        mGetMoreVenuesTask.cancel(true);
+                    }
+                    mGetMoreVenuesTask = new GetMoreVenuesTask(getActivity());
+                    mGetMoreVenuesTask.execute(mNextUrl);
+                    venueAmount += 20;
+                }
+            }
         }
-    }
 
-    public void setBusinessScrollListener(BusinessScrollListener businessScrollListener) {
-        mBusinessScrollListener = businessScrollListener;
     }
 
     class BusinessAutoCompleteAsynctask extends AsyncTask<String, Integer, List<Business>> {
@@ -734,8 +738,13 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
-//    @Override
-    public void onBackPressed() {
+    @Override
+    public boolean onBackPress() {
+        return onBackPressed();
+    }
+
+    //    @Override
+    public boolean onBackPressed() {
         System.out.println("Back Pressed");
         mLocationWords = "";
         if (mBusinessLayout.getVisibility() == View.GONE) {
@@ -750,7 +759,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mViewGroupLoading.setVisibility(View.VISIBLE);
             }
             mVenueFragmentLayout.setVisibility(View.VISIBLE);
+            return true;
         }
+        return false;
     }
 
     @Override public void onResume() {
@@ -758,8 +769,11 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         checkLocationManager();
-        if(alreadyLoaded && mVenueFragment!=null && mVenuesLoaded!=null) {
-            mVenueFragment.setListView(mVenuesLoaded);
+        if(alreadyLoaded && mVenueListView!=null && mVenuesLoaded!=null) {
+            setVenueListView(mVenuesLoaded);
+        } else {
+            mVenuesLoaded = new ArrayList<BusinessSearchResult>();
+            mLocationManager.addLocationChangeListener(this);
         }
         super.onResume();
     }
@@ -776,14 +790,23 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         mLocationManager.removeLocationChangeListener(this);
+
         if(mBusinessAutoCompleteAsyncTask != null){
             mBusinessAutoCompleteAsyncTask.cancel(true);
         }
         if(mLocationAutoCompleteAsyncTask != null){
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
+        if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetMoreVenuesTask.cancel(true);
+        }
+        if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetRemainingFirstVenuesTask.cancel(true);
+        }
+        if(mGetVenuesTask != null && mGetVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+            mGetVenuesTask.cancel(true);
+        }
         mFirstLoad = true;
-        mVenuesLoaded = mVenueFragment.getVenues();
 
         super.onPause();
     }
@@ -985,5 +1008,241 @@ public class BusinessDirectoryFragment extends Fragment implements
         }else{
             locationEnabled = true;
         }
+    }
+
+    private class GetVenuesTask extends AsyncTask<String, Void, String> {
+
+        AirbitzAPI mApi = AirbitzAPI.getApi();
+        Context mContext;
+
+        public GetVenuesTask(Context context) {
+            mContext = context;
+        }
+
+        @Override protected void onPreExecute() {
+        }
+
+        @Override protected String doInBackground(String... params) {
+            String result = "";
+            result = mApi.getSearchByLatLong(params[0], "", "", "1");
+
+            return result;
+        }
+
+        @Override protected void onCancelled() {
+            mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
+            mGetVenuesTask = null;
+            super.onCancelled();
+        }
+
+        @Override protected void onPostExecute(String searchResult) {
+            try {
+                mVenuesLoaded.clear();
+                processSearchResults(searchResult);
+                setVenueListView(mVenuesLoaded);
+            } catch (JSONException e) {
+                mNoResultView.setVisibility(View.VISIBLE);
+                hideLoadingIndicator();
+                e.printStackTrace();
+                this.cancel(true);
+            } catch (Exception e) {
+                mNoResultView.setVisibility(View.VISIBLE);
+                hideLoadingIndicator();
+                e.printStackTrace();
+                this.cancel(true);
+            }
+            mGetVenuesTask = null;
+        }
+    }
+
+    private void showDirectoryDetailFragment(String id, String name, String distance) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DirectoryDetailFragment.BIZID, id);
+        bundle.putString("", name);
+        bundle.putString("", distance);
+        Fragment fragment = new DirectoryDetailFragment();
+        fragment.setArguments(bundle);
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
+    }
+
+    public void setVenueListView(List<BusinessSearchResult> venues) {
+        if(venues!=null) {
+            mVenueListView.setVisibility(View.VISIBLE);
+            mNoResultView.setVisibility(View.GONE);
+            hideLoadingIndicator();
+        } else {
+            mVenueListView.setVisibility(View.GONE);
+            mNoResultView.setVisibility(View.VISIBLE);
+        }
+        if(mVenuesLoaded.isEmpty())
+            mVenuesLoaded.addAll(venues);
+
+        mVenueAdapter = new VenueAdapter(getActivity(), mVenuesLoaded);
+        mVenueListView.setAdapter(mVenueAdapter);
+        ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mVenueListView.getContext());
+
+        preloadVenueImages();
+
+        mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showDirectoryDetailFragment(mVenuesLoaded.get(i).getId(), mVenuesLoaded.get(i).getName(), mVenuesLoaded.get(i).getDistance());
+            }
+        });
+
+        mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override public void onScrollStateChanged(AbsListView absListView, int i) { }
+
+            @Override public void onScroll(AbsListView view,
+                                           int firstVisibleItem,
+                                           int visibleItemCount,
+                                           int totalItemCount) {
+
+                if (!mNextUrl.equalsIgnoreCase("null")) {
+                    if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                        if (!mLoadFlag) {
+                            mLoadFlag = true;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    void processSearchResults(String searchResult) throws JSONException {
+
+        SearchResult results = new SearchResult(new JSONObject(searchResult));
+
+        mNextUrl = "null";
+        mTempVenues = new ArrayList<BusinessSearchResult>();
+        mNextUrl = results.getNextLink();
+        mTempVenues = results.getBusinessSearchObjectArray();
+
+        if (mTempVenues.isEmpty() && mVenuesLoaded.isEmpty()) {
+
+        } else {
+
+                if (mTempVenues.size() >= 5) {
+                    for (int i = 0; i < 5; i++) {
+                        mVenuesLoaded.add(mTempVenues.get(i));
+                    }
+
+                    for (int i = 4; i >= 0; i--) {
+                        mTempVenues.remove(i);
+                    }
+                } else {
+                    for (int i = 0; i < mTempVenues.size(); i++) {
+                        mVenuesLoaded.add(mTempVenues.get(i));
+                    }
+                    for (int i = mTempVenues.size() - 1; i >= 0; i--) {
+                        mTempVenues.remove(i);
+                    }
+                }
+        }
+    }
+
+    private void preloadVenueImages() {
+        if (mVenuesLoaded != null) {
+            for (BusinessSearchResult venue : mVenuesLoaded) {
+                Picasso.with(getActivity()).load(venue.getProfileImage().getImageThumbnail()).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) { }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) { }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) { }
+                });
+            }
+        }
+    }
+    private class GetMoreVenuesTask extends AsyncTask<String, Void, String> {
+
+        AirbitzAPI mApi = AirbitzAPI.getApi();
+        Context mContext;
+
+        public GetMoreVenuesTask(Context context) {
+            mContext = context;
+        }
+
+        @Override protected void onPreExecute() {
+        }
+
+        @Override protected String doInBackground(String... params) {
+            if (params[0].equalsIgnoreCase("null")) {
+                return "";
+            }
+            return mApi.getRequest(params[0]);
+        }
+
+        @Override protected void onCancelled() {
+            mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
+            mGetMoreVenuesTask = null;
+            super.onCancelled();
+        }
+
+        @Override protected void onPostExecute(String searchResult) {
+            if (!searchResult.isEmpty()) {
+                try {
+                    mLoadFlag = false;
+                    SearchResult results = new SearchResult(new JSONObject(searchResult));
+                    mNextUrl = results.getNextLink();
+                    mVenuesLoaded.addAll(results.getBusinessSearchObjectArray());
+                    setVenueListView(mVenuesLoaded);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    this.cancel(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    this.cancel(true);
+
+                }
+            } else {
+                hideLoadingIndicator();
+            }
+            if(venueAmount >= 100){
+                hideLoadingIndicator();
+            }
+            isGettingMoreVenueFinished = true;
+            mGetMoreVenuesTask = null;
+        }
+    }    private class GetRemainingFirstVenuesTask extends AsyncTask<String, Void, List<BusinessSearchResult>> {
+
+        Context mContext;
+
+        public GetRemainingFirstVenuesTask(Context context) {
+            mContext = context;
+        }
+
+        @Override protected void onPreExecute() {
+        }
+
+        @Override protected List<BusinessSearchResult> doInBackground(String... params) {
+            return mTempVenues;
+        }
+
+        @Override protected void onCancelled() {
+            mNoResultView.setVisibility(View.VISIBLE);
+            hideLoadingIndicator();
+            mGetRemainingFirstVenuesTask = null;
+            super.onCancelled();
+        }
+
+        @Override protected void onPostExecute(List<BusinessSearchResult> searchResult) {
+            if (!searchResult.isEmpty()) {
+                refreshVenueList();
+                mVenuesLoaded.addAll(searchResult);
+            }
+            mGetRemainingFirstVenuesTask = null;
+        }
+
+    }
+
+    public void refreshVenueList() {
+        mVenueAdapter.notifyDataSetChanged();
+        preloadVenueImages();
+        ListViewUtility.setListViewHeightBasedOnChildren(mVenueListView, mVenueListView.getContext());
     }
 }
