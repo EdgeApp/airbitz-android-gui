@@ -161,13 +161,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     }
 
     @Override
-    public void onBackPress() {
+    public boolean onBackPress() {
         ((NavigationActivity)getActivity()).hideSoftKeyboard(getView());
         if(mMode==CHANGE_QUESTIONS) {
             ((NavigationActivity) getActivity()).popFragment();
         } else if(mMode == FORGOT_PASSWORD) {
             ((NavigationActivity) getActivity()).Logout();
         }
+        return true;
     }
 
     private void AttemptSignupOrChange() {

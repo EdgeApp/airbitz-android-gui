@@ -100,7 +100,7 @@ public class NavigationActivity extends BaseActivity
 
     // For Fragments to implement if they need to customize on back presses
     public interface OnBackPress {
-        public void onBackPress();
+        public boolean onBackPress();
     }
 
     @Override
@@ -364,10 +364,10 @@ public class NavigationActivity extends BaseActivity
         // If fragments want the back key, they can have it
         Fragment fragment = mNavStacks[mNavThreadId].peek();
         if(fragment instanceof OnBackPress) {
-            ((OnBackPress) fragment).onBackPress();
-            return;
+            boolean handled = ((OnBackPress) fragment).onBackPress();
+            if(handled)
+                return;
         }
-
 
         boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
 

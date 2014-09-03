@@ -494,12 +494,13 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private ChangeTask mChangeTask;
 
     @Override
-    public void onBackPress() {
+    public boolean onBackPress() {
         ((NavigationActivity)getActivity()).hideSoftKeyboard(getView());
         if(mMode==SIGNUP)
             ((NavigationActivity)getActivity()).Logout();
         else
             ((NavigationActivity)getActivity()).popFragment();
+        return true;
     }
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
