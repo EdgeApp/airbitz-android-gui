@@ -149,15 +149,25 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/black">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/business_fragment_no_result_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:padding="20dp"
+                            android:text="@string/no_results_found"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <ListView
                             android:id="@+id/fragment_layout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/black"
                             android:orientation="vertical"
-                            android:layout_alignParentTop="true">
-
-                        </LinearLayout>
+                            android:layout_alignParentTop="true" />
 
                         <LinearLayout
                             android:id="@+id/layout_near_you"
@@ -179,12 +189,13 @@
                                 android:background="@drawable/gradient_background_grey"
                                 android:paddingBottom="@dimen/content_padding_quarter"
                                 android:paddingLeft="@dimen/content_padding_1_quarter"
+                                android:paddingRight="@dimen/content_padding_1_quarter"
                                 android:paddingTop="@dimen/content_padding_quarter"
                                 android:shadowColor="#FFFFFFFF"
                                 android:shadowDx="1"
                                 android:shadowDy="1"
                                 android:shadowRadius="1"
-                                android:text="Near You"
+                                android:text="@string/near_you"
                                 android:textColor="#ff384954"
                                 android:textSize="@dimen/text_size_small" />
 
@@ -202,7 +213,8 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <include layout="@layout/loading_indicator" />
+                <include layout="@layout/loading_indicator"
+                    android:visibility="visible" />
 
             </LinearLayout>
         </com.airbitz.objects.ObservableScrollView>
@@ -229,6 +241,7 @@
             android:background="@drawable/gradient_background_grey"
             android:paddingBottom="@dimen/content_padding_quarter"
             android:paddingLeft="@dimen/content_padding_1_quarter"
+            android:paddingRight="@dimen/content_padding_1_quarter"
             android:paddingTop="@dimen/content_padding_quarter"
             android:shadowColor="#FFFFFFFF"
             android:shadowDx="1"

@@ -40,6 +40,7 @@
     <string name="web">Web</string>
     <string name="your_location">Your Location</string>
     <string name="near_you">Near You</string>
+    <string name="no_results_found">No Results Found</string>
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>

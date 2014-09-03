@@ -3,7 +3,6 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -42,7 +41,6 @@ import java.util.List;
  * Created on 2/12/14.
  */
 public class VenueFragment extends Fragment implements
-    BusinessDirectoryFragment.BusinessScrollListener,
     CurrentLocationManager.OnLocationChange {
 
     public static final String TAG = VenueFragment.class.getSimpleName();
@@ -76,24 +74,6 @@ public class VenueFragment extends Fragment implements
     private boolean mIsInBusinessDirectory = false;
     private boolean mIsInMapBusinessDirectory = false;
 
-    public boolean getIsBusinessDirectory() {
-        return mIsInBusinessDirectory;
-    }
-
-    public boolean getVisibilityLoading(){ return loadingVisible; }
-
-    public ListView getVenueListView() {
-        return mVenueListView;
-    }
-
-    public List<BusinessSearchResult> getVenues() {
-        return mVenues;
-    }
-
-    public void setVenues(List<BusinessSearchResult> venues) {
-        mVenues = venues;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +94,7 @@ public class VenueFragment extends Fragment implements
 
         // Set-up list
         mVenueListView = (ListView) view.findViewById(R.id.listView);
-        mNoResultView = (TextView) view.findViewById(R.id.no_result_view);
+        mNoResultView = (TextView) view.findViewById(R.id.business_fragment_no_result_view);
 
         if (mVenues == null) {
             mVenueListView.setVisibility(View.INVISIBLE);
@@ -148,7 +128,6 @@ public class VenueFragment extends Fragment implements
             }
             mGetVenuesTask = new GetVenuesTask(mActivity);
             mGetVenuesTask.execute(latLon);
-            ((BusinessDirectoryFragment) getParentFragment()).setBusinessScrollListener(this);
 
         } else if (mIsInMapBusinessDirectory)  {
             mLocationName = getArguments().getString(BusinessDirectoryFragment.LOCATION);
@@ -176,29 +155,29 @@ public class VenueFragment extends Fragment implements
       }
     }
 
-    @Override public void onScrollEnded() {
-        if (isFirstLoad) {
-            isFirstLoad = false;
-            if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
-                mGetRemainingFirstVenuesTask.cancel(true);
-            }
-            mGetRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(mActivity);
-            mGetRemainingFirstVenuesTask.execute("");
-            venueAmount = 20;
-        } else {
-            if( venueAmount < 100) {
-                if (isGettingMoreVenueFinished) {
-                    isGettingMoreVenueFinished = false;
-                    if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
-                        mGetMoreVenuesTask.cancel(true);
-                    }
-                    mGetMoreVenuesTask = new GetMoreVenuesTask(mActivity);
-                    mGetMoreVenuesTask.execute(mNextUrl);
-                    venueAmount += 20;
-                }
-            }
-        }
-    }
+//    @Override public void onScrollEnded() {
+//        if (isFirstLoad) {
+//            isFirstLoad = false;
+//            if(mGetRemainingFirstVenuesTask != null && mGetRemainingFirstVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+//                mGetRemainingFirstVenuesTask.cancel(true);
+//            }
+//            mGetRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(mActivity);
+//            mGetRemainingFirstVenuesTask.execute("");
+//            venueAmount = 20;
+//        } else {
+//            if( venueAmount < 100) {
+//                if (isGettingMoreVenueFinished) {
+//                    isGettingMoreVenueFinished = false;
+//                    if(mGetMoreVenuesTask != null && mGetMoreVenuesTask.getStatus() == AsyncTask.Status.RUNNING){
+//                        mGetMoreVenuesTask.cancel(true);
+//                    }
+//                    mGetMoreVenuesTask = new GetMoreVenuesTask(mActivity);
+//                    mGetMoreVenuesTask.execute(mNextUrl);
+//                    venueAmount += 20;
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void onPause(){
