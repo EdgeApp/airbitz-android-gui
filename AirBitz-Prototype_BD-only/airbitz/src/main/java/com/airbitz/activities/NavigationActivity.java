@@ -510,21 +510,30 @@ public class NavigationActivity extends BaseActivity
     }
 
     // callback for funds sent
+    private String mIncomingUUID, mIncomingTxID;
     @Override
     public void onSentFunds(String walletUUID, String txId) {
         Common.LogD(TAG, "onSentFunds uuid, txid = "+walletUUID+", "+txId);
-        resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
 
-        mUUID = walletUUID;
-        mTxId = txId;
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-        bundle.putString(Transaction.TXID, txId);
-        bundle.putString(Wallet.WALLET_UUID, walletUUID);
-        FragmentSourceEnum e = FragmentSourceEnum.SEND;
+        mIncomingUUID = walletUUID;
+        mIncomingTxID = txId;
 
-        switchToWallets(e, bundle);
+        mHandler.post(IncomingBitcoinUpdater);
     }
+
+    final Runnable IncomingBitcoinUpdater = new Runnable() {
+        public void run() {
+            resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            bundle.putString(Transaction.TXID, mIncomingTxID);
+            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+            FragmentSourceEnum e = FragmentSourceEnum.SEND;
+
+            switchToWallets(e, bundle);
+        }
+    };
 
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
