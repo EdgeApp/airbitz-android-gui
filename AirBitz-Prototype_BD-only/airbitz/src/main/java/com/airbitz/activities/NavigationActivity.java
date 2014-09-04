@@ -264,7 +264,7 @@ public class NavigationActivity extends BaseActivity
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         mNavThreadId = id;
     }
 
