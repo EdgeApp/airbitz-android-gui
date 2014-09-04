@@ -561,7 +561,7 @@ public class SendConfirmationFragment extends Fragment {
         } else if (mAmountToSendSatoshi==0) {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (enteredPIN!=null && userPIN.equals(enteredPIN)) {
+        } else if (enteredPIN!=null && userPIN!=null && userPIN.equals(enteredPIN)) {
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
             mSendOrTransferTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             finishSlider();
@@ -624,7 +624,6 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
-            mActivity.showModalProgress(false);
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
