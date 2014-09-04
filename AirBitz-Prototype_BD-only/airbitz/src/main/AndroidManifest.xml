@@ -44,11 +44,6 @@
             android:value="@string/google_maps_api_key" />
 
         <activity
-            android:name=".fragments.ForgotPasswordFragment"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".activities.NavigationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -95,7 +90,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <uses-library android:name="com.google.android.maps" />
 
         <meta-data
