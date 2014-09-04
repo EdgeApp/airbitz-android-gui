@@ -128,20 +128,18 @@ public class WalletFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_wallet, container, false);
+            mOnBitcoinMode = true;
+            searchPage=false;
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
         }
 
-        mOnBitcoinMode = true;
-        searchPage=false;
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
 
         mAllTransactions = new ArrayList<Transaction>();
         mAllTransactions.addAll(mTransactions);
-
-        mOnBitcoinMode = true;
 
         mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions);
 
@@ -302,34 +300,26 @@ public class WalletFragment extends Fragment
         mButtonBitcoinBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchBarInfo(true);
-                mListTransaction.setAdapter(mTransactionAdapter);
                 mOnBitcoinMode = true;
+                animateBar();
             }
         });
+
         mButtonFiatBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchBarInfo(false);
-                mListTransaction.setAdapter(mTransactionAdapter);
                 mOnBitcoinMode = false;
+                animateBar();
             }
         });
 
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListTransaction.setAdapter(mTransactionAdapter);
-                if(mOnBitcoinMode){
-                    switchBarInfo(false);
-                    mOnBitcoinMode = false;
-                }else{
-                    switchBarInfo(true);
-                    mOnBitcoinMode = true;
-                }
+                mOnBitcoinMode = !mOnBitcoinMode;
+                animateBar();
             }
         });
-
         mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -397,7 +387,6 @@ public class WalletFragment extends Fragment
             }
         });
 
-        UpdateWalletTotalBalance();
         mDummyFocus.requestFocus();
         return mView;
     }
@@ -521,13 +510,13 @@ public class WalletFragment extends Fragment
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
         mWallet = mCoreAPI.getWallet(mWallet.getUUID());
         UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
-        UpdateWalletTotalBalance();
+        UpdateBalances();
         mRequestButton.setEnabled(true);
         mSendButton.setEnabled(true);
     }
 
     // Sum all transactions and show in total
-    private void UpdateWalletTotalBalance() {
+    private void UpdateBalances() {
         long totalSatoshis = 0;
         for(Transaction transaction : mAllTransactions) {
                 totalSatoshis+=transaction.getAmountSatoshi();
@@ -546,6 +535,9 @@ public class WalletFragment extends Fragment
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//todo
             mMoverType.setText(mBottomType.getText());
         }
+
+        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+        mTransactionAdapter.notifyDataSetChanged();
     }
 
 
@@ -553,20 +545,13 @@ public class WalletFragment extends Fragment
         return mCoreAPI.searchTransactionsIn(mWallet, term);
     }
 
-    private void switchBarInfo(boolean isBitcoin){
-        if(isBitcoin) {
+    private void animateBar(){
+        if(mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
-            mButtonMover.setText(mButtonBitcoinBalance.getText());
-            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setText(mTopType.getText());
         }else{
             mHandler.post(animateSwitchDown);
-            mButtonMover.setText(mButtonFiatBalance.getText());
-            mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//TODO
-            mMoverType.setText(mBottomType.getText());
         }
-        mTransactionAdapter.setIsBitcoin(isBitcoin);
-        mTransactionAdapter.notifyDataSetChanged();
+        UpdateBalances();
     }
 
     private Handler mHandler = new Handler();
@@ -591,7 +576,7 @@ public class WalletFragment extends Fragment
 
     @Override
     public void OnExchangeRatesChange() {
-        UpdateWalletTotalBalance();
+        UpdateBalances();
     }
 
     @Override
