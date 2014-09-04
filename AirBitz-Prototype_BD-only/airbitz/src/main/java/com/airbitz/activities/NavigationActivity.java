@@ -496,6 +496,8 @@ public class NavigationActivity extends BaseActivity
     // callback for funds sent
     @Override
     public void onSentFunds(String walletUUID, String txId) {
+        resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+
         mUUID = walletUUID;
         mTxId = txId;
         Bundle bundle = new Bundle();
@@ -505,8 +507,6 @@ public class NavigationActivity extends BaseActivity
         FragmentSourceEnum e = FragmentSourceEnum.SEND;
 
         switchToWallets(e, bundle);
-        resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
-
     }
 
     // Callback interface when a wallet could be updated
