@@ -51,6 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
+
 /**
  * The main Navigation activity holding fragments for anything controlled with
  * the custom Navigation Bar for Airbitz
@@ -402,6 +406,9 @@ public class NavigationActivity extends BaseActivity
     public void onResume() {
         super.onResume();
 
+        checkForCrashes();
+        checkForUpdates();
+
         registerServiceReceiver();
         startAirbitzService();
 
@@ -419,6 +426,15 @@ public class NavigationActivity extends BaseActivity
             mCoreAPI.startWatchers();
         }
         switchFragmentThread(mNavThreadId);
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this, "***REMOVED***");
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, "***REMOVED***");
     }
 
     @Override public void onPause() {
