@@ -3,7 +3,9 @@ package com.airbitz.fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -16,6 +18,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -41,6 +45,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.MapInfoWindowAdapter;
+import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
@@ -60,6 +65,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,6 +111,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private ArrayList<BusinessVenue> mBusinessVenueList;
 
+    private ListView mVenueListView;
+    private VenueAdapter mVenueAdapter;
+
     private float aPosY;
     int aPosBottom=-10000;
 
@@ -130,7 +140,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
 
 
-    private List<BusinessSearchResult> mVenues;
+    private List<BusinessSearchResult> mVenues = new ArrayList<BusinessSearchResult>();
     private static String mLocationWords = "";
 
     private boolean mCameraChangeListenerEnabled = false;
@@ -140,14 +150,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     private CurrentLocationManager mLocationManager;
 
-    private LinearLayout mVenueFragmentLayout;
-
     private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
-
-    VenueFragment mFragmentVenue;
 
     int dragBarHeight = 0;
     boolean alreadyLoaded = false;
@@ -189,15 +195,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             ((ViewGroup) view.getParent()).removeView(view);
         }
 
-        mVenueFragmentLayout = (LinearLayout) view.findViewById(R.id.venue_container);
-        if(mVenueFragmentLayout.getChildCount()<=0) {
-            mFragmentVenue = new VenueFragment();
-            mVenueBundle.putBoolean("from_business",false);
-            mVenueBundle.putBoolean("locationEnabled", locationEnabled);
-            mFragmentVenue.setArguments(mVenueBundle);
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.venue_container, mFragmentVenue, "venue").commit();
-        }
+        mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
 
         mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_mapbusinessdirectory_dummy_focus);
 
@@ -1249,6 +1247,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
             mLastSearchResult = searchResult;
             SearchResult result = new SearchResult(new JSONObject(searchResult));
             mVenues = result.getBusinessSearchObjectArray();
+            mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
+            mVenueListView.setAdapter(mVenueAdapter);
             if(mGoogleMap == null){
                 initializeMap();
             }
@@ -1256,7 +1256,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
                 mGoogleMap.clear();
                 initializeMarkerWithBusinessSearchResult();
             }
-            mFragmentVenue.setListView(searchResult);
+            mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
+                }
+            });
+
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
