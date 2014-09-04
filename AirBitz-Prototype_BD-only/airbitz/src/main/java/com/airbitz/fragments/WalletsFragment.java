@@ -14,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -137,12 +136,12 @@ public class WalletsFragment extends Fragment
 
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_wallets, container, false);
+
+            mOnBitcoinMode = true;
         } else {
             ((ViewGroup) mView.getParent()).removeView(mView);
 //            return mView;
         }
-
-        mOnBitcoinMode = true;
 
         mParentLayout = (RelativeLayout) mView;
         mContainerLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_container);
@@ -200,31 +199,23 @@ public class WalletsFragment extends Fragment
         mBitCoinBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchBarInfo(true);
-                mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = true;
+                animateBar();
             }
         });
         mFiatBalanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchBarInfo(false);
-                mLatestWalletAdapter.notifyDataSetChanged();
                 mOnBitcoinMode = false;
+                animateBar();
             }
         });
 
         mButtonMover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mLatestWalletAdapter.notifyDataSetChanged();
-                if(mOnBitcoinMode){
-                    switchBarInfo(false);
-                    mOnBitcoinMode = false;
-                }else{
-                    switchBarInfo(true);
-                    mOnBitcoinMode = true;
-                }
+                mOnBitcoinMode = !mOnBitcoinMode;
+                animateBar();
             }
         });
 
@@ -348,8 +339,6 @@ public class WalletsFragment extends Fragment
             }
         });
 
-        UpdateBalances();
-
         return mView;
     }
 
@@ -388,22 +377,17 @@ public class WalletsFragment extends Fragment
             mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
             mMoverType.setText(mBottomType.getText());
         }
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletAdapter.notifyDataSetChanged();
     }
 
-    private void switchBarInfo(boolean isBitcoin){
-        if(isBitcoin) {
+    private void animateBar(){
+        if(mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
-            mButtonMover.setText(mBitCoinBalanceButton.getText());
-            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setText(mTopType.getText());
         }else{
             mHandler.post(animateSwitchDown);
-           mButtonMover.setText(mFiatBalanceButton.getText());
-            mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
-            mMoverType.setText(mBottomType.getText());
         }
-        mLatestWalletAdapter.setIsBitcoin(isBitcoin);
-        mLatestWalletAdapter.notifyDataSetChanged();
+        UpdateBalances();
     }
 
     private Handler mHandler = new Handler();
@@ -583,6 +567,7 @@ public class WalletsFragment extends Fragment
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         UpdateBalances();
+
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
     }
