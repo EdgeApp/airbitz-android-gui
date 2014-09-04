@@ -658,6 +658,7 @@ public class NavigationActivity extends BaseActivity
             onBitcoinUri(mDataUri);
             mDataUri = null;
         } else {
+            resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
 
