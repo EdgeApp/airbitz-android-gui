@@ -191,6 +191,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             view = inflater.inflate(R.layout.fragment_business_directory, container, false);
         } else {
             ((ViewGroup) view.getParent()).removeView(view);
+            showLoadingIndicator();
+            mNoResultView.setVisibility(View.GONE);
             return view;
         }
 
