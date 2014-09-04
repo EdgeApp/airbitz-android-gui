@@ -143,7 +143,8 @@ public class CoreAPI {
     public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
-        Common.LogD(TAG, "asyncBitCoinInfo callback = "+type.toString());
+        String error = info.getStatus().getCode()+": "+info.getStatus().getSzDescription()+": "+info.getStatus().getSzSourceFile()+": "+info.getStatus().getSzSourceFunc()+": "+info.getStatus().getNSourceLine();
+        Common.LogD(TAG, "asyncBitCoinInfo callback type = "+type.toString()+"; info = "+error);
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
             if (mOnIncomingBitcoin != null) {
                 mIncomingUUID = info.getSzWalletUUID();
@@ -155,6 +156,7 @@ public class CoreAPI {
                 if(mOnSentFunds!=null) {
                     mIncomingUUID = info.getSzWalletUUID();
                     mIncomingTxID = info.getSzTxID();
+                    Common.LogD(TAG, "SentFunds uuid, TxID = "+mIncomingUUID+", "+mIncomingTxID);
                     mPeriodicTaskHandler.post(SentFundsUpdater);
                 }
                 else
@@ -775,7 +777,7 @@ public class CoreAPI {
         }
         else
         {
-            Common.LogD(TAG, "Error: CoreBridge.loadAllTransactions: "+ Error.getSzDescription());
+            Common.LogD(TAG, "Error: CoreBridge.getTransaction: "+ Error.getSzDescription());
         }
         return transaction;
     }
@@ -1475,14 +1477,14 @@ public class CoreAPI {
             tABC_TxDetails details = new tABC_TxDetails();
             tABC_CC result;
 
-            set64BitLongAtPtr(details.getCPtr(details) + 0, satoshi);
+            set64BitLongAtPtr(tABC_TxDetails.getCPtr(details) + 0, satoshi);
 
             //the true fee values will be set by the core
             SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
-            set64BitLongAtPtr(feesAB.getCPtr(feesAB), 1700);
+            set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(feesAB), 1700);
             details.setAmountFeesAirbitzSatoshi(feesAB);
             SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
-            set64BitLongAtPtr(feesAB.getCPtr(feesMiner), 10000);
+            set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(feesMiner), 10000);
             details.setAmountFeesMinersSatoshi(feesMiner);
 
             details.setAmountCurrency(value);
@@ -1493,7 +1495,7 @@ public class CoreAPI {
 
             SWIGTYPE_p_long lp = core.new_longp();
             SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
-            SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(pRequestID.getCPtr(pRequestID), false);
+            SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(SWIGTYPE_p_p_char.getCPtr(pRequestID), false);
 
             if (destinationWallet.getUUID() != null) {
                 tABC_TransferDetails Transfer = new tABC_TransferDetails();
@@ -1517,8 +1519,9 @@ public class CoreAPI {
                 txResult.setError(result);
                 txResult.setTxid(error.getSzDescription());
             } else {
-                txResult.setTxid(getStringAtPtr(core.longp_value(lp)));
-                Common.LogD(TAG, "TxID:  " + txResult.getString());
+                String txid = getStringAtPtr(core.longp_value(lp));
+                txResult.setTxid(txid);
+                Common.LogD(TAG, "Core InitiatTransferOrSend TxID:  " + txResult.getString());
             }
         } else {
             Common.LogD(TAG, "Initiate transfer - nothing to send");
