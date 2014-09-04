@@ -497,7 +497,7 @@ public class NavigationActivity extends BaseActivity
     String mUUID, mTxId;
     @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
-
+        Common.LogD(TAG, "onIncomingBitcoin uuid, txid = "+walletUUID+", "+txId);
         mUUID = walletUUID;
         mTxId = txId;
         /* If showing QR code, launch receiving screen*/
@@ -512,6 +512,7 @@ public class NavigationActivity extends BaseActivity
     // callback for funds sent
     @Override
     public void onSentFunds(String walletUUID, String txId) {
+        Common.LogD(TAG, "onSentFunds uuid, txid = "+walletUUID+", "+txId);
         resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
 
         mUUID = walletUUID;
