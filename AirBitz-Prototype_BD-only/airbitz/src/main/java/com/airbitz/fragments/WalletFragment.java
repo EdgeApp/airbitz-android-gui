@@ -332,22 +332,24 @@ public class WalletFragment extends Fragment
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSendButton.setEnabled(false);
+                mSendButton.setClickable(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
                 ((NavigationActivity) getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
                 ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
+                mSendButton.setClickable(true);
             }
         });
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRequestButton.setEnabled(false);
+                mRequestButton.setClickable(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(SendFragment.UUID, mWallet.getUUID());
                 ((NavigationActivity) getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
                 ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), bundle);
+                mRequestButton.setClickable(true);
             }
         });
 
@@ -511,8 +513,8 @@ public class WalletFragment extends Fragment
         mWallet = mCoreAPI.getWallet(mWallet.getUUID());
         UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
         UpdateBalances();
-        mRequestButton.setEnabled(true);
-        mSendButton.setEnabled(true);
+        mRequestButton.setPressed(false);
+        mSendButton.setPressed(false);
     }
 
     // Sum all transactions and show in total
