@@ -546,9 +546,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
-                    ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
+                    ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else {
-                    ShowMessageDialogSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
+                    ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
@@ -700,7 +700,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
-    public void ShowMessageDialogSuccess(String title, String reason) {
+    public void ShowMessageDialogChangeSuccess(String title, String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(reason)
                 .setTitle(title)
@@ -708,8 +708,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                            ((NavigationActivity)getActivity()).resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.BD.ordinal());
-                            ((NavigationActivity)getActivity()).switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
+                            ((NavigationActivity)getActivity()).popFragment();
                             }
                         });
         AlertDialog alert = builder.create();
