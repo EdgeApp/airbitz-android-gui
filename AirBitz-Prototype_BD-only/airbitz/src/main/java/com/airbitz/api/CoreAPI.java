@@ -2082,6 +2082,16 @@ public class CoreAPI {
         mWatcherTasks.clear();
     }
 
+    /*
+     * Prioritize wallet loop attention to this address for uuid
+     */
+    public void prioritizeAddress(String address, String walletUUID)
+    {
+        tABC_Error Error = new tABC_Error();
+        core.ABC_PrioritizeAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, address, Error);
+    }
+
+
     public long maxSpendable(String walletUUID, String destAddress, boolean bTransfer)
     {
         tABC_Error Error = new tABC_Error();
