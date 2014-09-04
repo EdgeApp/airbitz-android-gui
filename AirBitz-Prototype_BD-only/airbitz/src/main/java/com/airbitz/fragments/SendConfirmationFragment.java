@@ -586,7 +586,7 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     /**
-     * Represents an asynchronous creation of the first wallet
+     * Represents an asynchronous send or transfer
      */
     private SendOrTransferTask mSendOrTransferTask;
 
@@ -601,7 +601,13 @@ public class SendConfirmationFragment extends Fragment {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
-            mActivity.showModalProgress(true);
+
+            // show the sending screen
+            mSuccessFragment = new SuccessFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            mSuccessFragment.setArguments(bundle);
+            mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
         }
 
         @Override
@@ -623,24 +629,19 @@ public class SendConfirmationFragment extends Fragment {
             tABC_CC result = txResult.getError();
             String message;
             if (txResult.getError() != null) {
+                mActivity.popFragment();
                 if (result == tABC_CC.ABC_CC_InsufficientFunds) {
                     message = failInsufficientMessage;
                 } else {
                     message = (txResult.getString());
                 }
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
-            } else {
-                mSuccessFragment = new SuccessFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-                mSuccessFragment.setArguments(bundle);
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
 
         @Override
         protected void onCancelled() {
-            mActivity.showModalProgress(false);
+            mActivity.popFragment(); // stop the sending screen
             mSendOrTransferTask = null;
         }
     }
