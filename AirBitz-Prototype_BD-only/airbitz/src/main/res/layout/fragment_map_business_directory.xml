@@ -71,20 +71,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
-                <LinearLayout
-                    android:id="@+id/venue_container"
+                <ListView
+                    android:id="@+id/map_fragment_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center" >
-
-                    <!--<fragment-->
-                    <!--android:id="@+id/venue"-->
-                    <!--android:name="com.airbitz.fragments.VenueFragment"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent" />-->
-
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical"
+                    android:layout_alignParentTop="true" />
 
                 <LinearLayout
                     android:id="@+id/dragLayout"
