@@ -143,8 +143,14 @@ public class CoreAPI {
     public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
-        String error = info.getStatus().getCode()+": "+info.getStatus().getSzDescription()+": "+info.getStatus().getSzSourceFile()+": "+info.getStatus().getSzSourceFunc()+": "+info.getStatus().getNSourceLine();
-        Common.LogD(TAG, "asyncBitCoinInfo callback type = "+type.toString()+"; info = "+error);
+
+        if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds && info.getStatus().getCode() != tABC_CC.ABC_CC_Ok) {
+            String stuff = info.getStatus().getCode()+": "+info.getStatus().getSzDescription()+": "+info.getStatus().getSzSourceFile()+": "+info.getStatus().getSzSourceFunc()+": "+info.getStatus().getNSourceLine();
+            Common.LogD(TAG, "SentFunds Async Error info = "+stuff);
+            return;
+        }
+
+        Common.LogD(TAG, "asyncBitCoinInfo callback type = "+type.toString());
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
             if (mOnIncomingBitcoin != null) {
                 mIncomingUUID = info.getSzWalletUUID();
@@ -154,8 +160,8 @@ public class CoreAPI {
                 Common.LogD(TAG, "incoming bitcoin event has no listener");
         } else if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds) {
                 if(mOnSentFunds!=null) {
-                    mIncomingUUID = info.getSzWalletUUID();
-                    mIncomingTxID = info.getSzTxID();
+                    mIncomingUUID = new String(info.getSzWalletUUID());
+                    mIncomingTxID = new String(info.getSzTxID());
                     Common.LogD(TAG, "SentFunds uuid, TxID = "+mIncomingUUID+", "+mIncomingTxID);
                     mPeriodicTaskHandler.post(SentFundsUpdater);
                 }
