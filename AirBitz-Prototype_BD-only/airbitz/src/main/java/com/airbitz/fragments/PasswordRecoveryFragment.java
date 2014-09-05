@@ -636,10 +636,5 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 }
 
