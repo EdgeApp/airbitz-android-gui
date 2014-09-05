@@ -94,19 +94,18 @@ public class NavigationBarFragment extends Fragment {
     }
 
     private int mLastTab = 0;
+
     private void checkTabs(MotionEvent ev) {
         selectedTab = getTabNum(ev);
-        if(selectedTab==-1)
+        if (selectedTab == -1)
             return;
 
-        if(mLastTab!=selectedTab) {
-            selectTab(selectedTab);
-            unselectTab(mLastTab);
-            mLastTab = selectedTab;
+        selectTab(selectedTab);
+        unselectTab(mLastTab);
+        mLastTab = selectedTab;
 
-            if(mActivity!=null)
-                mActivity.onNavBarSelected(selectedTab);
-        }
+        if (mActivity != null)
+            mActivity.onNavBarSelected(selectedTab);
     }
 
     private int getTabNum(MotionEvent ev) {
