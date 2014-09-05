@@ -643,13 +643,12 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!success) {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
-                AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.SetUserPIN(mPin);
-                CreateDefaultCategories();
-
                 Fragment frag = new PasswordRecoveryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.SIGN_UP);
+                bundle.putString(PasswordRecoveryFragment.USERNAME, mUsername);
+                bundle.putString(PasswordRecoveryFragment.PASSWORD, mPassword);
+                bundle.putString(PasswordRecoveryFragment.PIN, mPin);
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).popFragment();
                 ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.BD.ordinal());
@@ -660,18 +659,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
             ((NavigationActivity)getActivity()).showModalProgress(false);
-        }
-    }
-
-    private void CreateDefaultCategories() {
-        String[] defaults = getResources().getStringArray(R.array.category_defaults);
-
-        for(String cat : defaults)
-            mCoreAPI.addCategory(cat);
-
-        List<String> cats = mCoreAPI.loadCategories();
-        if(cats.size()==0 || cats.get(0).equals(defaults)) {
-            Log.d("SignupActivity", "Category creation failed");
         }
     }
 

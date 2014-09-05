@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -45,6 +46,9 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     public static final String MODE = "com.airbitz.passwordrecovery.type";
     public static final String ANSWERS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
+    public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
+    public static final String PIN = "com.airbitz.passwordrecovery.pin";
+
     public static int SIGN_UP=0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
@@ -55,8 +59,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
+    private TextView mTitleTextView;
+    private Button mDoneSignUpButton;
+    private Button mSkipStepButton;
 
-    private RelativeLayout mLayoutRecovery;
     private LinearLayout mPasswordRecoveryListView;
     private ArrayList<QuestionView> mQuestionViews;
 
@@ -88,7 +94,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             return mView;
         }
 
-        Button mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
+        mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSkipStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +104,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         });
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
-        Button mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
+        mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) mView.findViewById(R.id.activity_password_recovery_back_button);
 
         if(getArguments() != null) {
@@ -108,7 +114,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 mPasswordEditText.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
-                mPasswordEditText.requestFocus();
             } else if(mMode == FORGOT_PASSWORD) {
                 mSkipStepButton.setVisibility(View.INVISIBLE);
                 mPasswordEditText.setVisibility(View.GONE);
@@ -119,12 +124,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             }
         }
 
-        mLayoutRecovery = (RelativeLayout) mView.findViewById(R.id.activity_recovery_container_layout);
-
         mStringQuestions = new ArrayList<String>();
         mNumericQuestions = new ArrayList<String>();
 
-        TextView mTitleTextView = (TextView) mView.findViewById(R.id.activity_recovery_title_textview);
+        mTitleTextView = (TextView) mView.findViewById(R.id.activity_recovery_title_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -254,7 +257,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         for (View v : mQuestionViews) {
             mPasswordRecoveryListView.addView(v);
         }
-        mPasswordRecoveryListView.invalidate();
+
+        mQuestionViews.get(0).getEditText().requestFocus();
     }
 
     /**
@@ -341,7 +345,9 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 InitializeQuestionViews();
             }
 
-            mPasswordEditText.requestFocus();
+            if(mMode==CHANGE_QUESTIONS)
+                mPasswordEditText.requestFocus();
+
             mFetchAllQuestionsTask = null;
         }
 
@@ -385,6 +391,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             } else {
                 if(mMode==SIGN_UP) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                    signin();
                     ((NavigationActivity) getActivity()).UserJustLoggedIn();
                 } else if(mMode==CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
@@ -477,7 +484,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Common.LogD(TAG, "spinner selection");
-                    if (ignoreSelected) return;
+                    if (ignoreSelected || mMode==FORGOT_PASSWORD) return;
 
                     chosenQuestion = currentQuestionList.get(i);
                     Common.LogD(TAG, "spinner selection not ignored="+chosenQuestion);
@@ -556,6 +563,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                                 return true;
                             } else if (mPosition == mQuestionViews.size() - 1) {
                                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mText);
+                                mDoneSignUpButton.requestFocus();
                                 return true;
                             }
                         } else {
@@ -564,6 +572,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                                 return true;
                             } else if (mPosition == mQuestionViews.size() - 1) {
                                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mText);
+                                mDoneSignUpButton.requestFocus();
                                 return true;
                             }
                         }
@@ -575,7 +584,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             chosenQuestion = UNSELECTED_QUESTION;
             if(mMode==FORGOT_PASSWORD) {
                 findViewById(R.id.item_recovery_question_down_arrow).setVisibility(View.GONE);
-                mSpinner.setSelection(0);
                 mSpinner.setClickable(false);
                 mSpinner.setEnabled(false);
                 mSpinner.setFocusable(false);
@@ -612,6 +620,30 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
     }
 
+    private void signin() {
+        Bundle bundle = getArguments();
+        String username = bundle.getString(USERNAME);
+        String password = bundle.getString(PASSWORD);
+        String pin = bundle.getString(PIN);
+
+        AirbitzApplication.Login(username, password);
+        mCoreAPI.SetUserPIN(pin);
+        CreateDefaultCategories();
+    }
+
+    private void CreateDefaultCategories() {
+        String[] defaults = getResources().getStringArray(R.array.category_defaults);
+
+        for(String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if(cats.size()==0 || cats.get(0).equals(defaults)) {
+            Common.LogD(TAG, "Category creation failed");
+        }
+    }
+
+
     public void ShowSkipQuestionsAlert(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
@@ -619,6 +651,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        signin();
                         ((NavigationActivity)getActivity()).popFragment();
                         ((NavigationActivity)getActivity()).finishSignup();
                     }
@@ -631,13 +664,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mQuestionViews!=null && !mQuestionViews.isEmpty())
-            mQuestionViews.get(0).requestFocus();
     }
 }
 
