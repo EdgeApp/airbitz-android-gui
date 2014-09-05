@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -633,7 +634,11 @@ public class ExportSavingOptionFragment extends Fragment {
             String mimeType = mimeTypeFor(mExportType);
         }
         intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(), "There are no email applications installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
