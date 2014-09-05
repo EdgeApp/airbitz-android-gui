@@ -319,7 +319,8 @@
                     android:drawableRight="@drawable/arrow_right"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_print"
                     android:layout_width="44.1dp"
@@ -338,7 +339,8 @@
                     android:drawableRight="@drawable/arrow_right"
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"/>
+                    android:paddingLeft="56.7dp"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_sd_card"
                     android:layout_width="44.1dp"
@@ -378,7 +380,8 @@
                     android:drawableRight="@drawable/arrow_right"
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"/>
+                    android:paddingLeft="56.7dp"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_google_drive"
                     android:layout_width="44.1dp"
