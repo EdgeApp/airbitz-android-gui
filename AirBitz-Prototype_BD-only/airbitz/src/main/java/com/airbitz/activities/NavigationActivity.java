@@ -523,8 +523,7 @@ public class NavigationActivity extends BaseActivity
 
     final Runnable IncomingBitcoinUpdater = new Runnable() {
         public void run() {
-            if(mNavStacks[Tabs.SEND.ordinal()].peek() instanceof SuccessFragment)
-                popFragment();
+            resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
