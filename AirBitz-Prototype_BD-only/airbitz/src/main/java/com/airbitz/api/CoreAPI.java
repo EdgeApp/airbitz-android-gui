@@ -1584,6 +1584,7 @@ public class CoreAPI {
     public void startAllAsyncUpdates() {
         startExchangeRateUpdates();
         startFileSyncUpdates();
+        startWatchers();
     }
 
     public void stopAllAsyncUpdates() {
