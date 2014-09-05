@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -45,6 +46,9 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     public static final String MODE = "com.airbitz.passwordrecovery.type";
     public static final String ANSWERS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
+    public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
+    public static final String PIN = "com.airbitz.passwordrecovery.pin";
+
     public static int SIGN_UP=0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
@@ -387,6 +391,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             } else {
                 if(mMode==SIGN_UP) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                    signin();
                     ((NavigationActivity) getActivity()).UserJustLoggedIn();
                 } else if(mMode==CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
@@ -579,7 +584,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             chosenQuestion = UNSELECTED_QUESTION;
             if(mMode==FORGOT_PASSWORD) {
                 findViewById(R.id.item_recovery_question_down_arrow).setVisibility(View.GONE);
-//                mSpinner.setSelection(0);
                 mSpinner.setClickable(false);
                 mSpinner.setEnabled(false);
                 mSpinner.setFocusable(false);
@@ -616,6 +620,30 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
     }
 
+    private void signin() {
+        Bundle bundle = getArguments();
+        String username = bundle.getString(USERNAME);
+        String password = bundle.getString(PASSWORD);
+        String pin = bundle.getString(PIN);
+
+        AirbitzApplication.Login(username, password);
+        mCoreAPI.SetUserPIN(pin);
+        CreateDefaultCategories();
+    }
+
+    private void CreateDefaultCategories() {
+        String[] defaults = getResources().getStringArray(R.array.category_defaults);
+
+        for(String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if(cats.size()==0 || cats.get(0).equals(defaults)) {
+            Common.LogD(TAG, "Category creation failed");
+        }
+    }
+
+
     public void ShowSkipQuestionsAlert(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
@@ -623,6 +651,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        signin();
                         ((NavigationActivity)getActivity()).popFragment();
                         ((NavigationActivity)getActivity()).finishSignup();
                     }

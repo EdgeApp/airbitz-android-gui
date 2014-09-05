@@ -254,14 +254,10 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchFragmentThread(int id) {
-        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE) {
+        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
             showNavBar();
         }
         Fragment frag = mNavStacks[id].peek();
-//        if(frag.isAdded()) {
-//            Common.LogD(TAG, "Fragment already added");
-//            return;
-//        }
         mNavBarFragment.unselectTab(mNavThreadId);
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
@@ -665,7 +661,6 @@ public class NavigationActivity extends BaseActivity
         DisplayLoginOverlay(false);
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
-        mCoreAPI.startWatchers();
         sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 
