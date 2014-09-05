@@ -258,16 +258,16 @@ public class NavigationActivity extends BaseActivity
             showNavBar();
         }
         Fragment frag = mNavStacks[id].peek();
-        if(frag.isAdded()) {
-            Common.LogD(TAG, "Fragment already added");
-            return;
-        }
+//        if(frag.isAdded()) {
+//            Common.LogD(TAG, "Fragment already added");
+//            return;
+//        }
         mNavBarFragment.unselectTab(mNavThreadId);
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activityLayout, mNavStacks[id].peek());
+        transaction.replace(R.id.activityLayout, frag);
         transaction.commitAllowingStateLoss();
         mNavThreadId = id;
     }
@@ -523,7 +523,8 @@ public class NavigationActivity extends BaseActivity
 
     final Runnable IncomingBitcoinUpdater = new Runnable() {
         public void run() {
-            resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
+            if(mNavStacks[Tabs.SEND.ordinal()].peek() instanceof SuccessFragment)
+                popFragment();
 
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);

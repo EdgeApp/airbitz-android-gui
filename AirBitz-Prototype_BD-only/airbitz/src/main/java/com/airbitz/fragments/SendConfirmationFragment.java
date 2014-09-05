@@ -562,8 +562,15 @@ public class SendConfirmationFragment extends Fragment {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else if (enteredPIN!=null && userPIN!=null && userPIN.equals(enteredPIN)) {
+            // show the sending screen
+            SuccessFragment mSuccessFragment = new SuccessFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            mSuccessFragment.setArguments(bundle);
+            mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
+
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
-            mSendOrTransferTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            mSendOrTransferTask.execute();
             finishSlider();
         } else {
             resetSlider();
@@ -594,20 +601,12 @@ public class SendConfirmationFragment extends Fragment {
         private Wallet mFromWallet;
         private final String mAddress;
         private final long mSatoshi;
-        private SuccessFragment mSuccessFragment;
         private String failInsufficientMessage = getResources().getString(R.string.fragment_send_failure_insufficient_funds);
 
         SendOrTransferTask(Wallet fromWallet, String address, long amount) {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
-
-            // show the sending screen
-            mSuccessFragment = new SuccessFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-            mSuccessFragment.setArguments(bundle);
-            mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
         }
 
         @Override
