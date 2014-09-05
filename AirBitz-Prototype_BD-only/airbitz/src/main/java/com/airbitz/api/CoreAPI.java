@@ -2004,27 +2004,6 @@ public class CoreAPI {
 
     //************************* Watcher code
 
-    public boolean allWatchersReady()
-    {
-        Common.LogD("CoreAPI", "watchersReady?");
-        List<Wallet> wallets = getCoreWallets();
-        for (Wallet w : wallets) {
-            if (!w.isArchived() && !watcherIsReady(w.getUUID())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean watcherIsReady(String UUID)
-    {
-        tABC_Error Error = new tABC_Error();
-        boolean result = core.ABC_WatcherStatus(UUID, Error) == tABC_CC.ABC_CC_Ok;
-        if(!result)
-            Common.LogD(TAG, Error.getSzDescription()+";"+Error.getSzSourceFile()+";"+Error.getSzSourceFunc()+";"+Error.getNSourceLine());
-        return result;
-    }
-
     private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
     public void startWatchers()
     {

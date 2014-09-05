@@ -7077,28 +7077,6 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1DataSyncAll(JNIEnv *je
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherStatus(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  char *arg1 = (char *) 0 ;
-  tABC_Error *arg2 = (tABC_Error *) 0 ;
-  tABC_CC result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg2_;
-  arg1 = 0;
-  if (jarg1) {
-    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
-    if (!arg1) return 0;
-  }
-  arg2 = *(tABC_Error **)&jarg2; 
-  result = (tABC_CC)ABC_WatcherStatus((char const *)arg1,arg2);
-  jresult = (jint)result; 
-  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
-  return jresult;
-}
-
-
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherStart(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jlong jarg4, jobject jarg4_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
@@ -7258,6 +7236,28 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1PrioritizeAddress(JNIE
   if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
   if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
   if (arg4) (*jenv)->ReleaseStringUTFChars(jenv, jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1WatcherDisconnect(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  tABC_Error *arg2 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg2_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = *(tABC_Error **)&jarg2; 
+  result = (tABC_CC)ABC_WatcherDisconnect((char const *)arg1,arg2);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   return jresult;
 }
 
