@@ -374,12 +374,12 @@ public class coreJNI {
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
   public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
-  public final static native int ABC_WatcherStatus(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherLoop(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherConnect(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatchAddresses(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_PrioritizeAddress(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_WatcherDisconnect(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_TxHeight(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);

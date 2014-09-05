@@ -58,8 +58,6 @@
 #define ABC_DENOMINATION_MBTC 1
 #define ABC_DENOMINATION_UBTC 2
 
-#define NETWORK_FAKE 0
-
 #define ABC_VERSION "1.1.2"
 
 #define ABC_MIN_USERNAME_LENGTH 3
@@ -946,8 +944,6 @@ extern "C" {
                             void *pData,
                             tABC_Error *pError);
 
-    tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
-
     tABC_CC ABC_WatcherStart(const char *szUserName,
                                 const char *szPassword,
                                 const char *szWalletUUID,
@@ -966,6 +962,8 @@ extern "C" {
     tABC_CC ABC_PrioritizeAddress(const char *szUserName, const char *szPassword,
                                   const char *szWalletUUID, const char *szAddress,
                                   tABC_Error *pError);
+
+    tABC_CC ABC_WatcherDisconnect(const char *szWalletUUID, tABC_Error *pError);
 
     tABC_CC ABC_WatcherStop(const char *szWalletUUID, tABC_Error *pError);
 
