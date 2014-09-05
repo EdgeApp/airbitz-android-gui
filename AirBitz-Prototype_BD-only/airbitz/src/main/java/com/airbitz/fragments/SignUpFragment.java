@@ -523,9 +523,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (mMode == CHANGE_PASSWORD) {
                 mUsername = AirbitzApplication.getUsername();
                 Common.LogD(TAG, "changing password to "+mPassword);
-                mCoreAPI.stopWatchers();
                 success = mCoreAPI.ChangePassword(mPassword);
-                mCoreAPI.startWatchers();
             }
             else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                 success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword,
@@ -563,6 +561,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onCancelled() {
             mChangeTask = null;
+            mCoreAPI.startAllAsyncUpdates();
             ((NavigationActivity)getActivity()).showModalProgress(false);
         }
     }
