@@ -321,13 +321,11 @@
             <RelativeLayout
                 android:id="@+id/layout_slide"
                 android:layout_below="@id/layout_pin"
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="44.1dp"
                 android:background="@drawable/bg_textfield"
-                android:orientation="vertical"
-                android:layout_marginLeft="12.6dp"
-                android:layout_marginRight="12.6dp"
-                android:gravity="center">
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/textview_slide"

@@ -192,6 +192,7 @@
                         android:textColor="@android:color/white"
                         android:background="@android:color/transparent"
                         android:gravity="center"
+                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center_vertical"
                         android:textSize="16sp"/>
 
@@ -215,7 +216,7 @@
 
                 <LinearLayout
                     android:id="@+id/transaction_detail_fiat_layout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp">
 
@@ -242,7 +243,7 @@
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_edittext"
                     android:gravity="center"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
 
@@ -288,6 +289,9 @@
                     android:layout_marginLeft="18dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingBottom="2dp"
                     android:textSize="12sp"/>
 
 
@@ -310,7 +314,9 @@
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
-                    android:paddingLeft="6.3dp"/>
+                    android:paddingRight="6.3dp"
+                    android:paddingTop="1dp"
+                    android:paddingLeft="10dp"/>
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_notes"
@@ -324,8 +330,9 @@
                     android:gravity="center"
                     android:textColor="@android:color/white"
                     android:layout_marginLeft="18dp"
-                    android:paddingBottom="2dp"
                     android:paddingTop="4dp"
+                    android:paddingLeft="2dp"
+                    android:paddingBottom="2dp"
                     android:textSize="12sp"/>
 
                 <EditText
@@ -342,9 +349,9 @@
                     android:inputType="textNoSuggestions"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
-                    android:paddingLeft="6.3dp"
+                    android:paddingLeft="10dp"
                     android:paddingRight="6.3dp"
-                    android:paddingTop="6.3dp"
+                    android:paddingTop="8.3dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"

@@ -153,6 +153,8 @@
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
                         android:layout_marginRight="6.3dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:src="@drawable/btn_request_green" />
 
                     <com.airbitz.objects.ResizableImageView
@@ -160,6 +162,8 @@
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
                         android:layout_marginLeft="6.3dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:src="@drawable/btn_send_orange" />
 
                 </LinearLayout>
