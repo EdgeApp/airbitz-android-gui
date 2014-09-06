@@ -265,7 +265,11 @@ public class NavigationActivity extends BaseActivity
         mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(frag.isAdded()) {
+            Common.LogD(TAG, "Fragment already added");
+        }
         transaction.replace(R.id.activityLayout, frag);
+        transaction.disallowAddToBackStack();
         transaction.commitAllowingStateLoss();
         mNavThreadId = id;
     }
@@ -442,29 +446,18 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
+        switchFragmentThread(Tabs.WALLET.ordinal());
+        mNavThreadId = Tabs.WALLET.ordinal();
+        resetFragmentThreadToBaseFragment(mNavThreadId);
+        Fragment frag = new WalletsFragment();
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
-            switchFragmentThread(Tabs.WALLET.ordinal());
-            mNavThreadId = Tabs.WALLET.ordinal();
-            while (!mNavStacks[mNavThreadId].isEmpty()){
-                mNavStacks[mNavThreadId].pop();
-            }
-            Fragment frag = new WalletsFragment();
             bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
-            bundle.putBoolean(WalletsFragment.CREATE, true);
-            frag.setArguments(bundle);
-            pushFragment(frag, Tabs.WALLET.ordinal());
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
-            switchFragmentThread(Tabs.WALLET.ordinal());
-            mNavThreadId = Tabs.WALLET.ordinal();
-            while (!mNavStacks[mNavThreadId].isEmpty()){
-                mNavStacks[mNavThreadId].pop();
-            }
-            Fragment frag = new WalletsFragment();
             bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
-            bundle.putBoolean(WalletsFragment.CREATE, true);
-            frag.setArguments(bundle);
-            pushFragment(frag, Tabs.WALLET.ordinal());
         }
+        bundle.putBoolean(WalletsFragment.CREATE, true);
+        frag.setArguments(bundle);
+        pushFragment(frag, Tabs.WALLET.ordinal());
     }
 
     /*
@@ -551,6 +544,7 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void onBlockHeightChange() {
         Common.LogD(TAG, "Block Height received");
+        updateWalletListener();
     }
 
     @Override
