@@ -7,15 +7,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/activityLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical"
-            android:layout_marginBottom="56.7dp">
+    <LinearLayout
+        android:id="@+id/activityLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="56.7dp"
+        android:orientation="vertical"/>
 
-        </LinearLayout>
+    <include layout="@layout/dialog_add_wallet"/>
 
     <RelativeLayout
         android:id="@+id/navigationLayout"
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
     <android.support.v4.view.ViewPager
@@ -46,7 +46,8 @@
         android:layout_height="wrap_content"
         android:visibility="visible" />
 
-    <include layout="@layout/layout_modal_indefinite_progress"
+    <include
         android:id="@+id/modal_indefinite_progress"
+        layout="@layout/layout_modal_indefinite_progress"
         android:visibility="gone" />
 </RelativeLayout>

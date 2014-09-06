@@ -282,16 +282,23 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private void finishEmail(String name, String email) {
+        String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Request Bitcoin");
-        intent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+            if(mContentURL!=null) {
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+            } else {
+                error = getString(R.string.request_qr_image_store_error);
+            }
+        } else {
+            error = getString(R.string.request_qr_bitmap_error);
         }
 
+        intent.putExtra(Intent.EXTRA_TEXT, mRequestURI + "\n"+error);
         startActivity(intent);
     }
 

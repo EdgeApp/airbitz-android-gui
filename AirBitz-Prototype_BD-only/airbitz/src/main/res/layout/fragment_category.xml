@@ -247,7 +247,7 @@
     <RelativeLayout
         android:id="@+id/popup_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_header"
         android:background="@android:color/transparent"
         android:visibility="gone">
@@ -296,7 +296,7 @@
         </RelativeLayout>
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/category_popup"
             android:paddingTop="6.3dp"
             android:layout_above="@+id/item_popup_listview_triangle">
