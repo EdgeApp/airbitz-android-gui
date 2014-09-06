@@ -516,22 +516,16 @@ public class NavigationActivity extends BaseActivity
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-        mHandler.post(IncomingBitcoinUpdater);
+        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
+
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+        bundle.putString(Transaction.TXID, mIncomingTxID);
+        bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+        FragmentSourceEnum e = FragmentSourceEnum.SEND;
+
+        switchToWallets(e, bundle);
     }
-
-    final Runnable IncomingBitcoinUpdater = new Runnable() {
-        public void run() {
-            resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-            bundle.putString(Transaction.TXID, mIncomingTxID);
-            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
-            FragmentSourceEnum e = FragmentSourceEnum.SEND;
-
-            switchToWallets(e, bundle);
-        }
-    };
 
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
