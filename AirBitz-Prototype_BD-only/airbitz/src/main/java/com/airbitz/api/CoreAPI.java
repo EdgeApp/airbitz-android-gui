@@ -163,7 +163,7 @@ public class CoreAPI {
                     mIncomingUUID = new String(info.getSzWalletUUID());
                     mIncomingTxID = new String(info.getSzTxID());
                     Common.LogD(TAG, "SentFunds uuid, TxID = "+mIncomingUUID+", "+mIncomingTxID);
-                    mOnSentFunds.onSentFunds(mIncomingUUID, mIncomingTxID);
+                    mPeriodicTaskHandler.post(SentFundsUpdater);
                 }
                 else
                     Common.LogD(TAG, "sent funds event has no listener");
