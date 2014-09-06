@@ -207,7 +207,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             }
             count++;
         }
-        if (allQuestionsSelected) {
+        if (allQuestionsSelected || mMode==FORGOT_PASSWORD) {
             if (allAnswersValid) {
                 if(mMode!=FORGOT_PASSWORD) {
                     mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
@@ -584,6 +584,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             chosenQuestion = UNSELECTED_QUESTION;
             if(mMode==FORGOT_PASSWORD) {
                 findViewById(R.id.item_recovery_question_down_arrow).setVisibility(View.GONE);
+                mSpinner.setSelection(0);
                 mSpinner.setClickable(false);
                 mSpinner.setEnabled(false);
                 mSpinner.setFocusable(false);

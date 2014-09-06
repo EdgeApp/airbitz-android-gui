@@ -221,6 +221,11 @@
     <string name="request_button_import">Import</string>
     <string name="request_amount_hint">Amt (Optional)</string>
 
+    <!-- Strings for Request fragment -->
+    <string name="request_qr_email_title">Request Bitcoin</string>
+    <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
+    <string name="request_qr_image_store_error">A QR code could not be stored on your device for attaching. You need an external SD card, or you must detach the USB connector.</string>
+
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
     <string name="transaction_details_advanced_title">Advanced Details</string>
