@@ -152,16 +152,16 @@ public class WalletsFragment extends Fragment
 
         mBalanceLabel = (TextView) mView.findViewById(R.id.fragment_wallets_balance_textview);
 
-        mInvisibleCover = getActivity().findViewById(R.id.fragment_wallets_invisible_cover);
-        mAddWalletLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_wallets_addwallet_layout);
-        mAddWalletNameEditText = (EditText) getActivity().findViewById(R.id.fragment_wallets_addwallet_name_edittext);
-        mAddWalletOnlineTextView = (TextView) getActivity().findViewById(R.id.fragment_wallets_addwallet_online_textview);
-        mAddWalletOfflineTextView = (TextView) getActivity().findViewById(R.id.fragment_wallets_addwallet_offline_textview);
-        mAddWalletOnOffSwitch = (Switch) getActivity().findViewById(R.id.fragment_wallets_addwallet_onoff_switch);
-        mAddWalletCancelButton = (HighlightOnPressButton) getActivity().findViewById(R.id.fragment_wallets_addwallet_cancel_button);
-        mAddWalletDoneButton = (HighlightOnPressButton) getActivity().findViewById(R.id.fragment_wallets_addwallet_done_button);
-        mAddWalletCurrencySpinner = (HighlightOnPressSpinner) getActivity().findViewById(R.id.fragment_wallets_addwallet_currency_spinner);
-        mAddWalletCurrencyLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_wallets_addwallet_currency_layout);
+        mInvisibleCover = mView.findViewById(R.id.fragment_wallets_invisible_cover);
+        mAddWalletLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallets_addwallet_layout);
+        mAddWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallets_addwallet_name_edittext);
+        mAddWalletOnlineTextView = (TextView) mView.findViewById(R.id.fragment_wallets_addwallet_online_textview);
+        mAddWalletOfflineTextView = (TextView) mView.findViewById(R.id.fragment_wallets_addwallet_offline_textview);
+        mAddWalletOnOffSwitch = (Switch) mView.findViewById(R.id.fragment_wallets_addwallet_onoff_switch);
+        mAddWalletCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_wallets_addwallet_cancel_button);
+        mAddWalletDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_wallets_addwallet_done_button);
+        mAddWalletCurrencySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_wallets_addwallet_currency_spinner);
+        mAddWalletCurrencyLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallets_addwallet_currency_layout);
 
         mBitCoinBalanceButton = (Button) mView.findViewById(R.id.back_button_top);
         mFiatBalanceButton = (Button) mView.findViewById(R.id.back_button_bottom);
@@ -377,7 +377,7 @@ public class WalletsFragment extends Fragment
         }
     }
 
-    private void animateBar(){
+    private void animateBar() {
         if(mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
         }else{

@@ -15,8 +15,6 @@
         android:layout_marginBottom="56.7dp"
         android:orientation="vertical"/>
 
-    <include layout="@layout/dialog_add_wallet"/>
-
     <RelativeLayout
         android:id="@+id/navigationLayout"
         android:layout_width="match_parent"
