@@ -25,9 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingTop="0dp"
+            android:paddingBottom="1.5dp"
             android:text="Dec 10 12:00 AM"
             android:textColor="@color/dark_blue_text"
-            android:textSize="12sp"
+            android:textSize="10dp"
             android:textStyle="bold" />
 
         <TextView
@@ -36,11 +38,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingTop=".5dp"
+            android:paddingBottom="0dp"
             android:singleLine="true"
             android:ellipsize="end"
             android:text="1zf76dh4TG"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/textview_confirmations"
@@ -48,11 +52,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingTop="1.5dp"
+            android:paddingBottom=".5dp"
             android:text="2 confirmations"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/green_text_dark"
-            android:textSize="12sp" />
+            android:textSize="10dp" />
 
     </LinearLayout>
 
@@ -74,12 +80,13 @@
                 style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:paddingTop=".5dp"
+                android:paddingBottom="7.5dp"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:text="-B 5.000"
                 android:textColor="@color/green_text_dark"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:shadowColor="#00000000" />
 
             <TextView
@@ -87,7 +94,8 @@
                 style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="7.5dp"
+                android:layout_marginBottom=".5dp"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:text="B 25.000"
@@ -101,8 +109,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="7dp"
                 android:src="@drawable/arrow_right" />
 
     </LinearLayout>
