@@ -537,9 +537,6 @@ public class WalletFragment extends Fragment
             mMoverCoin.setImageResource(R.drawable.ico_coin_usd_white);//todo
             mMoverType.setText(mBottomType.getText());
         }
-
-        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
-        mTransactionAdapter.notifyDataSetChanged();
     }
 
 
@@ -562,6 +559,7 @@ public class WalletFragment extends Fragment
         public void run() {
             Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
             animator.setDuration(100);
+            animator.addListener(endListener);
             animator.start();
         }
     };
@@ -571,10 +569,23 @@ public class WalletFragment extends Fragment
         public void run() {
             Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
             animator.setDuration(100);
+            animator.addListener(endListener);
             animator.start();
         }
     };
 
+    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
+
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+            mTransactionAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onAnimationCancel(Animator animator) { }
+        @Override public void onAnimationStart(Animator animator) { }
+        @Override public void onAnimationRepeat(Animator animator) { }
+    };
 
     @Override
     public void OnExchangeRatesChange() {
