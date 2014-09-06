@@ -264,14 +264,16 @@ public class NavigationActivity extends BaseActivity
         mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
         mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        mNavThreadId = id;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().disallowAddToBackStack();
         if(frag.isAdded()) {
             Common.LogD(TAG, "Fragment already added");
+            transaction.remove(frag);
+            transaction.add(R.id.activityLayout, frag);
+        } else {
+            transaction.replace(R.id.activityLayout, frag);
         }
-        transaction.replace(R.id.activityLayout, frag);
-        transaction.disallowAddToBackStack();
         transaction.commitAllowingStateLoss();
-        mNavThreadId = id;
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -447,8 +449,7 @@ public class NavigationActivity extends BaseActivity
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
         switchFragmentThread(Tabs.WALLET.ordinal());
-        mNavThreadId = Tabs.WALLET.ordinal();
-        resetFragmentThreadToBaseFragment(mNavThreadId);
+        resetFragmentThreadToBaseFragment(Tabs.WALLET.ordinal());
         Fragment frag = new WalletsFragment();
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
             bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
