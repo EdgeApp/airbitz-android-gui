@@ -537,7 +537,7 @@ public class WalletsFragment extends Fragment
 
     private void goCancel() { //CANCEL
         ((NavigationActivity) getActivity()).hideSoftKeyboard(mParentLayout);
-        mHandler.postDelayed(mDelayedAnimation, 300);
+        mHandler.postDelayed(mDelayedAnimation, 100);
     }
 
     //This animation must run after the keyboard is down else a layout redraw occurs causing a visual glitch
