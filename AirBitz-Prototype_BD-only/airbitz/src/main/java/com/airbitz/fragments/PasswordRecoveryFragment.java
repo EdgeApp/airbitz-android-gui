@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -189,7 +187,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         int count = 0;
         for (View view : mQuestionViews) {
             QuestionView qaView = (QuestionView) view;
-            if (qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default))) {
+            if (mMode!=FORGOT_PASSWORD && qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default))) {
                 allQuestionsSelected = false;
                 break;
             }
@@ -209,12 +207,15 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
         if (allQuestionsSelected || mMode==FORGOT_PASSWORD) {
             if (allAnswersValid) {
-                if(mMode!=FORGOT_PASSWORD) {
-                    mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
-                    mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-                } else {
+                if(mMode==SIGN_UP) {
+                    signIn();
+                }
+                if(mMode==FORGOT_PASSWORD) {
                     AttemptAnswerVerificationTask task = new AttemptAnswerVerificationTask();
                     task.execute(answers, getArguments().getString(USERNAME));
+                } else {
+                    mSaveQuestionsTask = new SaveQuestionsTask(questions, answers);
+                    mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 }
             } else {
                 ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
@@ -391,10 +392,11 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             } else {
                 if(mMode==SIGN_UP) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                    signin();
                     ((NavigationActivity) getActivity()).UserJustLoggedIn();
                 } else if(mMode==CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
+                } else if(mMode==FORGOT_PASSWORD) {
+
                 }
             }
         }
@@ -621,7 +623,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
     }
 
-    private void signin() {
+    private void signIn() {
         Bundle bundle = getArguments();
         String username = bundle.getString(USERNAME);
         String password = bundle.getString(PASSWORD);
@@ -652,7 +654,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        signin();
+                        signIn();
                         ((NavigationActivity)getActivity()).popFragment();
                         ((NavigationActivity)getActivity()).finishSignup();
                     }
