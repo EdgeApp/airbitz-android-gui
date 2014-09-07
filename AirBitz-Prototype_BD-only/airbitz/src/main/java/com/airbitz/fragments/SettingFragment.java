@@ -268,7 +268,9 @@ public class SettingFragment extends Fragment {
         mAccountTitle.setText("Account: "+AirbitzApplication.getUsername());
         try {
             String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            Integer iVersionCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
             TextView debugInfo = (TextView) mView.findViewById(R.id.fragment_settings_debug_info);
+            s = s.concat(" (" + iVersionCode.toString() + ")");
             debugInfo.setText(s);
         }catch (PackageManager.NameNotFoundException e){
             e.printStackTrace();
