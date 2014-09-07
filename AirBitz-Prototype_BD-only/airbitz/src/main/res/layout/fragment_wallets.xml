@@ -133,6 +133,7 @@
             android:background="@drawable/emboss_down"
             android:textColor="@android:color/white"
             android:textColorHint="@color/text_hint"
+            android:capitalize="words"
             android:inputType="textVisiblePassword|textNoSuggestions"
             android:hint="@string/fragment_wallets_addwallet_name_hint"
             android:imeOptions="actionDone"
