@@ -9,7 +9,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -117,7 +117,7 @@ public class WalletFragment extends Fragment
                 if(walletUUID==null || walletUUID.isEmpty()) {
                     Log.d("WalletFragment", "no detail info");
                 } else {
-                    mWallet = mCoreAPI.getWallet(walletUUID);
+                    mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                     mTransactions = mCoreAPI.loadAllTransactions(mWallet);
                 }
             }
@@ -130,8 +130,6 @@ public class WalletFragment extends Fragment
             mView = inflater.inflate(R.layout.fragment_wallet, container, false);
             mOnBitcoinMode = true;
             searchPage=false;
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
         }
 
 
@@ -510,7 +508,7 @@ public class WalletFragment extends Fragment
         super.onResume();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
-        mWallet = mCoreAPI.getWallet(mWallet.getUUID());
+        mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
         UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
         UpdateBalances();
         mRequestButton.setPressed(false);
@@ -557,7 +555,7 @@ public class WalletFragment extends Fragment
     Runnable animateSwitchUp = new Runnable() {
         @Override
         public void run() {
-            Animator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(switchable, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
             animator.setDuration(100);
             animator.addListener(endListener);
             animator.start();
@@ -567,7 +565,7 @@ public class WalletFragment extends Fragment
     Runnable animateSwitchDown = new Runnable() {
         @Override
         public void run() {
-            Animator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            ObjectAnimator animator = ObjectAnimator.ofFloat(switchable,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
             animator.setDuration(100);
             animator.addListener(endListener);
             animator.start();

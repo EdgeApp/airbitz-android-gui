@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -88,7 +88,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         if(mView==null) {
              mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 
