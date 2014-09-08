@@ -1865,7 +1865,7 @@ public class CoreAPI {
 
         int width = core.intp_value(pWidth);
 
-        mStrRequestURI = getStringAtPtr(lp2.getCPtr(lp2));
+        mStrRequestURI = getStringAtPtr(core.longp_value(lp2));
         return getBytesAtPtr(core.longp_value(lp), width*width);
     }
 
