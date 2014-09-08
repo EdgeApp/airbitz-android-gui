@@ -26,7 +26,7 @@ public class HelpFragment extends Fragment {
     public static final String REQUEST = "file:///android_asset/html/infoRequest.html";
     public static final String REQUEST_QR = "file:///android_asset/html/infoRequestQR.html";
     public static final String SEND = "file:///android_asset/html/infoSend.html";
-    public static final String SEND_CONFIRMATION = "file:///android_asset/html/infoSend.html"; //TODO
+    public static final String SEND_CONFIRMATION = "file:///android_asset/html/infoSendConfirmation.html";
     public static final String SETTINGS = "file:///android_asset/html/infoSettings.html";
     public static final String TRANSACTION_DETAILS = "file:///android_asset/html/infoTransactionDetails.html";
     public static final String TRANSACTIONS = "file:///android_asset/html/infoTransactions.html";
