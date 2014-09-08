@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -109,7 +110,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private HighlightOnPressImageButton mHelpButton;
 
     private LinearLayout mSentDetailLayout;
-    private RelativeLayout mNoteDetailLayout;
+    private LinearLayout mNoteDetailLayout;
     private RelativeLayout mNameDetailLayout;
 
     private EditText mFiatValueEdittext;
@@ -233,7 +234,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_help);
 
         mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
-        mNoteDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_note);
+        mNoteDetailLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_note);
         mNameDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
 
         mDummyFocus = mView.findViewById(R.id.fragment_transactiondetail_dummy_focus);
@@ -612,30 +613,35 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT, 95.0f);
+
             mAdvanceDetailsButton.setVisibility(View.GONE);
             mSentDetailLayout.setVisibility(View.GONE);
             mNoteDetailLayout.setVisibility(View.GONE);
+            mNameDetailLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.VISIBLE);
         } else {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
+
             mAdvanceDetailsButton.setVisibility(View.VISIBLE);
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mNoteDetailLayout.setVisibility(View.VISIBLE);
+            mNameDetailLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.GONE);
         }
     }
 
     private void showCategoryPopup(boolean hasFocus) {
         if (hasFocus) {
-            mDateTextView.setVisibility(View.GONE);
-            mNameDetailLayout.setVisibility(View.GONE);
             mAdvanceDetailsButton.setVisibility(View.GONE);
             mSentDetailLayout.setVisibility(View.GONE);
             mDoneButton.setVisibility(View.GONE);
             mCategoryListView.setVisibility(View.VISIBLE);
             popupTriangle.setVisibility(View.VISIBLE);
         } else {
-            mDateTextView.setVisibility(View.VISIBLE);
-            mNameDetailLayout.setVisibility(View.VISIBLE);
             mAdvanceDetailsButton.setVisibility(View.VISIBLE);
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mDoneButton.setVisibility(View.VISIBLE);
