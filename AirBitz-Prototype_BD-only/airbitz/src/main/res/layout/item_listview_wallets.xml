@@ -19,7 +19,7 @@
 
     <ImageView
         android:id="@+id/imageview_dots"
-        android:layout_width="37.8dp"
+        android:layout_width="30.8dp"
         android:layout_height="37.8dp"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
@@ -43,14 +43,14 @@
 
     <ImageView
         android:id="@+id/imageview_icon"
-        android:layout_width="37.8dp"
-        android:layout_height="37.8dp"
+        android:layout_width="22.8dp"
+        android:layout_height="28.8dp"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:paddingTop="9.45dp"
-        android:paddingLeft="9.45dp"
+        android:paddingLeft="5.45dp"
         android:paddingBottom="9.45dp"
-        android:paddingRight="9.45dp"
+        android:paddingRight="0dp"
         android:src="@drawable/arrow_right"
         android:layout_toLeftOf="@id/imageview_dots"
         android:layout_centerVertical="true"/>
@@ -64,7 +64,7 @@
         android:layout_marginRight="1dp"
         android:text="amount"
         android:textColor="@color/dark_blue_text"
-        android:textSize="15dp"
+        android:textSize="14dp"
         android:layout_centerVertical="true"/>
 
 
