@@ -105,8 +105,8 @@ if (hasProperty('storeFile')) {
 
 dependencies {
     compile 'me.grantland:autofittextview:0.1.+'
-    compile 'com.android.support:support-v4:19.0.+'
-    compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.google.android.gms:play-services:5.0.77'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'commons-io:commons-io:2.4'
