@@ -136,19 +136,23 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                     convertView.setVisibility(View.VISIBLE);
                 }
             }
-        }else {
+        } else {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.NORMAL);
-            titleTextView.setText(mWalletList.get(position).getName());
+            if (wallet.isLoading()) {
+                titleTextView.setText(R.string.loading);
+            } else {
+                titleTextView.setText(wallet.getName());
+            }
             if(mIsBitcoin) {
-                amountTextView.setText(mWalletList.get(position).getBalanceFormatted()
+                amountTextView.setText(wallet.getBalanceFormatted()
                         + mContext.getResources().getString(R.string.no_break_space_character));
             } else {
-                long satoshi = mWalletList.get(position).getBalanceSatoshi();
+                long satoshi = wallet.getBalanceSatoshi();
                 String temp = mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, true);
                 amountTextView.setText(temp);
             }
@@ -207,6 +211,19 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     public int getMapSize(){ return mIdMap.size();}
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        for (Wallet w : mWalletList) {
+            return !w.isLoading();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return !mWalletList.get(position).isLoading();
+    }
 
     @Override
     public long getItemId(int position) {
