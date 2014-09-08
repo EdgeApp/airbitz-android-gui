@@ -166,7 +166,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 Common.LogD(TAG, "no detail info");
             } else {
                 mCoreAPI = CoreAPI.getApi();
-                mWallet = mCoreAPI.getWallet(walletUUID);
+                mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
                 if (mTransaction.getCategory().isEmpty()) {

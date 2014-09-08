@@ -291,7 +291,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         if(bundle!=null) {
             String uuid = bundle.getString(UUID); // From a wallet with this UUID
             if(uuid!=null) {
-                mFromWallet = mCoreAPI.getWallet(uuid);
+                mFromWallet = mCoreAPI.getWalletFromUUID(uuid);
                 if(mFromWallet!=null) {
                     for(int i=0; i<mWallets.size(); i++) {
                         if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {

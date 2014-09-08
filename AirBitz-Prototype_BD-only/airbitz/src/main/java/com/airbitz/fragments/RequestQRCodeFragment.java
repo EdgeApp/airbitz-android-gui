@@ -78,7 +78,7 @@ public class RequestQRCodeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
-        mWallet = mCoreAPI.getWalletFromName(bundle.getString(Wallet.WALLET_NAME));
+        mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
     }
 
     @Override

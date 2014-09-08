@@ -163,7 +163,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 } else {
                     Fragment frag = new RequestQRCodeFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString(Wallet.WALLET_NAME, ((Wallet) pickWalletSpinner.getSelectedItem()).getName());
+                    bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);
