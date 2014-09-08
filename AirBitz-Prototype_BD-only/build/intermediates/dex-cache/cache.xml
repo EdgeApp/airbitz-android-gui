@@ -2,10 +2,58 @@
 <pre-dex-items>
 
     <item
-        dex="/Users/tom/Documents/AndroidStudioProjects/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/HockeySDK-3.0.2-bc35053f4fc79dd7252a628fd121748251094d3c.jar"
-        jar="/Users/tom/.gradle/caches/modules-2/files-2.1/net.hockeyapp.android/HockeySDK/3.0.2/8a3412e04f95700d4b65d40d1ee28d401a5ba28/HockeySDK-3.0.2.jar"
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/picasso-2.2.0-0895b5ea9e903b5aa2a4c96864f340eb7fe9da35.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.2.0/74137f8d9aac26dd9463efe32271f2be8d41cda9/picasso-2.2.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="74137f8d9aac26dd9463efe32271f2be8d41cda9"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/support-v4-19.0.1-969b5fe03c21bb40da29facde81330e6457276c8.jar"
+        jar="/home/thorton/local/packages/android-studio/sdk/extras/android/m2repository/com/android/support/support-v4/19.0.1/support-v4-19.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="587da9a481ffd341d2fa091704489b89845ddacd"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/classes-7bb21487461c882e85fbb8584d7e97a08c49fb06.jar"
+        jar="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/me.grantland/autofittextview/0.1.1/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="920802528981dd0dc30bacefc1add1a3e8f6913e"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/gson-2.2.4-ee59d7bcf58f1e0da51cb70131a0cfc0793c8383.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/HockeySDK-3.0.2-89cf85f34c202e1ee86824dab1adbbd90f2ba57d.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/net.hockeyapp.android/HockeySDK/3.0.2/8a3412e04f95700d4b65d40d1ee28d401a5ba28/HockeySDK-3.0.2.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="08a3412e04f95700d4b65d40d1ee28d401a5ba28"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/core-3.0.1-fe7c3f95a3dfb67ba4ded8dd8d9fb2c39ad74f69.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.0.1/9ebf6cd580d67601fbf88fd007aab4703b19e4c2/core-3.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9ebf6cd580d67601fbf88fd007aab4703b19e4c2"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/retrofit-1.4.1-fd54f736e95b0d3bc23d8c951684dae5944d8979.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.4.1/23de973a4908bc6f5ac6524af3251a19ad81a7b1/retrofit-1.4.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="23de973a4908bc6f5ac6524af3251a19ad81a7b1"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/classes-d2c6fb5dc728fe1120e237b5aab31b42d7022405.jar"
+        jar="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
+    <item
+        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/commons-io-2.4-1d92a76fb19971ef2ce02ecc3f2e5f94af535121.jar"
+        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad"/>
 
 </pre-dex-items>
