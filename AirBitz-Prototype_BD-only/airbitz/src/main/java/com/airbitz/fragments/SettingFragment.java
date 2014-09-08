@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -112,10 +112,8 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_setting, container, false);
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-//            return mView;
         }
+
         mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);

@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +60,6 @@ public class ForgotPasswordFragment extends Fragment {
         if(view==null) {
             view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
         } else {
-            ((ViewGroup) view.getParent()).removeView(view);
             return view;
         }
 

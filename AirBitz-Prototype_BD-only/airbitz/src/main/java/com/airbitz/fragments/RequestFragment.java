@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -104,9 +104,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_request, container, false);
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-//            return mView;
         }
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
@@ -163,7 +160,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 } else {
                     Fragment frag = new RequestQRCodeFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString(Wallet.WALLET_NAME, ((Wallet) pickWalletSpinner.getSelectedItem()).getName());
+                    bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);

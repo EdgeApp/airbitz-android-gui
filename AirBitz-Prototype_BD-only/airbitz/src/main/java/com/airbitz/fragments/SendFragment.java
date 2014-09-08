@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -118,14 +118,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
-            mView = inflater.inflate(R.layout.fragment_send, container, false);
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-//            return mView;
-        }
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_send_help_button);
 
@@ -291,7 +284,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         if(bundle!=null) {
             String uuid = bundle.getString(UUID); // From a wallet with this UUID
             if(uuid!=null) {
-                mFromWallet = mCoreAPI.getWallet(uuid);
+                mFromWallet = mCoreAPI.getWalletFromUUID(uuid);
                 if(mFromWallet!=null) {
                     for(int i=0; i<mWallets.size(); i++) {
                         if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {

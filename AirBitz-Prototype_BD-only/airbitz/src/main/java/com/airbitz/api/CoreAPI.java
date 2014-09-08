@@ -310,7 +310,7 @@ public class CoreAPI {
     }
 
     public void reloadWallet(Wallet wallet) {
-        Wallet info = getWallet(wallet.getUUID());
+        Wallet info = getWalletFromUUID(wallet.getUUID());
         wallet.setName(info.getName());
         wallet.setUUID(info.getUUID());
         wallet.setAttributes(info.getAttributes());
@@ -327,12 +327,12 @@ public class CoreAPI {
             }
         }
         if(wallet!=null) {
-            wallet = getWallet(wallet.getUUID());
+            wallet = getWalletFromUUID(wallet.getUUID());
         }
         return wallet;
     }
 
-    public Wallet getWallet(String uuid) {
+    public Wallet getWalletFromUUID(String uuid) {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_WalletInfo walletInfo = core.longp_to_ppWalletinfo(lp);
@@ -357,7 +357,7 @@ public class CoreAPI {
         }
         else
         {
-            Common.LogD("", "Error: CoreBridge.getWallet: " + Error.getSzDescription());
+            Common.LogD("", "Error: CoreBridge.getWalletFromUUID: " + Error.getSzDescription());
             return null;
         }
     }
@@ -766,7 +766,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_TxInfo pTxInfo = core.longp_to_ppTxInfo(lp);
 
-        Wallet wallet = getWallet(walletUUID);
+        Wallet wallet = getWalletFromUUID(walletUUID);
         if (wallet == null)
         {
             Common.LogD(TAG, "Could not find wallet for "+ walletUUID);
@@ -1475,7 +1475,7 @@ public class CoreAPI {
         TxResult txResult = new TxResult();
 
         tABC_Error error = new tABC_Error();
-        Wallet destinationWallet = getWallet(destinationAddress);
+        Wallet destinationWallet = getWalletFromUUID(destinationAddress);
         if (satoshi > 0) {
             double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
 
@@ -1865,7 +1865,7 @@ public class CoreAPI {
 
         int width = core.intp_value(pWidth);
 
-        mStrRequestURI = getStringAtPtr(lp2.getCPtr(lp2));
+        mStrRequestURI = getStringAtPtr(core.longp_value(lp2));
         return getBytesAtPtr(core.longp_value(lp), width*width);
     }
 

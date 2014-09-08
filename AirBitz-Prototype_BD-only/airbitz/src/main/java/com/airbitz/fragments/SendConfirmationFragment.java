@@ -7,7 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -114,7 +114,7 @@ public class SendConfirmationFragment extends Fragment {
             mLabel = bundle.getString(SendFragment.LABEL);
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            mSourceWallet = mCoreAPI.getWallet(bundle.getString(SendFragment.FROM_WALLET_UUID));
+            mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
         }
     }
 
@@ -124,7 +124,7 @@ public class SendConfirmationFragment extends Fragment {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 
@@ -179,7 +179,7 @@ public class SendConfirmationFragment extends Fragment {
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mIsUUID) {
-            mToWallet = mCoreAPI.getWallet(mUUIDorURI);
+            mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             mToEdittext.setText(mToWallet.getName());
         }
         else {

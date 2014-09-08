@@ -2,7 +2,7 @@ package com.airbitz.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +57,7 @@ public class SuccessFragment extends Fragment {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_received_success, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 
