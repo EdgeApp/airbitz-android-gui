@@ -1,17 +1,17 @@
 package com.airbitz.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 
 /**
  * Created by matt on 5/22/14.
  */
-public class CustomMapFragment extends SupportMapFragment {
+public class CustomMapFragment extends MapFragment {
 
     private static final String LOG_TAG = "CustomMapFragment";
 

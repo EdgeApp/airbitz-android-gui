@@ -7,7 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -124,7 +124,7 @@ public class SendConfirmationFragment extends Fragment {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 

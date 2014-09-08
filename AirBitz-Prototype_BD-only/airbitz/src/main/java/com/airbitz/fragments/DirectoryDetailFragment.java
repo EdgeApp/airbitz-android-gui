@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,7 +109,6 @@ public class DirectoryDetailFragment extends Fragment {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
             return mView;
         }
 

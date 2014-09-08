@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -120,9 +120,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_send, container, false);
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-//            return mView;
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -195,7 +195,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 

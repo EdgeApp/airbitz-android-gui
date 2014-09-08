@@ -13,7 +13,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.SurfaceView;
@@ -91,7 +91,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 

@@ -18,7 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,7 +96,7 @@ public class RequestQRCodeFragment extends Fragment {
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_request_qrcode, container, false);
         } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
+
             return mView;
         }
 

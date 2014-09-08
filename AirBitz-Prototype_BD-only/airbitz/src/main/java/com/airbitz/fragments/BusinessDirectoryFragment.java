@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -190,7 +190,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         if(view==null) {
             view = inflater.inflate(R.layout.fragment_business_directory, container, false);
         } else {
-            ((ViewGroup) view.getParent()).removeView(view);
             showLoadingIndicator();
             mNoResultView.setVisibility(View.GONE);
             return view;

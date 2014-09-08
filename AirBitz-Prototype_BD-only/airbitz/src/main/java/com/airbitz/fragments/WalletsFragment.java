@@ -8,7 +8,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -138,9 +138,6 @@ public class WalletsFragment extends Fragment
             mView = inflater.inflate(R.layout.fragment_wallets, container, false);
 
             mOnBitcoinMode = true;
-        } else {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-//            return mView;
         }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_header_layout);
@@ -390,7 +387,7 @@ public class WalletsFragment extends Fragment
     Runnable animateSwitchUp = new Runnable() {
         @Override
         public void run() {
-            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
             animator.setDuration(100);
             animator.addListener(endListener);
             animator.start();
@@ -400,7 +397,7 @@ public class WalletsFragment extends Fragment
     Runnable animateSwitchDown = new Runnable() {
         @Override
         public void run() {
-            Animator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
             animator.setDuration(100);
             animator.addListener(endListener);
             animator.start();

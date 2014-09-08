@@ -3,22 +3,18 @@ package com.airbitz.fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MotionEventCompat;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -65,8 +60,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -191,8 +184,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view==null) {
             view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
-        } else {
-            ((ViewGroup) view.getParent()).removeView(view);
         }
 
         mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
@@ -483,7 +474,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         mDragLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View view, MotionEvent event) {
                 String DEBUG_TAG = "TEST MOVE";
-                int action = MotionEventCompat.getActionMasked(event);
+                int action = event.getActionMasked();
                 switch (action) {
                     case (MotionEvent.ACTION_DOWN):
                         //Common.LogD(TAG, "action down");
