@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/transaction_detail_layout_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@drawable/bg_app">
+    android:background="@drawable/bg_app"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16sp"/>
+            android:textSize="16dp"/>
 
 
         <com.airbitz.objects.HighlightOnPressImageButton
@@ -50,200 +51,205 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/fragment_transactiondetail_main_layout"
+        android:weightSum="100"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/transaction_detail_textview_date"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:text="November 13, 2013 04:56 PM"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="13dp"/>
+
         <RelativeLayout
-            android:id="@+id/fragment_transactiondetail_main_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/fragment_category_layout_header">
+            android:id="@+id/transaction_detail_layout_name"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:gravity="center"
+            android:background="@android:color/transparent" >
 
-            <TextView
-                android:id="@+id/transaction_detail_textview_date"
+            <EditText
+                android:id="@+id/transaction_detail_edittext_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:text="November 13, 2013 04:56 PM"
+                android:layout_height="32dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textSize="16dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:hint="Payee or Business Name"
+                android:textColorHint="@color/text_hint"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
                 android:gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoComplete|textNoSuggestions|textCapWords"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:textColor="@android:color/white"
-                android:textSize="11sp"/>
+                android:background="@drawable/bg_edittext"
+                android:ems="10"/>
 
-            <RelativeLayout
-                android:id="@+id/transaction_detail_layout_name"
+            <ListView
+                android:id="@+id/listview_search"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/transaction_detail_textview_date"
-                android:background="@android:color/transparent" >
+                android:layout_height="match_parent"
+                android:layout_below="@id/transaction_detail_edittext_name"
+                android:divider="@color/gray_border"
+                android:dividerHeight="1px"
+                android:visibility="gone" />
+        </RelativeLayout>
 
-                <EditText
-                    android:id="@+id/transaction_detail_edittext_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:paddingLeft="@dimen/two_mm"
-                    android:paddingRight="@dimen/two_mm"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginRight="60dp"
-                    android:hint="Payee or Business Name"
-                    android:textColorHint="@color/text_hint"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:inputType="textAutoComplete|textNoSuggestions|textCapWords"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/bg_edittext"
-                    android:ems="10"/>
 
-                <ListView
-                    android:id="@+id/listview_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/transaction_detail_edittext_name"
-                    android:divider="@color/gray_border"
-                    android:dividerHeight="1px"
-                    android:visibility="gone" />
-            </RelativeLayout>
-
+        <RelativeLayout
+            android:id="@+id/transaction_detail_button_advanced_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/transaction_detail_button_advanced"
-                android:layout_width="132.3dp"
+                android:layout_width="120dp"
                 android:layout_height="25.2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/transaction_detail_layout_name"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/transaction_details_advanced_title"
                 android:background="@drawable/bg_btn_blue_stretch"
+                android:textColor="@android:color/white"
+                android:textSize="12dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_sent_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="27"
+            android:padding="8dp"
+            android:background="@drawable/emboss_down"
+            android:orientation="vertical"
+            android:weightSum="25">
+
+            <TextView
+                android:id="@+id/transaction_detail_textview_to_wallet"
+                style="@style/BlackDropShadow"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:text="To: My Wallet"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"/>
-
+                android:textSize="12dp"/>
 
             <LinearLayout
-                android:id="@+id/layout_sent_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/emboss_down"
-                android:orientation="vertical"
-                android:layout_marginLeft="@dimen/two_mm"
-                android:layout_marginRight="@dimen/two_mm"
-                android:layout_below="@id/transaction_detail_button_advanced">
+                android:id="@+id/transaction_detail_btc_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:orientation="horizontal"
+                android:weightSum="100"
+                android:gravity="center">
 
-                <LinearLayout
-                    android:id="@+id/transaction_detail_layout_sent_from"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/transaction_detail_textview_to_wallet"
-                        style="@style/BlackDropShadow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="To: My Wallet"
-                        android:textStyle="bold"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp"/>
-
-                    </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/transaction_detail_btc_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/transaction_detail_textview_bitcoin_sign"
+                    android:text="mBTC"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="0dp"
+                    android:layout_weight="20"
                     android:layout_height="25.2dp"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/transaction_detail_textview_bitcoin_sign"
-                        style="@style/BlackDropShadow"
-                        android:layout_width="60dp"
-                        android:layout_height="25.2dp"
-                        android:text="mBTC"
-                        android:gravity="center_vertical|right"
-                        android:layout_gravity="center_vertical"
-                        android:singleLine="true"
-                        android:ellipsize="none"
-                        android:paddingRight="10dp"
-                        android:textSize="16sp"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/transparent"
-                        android:layout_marginLeft="@dimen/one_point_five_mm" />
+                    android:gravity="center_vertical|right"
+                    android:layout_gravity="center_vertical"
+                    android:singleLine="true"
+                    android:ellipsize="none"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"/>
 
 
-                    <TextView
-                        android:id="@+id/transaction_detail_textview_bitcoin_value"
-                        android:layout_width="180dp"
-                        android:layout_height="28dp"
-                        style="@style/BlackDropShadow"
-                        android:layout_weight="10"
-                        android:textColorHint="@android:color/white"
-                        android:text="-1.64593"
-                        android:singleLine="true"
-                        android:ellipsize="none"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_vertical"
-                        android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/transaction_detail_textview_bitcoin_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="60"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    style="@style/BlackDropShadow"
+                    android:textColorHint="@android:color/white"
+                    android:text="-1.64593"
+                    android:singleLine="true"
+                    android:ellipsize="none"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="16sp"/>
 
-                    <TextView
-                        android:id="@+id/transaction_detail_textview_btc_fee_value"
-                        style="@style/BlackDropShadow"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="+0.0001"
-                        android:singleLine="true"
-                        android:ellipsize="none"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/transparent"
-                        android:layout_marginRight="10dp"
-                        android:gravity="right"
-                        android:layout_gravity="center_vertical"
-                        android:textSize="12sp"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/transaction_detail_fiat_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/transaction_detail_textview_btc_fee_value"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
+                    android:layout_weight="20"
+                    android:text="+0.0001"
+                    android:singleLine="true"
+                    android:ellipsize="none"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:gravity="right"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/transaction_detail_fiat_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:weightSum="100">
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_currency_sign"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="60dp"
-                    android:layout_height="25.2dp"
-                    android:paddingRight="10dp"
                     android:text="USD"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="0dp"
+                    android:layout_weight="20"
+                    android:layout_height="25.2dp"
                     android:gravity="center_vertical|right"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/one_point_five_mm"
-                    android:textColor="@android:color/white"/>
+                    android:singleLine="true"
+                    android:ellipsize="none"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"/>
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_dollar_value"
-                    android:layout_width="180dp"
-                    android:layout_height="26dp"
+                    android:hint="3.456"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
                     android:textSize="16sp"
-                    android:layout_weight="10"
+                    android:layout_weight="60"
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_edittext"
                     android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
 
@@ -251,96 +257,124 @@
                 <TextView
                     android:id="@+id/transaction_detail_textview_fiat_fee_value"
                     style="@style/BlackDropShadow"
-                    android:layout_width="60dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="20"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
-                    android:layout_marginRight="10dp"
                     android:gravity="center"
                     android:textSize="16sp"/>
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
 
-            <RelativeLayout
-                android:id="@+id/transaction_detail_layout_note"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edge_blue_bg"
-                android:layout_marginLeft="@dimen/two_mm"
-                android:layout_marginRight="@dimen/two_mm"
-                android:layout_marginTop="6.3dp"
-                android:layout_below="@id/layout_sent_detail"
-                android:gravity="center_horizontal" >
+        <LinearLayout
+            android:id="@+id/transaction_detail_layout_note"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="50"
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:background="@drawable/rounded_edge_blue_bg"
+            android:layout_below="@id/layout_sent_detail"
+            >
 
-                <TextView
-                    android:id="@+id/transaction_detail_textview_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/transaction_details_category_title"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingLeft="2dp"
-                    android:paddingBottom="2dp"
-                    android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/transaction_detail_textview_category"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:layout_marginLeft="4dp"
+                android:text="@string/transaction_details_category_title"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/white"
+                android:textSize="12dp"/>
 
+            <LinearLayout
+                android:id="@+id/transaction_detail_edittext_category_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="20"
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_category"
-                    android:layout_below="@+id/transaction_detail_textview_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="26dp"
-                    android:layout_alignParentLeft="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="32dp"
                     android:background="@drawable/bg_edittext"
                     android:text="Transfer:Wallet:TestCAD"
                     android:selectAllOnFocus="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:inputType="textCapWords|textCapSentences"
-                    android:gravity="center_vertical"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
-                    android:textSize="14sp"
+                    android:textSize="14dp"
+                    android:paddingLeft="8dp"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/white"
-                    android:paddingRight="6.3dp"
-                    android:paddingTop="1dp"
-                    android:paddingLeft="10dp"/>
+                    android:textColorHint="@android:color/white"/>
 
-                <TextView
-                    android:id="@+id/transaction_detail_textview_notes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/transaction_detail_edittext_category"
-                    android:text="@string/transaction_details_notes_title"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="18dp"
-                    android:paddingTop="4dp"
-                    android:paddingLeft="2dp"
-                    android:paddingBottom="2dp"
-                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/transaction_detail_category_popup_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="80"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:id="@+id/fragment_transactiondetail_listview_triangle"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="-15dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/blue_triangle"/>
+
+                <ListView
+                    android:id="@+id/listview_category"
+                    android:layout_width="fill_parent"
+                    android:layout_height="170dp"
+                    android:padding="4dp"
+                    android:layout_marginTop="-1dp"
+                    android:divider="@color/gray_border"
+                    android:dividerHeight="1px"
+                    android:background="@drawable/category_popup"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/transaction_detail_textview_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="4dp"
+                android:text="@string/transaction_details_notes_title"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="12dp"/>
+
+            <LinearLayout
+                android:id="@+id/transaction_detail_layout_edittext_notes"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="35"
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_notes"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/transaction_detail_textview_notes"
-                    android:textSize="14sp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textSize="14dp"
+                    android:padding="8dp"
                     android:text="Test Stuff that/'s long enough to wrap around for a second line "
                     android:gravity="left"
                     android:textColor="@android:color/white"
@@ -349,62 +383,39 @@
                     android:inputType="textNoSuggestions"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="6.3dp"
-                    android:paddingTop="8.3dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
                     android:background="@drawable/bg_edittext"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <ListView
-                android:id="@+id/listview_category"
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="170dp"
-                android:layout_below="@+id/fragment_transactiondetail_listview_triangle"
-                android:divider="@color/gray_border"
-                android:dividerHeight="1px"
-                android:background="@drawable/category_popup"
-                android:padding="9.45dp"
-                android:layout_marginTop="-1dp"
-                android:visibility="gone" />
+                android:layout_height="0dp"
+                android:layout_weight="25"
+                android:gravity="center_horizontal|bottom"
+                android:padding="3dp"
+                android:orientation="vertical">
 
-            <View
-                android:layout_alignTop="@id/transaction_detail_layout_note"
-                android:id="@+id/fragment_transactiondetail_listview_triangle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="31.7dp"
-                android:background="@drawable/blue_triangle"
-                android:visibility="gone"/>
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/transaction_detail_button_done"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:text="@string/string_done"
+                    android:textSize="16dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/btn_green"/>
+            </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
-    <com.airbitz.objects.HighlightOnPressButton
-        android:id="@+id/transaction_detail_button_done"
-        style="@style/BlackDropShadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/string_done"
-        android:padding="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="@dimen/one_point_five_mm"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/fragment_transactiondetail_main_layout"
-        android:background="@drawable/btn_green"/>
-
-    <View
+        <View
         android:layout_width="0px"
         android:layout_height="0px"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:id="@+id/fragment_transactiondetail_dummy_focus"/>
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

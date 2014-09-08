@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -70,15 +71,23 @@ import java.util.List;
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
     private HighlightOnPressButton mDoneButton;
+    private RelativeLayout         mAdvanceDetailsButtonLayout;
     private HighlightOnPressButton mAdvanceDetailsButton;
 
     private TextView mDateTextView;
+    private RelativeLayout mPayeeNameLayout;
     private TextView mTitleTextView;
+    private TextView mNotesTextView;
     private TextView mToFromName;
     private EditText mPayeeEditText;
     private TextView mBitcoinValueTextview;
     private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
+
+    private TextView mCategoryTextView;
+    private LinearLayout mCategoryEdittextLayout;
+    private LinearLayout mCategoryPopupLayout;
+
 
     private View mDummyFocus;
 
@@ -109,12 +118,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private HighlightOnPressImageButton mHelpButton;
 
     private LinearLayout mSentDetailLayout;
-    private RelativeLayout mNoteDetailLayout;
+    private LinearLayout mNoteDetailLayout;
     private RelativeLayout mNameDetailLayout;
 
     private EditText mFiatValueEdittext;
     private String mFiatValue;
     private TextView mFiatDenominationLabel;
+    private LinearLayout mEdittextNotesLayout;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
 
@@ -213,9 +223,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         popupTriangle = mView.findViewById(R.id.fragment_transactiondetail_listview_triangle);
 
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
+        mAdvanceDetailsButtonLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_button_advanced_layout);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_title);
+        mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
+        mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
         mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
         mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
         mBitcoinValueTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_value);
@@ -226,14 +239,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mFiatDenominationLabel = (TextView) mView.findViewById(R.id.transaction_detail_textview_currency_sign);
         mBitcoinSignTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
+        mEdittextNotesLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
         mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
+        mCategoryTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_category);
+        mCategoryEdittextLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_edittext_category_layout);
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
+        mCategoryPopupLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_category_popup_layout);
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_help);
 
         mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
-        mNoteDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_note);
+        mNoteDetailLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_note);
         mNameDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
 
         mDummyFocus = mView.findViewById(R.id.fragment_transactiondetail_dummy_focus);
@@ -339,11 +356,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    mAdvanceDetailsButton.setVisibility(View.GONE);
+                    mAdvanceDetailsButtonLayout.setVisibility(View.GONE);
                     mSentDetailLayout.setVisibility(View.GONE);
                     mDoneButton.setVisibility(View.GONE);
                 } else {
-                    mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                    mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
                     mSentDetailLayout.setVisibility(View.VISIBLE);
                     mDoneButton.setVisibility(View.VISIBLE);
                 }
@@ -471,7 +488,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mPayeeEditText.setText((String) mSearchAdapter.getItem(i));
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
-                mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+                mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
                 mSentDetailLayout.setVisibility(View.VISIBLE);
                 mNoteDetailLayout.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.GONE);
@@ -612,14 +629,23 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT, 95.0f);
+
             mAdvanceDetailsButton.setVisibility(View.GONE);
             mSentDetailLayout.setVisibility(View.GONE);
             mNoteDetailLayout.setVisibility(View.GONE);
+            mNameDetailLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.VISIBLE);
         } else {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
+
             mAdvanceDetailsButton.setVisibility(View.VISIBLE);
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mNoteDetailLayout.setVisibility(View.VISIBLE);
+            mNameDetailLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.GONE);
         }
     }
@@ -627,20 +653,72 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private void showCategoryPopup(boolean hasFocus) {
         if (hasFocus) {
             mDateTextView.setVisibility(View.GONE);
-            mNameDetailLayout.setVisibility(View.GONE);
-            mAdvanceDetailsButton.setVisibility(View.GONE);
+            mPayeeNameLayout.setVisibility(View.GONE);
+            mAdvanceDetailsButtonLayout.setVisibility(View.GONE);
             mSentDetailLayout.setVisibility(View.GONE);
             mDoneButton.setVisibility(View.GONE);
-            mCategoryListView.setVisibility(View.VISIBLE);
-            popupTriangle.setVisibility(View.VISIBLE);
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 75.0f);
+                mNoteDetailLayout.setLayoutParams(params);
+            }
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 6.66f);
+                mCategoryTextView.setLayoutParams(params);
+            }
+
+            mCategoryPopupLayout.setVisibility(View.VISIBLE);
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 13.2f);
+                mCategoryEdittextLayout.setLayoutParams(params);
+            }
+
+            mEdittextNotesLayout.setVisibility(View.GONE);
+            mNotesTextView.setVisibility(View.GONE);
+            mNoteEdittext.setVisibility(View.GONE);
         } else {
+
             mDateTextView.setVisibility(View.VISIBLE);
-            mNameDetailLayout.setVisibility(View.VISIBLE);
-            mAdvanceDetailsButton.setVisibility(View.VISIBLE);
+            mPayeeNameLayout.setVisibility(View.VISIBLE);
+            mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mDoneButton.setVisibility(View.VISIBLE);
-            mCategoryListView.setVisibility(View.GONE);
-            popupTriangle.setVisibility(View.GONE);
+
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 50.0f);
+                mNoteDetailLayout.setLayoutParams(params);
+            }
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
+                mCategoryTextView.setLayoutParams(params);
+            }
+
+            mCategoryPopupLayout.setVisibility(View.GONE);
+
+            if (true)
+            {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 20.0f);
+                mCategoryEdittextLayout.setLayoutParams(params);
+            }
+
+            mEdittextNotesLayout.setVisibility(View.VISIBLE);
+            mNotesTextView.setVisibility(View.VISIBLE);
+            mNoteEdittext.setVisibility(View.VISIBLE);
         }
     }
 
