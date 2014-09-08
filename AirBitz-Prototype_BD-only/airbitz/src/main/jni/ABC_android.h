@@ -58,8 +58,6 @@
 #define ABC_DENOMINATION_MBTC 1
 #define ABC_DENOMINATION_UBTC 2
 
-#define NETWORK_FAKE 0
-
 #define ABC_VERSION "1.1.2"
 
 #define ABC_MIN_USERNAME_LENGTH 3
@@ -946,6 +944,8 @@ extern "C" {
                             void *pData,
                             tABC_Error *pError);
 
+    tABC_CC ABC_WatcherStatus(const char *szWalletUUID, tABC_Error *pError);
+
     tABC_CC ABC_WatcherStart(const char *szUserName,
                                 const char *szPassword,
                                 const char *szWalletUUID,
@@ -984,14 +984,13 @@ extern "C" {
 
     tABC_CC ABC_Version(char **szVersion, tABC_Error *pError);
 
-    // temp functions
-//    void tempEventA();
-//    void tempEventB();
-
     tABC_CC ABC_UploadLogs(const char *szUserName,
                            const char *szPassword,
                            tABC_Error *pError);
 
+    // temp functions
+    // void tempEventA();
+    // void tempEventB();
 
     tABC_CC ABC_CsvExport(const char *szUserName,
                           const char *szPassword,
