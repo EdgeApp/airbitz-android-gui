@@ -117,7 +117,7 @@ public class WalletFragment extends Fragment
                 if(walletUUID==null || walletUUID.isEmpty()) {
                     Log.d("WalletFragment", "no detail info");
                 } else {
-                    mWallet = mCoreAPI.getWallet(walletUUID);
+                    mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                     mTransactions = mCoreAPI.loadAllTransactions(mWallet);
                 }
             }
@@ -510,7 +510,7 @@ public class WalletFragment extends Fragment
         super.onResume();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
-        mWallet = mCoreAPI.getWallet(mWallet.getUUID());
+        mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
         UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
         UpdateBalances();
         mRequestButton.setPressed(false);

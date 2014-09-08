@@ -423,7 +423,7 @@ public class WalletsFragment extends Fragment
     private void showWalletFragment(String uUID) {
         Bundle bundle = new Bundle();
         bundle.putString(FROM_SOURCE, "");
-        Wallet w = mCoreAPI.getWallet(uUID);
+        Wallet w = mCoreAPI.getWalletFromUUID(uUID);
         bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
