@@ -240,7 +240,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
-        mHelpButton.setVisibility(View.GONE);
+        mHelpButton.setVisibility(View.VISIBLE);
         mSearchField = (EditText) view.findViewById(R.id.edittext_search);
         mLocationField = (EditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
@@ -327,7 +327,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Common.showHelpInfoDialog(getActivity(), "Info", "Business directory info");
+                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.INFO), NavigationActivity.Tabs.BD.ordinal());
             }
         });
 
