@@ -1171,8 +1171,19 @@ public class CoreAPI {
     }
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
-        String pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
-        String out = String.format("%.3f", in);
+        String pre;
+        String out;
+        if (in < 0)
+        {
+            in = Math.abs(in);
+            pre = withSymbol ? "-" + mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "-";
+            out = String.format("%.3f", in);
+        }
+        else
+        {
+            pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
+            out = String.format("%.3f", in);
+        }
         return pre+out;
     }
 
