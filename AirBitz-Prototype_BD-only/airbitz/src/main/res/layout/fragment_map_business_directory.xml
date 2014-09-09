@@ -53,7 +53,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="480dp"
                     android:layout_gravity="center"
-                    android:orientation="vertical" />
+                    android:orientation="vertical" >
+
+                    <com.google.android.gms.maps.MapView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/custom_map_fragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/locateMeButton"
