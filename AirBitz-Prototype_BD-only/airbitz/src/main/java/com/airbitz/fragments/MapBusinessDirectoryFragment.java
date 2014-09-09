@@ -1,7 +1,6 @@
 package com.airbitz.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -53,7 +51,9 @@ import com.airbitz.utils.Common;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -72,7 +72,7 @@ import java.util.List;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class MapBusinessDirectoryFragment extends Fragment implements CustomMapFragment.OnMapReadyListener,
+public class MapBusinessDirectoryFragment extends Fragment implements
         CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
 
@@ -121,7 +121,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
     private LocationAdapter mLocationAdapter;
 
     private LinearLayout mapView;
-    private CustomMapFragment mapFragment;
+    private MapView mMapView;
 
     private String mLocationName;
     private String mBusinessName;
@@ -169,33 +169,27 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         }
     }
 
-    @Override
-    public void onMapReady() {
-        mGoogleMap = mapFragment.getMap();
-        initializeMap();
-        if(!alreadyLoaded) {
-            mLocationManager.addLocationChangeListener(this);
-        }
-    }
-
     View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(view==null) {
-            view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
-        }
+        view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
 
         mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
 
         mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_mapbusinessdirectory_dummy_focus);
 
         mapView = (LinearLayout) view.findViewById(R.id.map_view);
-        if(mapView.getChildCount()<=0) {
-            mapFragment = CustomMapFragment.newInstance();
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.map_view, mapFragment, "map").commit();
+        mMapView =  (MapView) view.findViewById(R.id.custom_map_fragment);
+        mMapView.onCreate(savedInstanceState);
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        mGoogleMap = mMapView.getMap();
 
         mMapLayout = (LinearLayout) view.findViewById(R.id.map_view_layout);
 
@@ -648,6 +642,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
 
     @Override
     public void onPause(){
+        super.onPause();
+        mMapView.onPause();
         if(mLocationManager!=null) {
             mLocationManager.removeLocationChangeListener(this);
         }
@@ -663,18 +659,31 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
-        super.onPause();
     }
 
     @Override
     public void onResume(){
+        super.onResume();
+        mCurrentLocation = mLocationManager.getLocation();
+        mMapView.onResume();
         checkLocationManager();
         if(!alreadyLoaded) {
             search();
         }
-        super.onResume();
+        initializeMap();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
     private void checkLocationManager(){
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -1139,23 +1148,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements CustomMapF
         return false;
     }
 
-    private ProgressDialog mProgressDialog;
     private void showMessageProgress(String message, boolean visible) {
-        if(visible) {
-            if(mProgressDialog==null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setMessage(message);
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
-            }
-        } else {
-            if(mProgressDialog!=null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
+        ((NavigationActivity)getActivity()).showModalProgress(visible);
     }
 
 
