@@ -102,9 +102,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
-            mView = inflater.inflate(R.layout.fragment_request, container, false);
-        }
+        mView = inflater.inflate(R.layout.fragment_request, container, false);
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
