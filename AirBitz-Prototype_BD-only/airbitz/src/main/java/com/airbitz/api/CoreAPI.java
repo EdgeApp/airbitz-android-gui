@@ -79,6 +79,8 @@ public class CoreAPI {
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
     public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
+    public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
+    public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
     public native int coreWatcherLoop(String juuid, long jerrorp);
     public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
@@ -1036,11 +1038,10 @@ public class CoreAPI {
             transaction.setmMalleableID(txInfo.getSzMalleableTxId());
         }
 
-        boolean bSyncing = false;
-        transaction.setConfirmations(calcTxConfirmations(wallet, transaction.getmMalleableID()));
+        int confirmations = calcTxConfirmations(wallet, transaction, transaction.getmMalleableID());
+        transaction.setConfirmations(confirmations);
         transaction.setConfirmed(false);
         transaction.setConfirmed(transaction.getConfirmations() >= CONFIRMED_CONFIRMATION_COUNT);
-        transaction.setSyncing(bSyncing);
         if (!transaction.getName().isEmpty()) {
             transaction.setAddress(transaction.getName());
         } else {
@@ -1059,24 +1060,23 @@ public class CoreAPI {
 
     }
 
-    private boolean mSyncing;
-    public int calcTxConfirmations(Wallet wallet, String txId)
+    public int calcTxConfirmations(Wallet wallet, Transaction t, String txId)
     {
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_int th = core.new_intp();
         SWIGTYPE_p_int bh = core.new_intp();
 
-        mSyncing = false;
+        t.setSyncing(false);
         if (wallet.getUUID().length() == 0 || txId.length() == 0) {
             return 0;
         }
         if (core.ABC_TxHeight(wallet.getUUID(), txId, core.int_to_uint(th), Error) != tABC_CC.ABC_CC_Ok) {
-            mSyncing = true;
+            t.setSyncing(true);
             return 0;
         }
         if (core.ABC_BlockHeight(wallet.getUUID(), core.int_to_uint(bh), Error) != tABC_CC.ABC_CC_Ok) {
-            mSyncing = true;
+            t.setSyncing(true);
             return 0;
         }
 
@@ -1722,7 +1722,8 @@ public class CoreAPI {
     }
 
     private SyncDataTask mSyncDataTask;
-    public class SyncDataTask extends AsyncTask<Void, Void, Void> {
+    private boolean mDataFetched = false;
+    public class SyncDataTask extends AsyncTask<Void, String, Void> {
         SyncDataTask() { }
 
         @Override
@@ -1732,15 +1733,39 @@ public class CoreAPI {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            // Sync Account
             tABC_Error error = new tABC_Error();
-            int result = coreDataSyncAll(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
+            coreDataSyncAccount(AirbitzApplication.getUsername(),
+                                AirbitzApplication.getPassword(),
+                                tABC_Error.getCPtr(error));
+
+            List<Wallet> wallets = getCoreWallets();
+            for (Wallet w : wallets) {
+                coreDataSyncWallet(AirbitzApplication.getUsername(),
+                                   AirbitzApplication.getPassword(),
+                                   w.getUUID(),
+                                   tABC_Error.getCPtr(error));
+                publishProgress(w.getUUID());
+            }
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... uuids) {
+            if (!mDataFetched) {
+                for (String uuid : uuids) {
+                    connectWatcher(uuid);
+                }
+            }
         }
 
         @Override
         protected void onPostExecute(Void v) {
             Common.LogD(TAG, "coreDataSyncAll returned");
             mSyncDataTask = null;
+            if (!mDataFetched) {
+                mDataFetched = true;
+            }
         }
 
         @Override
@@ -1749,9 +1774,6 @@ public class CoreAPI {
             mSyncDataTask = null;
         }
     }
-
-
-
 
     //**************** Wallet handling
     public List<Wallet> getCoreWallets() {
@@ -1783,6 +1805,7 @@ public class CoreAPI {
                 in.setUUID(wi.getUUID());
                 in.setAttributes(wi.getAttributes());
                 in.setCurrencyNum(wi.getCurrencyNum());
+                in.setLoading(wi.getCurrencyNum() == -1);
                 mWallets.add(in);
             }
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
@@ -2033,9 +2056,37 @@ public class CoreAPI {
                 while(!thread.isAlive()) { } // wait for thread to start before calling the next two methods
 
                 core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
-                core.ABC_WatcherConnect(uuid, error);
                 Common.LogD(TAG, "Started watcher for "+uuid);
             }
+        }
+        if (mDataFetched) {
+            connectWatchers();
+        }
+    }
+
+    public void connectWatchers() {
+        tABC_Error error = new tABC_Error();
+        List<Wallet> wallets = getCoreWallets();
+        for (Wallet w : wallets) {
+            connectWatcher(w.getUUID());
+        }
+    }
+
+    public void connectWatcher(String uuid) {
+        tABC_Error error = new tABC_Error();
+        core.ABC_WatcherConnect(uuid, error);
+        printABCError(error);
+
+        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                                AirbitzApplication.getPassword(),
+                                uuid, error);
+        printABCError(error);
+    }
+
+    public void disconnectWatchers() {
+        for (String uuid : mWatcherTasks.keySet()) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_WatcherDisconnect(uuid, error);
         }
     }
 
@@ -2209,4 +2260,15 @@ public class CoreAPI {
         }
     }
 
+    private void printABCError(tABC_Error pError) {
+        if (pError.getCode() != tABC_CC.ABC_CC_Ok) {
+            Common.LogD(TAG,
+                String.format("Code: %s, Desc: %s, Func: %s, File: %s, Line: %d\n",
+                    pError.getCode().toString(),
+                    pError.getSzDescription(),
+                    pError.getSzSourceFunc(),
+                    pError.getSzSourceFile(),
+                    pError.getNSourceLine()));
+        }
+    }
 }

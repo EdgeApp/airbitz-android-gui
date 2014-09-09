@@ -446,15 +446,15 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
-        Fragment frag = new WalletsFragment();
+//        resetAllNavThreads();
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
             bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
             bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
         }
+        Fragment frag = mNavStacks[Tabs.WALLET.ordinal()].peek();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
-        pushFragment(frag, Tabs.WALLET.ordinal());
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
@@ -778,4 +778,11 @@ public class NavigationActivity extends BaseActivity
         }
     };
 
+    private void resetAllNavThreads() {
+        mNavFragments[0] = new BusinessDirectoryFragment();
+        mNavFragments[1] = new RequestFragment();
+        mNavFragments[2] = new SendFragment();
+        mNavFragments[3] = new WalletsFragment();
+        mNavFragments[4] = new SettingFragment();
+    }
 }
