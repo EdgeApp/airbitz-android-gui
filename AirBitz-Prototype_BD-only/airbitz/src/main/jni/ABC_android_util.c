@@ -79,6 +79,80 @@ Java_com_airbitz_api_CoreAPI_coreDataSyncAll(JNIEnv *jenv, jclass jcls, jstring 
   return jresult;
 }
 
+JNIEXPORT jint JNICALL
+Java_com_airbitz_api_CoreAPI_coreDataSyncAccount(JNIEnv *jenv, jclass jcls, jstring jusername, jstring jpassword, jlong jerrorp) {
+  jint jresult = 0 ;
+  char *username = (char *) 0 ;
+  char *password = (char *) 0 ;
+  tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
+  void *bcInfo = (void *) 0 ;
+  tABC_Error *errorp = (tABC_Error *) 0 ;
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+  username = 0;
+  if (jusername) {
+    username = (char *)(*jenv)->GetStringUTFChars(jenv, jusername, 0);
+    if (!username) return 0;
+  }
+  password = 0;
+  if (jpassword) {
+    password = (char *)(*jenv)->GetStringUTFChars(jenv, jpassword, 0);
+    if (!password) return 0;
+  }
+  callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
+  bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
+  errorp = *(tABC_Error **)&jerrorp;
+  result = (tABC_CC)ABC_DataSyncAccount((char const *)username, (char const *)password,
+                                        callback, bcInfo, errorp);
+  jresult = (jint)result;
+  if (username) (*jenv)->ReleaseStringUTFChars(jenv, jusername, (const char *)username);
+  if (password) (*jenv)->ReleaseStringUTFChars(jenv, jpassword, (const char *)password);
+  return jresult;
+}
+
+Java_com_airbitz_api_CoreAPI_coreDataSyncWallet(JNIEnv *jenv, jclass jcls, jstring jusername, jstring jpassword, jstring juuid, jlong jerrorp) {
+  jint jresult = 0 ;
+  char *username = (char *) 0 ;
+  char *password = (char *) 0 ;
+  char *uuid = (char *) 0 ;
+  tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
+  void *bcInfo = (void *) 0 ;
+  tABC_Error *errorp = (tABC_Error *) 0 ;
+  tABC_CC result;
+
+  (void)jenv;
+  (void)jcls;
+
+  username = 0;
+  if (jusername) {
+    username = (char *)(*jenv)->GetStringUTFChars(jenv, jusername, 0);
+    if (!username) return 0;
+  }
+  password = 0;
+  if (jpassword) {
+    password = (char *)(*jenv)->GetStringUTFChars(jenv, jpassword, 0);
+    if (!password) return 0;
+  }
+  uuid = 0;
+  if (juuid) {
+    uuid = (char *)(*jenv)->GetStringUTFChars(jenv, juuid, 0);
+    if (!uuid) return 0;
+  }
+  callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
+  bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
+  errorp = *(tABC_Error **)&jerrorp;
+  result = (tABC_CC)ABC_DataSyncWallet((char const *)username, (char const *)password,
+                                       (char const *)uuid, callback, bcInfo, errorp);
+  jresult = (jint)result;
+  if (username) (*jenv)->ReleaseStringUTFChars(jenv, jusername, (const char *)username);
+  if (password) (*jenv)->ReleaseStringUTFChars(jenv, jpassword, (const char *)password);
+  if (uuid) (*jenv)->ReleaseStringUTFChars(jenv, juuid, (const char *)uuid);
+  return jresult;
+}
+
 
 JNIEXPORT jint JNICALL
 Java_com_airbitz_api_CoreAPI_coreWatcherLoop(JNIEnv *jenv, jclass jcls, jstring juuid, jlong jerrorp) {

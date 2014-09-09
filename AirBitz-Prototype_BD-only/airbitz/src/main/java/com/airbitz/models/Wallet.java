@@ -22,6 +22,7 @@ public class Wallet {
     private int mCurrencyNum;
     private long mAttributes;
     private long mBalanceSatoshi = 0;
+    private boolean mLoading = false;
     private List<Transaction> mTransactions;
 
     private CoreAPI mCoreAPI;
@@ -71,6 +72,14 @@ public class Wallet {
 
     public void setCurrencyNum(int num) { mCurrencyNum = num; }
     public int getCurrencyNum() {return mCurrencyNum; }
+
+    public void setLoading(boolean loading) {
+        mLoading = loading;
+    }
+
+    public boolean isLoading() {
+        return mLoading;
+    }
 
     public void setAttributes(long attr) { mAttributes = attr; }
     public long getAttributes() {return mAttributes; }

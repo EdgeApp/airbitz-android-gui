@@ -395,8 +395,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     ((NavigationActivity) getActivity()).UserJustLoggedIn();
                 } else if(mMode==CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
-                } else if(mMode==FORGOT_PASSWORD) {
-
                 }
             }
         }

@@ -95,6 +95,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
     private CoreAPI mCoreAPI;
     private View mView;
+    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -112,6 +113,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
             return mView;
         }
+
+        mActivity = (NavigationActivity) getActivity();
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
@@ -178,7 +181,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.length()>=4) {
-                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mWithdrawalPinEditText);
+                    mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
                     mParentLayout.requestFocus();
                 }
             }
@@ -251,7 +254,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    ((NavigationActivity)getActivity()).showSoftKeyboard(mUserNameEditText);
+                    mActivity.showSoftKeyboard(mUserNameEditText);
                 }
             }
         });
@@ -354,7 +357,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     }
 
     private void goNext() {
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(mParentLayout);
+        mActivity.hideSoftKeyboard(mParentLayout);
         // if they entered a valid mUsername or old mPassword
         if (userNameFieldIsValid() && newPasswordFieldsAreValid() && pinFieldIsValid()) {
             // if we are signing up a new account
@@ -385,7 +388,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (mUserNameEditText.getText().toString().length() == 0)
             {
                 bUserNameFieldIsValid = false;
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
             }
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
@@ -394,7 +397,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -414,12 +417,12 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!mGoodPassword)
             {
                 bNewPasswordFieldsAreValid = false;
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
             }
             else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString()))
             {
                 bNewPasswordFieldsAreValid = false;
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
             }
         }
 
@@ -441,7 +444,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH)
             {
                 bpinNameFieldIsValid = false;
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
             }
         }
 
@@ -496,11 +499,11 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
     @Override
     public boolean onBackPress() {
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(getView());
+        mActivity.hideSoftKeyboard(getView());
         if(mMode==SIGNUP)
-            ((NavigationActivity)getActivity()).Logout();
+            mActivity.Logout();
         else
-            ((NavigationActivity)getActivity()).popFragment();
+            mActivity.popFragment();
         return true;
     }
 
@@ -511,7 +514,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
             mCoreAPI.stopAllAsyncUpdates();
         }
 
@@ -539,20 +542,24 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             mChangeTask=null;
             if (success) {
-                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                if (mMode == CHANGE_PASSWORD) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
+                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    AirbitzApplication.Login(mUsername, mPassword);
+                    mActivity.UserJustLoggedIn();
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
                 } else {
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
             }
             mCoreAPI.startAllAsyncUpdates();
@@ -562,7 +569,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         protected void onCancelled() {
             mChangeTask = null;
             mCoreAPI.startAllAsyncUpdates();
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
@@ -583,7 +590,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -596,19 +603,19 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateAccountTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             if (success) {
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             mCreateAccountTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
@@ -627,7 +634,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -639,9 +646,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             if (!success) {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 Fragment frag = new PasswordRecoveryFragment();
                 Bundle bundle = new Bundle();
@@ -658,7 +665,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
@@ -694,7 +701,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                            ((NavigationActivity)getActivity()).popFragment();
+                            mActivity.popFragment();
                             }
                         });
         AlertDialog alert = builder.create();
