@@ -35,7 +35,6 @@ public class coreJNI {
   public final static native int ABC_DENOMINATION_BTC_get();
   public final static native int ABC_DENOMINATION_MBTC_get();
   public final static native int ABC_DENOMINATION_UBTC_get();
-  public final static native int NETWORK_FAKE_get();
   public final static native String ABC_VERSION_get();
   public final static native int ABC_MIN_USERNAME_LENGTH_get();
   public final static native int ABC_MIN_PASS_LENGTH_get();
@@ -374,6 +373,8 @@ public class coreJNI {
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
   public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_DataSyncAccount(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_DataSyncWallet(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_WatcherStart(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherLoop(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_WatcherConnect(String jarg1, long jarg2, tABC_Error jarg2_);

@@ -144,7 +144,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
         }else {
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
-            if(transaction.getConfirmations() == 0){
+            if (transaction.isSyncing()) {
+                viewHolder.confirmationsTextView.setText(mContext.getString(R.string.synchronizing));
+                viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
+            } else if(transaction.getConfirmations() == 0){
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }else if(transaction.getConfirmations() >= 6){
