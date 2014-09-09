@@ -187,13 +187,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(view==null) {
-            view = inflater.inflate(R.layout.fragment_business_directory, container, false);
-        } else {
-            showLoadingIndicator();
-            mNoResultView.setVisibility(View.GONE);
-            return view;
-        }
+        view = inflater.inflate(R.layout.fragment_business_directory, container, false);
 
         checkLocationManager();
 
@@ -634,6 +628,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
         mBackButton.setVisibility(View.GONE);
+        showLoadingIndicator();
+        mNoResultView.setVisibility(View.GONE);
 
         return view;
     }
@@ -960,13 +956,17 @@ public class BusinessDirectoryFragment extends Fragment implements
     }
 
     public void hideLoadingIndicator() {
-        mViewGroupLoading.setVisibility(View.GONE);
-        mLoadingVisible = false;
+        if(mViewGroupLoading!=null) {
+            mViewGroupLoading.setVisibility(View.GONE);
+            mLoadingVisible = false;
+        }
     }
 
     public void showLoadingIndicator() {
-        mViewGroupLoading.setVisibility(View.VISIBLE);
-        mLoadingVisible = true;
+        if(mViewGroupLoading!=null) {
+            mViewGroupLoading.setVisibility(View.VISIBLE);
+            mLoadingVisible = true;
+        }
     }
 
     public Categories getMoreBusinessCategory(Categories initial, String link) {
