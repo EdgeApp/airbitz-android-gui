@@ -235,10 +235,9 @@
                     style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1.00 BTC = $ 600.00 USD"
                     android:textColor="@android:color/white"
                     android:gravity="center"
-                    android:textSize="12sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
