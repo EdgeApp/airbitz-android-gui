@@ -2252,8 +2252,8 @@ public class CoreAPI {
     private void printABCError(tABC_Error pError) {
         if (pError.getCode() != tABC_CC.ABC_CC_Ok) {
             Common.LogD(TAG,
-                String.format("Code: %d, Desc: %s, Func: %s, File: %s, Line: %d\n",
-                    pError.getCode(),
+                String.format("Code: %s, Desc: %s, Func: %s, File: %s, Line: %d\n",
+                    pError.getCode().toString(),
                     pError.getSzDescription(),
                     pError.getSzSourceFunc(),
                     pError.getSzSourceFile(),
