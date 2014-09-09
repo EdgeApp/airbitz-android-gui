@@ -446,7 +446,6 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
-//        resetAllNavThreads();
         if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
             bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
