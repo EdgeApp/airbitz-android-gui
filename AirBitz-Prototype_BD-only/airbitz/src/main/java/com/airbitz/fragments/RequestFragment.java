@@ -48,10 +48,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private EditText mFiatField;
     private boolean mAutoUpdatingTextFields = false;
 
-
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
-
 
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
@@ -71,6 +69,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private CoreAPI mCoreAPI;
     int mFromIndex =0;
     private View mView;
+
+    private String mSavedBitcoin;
+    private String mSavedFiat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -349,10 +350,19 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
         setConversionText(mSelectedWallet.getCurrencyNum());
         mCoreAPI.addExchangeRateChangeListener(this);
+        if(mSavedBitcoin!=null) {
+            mAutoUpdatingTextFields = true;
+            mFiatField.setText(mSavedFiat);
+            mBitcoinField.setText(mSavedBitcoin);
+            mAutoUpdatingTextFields = false;
+        }
+
     }
 
     @Override public void onPause() {
         super.onPause();
+        mSavedBitcoin = mBitcoinField.getText().toString();
+        mSavedFiat = mFiatField.getText().toString();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
     }
