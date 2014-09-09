@@ -242,15 +242,17 @@ public class NavigationActivity extends BaseActivity
     public void onNavBarSelected(int position) {
         if(AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
-            switchFragmentThread(position);
+            if(position!=mNavThreadId) {
+                switchFragmentThread(position);
+            }
         } else {
             if (position != Tabs.BD.ordinal()) {
                 if(AirbitzApplication.getLastNavTab()!=position) {
                     AirbitzApplication.setLastNavTab(position);
-                    mNavBarFragment.unselectTab(position);
-                    mNavBarFragment.selectTab(Tabs.BD.ordinal());
                 }
                 DisplayLoginOverlay(true);
+            } else {
+                mNavBarFragment.selectTab(Tabs.BD.ordinal());
             }
         }
     }
@@ -268,9 +270,8 @@ public class NavigationActivity extends BaseActivity
         if(frag.isAdded()) {
             Common.LogD(TAG, "Fragment already added");
         }
-        FragmentTransaction done = transaction.replace(R.id.activityLayout, frag);
+        transaction.replace(R.id.activityLayout, frag);
         transaction.commit();
-        getSupportFragmentManager().executePendingTransactions();
         mNavThreadId = id;
     }
 
