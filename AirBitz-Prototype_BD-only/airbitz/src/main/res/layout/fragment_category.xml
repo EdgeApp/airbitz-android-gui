@@ -93,7 +93,7 @@
                 android:paddingLeft="12.6dp"
                 android:textColor="@android:color/black"
                 android:imeOptions="actionDone"
-                android:inputType="textAutoComplete|textNoSuggestions"
+                android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:textColorHint="#44000000"
                 android:textCursorDrawable="@drawable/bold_cursor"
                 android:layout_toLeftOf="@+id/settings_category_button_add"

@@ -238,7 +238,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="160dp"
             android:layout_marginTop="-1dp"
             android:padding="12.6dp"
             android:id="@+id/listing_listview"
@@ -247,10 +247,10 @@
 
         <View
             android:id="@+id/fragment_send_listview_triangle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-25dp"
+            android:layout_marginTop="-15dp"
             android:background="@drawable/blue_triangle"/>
 
     </RelativeLayout>

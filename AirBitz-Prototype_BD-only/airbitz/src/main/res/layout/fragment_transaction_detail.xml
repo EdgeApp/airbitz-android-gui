@@ -380,7 +380,7 @@
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textColorHint="@android:color/white"
-                    android:inputType="textNoSuggestions"
+                    android:inputType="textNoSuggestions|textAutoCorrect|textCapSentences"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
                     android:background="@drawable/bg_edittext"/>
