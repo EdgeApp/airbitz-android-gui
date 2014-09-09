@@ -55,6 +55,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private EditText mPasswordForPINEditText;
     private EditText mWithdrawalPinEditText;
     private TextView mWithdrawalLabel;
+    private TextView mHintTextView;
     private Button mNextButton;
     private boolean mGoodPassword = false;
     private int mMode = SIGNUP;
@@ -127,7 +128,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.activity_signup_repassword_edittext);
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
         mTitleTextView = (TextView) mView.findViewById(R.id.activity_signup_title_textview);
-        TextView mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
+        mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
         mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -294,7 +295,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // hide mUsername
-            mUserNameEditText.setVisibility(View.GONE);
+            mUserNameEditText.setVisibility(View.INVISIBLE);
+            mHintTextView.setVisibility(View.INVISIBLE);
         } else if(mMode==CHANGE_PIN) {
             // hide both mPassword fields
             mPasswordForPINEditText = mUserNameEditText;
