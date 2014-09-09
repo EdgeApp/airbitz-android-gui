@@ -451,9 +451,11 @@ public class NavigationActivity extends BaseActivity
         }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
             bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
         }
-        Fragment frag = mNavStacks[Tabs.WALLET.ordinal()].peek();
+        Fragment frag = new WalletsFragment();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
+        mNavStacks[Tabs.WALLET.ordinal()].clear();
+        mNavStacks[Tabs.WALLET.ordinal()].add(frag);
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
