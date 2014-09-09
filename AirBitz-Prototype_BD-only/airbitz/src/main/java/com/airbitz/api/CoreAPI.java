@@ -471,11 +471,15 @@ public class CoreAPI {
     }
 
     public String getCurrencyDenomination(int currencyNum) {
-        return mFauxCurrencyDenomination[SettingsCurrencyIndex()];
+        return mFauxCurrencyDenomination[CurrencyIndex(currencyNum)];
     }
 
     public int[] getCurrencyNumbers() {
         return mFauxCurrencyNumbers;
+    }
+
+    public String getCurrencyAcronym(int currencyNum) {
+        return mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
     }
 
     public String[] getCurrencyAcronyms() {
@@ -1338,8 +1342,8 @@ public class CoreAPI {
                 denomIndex = 2;
             }
         }
-        String currency = FormatDefaultCurrency(satoshi, false, false);
-        String currencyLabel = mFauxCurrencyAcronyms[SettingsCurrencyIndex()];
+        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+        String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
         return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
     }
 
