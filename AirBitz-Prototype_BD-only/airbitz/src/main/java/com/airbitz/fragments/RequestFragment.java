@@ -72,6 +72,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     private String mSavedBitcoin;
     private String mSavedFiat;
+    private int mSavedSelection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,13 +119,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
         pickWalletSpinner.setAdapter(dataAdapter);
-        pickWalletSpinner.post(new Runnable() {
-            @Override
-            public void run() {
-                pickWalletSpinner.setSelection(mFromIndex);
-            }
-        });
-
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
@@ -352,17 +346,18 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mCoreAPI.addExchangeRateChangeListener(this);
         if(mSavedBitcoin!=null) {
             mAutoUpdatingTextFields = true;
+            pickWalletSpinner.setSelection(mSavedSelection);
             mFiatField.setText(mSavedFiat);
             mBitcoinField.setText(mSavedBitcoin);
             mAutoUpdatingTextFields = false;
         }
-
     }
 
     @Override public void onPause() {
         super.onPause();
         mSavedBitcoin = mBitcoinField.getText().toString();
         mSavedFiat = mFiatField.getText().toString();
+        mSavedSelection = pickWalletSpinner.getSelectedItemPosition();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
     }
