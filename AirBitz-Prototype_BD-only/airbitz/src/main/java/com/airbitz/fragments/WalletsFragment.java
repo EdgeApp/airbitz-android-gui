@@ -290,9 +290,13 @@ public class WalletsFragment extends Fragment
                 int pos = mLatestWalletAdapter.getArchivePos();
                 mLatestWalletAdapter.switchCloseAfterArchive(pos);
                 mLatestWalletAdapter.notifyDataSetChanged();
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
                 archiveClosed = !archiveClosed;
+                int size = mLatestWalletAdapter.getCount();
+                if(archiveClosed) {
+                    size = mLatestWalletAdapter.getArchivePos();
+                }
                 mLatestWalletListView.setArchiveClosed(archiveClosed);
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
             }
         });
 
@@ -306,12 +310,17 @@ public class WalletsFragment extends Fragment
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
+                    archiveClosed = !archiveClosed;
                     int pos = a.getPosition(wallet);
                     a.switchCloseAfterArchive(pos);
                     mLatestWalletAdapter.notifyDataSetChanged();
-                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
-                    archiveClosed = !archiveClosed;
+
+                    int size = mLatestWalletAdapter.getCount();
+                    if(archiveClosed) {
+                        size = mLatestWalletAdapter.getArchivePos();
+                    }
                     mLatestWalletListView.setArchiveClosed(archiveClosed);
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
                 }
             }
         });
