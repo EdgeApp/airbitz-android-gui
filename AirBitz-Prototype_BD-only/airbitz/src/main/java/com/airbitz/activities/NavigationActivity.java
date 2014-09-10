@@ -248,12 +248,11 @@ public class NavigationActivity extends BaseActivity
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
-                if(AirbitzApplication.getLastNavTab()!=position) {
-                    AirbitzApplication.setLastNavTab(position);
-                }
-                DisplayLoginOverlay(true);
-            } else {
+                AirbitzApplication.setLastNavTab(position);
+                mNavBarFragment.unselectTab(position);
+                mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
                 mNavBarFragment.selectTab(Tabs.BD.ordinal());
+                DisplayLoginOverlay(true);
             }
         }
     }
@@ -292,6 +291,7 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
+            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
             if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
@@ -307,6 +307,7 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
+            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -316,6 +317,7 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
+        getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
@@ -452,17 +454,16 @@ public class NavigationActivity extends BaseActivity
         mCoreAPI.stopAllAsyncUpdates();
     }
 
-    public void switchToWallets(FragmentSourceEnum fragmentSourceEnum, Bundle bundle){
-        if(fragmentSourceEnum == FragmentSourceEnum.REQUEST){
-            bundle.putString(WalletsFragment.FROM_SOURCE, "REQUEST");
-        }else if(fragmentSourceEnum == FragmentSourceEnum.SEND){
-            bundle.putString(WalletsFragment.FROM_SOURCE, "SEND");
-        }
+    /*
+     * this only gets called from sent funds, or a request comes through
+     */
+    public void switchToWallets(Bundle bundle) {
         Fragment frag = new WalletsFragment();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
         mNavStacks[Tabs.WALLET.ordinal()].clear();
         mNavStacks[Tabs.WALLET.ordinal()].add(frag);
+
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
@@ -521,14 +522,17 @@ public class NavigationActivity extends BaseActivity
     final Runnable switchWalletsRunnable = new Runnable() {
         @Override
         public void run() {
+            if(mNavThreadId == Tabs.SEND.ordinal()) {
+                popFragment(); // remove the success fragment that's displaying there
+                getFragmentManager().executePendingTransactions();
+            }
 
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
             bundle.putString(Transaction.TXID, mIncomingTxID);
             bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
-            FragmentSourceEnum e = FragmentSourceEnum.SEND;
 
-            switchToWallets(e, bundle);
+            switchToWallets(bundle);
             resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
         }
     };
@@ -584,10 +588,10 @@ public class NavigationActivity extends BaseActivity
 
     private void gotoDetailsNow() {
         Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE,"REQUEST");
+        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
         bundle.putString(Transaction.TXID, mTxId);
         bundle.putString(Wallet.WALLET_UUID, mUUID);
-        switchToWallets(FragmentSourceEnum.REQUEST, bundle);
+        switchToWallets(bundle);
 
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
