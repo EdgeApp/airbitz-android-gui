@@ -93,6 +93,12 @@ public class SuccessFragment extends Fragment {
         return mView;
     }
 
+    @Override public void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mSendAnimationRunner);
+        mHandler.removeCallbacks(mRequestAnimationRunner);
+    }
+
     Runnable mSendAnimationRunner = new Runnable() {
         int count = 0;
 
@@ -125,8 +131,7 @@ public class SuccessFragment extends Fragment {
                 }
                 mHandler.postDelayed(this, 500);
             } else {
-                FragmentSourceEnum e = FragmentSourceEnum.REQUEST;
-                mActivity.switchToWallets(e, mBundle);
+                mActivity.switchToWallets(mBundle);
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
                 mActivity.showNavBar();
             }
