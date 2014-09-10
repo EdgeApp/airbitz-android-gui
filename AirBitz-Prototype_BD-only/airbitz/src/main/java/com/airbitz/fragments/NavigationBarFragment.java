@@ -97,7 +97,7 @@ public class NavigationBarFragment extends Fragment {
 
     private void checkTabs(MotionEvent ev) {
         selectedTab = getTabNum(ev);
-        if (selectedTab == -1)
+        if (selectedTab == -1 || (selectedTab == mLastTab))
             return;
 
         selectTab(selectedTab);
