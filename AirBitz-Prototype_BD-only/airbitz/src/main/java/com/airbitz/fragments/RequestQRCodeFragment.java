@@ -72,6 +72,8 @@ public class RequestQRCodeFragment extends Fragment {
     static final int PICK_CONTACT_SMS =1;
     static final int PICK_CONTACT_EMAIL=2;
 
+    private long mSatoshi;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -193,6 +195,7 @@ public class RequestQRCodeFragment extends Fragment {
                     mQRBitmap = addWhiteBorder(mQRBitmap);
                     Common.LogD(TAG, "Ending QRCodeBitmap at:"+System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
+                    mSatoshi = mCoreAPI.denominationToSatoshi(bundle.getString(RequestFragment.BITCOIN_VALUE));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
