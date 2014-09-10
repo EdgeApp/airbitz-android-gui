@@ -262,6 +262,11 @@ public class NavigationActivity extends BaseActivity
         if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
             showNavBar();
         }
+        mNavBarFragment.unselectTab(mNavThreadId);
+        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
+        mNavBarFragment.selectTab(id);
+        AirbitzApplication.setLastNavTab(id);
+
         Fragment frag = mNavStacks[id].peek();
         getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
