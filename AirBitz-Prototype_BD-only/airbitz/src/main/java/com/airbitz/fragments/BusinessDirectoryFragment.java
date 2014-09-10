@@ -205,8 +205,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         mBusinessList = new ArrayList<Business>();
         mLocationList = new ArrayList<LocationSearchResult>();
 
-        Log.d("TAG_LOC", "CUR LOC: ");
-
         mRestaurantButton = (TextView) view.findViewById(R.id.button_restaurant);
         mBarButton = (TextView) view.findViewById(R.id.button_bar);
         mCoffeeButton = (TextView) view.findViewById(R.id.button_coffee_tea);
