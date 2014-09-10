@@ -243,6 +243,7 @@ public class NavigationActivity extends BaseActivity
         if(AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if(position!=mNavThreadId) {
+                AirbitzApplication.setLastNavTab(position);
                 switchFragmentThread(position);
             }
         } else {
