@@ -267,17 +267,36 @@ public class NavigationActivity extends BaseActivity
         AirbitzApplication.setLastNavTab(id);
 
         Fragment frag = mNavStacks[id].peek();
+        Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
+        if(fragShown!=null)
+            Common.LogD(TAG, "switchFragmentThread frag, fragShown is "+frag.getClass().getSimpleName()+", "+fragShown.getClass().getSimpleName());
+        else
+            Common.LogD(TAG, "switchFragmentThread no fragment showing yet ");
+
         getFragmentManager().executePendingTransactions();
+        Common.LogD(TAG, "switchFragmentThread pending transactions executed ");
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
         if(frag.isAdded()) {
-            Common.LogD(TAG, "Fragment already added");
+            Common.LogD(TAG, "Fragment already added, detaching and attaching");
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
             transaction.replace(R.id.activityLayout, frag);
+            Common.LogD(TAG, "switchFragmentThread replace executed.");
         }
         transaction.commit();
+        Common.LogD(TAG, "switchFragmentThread transactions committed.");
+        getFragmentManager().executePendingTransactions();
+        fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
+        if(fragShown!=null) {
+            Common.LogD(TAG, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
+        } else {
+            Common.LogD(TAG, "switchFragmentThread showing frag is null");
+        }
         mNavThreadId = id;
+
+        Common.LogD(TAG, "switchFragmentThread switch to threadId "+mNavThreadId);
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -523,8 +542,11 @@ public class NavigationActivity extends BaseActivity
         @Override
         public void run() {
             if(mNavThreadId == Tabs.SEND.ordinal()) {
+                Common.LogD(TAG, "onSentFunds Send thread detected, removing SuccessFragment");
                 popFragment(); // remove the success fragment that's displaying there
                 getFragmentManager().executePendingTransactions();
+            } else {
+                Common.LogD(TAG, "onSentFunds Send thread NOT detected, not removing SuccessFragment ");
             }
 
             Bundle bundle = new Bundle();
@@ -532,7 +554,9 @@ public class NavigationActivity extends BaseActivity
             bundle.putString(Transaction.TXID, mIncomingTxID);
             bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
 
+            Common.LogD(TAG, "onSentFunds calling switchToWallets");
             switchToWallets(bundle);
+            Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
             resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
         }
     };
