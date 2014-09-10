@@ -262,15 +262,15 @@ public class NavigationActivity extends BaseActivity
             showNavBar();
         }
         Fragment frag = mNavStacks[id].peek();
-        mNavBarFragment.unselectTab(mNavThreadId);
-        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
-        mNavBarFragment.selectTab(id);
-        AirbitzApplication.setLastNavTab(id);
+        getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
         if(frag.isAdded()) {
             Common.LogD(TAG, "Fragment already added");
+            transaction.detach(mNavStacks[mNavThreadId].peek());
+            transaction.attach(frag);
+        } else {
+            transaction.replace(R.id.activityLayout, frag);
         }
-        transaction.replace(R.id.activityLayout, frag);
         transaction.commit();
         mNavThreadId = id;
     }
