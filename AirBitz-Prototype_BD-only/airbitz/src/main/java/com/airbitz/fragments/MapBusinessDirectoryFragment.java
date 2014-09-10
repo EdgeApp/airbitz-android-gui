@@ -620,6 +620,31 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 }
             }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
         }
+
+        mLocateMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(locationEnabled) {
+                    Common.LogD("TAG_LOC",
+                            "CUR LOC: " + mCurrentLocation.getLatitude()
+                                    + "; "
+                                    + mCurrentLocation.getLongitude()
+                    );
+
+                    LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude());
+
+                    drawCurrentLocationMarker(currentLatLng);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+
+                    mUserLocationMarker.showInfoWindow();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.no_location_found), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
+
         mDummyFocus.requestFocus();
     }
 
@@ -761,35 +786,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
         mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
-
-        if(locationEnabled) {
-            mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Common.LogD("TAG_LOC",
-                            "CUR LOC: " + mCurrentLocation.getLatitude()
-                                    + "; "
-                                    + mCurrentLocation.getLongitude()
-                    );
-
-                    LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude());
-
-                    drawCurrentLocationMarker(currentLatLng);
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-
-                    mUserLocationMarker.showInfoWindow();
-                }
-            });
-        }else{
-            mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(), "No current location found.", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-        }
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override public void onInfoWindowClick(Marker marker) {
