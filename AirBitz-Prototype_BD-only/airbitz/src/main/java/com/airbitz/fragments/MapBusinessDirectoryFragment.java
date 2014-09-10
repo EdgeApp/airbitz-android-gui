@@ -624,23 +624,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-//        if(mBusinessCategoryAsynctask!=null)
-//            mBusinessCategoryAsynctask.cancel(true);
-
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void onPause(){
         super.onPause();
         mMapView.onPause();
@@ -667,7 +650,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mCurrentLocation = mLocationManager.getLocation();
         mMapView.onResume();
         checkLocationManager();
-        if(!alreadyLoaded) {
+        if(!alreadyLoaded && mCurrentLocation!=null) {
             search();
         }
         initializeMap();
@@ -684,7 +667,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-    private void checkLocationManager(){
+    private void checkLocationManager() {
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
