@@ -1236,17 +1236,17 @@ public class CoreAPI {
         return formatSatoshi(amount, withSymbol, -1);
     }
 
-    public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
+    public String formatSatoshi(long amountSatoshi, boolean withSymbol, int decimals) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
         int decimalPlaces = maxDecimalPlaces();
 
-        boolean negative = amount < 0;
+        boolean negative = amountSatoshi < 0;
         if(negative)
-            amount = -amount;
-        int result = FormatAmount(amount, SWIGTYPE_p_p_char.getCPtr(ppChar), decimalPlaces, false, tABC_Error.getCPtr(error));
+            amountSatoshi = -amountSatoshi;
+        int result = FormatAmount(amountSatoshi, SWIGTYPE_p_p_char.getCPtr(ppChar), decimalPlaces, false, tABC_Error.getCPtr(error));
         if ( result != 0)
         {
             return "";
@@ -1261,8 +1261,40 @@ public class CoreAPI {
             if(withSymbol) {
                 pretext += " "+ getUserBTCSymbol();
             }
+
             return pretext+pFormatted;
+
+            //TODO
+//            String unformatted = String.valueOf(amountSatoshi);
+//            String preFormatted = unformatted.substring(0, unformatted.length()-decimals);
+//            String postFormatted = unformatted.substring(unformatted.length());
+//            String formatted = preFormatted + "." + postFormatted;
+
+//            String p = pFormatted;
+//            int indexOfPeriod = pFormatted.indexOf(".");
+//            String decimal = pFormatted.substring(0, indexOfPeriod);
+//            String start = (decimal == null) ? p + strlen(p) : decimal;
+//            int offset = (start - pFormatted) % 3;
+//            NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+//            [f setLocale:[NSLocale localeWithLocaleIdentifier:@"USD"]];
+//
+//            for (int i = 0; i < strlen(pFormatted) && p - start <= decimalPlaces; ++i, ++p)
+//            {
+//                if (p < start)
+//                {
+//                    if (i != 0 && (i - offset) % 3 == 0)
+//                    [formatted appendString:[f groupingSeparator]];
+//                    [formatted appendFormat: @"%c", *p];
+//                }
+//                else if (p == decimal)
+//                [formatted appendString:[f currencyDecimalSeparator]];
+//                else
+//                [formatted appendFormat: @"%c", *p];
+//            }
+//            free(pFormatted);
+//            return formatted;
         }
+
     }
 
     public int SettingsCurrencyIndex() {
