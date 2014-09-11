@@ -80,7 +80,7 @@ public class NavigationActivity extends BaseActivity
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
-    private RelativeLayout mNavBarFragmentLayout;
+//    private RelativeLayout mNavBarFragmentLayout;
     private Calculator mCalculatorView;
     private FrameLayout mFragmentLayout;
     private ViewPager mViewPager;
@@ -123,7 +123,6 @@ public class NavigationActivity extends BaseActivity
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (FrameLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
 
@@ -164,9 +163,7 @@ public class NavigationActivity extends BaseActivity
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         if(bdonly){
             Common.LogD(TAG, "BD ONLY");
-            mNavBarFragmentLayout.setVisibility(View.GONE);
             mNavBarFragment.hideNavBarFragment();
-            mNavBarFragmentLayout.invalidate();
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
         }
@@ -259,7 +256,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void switchFragmentThread(int id) {
-        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
+        if(AirbitzApplication.isLoggedIn() && !keyBoardUp) {
             showNavBar();
         }
         mNavBarFragment.unselectTab(mNavThreadId);
@@ -274,7 +271,6 @@ public class NavigationActivity extends BaseActivity
         else
             Common.LogD(TAG, "switchFragmentThread no fragment showing yet ");
 
-//        getFragmentManager().executePendingTransactions();
         Common.LogD(TAG, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
@@ -288,7 +284,6 @@ public class NavigationActivity extends BaseActivity
         }
         transaction.commit();
         Common.LogD(TAG, "switchFragmentThread transactions committed.");
-//        getFragmentManager().executePendingTransactions();
         fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if(fragShown!=null) {
             Common.LogD(TAG, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
@@ -311,7 +306,6 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
-//            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
             if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
@@ -327,7 +321,6 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
-//            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -337,7 +330,6 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
-//        getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
@@ -347,9 +339,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void hideNavBar() {
-        mNavBarFragmentLayout.setVisibility(View.GONE);
         mNavBarFragment.hideNavBarFragment();
-        mNavBarFragmentLayout.invalidate();
         RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mFragmentLayout.setLayoutParams(rLP);
         mFragmentLayout.invalidate();
@@ -357,9 +347,7 @@ public class NavigationActivity extends BaseActivity
 
     public void showNavBar() {
         if(!bdonly) {
-            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
             mNavBarFragment.showNavBarFragment();
-            mNavBarFragmentLayout.invalidate();
             RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rLP.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.nav_bar_height));
             mFragmentLayout.setLayoutParams(rLP);
@@ -375,7 +363,6 @@ public class NavigationActivity extends BaseActivity
         if(mCalculatorView.getVisibility()==View.VISIBLE) {
             mCalculatorView.setVisibility(View.GONE);
             mCalculatorView.setEnabled(false);
-            showNavBar();
         }
     }
 
@@ -383,7 +370,6 @@ public class NavigationActivity extends BaseActivity
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
 
         if(mCalculatorView.getVisibility()!=View.VISIBLE) {
-            hideNavBar();
             mCalculatorView.setVisibility(View.VISIBLE);
             mCalculatorView.setEnabled(true);
         }
@@ -478,15 +464,6 @@ public class NavigationActivity extends BaseActivity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-//        Fragment frag = new WalletsFragment();
-//        bundle.putBoolean(WalletsFragment.CREATE, true);
-//        frag.setArguments(bundle);
-//        mNavStacks[Tabs.WALLET.ordinal()].clear();
-//        mNavStacks[Tabs.WALLET.ordinal()].add(frag);
-//
-//        switchFragmentThread(Tabs.WALLET.ordinal(), bundle);
-
-
         mNavStacks[Tabs.WALLET.ordinal()].clear();
         Fragment frag = new WalletsFragment();
         frag.setArguments(bundle);
@@ -543,14 +520,6 @@ public class NavigationActivity extends BaseActivity
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-//        if(mNavThreadId == Tabs.SEND.ordinal()) {
-//            Common.LogD(TAG, "onSentFunds Send thread detected, removing SuccessFragment");
-//            popFragment(); // remove the success fragment that's displaying there
-//            getFragmentManager().executePendingTransactions();
-//        } else {
-//            Common.LogD(TAG, "onSentFunds Send thread NOT detected, not removing SuccessFragment ");
-//        }
-
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
         bundle.putString(Transaction.TXID, mIncomingTxID);
@@ -560,11 +529,6 @@ public class NavigationActivity extends BaseActivity
         frag.setArguments(bundle);
         pushFragment(frag, mNavThreadId);
 
-//
-//        Common.LogD(TAG, "onSentFunds calling switchToWallets");
-//        switchToWallets(bundle);
-//        Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
-//        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
     }
 
     public void switchFromTransactionToWallets(Bundle b) {
@@ -625,6 +589,7 @@ public class NavigationActivity extends BaseActivity
     private void gotoDetailsNow() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
+        bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, mTxId);
         bundle.putString(Wallet.WALLET_UUID, mUUID);
         switchToWallets(bundle);
