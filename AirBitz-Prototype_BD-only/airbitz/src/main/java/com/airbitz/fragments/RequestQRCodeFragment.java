@@ -291,7 +291,7 @@ public class RequestQRCodeFragment extends Fragment {
     private void finishEmail(String fullName, String email) {
         String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
+        intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
         if(mQRBitmap!=null) {
