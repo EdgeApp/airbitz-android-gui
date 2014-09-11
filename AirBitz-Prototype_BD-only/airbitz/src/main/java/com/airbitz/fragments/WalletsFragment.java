@@ -583,14 +583,17 @@ public class WalletsFragment extends Fragment
         ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
-    public void buildFragments(){
-        if(bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST) || bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)){
+    public void buildFragments() {
+        if(bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-//            Fragment frag2 = new TransactionDetailFragment();
-//            frag2.setArguments(bundle);
-//            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
+        }
+
+        if(bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
+            Fragment frag2 = new TransactionDetailFragment();
+            frag2.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
         }
     }
 
