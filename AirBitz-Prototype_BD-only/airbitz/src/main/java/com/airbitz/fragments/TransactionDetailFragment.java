@@ -68,7 +68,8 @@ import java.util.List;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
+public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange,
+    NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
     private HighlightOnPressButton mDoneButton;
     private RelativeLayout         mAdvanceDetailsButtonLayout;
@@ -162,10 +163,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         super.onCreate(savedInstanceState);
         bundle = getArguments();
         if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("SEND")) {
+            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
                 Common.LogD(TAG, "SEND");
                 mFromSend = true;
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals("REQUEST")) {
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 Common.LogD(TAG, "REQUEST");
             }
@@ -611,8 +612,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
-                getActivity().onBackPressed();
+                goDone();
             }
         });
 
@@ -947,6 +947,22 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mLocationManager.removeLocationChangeListener(this);
         mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
         mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+    }
+
+    @Override
+    public boolean onBackPress() {
+        goDone();
+        return true;
+    }
+
+    private void goDone() {
+        mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
+        if(mFromRequest || mFromSend) {
+            //TODO move to Wallets Stack
+            ((NavigationActivity)getActivity()).switchFromTransactionToWallets(getArguments());
+        } else {
+            ((NavigationActivity)getActivity()).popFragment();
+        }
     }
 
     class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
