@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -103,6 +104,8 @@ public class CategoryFragment extends Fragment {
         mRootView = mView.findViewById(R.id.category_page);
 
         mParentActivity = getActivity();
+
+        mParentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         //  Inflate Fields
         mAddField = (EditText) mView.findViewById(R.id.add_field);
