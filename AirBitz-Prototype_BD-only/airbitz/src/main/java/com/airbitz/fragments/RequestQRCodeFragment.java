@@ -19,6 +19,10 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -284,12 +288,12 @@ public class RequestQRCodeFragment extends Fragment {
         startActivityForResult(intent, PICK_CONTACT_EMAIL);
     }
 
-    private void finishEmail(String name, String email) {
+    private void finishEmail(String fullName, String email) {
         String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             if(mContentURL!=null) {
@@ -301,8 +305,66 @@ public class RequestQRCodeFragment extends Fragment {
             error = getString(R.string.request_qr_bitmap_error);
         }
 
-        intent.putExtra(Intent.EXTRA_TEXT, mRequestURI + "\n"+error);
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getEmailContent(fullName)));
         startActivity(intent);
+    }
+
+    private String getEmailContent(String fullName) {
+        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8);
+        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5);
+        // For sending requests, use 8 decimal places which is a BTC (not mBTC or uBTC amount)
+
+        String iosURL = "TBD";
+        String redirectURL = mRequestURI;
+        String paramsURI = "TBD";
+        String paramsURIEnc = "TBD";
+
+        if(mRequestURI.contains("bitcoin:")) {
+//        NSRange tempRange = [self.uriString rangeOfString:@"bitcoin:"];
+//
+//        if (tempRange.location != NSNotFound)
+//        {
+//            iosURL = [self.uriString stringByReplacingCharactersInRange:tempRange withString:@"bitcoin://"];
+//            paramsURI = [self.uriString stringByReplacingCharactersInRange:tempRange withString:@""];
+//            paramsURIEnc = (String )CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
+//                NULL,
+//                (CFStringRef)paramsURI,
+//                NULL,
+//                (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+//                kCFStringEncodingUTF8 ));
+//            redirectURL = [NSString stringWithFormat:@"%@%@",@"https://airbitz.co/blf/?address=", paramsURIEnc ];
+//
+//        }
+        }
+
+        String content = Common.loadAssetTextAsString(getActivity(), "html/EmailTemplate.html");
+
+        List<String> searchList  = new ArrayList<String>();
+        searchList.add("<abtag FROM>");
+        searchList.add("<abtag BITCOIN_URL>");
+        searchList.add("<abtag REDIRECT_URL>");
+        searchList.add("<abtag BITCOIN_URI>");
+        searchList.add("<abtag ADDRESS>");
+        searchList.add("<abtag AMOUNT_BTC>");
+        searchList.add("<abtag AMOUNT_MBTC>");
+
+        List<String> replaceList = new ArrayList<String>();
+        if(fullName==null)
+            replaceList.add("NULL ERROR");
+        else
+            replaceList.add(fullName);
+        replaceList.add(iosURL);
+        replaceList.add(redirectURL);
+        replaceList.add(mRequestURI);
+        replaceList.add(mAddress);
+        replaceList.add(amountBTC);
+        replaceList.add(amountMBTC);
+
+        for (int i=0; i<searchList.size(); i++)
+        {
+            content = content.replaceFirst(searchList.get(i), replaceList.get(i));
+        }
+        return content;
     }
 
     //code
@@ -382,7 +444,7 @@ public class RequestQRCodeFragment extends Fragment {
                         // get the only phone number
                         if(c.moveToFirst()) {
                             String email = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-                            String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
+                            String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
                             finishEmail(name, email);
                         } else {
                             Log.w(TAG, "No Contact results");
@@ -392,7 +454,7 @@ public class RequestQRCodeFragment extends Fragment {
 
                         int i=0;
                         if(c.moveToFirst()) {
-                            final String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
+                            final String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
                             while(!c.isAfterLast()) { // for each phone number, add it to the numbers array
                                 String type = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(this.getResources(), c.getInt(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)), ""); // insert a type string in front of the number
                                 String email = type + ":" + c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));

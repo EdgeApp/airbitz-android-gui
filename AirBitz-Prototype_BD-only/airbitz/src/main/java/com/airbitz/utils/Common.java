@@ -34,6 +34,39 @@ public class Common {
 
     public static double milesToFeet(double miles) { return (miles*5280);}
 
+    public static String loadAssetTextAsString(Context context, String name) {
+        BufferedReader in = null;
+        try {
+            StringBuilder buf = new StringBuilder();
+            InputStream is = context.getAssets().open(name);
+            in = new BufferedReader(new InputStreamReader(is));
+
+            String str;
+            boolean isFirst = true;
+            while ( (str = in.readLine()) != null ) {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    buf.append('\n');
+                buf.append(str);
+            }
+            return buf.toString();
+        } catch (IOException e) {
+            Common.LogD(TAG, "Error opening asset " + name);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Common.LogD(TAG, "Error closing asset " + name);
+                }
+            }
+        }
+
+        return null;
+    }
+
+
     public static void showHelpInfoDialog(Activity act, String title, String message){
         final Dialog dialog = new Dialog(act);
         dialog.setContentView(R.layout.dialog_help_info);
