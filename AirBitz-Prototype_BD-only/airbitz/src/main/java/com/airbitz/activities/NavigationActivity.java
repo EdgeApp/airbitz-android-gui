@@ -347,9 +347,6 @@ public class NavigationActivity extends BaseActivity
     public void hideNavBar() {
         if(mNavBarFragmentLayout.getVisibility()==View.VISIBLE) {
             mNavBarFragmentLayout.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mFragmentLayout.setLayoutParams(rLP);
-            mFragmentLayout.invalidate();
         }
     }
 
