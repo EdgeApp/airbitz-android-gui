@@ -1820,6 +1820,16 @@ public class CoreAPI {
         return null;
     }
 
+    public List<Wallet> getCoreActiveWallets() {
+        List<Wallet> wallets = getCoreWallets();
+        List<Wallet> out = new ArrayList<Wallet>();
+        for(Wallet w: wallets) {
+            if(!w.isArchived())
+                out.add(w);
+        }
+        return out;
+    }
+
     private class ppWalletInfo extends SWIGTYPE_p_p_sABC_WalletInfo {
         public ppWalletInfo(long ptr) {
             super(ptr, false);
