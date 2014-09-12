@@ -20,6 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1181,14 +1184,16 @@ public class CoreAPI {
         {
             in = Math.abs(in);
             pre = withSymbol ? "-" + mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "-";
-            out = String.format("%.3f", in);
-        }
-        else
-        {
+        } else {
             pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
-            out = String.format("%.3f", in);
         }
-        return pre+out;
+        BigDecimal bd = new BigDecimal(in);
+        bd = bd.stripTrailingZeros();
+
+        MathContext mc = new MathContext(2);
+        bd = bd.round(mc);
+
+        return pre+bd;
     }
 
     private int findCurrencyIndex(int currencyNum) {
@@ -1209,7 +1214,7 @@ public class CoreAPI {
         return decimalPlaces;
     }
 
-    public int maxDecimalPlaces() {
+    public int userDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
         tABC_AccountSettings settings = coreSettings();
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
@@ -1233,15 +1238,19 @@ public class CoreAPI {
     }
 
     public String formatSatoshi(long amount, boolean withSymbol) {
-        return formatSatoshi(amount, withSymbol, -1);
+        return formatSatoshi(amount, withSymbol, userDecimalPlaces(), 2);
     }
 
-    public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
+    public String formatSatoshi(long amount, boolean withSymbol, int round) {
+        return formatSatoshi(amount, withSymbol, userDecimalPlaces(), round);
+    }
+
+    public String formatSatoshi(long amount, boolean withSymbol, int decimals, int round) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        int decimalPlaces = maxDecimalPlaces();
+        int decimalPlaces = userDecimalPlaces();
 
         boolean negative = amount < 0;
         if(negative)
@@ -1253,7 +1262,7 @@ public class CoreAPI {
         }
         else {
             String pFormatted = getStringAtPtr(core.longp_value(lp));
-            decimalPlaces = decimals > -1 ? decimals : maxDecimalPlaces();
+            decimalPlaces = decimals > -1 ? decimals : decimalPlaces;
             String pretext = "";
             if (negative) {
                 pretext += "-";
@@ -1261,7 +1270,13 @@ public class CoreAPI {
             if(withSymbol) {
                 pretext += " "+ getUserBTCSymbol();
             }
-            return pretext+pFormatted;
+
+            BigDecimal bd = new BigDecimal(amount);
+            bd = bd.movePointLeft(decimalPlaces);
+
+            bd = bd.setScale(2, RoundingMode.HALF_UP);
+            bd = bd.stripTrailingZeros();
+            return pretext+bd.toPlainString();
         }
     }
 
@@ -1320,7 +1335,7 @@ public class CoreAPI {
     }
 
     public long denominationToSatoshi(String amount) {
-        int decimalPlaces = maxDecimalPlaces();
+        int decimalPlaces = userDecimalPlaces();
 
         String cleanAmount = amount.replaceAll(",", "");
         return ParseAmount(cleanAmount, decimalPlaces);
@@ -1363,7 +1378,7 @@ public class CoreAPI {
         }
         else
         {
-            out = formatSatoshi(satoshi, withSymbol);
+            out = formatSatoshi(satoshi, withSymbol, 2);
         }
         return out;
     }
