@@ -289,15 +289,20 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private void finishEmail(String fullName, String email) {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+
         String error = "";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("message/rfc822").setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
+        String filename = Common.createTempFileFromString(getEmailContent(fullName));
+        Uri htmlFile = Uri.parse("file://" + filename);
+        uris.add(htmlFile);
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             if(mContentURL!=null) {
-                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+                uris.add(Uri.parse(mContentURL));
             } else {
                 error = getString(R.string.request_qr_image_store_error);
             }
@@ -305,36 +310,24 @@ public class RequestQRCodeFragment extends Fragment {
             error = getString(R.string.request_qr_bitmap_error);
         }
 
-        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getEmailContent(fullName)));
+        intent.putExtra(Intent.EXTRA_STREAM, uris);
+        intent.putExtra(Intent.EXTRA_TEXT, "Please open the attachment to view the Bitcoin Request");
         startActivity(intent);
     }
 
     private String getEmailContent(String fullName) {
-        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8);
-        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5);
-        // For sending requests, use 8 decimal places which is a BTC (not mBTC or uBTC amount)
+        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8, 8);
+        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5, 5);
 
-        String iosURL = "TBD";
+        String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
-        String paramsURI = "TBD";
-        String paramsURIEnc = "TBD";
 
         if(mRequestURI.contains("bitcoin:")) {
-//        NSRange tempRange = [self.uriString rangeOfString:@"bitcoin:"];
-//
-//        if (tempRange.location != NSNotFound)
-//        {
-//            iosURL = [self.uriString stringByReplacingCharactersInRange:tempRange withString:@"bitcoin://"];
-//            paramsURI = [self.uriString stringByReplacingCharactersInRange:tempRange withString:@""];
-//            paramsURIEnc = (String )CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
-//                NULL,
-//                (CFStringRef)paramsURI,
-//                NULL,
-//                (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-//                kCFStringEncodingUTF8 ));
-//            redirectURL = [NSString stringWithFormat:@"%@%@",@"https://airbitz.co/blf/?address=", paramsURIEnc ];
-//
-//        }
+            String[] typeAddress = mRequestURI.split(":");
+            String address = typeAddress[1];
+
+            bitcoinURL += address;
+            redirectURL = "https://airbitz.co/blf/?address="+address;
         }
 
         String content = Common.loadAssetTextAsString(getActivity(), "html/EmailTemplate.html");
@@ -353,7 +346,7 @@ public class RequestQRCodeFragment extends Fragment {
             replaceList.add("NULL ERROR");
         else
             replaceList.add(fullName);
-        replaceList.add(iosURL);
+        replaceList.add(bitcoinURL);
         replaceList.add(redirectURL);
         replaceList.add(mRequestURI);
         replaceList.add(mAddress);
