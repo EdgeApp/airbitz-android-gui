@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,11 +16,11 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -41,7 +42,6 @@ import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
-import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
@@ -347,6 +347,9 @@ public class NavigationActivity extends BaseActivity
     public void hideNavBar() {
         if(mNavBarFragmentLayout.getVisibility()==View.VISIBLE) {
             mNavBarFragmentLayout.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mFragmentLayout.setLayoutParams(rLP);
+            mFragmentLayout.invalidate();
         }
     }
 
