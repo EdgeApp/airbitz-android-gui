@@ -301,7 +301,7 @@ public class NavigationActivity extends BaseActivity
 
     public void switchFragmentThread(int id, Bundle bundle) {
         if(bundle!=null)
-            mNavFragments[id].setArguments(bundle);
+            mNavStacks[id].peek().setArguments(bundle);
         switchFragmentThread(id);
     }
 
@@ -619,9 +619,8 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void resetFragmentThreadToBaseFragment(int threadId) {
-        while(mNavStacks[threadId].size() > 1) {
-            mNavStacks[threadId].pop();
-        }
+        mNavStacks[threadId].clear();
+        mNavStacks[threadId].add(getNewBaseFragement(threadId));
     }
 
     private AlertDialog mIncomingDialog;
@@ -811,4 +810,21 @@ public class NavigationActivity extends BaseActivity
             }
         }
     };
+
+    private Fragment getNewBaseFragement(int id) {
+        switch(id) {
+            case 0:
+                return new BusinessDirectoryFragment();
+            case 1:
+                return new RequestFragment();
+            case 2:
+                return new SendFragment();
+            case 3:
+                return new WalletsFragment();
+            case 4:
+                return new SettingFragment();
+            default:
+                return null;
+        }
+    }
 }
