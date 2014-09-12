@@ -3,9 +3,14 @@ package com.airbitz.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.LinkedHashMap;
 
 /**
  * Created on 2/13/14.
@@ -66,6 +72,31 @@ public class Common {
         return null;
     }
 
+    public static LinkedHashMap<String, Uri> GetMatchedContactsList(Context context, String searchTerm) {
+        LinkedHashMap<String, Uri> contactList = new LinkedHashMap<String, Uri>();
+        ContentResolver cr = context.getContentResolver();
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
+        Cursor cur;
+        if(searchTerm==null) {
+            cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                    columns, null, null, null);
+        } else {
+            cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                    columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        }
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                if (photoURI != null) {
+                    Uri thumbUri = Uri.parse(photoURI);
+                    contactList.put(name, thumbUri);
+                }
+            }
+        }
+        cur.close();
+        return contactList;
+    }
 
     public static void showHelpInfoDialog(Activity act, String title, String message){
         final Dialog dialog = new Dialog(act);

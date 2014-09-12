@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -99,6 +101,7 @@ public class WalletFragment extends Fragment
 
     private List<Transaction> mTransactions;
     private List<Transaction> mAllTransactions;
+    private LinkedHashMap<String, Uri> mContacts;
 
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
@@ -132,14 +135,14 @@ public class WalletFragment extends Fragment
             searchPage=false;
         }
 
-
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
         mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
 
         mAllTransactions = new ArrayList<Transaction>();
         mAllTransactions.addAll(mTransactions);
 
-        mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions);
+        mContacts = Common.GetMatchedContactsList(getActivity(), null);
+        mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions, mContacts);
 
         mSearchField = (EditText) mView.findViewById(R.id.fragment_search_edittext);
         mSearchButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_search_button);

@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -69,6 +70,7 @@ import java.util.List;
  */
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
+
     private HighlightOnPressButton mDoneButton;
     private RelativeLayout         mAdvanceDetailsButtonLayout;
     private HighlightOnPressButton mAdvanceDetailsButton;
@@ -79,6 +81,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private TextView mNotesTextView;
     private TextView mToFromName;
     private EditText mPayeeEditText;
+    private ImageView mPayeeImageView;
     private TextView mBitcoinValueTextview;
     private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
@@ -228,6 +231,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
         mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
+        mPayeeImageView = (ImageView) mView.findViewById(R.id.transaction_detail_contact_pic);
         mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
         mBitcoinValueTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mBTCFeeTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_btc_fee_value);
@@ -435,7 +439,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (editable.toString().isEmpty()) {
                     mCombined.addAll(mOriginalBusinesses);
                 } else {
-                    getMatchedContactsList(editable.toString());
+                    mContactPhotos.clear();
+                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+                    mContactNames.clear();
+                    for(String s: mContactPhotos.keySet()) {
+                        mContactNames.add(s);
+                    }
+
                     getMatchedBusinessList(editable.toString());
                     combineMatchLists();
                 }
@@ -483,7 +493,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (mSearchAdapter.getItem(i) instanceof BusinessSearchResult) {
                     mPayeeEditText.setText(((BusinessSearchResult) mSearchAdapter.getItem(i)).getName());
                 } else {
-                    mPayeeEditText.setText((String) mSearchAdapter.getItem(i));
+                    String name = (String) mSearchAdapter.getItem(i);
+                    mPayeeEditText.setText(name);
+                    setContactImageFromName(name);
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
                 mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
@@ -623,6 +635,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
 
         return mView;
+    }
+
+    private void setContactImageFromName(String name) {
+        Uri payeeImage = mContactPhotos.get(name);
+        if(mContactPhotos!=null && payeeImage!=null) {
+            mPayeeImageView.setVisibility(View.VISIBLE);
+//            mPayeeImageView.setImageURI(null);
+            mPayeeImageView.setImageURI(payeeImage);
+        } else {
+            mPayeeImageView.setVisibility(View.GONE);
+        }
     }
 
     private void showPayeeSearch(boolean hasFocus) {
@@ -886,6 +909,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mToFromName.setText(pretext + transaction.getWalletName());
 
         mPayeeEditText.setText(transaction.getName());
+        setContactImageFromName(transaction.getName());
         mNoteEdittext.setText(transaction.getNotes());
         doEdit = true;
         mCategoryEdittext.setText(transaction.getCategory());
@@ -970,7 +994,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (mPayeeEditText.getText().toString().isEmpty()) {
                     mCombined.addAll(mBusinesses);
                 } else {
-                    getMatchedContactsList(mPayeeEditText.getText().toString());
+                    mContactPhotos.clear();
+                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+                    mContactNames.clear();
+                    for(String s: mContactPhotos.keySet()) {
+                        mContactNames.add(s);
+                    }
                     getMatchedBusinessList(mPayeeEditText.getText().toString());
                     combineMatchLists();
                 }
@@ -1024,28 +1053,28 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         cur.close();
     }
 
-    public void getMatchedContactsList(String searchTerm) {
-        ContentResolver cr = getActivity().getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
-        if (cur.getCount() > 0) {
-            mContactNames.clear();
-            mContactPhotos.clear();
-            while (cur.moveToNext()) {
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                if (photoURI != null) {
-                    Uri thumbUri = Uri.parse(photoURI);
-                    mContactPhotos.put(name, thumbUri);
-                }
-            }
-            for (String s : mContactPhotos.keySet()) {
-                mContactNames.add(s);
-            }
-        }
-        cur.close();
-    }
+//    public void getMatchedContactsList(String searchTerm) {
+//        ContentResolver cr = getActivity().getContentResolver();
+//        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
+//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+//                columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+//        if (cur.getCount() > 0) {
+//            mContactNames.clear();
+//            mContactPhotos.clear();
+//            while (cur.moveToNext()) {
+//                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+//                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+//                if (photoURI != null) {
+//                    Uri thumbUri = Uri.parse(photoURI);
+//                    mContactPhotos.put(name, thumbUri);
+//                }
+//            }
+//            for (String s : mContactPhotos.keySet()) {
+//                mContactNames.add(s);
+//            }
+//        }
+//        cur.close();
+//    }
 
     public void getMatchedBusinessList(String searchTerm) {
         mBusinesses.clear();
