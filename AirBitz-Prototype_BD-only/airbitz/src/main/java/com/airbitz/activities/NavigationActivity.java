@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.airbitz.AirbitzApplication;
@@ -81,7 +82,7 @@ public class NavigationActivity extends BaseActivity
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
     private Calculator mCalculatorView;
-    private FrameLayout mFragmentLayout;
+    private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
 
     private int mNavThreadId;
@@ -123,7 +124,7 @@ public class NavigationActivity extends BaseActivity
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
-        mFragmentLayout = (FrameLayout) findViewById(R.id.activityLayout);
+        mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
 
         setTypeFaces();
