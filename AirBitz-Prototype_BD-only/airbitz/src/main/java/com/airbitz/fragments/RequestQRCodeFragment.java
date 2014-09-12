@@ -89,10 +89,10 @@ public class RequestQRCodeFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if(mContentURL!=null) { // delete temp file
-            Log.d("WalletQRCodeFragment", "deleting temp file");
-            getActivity().getContentResolver().delete(Uri.parse(mContentURL), null, null);
-        }
+//        if(mContentURL!=null) { // delete temp file
+//            Log.d("WalletQRCodeFragment", "deleting temp file");
+//            getActivity().getContentResolver().delete(Uri.parse(mContentURL), null, null);
+//        }
         mCoreAPI.prioritizeAddress(null, mWallet.getUUID());
         super.onPause();
     }
