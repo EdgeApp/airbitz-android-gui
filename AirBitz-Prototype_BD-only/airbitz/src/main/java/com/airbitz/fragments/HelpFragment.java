@@ -86,7 +86,7 @@ public class HelpFragment extends Fragment {
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                String original = loadAssetTextAsString(getActivity(), "html/info.html");
+                String original = Common.loadAssetTextAsString(getActivity(), "html/info.html");
                 String replaced = original.replace("*", version + " " + String.valueOf(build));
 
                 webView.loadData(replaced, "text/html; charset=UTF-8", null);
@@ -104,37 +104,5 @@ public class HelpFragment extends Fragment {
         ((NavigationActivity)getActivity()).hideSoftKeyboard(v);
 
         return v;
-    }
-
-    private String loadAssetTextAsString(Context context, String name) {
-        BufferedReader in = null;
-        try {
-            StringBuilder buf = new StringBuilder();
-            InputStream is = context.getAssets().open(name);
-            in = new BufferedReader(new InputStreamReader(is));
-
-            String str;
-            boolean isFirst = true;
-            while ( (str = in.readLine()) != null ) {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    buf.append('\n');
-                buf.append(str);
-            }
-            return buf.toString();
-        } catch (IOException e) {
-            Common.LogD(TAG, "Error opening asset " + name);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Common.LogD(TAG, "Error closing asset " + name);
-                }
-            }
-        }
-
-        return null;
     }
 }

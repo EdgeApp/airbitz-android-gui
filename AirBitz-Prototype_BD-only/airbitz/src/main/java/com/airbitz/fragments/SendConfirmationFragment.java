@@ -627,8 +627,9 @@ public class SendConfirmationFragment extends Fragment {
             mSendOrTransferTask = null;
             tABC_CC result = txResult.getError();
             String message;
-            if (txResult.getError() != null) {
-                mActivity.popFragment();
+            if (result != null) {
+                mActivity.popFragment(); // stop the sending screen
+                getFragmentManager().executePendingTransactions();
                 if (result == tABC_CC.ABC_CC_InsufficientFunds) {
                     message = failInsufficientMessage;
                 } else {
