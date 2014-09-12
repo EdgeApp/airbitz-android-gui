@@ -38,7 +38,6 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
-import com.airbitz.fragments.TransactionDetailFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.FragmentSourceEnum;
@@ -141,19 +140,19 @@ public class NavigationActivity extends BaseActivity
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    hideNavBar();
                     keyBoardUp = true;
+                    hideNavBar();
                     if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
                     }
                 } else {
-                    if(keyBoardUp && AirbitzApplication.isLoggedIn()) {
+                    keyBoardUp = false;
+                    if(AirbitzApplication.isLoggedIn() ) {
                         showNavBar();
                     }
-                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment && keyBoardUp){
+                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
                     }
-                    keyBoardUp = false;
                 }
             }
         });
@@ -165,7 +164,7 @@ public class NavigationActivity extends BaseActivity
         if(bdonly){
             Common.LogD(TAG, "BD ONLY");
             mNavBarFragmentLayout.setVisibility(View.GONE);
-            mNavBarFragment.hideNavBarFragment();
+//            mNavBarFragment.hideNavBarFragment();
             mNavBarFragmentLayout.invalidate();
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
@@ -274,7 +273,7 @@ public class NavigationActivity extends BaseActivity
         else
             Common.LogD(TAG, "switchFragmentThread no fragment showing yet ");
 
-//        getFragmentManager().executePendingTransactions();
+        getFragmentManager().executePendingTransactions();
         Common.LogD(TAG, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
@@ -288,7 +287,6 @@ public class NavigationActivity extends BaseActivity
         }
         transaction.commit();
         Common.LogD(TAG, "switchFragmentThread transactions committed.");
-//        getFragmentManager().executePendingTransactions();
         fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if(fragShown!=null) {
             Common.LogD(TAG, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
@@ -311,7 +309,6 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
-//            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
             if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
@@ -327,7 +324,7 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
-//            getFragmentManager().executePendingTransactions();
+            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -337,7 +334,7 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
-//        getFragmentManager().executePendingTransactions();
+        getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
@@ -347,25 +344,28 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void hideNavBar() {
-        mNavBarFragmentLayout.setVisibility(View.GONE);
-        mNavBarFragment.hideNavBarFragment();
-        mNavBarFragmentLayout.invalidate();
-        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mFragmentLayout.setLayoutParams(rLP);
-        mFragmentLayout.invalidate();
-    }
-
-    public void showNavBar() {
-        if(!bdonly) {
-            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
-            mNavBarFragment.showNavBarFragment();
-            mNavBarFragmentLayout.invalidate();
+        if(mNavBarFragmentLayout.getVisibility()==View.VISIBLE) {
+            mNavBarFragmentLayout.setVisibility(View.GONE);
             RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            rLP.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.nav_bar_height));
             mFragmentLayout.setLayoutParams(rLP);
             mFragmentLayout.invalidate();
         }
     }
+
+    public void showNavBar() {
+        if(!bdonly) {
+            if(mNavBarFragmentLayout.getVisibility()==View.GONE && !keyBoardUp) {
+                mHandler.postDelayed(delayedShowNavBar, 50);
+            }
+        }
+    }
+
+    final Runnable delayedShowNavBar = new Runnable() {
+        @Override
+        public void run() {
+            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+        }
+    };
 
     public Calculator getCalculatorView() {
         return mCalculatorView;
@@ -375,7 +375,6 @@ public class NavigationActivity extends BaseActivity
         if(mCalculatorView.getVisibility()==View.VISIBLE) {
             mCalculatorView.setVisibility(View.GONE);
             mCalculatorView.setEnabled(false);
-            showNavBar();
         }
     }
 
@@ -383,7 +382,6 @@ public class NavigationActivity extends BaseActivity
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
 
         if(mCalculatorView.getVisibility()!=View.VISIBLE) {
-            hideNavBar();
             mCalculatorView.setVisibility(View.VISIBLE);
             mCalculatorView.setEnabled(true);
         }
@@ -478,19 +476,12 @@ public class NavigationActivity extends BaseActivity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-//        Fragment frag = new WalletsFragment();
-//        bundle.putBoolean(WalletsFragment.CREATE, true);
-//        frag.setArguments(bundle);
-//        mNavStacks[Tabs.WALLET.ordinal()].clear();
-//        mNavStacks[Tabs.WALLET.ordinal()].add(frag);
-//
-//        switchFragmentThread(Tabs.WALLET.ordinal(), bundle);
-
-
-        mNavStacks[Tabs.WALLET.ordinal()].clear();
         Fragment frag = new WalletsFragment();
+        bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
-        pushFragment(frag, Tabs.WALLET.ordinal());
+        mNavStacks[Tabs.WALLET.ordinal()].clear();
+        mNavStacks[Tabs.WALLET.ordinal()].add(frag);
+
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
@@ -543,35 +534,32 @@ public class NavigationActivity extends BaseActivity
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-//        if(mNavThreadId == Tabs.SEND.ordinal()) {
-//            Common.LogD(TAG, "onSentFunds Send thread detected, removing SuccessFragment");
-//            popFragment(); // remove the success fragment that's displaying there
-//            getFragmentManager().executePendingTransactions();
-//        } else {
-//            Common.LogD(TAG, "onSentFunds Send thread NOT detected, not removing SuccessFragment ");
-//        }
+        mHandler.postDelayed(switchWalletsRunnable, 100); //TEST
+   }
 
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-        bundle.putString(Transaction.TXID, mIncomingTxID);
-        bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+    final Runnable switchWalletsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(mNavThreadId == Tabs.SEND.ordinal()) {
+                Common.LogD(TAG, "onSentFunds Send thread detected, removing SuccessFragment");
+                popFragment(); // remove the success fragment that's displaying there
+                getFragmentManager().executePendingTransactions();
+            } else {
+                Common.LogD(TAG, "onSentFunds Send thread NOT detected, not removing SuccessFragment ");
+            }
 
-        Fragment frag = new TransactionDetailFragment();
-        frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            bundle.putBoolean(WalletsFragment.CREATE, true);
+            bundle.putString(Transaction.TXID, mIncomingTxID);
+            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
 
-//
-//        Common.LogD(TAG, "onSentFunds calling switchToWallets");
-//        switchToWallets(bundle);
-//        Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
-//        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-    }
-
-    public void switchFromTransactionToWallets(Bundle b) {
-        b.putBoolean(WalletsFragment.CREATE, true);
-        switchToWallets(b);
-        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-    }
+            Common.LogD(TAG, "onSentFunds calling switchToWallets");
+            switchToWallets(bundle);
+            Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
+            resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
+        }
+    };
 
 
     // Callback interface when a wallet could be updated
@@ -825,5 +813,4 @@ public class NavigationActivity extends BaseActivity
             }
         }
     };
-
 }
