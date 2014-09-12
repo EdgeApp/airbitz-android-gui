@@ -720,7 +720,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_settings_debug_info"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>
