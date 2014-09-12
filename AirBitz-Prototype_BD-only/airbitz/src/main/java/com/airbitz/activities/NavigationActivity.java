@@ -103,6 +103,9 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
+    private int mFragmentViewHeight = 0;
+    private int mNavBarViewHeight = 0;
+
     // For Fragments to implement if they need to customize on back presses
     public interface OnBackPress {
         public boolean onBackPress();
@@ -344,12 +347,40 @@ public class NavigationActivity extends BaseActivity
         transaction.commitAllowingStateLoss();
     }
 
+    ViewGroup.LayoutParams mFragmentLayoutParams;
+    private ViewGroup.LayoutParams getFragmentLayoutParams() {
+        if(mFragmentLayoutParams==null) {
+            mFragmentLayoutParams = mFragmentLayout.getLayoutParams();
+        }
+        return mFragmentLayoutParams;
+    }
+
+    ViewGroup.LayoutParams mNavBarFragmentLayoutParams;
+    private ViewGroup.LayoutParams getNavBarFragmentLayoutParams() {
+        if(mNavBarFragmentLayoutParams==null) {
+            mNavBarFragmentLayoutParams = mNavBarFragmentLayout.getLayoutParams();
+        }
+        return mNavBarFragmentLayoutParams;
+    }
+
+    int mNavBarStart;
+    int getNavBarStart() {
+        if(mNavBarStart==0) {
+            int loc[] = new int[2];
+            mNavBarFragmentLayout.getLocationOnScreen(loc);
+            mNavBarStart = loc[1];
+        }
+        return mNavBarStart;
+    }
+
     public void hideNavBar() {
         if(mNavBarFragmentLayout.getVisibility()==View.VISIBLE) {
+            mFragmentLayoutParams = getFragmentLayoutParams();
             mNavBarFragmentLayout.setVisibility(View.GONE);
             RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(rLP);
             mFragmentLayout.invalidate();
+            int test = getNavBarStart();
         }
     }
 
@@ -365,6 +396,8 @@ public class NavigationActivity extends BaseActivity
         @Override
         public void run() {
             mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+            mFragmentLayout.setLayoutParams(getFragmentLayoutParams());
+            mFragmentLayout.invalidate();
         }
     };
 
