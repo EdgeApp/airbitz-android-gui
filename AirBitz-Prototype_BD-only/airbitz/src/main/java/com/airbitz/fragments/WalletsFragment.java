@@ -129,9 +129,12 @@ public class WalletsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         bundle = this.getArguments();
         if(bundle != null && bundle.getBoolean(CREATE)) {
+            Common.LogD(TAG, "onCreateView creating flow to TransactionDetails");
             bundle.remove(CREATE);
             bundle.putBoolean(CREATE, false);
             buildFragments();
+        } else {
+            Common.LogD(TAG, "onCreateView stopping in Wallets");
         }
 
         if(mView==null) {
@@ -588,9 +591,10 @@ public class WalletsFragment extends Fragment
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-//            Fragment frag2 = new TransactionDetailFragment();
-//            frag2.setArguments(bundle);
-//            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
+
+            Fragment frag2 = new TransactionDetailFragment();
+            frag2.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
         }
     }
 

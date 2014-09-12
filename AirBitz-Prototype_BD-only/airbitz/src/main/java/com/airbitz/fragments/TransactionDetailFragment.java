@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -68,8 +67,7 @@ import java.util.List;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange,
-    NavigationActivity.OnBackPress {
+public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
     private HighlightOnPressButton mDoneButton;
     private RelativeLayout         mAdvanceDetailsButtonLayout;
@@ -206,7 +204,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         } else {
-
             return mView;
         }
 
@@ -612,7 +609,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goDone();
+                mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
+                getActivity().onBackPressed();
             }
         });
 
@@ -947,22 +945,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mLocationManager.removeLocationChangeListener(this);
         mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
         mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
-    }
-
-    @Override
-    public boolean onBackPress() {
-        goDone();
-        return true;
-    }
-
-    private void goDone() {
-        mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
-        if(mFromRequest || mFromSend) {
-            //TODO move to Wallets Stack
-            ((NavigationActivity)getActivity()).switchFromTransactionToWallets(getArguments());
-        } else {
-            ((NavigationActivity)getActivity()).popFragment();
-        }
     }
 
     class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
