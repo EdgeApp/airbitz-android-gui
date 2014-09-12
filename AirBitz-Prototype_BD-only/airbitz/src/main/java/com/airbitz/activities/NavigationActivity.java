@@ -416,10 +416,17 @@ public class NavigationActivity extends BaseActivity
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
 
         if(mCalculatorView.getVisibility()!=View.VISIBLE) {
+            mHandler.postDelayed(delayedShowCalculator, 100);
+        }
+    }
+    final Runnable delayedShowCalculator = new Runnable() {
+        @Override
+        public void run() {
             mCalculatorView.setVisibility(View.VISIBLE);
             mCalculatorView.setEnabled(true);
         }
-    }
+    };
+
 
     public void onCalculatorButtonClick(View v) {
         mCalculatorView.onButtonClick(v);
