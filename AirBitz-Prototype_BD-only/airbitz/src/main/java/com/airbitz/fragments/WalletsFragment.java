@@ -128,7 +128,7 @@ public class WalletsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         bundle = this.getArguments();
-        if(bundle != null && bundle.getBoolean(CREATE)){
+        if(bundle != null && bundle.getBoolean(CREATE)) {
             bundle.remove(CREATE);
             bundle.putBoolean(CREATE, false);
             buildFragments();
@@ -290,9 +290,13 @@ public class WalletsFragment extends Fragment
                 int pos = mLatestWalletAdapter.getArchivePos();
                 mLatestWalletAdapter.switchCloseAfterArchive(pos);
                 mLatestWalletAdapter.notifyDataSetChanged();
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
                 archiveClosed = !archiveClosed;
+                int size = mLatestWalletAdapter.getCount();
+                if(archiveClosed) {
+                    size = mLatestWalletAdapter.getArchivePos();
+                }
                 mLatestWalletListView.setArchiveClosed(archiveClosed);
+                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
             }
         });
 
@@ -306,12 +310,17 @@ public class WalletsFragment extends Fragment
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
+                    archiveClosed = !archiveClosed;
                     int pos = a.getPosition(wallet);
                     a.switchCloseAfterArchive(pos);
                     mLatestWalletAdapter.notifyDataSetChanged();
-                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
-                    archiveClosed = !archiveClosed;
+
+                    int size = mLatestWalletAdapter.getCount();
+                    if(archiveClosed) {
+                        size = mLatestWalletAdapter.getArchivePos();
+                    }
                     mLatestWalletListView.setArchiveClosed(archiveClosed);
+                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
                 }
             }
         });
@@ -575,13 +584,13 @@ public class WalletsFragment extends Fragment
     }
 
     public void buildFragments(){
-        if(bundle.getString(FROM_SOURCE).equals("REQUEST") || bundle.getString(FROM_SOURCE).equals("SEND")){
+        if(bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST) || bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)){
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            Fragment frag2 = new TransactionDetailFragment();
-            frag2.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
+//            Fragment frag2 = new TransactionDetailFragment();
+//            frag2.setArguments(bundle);
+//            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
         }
     }
 
