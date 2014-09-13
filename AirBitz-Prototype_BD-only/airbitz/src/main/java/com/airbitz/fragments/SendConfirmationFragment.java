@@ -115,11 +115,11 @@ public class SendConfirmationFragment extends Fragment {
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
-            if(mIsUUID) {
-                mWalletForConversions = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-            } else {
+//            if(mIsUUID) {
+//                mWalletForConversions = mCoreAPI.getWalletFromUUID(mUUIDorURI);
+//            } else {
                 mWalletForConversions = mSourceWallet;
-            }
+//            }
         }
     }
 
