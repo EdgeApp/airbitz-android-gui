@@ -1179,12 +1179,13 @@ public class CoreAPI {
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
         String pre;
+        String denom = mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)]+" ";
         if (in < 0)
         {
             in = Math.abs(in);
-            pre = withSymbol ? "-" + mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "-";
+            pre = withSymbol ? "-" + denom : "-";
         } else {
-            pre = withSymbol ? mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)] : "";
+            pre = withSymbol ? denom : "";
         }
         BigDecimal bd = new BigDecimal(in);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
