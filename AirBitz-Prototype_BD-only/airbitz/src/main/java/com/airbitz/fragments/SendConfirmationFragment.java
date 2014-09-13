@@ -193,7 +193,7 @@ public class SendConfirmationFragment extends Fragment {
             String out;
             out = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false);
             mFiatField.setText(out);
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mPinEdittext.requestFocus();
         }
 
@@ -435,8 +435,7 @@ public class SendConfirmationFragment extends Fragment {
                 currency = Double.valueOf(mFiatField.getText().toString());
                 satoshi = mCoreAPI.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
                 mAmountToSendSatoshi = satoshi;
-                int currencyDecimalPlaces = 2;
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             }
             catch(NumberFormatException e) {  } //not a double, ignore
         }
@@ -479,7 +478,7 @@ public class SendConfirmationFragment extends Fragment {
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mConversionTextView.setTextColor(Color.WHITE);
             mBitcoinField.setTextColor(Color.WHITE);
             mFiatField.setTextColor(Color.WHITE);
