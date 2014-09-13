@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -199,6 +200,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         }
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mActivity = (NavigationActivity) getActivity();
     }
 
@@ -1037,6 +1039,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
         mTransaction.setAmountFiat(amountFiat);
         mCoreAPI.storeTransaction(mTransaction);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     public void getContactsList() {
