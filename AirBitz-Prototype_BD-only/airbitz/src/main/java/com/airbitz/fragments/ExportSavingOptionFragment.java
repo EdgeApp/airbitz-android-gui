@@ -104,7 +104,7 @@ public class ExportSavingOptionFragment extends Fragment {
         mExportType = bundle.getInt(EXPORT_TYPE);
 
         mCoreApi = CoreAPI.getApi();
-        mWalletList = mCoreApi.getCoreWallets();
+        mWalletList = mCoreApi.getCoreWallets(false);
         mWalletNameList = new ArrayList<String>();
         for(Wallet w: mWalletList){
             if(!w.isArchived())
