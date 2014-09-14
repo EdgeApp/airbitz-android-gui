@@ -92,7 +92,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
-    private Wallet mSourceWallet, mWalletForConversions;
+    private Wallet mSourceWallet, mWalletForConversions, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
 
@@ -115,11 +115,10 @@ public class SendConfirmationFragment extends Fragment {
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
-//            if(mIsUUID) {
-//                mWalletForConversions = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-//            } else {
-                mWalletForConversions = mSourceWallet;
-//            }
+            mWalletForConversions = mSourceWallet;
+            if(mIsUUID) {
+                mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
+            }
         }
     }
 
@@ -176,8 +175,8 @@ public class SendConfirmationFragment extends Fragment {
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
-        if(mIsUUID) {
-            mToEdittext.setText(mWalletForConversions.getName());
+        if(mToWallet!=null) {
+            mToEdittext.setText(mToWallet.getName());
         } else {
             String temp = mUUIDorURI;
             if(mUUIDorURI.length()>20) {
