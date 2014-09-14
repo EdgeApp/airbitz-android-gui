@@ -261,6 +261,7 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
+
     public void switchFragmentThread(int id) {
         if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
             showNavBar();
