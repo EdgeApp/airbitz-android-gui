@@ -645,11 +645,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private void setContactImageFromName(String name) {
         Uri payeeImage = mContactPhotos.get(name);
         if(mContactPhotos!=null && payeeImage!=null) {
-            mPayeeImageView.setVisibility(View.VISIBLE);
+            mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 //            mPayeeImageView.setImageURI(null);
             mPayeeImageView.setImageURI(payeeImage);
         } else {
-            mPayeeImageView.setVisibility(View.GONE);
+            mPayeeImageViewFrame.setVisibility(View.GONE);
         }
     }
 
