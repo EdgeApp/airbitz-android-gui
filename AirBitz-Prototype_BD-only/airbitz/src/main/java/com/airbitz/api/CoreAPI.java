@@ -165,8 +165,8 @@ public class CoreAPI {
                 Common.LogD(TAG, "incoming bitcoin event has no listener");
         } else if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds) {
                 if(mOnSentFunds!=null) {
-                    mIncomingUUID = new String(info.getSzWalletUUID());
-                    mIncomingTxID = new String(info.getSzTxID());
+                    mIncomingUUID = info.getSzWalletUUID();
+                    mIncomingTxID = info.getSzTxID();
                     Common.LogD(TAG, "SentFunds uuid, TxID = "+mIncomingUUID+", "+mIncomingTxID);
                     mPeriodicTaskHandler.post(SentFundsUpdater);
                 }
@@ -268,7 +268,7 @@ public class CoreAPI {
 
     public List<Wallet> loadWallets() {
         List<Wallet> list = new ArrayList<Wallet>();
-        List<Wallet> coreList = getCoreWallets();
+        List<Wallet> coreList = getCoreWallets(true);
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
@@ -442,7 +442,6 @@ public class CoreAPI {
 
     public void SetUserPIN(String pin) {
         coreSettings().setSzPIN(pin);
-        saveAccountSettings(coreSettings());
     }
 
     public String getDefaultBTCDenomination() {
@@ -541,6 +540,7 @@ public class CoreAPI {
         if(mCoreSettings!=null)
             return mCoreSettings;
 
+        startWatchers();
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -1613,9 +1613,9 @@ public class CoreAPI {
     }
 
     public void startAllAsyncUpdates() {
+        startWatchers();
         startExchangeRateUpdates();
         startFileSyncUpdates();
-        startWatchers();
     }
 
     public void stopAllAsyncUpdates() {
@@ -1759,7 +1759,7 @@ public class CoreAPI {
                                 AirbitzApplication.getPassword(),
                                 tABC_Error.getCPtr(error));
 
-            List<Wallet> wallets = getCoreWallets();
+            List<Wallet> wallets = getCoreWallets(false);
             for (Wallet w : wallets) {
                 coreDataSyncWallet(AirbitzApplication.getUsername(),
                                    AirbitzApplication.getPassword(),
@@ -1796,7 +1796,7 @@ public class CoreAPI {
     }
 
     //**************** Wallet handling
-    public List<Wallet> getCoreWallets() {
+    public List<Wallet> getCoreWallets(boolean withTransactions) {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -1815,18 +1815,20 @@ public class CoreAPI {
             int count = core.intp_value(pCount);
             ppWalletInfo base = new ppWalletInfo(ptrToInfo);
 
-            for (int i = 0; i < count; i++) {
-                pLong temp = new pLong(base.getPtr(base, i * 4));
-                long start = core.longp_value(temp);
-                WalletInfo wi = new WalletInfo(start);
-                Wallet in = new Wallet(wi.getName());
-                in.setTransactions(wi.getTransactions());
-                in.setBalanceSatoshi(wi.getBalance());
-                in.setUUID(wi.getUUID());
-                in.setAttributes(wi.getAttributes());
-                in.setCurrencyNum(wi.getCurrencyNum());
-                in.setLoading(wi.getCurrencyNum() == -1);
-                mWallets.add(in);
+                for (int i = 0; i < count; i++) {
+                    pLong temp = new pLong(base.getPtr(base, i * 4));
+                    long start = core.longp_value(temp);
+                    WalletInfo wi = new WalletInfo(start);
+                    Wallet in = new Wallet(wi.getName());
+                    in.setBalanceSatoshi(wi.getBalance());
+                    in.setUUID(wi.getUUID());
+                    in.setAttributes(wi.getAttributes());
+                    in.setCurrencyNum(wi.getCurrencyNum());
+                    in.setLoading(wi.getCurrencyNum() == -1);
+                    if(withTransactions) {
+                        in.setTransactions(wi.getTransactions());
+                    }
+                    mWallets.add(in);
             }
             core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
             return mWallets;
@@ -1837,7 +1839,7 @@ public class CoreAPI {
     }
 
     public List<Wallet> getCoreActiveWallets() {
-        List<Wallet> wallets = getCoreWallets();
+        List<Wallet> wallets = getCoreWallets(false);
         List<Wallet> out = new ArrayList<Wallet>();
         for(Wallet w: wallets) {
             if(!w.isArchived())
@@ -2073,7 +2075,7 @@ public class CoreAPI {
     public void startWatchers()
     {
         tABC_Error error = new tABC_Error();
-        List<Wallet> wallets = getCoreWallets();
+        List<Wallet> wallets = getCoreWallets(false);
         for (Wallet w : wallets) {
             String uuid = w.getUUID();
             if(uuid!=null && !mWatcherTasks.containsKey(uuid)) {
@@ -2095,8 +2097,7 @@ public class CoreAPI {
     }
 
     public void connectWatchers() {
-        tABC_Error error = new tABC_Error();
-        List<Wallet> wallets = getCoreWallets();
+        List<Wallet> wallets = getCoreWallets(false);
         for (Wallet w : wallets) {
             connectWatcher(w.getUUID());
         }

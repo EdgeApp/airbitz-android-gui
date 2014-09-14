@@ -494,7 +494,6 @@ public class NavigationActivity extends BaseActivity
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
-            mCoreAPI.startWatchers();
         }
         switchFragmentThread(mNavThreadId);
     }
@@ -622,7 +621,6 @@ public class NavigationActivity extends BaseActivity
     public void OnDataSync() {
         Common.LogD(TAG, "Data Sync received");
         updateWalletListener();
-        mCoreAPI.startWatchers();
     }
 
     @Override
