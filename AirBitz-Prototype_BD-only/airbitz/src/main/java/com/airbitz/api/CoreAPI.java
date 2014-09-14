@@ -1759,13 +1759,13 @@ public class CoreAPI {
                                 AirbitzApplication.getPassword(),
                                 tABC_Error.getCPtr(error));
 
-            List<Wallet> wallets = getCoreWallets(false);
-            for (Wallet w : wallets) {
+            List<String> uuids = loadWalletUUIDs();
+            for (String uuid : uuids) {
                 coreDataSyncWallet(AirbitzApplication.getUsername(),
                                    AirbitzApplication.getPassword(),
-                                   w.getUUID(),
+                                   uuid,
                                    tABC_Error.getCPtr(error));
-                publishProgress(w.getUUID());
+                publishProgress(uuid);
             }
             return null;
         }
@@ -1796,6 +1796,39 @@ public class CoreAPI {
     }
 
     //**************** Wallet handling
+
+    public List<String> loadWalletUUIDs()
+    {
+        tABC_Error Error = new tABC_Error();
+        List<String> uuids = new ArrayList<String>();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+
+        SWIGTYPE_p_long aUUIDS = core.new_longp();
+        SWIGTYPE_p_p_p_char pppUUIDs = core.longp_to_pppChar(aUUIDS);
+
+        tABC_CC result = core.ABC_GetWalletUUIDs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                pppUUIDs, pUCount, Error);
+        if (tABC_CC.ABC_CC_Ok == result)
+        {
+            if (core.longp_value(aUUIDS)!=0)
+            {
+                int count = core.intp_value(pCount);
+                long base = core.longp_value(aUUIDS);
+                for (int i = 0; i < count; i++)
+                {
+                    pLong temp = new pLong(base + i * 4);
+                    long start = core.longp_value(temp);
+                    if(start!=0) {
+                        uuids.add(getStringAtPtr(start));
+                    }
+                }
+            }
+        }
+        return uuids;
+    }
+
     public List<Wallet> getCoreWallets(boolean withTransactions) {
         List<Wallet> mWallets = new ArrayList<Wallet>();
 
@@ -2075,9 +2108,8 @@ public class CoreAPI {
     public void startWatchers()
     {
         tABC_Error error = new tABC_Error();
-        List<Wallet> wallets = getCoreWallets(false);
-        for (Wallet w : wallets) {
-            String uuid = w.getUUID();
+        List<String> wallets = loadWalletUUIDs();
+        for (String uuid : wallets) {
             if(uuid!=null && !mWatcherTasks.containsKey(uuid)) {
                 core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
                 Thread thread = new Thread(new WatcherRunnable(uuid));
@@ -2097,9 +2129,9 @@ public class CoreAPI {
     }
 
     public void connectWatchers() {
-        List<Wallet> wallets = getCoreWallets(false);
-        for (Wallet w : wallets) {
-            connectWatcher(w.getUUID());
+        List<String> wallets = loadWalletUUIDs();
+        for (String uuid : wallets) {
+            connectWatcher(uuid);
         }
     }
 
@@ -2122,7 +2154,7 @@ public class CoreAPI {
     }
 
     /*
-     * This thread will block forever
+     * This thread will block as long as the watchers are running
      */
     private class WatcherRunnable implements Runnable {
         private final String uuid;
@@ -2162,6 +2194,7 @@ public class CoreAPI {
         }
 
         mWatcherTasks.clear();
+        disconnectWatchers();
     }
 
     /*
