@@ -33,6 +33,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -83,6 +84,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private TextView mToFromName;
     private EditText mPayeeEditText;
     private ImageView mPayeeImageView;
+    private FrameLayout mPayeeImageViewFrame;
     private TextView mBitcoinValueTextview;
     private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
@@ -234,6 +236,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
         mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
         mPayeeImageView = (ImageView) mView.findViewById(R.id.transaction_detail_contact_pic);
+        mPayeeImageViewFrame = (FrameLayout) mView.findViewById(R.id.transaction_detail_contact_pic_frame);
         mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
         mBitcoinValueTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mBTCFeeTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_btc_fee_value);
