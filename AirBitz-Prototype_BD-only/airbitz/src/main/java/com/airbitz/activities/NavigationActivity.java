@@ -348,6 +348,16 @@ public class NavigationActivity extends BaseActivity
         transaction.commitAllowingStateLoss();
     }
 
+    public void popFragmentImmediate(int threadId) {
+        hideSoftKeyboard(mFragmentLayout);
+        Fragment fragment = mNavStacks[threadId].pop();
+        getFragmentManager().executePendingTransactions();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.remove(fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+
     ViewGroup.LayoutParams mFragmentLayoutParams;
     private ViewGroup.LayoutParams getFragmentLayoutParams() {
         if(mFragmentLayoutParams==null) {
@@ -577,30 +587,31 @@ public class NavigationActivity extends BaseActivity
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-        mHandler.postDelayed(switchWalletsRunnable, 100); //TEST
+        mHandler.post(switchWalletsRunnable);
    }
 
     final Runnable switchWalletsRunnable = new Runnable() {
         @Override
         public void run() {
-            if(mNavThreadId == Tabs.SEND.ordinal()) {
-                Common.LogD(TAG, "onSentFunds Send thread detected, removing SuccessFragment");
-                popFragment(); // remove the success fragment that's displaying there
-                getFragmentManager().executePendingTransactions();
-            } else {
-                Common.LogD(TAG, "onSentFunds Send thread NOT detected, not removing SuccessFragment ");
+            boolean onSuccessFragment = mNavStacks[mNavThreadId].peek() instanceof  SuccessFragment;
+            while (mNavStacks[Tabs.SEND.ordinal()].size()>0) {
+                Common.LogD(TAG, "onSentFunds Send thread detected, removing "+mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+                popFragmentImmediate(Tabs.SEND.ordinal());
             }
+            Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
+            pushFragment(frag, Tabs.SEND.ordinal());
 
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-            bundle.putBoolean(WalletsFragment.CREATE, true);
-            bundle.putString(Transaction.TXID, mIncomingTxID);
-            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+            if(onSuccessFragment) {
+                Bundle bundle = new Bundle();
+                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+                bundle.putBoolean(WalletsFragment.CREATE, true);
+                bundle.putString(Transaction.TXID, mIncomingTxID);
+                bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
 
-            Common.LogD(TAG, "onSentFunds calling switchToWallets");
-            switchToWallets(bundle);
-            Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
-            resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
+                Common.LogD(TAG, "onSentFunds calling switchToWallets");
+                switchToWallets(bundle);
+                Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
+            }
         }
     };
 
