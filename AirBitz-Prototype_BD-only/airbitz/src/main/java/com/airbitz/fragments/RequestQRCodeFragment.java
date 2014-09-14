@@ -333,13 +333,13 @@ public class RequestQRCodeFragment extends Fragment {
         String content = Common.loadAssetTextAsString(getActivity(), "html/EmailTemplate.html");
 
         List<String> searchList  = new ArrayList<String>();
-        searchList.add("<abtag FROM>");
-        searchList.add("<abtag BITCOIN_URL>");
-        searchList.add("<abtag REDIRECT_URL>");
-        searchList.add("<abtag BITCOIN_URI>");
-        searchList.add("<abtag ADDRESS>");
-        searchList.add("<abtag AMOUNT_BTC>");
-        searchList.add("<abtag AMOUNT_MBTC>");
+        searchList.add("[[abtag FROM]]");
+        searchList.add("[[abtag BITCOIN_URL]]");
+        searchList.add("[[abtag REDIRECT_URL]]");
+        searchList.add("[[abtag BITCOIN_URI]]");
+        searchList.add("[[abtag ADDRESS]]");
+        searchList.add("[[abtag AMOUNT_BTC]]");
+        searchList.add("[[abtag AMOUNT_MBTC]]");
 
         List<String> replaceList = new ArrayList<String>();
         if(fullName==null)
