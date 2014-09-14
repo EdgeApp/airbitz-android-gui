@@ -483,6 +483,8 @@ public class NavigationActivity extends BaseActivity
         registerServiceReceiver();
         startAirbitzService();
 
+        mCoreAPI.connectWatchers();
+
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
@@ -724,15 +726,18 @@ public class NavigationActivity extends BaseActivity
         if(mDataUri!=null) {
             onBitcoinUri(mDataUri);
             mDataUri = null;
+            DisplayLoginOverlay(false);
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
         } else {
+            DisplayLoginOverlay(false);
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
             resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
-
-        DisplayLoginOverlay(false);
-        mCoreAPI.setupAccountSettings();
-        mCoreAPI.startAllAsyncUpdates();
-        sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 
     public void startRecoveryQuestions(String questions, String username) {
