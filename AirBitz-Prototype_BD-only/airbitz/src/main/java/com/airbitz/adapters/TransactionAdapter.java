@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,6 +65,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     static class ViewHolderItem {
         ImageView contactImageView;
+        FrameLayout contactImageViewFrame;
         TextView dateTextView;
         TextView nameTextView;
         TextView runningTotalTextView;
@@ -80,6 +82,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             convertView = inflater.inflate(R.layout.item_listview_transaction, parent, false);
             viewHolder = new ViewHolderItem();
             viewHolder.contactImageView = (ImageView) convertView.findViewById(R.id.imageview_contact_pic);
+            viewHolder.contactImageViewFrame = (FrameLayout) convertView.findViewById(R.id.imageview_contact_pic_frame);
             viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.textview_date);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.textview_name);
             viewHolder.runningTotalTextView = (TextView) convertView.findViewById(R.id.textview_amount_running_total);
@@ -115,11 +118,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         viewHolder.nameTextView.setText(name);
         Uri payeeImage = mContactList.get(name);
         if(mContactList!=null && payeeImage!=null) {
-            viewHolder.contactImageView.setVisibility(View.VISIBLE);
+            viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
             viewHolder.contactImageView.setImageURI(null);
             viewHolder.contactImageView.setImageURI(payeeImage);
         } else {
-            viewHolder.contactImageView.setVisibility(View.GONE);
+            viewHolder.contactImageViewFrame.setVisibility(View.GONE);
         }
 
         long transactionSatoshis = transaction.getAmountSatoshi();

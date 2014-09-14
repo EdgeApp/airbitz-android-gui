@@ -6,15 +6,28 @@
     android:background="@android:color/transparent"
     android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/imageview_contact_pic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <FrameLayout
+        android:id="@+id/imageview_contact_pic_frame"
         android:layout_gravity="center"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="0dp"
         android:visibility="gone"
-        android:src="@drawable/arrow_right" />
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/imageview_contact_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:src="@drawable/arrow_right"/>
+
+        <ImageView
+            android:src="@drawable/frame_rounded"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_text"
