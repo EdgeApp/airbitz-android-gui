@@ -1872,7 +1872,7 @@ public class CoreAPI {
     }
 
     public List<Wallet> getCoreActiveWallets() {
-        List<Wallet> wallets = getCoreWallets(false);
+        List<Wallet> wallets = getCoreWallets(true);
         List<Wallet> out = new ArrayList<Wallet>();
         for(Wallet w: wallets) {
             if(!w.isArchived())
