@@ -355,7 +355,7 @@ public class RequestQRCodeFragment extends Fragment {
 
         for (int i=0; i<searchList.size(); i++)
         {
-            content = content.replaceFirst(searchList.get(i), replaceList.get(i));
+            content = content.replace(searchList.get(i), replaceList.get(i));
         }
         return content;
     }
