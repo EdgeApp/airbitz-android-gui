@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,11 +16,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.airbitz.AirbitzApplication;
@@ -38,10 +40,8 @@ import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
-import com.airbitz.fragments.TransactionDetailFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
-import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzService;
@@ -80,9 +80,9 @@ public class NavigationActivity extends BaseActivity
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
-//    private RelativeLayout mNavBarFragmentLayout;
+    private RelativeLayout mNavBarFragmentLayout;
     private Calculator mCalculatorView;
-    private FrameLayout mFragmentLayout;
+    private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
 
     private int mNavThreadId;
@@ -102,6 +102,9 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
+
+    private int mFragmentViewHeight = 0;
+    private int mNavBarViewHeight = 0;
 
     // For Fragments to implement if they need to customize on back presses
     public interface OnBackPress {
@@ -123,7 +126,8 @@ public class NavigationActivity extends BaseActivity
 
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        mFragmentLayout = (FrameLayout) findViewById(R.id.activityLayout);
+        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+        mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
 
         setTypeFaces();
@@ -140,19 +144,19 @@ public class NavigationActivity extends BaseActivity
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    hideNavBar();
                     keyBoardUp = true;
+                    hideNavBar();
                     if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
                     }
                 } else {
-                    if(keyBoardUp && AirbitzApplication.isLoggedIn()) {
+                    keyBoardUp = false;
+                    if(AirbitzApplication.isLoggedIn() ) {
                         showNavBar();
                     }
-                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment && keyBoardUp){
+                    if(mNavStacks[mNavThreadId].peek() instanceof CategoryFragment){
                         ((CategoryFragment)mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
                     }
-                    keyBoardUp = false;
                 }
             }
         });
@@ -163,7 +167,9 @@ public class NavigationActivity extends BaseActivity
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
         if(bdonly){
             Common.LogD(TAG, "BD ONLY");
-            mNavBarFragment.hideNavBarFragment();
+            mNavBarFragmentLayout.setVisibility(View.GONE);
+//            mNavBarFragment.hideNavBarFragment();
+            mNavBarFragmentLayout.invalidate();
             RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
             mFragmentLayout.setLayoutParams(lLP);
         }
@@ -255,8 +261,9 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
+
     public void switchFragmentThread(int id) {
-        if(AirbitzApplication.isLoggedIn() && !keyBoardUp) {
+        if(mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
             showNavBar();
         }
         mNavBarFragment.unselectTab(mNavThreadId);
@@ -271,6 +278,7 @@ public class NavigationActivity extends BaseActivity
         else
             Common.LogD(TAG, "switchFragmentThread no fragment showing yet ");
 
+        getFragmentManager().executePendingTransactions();
         Common.LogD(TAG, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
@@ -297,7 +305,7 @@ public class NavigationActivity extends BaseActivity
 
     public void switchFragmentThread(int id, Bundle bundle) {
         if(bundle!=null)
-            mNavFragments[id].setArguments(bundle);
+            mNavStacks[id].peek().setArguments(bundle);
         switchFragmentThread(id);
     }
 
@@ -321,6 +329,7 @@ public class NavigationActivity extends BaseActivity
 
         // Only show visually if we're displaying the thread
         if(mNavThreadId==threadID) {
+            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -330,6 +339,7 @@ public class NavigationActivity extends BaseActivity
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
+        getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
@@ -338,22 +348,69 @@ public class NavigationActivity extends BaseActivity
         transaction.commitAllowingStateLoss();
     }
 
+    public void popFragmentImmediate(int threadId) {
+        hideSoftKeyboard(mFragmentLayout);
+        Fragment fragment = mNavStacks[threadId].pop();
+        getFragmentManager().executePendingTransactions();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.remove(fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+
+    ViewGroup.LayoutParams mFragmentLayoutParams;
+    private ViewGroup.LayoutParams getFragmentLayoutParams() {
+        if(mFragmentLayoutParams==null) {
+            mFragmentLayoutParams = mFragmentLayout.getLayoutParams();
+        }
+        return mFragmentLayoutParams;
+    }
+
+    ViewGroup.LayoutParams mNavBarFragmentLayoutParams;
+    private ViewGroup.LayoutParams getNavBarFragmentLayoutParams() {
+        if(mNavBarFragmentLayoutParams==null) {
+            mNavBarFragmentLayoutParams = mNavBarFragmentLayout.getLayoutParams();
+        }
+        return mNavBarFragmentLayoutParams;
+    }
+
+    int mNavBarStart;
+    int getNavBarStart() {
+        if(mNavBarStart==0) {
+            int loc[] = new int[2];
+            mNavBarFragmentLayout.getLocationOnScreen(loc);
+            mNavBarStart = loc[1];
+        }
+        return mNavBarStart;
+    }
+
     public void hideNavBar() {
-        mNavBarFragment.hideNavBarFragment();
-        RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mFragmentLayout.setLayoutParams(rLP);
-        mFragmentLayout.invalidate();
+        if(mNavBarFragmentLayout.getVisibility()==View.VISIBLE) {
+            mFragmentLayoutParams = getFragmentLayoutParams();
+            mNavBarFragmentLayout.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mFragmentLayout.setLayoutParams(rLP);
+            mFragmentLayout.invalidate();
+            int test = getNavBarStart();
+        }
     }
 
     public void showNavBar() {
         if(!bdonly) {
-            mNavBarFragment.showNavBarFragment();
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            rLP.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.nav_bar_height));
-            mFragmentLayout.setLayoutParams(rLP);
-            mFragmentLayout.invalidate();
+            if(mNavBarFragmentLayout.getVisibility()==View.GONE && !keyBoardUp) {
+                mHandler.postDelayed(delayedShowNavBar, 50);
+            }
         }
     }
+
+    final Runnable delayedShowNavBar = new Runnable() {
+        @Override
+        public void run() {
+            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
+            mFragmentLayout.setLayoutParams(getFragmentLayoutParams());
+            mFragmentLayout.invalidate();
+        }
+    };
 
     public Calculator getCalculatorView() {
         return mCalculatorView;
@@ -370,10 +427,17 @@ public class NavigationActivity extends BaseActivity
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
 
         if(mCalculatorView.getVisibility()!=View.VISIBLE) {
+            mHandler.postDelayed(delayedShowCalculator, 100);
+        }
+    }
+    final Runnable delayedShowCalculator = new Runnable() {
+        @Override
+        public void run() {
             mCalculatorView.setVisibility(View.VISIBLE);
             mCalculatorView.setEnabled(true);
         }
-    }
+    };
+
 
     public void onCalculatorButtonClick(View v) {
         mCalculatorView.onButtonClick(v);
@@ -429,6 +493,8 @@ public class NavigationActivity extends BaseActivity
         registerServiceReceiver();
         startAirbitzService();
 
+        mCoreAPI.connectWatchers();
+
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
@@ -440,7 +506,6 @@ public class NavigationActivity extends BaseActivity
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
-            mCoreAPI.startWatchers();
         }
         switchFragmentThread(mNavThreadId);
     }
@@ -464,10 +529,12 @@ public class NavigationActivity extends BaseActivity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-        mNavStacks[Tabs.WALLET.ordinal()].clear();
         Fragment frag = new WalletsFragment();
+        bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
-        pushFragment(frag, Tabs.WALLET.ordinal());
+        mNavStacks[Tabs.WALLET.ordinal()].clear();
+        mNavStacks[Tabs.WALLET.ordinal()].add(frag);
+
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
@@ -520,22 +587,33 @@ public class NavigationActivity extends BaseActivity
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-        bundle.putString(Transaction.TXID, mIncomingTxID);
-        bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+        mHandler.post(switchWalletsRunnable);
+   }
 
-        Fragment frag = new TransactionDetailFragment();
-        frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
+    final Runnable switchWalletsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            boolean onSuccessFragment = mNavStacks[mNavThreadId].peek() instanceof  SuccessFragment;
+            while (mNavStacks[Tabs.SEND.ordinal()].size()>0) {
+                Common.LogD(TAG, "onSentFunds Send thread detected, removing "+mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+                popFragmentImmediate(Tabs.SEND.ordinal());
+            }
+            Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
+            pushFragment(frag, Tabs.SEND.ordinal());
 
-    }
+            if(onSuccessFragment) {
+                Bundle bundle = new Bundle();
+                bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+                bundle.putBoolean(WalletsFragment.CREATE, true);
+                bundle.putString(Transaction.TXID, mIncomingTxID);
+                bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
 
-    public void switchFromTransactionToWallets(Bundle b) {
-        b.putBoolean(WalletsFragment.CREATE, true);
-        switchToWallets(b);
-        resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-    }
+                Common.LogD(TAG, "onSentFunds calling switchToWallets");
+                switchToWallets(bundle);
+                Common.LogD(TAG, "onSentFunds calling resetFragmentThreadToBaseFragment on SEND thread");
+            }
+        }
+    };
 
 
     // Callback interface when a wallet could be updated
@@ -556,7 +634,6 @@ public class NavigationActivity extends BaseActivity
     public void OnDataSync() {
         Common.LogD(TAG, "Data Sync received");
         updateWalletListener();
-        mCoreAPI.startWatchers();
     }
 
     @Override
@@ -589,7 +666,6 @@ public class NavigationActivity extends BaseActivity
     private void gotoDetailsNow() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
-        bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, mTxId);
         bundle.putString(Wallet.WALLET_UUID, mUUID);
         switchToWallets(bundle);
@@ -598,9 +674,8 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void resetFragmentThreadToBaseFragment(int threadId) {
-        while(mNavStacks[threadId].size() > 1) {
-            mNavStacks[threadId].pop();
-        }
+        mNavStacks[threadId].clear();
+        mNavStacks[threadId].add(getNewBaseFragement(threadId));
     }
 
     private AlertDialog mIncomingDialog;
@@ -662,15 +737,18 @@ public class NavigationActivity extends BaseActivity
         if(mDataUri!=null) {
             onBitcoinUri(mDataUri);
             mDataUri = null;
+            DisplayLoginOverlay(false);
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
         } else {
+            DisplayLoginOverlay(false);
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
             resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
-
-        DisplayLoginOverlay(false);
-        mCoreAPI.setupAccountSettings();
-        mCoreAPI.startAllAsyncUpdates();
-        sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
     }
 
     public void startRecoveryQuestions(String questions, String username) {
@@ -791,4 +869,20 @@ public class NavigationActivity extends BaseActivity
         }
     };
 
+    private Fragment getNewBaseFragement(int id) {
+        switch(id) {
+            case 0:
+                return new BusinessDirectoryFragment();
+            case 1:
+                return new RequestFragment();
+            case 2:
+                return new SendFragment();
+            case 3:
+                return new WalletsFragment();
+            case 4:
+                return new SettingFragment();
+            default:
+                return null;
+        }
+    }
 }

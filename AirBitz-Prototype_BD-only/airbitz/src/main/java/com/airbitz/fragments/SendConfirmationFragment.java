@@ -92,7 +92,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
-    private Wallet mSourceWallet, mWalletForConversions;
+    private Wallet mSourceWallet, mWalletForConversions, mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
 
@@ -115,10 +115,9 @@ public class SendConfirmationFragment extends Fragment {
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
+            mWalletForConversions = mSourceWallet;
             if(mIsUUID) {
-                mWalletForConversions = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-            } else {
-                mWalletForConversions = mSourceWallet;
+                mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
         }
     }
@@ -176,8 +175,8 @@ public class SendConfirmationFragment extends Fragment {
 
         String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
-        if(mIsUUID) {
-            mToEdittext.setText(mWalletForConversions.getName());
+        if(mToWallet!=null) {
+            mToEdittext.setText(mToWallet.getName());
         } else {
             String temp = mUUIDorURI;
             if(mUUIDorURI.length()>20) {
@@ -193,7 +192,7 @@ public class SendConfirmationFragment extends Fragment {
             String out;
             out = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false);
             mFiatField.setText(out);
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mPinEdittext.requestFocus();
         }
 
@@ -435,16 +434,12 @@ public class SendConfirmationFragment extends Fragment {
                 currency = Double.valueOf(mFiatField.getText().toString());
                 satoshi = mCoreAPI.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
                 mAmountToSendSatoshi = satoshi;
-                int currencyDecimalPlaces = 2;
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, currencyDecimalPlaces));
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             }
             catch(NumberFormatException e) {  } //not a double, ignore
         }
         mAutoUpdatingTextFields = false;
-        if(mCalculateFeesTask != null)
-            mCalculateFeesTask.cancel(true);
-        mCalculateFeesTask = new CalculateFeesTask();
-        mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        calculateFees();
     }
 
     /**
@@ -479,10 +474,9 @@ public class SendConfirmationFragment extends Fragment {
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false, 2));
-            mConversionTextView.setTextColor(Color.WHITE);
-            mBitcoinField.setTextColor(Color.WHITE);
-            mFiatField.setTextColor(Color.WHITE);
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
+
+            calculateFees();
             mAutoUpdatingTextFields = false;
         }
 
@@ -490,6 +484,13 @@ public class SendConfirmationFragment extends Fragment {
         protected void onCancelled() {
             mMaxAmountTask = null;
         }
+    }
+
+    private void calculateFees() {
+        if(mCalculateFeesTask != null)
+            mCalculateFeesTask.cancel(true);
+        mCalculateFeesTask = new CalculateFeesTask();
+        mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private CalculateFeesTask mCalculateFeesTask;
@@ -555,7 +556,7 @@ public class SendConfirmationFragment extends Fragment {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
-        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+//        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if((mFees+mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
