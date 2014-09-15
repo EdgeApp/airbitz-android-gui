@@ -626,15 +626,14 @@ public class SendConfirmationFragment extends Fragment {
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
             mSendOrTransferTask = null;
-            tABC_CC result = txResult.getError();
             String message;
-            if (result != null) {
+            if (txResult != null) {
                 mActivity.popFragment(); // stop the sending screen
                 getFragmentManager().executePendingTransactions();
-                if (result == tABC_CC.ABC_CC_InsufficientFunds) {
+                if (txResult.getError() == tABC_CC.ABC_CC_InsufficientFunds) {
                     message = failInsufficientMessage;
                 } else {
-                    message = (txResult.getString());
+                    message = (txResult.getTxId());
                 }
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
             }
