@@ -1557,10 +1557,12 @@ public class CoreAPI {
                 txResult.setError(result);
                 txResult.setTxId(error.getSzDescription());
             } else {
-                Common.LogD(TAG, "Core InitiatTransferOrSend successful");
+                Common.LogD(TAG, "Core InitiateTransferOrSend successful");
             }
         } else {
             Common.LogD(TAG, "Initiate transfer - nothing to send");
+            txResult = new TxResult();
+            txResult.setTxId("Initiate transfer, send amount negative = "+String.valueOf(satoshi));
         }
         return txResult;
     }
