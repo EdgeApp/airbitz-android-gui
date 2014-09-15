@@ -29,18 +29,11 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
-    private int mCurrentPosition = 0;
-    private boolean firstPlace = false;
-    private double mLat;
-    private double mLon;
     private final Picasso p;
 
     public VenueAdapter(Context context, List<BusinessSearchResult> venues) {
-        firstPlace = false;
         mContext = context;
         mVenues = venues;
-        mLat = getLatFromSharedPreference();
-        mLon = getLonFromSharedPreference();
         p =  new Picasso.Builder(context).build();
     }
 
@@ -75,7 +68,6 @@ public class VenueAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        mCurrentPosition = position;
         VenueViewHolderItem viewHolder;
 
         if(convertView==null) {
@@ -255,21 +247,4 @@ public class VenueAdapter extends BaseAdapter {
         }
         return convertView;
     }
-
-    private float getStateFromSharedPreferences(String key) {
-        SharedPreferences pref = mContext.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME, Context.MODE_PRIVATE);
-        return pref.getFloat(key, -1);
-    }
-
-    private double getLatFromSharedPreference(){
-        double lat = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LAT_KEY);
-        return lat;
-    }
-
-    private double getLonFromSharedPreference(){
-        double lon = (double)getStateFromSharedPreferences(BusinessDirectoryFragment.LON_KEY);
-        return lon;
-    }
-
-
 }
