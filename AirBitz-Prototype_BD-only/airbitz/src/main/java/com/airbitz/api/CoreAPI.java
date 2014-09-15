@@ -1491,9 +1491,9 @@ public class CoreAPI {
 
     public class TxResult {
         private String txid;
-        public String getString() { return txid; }
+        public String getTxId() { return txid; }
 
-        public void setTxid(String txid) { this.txid = txid; }
+        public void setTxId(String txid) { this.txid = txid; }
 
         private tABC_CC error;
         public tABC_CC getError() { return error; }
@@ -1503,7 +1503,7 @@ public class CoreAPI {
 
     //this is a blocking call
     public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
-        TxResult txResult = new TxResult();
+        TxResult txResult = null;
 
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWalletFromUUID(destinationAddress);
@@ -1553,12 +1553,11 @@ public class CoreAPI {
             if (result != tABC_CC.ABC_CC_Ok) {
                 Common.LogD(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
                         error.getSzSourceFunc() + " " + error.getNSourceLine());
+                txResult = new TxResult();
                 txResult.setError(result);
-                txResult.setTxid(error.getSzDescription());
+                txResult.setTxId(error.getSzDescription());
             } else {
-                String txid = getStringAtPtr(core.longp_value(lp));
-                txResult.setTxid(txid);
-                Common.LogD(TAG, "Core InitiatTransferOrSend TxID:  " + txResult.getString());
+                Common.LogD(TAG, "Core InitiatTransferOrSend successful");
             }
         } else {
             Common.LogD(TAG, "Initiate transfer - nothing to send");
