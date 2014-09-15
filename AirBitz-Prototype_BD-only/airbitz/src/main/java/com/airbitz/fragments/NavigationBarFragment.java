@@ -255,13 +255,4 @@ public class NavigationBarFragment extends Fragment {
         initializeElements();
         selectTab(selectedTab);
     }
-
-    public void hideNavBarFragment(){
-        mContainerLayout.setVisibility(View.GONE);
-        mContainerLayout.invalidate();
-    }
-    public void showNavBarFragment(){
-        mContainerLayout.setVisibility(View.VISIBLE);
-        mContainerLayout.invalidate();
-    }
 }

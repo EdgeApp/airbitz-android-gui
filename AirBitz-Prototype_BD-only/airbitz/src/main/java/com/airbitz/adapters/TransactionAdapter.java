@@ -1,10 +1,13 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -14,6 +17,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -29,14 +33,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private CoreAPI mCoreAPI;
 
     private List<Transaction> mListTransaction;
+    private LinkedHashMap<String, Uri> mContactList;
     private long[] mRunningSatoshi;
 
-    public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction){
+    public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList){
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
         mWallet = wallet;
         mCurrencyNum = mWallet.getCurrencyNum();
         mListTransaction = listTransaction;
+        mContactList = contactList;
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
     }
@@ -58,6 +64,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     public void setIsBitcoin(boolean isBitcoin) { mIsBitcoin = isBitcoin; }
 
     static class ViewHolderItem {
+        ImageView contactImageView;
+        FrameLayout contactImageViewFrame;
         TextView dateTextView;
         TextView nameTextView;
         TextView runningTotalTextView;
@@ -73,6 +81,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_transaction, parent, false);
             viewHolder = new ViewHolderItem();
+            viewHolder.contactImageView = (ImageView) convertView.findViewById(R.id.imageview_contact_pic);
+            viewHolder.contactImageViewFrame = (FrameLayout) convertView.findViewById(R.id.imageview_contact_pic_frame);
             viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.textview_date);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.textview_name);
             viewHolder.runningTotalTextView = (TextView) convertView.findViewById(R.id.textview_amount_running_total);
@@ -104,7 +114,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         Transaction transaction = mListTransaction.get(position);
 
-        viewHolder.nameTextView.setText(transaction.getName());
+        String name = transaction.getName();
+        viewHolder.nameTextView.setText(name);
+        Uri payeeImage = mContactList.get(name);
+        if(mContactList!=null && payeeImage!=null) {
+            viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
+            viewHolder.contactImageView.setImageURI(null);
+            viewHolder.contactImageView.setImageURI(payeeImage);
+        } else {
+            viewHolder.contactImageViewFrame.setVisibility(View.GONE);
+        }
 
         long transactionSatoshis = transaction.getAmountSatoshi();
         long transactionSatoshisAbs = Math.abs(transactionSatoshis);

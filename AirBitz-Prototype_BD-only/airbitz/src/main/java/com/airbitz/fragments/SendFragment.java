@@ -92,7 +92,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private List<Wallet> mWalletOtherList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
-    private String mSpinnerWalletName;
     private List<Wallet> mCurrentListing;
 
     private WalletPickerAdapter listingAdapter;
@@ -113,7 +112,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             mCoreAPI = CoreAPI.getApi();
 
         mActivity = (NavigationActivity) getActivity();
-        mWallets = mCoreAPI.getCoreWallets();
+        mWallets = mCoreAPI.getCoreActiveWallets();
     }
 
     @Override
@@ -155,7 +154,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mFromWallet = mWallets.get(i);
-                mSpinnerWalletName = mFromWallet.getName();
                 updateWalletOtherList();
                 goAutoCompleteWalletListing();
             }
@@ -483,7 +481,6 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mHandler.postDelayed(cameraDelayRunner, 500);
 
 
-        mWallets = mCoreAPI.getCoreWallets();
         if(walletSpinner != null && walletSpinner.getAdapter()!=null) {
             ((WalletPickerAdapter)walletSpinner.getAdapter()).notifyDataSetChanged();
         }
@@ -508,7 +505,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     };
 
     public void updateWalletOtherList(){
-        mWallets = mCoreAPI.getCoreWallets(); // always refresh
+        mWallets = mCoreAPI.getCoreWallets(false); // always refresh
         mWalletOtherList = new ArrayList<Wallet>();
         for(Wallet wallet: mWallets){
             if(!wallet.isArchived() && !wallet.getUUID().equals(mFromWallet.getUUID())){

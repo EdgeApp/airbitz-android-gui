@@ -70,23 +70,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_below="@id/fragment_wallet_header_separator_blue"
-        android:layout_marginRight="12.6dp"
-        android:layout_marginLeft="12.6dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginBottom="12.6dp">
 
         <RelativeLayout
             android:id="@+id/fragment_wallet_export_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="-12.6dp"
-            android:layout_marginRight="-12.6dp">
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
 
             <com.airbitz.objects.HighlightOnPressImageButton
                 android:id="@+id/fragment_wallet_export_button"
+                android:layout_marginLeft="-8dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
@@ -96,10 +98,11 @@
 
             <com.airbitz.objects.HighlightOnPressImageButton
                 android:id="@+id/fragment_wallet_search_button"
+                android:layout_marginRight="-8dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
@@ -109,7 +112,7 @@
             <EditText
                 android:id="@+id/fragment_wallet_walletname_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
+                android:layout_height="38dp"
                 android:layout_centerVertical="true"
                 android:imeOptions="actionDone"
                 android:text="Wallet"
@@ -121,7 +124,7 @@
                 android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="17dp" />
 
         </RelativeLayout>
 
@@ -129,7 +132,9 @@
             layout="@layout/custom_currency_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="-1dp"
             android:visibility="visible" />
 
         <ScrollView
@@ -145,6 +150,7 @@
                     android:id="@+id/fragment_wallet_sendrequest_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -152,8 +158,7 @@
                         android:id="@+id/fragment_wallet_request_button"
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
-                        android:layout_marginRight="6.3dp"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="10dp"
                         android:layout_marginBottom="4dp"
                         android:src="@drawable/btn_request_green" />
 
@@ -161,8 +166,7 @@
                         android:id="@+id/fragment_wallet_send_button"
                         android:layout_width="138.6dp"
                         android:layout_height="37.8dp"
-                        android:layout_marginLeft="6.3dp"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginBottom="4dp"
                         android:src="@drawable/btn_send_orange" />
 
@@ -172,6 +176,7 @@
                     android:id="@+id/listview_transaction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:dividerHeight="0dp"
                     android:divider="@drawable/wallet_list_divider"
                     android:background="@android:color/transparent">
