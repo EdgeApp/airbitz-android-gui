@@ -582,18 +582,20 @@ public class NavigationActivity extends BaseActivity
     private String mIncomingUUID, mIncomingTxID;
     @Override
     public void onSentFunds(String walletUUID, String txId) {
+        mSendCheckUUID = null; // We got the signal, make sure it's not picked up by Block Height Change
         Common.LogD(TAG, "onSentFunds uuid, txid = "+walletUUID+", "+txId);
 
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
+        mHandler.removeCallbacks(sendFundsRunner);
         mHandler.post(switchWalletsRunnable);
    }
 
     final Runnable switchWalletsRunnable = new Runnable() {
         @Override
         public void run() {
-            boolean onSuccessFragment = mNavStacks[mNavThreadId].peek() instanceof  SuccessFragment;
+            boolean onSuccessFragment = true; //mNavStacks[mNavThreadId].peek() instanceof  SuccessFragment;
             while (mNavStacks[Tabs.SEND.ordinal()].size()>0) {
                 Common.LogD(TAG, "onSentFunds Send thread detected, removing "+mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
                 popFragmentImmediate(Tabs.SEND.ordinal());
@@ -615,6 +617,50 @@ public class NavigationActivity extends BaseActivity
         }
     };
 
+    public void startSendFundsTimer() {
+        mHandler.postDelayed(sendFundsRunner, 60000); // 30 seconds
+    }
+
+    final Runnable sendFundsRunner = new Runnable() {
+        @Override
+        public void run() {
+            while (mNavStacks[Tabs.SEND.ordinal()].size()>0) {
+                Common.LogD(TAG, "Send Funds timeout, removing "+mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+                popFragmentImmediate(Tabs.SEND.ordinal());
+            }
+
+            Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
+            pushFragment(frag, Tabs.SEND.ordinal());
+
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            bundle.putString(Transaction.TXID, mIncomingTxID);
+            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+
+            Common.LogD(TAG, "Send Funds timeout switchToWallets");
+            switchToWallets(bundle);
+            ShowOkMessageDialog("SEND FUNDS HANG", "Timeout occurred after 60 seconds");
+        }
+    };
+
+    private String mSendCheckUUID;
+    private long mSendCheckTime = 0;
+    public void setWalletToCheckDuringSendInterval(String uuid) {
+        Common.LogD(TAG, "Setting wallet to check on send");
+        mSendCheckUUID = uuid;
+        mSendCheckTime = System.currentTimeMillis();
+    }
+
+    private void checkSendWalletUUID() {
+        if(mSendCheckUUID!=null) {
+            Common.LogD(TAG, "Checking for recent transaction");
+            Wallet wallet = mCoreAPI.getWalletFromUUID(mSendCheckUUID);
+            Transaction transaction = mCoreAPI.loadAllTransactions(wallet).get(0);
+            if(mSendCheckTime - transaction.getDate() < 10000) { // within 10 seconds
+                ShowOkMessageDialog("SEND FUNDS HANG", "Block Height or Data Sync came before onSentFunds");
+            }
+        }
+    }
 
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
@@ -633,12 +679,14 @@ public class NavigationActivity extends BaseActivity
     @Override
     public void OnDataSync() {
         Common.LogD(TAG, "Data Sync received");
+        checkSendWalletUUID();
         updateWalletListener();
     }
 
     @Override
     public void onBlockHeightChange() {
         Common.LogD(TAG, "Block Height received");
+        checkSendWalletUUID();
         updateWalletListener();
     }
 

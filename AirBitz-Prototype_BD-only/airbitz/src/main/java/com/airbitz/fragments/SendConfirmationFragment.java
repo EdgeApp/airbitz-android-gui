@@ -614,11 +614,13 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             Common.LogD(TAG, "SEND called");
+            ((NavigationActivity)getActivity()).setWalletToCheckDuringSendInterval(mFromWallet.getUUID()); // FOR TESTING
         }
 
         @Override
         protected CoreAPI.TxResult doInBackground(Void... params) {
             Common.LogD(TAG, "Initiating SEND");
+            ((NavigationActivity)getActivity()).startSendFundsTimer();
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
