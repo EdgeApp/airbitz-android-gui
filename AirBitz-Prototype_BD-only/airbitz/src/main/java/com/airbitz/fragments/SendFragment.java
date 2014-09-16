@@ -277,7 +277,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
 
-        mFromWallet = mWallets.get(0);
+        if(!mWallets.isEmpty()) {
+            mFromWallet = mWallets.get(0);
+        }
         Bundle bundle = getArguments();
         if(bundle!=null) {
             String uuid = bundle.getString(UUID); // From a wallet with this UUID
