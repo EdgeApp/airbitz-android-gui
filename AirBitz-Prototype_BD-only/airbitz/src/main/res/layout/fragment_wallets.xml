@@ -123,7 +123,7 @@
         android:layout_marginTop="44.1dp"
         android:focusableInTouchMode="true"
         android:id="@+id/fragment_wallets_addwallet_layout"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <EditText
             android:layout_width="match_parent"
@@ -133,8 +133,7 @@
             android:background="@drawable/emboss_down"
             android:textColor="@android:color/white"
             android:textColorHint="@color/text_hint"
-            android:capitalize="words"
-            android:inputType="textVisiblePassword|textNoSuggestions"
+            android:inputType="textVisiblePassword|textNoSuggestions|textCapWords"
             android:hint="@string/fragment_wallets_addwallet_name_hint"
             android:imeOptions="actionDone"
             android:textCursorDrawable="@drawable/bold_cursor_white"
