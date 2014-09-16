@@ -64,6 +64,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -138,7 +139,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private List<BusinessSearchResult> mOriginalBusinesses;
     private List<String> mContactNames;
     private List<Object> mCombined;
-    private LinkedHashMap<String, Uri> mContactPhotos;
+    private HashMap<String, Uri> mContactPhotos;
+    private HashMap<String, Long> mBizIds;
+    private long mBizId;
 
     private List<String> mCategories;
     private List<String> mOriginalCategories;
@@ -198,6 +201,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else if (mTransaction.getCategory().startsWith("Exchange:")) {
                     currentType = "Exchange:";
                     catSelected = true;
+                }
+
+                // if there is a bizId, add it as the first one of the map
+                if(mTransaction.getmBizId()!=0) {
+                    mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
                 }
             }
         }
@@ -268,6 +276,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mContactNames = new ArrayList<String>();
         mCombined = new ArrayList<Object>();
         mContactPhotos = new LinkedHashMap<String, Uri>();
+        mBizIds = new LinkedHashMap<String, Long>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mCombined, mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
 
@@ -747,6 +756,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mNoteEdittext.setVisibility(View.VISIBLE);
         }
     }
+
+    private void updateBizId()
+    {
+        mBizId = 0;
+        if (mBizIds.containsKey(mPayeeEditText.getText().toString()))
+        {
+            mBizId = mBizIds.get(mPayeeEditText.getText().toString());
+        }
+        Common.LogD(TAG, "Biz ID: " + String.valueOf(mBizId));
+    }
+
 
     private void highlightEditableText(EditText editText) {
         if (editText.getText().toString().startsWith("Income:")) {
