@@ -1066,6 +1066,56 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
+    class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+
+        public OnlineBusinessSearchAsyncTask() {
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return api.getSearchByRadius("16093", "", strings[0], "", "1");
+        }
+
+        @Override
+        protected void onPostExecute(String searchResult) {
+//            try {
+//                mBusinesses.clear();
+//                mCombined.clear();
+//                mOriginalBusinesses.clear();
+//                SearchResult results = new SearchResult(new JSONObject(searchResult));
+//                mBusinesses.addAll(results.getBusinessSearchObjectArray());
+//                mOriginalBusinesses.addAll(mBusinesses);
+//                if (mPayeeEditText.getText().toString().isEmpty()) {
+//                    mCombined.addAll(mBusinesses);
+//                } else {
+//                    mContactPhotos.clear();
+//                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+//                    mContactNames.clear();
+//                    for(String s: mContactPhotos.keySet()) {
+//                        mContactNames.add(s);
+//                    }
+//                    getMatchedBusinessList(mPayeeEditText.getText().toString());
+//                    combineMatchLists();
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                this.cancel(true);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                this.cancel(true);
+//            }
+//            mSearchAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mBusinessSearchAsyncTask = null;
+            super.onCancelled();
+        }
+    }
+
+
     public void getContactsList() {
         ContentResolver cr = getActivity().getContentResolver();
         String columns[] = {ContactsContract.Contacts.DISPLAY_NAME};
