@@ -327,13 +327,33 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mCamera = null;
     }
 
-    public void startCamera(int cameraIndex) {
+    public void startCamera() {
+        //Get back camera unless there is none, then try the front camera - fix for Nexus 7
+        int numCameras = Camera.getNumberOfCameras();
+        if (numCameras == 0) {
+            Common.LogD(TAG, "No cameras!");
+            return;
+        }
+
+        int cameraIndex = 0;
+        while (cameraIndex < numCameras) {
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            Camera.getCameraInfo(cameraIndex, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                break;
+            }
+            cameraIndex++;
+        }
+
+        if(cameraIndex>=numCameras)
+            cameraIndex=0; //Front facing camera if no other camera index returned
 
         try {
             Common.LogD(TAG, "Opening Camera");
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
             Common.LogD(TAG, "Camera Does Not exist");
+            return;
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
@@ -504,7 +524,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     Runnable cameraDelayRunner = new Runnable() {
         @Override
-        public void run() { startCamera(BACK_CAMERA_INDEX); }
+        public void run() { startCamera(); }
     };
 
     public void updateWalletOtherList(){
@@ -563,7 +583,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 .setNeutralButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                startCamera(BACK_CAMERA_INDEX);
+                                startCamera();
                                 dialog.cancel();
                             }
                         });
