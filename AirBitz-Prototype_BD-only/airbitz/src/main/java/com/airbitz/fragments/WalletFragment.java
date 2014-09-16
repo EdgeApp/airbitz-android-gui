@@ -254,7 +254,7 @@ public class WalletFragment extends Fragment
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
-                    mDummyFocus.requestFocus();
+                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mSearchField);
                     return true;
                 }
                 return false;
@@ -281,20 +281,11 @@ public class WalletFragment extends Fragment
                         alert.show();
                         return false;
                     } else {
-                        mDummyFocus.requestFocus();
+                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mWalletNameEditText);
                         return true;
                     }
                 }
                 return false;
-            }
-        });
-
-        mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus) {
-                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mDummyFocus);
-                }
             }
         });
 
@@ -324,7 +315,7 @@ public class WalletFragment extends Fragment
         mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDummyFocus.requestFocus();
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mExportButton);
                 Fragment fragment = new ExportFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
             }
@@ -333,6 +324,7 @@ public class WalletFragment extends Fragment
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
                 mSendButton.setClickable(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
@@ -345,6 +337,7 @@ public class WalletFragment extends Fragment
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
                 mRequestButton.setClickable(false);
                 Bundle bundle = new Bundle();
                 bundle.putString(SendFragment.UUID, mWallet.getUUID());
@@ -357,7 +350,7 @@ public class WalletFragment extends Fragment
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mDummyFocus.requestFocus();
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
                 TransactionAdapter a = (TransactionAdapter) adapterView.getAdapter();
                 a.selectItem(view, i);
                 Bundle bundle = new Bundle();
@@ -390,7 +383,7 @@ public class WalletFragment extends Fragment
             }
         });
 
-        mDummyFocus.requestFocus();
+        ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
         return mView;
     }
 
@@ -455,7 +448,7 @@ public class WalletFragment extends Fragment
             });
             mSearchField.requestFocus();
         } else {
-            mDummyFocus.requestFocus();
+            ((NavigationActivity) getActivity()).hideSoftKeyboard(mSearchField);
             mSearchLayout.animate().translationX(mParentLayout.getWidth()).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
