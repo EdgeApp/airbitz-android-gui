@@ -115,7 +115,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
+        if(!mWallets.isEmpty()) {
+            mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
+        }
 
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
