@@ -656,7 +656,7 @@ public class NavigationActivity extends BaseActivity
             Common.LogD(TAG, "Checking for recent transaction");
             Wallet wallet = mCoreAPI.getWalletFromUUID(mSendCheckUUID);
             Transaction transaction = mCoreAPI.loadAllTransactions(wallet).get(0);
-            if(mSendCheckTime - transaction.getDate() < 10000) { // within 10 seconds
+            if((mSendCheckTime - transaction.getDate()*1000) < 10000) { // within 10 seconds
                 ShowOkMessageDialog("SEND FUNDS HANG", "Block Height or Data Sync came before onSentFunds");
             }
         }
