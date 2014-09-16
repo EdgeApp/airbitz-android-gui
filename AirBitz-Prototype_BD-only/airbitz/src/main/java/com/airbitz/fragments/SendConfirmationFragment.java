@@ -87,7 +87,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mUUIDorURI;
     private String mLabel;
     private Boolean mIsUUID;
-    private long mAmountToSendSatoshi;
+    private long mAmountToSendSatoshi=0;
     private long mFees;
 
     private CoreAPI mCoreAPI;
@@ -183,17 +183,6 @@ public class SendConfirmationFragment extends Fragment {
                 temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length()-5, mUUIDorURI.length());
             }
             mToEdittext.setText(temp);
-        }
-
-        if(mAmountToSendSatoshi==0) {
-            mBitcoinField.setText("");
-            mFiatField.setText("");
-        } else {
-            String out;
-            out = mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false);
-            mFiatField.setText(out);
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
-            mPinEdittext.requestFocus();
         }
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
@@ -653,13 +642,18 @@ public class SendConfirmationFragment extends Fragment {
         mParentLayout.requestFocus(); //Take focus away first
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        String btc = mBitcoinField.getText().toString();
-        String fiat = mFiatField.getText().toString();
-        if(btc.isEmpty() && fiat.isEmpty()) {
+        mAutoUpdatingTextFields = true;
+        if(mAmountToSendSatoshi==0) {
+            mBitcoinField.setText("");
+            mFiatField.setText("");
             mFiatField.requestFocus();
-        } else if(mPinEdittext.getText().toString().isEmpty()) {
+        } else {
+            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mPinEdittext.requestFocus();
         }
+        mAutoUpdatingTextFields = false;
+
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
