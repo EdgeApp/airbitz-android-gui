@@ -603,7 +603,6 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             Common.LogD(TAG, "SEND called");
-            ((NavigationActivity)getActivity()).setWalletToCheckDuringSendInterval(mFromWallet.getUUID()); // FOR TESTING
         }
 
         @Override
