@@ -601,7 +601,7 @@ public class NavigationActivity extends BaseActivity
                 popFragmentImmediate(Tabs.SEND.ordinal());
             }
             Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
-            pushFragment(frag, Tabs.SEND.ordinal());
+            mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
 
             if(onSuccessFragment) {
                 Bundle bundle = new Bundle();
