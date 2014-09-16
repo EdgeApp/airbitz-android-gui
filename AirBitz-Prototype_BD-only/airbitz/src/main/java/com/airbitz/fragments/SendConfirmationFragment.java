@@ -620,7 +620,6 @@ public class SendConfirmationFragment extends Fragment {
             String message;
             if (txResult != null) {
                 mActivity.popFragment(); // stop the sending screen
-                getFragmentManager().executePendingTransactions();
                 if (txResult.getError() == tABC_CC.ABC_CC_InsufficientFunds) {
                     message = failInsufficientMessage;
                 } else {
