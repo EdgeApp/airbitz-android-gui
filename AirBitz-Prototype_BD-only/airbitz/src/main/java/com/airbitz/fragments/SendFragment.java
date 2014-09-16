@@ -460,6 +460,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     }
 
     public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
         Fragment fragment = new SendConfirmationFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_UUID, isUUID);
