@@ -87,6 +87,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mUUIDorURI;
     private String mLabel;
     private Boolean mIsUUID;
+    private long mAmountMax;
     private long mAmountToSendSatoshi=0;
     private long mFees;
 
@@ -121,7 +122,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -458,6 +458,7 @@ public class SendConfirmationFragment extends Fragment {
             if(max<0) {
                 Common.LogD(TAG, "Max calculation error");
             }
+            mAmountMax = max;
             mAmountToSendSatoshi = max;
             mAutoUpdatingTextFields = true;
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
@@ -466,6 +467,7 @@ public class SendConfirmationFragment extends Fragment {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
 
             calculateFees();
+            mPinEdittext.requestFocus();
             mAutoUpdatingTextFields = false;
         }
 
@@ -476,8 +478,9 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void calculateFees() {
-        if(mCalculateFeesTask != null)
+        if (mCalculateFeesTask != null) {
             mCalculateFeesTask.cancel(true);
+        }
         mCalculateFeesTask = new CalculateFeesTask();
         mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -516,19 +519,25 @@ public class SendConfirmationFragment extends Fragment {
 
     private void UpdateFeeFields(Long fees) {
         mAutoUpdatingTextFields = true;
-        if(fees<0) {
+        int color = Color.WHITE;
+        if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+            color = getResources().getColor(R.color.max_orange);
+            mMaxButton.setBackgroundResource(R.drawable.bg_btn_orange);
+        } else {
+            color = Color.WHITE;
+            mMaxButton.setBackgroundResource(R.drawable.bg_btn_green);
+        }
+        if (fees < 0) {
             mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
-        }
-        else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi())
-        {
-            mConversionTextView.setTextColor(Color.WHITE);
-            mBitcoinField.setTextColor(Color.WHITE);
-            mFiatField.setTextColor(Color.WHITE);
+        } else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
+            mConversionTextView.setTextColor(color);
+            mBitcoinField.setTextColor(color);
+            mFiatField.setTextColor(color);
 
             String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false);
             mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
@@ -658,6 +667,10 @@ public class SendConfirmationFragment extends Fragment {
         mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
         mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
         super.onResume();
+
+        if (mFees > 0) {
+            UpdateFeeFields(mFees);
+        }
     }
 
     @Override public void onPause() {
