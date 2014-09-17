@@ -19,7 +19,7 @@ import com.airbitz.R;
 import java.io.File;
 
 public class BaseActivity extends FragmentActivity {
-    private final int DIALOG_TIMEOUT_MILLIS = 60000;
+    private final int DIALOG_TIMEOUT_MILLIS = 120000;
     Handler mHandler;
 
     public void showModalProgress(final boolean show) {
