@@ -279,7 +279,7 @@ static double doublep_value(double *obj) {
 }
 
 
-#include "ABC_android.h"
+#include "ABC.h"
 
 
 long * p64_t_to_long_ptr(int64_t * x) {
@@ -6342,22 +6342,21 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GenerateRequestQRCode(
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jlong jarg7, jlong jarg8, jobject jarg8_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jobject jarg5_, jlong jarg6, jlong jarg7, jobject jarg7_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
   tABC_TxDetails *arg5 = (tABC_TxDetails *) 0 ;
-  tABC_Request_Callback arg6 = (tABC_Request_Callback) 0 ;
-  void *arg7 = (void *) 0 ;
-  tABC_Error *arg8 = (tABC_Error *) 0 ;
+  char **arg6 = (char **) 0 ;
+  tABC_Error *arg7 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg5_;
-  (void)jarg8_;
+  (void)jarg7_;
   arg1 = 0;
   if (jarg1) {
     arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
@@ -6379,10 +6378,9 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JN
     if (!arg4) return 0;
   }
   arg5 = *(tABC_TxDetails **)&jarg5; 
-  arg6 = *(tABC_Request_Callback *)&jarg6; 
-  arg7 = *(void **)&jarg7; 
-  arg8 = *(tABC_Error **)&jarg8; 
-  result = (tABC_CC)ABC_InitiateSendRequest((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7,arg8);
+  arg6 = *(char ***)&jarg6; 
+  arg7 = *(tABC_Error **)&jarg7; 
+  result = (tABC_CC)ABC_InitiateSendRequest((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
   jresult = (jint)result; 
   if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
@@ -6392,22 +6390,21 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateSendRequest(JN
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateTransfer(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jlong jarg5, jlong jarg6, jlong jarg7, jobject jarg7_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateTransfer(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jlong jarg5, jlong jarg6, jobject jarg6_) {
   jint jresult = 0 ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   tABC_TransferDetails *arg3 = (tABC_TransferDetails *) 0 ;
   tABC_TxDetails *arg4 = (tABC_TxDetails *) 0 ;
-  tABC_Request_Callback arg5 = (tABC_Request_Callback) 0 ;
-  void *arg6 = (void *) 0 ;
-  tABC_Error *arg7 = (tABC_Error *) 0 ;
+  char **arg5 = (char **) 0 ;
+  tABC_Error *arg6 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg3_;
   (void)jarg4_;
-  (void)jarg7_;
+  (void)jarg6_;
   arg1 = 0;
   if (jarg1) {
     arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
@@ -6420,10 +6417,9 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1InitiateTransfer(JNIEn
   }
   arg3 = *(tABC_TransferDetails **)&jarg3; 
   arg4 = *(tABC_TxDetails **)&jarg4; 
-  arg5 = *(tABC_Request_Callback *)&jarg5; 
-  arg6 = *(void **)&jarg6; 
-  arg7 = *(tABC_Error **)&jarg7; 
-  result = (tABC_CC)ABC_InitiateTransfer((char const *)arg1,(char const *)arg2,arg3,arg4,arg5,arg6,arg7);
+  arg5 = *(char ***)&jarg5; 
+  arg6 = *(tABC_Error **)&jarg6; 
+  result = (tABC_CC)ABC_InitiateTransfer((char const *)arg1,(char const *)arg2,arg3,arg4,arg5,arg6);
   jresult = (jint)result; 
   if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);

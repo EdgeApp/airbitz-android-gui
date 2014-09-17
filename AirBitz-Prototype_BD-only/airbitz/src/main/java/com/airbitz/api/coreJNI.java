@@ -351,8 +351,8 @@ public class coreJNI {
   public final static native int ABC_FinalizeReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CancelReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GenerateRequestQRCode(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
-  public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
-  public final static native int ABC_InitiateTransfer(String jarg1, String jarg2, long jarg3, tABC_TransferDetails jarg3_, long jarg4, tABC_TxDetails jarg4_, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_InitiateSendRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_InitiateTransfer(String jarg1, String jarg2, long jarg3, tABC_TransferDetails jarg3_, long jarg4, tABC_TxDetails jarg4_, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_CalcSendFees(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, tABC_TxDetails jarg6_, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_MaxSpendable(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);

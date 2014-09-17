@@ -601,7 +601,6 @@ public class SendConfirmationFragment extends Fragment {
         private Wallet mFromWallet;
         private final String mAddress;
         private final long mSatoshi;
-        private String failInsufficientMessage = getResources().getString(R.string.fragment_send_failure_insufficient_funds);
 
         SendOrTransferTask(Wallet fromWallet, String address, long amount) {
             mFromWallet = fromWallet;
@@ -617,7 +616,6 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected CoreAPI.TxResult doInBackground(Void... params) {
             Common.LogD(TAG, "Initiating SEND");
-            ((NavigationActivity)getActivity()).startSendFundsTimer();
             return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
         }
 
@@ -625,15 +623,12 @@ public class SendConfirmationFragment extends Fragment {
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
             mSendOrTransferTask = null;
-            String message;
-            if (txResult != null) {
+            if (txResult.getError() != null ) {
                 mActivity.popFragment(); // stop the sending screen
-                if (txResult.getError() == tABC_CC.ABC_CC_InsufficientFunds) {
-                    message = failInsufficientMessage;
-                } else {
-                    message = (txResult.getTxId());
-                }
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), message);
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+            } else {
+                if(mActivity!=null)
+                    mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
             }
         }
 
