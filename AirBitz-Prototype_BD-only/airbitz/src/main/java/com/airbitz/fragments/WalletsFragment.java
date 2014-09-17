@@ -262,6 +262,7 @@ public class WalletsFragment extends Fragment
         mAddWalletDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mAddWalletDoneButton.setEnabled(false);
                 goDone();
             }
         });
@@ -269,6 +270,7 @@ public class WalletsFragment extends Fragment
         mAddWalletCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mAddWalletCancelButton.setEnabled(false);
                 goCancel();
             }
         });
@@ -513,21 +515,25 @@ public class WalletsFragment extends Fragment
     }
 
 
-    public void showDialogWalletType(){
-        if(mAddWalletLayout.getVisibility() == View.VISIBLE)
+    public void showDialogWalletType() {
+        if (mAddWalletLayout.getVisibility() == View.VISIBLE) {
             return;
-            mAddWalletNameEditText.setText("");
-            mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
-            mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
-            mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
-            mAddWalletNameEditText.setHintTextColor(getResources().getColor(R.color.text_hint));
-            mAddWalletOnOffSwitch.setChecked(false);
+        }
+        mAddWalletCancelButton.setEnabled(true);
+        mAddWalletDoneButton.setEnabled(true);
 
-            Animation mSlideInTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_top);
-            mAddWalletLayout.startAnimation(mSlideInTop);
-            mAddWalletLayout.setVisibility(View.VISIBLE);
-            mInvisibleCover.setVisibility(View.VISIBLE);
-            mAddWalletNameEditText.requestFocus();
+        mAddWalletNameEditText.setText("");
+        mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
+        mAddWalletOfflineTextView.setTextColor(getResources().getColor(R.color.identifier_off_text));
+        mAddWalletNameEditText.setHint(getString(R.string.fragment_wallets_addwallet_name_hint));
+        mAddWalletNameEditText.setHintTextColor(getResources().getColor(R.color.text_hint));
+        mAddWalletOnOffSwitch.setChecked(false);
+
+        Animation mSlideInTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_top);
+        mAddWalletLayout.startAnimation(mSlideInTop);
+        mAddWalletLayout.setVisibility(View.VISIBLE);
+        mInvisibleCover.setVisibility(View.VISIBLE);
+        mAddWalletNameEditText.requestFocus();
     }
 
     private void goDone(){
