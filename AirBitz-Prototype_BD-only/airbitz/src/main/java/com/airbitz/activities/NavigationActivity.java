@@ -64,7 +64,6 @@ import net.hockeyapp.android.UpdateManager;
 public class NavigationActivity extends BaseActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
-        CoreAPI.OnSentFunds,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
@@ -119,7 +118,6 @@ public class NavigationActivity extends BaseActivity
         initiateCore();
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnSentFundsListener(this);
         mCoreAPI.setOnDataSyncListener(this);
         mCoreAPI.setOnBlockHeightChangeListener(this);
         mCoreAPI.setOnOnRemotePasswordChangeListener(this);
@@ -580,70 +578,31 @@ public class NavigationActivity extends BaseActivity
 
     // callback for funds sent
     private String mIncomingUUID, mIncomingTxID;
-    @Override
+
     public void onSentFunds(String walletUUID, String txId) {
-        Common.LogD(TAG, "onSentFunds uuid, txid = "+walletUUID+", "+txId);
+        Common.LogD(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         mIncomingUUID = walletUUID;
         mIncomingTxID = txId;
 
-        mHandler.post(switchWalletsRunnable);
-   }
+        getFragmentManager().executePendingTransactions();
 
-    final Runnable switchWalletsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mHandler.removeCallbacks(sendFundsRunner);
-            getFragmentManager().executePendingTransactions();
-
-            while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
-                Common.LogD(TAG, "onSentFunds Send thread detected, removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
-                popFragmentImmediate(Tabs.SEND.ordinal());
-            }
-            Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
-            mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
-
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-            bundle.putBoolean(WalletsFragment.CREATE, true);
-            bundle.putString(Transaction.TXID, mIncomingTxID);
-            bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
-
-            Common.LogD(TAG, "onSentFunds calling switchToWallets");
-            switchToWallets(bundle);
+        while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
+            Common.LogD(TAG, "onSentFunds Send thread detected, removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+            popFragmentImmediate(Tabs.SEND.ordinal());
         }
-    };
+        Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
+        mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
 
-    public void startSendFundsTimer() {
-        mHandler.postDelayed(sendFundsRunner, 60000);
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+        bundle.putBoolean(WalletsFragment.CREATE, true);
+        bundle.putString(Transaction.TXID, mIncomingTxID);
+        bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+
+        Common.LogD(TAG, "onSentFunds calling switchToWallets");
+        switchToWallets(bundle);
     }
-
-    final Runnable sendFundsRunner = new Runnable() {
-        @Override
-        public void run() {
-            Common.LogD(TAG, "Send Funds timeout switchToWallets");
-            ShowOkMessageDialog("SEND FUNDS HANG", "Timeout occurred after 60 seconds");
-        }
-    };
-
-//    private String mSendCheckUUID;
-//    private long mSendCheckTime = 0;
-//    public void setWalletToCheckDuringSendInterval(String uuid) {
-//        Common.LogD(TAG, "Setting wallet to check on send");
-//        mSendCheckUUID = uuid;
-//        mSendCheckTime = System.currentTimeMillis();
-//    }
-
-//    private void checkSendWalletUUID() {
-//        if(mSendCheckUUID!=null) {
-//            Common.LogD(TAG, "Checking for recent transaction");
-//            Wallet wallet = mCoreAPI.getWalletFromUUID(mSendCheckUUID);
-//            Transaction transaction = mCoreAPI.loadAllTransactions(wallet).get(0);
-//            if((mSendCheckTime - transaction.getDate()*1000) < 10000) { // within 10 seconds
-//                ShowOkMessageDialog("SEND FUNDS HANG", "Block Height or Data Sync came before onSentFunds");
-//            }
-//        }
-//    }
 
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
