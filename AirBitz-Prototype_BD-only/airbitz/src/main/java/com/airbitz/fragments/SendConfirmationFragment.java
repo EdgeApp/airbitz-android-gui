@@ -179,7 +179,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
-        String balance = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(mSourceWallet.getBalanceSatoshi(), true, false);
+        String balance = mCoreAPI.formatSatoshi(mSourceWallet.getBalanceSatoshi(), true);
         mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
         if(mToWallet!=null) {
             mToEdittext.setText(mToWallet.getName());

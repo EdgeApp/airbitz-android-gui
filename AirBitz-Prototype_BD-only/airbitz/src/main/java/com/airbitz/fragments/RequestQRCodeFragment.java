@@ -316,8 +316,8 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private String getEmailContent(String fullName) {
-        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8, 8);
-        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5, 5);
+        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8);
+        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5);
 
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
