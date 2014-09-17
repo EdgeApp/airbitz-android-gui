@@ -15,11 +15,11 @@
 %apply char * { unsigned char * }
 
 %{
-#include "ABC_android.h"
+#include "ABC.h"
 %}
 
 /* Let's just grab the original header file here */
-%include "ABC_android.h"
+%include "ABC.h"
 
 %pointer_cast(int64_t *, long *, p64_t_to_long_ptr);
 %pointer_cast(int64_t *, double *, p64_t_to_double_ptr);

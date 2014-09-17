@@ -269,12 +269,12 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_GenerateRequestQRCode(szUserName, szPassword, szWalletUUID, szRequestID, SWIGTYPE_p_p_char.getCPtr(pszURI), SWIGTYPE_p_p_unsigned_char.getCPtr(paData), SWIGTYPE_p_unsigned_int.getCPtr(pWidth), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_InitiateSendRequest(String szUserName, String szPassword, String szWalletUUID, String szDestAddress, tABC_TxDetails pDetails, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_InitiateSendRequest(szUserName, szPassword, szWalletUUID, szDestAddress, tABC_TxDetails.getCPtr(pDetails), pDetails, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_InitiateSendRequest(String szUserName, String szPassword, String szWalletUUID, String szDestAddress, tABC_TxDetails pDetails, SWIGTYPE_p_p_char szTxId, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_InitiateSendRequest(szUserName, szPassword, szWalletUUID, szDestAddress, tABC_TxDetails.getCPtr(pDetails), pDetails, SWIGTYPE_p_p_char.getCPtr(szTxId), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_InitiateTransfer(String szUserName, String szPassword, tABC_TransferDetails pTransfer, tABC_TxDetails pDetails, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_InitiateTransfer(szUserName, szPassword, tABC_TransferDetails.getCPtr(pTransfer), pTransfer, tABC_TxDetails.getCPtr(pDetails), pDetails, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_InitiateTransfer(String szUserName, String szPassword, tABC_TransferDetails pTransfer, tABC_TxDetails pDetails, SWIGTYPE_p_p_char szTxId, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_InitiateTransfer(szUserName, szPassword, tABC_TransferDetails.getCPtr(pTransfer), pTransfer, tABC_TxDetails.getCPtr(pDetails), pDetails, SWIGTYPE_p_p_char.getCPtr(szTxId), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_CalcSendFees(String szUserName, String szPassword, String szWalletUUID, String szDestAddress, boolean bTransfer, tABC_TxDetails pDetails, SWIGTYPE_p_int64_t pTotalFees, tABC_Error pError) {
