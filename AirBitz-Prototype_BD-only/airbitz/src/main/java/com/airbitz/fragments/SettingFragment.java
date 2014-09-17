@@ -32,6 +32,7 @@ import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.utils.Common;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,8 +43,18 @@ import java.util.Set;
  * Created on 2/12/14.
  */
 public class SettingFragment extends Fragment {
+    private final String TAG = getClass().getSimpleName();
 
     private static final int MAX_TIME_VALUE = 60;
+
+    static final int USD_NUM = 840;
+    static final int CAD_NUM = 124;
+    static final int EUR_NUM = 978;
+    static final int PESO_NUM = 484;
+    static final int YUAN_NUM = 156;
+
+    static final String[] USD_EXCHANGES = new String[] { "Bitstamp", "Coinbase" };
+    static final String[] OTHER_EXCHANGES = new String[] { "Coinbase" };
 
     private RelativeLayout mCategoryContainer;
 
@@ -333,22 +344,17 @@ public class SettingFragment extends Fragment {
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
-        Set<String> exchangeSources = new HashSet<String>();
-        for(int i=0; i<mExchanges.size(); i++) {
-            exchangeSources.add(mExchanges.get(i).getSource());
-        }
-        String[] exchanges = exchangeSources.toArray(new String[exchangeSources.size()]);
 
-        mUSDollarButton.setText(exchangeForCurrencyNum(840));
-        mUSDExchangeItems = exchanges;
-        mCanadianDollarButton.setText(exchangeForCurrencyNum(124));
-        mCanadianExchangeItems = exchanges;;
-        mEuroButton.setText(exchangeForCurrencyNum(978));
-        mEuroExchangeItems = exchanges;;
-        mPesoButton.setText(exchangeForCurrencyNum(484));
-        mPesoExchangeItems = exchanges;;
-        mYuanButton.setText(exchangeForCurrencyNum(156));
-        mYuanExchangeItems = exchanges;;
+        mUSDollarButton.setText(exchangeForCurrencyNum(USD_NUM));
+        mUSDExchangeItems = USD_EXCHANGES;
+        mCanadianDollarButton.setText(exchangeForCurrencyNum(CAD_NUM));
+        mCanadianExchangeItems = OTHER_EXCHANGES;
+        mEuroButton.setText(exchangeForCurrencyNum(EUR_NUM));
+        mEuroExchangeItems = OTHER_EXCHANGES;
+        mPesoButton.setText(exchangeForCurrencyNum(PESO_NUM));
+        mPesoExchangeItems = OTHER_EXCHANGES;
+        mYuanButton.setText(exchangeForCurrencyNum(YUAN_NUM));
+        mYuanExchangeItems = OTHER_EXCHANGES;
     }
 
     // searches the exchanges in the settings for the exchange associated with the given currency number
@@ -363,28 +369,6 @@ public class SettingFragment extends Fragment {
             }
         }
         return szRetVal;
-    }
-
-    // sets the exchange for the given currency in the settings
-    void setExchange(String szSourceSel, int currencyNum) {
-            // if there are currently any sources
-            if (mExchanges.size() > 0) {
-                boolean bReplaced = false;
-                // look through all the sources
-                for (CoreAPI.ExchangeRateSource source : mExchanges) {
-                    if (source.getmCurrencyNum() == currencyNum) {
-                        source.setSzSource(szSourceSel);
-                        bReplaced = true;
-                        break;
-                    }
-                }
-                if (!bReplaced) { // add the source
-                    mCoreAPI.addExchangeRateSource(szSourceSel, currencyNum);
-                }
-            } else {
-                // add our first and only source
-                mCoreAPI.addExchangeRateSource(szSourceSel, currencyNum);
-            }
     }
 
     private void saveCurrentSettings() {
@@ -424,8 +408,26 @@ public class SettingFragment extends Fragment {
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
-        //Default Exchanges TODO
-//            mCoreSettings.set(USD_EXCHANGE, mUSDollarButton.getText().toString());
+        // Default Exchanges
+        for (CoreAPI.ExchangeRateSource source : mExchanges) {
+            switch (source.getCurrencyNum()) {
+                case USD_NUM:
+                    source.setSzSource(mUSDollarButton.getText().toString());
+                    break;
+                case CAD_NUM:
+                    source.setSzSource(mCanadianDollarButton.getText().toString());
+                    break;
+                case EUR_NUM:
+                    source.setSzSource(mEuroButton.getText().toString());
+                    break;
+                case PESO_NUM:
+                    source.setSzSource(mPesoButton.getText().toString());
+                    break;
+                case YUAN_NUM:
+                    source.setSzSource(mYuanButton.getText().toString());
+                    break;
+            }
+        }
 
         //Advanced Settings TODO
 
@@ -569,11 +571,7 @@ public class SettingFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                   int num = mTextPicker.getValue();
                                   button.setText(items[num]);
-//                                if(mCurrencyItems.equals(items)) {//TODO?
-//                                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[num];
-//                                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
-//                                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
-//                                }
+                                  saveCurrentSettings();
                             }
                         }
                 )
