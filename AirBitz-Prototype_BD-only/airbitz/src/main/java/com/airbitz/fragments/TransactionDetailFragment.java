@@ -955,7 +955,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
 
-        String currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(), false, false);
+        String currencyValue = null;
+        // If no value set, then calculate it
+        if (transaction.getAmountFiat() == 0.0) {
+            currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
+                                                    false, false);
+        } else {
+            currencyValue = mCoreAPI.formatCurrency(transaction.getAmountFiat(),
+                                                    mWallet.getCurrencyNum(), false);
+        }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
         mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
