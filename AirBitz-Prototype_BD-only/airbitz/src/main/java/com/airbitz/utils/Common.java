@@ -1,10 +1,12 @@
 package com.airbitz.utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -183,4 +186,26 @@ public class Common {
         }
         return dist;
     }
+
+    public static boolean isBadWalletName(String text) {
+        return text == null || text.trim().isEmpty();
+    }
+
+    public static void alertBadWalletName(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        builder.setMessage(activity.getResources().getString(R.string.error_invalid_wallet_name_description))
+                .setTitle(activity.getString(R.string.error_invalid_wallet_name_title))
+                .setCancelable(false)
+                .setNeutralButton(activity.getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
 }

@@ -192,7 +192,7 @@ public class WalletFragment extends Fragment
                 if (hasFocus) {
                     ((NavigationActivity) getActivity()).showSoftKeyboard(mWalletNameEditText);
                 } else {
-                    if (!isBadWalletName()) {
+                    if (!Common.isBadWalletName(mWalletNameEditText.getText().toString())) {
                         mWallet.setName(mWalletNameEditText.getText().toString());
                         mCoreAPI.renameWallet(mWallet);
                     }
@@ -204,8 +204,8 @@ public class WalletFragment extends Fragment
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (isBadWalletName()) {
-                        alertBadWalletName();
+                    if (Common.isBadWalletName(mWalletNameEditText.getText().toString())) {
+                        Common.alertBadWalletName(WalletFragment.this.getActivity());
                         return false;
                     } else {
                         ((NavigationActivity) getActivity()).hideSoftKeyboard(mWalletNameEditText);
@@ -396,27 +396,6 @@ public class WalletFragment extends Fragment
             super.onCancelled();
         }
     }
-
-    private boolean isBadWalletName() {
-        return mWalletNameEditText.getText().toString().trim().isEmpty();
-    }
-
-    private void alertBadWalletName() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.error_invalid_wallet_name_description))
-                .setTitle(getString(R.string.error_invalid_wallet_name_title))
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
 
     private void SetSearchVisibility(boolean visible) {
         if(visible) {
