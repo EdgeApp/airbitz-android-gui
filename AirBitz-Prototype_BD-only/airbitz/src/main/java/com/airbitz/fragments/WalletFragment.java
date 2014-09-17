@@ -186,18 +186,33 @@ public class WalletFragment extends Fragment
         mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
         mWalletNameEditText.setText(mWallet.getName());
-
         mWalletNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     ((NavigationActivity) getActivity()).showSoftKeyboard(mWalletNameEditText);
                 } else {
-                    if (!mWalletNameEditText.getText().toString().trim().isEmpty()) {
+                    if (!isBadWalletName()) {
                         mWallet.setName(mWalletNameEditText.getText().toString());
                         mCoreAPI.renameWallet(mWallet);
                     }
                 }
+            }
+        });
+
+        mWalletNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (isBadWalletName()) {
+                        alertBadWalletName();
+                        return false;
+                    } else {
+                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mWalletNameEditText);
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
@@ -256,34 +271,6 @@ public class WalletFragment extends Fragment
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     ((NavigationActivity) getActivity()).hideSoftKeyboard(mSearchField);
                     return true;
-                }
-                return false;
-            }
-        });
-
-        mWalletNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (mWalletNameEditText.getText().toString().trim().isEmpty()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-                        builder.setMessage(getResources().getString(R.string.error_invalid_wallet_name_description))
-                                .setTitle(getString(R.string.error_invalid_wallet_name_title))
-                                .setCancelable(false)
-                                .setNeutralButton(getResources().getString(R.string.string_ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-                                            }
-                                        }
-                                );
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                        return false;
-                    } else {
-                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mWalletNameEditText);
-                        return true;
-                    }
                 }
                 return false;
             }
@@ -408,6 +395,26 @@ public class WalletFragment extends Fragment
             mSearchTask = null;
             super.onCancelled();
         }
+    }
+
+    private boolean isBadWalletName() {
+        return mWalletNameEditText.getText().toString().trim().isEmpty();
+    }
+
+    private void alertBadWalletName() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getResources().getString(R.string.error_invalid_wallet_name_description))
+                .setTitle(getString(R.string.error_invalid_wallet_name_title))
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
