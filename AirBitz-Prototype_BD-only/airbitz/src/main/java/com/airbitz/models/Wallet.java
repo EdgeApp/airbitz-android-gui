@@ -98,7 +98,7 @@ public class Wallet {
         mBalanceFormatted = amount;
     }
     public String getBalanceFormatted(){
-        mBalanceFormatted = mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(getBalanceSatoshi(), true, false);
+        mBalanceFormatted = mCoreAPI.formatSatoshi(getBalanceSatoshi(), true);
         return mBalanceFormatted;
     }
 

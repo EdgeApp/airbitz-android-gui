@@ -1211,14 +1211,10 @@ public class CoreAPI {
     }
 
     public String formatSatoshi(long amount, boolean withSymbol) {
-        return formatSatoshi(amount, withSymbol, userDecimalPlaces(), 2);
+        return formatSatoshi(amount, withSymbol, userDecimalPlaces());
     }
 
-    public String formatSatoshi(long amount, boolean withSymbol, int round) {
-        return formatSatoshi(amount, withSymbol, userDecimalPlaces(), round);
-    }
-
-    public String formatSatoshi(long amount, boolean withSymbol, int decimals, int round) {
+    public String formatSatoshi(long amount, boolean withSymbol, int decimals) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
@@ -1234,7 +1230,6 @@ public class CoreAPI {
             return "";
         }
         else {
-            String pFormatted = getStringAtPtr(core.longp_value(lp));
             decimalPlaces = decimals > -1 ? decimals : decimalPlaces;
             String pretext = "";
             if (negative) {
@@ -1247,7 +1242,7 @@ public class CoreAPI {
             BigDecimal bd = new BigDecimal(amount);
             bd = bd.movePointLeft(decimalPlaces);
 
-            bd = bd.setScale(2, RoundingMode.HALF_UP);
+            bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
             bd = bd.stripTrailingZeros();
             return pretext+bd.toPlainString();
         }

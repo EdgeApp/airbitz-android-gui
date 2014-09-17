@@ -505,7 +505,7 @@ public class WalletFragment extends Fragment
         }
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
-        mButtonBitcoinBalance.setText(mCoreAPI.getUserBTCSymbol()+" "+mCoreAPI.FormatDefaultCurrency(totalSatoshis, true, false));
+        mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
         String temp = mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
         mButtonFiatBalance.setText(temp);
         if(mOnBitcoinMode) {
