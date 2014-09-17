@@ -915,7 +915,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             s.append("\n");
 
             start = s.length();
-            s.append(mCoreAPI.getUserBTCSymbol() + " " + mCoreAPI.FormatDefaultCurrency(feesSatoshi, true, false))
+            s.append(mCoreAPI.formatSatoshi(feesSatoshi, true))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -945,7 +945,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if (transaction.getAmountSatoshi() < 0)
         {
             coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
-            feeFormatted = "+" + mCoreAPI.FormatDefaultCurrency(transaction.getMinerFees() + transaction.getABFees(), true, false) + " fee";
+            feeFormatted = "+" + mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + " fee";
         }
         else
         {
