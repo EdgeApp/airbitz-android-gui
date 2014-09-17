@@ -40,6 +40,8 @@ import com.airbitz.utils.Common;
 public class SendConfirmationFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
+    private final String SATOSHIS = "satoshisToSave";
+
     private TextView mFromEdittext;
     private TextView mToEdittext;
     private EditText mPinEdittext;
@@ -64,6 +66,8 @@ public class SendConfirmationFragment extends Fragment {
 
     private EditText mFiatField;
     private EditText mBitcoinField;
+    private String mSavedBitcoin;
+    private String mSavedFiat;
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -88,7 +92,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mLabel;
     private Boolean mIsUUID;
     private long mAmountMax;
-    private long mAmountToSendSatoshi=0;
+    private long mAmountToSendSatoshi;
     private long mFees;
 
     private CoreAPI mCoreAPI;
@@ -121,6 +125,8 @@ public class SendConfirmationFragment extends Fragment {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
         }
+
+        mAutoUpdatingTextFields = true;
     }
 
     @Override
@@ -644,17 +650,19 @@ public class SendConfirmationFragment extends Fragment {
         mParentLayout.requestFocus(); //Take focus away first
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mAutoUpdatingTextFields = true;
-        if(mAmountToSendSatoshi==0) {
-            mBitcoinField.setText("");
-            mFiatField.setText("");
-            mFiatField.requestFocus();
-        } else {
-            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
+        mAutoUpdatingTextFields = false;
+
+        if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mPinEdittext.requestFocus();
+        } else {
+            if(mSavedBitcoin!=null) {
+                mBitcoinField.setText(mSavedBitcoin);
+            } else {
+                mFiatField.setText("");
+                mBitcoinField.setText("");
+            }
         }
-        mAutoUpdatingTextFields = false;
 
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
@@ -662,14 +670,14 @@ public class SendConfirmationFragment extends Fragment {
         mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
         mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
         super.onResume();
-
-        if (mFees > 0) {
-            UpdateFeeFields(mFees);
-        }
     }
 
     @Override public void onPause() {
         super.onPause();
+        mSavedBitcoin = mBitcoinField.getText().toString();
+        mSavedFiat = mFiatField.getText().toString();
+        mBitcoinField = null;
+        mFiatField = null;
         if(mCalculateFeesTask !=null)
             mCalculateFeesTask.cancel(true);
     }
