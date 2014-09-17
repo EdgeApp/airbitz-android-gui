@@ -262,7 +262,6 @@ public class WalletsFragment extends Fragment
         mAddWalletDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAddWalletDoneButton.setEnabled(false);
                 goDone();
             }
         });
@@ -270,7 +269,6 @@ public class WalletsFragment extends Fragment
         mAddWalletCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAddWalletCancelButton.setEnabled(false);
                 goCancel();
             }
         });
@@ -551,6 +549,8 @@ public class WalletsFragment extends Fragment
     }
 
     private void goCancel() { //CANCEL
+        mAddWalletCancelButton.setEnabled(false);
+        mAddWalletDoneButton.setEnabled(false);
         ((NavigationActivity) getActivity()).hideSoftKeyboard(mParentLayout);
         mHandler.postDelayed(mDelayedAnimation, 100);
     }
