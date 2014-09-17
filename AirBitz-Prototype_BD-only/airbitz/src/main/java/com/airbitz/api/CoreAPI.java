@@ -149,12 +149,6 @@ public class CoreAPI {
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
 
-        if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds && info.getStatus().getCode() != tABC_CC.ABC_CC_Ok) {
-            String stuff = info.getStatus().getCode()+": "+info.getStatus().getSzDescription()+": "+info.getStatus().getSzSourceFile()+": "+info.getStatus().getSzSourceFunc()+": "+info.getStatus().getNSourceLine();
-            Common.LogD(TAG, "SentFunds Async Error info = "+stuff);
-            return;
-        }
-
         Common.LogD(TAG, "asyncBitCoinInfo callback type = "+type.toString());
         if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
             if (mOnIncomingBitcoin != null) {
@@ -163,15 +157,6 @@ public class CoreAPI {
                 mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
             } else
                 Common.LogD(TAG, "incoming bitcoin event has no listener");
-        } else if(type==tABC_AsyncEventType.ABC_AsyncEventType_SentFunds) {
-                if(mOnSentFunds!=null) {
-                    mIncomingUUID = info.getSzWalletUUID();
-                    mIncomingTxID = info.getSzTxID();
-                    Common.LogD(TAG, "SentFunds uuid, TxID = "+mIncomingUUID+", "+mIncomingTxID);
-                    mPeriodicTaskHandler.post(SentFundsUpdater);
-                }
-                else
-                    Common.LogD(TAG, "sent funds event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
@@ -207,19 +192,6 @@ public class CoreAPI {
     final Runnable IncomingBitcoinUpdater = new Runnable() {
         public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID); }
     };
-
-    // Callback interface when an incoming bitcoin is received
-    private OnSentFunds mOnSentFunds;
-    public interface OnSentFunds {
-        public void onSentFunds(String walletUUID, String txId);
-    }
-    public void setOnSentFundsListener(OnSentFunds listener) {
-        mOnSentFunds = listener;
-    }
-    final Runnable SentFundsUpdater = new Runnable() {
-        public void run() { mOnSentFunds.onSentFunds(mIncomingUUID, mIncomingTxID); }
-    };
-
 
     // Callback interface when a block height change is received
     private OnBlockHeightChange mOnBlockHeightChange;
@@ -1490,20 +1462,20 @@ public class CoreAPI {
     }
 
     public class TxResult {
-        private String txid;
+        private String txid=null;
         public String getTxId() { return txid; }
 
         public void setTxId(String txid) { this.txid = txid; }
 
-        private tABC_CC error;
-        public tABC_CC getError() { return error; }
+        private String error=null;
+        public String getError() { return error; }
 
-        public void setError(tABC_CC error) { this.error = error; }
+        public void setError(String error) { this.error = error; }
     }
 
     //this is a blocking call
     public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
-        TxResult txResult = null;
+        TxResult txResult = new TxResult();
 
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWalletFromUUID(destinationAddress);
@@ -1530,9 +1502,8 @@ public class CoreAPI {
             details.setSzCategory("");
             details.setAttributes(0x2); //for our own use (not used by the core)
 
-            SWIGTYPE_p_long lp = core.new_longp();
-            SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
-            SWIGTYPE_p_void pVoid = new SWIGTYPE_p_void(SWIGTYPE_p_p_char.getCPtr(pRequestID), false);
+            SWIGTYPE_p_long txid = core.new_longp();
+            SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
 
             if (destinationWallet.getUUID() != null) {
                 tABC_TransferDetails Transfer = new tABC_TransferDetails();
@@ -1544,25 +1515,23 @@ public class CoreAPI {
                 Transfer.setSzDestName(sourceWallet.getName());
                 Transfer.setSzDestCategory("Transfer:Wallet:" + sourceWallet.getName());
 
-                result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, null, pVoid, error);
+                result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, pTxId, error);
             } else {
                 result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        sourceWallet.getUUID(), destinationAddress, details, null, pVoid, error);
+                        sourceWallet.getUUID(), destinationAddress, details, pTxId, error);
             }
 
             if (result != tABC_CC.ABC_CC_Ok) {
                 Common.LogD(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
                         error.getSzSourceFunc() + " " + error.getNSourceLine());
-                txResult = new TxResult();
-                txResult.setError(result);
-                txResult.setTxId(error.getSzDescription());
+                txResult.setError(error.getSzDescription());
             } else {
                 Common.LogD(TAG, "Core InitiateTransferOrSend successful");
+                txResult.setTxId(getStringAtPtr(core.longp_value(txid)));
             }
         } else {
-            Common.LogD(TAG, "Initiate transfer - nothing to send");
-            txResult = new TxResult();
-            txResult.setTxId("Initiate transfer, send amount negative = "+String.valueOf(satoshi));
+            Common.LogD(TAG, "Initiate transfer - no funds to send");
+            txResult.setError("Initiate transfer - no funds to send");
         }
         return txResult;
     }

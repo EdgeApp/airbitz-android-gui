@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ABC_android.h>
+#include <ABC.h>
 #include <android/log.h>
 
 /*
