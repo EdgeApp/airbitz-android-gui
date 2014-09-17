@@ -2,13 +2,13 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -531,7 +531,7 @@ public class WalletsFragment extends Fragment
     }
 
     private void goDone(){
-        if(!mAddWalletNameEditText.getText().toString().isEmpty() && mAddWalletNameEditText.getText().toString().trim().length() > 0) {
+        if(!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
                 int[] nums = mCoreAPI.getCurrencyNumbers();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
@@ -540,7 +540,7 @@ public class WalletsFragment extends Fragment
             }
             goCancel();
         } else {
-            goCancel();
+            Common.alertBadWalletName(this.getActivity());
         }
     }
 
