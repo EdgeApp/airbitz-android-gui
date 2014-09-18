@@ -122,7 +122,7 @@ public class WalletsFragment extends Fragment
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-        mLatestWalletList = mCoreAPI.loadWallets();
+        mLatestWalletList = mCoreAPI.loadWallets(false);
     }
 
     @Override
@@ -466,10 +466,9 @@ public class WalletsFragment extends Fragment
     @Override
     public void onWalletUpdated() {
         Common.LogD(TAG, "wallet list updated");
-        refreshWalletListView(mCoreAPI.loadWallets());
+        refreshWalletListView(mCoreAPI.loadWallets(false));
         UpdateBalances();
     }
-
 
     /**
      * Represents an asynchronous creation of the first wallet
@@ -502,7 +501,7 @@ public class WalletsFragment extends Fragment
             if (!success) {
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
-                refreshWalletListView(mCoreAPI.loadWallets());
+                refreshWalletListView(mCoreAPI.loadWallets(false));
             }
         }
 
