@@ -629,12 +629,12 @@ public class SendConfirmationFragment extends Fragment {
         protected void onPostExecute(final CoreAPI.TxResult txResult) {
             Common.LogD(TAG, "SEND done");
             mSendOrTransferTask = null;
-            if (txResult.getError() != null ) {
-                mActivity.popFragment(); // stop the sending screen
-                if(mActivity!=null) {
-                    Common.LogD(TAG, "Error during send "+txResult.getError());
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
-                }
+            if (txResult.getError() != null) {
+                Common.LogD(TAG, "Error during send "+txResult.getError());
+//                if(mActivity!=null) {
+//                    mActivity.popFragment(); // stop the sending screen
+//                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+//                }
             } else {
                 if(mActivity!=null)
                     mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
