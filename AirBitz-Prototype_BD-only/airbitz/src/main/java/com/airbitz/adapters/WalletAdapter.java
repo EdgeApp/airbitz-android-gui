@@ -149,8 +149,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 titleTextView.setText(wallet.getName());
             }
             if(mIsBitcoin) {
-                amountTextView.setText(wallet.getBalanceFormatted()
-                        + mContext.getResources().getString(R.string.no_break_space_character));
+                amountTextView.setText(mCoreAPI.formatSatoshi(wallet.getBalanceSatoshi(), true));
             } else {
                 long satoshi = wallet.getBalanceSatoshi();
                 String temp = mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, true);

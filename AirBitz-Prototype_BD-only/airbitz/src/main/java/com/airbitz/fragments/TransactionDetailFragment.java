@@ -219,7 +219,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if(mView==null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         } else {
-            return mView;
+//            return mView;
         }
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());

@@ -309,7 +309,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 if(!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
                     currency = Double.parseDouble(fiat);
                     satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-                    mBitcoinField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), true, false));
+                    mBitcoinField.setText(mCoreAPI.formatSatoshi(satoshi, false));
                 } else {
                     Common.LogD(TAG, "Too much fiat");
                 }

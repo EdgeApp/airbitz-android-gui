@@ -144,7 +144,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
 
         if(mSearch){
-            String btcCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshisAbs, true, false);
+            String btcCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, true);
             viewHolder.creditAmountTextView.setText(btcSymbol+" "+btcCurrency);
 
             String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
@@ -165,8 +165,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
             if (mIsBitcoin) {
-                String walletCurrency = mCoreAPI.FormatDefaultCurrency(transactionSatoshisAbs, true, false);
-                String totalCurrency = mCoreAPI.FormatDefaultCurrency(mRunningSatoshi[position], true, false);
+                String walletCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, false);
+                String totalCurrency = mCoreAPI.formatSatoshi(mRunningSatoshi[position], false);
 
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
