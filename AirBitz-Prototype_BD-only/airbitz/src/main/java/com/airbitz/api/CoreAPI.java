@@ -237,10 +237,13 @@ public class CoreAPI {
     };
 
     //***************** Wallet handling
-
     public List<Wallet> loadWallets() {
+        return loadWallets(true);
+    }
+
+    public List<Wallet> loadWallets(boolean withTransactions) {
         List<Wallet> list = new ArrayList<Wallet>();
-        List<Wallet> coreList = getCoreWallets(true);
+        List<Wallet> coreList = getCoreWallets(withTransactions);
 
         if(coreList==null)
             coreList = new ArrayList<Wallet>();
@@ -1823,8 +1826,8 @@ public class CoreAPI {
                     in.setAttributes(wi.getAttributes());
                     in.setCurrencyNum(wi.getCurrencyNum());
                     in.setLoading(wi.getCurrencyNum() == -1);
-                    if(withTransactions) {
-                        in.setTransactions(wi.getTransactions());
+                    if (withTransactions) {
+                        in.setTransactions(loadAllTransactions(in));
                     }
                     mWallets.add(in);
             }
@@ -1837,7 +1840,7 @@ public class CoreAPI {
     }
 
     public List<Wallet> getCoreActiveWallets() {
-        List<Wallet> wallets = getCoreWallets(true);
+        List<Wallet> wallets = getCoreWallets(false);
         List<Wallet> out = new ArrayList<Wallet>();
         for(Wallet w: wallets) {
             if(!w.isArchived())
