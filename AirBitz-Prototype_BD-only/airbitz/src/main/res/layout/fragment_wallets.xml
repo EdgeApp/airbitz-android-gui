@@ -123,7 +123,7 @@
         android:layout_marginTop="44.1dp"
         android:focusableInTouchMode="true"
         android:id="@+id/fragment_wallets_addwallet_layout"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <EditText
             android:layout_width="match_parent"
@@ -147,6 +147,7 @@
             android:layout_height="25.2dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
+            android:layout_marginBottom="6dp"
             android:visibility="visible">
 
             <TextView
@@ -216,16 +217,17 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="37.8dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="12.6dp"
             android:layout_marginTop="12.6dp"
             android:gravity="center">
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_cancel_button"
-                android:layout_width="138.6dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="6.3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/btn_cancel"
                 android:text="@string/string_cancel"
                 android:textSize="16sp"
@@ -234,9 +236,10 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_done_button"
-                android:layout_width="138.6dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="6.3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/btn_green"
                 android:text="@string/string_done"
                 android:textSize="16sp"
