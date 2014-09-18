@@ -494,20 +494,20 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         return crackString;
     }
 
-    /**
-     * Represents an asynchronous account creation task
-     */
-    private ChangeTask mChangeTask;
-
     @Override
     public boolean onBackPress() {
         mActivity.hideSoftKeyboard(getView());
         if(mMode==SIGNUP)
-            mActivity.Logout();
+            mActivity.noSignup();
         else
             mActivity.popFragment();
         return true;
     }
+
+    /**
+     * Represents an asynchronous account creation task
+     */
+    private ChangeTask mChangeTask;
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
         tABC_CC success;

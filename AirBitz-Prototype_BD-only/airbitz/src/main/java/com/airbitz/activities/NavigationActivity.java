@@ -758,6 +758,12 @@ public class NavigationActivity extends BaseActivity
         DisplayLoginOverlay(false);
     }
 
+    public void noSignup() {
+        popFragment();
+        showNavBar();
+        DisplayLoginOverlay(true);
+    }
+
     public void finishSignup() {
         showNavBar();
         switchFragmentThread(AirbitzApplication.getLastNavTab());
