@@ -2300,4 +2300,14 @@ public class CoreAPI {
                     pError.getNSourceLine()));
         }
     }
+
+    public void logout() {
+        stopAllAsyncUpdates();
+
+        tABC_Error error = new tABC_Error();
+        tABC_CC result = core.ABC_ClearKeyCache(error);
+        if(result != tABC_CC.ABC_CC_Ok) {
+            Common.LogD(TAG, error.toString());
+        }
+    }
 }
