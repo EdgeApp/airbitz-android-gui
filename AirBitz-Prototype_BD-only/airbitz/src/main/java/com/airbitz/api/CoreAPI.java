@@ -1163,11 +1163,8 @@ public class CoreAPI {
             pre = withSymbol ? denom : "";
         }
         BigDecimal bd = new BigDecimal(in);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
         bd = bd.stripTrailingZeros();
-
-        MathContext mc = new MathContext(2);
-        bd = bd.round(mc);
 
         return pre+bd.toPlainString();
     }
