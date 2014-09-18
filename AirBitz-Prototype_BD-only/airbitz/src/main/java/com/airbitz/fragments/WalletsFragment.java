@@ -183,7 +183,7 @@ public class WalletsFragment extends Fragment
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialogWalletType();
+                showAddWalletLayout();
             }
         });
 
@@ -513,12 +513,12 @@ public class WalletsFragment extends Fragment
     }
 
 
-    public void showDialogWalletType() {
+    public void showAddWalletLayout() {
         if (mAddWalletLayout.getVisibility() == View.VISIBLE) {
             return;
         }
-        mAddWalletCancelButton.setEnabled(true);
-        mAddWalletDoneButton.setEnabled(true);
+        mAddWalletCancelButton.setClickable(true);
+        mAddWalletDoneButton.setClickable(true);
 
         mAddWalletNameEditText.setText("");
         mAddWalletOnlineTextView.setTextColor(getResources().getColor(R.color.identifier_white));
@@ -549,8 +549,8 @@ public class WalletsFragment extends Fragment
     }
 
     private void goCancel() { //CANCEL
-        mAddWalletCancelButton.setEnabled(false);
-        mAddWalletDoneButton.setEnabled(false);
+        mAddWalletCancelButton.setClickable(false);
+        mAddWalletDoneButton.setClickable(false);
         ((NavigationActivity) getActivity()).hideSoftKeyboard(mParentLayout);
         mHandler.postDelayed(mDelayedAnimation, 100);
     }
