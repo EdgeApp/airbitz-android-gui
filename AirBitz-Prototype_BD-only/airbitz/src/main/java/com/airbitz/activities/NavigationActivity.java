@@ -488,7 +488,7 @@ public class NavigationActivity extends BaseActivity
         checkForCrashes();
         checkForUpdates();
 
-        registerServiceReceiver();
+//        registerServiceReceiver();
         startAirbitzService();
 
         mCoreAPI.connectWatchers();
@@ -500,7 +500,7 @@ public class NavigationActivity extends BaseActivity
                 DisplayLoginOverlay(true);
 
             mNavThreadId = Tabs.BD.ordinal();
-            askCredentialsFromService(); // if service is running, it has the credentials probably
+//            askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
@@ -519,7 +519,7 @@ public class NavigationActivity extends BaseActivity
 
     @Override public void onPause() {
         super.onPause();
-        unregisterReceiver(AirbitzServiceReceiver);
+//        unregisterReceiver(AirbitzServiceReceiver);
         mCoreAPI.stopAllAsyncUpdates();
     }
 
@@ -728,12 +728,12 @@ public class NavigationActivity extends BaseActivity
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
-            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+//            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
-            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
+//            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
             resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
@@ -764,7 +764,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void Logout() {
-        sendCredentialsToService(null, null);
+//        sendCredentialsToService(null, null);
         AirbitzApplication.Logout();
         DisplayLoginOverlay(false);
         mCoreAPI.resetCore();
@@ -832,11 +832,11 @@ public class NavigationActivity extends BaseActivity
         Common.LogD(TAG, "Asking for credentials");
     }
 
-    private void registerServiceReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AirbitzService.REPLY_CREDENTIALS);
-        registerReceiver(AirbitzServiceReceiver, filter);
-    }
+//    private void registerServiceReceiver() {
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(AirbitzService.REPLY_CREDENTIALS);
+//        registerReceiver(AirbitzServiceReceiver, filter);
+//    }
 
     private void startAirbitzService() {
         Intent i= new Intent(this, AirbitzService.class);
@@ -844,18 +844,18 @@ public class NavigationActivity extends BaseActivity
     }
 
     // For receiving Service queries
-    private BroadcastReceiver AirbitzServiceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Common.LogD(TAG, "Broadcast received: " + intent.getAction());
-            if (intent.getAction().equals(AirbitzService.REPLY_CREDENTIALS)) {
-                String username = intent.getStringExtra(AirbitzService.SERVICE_USERNAME);
-                String password = intent.getStringExtra(AirbitzService.SERVICE_PASSWORD);
-                Common.LogD(TAG, "Credentials received, logging in: "+username+", "+password);
-                attemptLogin(username, password);
-            }
-        }
-    };
+//    private BroadcastReceiver AirbitzServiceReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Common.LogD(TAG, "Broadcast received: " + intent.getAction());
+//            if (intent.getAction().equals(AirbitzService.REPLY_CREDENTIALS)) {
+//                String username = intent.getStringExtra(AirbitzService.SERVICE_USERNAME);
+//                String password = intent.getStringExtra(AirbitzService.SERVICE_PASSWORD);
+//                Common.LogD(TAG, "Credentials received, logging in: "+username+", "+password);
+//                attemptLogin(username, password);
+//            }
+//        }
+//    };
 
     private Fragment getNewBaseFragement(int id) {
         switch(id) {
