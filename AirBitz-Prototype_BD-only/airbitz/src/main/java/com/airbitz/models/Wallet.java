@@ -86,17 +86,13 @@ public class Wallet {
 
     public void setBalanceSatoshi(long bal) { mBalanceSatoshi = bal; }
     public long getBalanceSatoshi() {
-        List<Transaction> transactions = getTransactions();
-        mBalanceSatoshi = 0;
-        for(Transaction t : transactions) {
-            mBalanceSatoshi += t.getAmountSatoshi();
-        }
         return mBalanceSatoshi;
     }
 
     public void setBalanceFormatted(String amount){
         mBalanceFormatted = amount;
     }
+
     public String getBalanceFormatted(){
         mBalanceFormatted = mCoreAPI.formatSatoshi(getBalanceSatoshi(), true);
         return mBalanceFormatted;
@@ -107,9 +103,6 @@ public class Wallet {
     }
 
     public List<Transaction> getTransactions() {
-        if(mTransactions==null || mTransactions.size()==0) {
-            mTransactions = mCoreAPI.loadAllTransactions(this);
-        }
         return mTransactions;
     }
 }
