@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,7 +46,6 @@ import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.AirbitzService;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
@@ -104,6 +105,22 @@ public class NavigationActivity extends BaseActivity
 
     private int mFragmentViewHeight = 0;
     private int mNavBarViewHeight = 0;
+
+
+    //******************* HockeyApp support - COMMENT OUT FOR PRODUCTION!!!
+
+    private void checkForCrashes() {
+        CrashManager.register(this, "***REMOVED***");
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, "***REMOVED***");
+    }
+    //******************* end HockeyApp support
+
+
+
 
     // For Fragments to implement if they need to customize on back presses
     public interface OnBackPress {
@@ -488,8 +505,8 @@ public class NavigationActivity extends BaseActivity
         checkForCrashes();
         checkForUpdates();
 
-//        registerServiceReceiver();
-        startAirbitzService();
+        //Look for Connection change events
+        registerReceiver(ConnectivityChangeReceiver, new IntentFilter( ConnectivityManager.CONNECTIVITY_ACTION));
 
         mCoreAPI.connectWatchers();
 
@@ -500,7 +517,6 @@ public class NavigationActivity extends BaseActivity
                 DisplayLoginOverlay(true);
 
             mNavThreadId = Tabs.BD.ordinal();
-//            askCredentialsFromService(); // if service is running, it has the credentials probably
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.startAllAsyncUpdates();
@@ -508,19 +524,9 @@ public class NavigationActivity extends BaseActivity
         switchFragmentThread(mNavThreadId);
     }
 
-    private void checkForCrashes() {
-        CrashManager.register(this, "***REMOVED***");
-    }
-
-    private void checkForUpdates() {
-        // Remove this for store builds!
-        UpdateManager.register(this, "***REMOVED***");
-    }
-
     @Override public void onPause() {
         super.onPause();
-//        unregisterReceiver(AirbitzServiceReceiver);
-        mCoreAPI.stopAllAsyncUpdates();
+        unregisterReceiver(ConnectivityChangeReceiver);
     }
 
     /*
@@ -728,12 +734,10 @@ public class NavigationActivity extends BaseActivity
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
-//            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
-//            sendCredentialsToService(AirbitzApplication.getUsername(), AirbitzApplication.getPassword());
             resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
@@ -752,6 +756,7 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void startSignUp() {
+        hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
         Fragment frag = new SignUpFragment();
         pushFragmentNoAnimation(frag, mNavThreadId);
@@ -823,46 +828,6 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
-        //************************** Service support
-
-    private void sendCredentialsToService(String username, String password) {
-        final Intent intent = new Intent(AirbitzService.SET_CREDENTIALS);
-        intent.putExtra(AirbitzService.SERVICE_USERNAME, username);
-        intent.putExtra(AirbitzService.SERVICE_PASSWORD, password);
-        sendBroadcast(intent);
-        Common.LogD(TAG, "Sending credentials");
-    }
-
-    private void askCredentialsFromService() {
-        Intent appIntent = new Intent(AirbitzService.ASK_CREDENTIALS);
-        sendBroadcast(appIntent);
-        Common.LogD(TAG, "Asking for credentials");
-    }
-
-//    private void registerServiceReceiver() {
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(AirbitzService.REPLY_CREDENTIALS);
-//        registerReceiver(AirbitzServiceReceiver, filter);
-//    }
-
-    private void startAirbitzService() {
-        Intent i= new Intent(this, AirbitzService.class);
-        startService(i);
-    }
-
-    // For receiving Service queries
-//    private BroadcastReceiver AirbitzServiceReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Common.LogD(TAG, "Broadcast received: " + intent.getAction());
-//            if (intent.getAction().equals(AirbitzService.REPLY_CREDENTIALS)) {
-//                String username = intent.getStringExtra(AirbitzService.SERVICE_USERNAME);
-//                String password = intent.getStringExtra(AirbitzService.SERVICE_PASSWORD);
-//                Common.LogD(TAG, "Credentials received, logging in: "+username+", "+password);
-//                attemptLogin(username, password);
-//            }
-//        }
-//    };
 
     private Fragment getNewBaseFragement(int id) {
         switch(id) {
@@ -880,4 +845,47 @@ public class NavigationActivity extends BaseActivity
                 return null;
         }
     }
+
+    //************************ Connectivity support
+
+    public  boolean networkIsAvailable() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI")) {
+                if (ni.isConnected()) {
+                    Common.LogD(TAG, "Connection is WIFI");
+                    haveConnectedWifi = true;
+                }
+            }
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE")) {
+                if (ni.isConnected()) {
+                    Common.LogD(TAG, "Connection is MOBILE");
+                    haveConnectedMobile = true;
+                }
+            }
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+
+            if(extras!=null) {
+                if(networkIsAvailable()) {
+                    Common.LogD(TAG, "Connection available");
+                    mCoreAPI.startAllAsyncUpdates();
+                } else { // has connection
+                    Common.LogD(TAG, "Connection NOT available");
+                    mCoreAPI.stopAllAsyncUpdates();
+                    ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
+                }
+            }
+        }
+    };
 }
