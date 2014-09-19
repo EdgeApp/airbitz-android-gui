@@ -68,20 +68,28 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             textView.setText(business.getName());
             ImageView imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
-            p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(imageView);
+
+            if(business.getSquareProfileImage()!=null)
+                p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(imageView);
+
             TextView addressView = (TextView) convertView.findViewById(R.id.transaction_detail_item_address);
 
-            String s = business.getCountry();
-            if(!s.isEmpty() && !business.getState().isEmpty()){
-                s = business.getState()+ ", " + s;
+            // create the address
+            String strAddress = "";
+            if (business.getAddress()!=null) {
+                strAddress += business.getAddress();
             }
-            if(!s.isEmpty() && !business.getCity().isEmpty()){
-                s = business.getCity()+ ", " + s;
+            if (business.getCity()!=null) {
+                strAddress += (strAddress.length() > 0 ? ", " : "") + business.getCity();
             }
-            if(!s.isEmpty() && !business.getAddress().isEmpty()){
-                s = business.getAddress()+ ", " + s;
+            if (business.getState()!=null) {
+                strAddress += (strAddress.length() > 0 ? ", " : "") + business.getState();
             }
-            addressView.setText(s);
+            if (business.getPostalCode()!=null) {
+                strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
+            }
+
+            addressView.setText(strAddress);
             addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         }else if(mCombined.get(position) instanceof String){
             final String contactName = (String) mCombined.get(position);
