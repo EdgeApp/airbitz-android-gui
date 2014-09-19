@@ -150,16 +150,7 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectivityManager cm =
-                        (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                boolean isConnected = activeNetwork != null &&
-                        activeNetwork.isConnectedOrConnecting();
-                if(isConnected) {
-                    InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
-                    mgr.hideSoftInputFromWindow(mUserNameEditText.getWindowToken(), 0);
+                if( ((NavigationActivity)getActivity()).networkIsAvailable()) {
                     ((NavigationActivity) getActivity()).startSignUp();
                 } else {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
