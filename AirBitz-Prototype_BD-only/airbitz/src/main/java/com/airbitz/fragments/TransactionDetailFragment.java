@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -47,6 +46,7 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.SearchResult;
@@ -64,15 +64,18 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created on 2/20/14.
  */
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
+    private final int MIN_AUTOCOMPLETE = 5;
 
     private HighlightOnPressButton mDoneButton;
     private RelativeLayout         mAdvanceDetailsButtonLayout;
@@ -97,7 +100,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private View mDummyFocus;
 
-    private View popupTriangle;
 
     private CurrentLocationManager mLocationManager;
     private boolean locationEnabled;
@@ -136,9 +138,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
 
     private List<BusinessSearchResult> mBusinesses;
-    private List<BusinessSearchResult> mOriginalBusinesses;
+    private List<BusinessSearchResult> mNearBusinesses, mArrayOtherBusinesses;
     private List<String> mContactNames;
-    private List<Object> mCombined;
+    private List<String> mArrayAutoCompleteQueries;
+    private ConcurrentHashMap<String, String> mArrayThumbnailsToRetrieve;
+    private ConcurrentHashMap<String, String> mArrayThumbnailsRetrieving;
+    private ConcurrentHashMap<String, String> mThumbnailURLs;
+    private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mContactPhotos;
     private HashMap<String, Long> mBizIds;
     private long mBizId;
@@ -160,6 +166,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
 
     private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
+    private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
 
     private CoreAPI mCoreAPI;
     private View mView;
@@ -233,8 +240,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
-        popupTriangle = mView.findViewById(R.id.fragment_transactiondetail_listview_triangle);
-
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButtonLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_button_advanced_layout);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
@@ -272,12 +277,16 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mSearchListView = (ListView) mView.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
-        mOriginalBusinesses = new ArrayList<BusinessSearchResult>();
+        mNearBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
-        mCombined = new ArrayList<Object>();
+        mArrayAutoCompleteQueries = new ArrayList<String>();
+        mArrayAutoComplete = new ArrayList<Object>();
+        mArrayOtherBusinesses = new ArrayList<BusinessSearchResult>();
+        mArrayThumbnailsToRetrieve = new ConcurrentHashMap<String, String>();
+        mArrayThumbnailsRetrieving = new ConcurrentHashMap<String, String>();
         mContactPhotos = new LinkedHashMap<String, Uri>();
         mBizIds = new LinkedHashMap<String, Long>();
-        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mCombined, mContactPhotos);
+        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mArrayAutoComplete, mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
 
         goSearch();
@@ -449,20 +458,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mCombined.clear();
-                if (editable.toString().isEmpty()) {
-                    mCombined.addAll(mOriginalBusinesses);
-                } else {
-                    mContactPhotos.clear();
-                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
-                    mContactNames.clear();
-                    for(String s: mContactPhotos.keySet()) {
-                        mContactNames.add(s);
-                    }
-
-                    getMatchedBusinessList(editable.toString());
-                    combineMatchLists();
-                }
+                updateAutoCompleteArray();
+                updateBizId();
+                updatePhoto();
                 mSearchAdapter.notifyDataSetChanged();
             }
         });
@@ -509,7 +507,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else {
                     String name = (String) mSearchAdapter.getItem(i);
                     mPayeeEditText.setText(name);
-                    setContactImageFromName(name);
+                    updateBizId();
+                    updatePhoto();
                 }
                 mDateTextView.setVisibility(View.VISIBLE);
                 mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
@@ -521,6 +520,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else {
                     mDummyFocus.requestFocus();
                 }
+
+
             }
         });
 
@@ -651,11 +652,95 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         return mView;
     }
 
-    private void setContactImageFromName(String name) {
-        Uri payeeImage = mContactPhotos.get(name);
+    private void updateAutoCompleteArray() {
+        mArrayAutoComplete.clear();
+        if (mPayeeEditText.toString().isEmpty()) {
+            mArrayAutoComplete.addAll(mNearBusinesses);
+        } else {
+            mContactPhotos.clear();
+            mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+            mContactNames.clear();
+            for (String s : mContactPhotos.keySet()) {
+                mContactNames.add(s);
+            }
+
+            getMatchedBusinessList(mPayeeEditText.toString());
+            combineMatchLists();
+        }
+
+        String strTerm = mPayeeEditText.getText().toString();
+        // if there is anything in the payee field
+        if (!strTerm.isEmpty()) {
+
+            mArrayAutoComplete.clear();
+
+            // go through all the near businesses
+            mArrayAutoComplete.addAll(getMatchedBusinessList(strTerm));
+
+            // go through all the contacts
+            mContactPhotos.clear();
+            mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+            mContactNames.clear();
+            for (String s : mContactPhotos.keySet()) {
+                mContactNames.add(s);
+            }
+            mArrayAutoComplete.addAll(mContactNames);
+
+            // check if we have less than the minimum
+            if (mArrayAutoComplete.size() < MIN_AUTOCOMPLETE) {
+                // add the matches from other businesses
+                for (BusinessSearchResult business : mArrayOtherBusinesses) {
+                    // if it matches what the user has currently typed
+                    if (business.getName().contains(strTerm)) {
+                        // if it isn't already in the near array
+                        if (!mNearBusinesses.contains(business.getName())) {
+                            // add this business to the auto complete array
+                            mArrayAutoComplete.add(business.getName());
+
+                            // TODO make sure we have the thumbnail
+//                                    [self ifNeededResolveThumbnailForBusiness:strBusiness];
+                        }
+                    }
+                }
+
+                // issue an auto-complete request for it
+                startOnlineBusinessSearch(strTerm);
+            }
+
+//                    mArrayAutoComplete = [arrayAutoComplete sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        } else {
+            if (mFromRequest) {
+                // this is a receive so use the address book
+                mArrayAutoComplete.clear();
+                for (String contact : mContactNames)
+                    mArrayAutoComplete.add(contact);
+            } else {
+                // this is a sent so we must be looking for businesses
+
+                // since nothing in payee yet, just populate with businesses (already sorted by distance)
+                mArrayAutoComplete.clear();
+                for (BusinessSearchResult bsresult : mNearBusinesses)
+                    mArrayAutoComplete.add(bsresult);
+
+                // make sure we have the thumbnails for all of these businesses
+//                        for (NSString *strName in self.arrayNearBusinesses)
+//                        {
+//                            [self ifNeededResolveThumbnailForBusiness:strName];
+//                        }
+            }
+        }
+
+        // initiate any thumbnail resolves
+//                [self resolveOutstandingThumbnails];
+
+        // force the table to reload itself
+        mSearchAdapter.notifyDataSetChanged();
+    }
+
+    private void updatePhoto() {
+        Uri payeeImage = mContactPhotos.get(mPayeeEditText.getText().toString());
         if(mContactPhotos!=null && payeeImage!=null) {
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
-//            mPayeeImageView.setImageURI(null);
             mPayeeImageView.setImageURI(payeeImage);
         } else {
             mPayeeImageViewFrame.setVisibility(View.GONE);
@@ -934,7 +1019,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mToFromName.setText(pretext + transaction.getWalletName());
 
         mPayeeEditText.setText(transaction.getName());
-        setContactImageFromName(transaction.getName());
+        updatePhoto();
         mNoteEdittext.setText(transaction.getNotes());
         doEdit = true;
         mCategoryEdittext.setText(transaction.getCategory());
@@ -1019,13 +1104,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         protected void onPostExecute(String searchResult) {
             try {
                 mBusinesses.clear();
-                mCombined.clear();
-                mOriginalBusinesses.clear();
+                mArrayAutoComplete.clear();
+                mNearBusinesses.clear();
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 mBusinesses.addAll(results.getBusinessSearchObjectArray());
-                mOriginalBusinesses.addAll(mBusinesses);
+                mNearBusinesses.addAll(mBusinesses);
                 if (mPayeeEditText.getText().toString().isEmpty()) {
-                    mCombined.addAll(mBusinesses);
+                    mArrayAutoComplete.addAll(mBusinesses);
                 } else {
                     mContactPhotos.clear();
                     mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
@@ -1069,57 +1154,106 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             amountFiat = 0.0;
         }
         mTransaction.setAmountFiat(amountFiat);
+        mTransaction.setmBizId(mBizId);
         mCoreAPI.storeTransaction(mTransaction);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
-    class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
+    private void startOnlineBusinessSearch(String term) {
+        if(!mArrayAutoCompleteQueries.contains(term)) {
+            mArrayAutoCompleteQueries.add(term);
+            mOnlineBusinessSearchAsyncTask = new OnlineBusinessSearchAsyncTask();
+            mOnlineBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, term);
+        }
+    }
+
+    class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, List<Business>> {
         private AirbitzAPI api = AirbitzAPI.getApi();
 
         public OnlineBusinessSearchAsyncTask() {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
-            return api.getSearchByRadius("16093", "", strings[0], "", "1");
+        protected List<Business> doInBackground(String... strings) {
+            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
         }
 
         @Override
-        protected void onPostExecute(String searchResult) {
-//            try {
-//                mBusinesses.clear();
-//                mCombined.clear();
-//                mOriginalBusinesses.clear();
-//                SearchResult results = new SearchResult(new JSONObject(searchResult));
-//                mBusinesses.addAll(results.getBusinessSearchObjectArray());
-//                mOriginalBusinesses.addAll(mBusinesses);
-//                if (mPayeeEditText.getText().toString().isEmpty()) {
-//                    mCombined.addAll(mBusinesses);
-//                } else {
-//                    mContactPhotos.clear();
-//                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
-//                    mContactNames.clear();
-//                    for(String s: mContactPhotos.keySet()) {
-//                        mContactNames.add(s);
-//                    }
-//                    getMatchedBusinessList(mPayeeEditText.getText().toString());
-//                    combineMatchLists();
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//                this.cancel(true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                this.cancel(true);
-//            }
-//            mSearchAdapter.notifyDataSetChanged();
+        protected void onPostExecute(List<Business> businesses) {
+            for(Business business : businesses) {
+                BusinessSearchResult bsresult = new BusinessSearchResult(business.getId(), business.getName());
+                if(!mArrayOtherBusinesses.contains(bsresult)) {
+                    mArrayOtherBusinesses.add(bsresult);
+                }
+                if(!mBizIds.containsKey(bsresult.getName()) && !bsresult.getId().isEmpty()) {
+                    mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
+                }
+                updateAutoCompleteArray();
+                updateBizId();
+            }
+
         }
 
         @Override
         protected void onCancelled() {
-            mBusinessSearchAsyncTask = null;
+            mOnlineBusinessSearchAsyncTask = null;
             super.onCancelled();
+        }
+    }
+
+    private void resolveOutstandingThumbnails()
+    {
+        for (int i = mArrayThumbnailsToRetrieve.size()-1; i >= 0; i--)
+        {
+            String strName = mArrayThumbnailsToRetrieve.get(i);
+            getThumbnailForBusiness(strName);
+            mArrayThumbnailsToRetrieve.remove(i);
+        }
+    }
+
+    private void ifNeededResolveThumbnailForBusiness(String strName)
+    {
+        // if we don't already have it, it isn't being resolved and it isn't queued to be resolved
+        if (mContactPhotos.containsKey(strName) &&
+            (!mArrayThumbnailsRetrieving.contains(strName) &&
+            !mArrayThumbnailsToRetrieve.contains(strName)))
+        {
+            // add it to those to retrieve
+            mArrayThumbnailsToRetrieve.put(strName, "");
+        }
+    }
+
+    private void getThumbnailForBusiness(String strName)
+    {
+        String strThumbnailURL = mThumbnailURLs.get(strName);
+
+        if (!strThumbnailURL.isEmpty())
+        {
+            mArrayThumbnailsRetrieving.put(strName, strThumbnailURL);
+
+//            // create the search query
+//            String strURL = [NSString stringWithFormat:@"%@%@", SERVER_URL, strThumbnailURL];
+//
+//            // run the query - note we are using perform selector so it is handled on a seperate run of the run loop to avoid callback issues
+//            [self performSelector:@selector(issueRequests:) withObject:@{ strURL : strName } afterDelay:0.0];
+        }
+    }
+
+    class BusinessThumbnailAsyncTask extends AsyncTask<String, Integer, List<Business>> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+
+        public BusinessThumbnailAsyncTask() {
+        }
+
+        @Override
+        protected List<Business> doInBackground(String... strings) {
+            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
+        }
+
+        @Override
+        protected void onPostExecute(List<Business> businesses) {
+
         }
     }
 
@@ -1138,70 +1272,48 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         cur.close();
     }
 
-//    public void getMatchedContactsList(String searchTerm) {
-//        ContentResolver cr = getActivity().getContentResolver();
-//        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-//                columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
-//        if (cur.getCount() > 0) {
-//            mContactNames.clear();
-//            mContactPhotos.clear();
-//            while (cur.moveToNext()) {
-//                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-//                if (photoURI != null) {
-//                    Uri thumbUri = Uri.parse(photoURI);
-//                    mContactPhotos.put(name, thumbUri);
-//                }
-//            }
-//            for (String s : mContactPhotos.keySet()) {
-//                mContactNames.add(s);
-//            }
-//        }
-//        cur.close();
-//    }
-
-    public void getMatchedBusinessList(String searchTerm) {
+    public List<BusinessSearchResult> getMatchedBusinessList(String searchTerm) {
         mBusinesses.clear();
-        for (int i = 0; i < mOriginalBusinesses.size(); i++) {
-            if (mOriginalBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
+        for (int i = 0; i < mNearBusinesses.size(); i++) {
+            if (mNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
                 int j = 0;
                 boolean flag = false;
                 while (!flag && j != mBusinesses.size()) {
-                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mOriginalBusinesses.get(i).getName().toLowerCase()) > 0) {
-                        mBusinesses.add(j, mOriginalBusinesses.get(i));
+                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mNearBusinesses.get(i).getName().toLowerCase()) > 0) {
+                        mBusinesses.add(j, mNearBusinesses.get(i));
                         flag = true;
                     }
                     j++;
                 }
                 if (j == mBusinesses.size() && !flag) {
-                    mBusinesses.add(mOriginalBusinesses.get(i));
+                    mBusinesses.add(mNearBusinesses.get(i));
                 }
             }
         }
+        return mBusinesses;
     }
 
     public void combineMatchLists() {
         while (!mBusinesses.isEmpty() | !mContactNames.isEmpty()) {
             if (mBusinesses.isEmpty()) {
-                mCombined.add(mContactNames.get(0));
+                mArrayAutoComplete.add(mContactNames.get(0));
                 mContactNames.remove(0);
             } else if (mContactNames.isEmpty()) {
-                mCombined.add(mBusinesses.get(0));
+                mArrayAutoComplete.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
             } else if (mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase()) < 0) {
-                mCombined.add(mBusinesses.get(0));
+                mArrayAutoComplete.add(mBusinesses.get(0));
                 mBusinesses.remove(0);
             } else {
-                mCombined.add(mContactNames.get(0));
+                mArrayAutoComplete.add(mContactNames.get(0));
                 mContactNames.remove(0);
             }
         }
     }
 
     public void goSearch() {
-        mCombined.clear();
-        mOriginalBusinesses.clear();
+        mArrayAutoComplete.clear();
+        mNearBusinesses.clear();
         mBusinesses.clear();
         if (locationEnabled) {
             if (mLocationManager.getLocation() != null) {
