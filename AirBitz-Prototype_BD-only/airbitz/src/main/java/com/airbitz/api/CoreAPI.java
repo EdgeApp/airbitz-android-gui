@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -74,6 +76,8 @@ public class CoreAPI {
         mInstance = null;
     }
 
+    private Context mContext;
+
     public native String getStringAtPtr(long pointer);
     public native byte[] getBytesAtPtr(long pointer, int length);
     public native long get64BitLongAtPtr(long pointer);
@@ -109,6 +113,7 @@ public class CoreAPI {
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
         }
+        mContext = context;
     }
 
     public void setupAccountSettings() {
@@ -268,6 +273,9 @@ public class CoreAPI {
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
     public boolean createWallet(String username, String password, String walletName, int currencyNum) {
+        if (!hasConnectivity()) {
+            return false;
+        }
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
@@ -399,7 +407,9 @@ public class CoreAPI {
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         tABC_CC result = core.ABC_SignIn(username, password, null, pVoid, pError);
-
+        if (result == tABC_CC.ABC_CC_Ok) {
+            accountSync(username, password);
+        }
         return result == tABC_CC.ABC_CC_Ok;
     }
 
@@ -1706,6 +1716,23 @@ public class CoreAPI {
         }
     }
 
+    private boolean hasConnectivity() {
+        ConnectivityManager cm =
+            (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    private boolean accountSync(String username, String password) {
+        tABC_Error error = new tABC_Error();
+        if (hasConnectivity()) {
+            coreDataSyncAccount(username, password, tABC_Error.getCPtr(error));
+            return true;
+        }
+        return false;
+    }
+
     private SyncDataTask mSyncDataTask;
     private boolean mDataFetched = false;
     public class SyncDataTask extends AsyncTask<Void, String, Void> {
@@ -1719,17 +1746,18 @@ public class CoreAPI {
         @Override
         protected Void doInBackground(Void... voids) {
             // Sync Account
-            tABC_Error error = new tABC_Error();
-            coreDataSyncAccount(AirbitzApplication.getUsername(),
-                                AirbitzApplication.getPassword(),
-                                tABC_Error.getCPtr(error));
+            accountSync(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword());
 
+            tABC_Error error = new tABC_Error();
             List<String> uuids = loadWalletUUIDs();
             for (String uuid : uuids) {
-                coreDataSyncWallet(AirbitzApplication.getUsername(),
-                                   AirbitzApplication.getPassword(),
-                                   uuid,
-                                   tABC_Error.getCPtr(error));
+                if (hasConnectivity()) {
+                    coreDataSyncWallet(AirbitzApplication.getUsername(),
+                                    AirbitzApplication.getPassword(),
+                                    uuid,
+                                    tABC_Error.getCPtr(error));
+                }
                 publishProgress(uuid);
             }
             return null;
@@ -2191,8 +2219,14 @@ public class CoreAPI {
         String oldPIN = GetUserPIN();
 
         Common.LogD(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
-        return core.ABC_ChangePassword(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-            password, oldPIN, null, null, Error);
+        tABC_CC cc = core.ABC_ChangePassword(
+                        AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        password, oldPIN, null, null, Error);
+        if (tABC_CC.ABC_CC_Ok == cc) {
+            accountSync(AirbitzApplication.getUsername(), password);
+        }
+        return cc;
     }
 
     public boolean recoveryAnswers(String strAnswers, String strUserName)
@@ -2213,10 +2247,14 @@ public class CoreAPI {
         }
     }
 
-
     public tABC_CC ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers, String password, String pin) {
         tABC_Error Error = new tABC_Error();
-        return core.ABC_ChangePasswordWithRecoveryAnswers(username, recoveryAnswers, password, pin, null, null, Error);
+        tABC_CC cc = core.ABC_ChangePasswordWithRecoveryAnswers(
+                        username, recoveryAnswers, password, pin, null, null, Error);
+        if (tABC_CC.ABC_CC_Ok == cc) {
+            accountSync(username, password);
+        }
+        return cc;
     }
 
     public BitcoinURIInfo CheckURIResults(String results)
