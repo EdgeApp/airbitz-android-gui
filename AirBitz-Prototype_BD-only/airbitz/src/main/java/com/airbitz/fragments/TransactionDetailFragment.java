@@ -1051,7 +1051,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(mCoreAPI.FiatCurrencyAcronym());
+        mFiatDenominationLabel.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
+
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 
         mBTCFeeTextView.setText(feeFormatted);
