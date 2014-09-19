@@ -49,7 +49,11 @@ public class BaseActivity extends FragmentActivity {
         }
     };
 
+    AlertDialog mMessageDialog;
     public void ShowOkMessageDialog(String title, String message) {
+        if(mMessageDialog!=null) {
+            mMessageDialog.dismiss();
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(title)
@@ -60,8 +64,8 @@ public class BaseActivity extends FragmentActivity {
                                 dialog.cancel();
                             }
                         });
-        AlertDialog alert = builder.create();
-        alert.show();
+        mMessageDialog = builder.create();
+        mMessageDialog.show();
     }
 
     public void ShowMessageDialogBackPress(String title, String reason) {
