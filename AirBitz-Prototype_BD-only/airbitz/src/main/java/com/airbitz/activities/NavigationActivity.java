@@ -587,13 +587,6 @@ public class NavigationActivity extends BaseActivity
 
         getFragmentManager().executePendingTransactions();
 
-        while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
-            Common.LogD(TAG, "onSentFunds Send thread detected, removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
-            popFragmentImmediate(Tabs.SEND.ordinal());
-        }
-        Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
-        mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
-
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
         bundle.putBoolean(WalletsFragment.CREATE, true);
@@ -602,6 +595,13 @@ public class NavigationActivity extends BaseActivity
 
         Common.LogD(TAG, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
+
+        while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
+            Common.LogD(TAG, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+            mNavStacks[Tabs.SEND.ordinal()].pop();
+        }
+        Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
+        mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
     }
 
     // Callback interface when a wallet could be updated
