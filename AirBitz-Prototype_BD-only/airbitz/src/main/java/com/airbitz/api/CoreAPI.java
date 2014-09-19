@@ -1709,7 +1709,7 @@ public class CoreAPI {
 
     public void syncAllData()
     {
-        if (AirbitzApplication.isLoggedIn()) {
+        if (AirbitzApplication.isLoggedIn() && hasConnectivity()) {
             if(mSyncDataTask==null) {
                 mSyncDataTask = new SyncDataTask();
                 mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
