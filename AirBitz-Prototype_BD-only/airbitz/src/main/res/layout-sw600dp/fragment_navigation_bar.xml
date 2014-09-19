@@ -6,65 +6,66 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/fragment_navigation_bar_popup_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="127.2" >
         <ImageView
-            android:layout_width="136dp"
-            android:layout_height="127.2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:id="@+id/popup_directory_button"
             android:background="@drawable/tab_popup_directory"
-            android:padding="15dp"
+            android:layout_marginRight="-16dp"
             android:visibility="invisible"
+            android:layout_weight="1"
             />
 
         <ImageView
-            android:layout_width="152dp"
-            android:layout_height="127.2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:id="@+id/popup_request_button"
             android:background="@drawable/tab_popup_request"
-            android:layout_toRightOf="@id/popup_directory_button"
-            android:layout_marginLeft="-32dp"
-            android:layout_marginStart="0dp"
-            android:padding="15dp"
+            android:layout_marginLeft="-16dp"
+            android:layout_marginRight="-16dp"
             android:visibility="invisible"
+            android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="154dp"
-            android:layout_height="127.2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:id="@+id/popup_send_button"
             android:background="@drawable/tab_popup_send"
-            android:layout_centerHorizontal="true"
-            android:padding="15dp"
             android:visibility="invisible"
+            android:layout_marginLeft="-16dp"
+            android:layout_marginRight="-16dp"
+            android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="153dp"
-            android:layout_height="127.2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:id="@+id/popup_wallet_button"
             android:background="@drawable/tab_popup_wallet"
-            android:layout_toRightOf="@id/popup_send_button"
-            android:layout_marginLeft="-33dp"
-            android:padding="15dp"
+            android:layout_marginLeft="-16dp"
+            android:layout_marginRight="-16dp"
             android:visibility="invisible"
+            android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="136dp"
-            android:layout_height="127.2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:id="@+id/popup_setting_button"
             android:background="@drawable/tab_popup_settings"
-            android:layout_alignParentRight="true"
-            android:padding="15dp"
+            android:layout_marginLeft="-16dp"
             android:visibility="invisible"
+            android:layout_weight="1"
             />
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
