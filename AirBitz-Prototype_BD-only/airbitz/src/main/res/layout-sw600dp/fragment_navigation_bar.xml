@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:id="@+id/fragment_navigation_bar_popup_container"
         android:layout_width="match_parent"
-        android:layout_height="127.2" >
+        android:layout_height="127.2dp" >
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
