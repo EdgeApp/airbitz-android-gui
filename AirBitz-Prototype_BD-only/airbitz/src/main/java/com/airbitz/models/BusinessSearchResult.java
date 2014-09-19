@@ -57,6 +57,11 @@ public class BusinessSearchResult {
         mDistance = distance;
     }
 
+    public BusinessSearchResult(String bizId, String bizName) {
+        mBizId = bizId;
+        mBizName = bizName;
+    }
+
     public BusinessSearchResult(JSONObject jsonResponse) throws JSONException{
         if(jsonResponse != null){
             if(jsonResponse.has("bizId")){
