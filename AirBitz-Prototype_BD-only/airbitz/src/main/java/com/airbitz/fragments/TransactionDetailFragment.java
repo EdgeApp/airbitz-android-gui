@@ -23,6 +23,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -49,6 +50,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -61,10 +63,10 @@ import com.airbitz.utils.Common;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -138,12 +140,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
 
     private List<BusinessSearchResult> mBusinesses;
-    private List<BusinessSearchResult> mNearBusinesses, mArrayOtherBusinesses;
+    private List<BusinessSearchResult> mArrayNearBusinesses, mArrayOtherBusinesses;
     private List<String> mContactNames;
     private List<String> mArrayAutoCompleteQueries;
-    private ConcurrentHashMap<String, String> mArrayThumbnailsToRetrieve;
-    private ConcurrentHashMap<String, String> mArrayThumbnailsRetrieving;
-    private ConcurrentHashMap<String, String> mThumbnailURLs;
+    private List<String> mArrayThumbnailsToRetrieve, mArrayThumbnailsRetrieving;
+    private ConcurrentHashMap<String, String> mThumbnailURLs, mArrayAddresses;
     private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mContactPhotos;
     private HashMap<String, Long> mBizIds;
@@ -165,7 +166,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Wallet mWallet;
     private Transaction mTransaction;
 
-    private BusinessSearchAsyncTask mBusinessSearchAsyncTask = null;
+    private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
 
     private CoreAPI mCoreAPI;
@@ -194,25 +195,28 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
-                if (mTransaction.getCategory().isEmpty()) {
-                    currentType = defaultCat.toString() + ":";
-                } else if (mTransaction.getCategory().startsWith("Income:")) {
-                    currentType = "Income:";
-                    catSelected = true;
-                } else if (mTransaction.getCategory().startsWith("Expense:")) {
-                    currentType = "Expense:";
-                    catSelected = true;
-                } else if (mTransaction.getCategory().startsWith("Transfer:")) {
-                    currentType = "Transfer:";
-                    catSelected = true;
-                } else if (mTransaction.getCategory().startsWith("Exchange:")) {
-                    currentType = "Exchange:";
-                    catSelected = true;
-                }
+                if(mTransaction!=null) {
+                    if (mTransaction.getCategory().isEmpty()) {
+                        currentType = defaultCat.toString() + ":";
+                    } else if (mTransaction.getCategory().startsWith("Income:")) {
+                        currentType = "Income:";
+                        catSelected = true;
+                    } else if (mTransaction.getCategory().startsWith("Expense:")) {
+                        currentType = "Expense:";
+                        catSelected = true;
+                    } else if (mTransaction.getCategory().startsWith("Transfer:")) {
+                        currentType = "Transfer:";
+                        catSelected = true;
+                    } else if (mTransaction.getCategory().startsWith("Exchange:")) {
+                        currentType = "Exchange:";
+                        catSelected = true;
+                    }
 
-                // if there is a bizId, add it as the first one of the map
-                if(mTransaction.getmBizId()!=0) {
-                    mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
+                    // if there is a bizId, add it as the first one of the map
+                    if (mTransaction.getmBizId() != 0) {
+                        mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
+                        mBizId = mTransaction.getmBizId();
+                    }
                 }
             }
         }
@@ -277,13 +281,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mSearchListView = (ListView) mView.findViewById(R.id.listview_search);
         mBusinesses = new ArrayList<BusinessSearchResult>();
-        mNearBusinesses = new ArrayList<BusinessSearchResult>();
+        mArrayNearBusinesses = new ArrayList<BusinessSearchResult>();
         mContactNames = new ArrayList<String>();
         mArrayAutoCompleteQueries = new ArrayList<String>();
         mArrayAutoComplete = new ArrayList<Object>();
         mArrayOtherBusinesses = new ArrayList<BusinessSearchResult>();
-        mArrayThumbnailsToRetrieve = new ConcurrentHashMap<String, String>();
-        mArrayThumbnailsRetrieving = new ConcurrentHashMap<String, String>();
+        mArrayThumbnailsToRetrieve = new ArrayList<String>();
+        mArrayThumbnailsRetrieving = new ArrayList<String>();
+        mArrayAddresses = new ConcurrentHashMap<String, String>();
+        mThumbnailURLs = new ConcurrentHashMap<String, String>();
         mContactPhotos = new LinkedHashMap<String, Uri>();
         mBizIds = new LinkedHashMap<String, Long>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mArrayAutoComplete, mContactPhotos);
@@ -653,21 +659,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void updateAutoCompleteArray() {
-        mArrayAutoComplete.clear();
-        if (mPayeeEditText.toString().isEmpty()) {
-            mArrayAutoComplete.addAll(mNearBusinesses);
-        } else {
-            mContactPhotos.clear();
-            mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
-            mContactNames.clear();
-            for (String s : mContactPhotos.keySet()) {
-                mContactNames.add(s);
-            }
-
-            getMatchedBusinessList(mPayeeEditText.toString());
-            combineMatchLists();
-        }
-
         String strTerm = mPayeeEditText.getText().toString();
         // if there is anything in the payee field
         if (!strTerm.isEmpty()) {
@@ -679,7 +670,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             // go through all the contacts
             mContactPhotos.clear();
-            mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
+            mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), strTerm));
             mContactNames.clear();
             for (String s : mContactPhotos.keySet()) {
                 mContactNames.add(s);
@@ -693,12 +684,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     // if it matches what the user has currently typed
                     if (business.getName().contains(strTerm)) {
                         // if it isn't already in the near array
-                        if (!mNearBusinesses.contains(business.getName())) {
+                        if (!mArrayNearBusinesses.contains(business.getName())) {
                             // add this business to the auto complete array
-                            mArrayAutoComplete.add(business.getName());
-
-                            // TODO make sure we have the thumbnail
-//                                    [self ifNeededResolveThumbnailForBusiness:strBusiness];
+                            mArrayAutoComplete.add(business);
                         }
                     }
                 }
@@ -719,19 +707,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
                 // since nothing in payee yet, just populate with businesses (already sorted by distance)
                 mArrayAutoComplete.clear();
-                for (BusinessSearchResult bsresult : mNearBusinesses)
+                for (BusinessSearchResult bsresult : mArrayOtherBusinesses)
                     mArrayAutoComplete.add(bsresult);
-
-                // make sure we have the thumbnails for all of these businesses
-//                        for (NSString *strName in self.arrayNearBusinesses)
-//                        {
-//                            [self ifNeededResolveThumbnailForBusiness:strName];
-//                        }
             }
         }
-
-        // initiate any thumbnail resolves
-//                [self resolveOutstandingThumbnails];
 
         // force the table to reload itself
         mSearchAdapter.notifyDataSetChanged();
@@ -1086,14 +1065,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     @Override
     public void OnCurrentLocationChange(Location location) {
         mLocationManager.removeLocationChangeListener(this);
-        mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
-        mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+        mNearBusinessSearchAsyncTask = new NearBusinessSearchAsyncTask();
+        mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
     }
 
-    class BusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
+    class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
         private AirbitzAPI api = AirbitzAPI.getApi();
 
-        public BusinessSearchAsyncTask() {
+        public NearBusinessSearchAsyncTask() {
         }
 
         @Override
@@ -1104,24 +1083,50 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         @Override
         protected void onPostExecute(String searchResult) {
             try {
-                mBusinesses.clear();
-                mArrayAutoComplete.clear();
-                mNearBusinesses.clear();
+                mArrayNearBusinesses.clear();
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
-                mBusinesses.addAll(results.getBusinessSearchObjectArray());
-                mNearBusinesses.addAll(mBusinesses);
-                if (mPayeeEditText.getText().toString().isEmpty()) {
-                    mArrayAutoComplete.addAll(mBusinesses);
-                } else {
-                    mContactPhotos.clear();
-                    mContactPhotos.putAll(Common.GetMatchedContactsList(getActivity(), mPayeeEditText.getText().toString()));
-                    mContactNames.clear();
-                    for(String s: mContactPhotos.keySet()) {
-                        mContactNames.add(s);
+                for(BusinessSearchResult business : results.getBusinessSearchObjectArray()) {
+                    if (!business.getName().isEmpty()) {
+                        mArrayNearBusinesses.add(business);
+
+                        // create the address
+                        // create the address
+                        String strAddress = "";
+                        if (business.getAddress()!=null) {
+                            strAddress += business.getAddress();
+                        }
+                        if (business.getCity()!=null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getCity();
+                        }
+                        if (business.getState()!=null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getState();
+                        }
+                        if (business.getPostalCode()!=null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
+                        }
+                        if (strAddress.length() > 0) {
+                            mArrayAddresses.put(business.getName(), strAddress);
+                        }
+
+                        // set the biz id if available
+                        long numBizId = Long.valueOf(business.getId());
+                        if (numBizId!=0)
+                        {
+                            mBizIds.put(business.getName(), numBizId);
+                        }
+
+                        // check if we can get a thumbnail
+                        ProfileImage pImage = business.getSquareProfileImage();
+                        if(pImage!=null) {
+                            String thumbnail = pImage.getImageThumbnail();
+                            if(thumbnail!=null) {
+                                Uri uri = Uri.parse(thumbnail);
+                                mContactPhotos.put(business.getName(), uri);
+                            }
+                        }
                     }
-                    getMatchedBusinessList(mPayeeEditText.getText().toString());
-                    combineMatchLists();
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 this.cancel(true);
@@ -1129,12 +1134,16 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 e.printStackTrace();
                 this.cancel(true);
             }
+            combineMatchLists();
+            updateAutoCompleteArray();
+            updateBizId();
+
             mSearchAdapter.notifyDataSetChanged();
         }
 
         @Override
         protected void onCancelled() {
-            mBusinessSearchAsyncTask = null;
+            mNearBusinessSearchAsyncTask = null;
             super.onCancelled();
         }
     }
@@ -1142,8 +1151,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     @Override
     public void onPause() {
         super.onPause();
-        if (mBusinessSearchAsyncTask != null) {
-            mBusinessSearchAsyncTask.cancel(true);
+        if (mNearBusinessSearchAsyncTask != null) {
+            mNearBusinessSearchAsyncTask.cancel(true);
         }
         mTransaction.setName(mPayeeEditText.getText().toString());
         mTransaction.setCategory(mCategoryEdittext.getText().toString());
@@ -1190,10 +1199,20 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if(!mBizIds.containsKey(bsresult.getName()) && !bsresult.getId().isEmpty()) {
                     mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
                 }
+
+
+                // check if we can get a thumbnail
+                ProfileImage pImage = bsresult.getSquareProfileImage();
+                if(pImage!=null) {
+                    String thumbnail = pImage.getImageThumbnail();
+                    if(thumbnail!=null) {
+                        Uri uri = Uri.parse(thumbnail);
+                        mContactPhotos.put(bsresult.getName(), uri);
+                    }
+                }
                 updateAutoCompleteArray();
                 updateBizId();
             }
-
         }
 
         @Override
@@ -1202,62 +1221,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             super.onCancelled();
         }
     }
-
-    private void resolveOutstandingThumbnails()
-    {
-        for (int i = mArrayThumbnailsToRetrieve.size()-1; i >= 0; i--)
-        {
-            String strName = mArrayThumbnailsToRetrieve.get(i);
-            getThumbnailForBusiness(strName);
-            mArrayThumbnailsToRetrieve.remove(i);
-        }
-    }
-
-    private void ifNeededResolveThumbnailForBusiness(String strName)
-    {
-        // if we don't already have it, it isn't being resolved and it isn't queued to be resolved
-        if (mContactPhotos.containsKey(strName) &&
-            (!mArrayThumbnailsRetrieving.contains(strName) &&
-            !mArrayThumbnailsToRetrieve.contains(strName)))
-        {
-            // add it to those to retrieve
-            mArrayThumbnailsToRetrieve.put(strName, "");
-        }
-    }
-
-    private void getThumbnailForBusiness(String strName)
-    {
-        String strThumbnailURL = mThumbnailURLs.get(strName);
-
-        if (!strThumbnailURL.isEmpty())
-        {
-            mArrayThumbnailsRetrieving.put(strName, strThumbnailURL);
-
-//            // create the search query
-//            String strURL = [NSString stringWithFormat:@"%@%@", SERVER_URL, strThumbnailURL];
-//
-//            // run the query - note we are using perform selector so it is handled on a seperate run of the run loop to avoid callback issues
-//            [self performSelector:@selector(issueRequests:) withObject:@{ strURL : strName } afterDelay:0.0];
-        }
-    }
-
-    class BusinessThumbnailAsyncTask extends AsyncTask<String, Integer, List<Business>> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
-
-        public BusinessThumbnailAsyncTask() {
-        }
-
-        @Override
-        protected List<Business> doInBackground(String... strings) {
-            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
-        }
-
-        @Override
-        protected void onPostExecute(List<Business> businesses) {
-
-        }
-    }
-
 
     public void getContactsList() {
         ContentResolver cr = getActivity().getContentResolver();
@@ -1275,19 +1238,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     public List<BusinessSearchResult> getMatchedBusinessList(String searchTerm) {
         mBusinesses.clear();
-        for (int i = 0; i < mNearBusinesses.size(); i++) {
-            if (mNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
+        for (int i = 0; i < mArrayNearBusinesses.size(); i++) {
+            if (mArrayNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
                 int j = 0;
                 boolean flag = false;
                 while (!flag && j != mBusinesses.size()) {
-                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mNearBusinesses.get(i).getName().toLowerCase()) > 0) {
-                        mBusinesses.add(j, mNearBusinesses.get(i));
+                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mArrayNearBusinesses.get(i).getName().toLowerCase()) > 0) {
+                        mBusinesses.add(j, mArrayNearBusinesses.get(i));
                         flag = true;
                     }
                     j++;
                 }
                 if (j == mBusinesses.size() && !flag) {
-                    mBusinesses.add(mNearBusinesses.get(i));
+                    mBusinesses.add(mArrayNearBusinesses.get(i));
                 }
             }
         }
@@ -1314,12 +1277,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     public void goSearch() {
         mArrayAutoComplete.clear();
-        mNearBusinesses.clear();
+        mArrayNearBusinesses.clear();
         mBusinesses.clear();
         if (locationEnabled) {
             if (mLocationManager.getLocation() != null) {
-                mBusinessSearchAsyncTask = new BusinessSearchAsyncTask();
-                mBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+                mNearBusinessSearchAsyncTask = new NearBusinessSearchAsyncTask();
+                mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
             } else {
                 mLocationManager.addLocationChangeListener(this);
             }
