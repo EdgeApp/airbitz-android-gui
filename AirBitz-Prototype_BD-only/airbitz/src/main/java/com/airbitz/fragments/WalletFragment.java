@@ -69,6 +69,8 @@ public class WalletFragment extends Fragment
     private TextView mTitleTextView;
 
     private int SEARCH_ANIMATION_DURATION = 500;
+    private float mSearchBarHeight;
+    private float mScrollViewY;
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
@@ -425,10 +427,12 @@ public class WalletFragment extends Fragment
                     sendRequestLayout.setVisibility(View.GONE);
                 }
             });
-            mScrollView.animate().translationY(-getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height)).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mScrollView.setY(getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top));
+            mSearchBarHeight = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
+            mScrollViewY = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
+
+            mScrollView.animate().translationY(-mScrollViewY+mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
                     mScrollView.setVisibility(View.VISIBLE);
                 }
             });
@@ -459,8 +463,7 @@ public class WalletFragment extends Fragment
                     sendRequestLayout.setVisibility(View.VISIBLE);
                 }
             });
-            mScrollView.setY(-getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_bottom));
-            mScrollView.animate().translationY(0).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mScrollView.animate().translationY(mScrollViewY-mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mScrollView.setVisibility(View.VISIBLE);
