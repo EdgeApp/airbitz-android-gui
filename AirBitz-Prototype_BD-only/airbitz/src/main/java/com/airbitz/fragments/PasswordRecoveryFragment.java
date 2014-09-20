@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -92,6 +93,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
             return mView;
         }
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
         mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
