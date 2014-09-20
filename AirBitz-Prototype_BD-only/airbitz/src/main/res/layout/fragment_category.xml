@@ -250,7 +250,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_header"
         android:background="@android:color/transparent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <View
             android:layout_width="match_parent"
@@ -278,7 +278,7 @@
                 android:paddingLeft="12.6dp"
                 android:textSize="16sp"
                 android:imeOptions="actionDone"
-                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:layout_toLeftOf="@+id/item_popup_delete"
                 android:background="@drawable/rounded_edge"/>
             <com.airbitz.objects.HighlightOnPressButton
