@@ -367,6 +367,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        mPayeeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPayeeSearch(true);
+                mPayeeEditText.selectAll();
+            }
+        });
+
         mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -409,6 +417,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
                     showPayeeSearch(false);
                     ((NavigationActivity) getActivity()).hideSoftKeyboard(mPayeeEditText);
+                    mDummyFocus.requestFocus();
                     return true;
                 }
                 return false;
