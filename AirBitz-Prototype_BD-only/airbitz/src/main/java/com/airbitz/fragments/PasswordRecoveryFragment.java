@@ -205,7 +205,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 break;
             }
             //verify that all six answers have achieved their minimum character limit
-            if (qaView.getText().length() < qaView.getMinimumCharacters()) {
+            if (qaView.getText().length() < qaView.getMinimumCharacters() || qaView.getText().isEmpty()) {
                 allAnswersValid = false;
             } else {
                 //add question and answer to arrays
