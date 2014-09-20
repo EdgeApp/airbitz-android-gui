@@ -57,6 +57,8 @@
     <string name="fragment_landing_forgot_image_description">Arrow Button</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_username_details">Please enter a User Name</string>
+    <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
+    <string name="fragment_forgot_no_recovery_questions_text">This user does not have any recovery questions set!</string>
 
     <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>
