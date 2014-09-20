@@ -217,7 +217,8 @@ public class LandingFragment extends Fragment {
             mRecoveryQuestionsTask = null;
 
             if(questionString==null) {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog("No Recovery Questions", "This user does not have any recovery questions set!");
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
+                        getString(R.string.fragment_forgot_no_recovery_questions_text));
             } else { // Some message or questions
                 String[] questions = questionString.split("\n");
                 if(questions.length > 1) { // questions came back
