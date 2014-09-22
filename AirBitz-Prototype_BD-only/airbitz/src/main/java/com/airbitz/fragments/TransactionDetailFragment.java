@@ -147,7 +147,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private ConcurrentHashMap<String, String> mThumbnailURLs, mArrayAddresses;
     private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mContactPhotos;
-    private HashMap<String, Long> mBizIds;
+    private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();;
     private long mBizId;
 
     private List<String> mCategories;
@@ -291,7 +291,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mArrayAddresses = new ConcurrentHashMap<String, String>();
         mThumbnailURLs = new ConcurrentHashMap<String, String>();
         mContactPhotos = new LinkedHashMap<String, Uri>();
-        mBizIds = new LinkedHashMap<String, Long>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mArrayAutoComplete, mContactPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
 
