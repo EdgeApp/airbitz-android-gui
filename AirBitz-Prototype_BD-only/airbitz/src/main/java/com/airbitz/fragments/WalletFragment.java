@@ -123,7 +123,7 @@ public class WalletFragment extends Fragment
                     Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
-                    mTransactions = mCoreAPI.loadAllTransactions(mWallet);
+                    mTransactions = new ArrayList<Transaction>();
                 }
             }
         }
