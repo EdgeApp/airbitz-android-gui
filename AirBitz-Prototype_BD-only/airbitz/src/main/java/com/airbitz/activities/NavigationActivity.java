@@ -508,8 +508,6 @@ public class NavigationActivity extends BaseActivity
         //Look for Connection change events
         registerReceiver(ConnectivityChangeReceiver, new IntentFilter( ConnectivityManager.CONNECTIVITY_ACTION));
 
-        mCoreAPI.connectWatchers();
-
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if(!AirbitzApplication.isLoggedIn()) {
@@ -519,15 +517,15 @@ public class NavigationActivity extends BaseActivity
             mNavThreadId = Tabs.BD.ordinal();
         } else {
             DisplayLoginOverlay(false);
-            mCoreAPI.startAllAsyncUpdates();
+            startAsyncHandler();
         }
         switchFragmentThread(mNavThreadId);
     }
 
     @Override public void onPause() {
         super.onPause();
-        mCoreAPI.stopAllAsyncUpdates();
         unregisterReceiver(ConnectivityChangeReceiver);
+        stopAsyncHandler();
     }
 
     /*
@@ -847,6 +845,22 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
+    private void startAsyncHandler() {
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                mCoreAPI.startAllAsyncUpdates();
+            }
+        }, 500);
+    }
+
+    private void stopAsyncHandler() {
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                mCoreAPI.stopAllAsyncUpdates();
+            }
+        }, 500);
+    }
+
     //************************ Connectivity support
 
     public  boolean networkIsAvailable() {
@@ -880,12 +894,10 @@ public class NavigationActivity extends BaseActivity
             if(extras!=null) {
                 if(networkIsAvailable()) {
                     Common.LogD(TAG, "Connection available");
-                    mCoreAPI.startFileSyncUpdates();
-                    mCoreAPI.startExchangeRateUpdates();
+                    mCoreAPI.restoreConnectivity();
                 } else { // has connection
                     Common.LogD(TAG, "Connection NOT available");
-                    mCoreAPI.stopFileSyncUpdates();
-                    mCoreAPI.stopExchangeRateUpdates();
+                    mCoreAPI.lostConnectivity();
                     ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
                 }
             }

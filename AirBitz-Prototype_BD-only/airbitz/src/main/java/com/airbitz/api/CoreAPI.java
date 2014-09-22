@@ -525,7 +525,6 @@ public class CoreAPI {
         if(mCoreSettings!=null)
             return mCoreSettings;
 
-        startWatchers();
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -1590,16 +1589,38 @@ public class CoreAPI {
     }
 
     public void startAllAsyncUpdates() {
-        connectWatchers();
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
         startWatchers();
         startExchangeRateUpdates();
         startFileSyncUpdates();
     }
 
     public void stopAllAsyncUpdates() {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
         stopWatchers();
+    }
+
+    public void restoreConnectivity() {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
+        connectWatchers();
+        startExchangeRateUpdates();
+        startFileSyncUpdates();
+    }
+
+    public void lostConnectivity() {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
+        stopExchangeRateUpdates();
+        stopFileSyncUpdates();
         disconnectWatchers();
     }
 
@@ -1711,7 +1732,7 @@ public class CoreAPI {
 
     public void syncAllData()
     {
-        if (AirbitzApplication.isLoggedIn() && hasConnectivity()) {
+        if (AirbitzApplication.isLoggedIn()) {
             if(mSyncDataTask==null) {
                 mSyncDataTask = new SyncDataTask();
                 mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -2107,16 +2128,14 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         List<String> wallets = loadWalletUUIDs();
         for (String uuid : wallets) {
-            if(uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+            if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
+                core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                                      uuid, error);
                 Thread thread = new Thread(new WatcherRunnable(uuid));
                 mWatcherTasks.put(uuid, thread);
-                thread.getState();
                 thread.start();
 
-                while(!thread.isAlive()) { } // wait for thread to start before calling the next two methods
-
-                core.ABC_WatchAddresses(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), uuid, error);
+                watchAddresses(uuid);
                 Common.LogD(TAG, "Started watcher for "+uuid);
             }
         }
@@ -2136,17 +2155,23 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         core.ABC_WatcherConnect(uuid, error);
         printABCError(error);
-
-        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                                AirbitzApplication.getPassword(),
-                                uuid, error);
-        printABCError(error);
+        watchAddresses(uuid);
     }
 
     public void disconnectWatchers() {
         for (String uuid : mWatcherTasks.keySet()) {
             tABC_Error error = new tABC_Error();
             core.ABC_WatcherDisconnect(uuid, error);
+        }
+    }
+
+    private void watchAddresses(String uuid) {
+        if (mWatcherTasks.get(uuid) != null) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                                    AirbitzApplication.getPassword(),
+                                    uuid, error);
+            printABCError(error);
         }
     }
 
@@ -2168,12 +2193,9 @@ public class CoreAPI {
     }
 
     public void stopWatchers() {
-        tABC_Error Error = new tABC_Error();
-        Set set = mWatcherTasks.keySet();
-        Iterator i = set.iterator();
-        while (i.hasNext()) {
-            String uuid = (String) i.next();
-            core.ABC_WatcherStop(uuid, Error);
+        tABC_Error error = new tABC_Error();
+        for (String uuid : mWatcherTasks.keySet()) {
+            core.ABC_WatcherStop(uuid, error);
         }
         // Wait for all of the threads to finish.
         for (Thread thread : mWatcherTasks.values()) {
@@ -2183,15 +2205,10 @@ public class CoreAPI {
                 e.printStackTrace();
             }
         }
-
-        i = set.iterator();
-        while (i.hasNext()) {
-            String uuid = (String) i.next();
-            core.ABC_WatcherDelete(uuid, Error);
+        for (String uuid : mWatcherTasks.keySet()) {
+            core.ABC_WatcherDelete(uuid, error);
         }
-
         mWatcherTasks.clear();
-        disconnectWatchers();
     }
 
     /*
