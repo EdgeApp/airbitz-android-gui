@@ -161,7 +161,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         if(mSearch){
             String btcCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, true);
-            viewHolder.creditAmountTextView.setText(btcSymbol+" "+btcCurrency);
+            viewHolder.creditAmountTextView.setText(btcCurrency);
 
             String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
             viewHolder.runningTotalTextView.setText(fiatCurrency);

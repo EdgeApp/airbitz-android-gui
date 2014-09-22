@@ -408,6 +408,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     ((NavigationActivity) getActivity()).hideSoftKeyboard(mPayeeEditText);
                     updatePhoto();
                     updateBizId();
+                    mDummyFocus.requestFocus();
                     return true;
                 }
                 return false;

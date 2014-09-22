@@ -381,7 +381,7 @@ public class WalletsFragment extends Fragment
             mMoverType.setText(mTopType.getText());
         } else {
             mButtonMover.setText(mFiatBalanceButton.getText());
-            mMoverCoin.setImageResource(mCurrencyCoinWhiteDrawables[mCurrencyIndex]);
+            mMoverCoin.setImageResource(0);
             mMoverType.setText(mBottomType.getText());
         }
     }
