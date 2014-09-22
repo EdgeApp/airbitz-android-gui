@@ -331,7 +331,7 @@ public class AirbitzAPI {
 
         String url = API_BUSINESS+bizId +"/";
 
-        String response = getRequest(url, null);
+        String response = getRequest(url, "");
 
         try{
             return new BusinessDetail(new JSONObject(response));
