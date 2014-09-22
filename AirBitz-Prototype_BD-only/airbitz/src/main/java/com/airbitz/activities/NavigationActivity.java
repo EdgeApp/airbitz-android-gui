@@ -526,6 +526,7 @@ public class NavigationActivity extends BaseActivity
 
     @Override public void onPause() {
         super.onPause();
+        mCoreAPI.stopAllAsyncUpdates();
         unregisterReceiver(ConnectivityChangeReceiver);
     }
 
