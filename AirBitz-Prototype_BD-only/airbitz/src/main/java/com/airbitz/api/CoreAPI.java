@@ -1017,6 +1017,7 @@ public class CoreAPI {
         transaction.setName(txInfo.getDetails().getSzName());
         transaction.setNotes(txInfo.getDetails().getSzNotes());
         transaction.setCategory(txInfo.getDetails().getSzCategory());
+        transaction.setmBizId(txInfo.getDetails().getBizId());
         transaction.setDate(txInfo.getCreationTime());
 
         transaction.setAmountSatoshi(txInfo.getDetails().getmAmountSatoshi());
@@ -1142,6 +1143,7 @@ public class CoreAPI {
         details.setSzCategory(transaction.getCategory());
         details.setSzNotes(transaction.getNotes());
         details.setAmountCurrency(transaction.getAmountFiat());
+        details.setBizId(transaction.getmBizId());
 
         result = SaveTransaction(transaction, details);
 
