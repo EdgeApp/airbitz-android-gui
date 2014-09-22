@@ -879,10 +879,12 @@ public class NavigationActivity extends BaseActivity
             if(extras!=null) {
                 if(networkIsAvailable()) {
                     Common.LogD(TAG, "Connection available");
-                    mCoreAPI.startAllAsyncUpdates();
+                    mCoreAPI.startFileSyncUpdates();
+                    mCoreAPI.startExchangeRateUpdates();
                 } else { // has connection
                     Common.LogD(TAG, "Connection NOT available");
-                    mCoreAPI.stopAllAsyncUpdates();
+                    mCoreAPI.stopFileSyncUpdates();
+                    mCoreAPI.stopExchangeRateUpdates();
                     ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
                 }
             }

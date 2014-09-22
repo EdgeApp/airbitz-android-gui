@@ -1629,7 +1629,7 @@ public class CoreAPI {
         }
     }
 
-    private void stopExchangeRateUpdates() {
+    public void stopExchangeRateUpdates() {
         mPeriodicTaskHandler.removeCallbacks(ExchangeRateUpdater);
     }
 
@@ -1699,7 +1699,7 @@ public class CoreAPI {
         }
     };
 
-    private void stopFileSyncUpdates() {
+    public void stopFileSyncUpdates() {
         mPeriodicTaskHandler.removeCallbacks(FileSyncUpdater);
     }
 
