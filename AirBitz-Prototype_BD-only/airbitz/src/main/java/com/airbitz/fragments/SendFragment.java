@@ -58,7 +58,7 @@ import java.util.List;
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private final String TAG = getClass().getSimpleName();
-    
+
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -498,6 +498,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     @Override
     public void onResume() {
         super.onResume();
+        mWallets = mCoreAPI.getCoreActiveWallets();
+
         dummyFocus.requestFocus();
         if(mHandler==null)
             mHandler = new Handler();
@@ -528,10 +530,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     };
 
     public void updateWalletOtherList(){
-        mWallets = mCoreAPI.getCoreWallets(false); // always refresh
         mWalletOtherList = new ArrayList<Wallet>();
         for(Wallet wallet: mWallets){
-            if(mFromWallet!=null && !wallet.isArchived() && !wallet.getUUID().equals(mFromWallet.getUUID())) {
+            if(mFromWallet!=null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mWalletOtherList.add(wallet);
             }
         }
