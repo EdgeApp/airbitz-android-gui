@@ -57,22 +57,38 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
         return mCombined.get(position);
     }
 
+    static class ViewHolderItem {
+        ImageView imageView;
+        TextView textView;
+        TextView addressView;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewHolderItem viewHolder;
+        if(convertView==null){
+            // well set up the ViewHolder
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_transaction_detail_business, parent, false);
+
+            viewHolder = new ViewHolderItem();
+            viewHolder.textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
+            viewHolder.textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
+            viewHolder.addressView = (TextView) convertView.findViewById(R.id.transaction_detail_item_address);
+            // store the holder with the view.
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolderItem) convertView.getTag();
+        }
 
         if(mCombined.get(position) instanceof BusinessSearchResult) {
             final BusinessSearchResult business = (BusinessSearchResult) mCombined.get(position);
-            convertView = inflater.inflate(R.layout.item_listview_transaction_detail_business, parent, false);
-            TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
-            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            textView.setText(business.getName());
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
+            viewHolder.textView.setText(business.getName());
 
             if(business.getSquareProfileImage()!=null)
-                p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(imageView);
+                p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(viewHolder.imageView);
 
-            TextView addressView = (TextView) convertView.findViewById(R.id.transaction_detail_item_address);
 
             // create the address
             String strAddress = "";
@@ -89,17 +105,13 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
                 strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
             }
 
-            addressView.setText(strAddress);
-            addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.addressView.setText(strAddress);
+            viewHolder.addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         }else if(mCombined.get(position) instanceof String){
             final String contactName = (String) mCombined.get(position);
-            convertView = inflater.inflate(R.layout.item_listview_transaction_detail_contact, parent, false);
-            TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
-            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            textView.setText(contactName);
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
-            p.load(mContactPhotos.get(contactName)).noFade().into(imageView);
+            viewHolder.textView.setText(contactName);
         }
+        p.load(mContactPhotos.get(viewHolder.textView.getText())).noFade().into(viewHolder.imageView);
         return convertView;
     }
 

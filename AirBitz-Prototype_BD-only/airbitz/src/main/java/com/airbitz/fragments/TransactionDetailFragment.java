@@ -47,6 +47,7 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Business;
+import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.ProfileImage;
@@ -58,6 +59,7 @@ import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,8 +143,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private List<BusinessSearchResult> mArrayNearBusinesses, mArrayOnlineBusinesses;
     private List<String> mContactNames;
     private List<String> mArrayAutoCompleteQueries;
-    private List<String> mArrayThumbnailsToRetrieve, mArrayThumbnailsRetrieving;
-    private ConcurrentHashMap<String, String> mThumbnailURLs, mArrayAddresses;
+    private ConcurrentHashMap<String, String> mArrayAddresses;
     private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mCombinedPhotos;
     private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();;
@@ -166,6 +167,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+
+
+    Picasso mPicassoBuilder;
 
     private CoreAPI mCoreAPI;
     private View mView;
@@ -231,6 +235,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 //            return mView;
         }
 
+        FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
+
+        mPicassoBuilder =  new Picasso.Builder(getActivity()).build();
+
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -284,10 +292,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mArrayAutoCompleteQueries = new ArrayList<String>();
         mArrayAutoComplete = new ArrayList<Object>();
         mArrayOnlineBusinesses = new ArrayList<BusinessSearchResult>();
-        mArrayThumbnailsToRetrieve = new ArrayList<String>();
-        mArrayThumbnailsRetrieving = new ArrayList<String>();
         mArrayAddresses = new ConcurrentHashMap<String, String>();
-        mThumbnailURLs = new ConcurrentHashMap<String, String>();
         mCombinedPhotos = new LinkedHashMap<String, Uri>();
         mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mArrayAutoComplete, mCombinedPhotos);
         mSearchListView.setAdapter(mSearchAdapter);
@@ -719,7 +724,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         Uri payeeImage = mCombinedPhotos.get(mPayeeEditText.getText().toString());
         if(mCombinedPhotos !=null && payeeImage!=null) {
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
-            mPayeeImageView.setImageURI(payeeImage);
+
+            if(payeeImage.getScheme().contains("content")) {
+                mPayeeImageView.setImageURI(payeeImage);
+            } else {
+                Common.LogD(TAG, "loading remote "+payeeImage.toString());
+                mPicassoBuilder.load(payeeImage).noFade().into(mPayeeImageView);
+            }
         } else {
             mPayeeImageViewFrame.setVisibility(View.GONE);
         }
@@ -1121,7 +1132,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                             if(thumbnail!=null) {
                                 Uri uri = Uri.parse(thumbnail);
                                 mCombinedPhotos.put(business.getName(), uri);
-                                Common.LogD(TAG, "Adding " +business.getName()+" thumbnail");
+                                Common.LogD(TAG, "Adding " + business.getName() + " thumbnail");
                             }
                         }
                     }
@@ -1201,16 +1212,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
                 }
 
-
-                // check if we can get a thumbnail
-                ProfileImage pImage = bsresult.getSquareProfileImage();
-                if(pImage!=null) {
-                    String thumbnail = pImage.getImageThumbnail();
-                    if(thumbnail!=null) {
-                        Uri uri = Uri.parse(thumbnail);
-                        mCombinedPhotos.put(bsresult.getName(), uri);
-                        Common.LogD(TAG, "Adding " + business.getName() + " thumbnail");
-                    }
+                if(!mCombinedPhotos.containsKey(business.getName())) {
+                    FindBizIdThumbnail(business.getName(), Long.valueOf(business.getId()));
                 }
             }
             combineMatchLists();
@@ -1292,6 +1295,45 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             } else {
                 mLocationManager.addLocationChangeListener(this);
             }
+        }
+    }
+
+    private void FindBizIdThumbnail(String name, long id) {
+            if(id!=0) {
+                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+    }
+
+    class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+        private String mName;
+        private long mBizId;
+
+        GetBizIdThumbnailAsyncTask(String name, long id) {
+            mName = name;
+            mBizId = id;
+        }
+
+        @Override
+        protected BusinessDetail doInBackground(Void... voids) {
+            return api.getHttpBusiness((int) mBizId);
+        }
+
+        @Override
+        protected void onPostExecute(BusinessDetail business) {
+            if(business!=null && business.getSquareImageLink()!=null) {
+                Uri uri = Uri.parse(business.getSquareImageLink());
+                Common.LogD(TAG, "Got "+uri);
+                mCombinedPhotos.put(mName, uri);
+                updatePhoto();
+                updateBizId();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
         }
     }
 }
