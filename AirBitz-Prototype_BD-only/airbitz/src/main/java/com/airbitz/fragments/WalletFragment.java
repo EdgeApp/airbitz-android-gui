@@ -3,8 +3,6 @@ package com.airbitz.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,7 +12,6 @@ import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +30,9 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -103,7 +102,7 @@ public class WalletFragment extends Fragment
 
     private List<Transaction> mTransactions;
     private List<Transaction> mAllTransactions;
-    private LinkedHashMap<String, Uri> mContacts;
+    private LinkedHashMap<String, Uri> mCombinedPhotos;
 
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
@@ -143,8 +142,8 @@ public class WalletFragment extends Fragment
         mAllTransactions = new ArrayList<Transaction>();
         mAllTransactions.addAll(mTransactions);
 
-        mContacts = Common.GetMatchedContactsList(getActivity(), null);
-        mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions, mContacts);
+        mCombinedPhotos = Common.GetMatchedContactsList(getActivity(), null);
+        mTransactionAdapter = new TransactionAdapter(getActivity(), mWallet, mTransactions, mCombinedPhotos);
 
         mSearchField = (EditText) mView.findViewById(R.id.fragment_search_edittext);
         mSearchButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
@@ -498,6 +497,7 @@ public class WalletFragment extends Fragment
         UpdateBalances();
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
+        FindBizIdThumbnails();
     }
 
     // Sum all transactions and show in total
@@ -582,6 +582,46 @@ public class WalletFragment extends Fragment
             mCoreAPI.reloadWallet(mWallet);
             mWalletNameEditText.setText(mWallet.getName());
             UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+        }
+    }
+
+    private void FindBizIdThumbnails() {
+        for(Transaction transaction : mTransactions) {
+            if(!mCombinedPhotos.containsKey(transaction.getName()) && transaction.getmBizId()!=0) {
+                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(transaction.getName(), transaction.getmBizId());
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
+    }
+
+    class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+        private String mName;
+        private long mBizId;
+
+        GetBizIdThumbnailAsyncTask(String name, long id) {
+            mName = name;
+            mBizId = id;
+        }
+
+        @Override
+        protected BusinessDetail doInBackground(Void... voids) {
+            return api.getHttpBusiness((int) mBizId);
+        }
+
+        @Override
+        protected void onPostExecute(BusinessDetail business) {
+            if(business!=null && business.getSquareImageLink()!=null) {
+                Uri uri = Uri.parse(business.getSquareImageLink());
+                Common.LogD(TAG, "Got "+uri);
+                mCombinedPhotos.put(mName, uri);
+                mTransactionAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
         }
     }
 }

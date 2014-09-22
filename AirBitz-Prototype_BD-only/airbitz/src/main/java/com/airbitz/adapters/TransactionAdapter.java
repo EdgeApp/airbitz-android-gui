@@ -2,6 +2,7 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.models.BusinessDetail;
+import com.airbitz.models.Image;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.Common;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
@@ -24,6 +30,8 @@ import java.util.List;
  * Created on 2/13/14.
  */
 public class TransactionAdapter extends ArrayAdapter<Transaction> {
+
+    private final String TAG = getClass().getSimpleName();
 
     private Context mContext;
     private Wallet mWallet;
@@ -36,6 +44,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private LinkedHashMap<String, Uri> mContactList;
     private long[] mRunningSatoshi;
 
+    private final Picasso mPicassoBuilder;
+
     public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList){
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
@@ -45,6 +55,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mContactList = contactList;
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
+        mPicassoBuilder =  new Picasso.Builder(context).build();
     }
 
     public void createRunningSatoshi() {
@@ -119,8 +130,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         Uri payeeImage = mContactList.get(name);
         if(mContactList!=null && payeeImage!=null) {
             viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
-            viewHolder.contactImageView.setImageURI(null);
-            viewHolder.contactImageView.setImageURI(payeeImage);
+            if(payeeImage.getScheme().contains("content")) {
+                viewHolder.contactImageView.setImageURI(null);
+                viewHolder.contactImageView.setImageURI(payeeImage);
+            } else {
+                Common.LogD(TAG, "loading remote "+payeeImage.toString());
+                mPicassoBuilder.load(payeeImage).noFade().into(viewHolder.contactImageView);
+            }
         } else {
             viewHolder.contactImageViewFrame.setVisibility(View.GONE);
         }

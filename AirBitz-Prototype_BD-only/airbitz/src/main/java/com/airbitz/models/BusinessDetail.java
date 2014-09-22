@@ -3,6 +3,7 @@ package com.airbitz.models;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.shared.utils.SpannableUtil;
 
 import org.json.JSONException;
@@ -28,6 +29,7 @@ public class BusinessDetail {
     private String mBizPostalCode;
     private String mBizCountry;
     private String mBizDistance;
+    private String mSquareImage;
     private List<Category> mCategory;
     private List<Social> mSocialArray;
     private List<Hour> mHourArray;
@@ -80,6 +82,7 @@ public class BusinessDetail {
             mBizState = jsonResponse.getString("state");
             mBizPostalCode = jsonResponse.getString("postalcode");
             mBizCountry = jsonResponse.getString("country");
+            mSquareImage = jsonResponse.getString("square_image");
             mSocialArray = Social.generateSocialListFromJSONObject(jsonResponse.getJSONArray("social"));
             mHourArray = Hour.generateHourListFromJSONObject(jsonResponse.getJSONArray("hours"));
             mCategory = Category.generateCategoryListFromJSONObject(jsonResponse.getJSONArray("categories"));
@@ -269,6 +272,18 @@ public class BusinessDetail {
         }
 
         return primaryImage;
+    }
+
+    public String getSquareImageLink() {
+        JSONObject temp = null;
+        String url=null;
+        try {
+            temp = new JSONObject(mSquareImage);
+            url = AirbitzAPI.getServerRoot()+temp.getString("image");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     public Spannable getPrettyAddressString() {
