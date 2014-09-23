@@ -105,11 +105,13 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
                 strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
             }
 
+            viewHolder.addressView.setVisibility(View.VISIBLE);
             viewHolder.addressView.setText(strAddress);
             viewHolder.addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         }else if(mCombined.get(position) instanceof String){
             final String contactName = (String) mCombined.get(position);
             viewHolder.textView.setText(contactName);
+            viewHolder.addressView.setVisibility(View.GONE);
         }
         p.load(mContactPhotos.get(viewHolder.textView.getText())).noFade().into(viewHolder.imageView);
         return convertView;
