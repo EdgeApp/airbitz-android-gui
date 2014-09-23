@@ -470,7 +470,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             @Override
             public void afterTextChanged(Editable editable) {
-                updateAutoCompleteArray();
+                updateAutoCompleteArray(mPayeeEditText.getText().toString());
                 updateBizId();
                 updatePhoto();
                 mSearchAdapter.notifyDataSetChanged();
@@ -664,8 +664,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         return mView;
     }
 
-    private void updateAutoCompleteArray() {
-        String strTerm = mPayeeEditText.getText().toString();
+    private void updateAutoCompleteArray(String strTerm) {
         // if there is anything in the payee field
         if (!strTerm.isEmpty()) {
 
@@ -706,13 +705,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mArrayAutoComplete.clear();
                 for (String contact : mContactNames)
                     mArrayAutoComplete.add(contact);
-            } else {
+            } else if(mFromSend) {
                 // this is a sent so we must be looking for businesses
 
                 // since nothing in payee yet, just populate with businesses (already sorted by distance)
                 mArrayAutoComplete.clear();
                 for (BusinessSearchResult bsresult : mArrayOnlineBusinesses)
                     mArrayAutoComplete.add(bsresult);
+            } else {
+                mArrayAutoComplete.clear();
+
+                // go through all the near businesses
+                mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
             }
         }
 
@@ -749,6 +753,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mNoteDetailLayout.setVisibility(View.GONE);
             mPayeeNameLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.VISIBLE);
+
+
+            updateAutoCompleteArray(mPayeeEditText.getText().toString());
+            updateBizId();
+            updatePhoto();
+            mSearchAdapter.notifyDataSetChanged();
         } else {
             mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -1150,10 +1160,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 this.cancel(true);
             }
             combineMatchLists();
-            updateAutoCompleteArray();
+            updateAutoCompleteArray(mPayeeEditText.getText().toString());
             updateBizId();
             updatePhoto();
-
             mSearchAdapter.notifyDataSetChanged();
         }
 
@@ -1221,10 +1230,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 }
             }
             combineMatchLists();
-            updateAutoCompleteArray();
+
+            updateAutoCompleteArray(mPayeeEditText.getText().toString());
             updateBizId();
             updatePhoto();
-
             mSearchAdapter.notifyDataSetChanged();
         }
 
