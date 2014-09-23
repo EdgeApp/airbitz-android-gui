@@ -517,15 +517,16 @@ public class NavigationActivity extends BaseActivity
             mNavThreadId = Tabs.BD.ordinal();
         } else {
             DisplayLoginOverlay(false);
-            startAsyncHandler();
+            mCoreAPI.restoreConnectivity();
         }
         switchFragmentThread(mNavThreadId);
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         unregisterReceiver(ConnectivityChangeReceiver);
-        stopAsyncHandler();
+        mCoreAPI.lostConnectivity();
     }
 
     /*
@@ -843,22 +844,6 @@ public class NavigationActivity extends BaseActivity
             default:
                 return null;
         }
-    }
-
-    private void startAsyncHandler() {
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                mCoreAPI.startAllAsyncUpdates();
-            }
-        }, 500);
-    }
-
-    private void stopAsyncHandler() {
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                mCoreAPI.stopAllAsyncUpdates();
-            }
-        }, 500);
     }
 
     //************************ Connectivity support
