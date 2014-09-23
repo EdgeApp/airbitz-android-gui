@@ -137,72 +137,39 @@
             android:layout_marginBottom="-1dp"
             android:visibility="visible" />
 
-        <ScrollView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment_wallet_scrollview">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <ListView
+                android:id="@+id/listview_transaction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:dividerHeight="0dp"
+                android:divider="@drawable/wallet_list_divider"
+                android:background="@android:color/transparent">
+            </ListView>
 
-                <LinearLayout
-                    android:id="@+id/fragment_wallet_sendrequest_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+            <FrameLayout
+                android:id="@android:id/empty"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" >
 
-                    <com.airbitz.objects.ResizableImageView
-                        android:id="@+id/fragment_wallet_request_button"
-                        android:layout_width="138.6dp"
-                        android:layout_height="37.8dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/btn_request_green" />
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" 
+                    android:layout_gravity="center"
+                    android:gravity="center" />
 
-                    <com.airbitz.objects.ResizableImageView
-                        android:id="@+id/fragment_wallet_send_button"
-                        android:layout_width="138.6dp"
-                        android:layout_height="37.8dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/btn_send_orange" />
+            </FrameLayout>
 
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/listview_transaction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:dividerHeight="0dp"
-                    android:divider="@drawable/wallet_list_divider"
-                    android:background="@android:color/transparent">
-
-                </ListView>
-
-                <FrameLayout
-                    android:id="@android:id/empty"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center" >
-
-                    <ProgressBar
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" 
-                        android:layout_gravity="center"
-                        android:gravity="center" />
-
-                </FrameLayout>
-
-            </LinearLayout>
-        </ScrollView>
+        </FrameLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/fragment_wallet_search_layout"
         android:layout_width="match_parent"
@@ -238,6 +205,7 @@
             android:gravity="center_vertical"/>
 
     </LinearLayout>
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"

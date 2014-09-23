@@ -45,6 +45,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private long[] mRunningSatoshi;
 
     private final Picasso mPicassoBuilder;
+    private SimpleDateFormat mFormatter;
 
     public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList){
         super(context, R.layout.item_listview_transaction, listTransaction);
@@ -56,6 +57,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
         mPicassoBuilder =  new Picasso.Builder(context).build();
+        mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
     }
 
     public void createRunningSatoshi() {
@@ -105,7 +107,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
             // store the holder with the view.
             convertView.setTag(viewHolder);
-        }else{
+        } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
@@ -120,10 +122,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
         }
 
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(mListTransaction.get(position).getDate()*1000);
-        viewHolder.dateTextView.setText(dateString);
-
         Transaction transaction = mListTransaction.get(position);
+
+        String dateString = mFormatter.format(transaction.getDate() * 1000);
+        viewHolder.dateTextView.setText(dateString);
 
         String name = transaction.getName();
         viewHolder.nameTextView.setText(name);
