@@ -134,28 +134,17 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="-1dp"
+            android:layout_marginBottom="-1dp"
             android:visibility="visible" />
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <include layout="@layout/custom_req_send_buttons"
-                android:id="@+id/fragment_wallet_req_send_button_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="8dp"
-                android:visibility="visible" />
-
 
             <ListView
                 android:id="@+id/listview_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/fragment_wallet_req_send_button_layout"
                 android:layout_marginTop="4dp"
                 android:dividerHeight="0dp"
                 android:divider="@drawable/wallet_list_divider"
@@ -177,7 +166,7 @@
 
             </FrameLayout>
 
-        </RelativeLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
