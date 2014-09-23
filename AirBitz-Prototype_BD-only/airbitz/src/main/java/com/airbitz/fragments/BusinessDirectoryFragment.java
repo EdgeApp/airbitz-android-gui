@@ -357,7 +357,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                             latLong = String.valueOf(currentLoc.getLatitude());
                             latLong += "," + String.valueOf(currentLoc.getLongitude());
                         }
-                        mBusinessAutoCompleteAsyncTask.execute(text, mLocationWords, latLong);
+                        mBusinessAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, text, mLocationWords, latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -414,7 +414,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         mBusinessAutoCompleteAsyncTask.cancel(true);
                     }
                     mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusinesses);
-                    mBusinessAutoCompleteAsyncTask.execute(query,mLocationWords,latLong);
+                    mBusinessAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query,mLocationWords,latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -451,7 +451,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                             mLocationAutoCompleteAsyncTask.cancel(true);
                         }
                         mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity()));
-                        mLocationAutoCompleteAsyncTask.execute(mLocationWords,latLong);
+                        mLocationAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationWords,latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -572,7 +572,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         mLocationAutoCompleteAsyncTask.cancel(true);
                     }
                     mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(cachedLocationSearch);
-                    mLocationAutoCompleteAsyncTask.execute(mLocationWords, latLong);
+                    mLocationAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationWords, latLong);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -652,7 +652,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             mGetVenuesTask.cancel(true);
         }
         mGetVenuesTask = new GetVenuesTask(getActivity());
-        mGetVenuesTask.execute(latLon);
+        mGetVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, latLon);
 
         mLocationManager.removeLocationChangeListener(this);
     }
@@ -664,7 +664,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mGetRemainingFirstVenuesTask.cancel(true);
             }
             mGetRemainingFirstVenuesTask = new GetRemainingFirstVenuesTask(getActivity());
-            mGetRemainingFirstVenuesTask.execute("");
+            mGetRemainingFirstVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "");
             venueAmount = 20;
         } else {
             if( venueAmount < 100) {
@@ -674,7 +674,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         mGetMoreVenuesTask.cancel(true);
                     }
                     mGetMoreVenuesTask = new GetMoreVenuesTask(getActivity());
-                    mGetMoreVenuesTask.execute(mNextUrl);
+                    mGetMoreVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mNextUrl);
                     venueAmount += 20;
                 }
             }
