@@ -531,7 +531,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mWallets = mCoreAPI.getCoreWallets(false); // always refresh
         mWalletOtherList = new ArrayList<Wallet>();
         for(Wallet wallet: mWallets){
-            if(!wallet.isArchived() && !wallet.getUUID().equals(mFromWallet.getUUID())){
+            if(mFromWallet!=null && !wallet.isArchived() && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mWalletOtherList.add(wallet);
             }
         }
