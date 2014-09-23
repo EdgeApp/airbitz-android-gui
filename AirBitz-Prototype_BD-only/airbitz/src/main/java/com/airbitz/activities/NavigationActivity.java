@@ -779,7 +779,6 @@ public class NavigationActivity extends BaseActivity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         DisplayLoginOverlay(false);
-        mCoreAPI.resetCore();
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
