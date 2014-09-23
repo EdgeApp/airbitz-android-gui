@@ -506,10 +506,8 @@ public class WalletFragment extends Fragment
 
     // Sum all transactions and show in total
     private void UpdateBalances() {
-        long totalSatoshis = 0;
-        for(Transaction transaction : mAllTransactions) {
-                totalSatoshis+=transaction.getAmountSatoshi();
-        }
+        long totalSatoshis = mWallet.getBalanceSatoshi();
+
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
