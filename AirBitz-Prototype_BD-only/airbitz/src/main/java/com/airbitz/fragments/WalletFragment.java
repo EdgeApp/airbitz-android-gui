@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -39,15 +38,11 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/**
- * Created on 2/13/14.
- */
 public class WalletFragment extends Fragment
         implements CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
@@ -70,7 +65,7 @@ public class WalletFragment extends Fragment
 
     private int SEARCH_ANIMATION_DURATION = 500;
     private float mSearchBarHeight;
-    private float mScrollViewY;
+    private float mListViewY;
 
     private ImageView mMoverCoin;
     private TextView mMoverType;
@@ -84,8 +79,6 @@ public class WalletFragment extends Fragment
 
     private RelativeLayout mParentLayout;
 
-    private ScrollView mScrollView;
-
     private Button mButtonBitcoinBalance;
     private Button mButtonFiatBalance;
     private Button mButtonMover;
@@ -98,6 +91,8 @@ public class WalletFragment extends Fragment
     private EditText mWalletNameEditText;
 
     private ListView mListTransaction;
+    private View mHeaderView;
+    private View mProgressView;
 
     private TransactionAdapter mTransactionAdapter;
 
@@ -109,20 +104,23 @@ public class WalletFragment extends Fragment
     private CoreAPI mCoreAPI;
     private View mView;
 
+    static final String TXS = "TXS";
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                 String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-                if(walletUUID==null || walletUUID.isEmpty()) {
+                if (walletUUID == null || walletUUID.isEmpty()) {
                     Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
+                }
+                if (mTransactions == null) {
                     mTransactions = new ArrayList<Transaction>();
                 }
             }
@@ -131,17 +129,15 @@ public class WalletFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView==null) {
             mView = inflater.inflate(R.layout.fragment_wallet, container, false);
             mOnBitcoinMode = true;
             searchPage=false;
         }
 
-
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_parent_layout);
-        mScrollView = (ScrollView) mView.findViewById(R.id.fragment_wallet_scrollview);
 
         mAllTransactions = new ArrayList<Transaction>();
         mAllTransactions.addAll(mTransactions);
@@ -153,8 +149,6 @@ public class WalletFragment extends Fragment
         mSearchButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_search_button);
         mSearchLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_search_layout);
 
-        mSendButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_request_button);
         mWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
         mExportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
@@ -178,10 +172,19 @@ public class WalletFragment extends Fragment
 
         mButtonBitcoinBalance = (Button) mView.findViewById(R.id.back_button_top);
         mButtonFiatBalance = (Button) mView.findViewById(R.id.back_button_bottom);
+
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size());
+        if (mHeaderView == null) {
+            mHeaderView = inflater.inflate(R.layout.custom_req_send_buttons, null, false);
+            mListTransaction.addHeaderView(mHeaderView);
+        }
+        mSendButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_request_button);
+
+        mProgressView = (View) mView.findViewById(android.R.id.empty);
+        mProgressView.setVisibility(View.GONE);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -259,7 +262,7 @@ public class WalletFragment extends Fragment
                         mSearchTask.cancel(true);
                     }
                     if (editable.toString().isEmpty()) {
-                        UpdateTransactionsListView(mAllTransactions);
+                        updateTransactionsListView(mAllTransactions);
                     } else {
                         mSearchTask = new SearchTask();
                         mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, editable.toString());
@@ -343,15 +346,20 @@ public class WalletFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
-                TransactionAdapter a = (TransactionAdapter) adapterView.getAdapter();
-                a.selectItem(view, i);
-                Bundle bundle = new Bundle();
-                bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
-                Transaction trans = mTransactions.get(i);
-                bundle.putString(Transaction.TXID, trans.getID());
-                Fragment fragment = new TransactionDetailFragment();
-                fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+                // Make sure this is not the header view and offset i by 1
+                if (i > 0) {
+                    int newIdx = i - 1;
+                    Transaction trans = mTransactions.get(newIdx);
+                    mTransactionAdapter.selectItem(view, newIdx);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
+                    bundle.putString(Transaction.TXID, trans.getID());
+
+                    Fragment fragment = new TransactionDetailFragment();
+                    fragment.setArguments(bundle);
+                    ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+                }
             }
         });
 
@@ -361,7 +369,7 @@ public class WalletFragment extends Fragment
                 if(searchPage){
                     SetSearchVisibility(false);
                     mTransactionAdapter.setSearch(false);
-                    UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+                    startTransactionTask();
                 }else{
                     getActivity().onBackPressed();
                 }
@@ -379,8 +387,44 @@ public class WalletFragment extends Fragment
         return mView;
     }
 
-    private SearchTask mSearchTask;
+    private TransactionTask mTransactionTask;
+    class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
 
+        public TransactionTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if (mTransactions.isEmpty()) {
+                mProgressView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected List<Transaction> doInBackground(Wallet...wallet) {
+            return mCoreAPI.loadAllTransactions(wallet[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Transaction> transactions) {
+            if (getActivity() == null) {
+                return;
+            }
+            updateTransactionsListView(transactions);
+
+            mTransactionTask = null;
+            mProgressView.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void onCancelled(){
+            mTransactionTask = null;
+            super.onCancelled();
+            mProgressView.setVisibility(View.GONE);
+        }
+    }
+
+    private SearchTask mSearchTask;
     class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
 
         public SearchTask() { }
@@ -390,9 +434,10 @@ public class WalletFragment extends Fragment
         }
 
         @Override protected void onPostExecute(List<Transaction> transactions) {
-            if(getActivity()==null)
+            if (getActivity()==null) {
                 return;
-            UpdateTransactionsListView(transactions);
+            }
+            updateTransactionsListView(transactions);
             mSearchTask = null;
         }
 
@@ -431,12 +476,12 @@ public class WalletFragment extends Fragment
                 }
             });
             mSearchBarHeight = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
-            mScrollViewY = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
+            mListViewY = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
 
-            mScrollView.animate().translationY(-mScrollViewY+mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mListTransaction.animate().translationY(-mListViewY+mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                    mScrollView.setVisibility(View.VISIBLE);
+                    mListTransaction.setVisibility(View.VISIBLE);
                 }
             });
             mSearchField.requestFocus();
@@ -466,10 +511,10 @@ public class WalletFragment extends Fragment
                     sendRequestLayout.setVisibility(View.VISIBLE);
                 }
             });
-            mScrollView.animate().translationY(mScrollViewY-mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mListTransaction.animate().translationY(mListViewY-mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mScrollView.setVisibility(View.VISIBLE);
+                    mListTransaction.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -478,38 +523,51 @@ public class WalletFragment extends Fragment
         mTransactionAdapter.notifyDataSetChanged();
     }
 
-    private void UpdateTransactionsListView(List<Transaction> transactions) {
-        mTransactions.clear();
-        mTransactions.addAll(transactions);
-        mTransactionAdapter.notifyDataSetChanged();
-        mTransactionAdapter.createRunningSatoshi();
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, transactions.size());
+    private void startTransactionTask() {
+        if (mTransactionTask != null) {
+            mTransactionTask.cancel(false);
+        }
+        mTransactionTask = new TransactionTask();
+        mTransactionTask.execute(mWallet);
     }
 
-    @Override public void onPause() {
+    private void updateTransactionsListView(List<Transaction> transactions) {
+        mTransactions.clear();
+        mTransactions.addAll(transactions);
+        mTransactionAdapter.createRunningSatoshi();
+        mTransactionAdapter.notifyDataSetChanged();
+        FindBizIdThumbnails();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mCoreAPI.addExchangeRateChangeListener(this);
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
+
+        mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
+        if (!mTransactions.isEmpty()) {
+            List<Transaction> txs = new ArrayList<Transaction>(mTransactions);
+            updateTransactionsListView(txs);
+        }
+        startTransactionTask();
+
+        UpdateBalances();
+        mRequestButton.setPressed(false);
+        mSendButton.setPressed(false);
+    }
+
+    @Override
+    public void onPause() {
         super.onPause();
         mCoreAPI.removeExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
-    @Override public void onResume(){
-        super.onResume();
-        mCoreAPI.addExchangeRateChangeListener(this);
-        ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
-        mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
-        UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
-        UpdateBalances();
-        mRequestButton.setPressed(false);
-        mSendButton.setPressed(false);
-        FindBizIdThumbnails();
-    }
-
     // Sum all transactions and show in total
     private void UpdateBalances() {
-        long totalSatoshis = 0;
-        for(Transaction transaction : mAllTransactions) {
-                totalSatoshis+=transaction.getAmountSatoshi();
-        }
+        long totalSatoshis = mWallet.getBalanceSatoshi();
+
         mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mButtonBitcoinBalance.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
@@ -581,11 +639,12 @@ public class WalletFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
-        if(mWallet!=null) {
+        if (mWallet!=null) {
             Common.LogD(TAG, "Reloading wallet");
             mCoreAPI.reloadWallet(mWallet);
             mWalletNameEditText.setText(mWallet.getName());
-            UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+
+            startTransactionTask();
         }
     }
 
