@@ -116,7 +116,7 @@ public class SendConfirmationFragment extends Fragment {
             System.out.println("Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
-            mLabel = bundle.getString(SendFragment.LABEL);
+            mLabel = bundle.getString(SendFragment.LABEL, "");
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
@@ -575,7 +575,7 @@ public class SendConfirmationFragment extends Fragment {
             mSuccessFragment.setArguments(bundle);
             mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
 
-            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi);
+            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
             mSendOrTransferTask.execute();
             finishSlider();
         } else {
@@ -607,11 +607,13 @@ public class SendConfirmationFragment extends Fragment {
         private Wallet mFromWallet;
         private final String mAddress;
         private final long mSatoshi;
+        private final String mLabel;
 
-        SendOrTransferTask(Wallet fromWallet, String address, long amount) {
+        SendOrTransferTask(Wallet fromWallet, String address, long amount, String label) {
             mFromWallet = fromWallet;
             mAddress = address;
             mSatoshi = amount;
+            mLabel = label;
         }
 
         @Override
@@ -622,7 +624,7 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected CoreAPI.TxResult doInBackground(Void... params) {
             Common.LogD(TAG, "Initiating SEND");
-            return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi);
+            return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi, mLabel);
         }
 
         @Override
