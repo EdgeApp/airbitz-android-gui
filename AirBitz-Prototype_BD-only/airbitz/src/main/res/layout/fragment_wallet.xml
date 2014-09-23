@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_wallet_parent_layout"
     android:layout_width="match_parent"
@@ -206,10 +205,4 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/fragment_wallet_dummy_focus"
-        android:focusable="true"
-        android:focusableInTouchMode="true"/>
 </RelativeLayout>
