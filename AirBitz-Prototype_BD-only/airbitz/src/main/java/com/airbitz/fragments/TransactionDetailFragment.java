@@ -702,21 +702,25 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         } else {
             if (mFromRequest) {
                 // this is a receive so use the address book
+                // show all the contacts
                 mArrayAutoComplete.clear();
-                for (String contact : mContactNames)
-                    mArrayAutoComplete.add(contact);
+                Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), null);
+                for (String s : list.keySet()) {
+                    mArrayAutoComplete.add(s);
+                    mCombinedPhotos.put(s, list.get(s));
+                }
+
             } else if(mFromSend) {
                 // this is a sent so we must be looking for businesses
 
                 // since nothing in payee yet, just populate with businesses (already sorted by distance)
                 mArrayAutoComplete.clear();
-                for (BusinessSearchResult bsresult : mArrayOnlineBusinesses)
-                    mArrayAutoComplete.add(bsresult);
+                mArrayAutoComplete.addAll(mArrayNearBusinesses);
             } else {
                 mArrayAutoComplete.clear();
 
                 // go through all the near businesses
-                mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
+                mArrayAutoComplete.addAll(mArrayNearBusinesses);
             }
         }
 
