@@ -98,6 +98,7 @@ public class WalletFragment extends Fragment
     private EditText mWalletNameEditText;
 
     private ListView mListTransaction;
+    private View mProgressView;
 
     private TransactionAdapter mTransactionAdapter;
 
@@ -109,20 +110,23 @@ public class WalletFragment extends Fragment
     private CoreAPI mCoreAPI;
     private View mView;
 
+    static final String TXS = "TXS";
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                 String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-                if(walletUUID==null || walletUUID.isEmpty()) {
+                if (walletUUID == null || walletUUID.isEmpty()) {
                     Log.d("WalletFragment", "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
+                }
+                if (mTransactions == null) {
                     mTransactions = new ArrayList<Transaction>();
                 }
             }
@@ -131,12 +135,11 @@ public class WalletFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView==null) {
             mView = inflater.inflate(R.layout.fragment_wallet, container, false);
             mOnBitcoinMode = true;
             searchPage=false;
         }
-
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -178,10 +181,13 @@ public class WalletFragment extends Fragment
 
         mButtonBitcoinBalance = (Button) mView.findViewById(R.id.back_button_top);
         mButtonFiatBalance = (Button) mView.findViewById(R.id.back_button_bottom);
+
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
-
         ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, mTransactions.size());
+
+        mProgressView = (View) mView.findViewById(android.R.id.empty);
+        mProgressView.setVisibility(View.GONE);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -259,7 +265,7 @@ public class WalletFragment extends Fragment
                         mSearchTask.cancel(true);
                     }
                     if (editable.toString().isEmpty()) {
-                        UpdateTransactionsListView(mAllTransactions);
+                        updateTransactionsListView(mAllTransactions);
                     } else {
                         mSearchTask = new SearchTask();
                         mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, editable.toString());
@@ -352,6 +358,7 @@ public class WalletFragment extends Fragment
                 Fragment fragment = new TransactionDetailFragment();
                 fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+
             }
         });
 
@@ -361,7 +368,7 @@ public class WalletFragment extends Fragment
                 if(searchPage){
                     SetSearchVisibility(false);
                     mTransactionAdapter.setSearch(false);
-                    UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+                    startTransactionTask();
                 }else{
                     getActivity().onBackPressed();
                 }
@@ -379,8 +386,42 @@ public class WalletFragment extends Fragment
         return mView;
     }
 
-    private SearchTask mSearchTask;
+    private TransactionTask mTransactionTask;
+    class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
 
+        public TransactionTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected List<Transaction> doInBackground(Wallet...wallet) {
+            return mCoreAPI.loadAllTransactions(wallet[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Transaction> transactions) {
+            if (getActivity() == null) {
+                return;
+            }
+            updateTransactionsListView(transactions);
+
+            mTransactionTask = null;
+            mProgressView.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void onCancelled(){
+            mTransactionTask = null;
+            super.onCancelled();
+            mProgressView.setVisibility(View.GONE);
+        }
+    }
+
+    private SearchTask mSearchTask;
     class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
 
         public SearchTask() { }
@@ -390,9 +431,10 @@ public class WalletFragment extends Fragment
         }
 
         @Override protected void onPostExecute(List<Transaction> transactions) {
-            if(getActivity()==null)
+            if (getActivity()==null) {
                 return;
-            UpdateTransactionsListView(transactions);
+            }
+            updateTransactionsListView(transactions);
             mSearchTask = null;
         }
 
@@ -478,30 +520,48 @@ public class WalletFragment extends Fragment
         mTransactionAdapter.notifyDataSetChanged();
     }
 
-    private void UpdateTransactionsListView(List<Transaction> transactions) {
+    private void startTransactionTask() {
+        if (mTransactionTask != null) {
+            mTransactionTask.cancel(false);
+        }
+        mTransactionTask = new TransactionTask();
+        mTransactionTask.execute(mWallet);
+    }
+
+    private void updateTransactionsListView(List<Transaction> transactions) {
         mTransactions.clear();
         mTransactions.addAll(transactions);
-        mTransactionAdapter.notifyDataSetChanged();
         mTransactionAdapter.createRunningSatoshi();
-        ListViewUtility.setTransactionListViewHeightBasedOnChildren(mListTransaction, transactions.size());
+        mTransactionAdapter.notifyDataSetChanged();
+        ListViewUtility.setTransactionListViewHeightBasedOnChildren(
+            mListTransaction, transactions.size());
+
+        FindBizIdThumbnails();
     }
 
-    @Override public void onPause() {
-        super.onPause();
-        mCoreAPI.removeExchangeRateChangeListener(this);
-        ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
-    }
-
-    @Override public void onResume(){
+    @Override
+    public void onResume(){
         super.onResume();
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
+
         mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
-        UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+        if (!mTransactions.isEmpty()) {
+            List<Transaction> txs = new ArrayList<Transaction>(mTransactions);
+            updateTransactionsListView(txs);
+        }
+        startTransactionTask();
+
         UpdateBalances();
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
-        FindBizIdThumbnails();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCoreAPI.removeExchangeRateChangeListener(this);
+        ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
     // Sum all transactions and show in total
@@ -579,11 +639,12 @@ public class WalletFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
-        if(mWallet!=null) {
+        if (mWallet!=null) {
             Common.LogD(TAG, "Reloading wallet");
             mCoreAPI.reloadWallet(mWallet);
             mWalletNameEditText.setText(mWallet.getName());
-            UpdateTransactionsListView(mCoreAPI.loadAllTransactions(mWallet));
+
+            startTransactionTask();
         }
     }
 
