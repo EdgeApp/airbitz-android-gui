@@ -130,7 +130,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private LinearLayout mSentDetailLayout;
     private LinearLayout mNoteDetailLayout;
-    private RelativeLayout mNameDetailLayout;
 
     private EditText mFiatValueEdittext;
     private String mFiatValue;
@@ -236,6 +235,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 //            return mView;
         }
 
+
+
         FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
         mPicassoBuilder =  new Picasso.Builder(getActivity()).build();
@@ -282,7 +283,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
         mNoteDetailLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_note);
-        mNameDetailLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
 
         mDummyFocus = mView.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
@@ -738,6 +738,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
+            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT, 95.0f);
@@ -745,16 +747,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mAdvanceDetailsButton.setVisibility(View.GONE);
             mSentDetailLayout.setVisibility(View.GONE);
             mNoteDetailLayout.setVisibility(View.GONE);
-            mNameDetailLayout.setLayoutParams(params);
+            mPayeeNameLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.VISIBLE);
         } else {
+            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
 
             mAdvanceDetailsButton.setVisibility(View.VISIBLE);
             mSentDetailLayout.setVisibility(View.VISIBLE);
             mNoteDetailLayout.setVisibility(View.VISIBLE);
-            mNameDetailLayout.setLayoutParams(params);
+            mPayeeNameLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.GONE);
         }
     }
