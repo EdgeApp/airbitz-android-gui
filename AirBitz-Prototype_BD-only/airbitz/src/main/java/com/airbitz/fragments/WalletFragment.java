@@ -63,7 +63,7 @@ public class WalletFragment extends Fragment
 
     private TextView mTitleTextView;
 
-    private int SEARCH_ANIMATION_DURATION = 500;
+    private int SEARCH_ANIMATION_DURATION = 350;
     private float mSearchBarHeight;
     private float mListViewY;
 
@@ -72,10 +72,7 @@ public class WalletFragment extends Fragment
     private TextView mBottomType;
     private TextView mTopType;
 
-    private View mDummyFocus;
-
     private RelativeLayout exportLayout;
-    private LinearLayout sendRequestLayout;
 
     private RelativeLayout mParentLayout;
 
@@ -91,7 +88,7 @@ public class WalletFragment extends Fragment
     private EditText mWalletNameEditText;
 
     private ListView mListTransaction;
-    private View mHeaderView;
+    private ViewGroup mHeaderView;
     private View mProgressView;
 
     private TransactionAdapter mTransactionAdapter;
@@ -155,9 +152,6 @@ public class WalletFragment extends Fragment
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
-        sendRequestLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_sendrequest_layout);
-
-        mDummyFocus = mView.findViewById(R.id.fragment_wallet_dummy_focus);
 
         switchable = (RelativeLayout) mView.findViewById(R.id.switchable);
         switchContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
@@ -175,7 +169,7 @@ public class WalletFragment extends Fragment
 
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mHeaderView == null) {
-            mHeaderView = inflater.inflate(R.layout.custom_req_send_buttons, null, false);
+            mHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
             mListTransaction.addHeaderView(mHeaderView);
         }
         mSendButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
@@ -468,19 +462,20 @@ public class WalletFragment extends Fragment
                     exportLayout.setVisibility(View.INVISIBLE);
                 }
             });
-            sendRequestLayout.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mHeaderView.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    sendRequestLayout.setVisibility(View.GONE);
+                    mHeaderView.setVisibility(View.GONE);
                 }
             });
             mSearchBarHeight = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
             mListViewY = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
 
-            mListTransaction.animate().translationY(-mListViewY+mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+            mListTransaction.animate().translationY(-mListViewY + mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
                     mListTransaction.setVisibility(View.VISIBLE);
+                    mListTransaction.requestLayout();
                 }
             });
             mSearchField.requestFocus();
@@ -504,16 +499,17 @@ public class WalletFragment extends Fragment
                     exportLayout.setVisibility(View.VISIBLE);
                 }
             });
-            sendRequestLayout.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mHeaderView.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    sendRequestLayout.setVisibility(View.VISIBLE);
+                    mHeaderView.setVisibility(View.VISIBLE);
                 }
             });
             mListTransaction.animate().translationY(mListViewY-mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mListTransaction.setVisibility(View.VISIBLE);
+                    mListTransaction.requestLayout();
                 }
             });
         }
