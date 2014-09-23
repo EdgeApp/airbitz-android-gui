@@ -72,10 +72,6 @@ public class CoreAPI {
         return mInstance;
     }
 
-    public void resetCore() {
-        mInstance = null;
-    }
-
     private Context mContext;
 
     public native String getStringAtPtr(long pointer);
