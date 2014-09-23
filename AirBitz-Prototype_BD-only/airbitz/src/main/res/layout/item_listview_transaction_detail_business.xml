@@ -13,22 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="37.8dp"
         android:orientation="vertical"
-        android:background="#addff1"
+        android:background="@color/listitem_normal"
         android:paddingLeft="12.6dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="22.05dp"
-            android:text="Name"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:gravity="center_vertical"
             android:id="@+id/transaction_detail_item_name"
             android:textColor="#000000" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="12.6dp"
-            android:text="Address"
-            android:textSize="11dp"
+            android:textSize="11sp"
             android:singleLine="true"
             android:ellipsize="end"
             android:id="@+id/transaction_detail_item_address"

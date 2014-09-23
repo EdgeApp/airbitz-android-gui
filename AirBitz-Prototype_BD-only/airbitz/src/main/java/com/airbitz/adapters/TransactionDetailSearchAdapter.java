@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -82,9 +83,11 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
+        String nameForImage = "";
         if(mCombined.get(position) instanceof BusinessSearchResult) {
             final BusinessSearchResult business = (BusinessSearchResult) mCombined.get(position);
-            viewHolder.textView.setText(business.getName());
+            nameForImage = business.getName();
+            viewHolder.textView.setText(nameForImage);
 
             if(business.getSquareProfileImage()!=null)
                 p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(viewHolder.imageView);
@@ -105,13 +108,15 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
                 strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
             }
 
+            viewHolder.addressView.setVisibility(View.VISIBLE);
             viewHolder.addressView.setText(strAddress);
             viewHolder.addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         }else if(mCombined.get(position) instanceof String){
-            final String contactName = (String) mCombined.get(position);
-            viewHolder.textView.setText(contactName);
+            nameForImage = (String) mCombined.get(position);
+            viewHolder.textView.setText(nameForImage);
+            viewHolder.addressView.setVisibility(View.GONE);
         }
-        p.load(mContactPhotos.get(viewHolder.textView.getText())).noFade().into(viewHolder.imageView);
+        p.load(mContactPhotos.get(nameForImage)).noFade().into(viewHolder.imageView);
         return convertView;
     }
 
