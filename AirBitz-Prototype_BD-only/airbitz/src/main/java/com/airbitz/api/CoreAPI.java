@@ -1477,7 +1477,7 @@ public class CoreAPI {
     }
 
     //this is a blocking call
-    public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi) {
+    public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi, String label) {
         TxResult txResult = new TxResult();
 
         tABC_Error error = new tABC_Error();
@@ -1500,7 +1500,11 @@ public class CoreAPI {
             details.setAmountFeesMinersSatoshi(feesMiner);
 
             details.setAmountCurrency(value);
-            details.setSzName("");
+            if (label == null) {
+                details.setSzName("");
+            } else {
+                details.setSzName(label);
+            }
             details.setSzNotes("");
             details.setSzCategory("");
             details.setAttributes(0x2); //for our own use (not used by the core)
