@@ -70,6 +70,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -671,15 +672,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mArrayAutoComplete.clear();
 
             // go through all the near businesses
-            mArrayAutoComplete.addAll(getMatchedBusinessList(strTerm));
+            mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
 
             // go through all the contacts
-            LinkedHashMap<String, Uri> list = Common.GetMatchedContactsList(getActivity(), strTerm);
-            mContactNames.clear();
+            Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), strTerm);
             for (String s : list.keySet()) {
-                mContactNames.add(s);
+                mArrayAutoComplete.add(s);
+                mCombinedPhotos.put(s, list.get(s));
             }
-            mArrayAutoComplete.addAll(mContactNames);
 
             // check if we have less than the minimum
             if (mArrayAutoComplete.size() < MIN_AUTOCOMPLETE) {
@@ -1245,7 +1245,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         cur.close();
     }
 
-    public List<BusinessSearchResult> getMatchedBusinessList(String searchTerm) {
+    public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
         mBusinesses.clear();
         for (int i = 0; i < mArrayNearBusinesses.size(); i++) {
             if (mArrayNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
@@ -1328,6 +1328,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mCombinedPhotos.put(mName, uri);
                 updatePhoto();
                 updateBizId();
+                mSearchAdapter.notifyDataSetChanged();
             }
         }
 
