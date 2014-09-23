@@ -63,7 +63,7 @@ public class WalletFragment extends Fragment
 
     private TextView mTitleTextView;
 
-    private int SEARCH_ANIMATION_DURATION = 500;
+    private int SEARCH_ANIMATION_DURATION = 350;
     private float mSearchBarHeight;
     private float mListViewY;
 
@@ -88,7 +88,7 @@ public class WalletFragment extends Fragment
     private EditText mWalletNameEditText;
 
     private ListView mListTransaction;
-    private View mHeaderView;
+    private ViewGroup mHeaderView;
     private View mProgressView;
 
     private TransactionAdapter mTransactionAdapter;
@@ -169,7 +169,7 @@ public class WalletFragment extends Fragment
 
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mHeaderView == null) {
-            mHeaderView = inflater.inflate(R.layout.custom_req_send_buttons, null, false);
+            mHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
             mListTransaction.addHeaderView(mHeaderView);
         }
         mSendButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
@@ -471,10 +471,11 @@ public class WalletFragment extends Fragment
             mSearchBarHeight = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
             mListViewY = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
 
-            mListTransaction.animate().translationY(-mListViewY+mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+            mListTransaction.animate().translationY(-mListViewY + mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
                     mListTransaction.setVisibility(View.VISIBLE);
+                    mListTransaction.requestLayout();
                 }
             });
             mSearchField.requestFocus();
@@ -508,6 +509,7 @@ public class WalletFragment extends Fragment
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mListTransaction.setVisibility(View.VISIBLE);
+                    mListTransaction.requestLayout();
                 }
             });
         }
