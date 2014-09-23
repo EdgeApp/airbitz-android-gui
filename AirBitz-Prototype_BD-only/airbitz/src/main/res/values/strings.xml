@@ -153,6 +153,7 @@
     <string name="settings_general_title">GENERAL</string>
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_language">Language</string>
+    <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
     <string name="settings_title_usd">US dollar</string>

@@ -576,11 +576,18 @@ public class NavigationActivity extends BaseActivity
         /* If showing QR code, launch receiving screen*/
         Fragment f = mNavStacks[mNavThreadId].peek();
         if( f instanceof RequestQRCodeFragment) {
-            startReceivedSuccess();
+            if(!SettingFragment.getMerchantModePref())
+            {
+                startReceivedSuccess();
+            } else {
+                ShowOkMessageDialog("", "** Payment Received **", 10000);
+            }
         } else {
             showIncomingBitcoinDialog();
         }
     }
+
+
 
     // callback for funds sent
     private String mIncomingUUID, mIncomingTxID;
