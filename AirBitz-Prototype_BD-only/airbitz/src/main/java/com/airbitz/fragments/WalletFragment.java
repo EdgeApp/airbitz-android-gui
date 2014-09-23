@@ -176,12 +176,8 @@ public class WalletFragment extends Fragment
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         mListTransaction.setAdapter(mTransactionAdapter);
 
-        if (mHeaderView == null) {
-            mHeaderView = inflater.inflate(R.layout.custom_req_send_buttons, null, false);
-            mListTransaction.addHeaderView(mHeaderView);
-        }
-        mSendButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_request_button);
+        mSendButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (ResizableImageView) mView.findViewById(R.id.fragment_wallet_request_button);
 
         mProgressView = (View) mView.findViewById(android.R.id.empty);
         mProgressView.setVisibility(View.GONE);
