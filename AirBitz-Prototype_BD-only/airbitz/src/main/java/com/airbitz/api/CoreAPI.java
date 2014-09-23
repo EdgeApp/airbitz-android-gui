@@ -278,7 +278,8 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_CreateWallet(username, password,
                 walletName, currencyNum, 0, null, pVoid, pError);
-        if(result==tABC_CC.ABC_CC_Ok) {
+        if (result == tABC_CC.ABC_CC_Ok) {
+            startWatchers();
             return true;
         } else {
             Common.LogD(TAG, "Create wallet failed - "+pError.getSzDescription()+", at "+pError.getSzSourceFunc());
@@ -2113,25 +2114,31 @@ public class CoreAPI {
     //************************* Watcher code
 
     private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
-    public void startWatchers()
-    {
-        tABC_Error error = new tABC_Error();
+    public void startWatchers() {
         List<String> wallets = loadWalletUUIDs();
         for (String uuid : wallets) {
             if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                core.ABC_WatcherStart(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                                      uuid, error);
-                Thread thread = new Thread(new WatcherRunnable(uuid));
-                mWatcherTasks.put(uuid, thread);
-                thread.start();
-
-                watchAddresses(uuid);
-                Common.LogD(TAG, "Started watcher for "+uuid);
+                startWatcher(uuid);
             }
         }
         if (mDataFetched) {
             connectWatchers();
         }
+    }
+
+    private void startWatcher(String uuid) {
+        tABC_Error error = new tABC_Error();
+        core.ABC_WatcherStart(AirbitzApplication.getUsername(),
+                              AirbitzApplication.getPassword(),
+                              uuid, error);
+        printABCError(error);
+
+        Thread thread = new Thread(new WatcherRunnable(uuid));
+        mWatcherTasks.put(uuid, thread);
+        thread.start();
+
+        watchAddresses(uuid);
+        Common.LogD(TAG, "Started watcher for "+uuid);
     }
 
     public void connectWatchers() {
