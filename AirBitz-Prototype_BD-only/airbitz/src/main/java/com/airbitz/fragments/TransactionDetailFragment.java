@@ -1212,7 +1212,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
                 }
 
-                if(!mCombinedPhotos.containsKey(business.getName())) {
+                if(!mCombinedPhotos.containsKey(business.getName()) && !business.getId().isEmpty()) {
                     FindBizIdThumbnail(business.getName(), Long.valueOf(business.getId()));
                 }
             }
