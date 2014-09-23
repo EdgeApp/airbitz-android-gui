@@ -656,16 +656,16 @@ public class SendConfirmationFragment extends Fragment {
 
         mAutoUpdatingTextFields = false;
 
-        if(mAmountToSendSatoshi > 0) {
+        if (mSavedBitcoin != null) {
+            mBitcoinField.setText(mSavedBitcoin);
+            mPinEdittext.requestFocus();
+        } else if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             mPinEdittext.requestFocus();
         } else {
-            if(mSavedBitcoin!=null) {
-                mBitcoinField.setText(mSavedBitcoin);
-            } else {
-                mFiatField.setText("");
-                mBitcoinField.setText("");
-            }
+            mFiatField.setText("");
+            mBitcoinField.setText("");
+            mFiatField.requestFocus();
         }
 
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
