@@ -1,7 +1,9 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -45,6 +47,8 @@ import java.util.Set;
 public class SettingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
+    private static final String MERCHANT_MODE_PREF = "MerchantMode";
+
     private static final int MAX_TIME_VALUE = 60;
 
     static final int USD_NUM = 840;
@@ -72,6 +76,7 @@ public class SettingFragment extends Fragment {
     private HighlightOnPressButton mChangeRecoveryButton;
 
     private Switch mSendNameSwitch;
+    private Switch mMerchantModeSwitch;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
@@ -146,6 +151,7 @@ public class SettingFragment extends Fragment {
         mChangeRecoveryButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_recovery);
 
         mSendNameSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
+        mMerchantModeSwitch = (Switch) mView.findViewById(R.id.settings_toggle_merchant_mode);
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
@@ -213,6 +219,14 @@ public class SettingFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 setUserNameState(isChecked);
+            }
+        });
+
+        mMerchantModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save the state here
+                saveMerchantModePref(isChecked);
             }
         });
 
@@ -342,6 +356,8 @@ public class SettingFragment extends Fragment {
         mCurrencyNum = mCoreSettings.getCurrencyNum();
         mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
 
+        mMerchantModeSwitch.setChecked(getMerchantModePref());
+
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
 
@@ -434,6 +450,17 @@ public class SettingFragment extends Fragment {
         if(AirbitzApplication.isLoggedIn()) {
             mCoreAPI.saveAccountSettings(mCoreSettings);
         }
+    }
+
+    private void saveMerchantModePref(boolean state) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(MERCHANT_MODE_PREF, state);
+        editor.apply();
+    }
+
+    static public boolean getMerchantModePref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getBoolean(MERCHANT_MODE_PREF, false);
     }
 
 

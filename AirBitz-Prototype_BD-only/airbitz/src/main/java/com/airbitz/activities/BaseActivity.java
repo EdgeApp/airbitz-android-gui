@@ -68,6 +68,20 @@ public class BaseActivity extends FragmentActivity {
         mMessageDialog.show();
     }
 
+    public void ShowOkMessageDialog(String title, String message, int timeoutMillis) {
+        mHandler.postDelayed(mMessageDialogKiller, timeoutMillis);
+        ShowOkMessageDialog(title, message);
+    }
+
+    Runnable mMessageDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if(mMessageDialog.isShowing()) {
+                mMessageDialog.dismiss();
+            }
+        }
+    };
+
     public void ShowMessageDialogBackPress(String title, String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(reason)
