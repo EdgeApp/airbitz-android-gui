@@ -708,12 +708,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mCombinedPhotos.put(s, list.get(s));
                 }
 
-            } else if(mFromSend) {
+            } else {
                 // this is a sent so we must be looking for businesses
                 // since nothing in payee yet, just populate with businesses (already sorted by distance)
-                mArrayAutoComplete.addAll(mArrayNearBusinesses);
-            } else {
-                // go through all the near businesses
                 mArrayAutoComplete.addAll(mArrayNearBusinesses);
             }
         }
