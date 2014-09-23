@@ -75,7 +75,6 @@ public class WalletFragment extends Fragment
     private View mDummyFocus;
 
     private RelativeLayout exportLayout;
-    private LinearLayout sendRequestLayout;
 
     private RelativeLayout mParentLayout;
 
@@ -155,7 +154,6 @@ public class WalletFragment extends Fragment
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
-        sendRequestLayout = (LinearLayout) mView.findViewById(R.id.fragment_wallet_sendrequest_layout);
 
         mDummyFocus = mView.findViewById(R.id.fragment_wallet_dummy_focus);
 
@@ -468,10 +466,10 @@ public class WalletFragment extends Fragment
                     exportLayout.setVisibility(View.INVISIBLE);
                 }
             });
-            sendRequestLayout.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mHeaderView.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    sendRequestLayout.setVisibility(View.GONE);
+                    mHeaderView.setVisibility(View.GONE);
                 }
             });
             mSearchBarHeight = getActivity().getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
@@ -504,10 +502,10 @@ public class WalletFragment extends Fragment
                     exportLayout.setVisibility(View.VISIBLE);
                 }
             });
-            sendRequestLayout.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
+            mHeaderView.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    sendRequestLayout.setVisibility(View.VISIBLE);
+                    mHeaderView.setVisibility(View.VISIBLE);
                 }
             });
             mListTransaction.animate().translationY(mListViewY-mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
