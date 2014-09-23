@@ -250,7 +250,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_header"
         android:background="@android:color/transparent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <View
             android:layout_width="match_parent"
