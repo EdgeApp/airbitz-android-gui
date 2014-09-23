@@ -72,8 +72,6 @@ public class WalletFragment extends Fragment
     private TextView mBottomType;
     private TextView mTopType;
 
-    private View mDummyFocus;
-
     private RelativeLayout exportLayout;
 
     private RelativeLayout mParentLayout;
@@ -154,8 +152,6 @@ public class WalletFragment extends Fragment
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
-
-        mDummyFocus = mView.findViewById(R.id.fragment_wallet_dummy_focus);
 
         switchable = (RelativeLayout) mView.findViewById(R.id.switchable);
         switchContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
