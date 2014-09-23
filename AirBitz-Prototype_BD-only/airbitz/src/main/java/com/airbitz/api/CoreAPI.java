@@ -1589,18 +1589,12 @@ public class CoreAPI {
     }
 
     public void startAllAsyncUpdates() {
-        if (!AirbitzApplication.isLoggedIn()) {
-            return;
-        }
         startWatchers();
         startExchangeRateUpdates();
         startFileSyncUpdates();
     }
 
     public void stopAllAsyncUpdates() {
-        if (!AirbitzApplication.isLoggedIn()) {
-            return;
-        }
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
         stopWatchers();
