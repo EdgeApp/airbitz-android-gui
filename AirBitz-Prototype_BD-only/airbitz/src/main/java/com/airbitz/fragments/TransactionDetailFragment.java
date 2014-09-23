@@ -666,10 +666,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void updateAutoCompleteArray(String strTerm) {
         // if there is anything in the payee field
+
+        mArrayAutoComplete.clear();
         if (!strTerm.isEmpty()) {
-
-            mArrayAutoComplete.clear();
-
             // go through all the near businesses
             mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
 
@@ -703,7 +702,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             if (mFromRequest) {
                 // this is a receive so use the address book
                 // show all the contacts
-                mArrayAutoComplete.clear();
                 Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), null);
                 for (String s : list.keySet()) {
                     mArrayAutoComplete.add(s);
@@ -712,13 +710,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             } else if(mFromSend) {
                 // this is a sent so we must be looking for businesses
-
                 // since nothing in payee yet, just populate with businesses (already sorted by distance)
-                mArrayAutoComplete.clear();
                 mArrayAutoComplete.addAll(mArrayNearBusinesses);
             } else {
-                mArrayAutoComplete.clear();
-
                 // go through all the near businesses
                 mArrayAutoComplete.addAll(mArrayNearBusinesses);
             }
