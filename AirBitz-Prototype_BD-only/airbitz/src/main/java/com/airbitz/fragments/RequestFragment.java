@@ -41,6 +41,7 @@ import java.util.List;
 public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
     private final String TAG = getClass().getSimpleName();
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
+    public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
@@ -137,10 +138,14 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                     AlertDialog alert = builder.create();
                     alert.show();
                 } else {
+                    String btc = mBitcoinField.getText().toString();
+                    long satoshi = mCoreAPI.denominationToSatoshi(btc);
+
                     Fragment frag = new RequestQRCodeFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+                    bundle.putLong(SATOSHI_VALUE, satoshi);
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
@@ -388,7 +393,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         @Override
         protected Void doInBackground(Void... params) {
             if(mWallets!=null && mWallets.size()>0) {
-                String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", "0");
+                String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", 0);
             }
             return null;
         }
