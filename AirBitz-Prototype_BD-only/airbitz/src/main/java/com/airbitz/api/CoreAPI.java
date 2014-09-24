@@ -1419,9 +1419,8 @@ public class CoreAPI {
         return val > maxFiat;
     }
 
-    public String createReceiveRequestFor(Wallet wallet, String name, String notes, String btc) {
+    public String createReceiveRequestFor(Wallet wallet, String name, String notes, long satoshi) {
         //first need to create a transaction details struct
-        long satoshi = denominationToSatoshi(btc);
         double value = SatoshiToCurrency(satoshi, wallet.getCurrencyNum());
 
         //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
