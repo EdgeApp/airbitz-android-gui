@@ -548,6 +548,8 @@ public class WalletFragment extends Fragment
         startTransactionTask();
 
         UpdateBalances();
+        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+        mTransactionAdapter.notifyDataSetChanged();
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
     }
