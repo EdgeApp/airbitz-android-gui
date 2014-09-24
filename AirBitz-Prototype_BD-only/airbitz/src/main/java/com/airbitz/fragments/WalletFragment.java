@@ -305,6 +305,9 @@ public class WalletFragment extends Fragment
             public void onClick(View view) {
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mExportButton);
                 Fragment fragment = new ExportFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
+                fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
             }
         });

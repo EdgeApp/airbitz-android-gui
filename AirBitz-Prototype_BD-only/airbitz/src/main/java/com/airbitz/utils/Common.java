@@ -80,12 +80,12 @@ public class Common {
         return null;
     }
 
-    public static String createTempFileFromString(String data) {
+    public static String createTempFileFromString(String name, String data) {
         String strDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp";
         File file = new File(strDir);
         if (!file.exists())
             file.mkdirs();
-        String strFile = strDir + "/email.html";
+        String strFile = strDir + "/"+name;
         try {
             FileOutputStream fos = new FileOutputStream(strFile);
             Writer out = new OutputStreamWriter(fos, "UTF-8");
@@ -94,7 +94,7 @@ public class Common {
             out.close();
             return strFile;
         } catch (Throwable t) {
-            LogD(TAG, "createFileFromString failed");
+            LogD(TAG, "createFileFromString failed for "+name);
             return null;
         }
     }
