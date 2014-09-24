@@ -575,25 +575,42 @@ public class NavigationActivity extends BaseActivity
         mUUID = walletUUID;
         mTxId = txId;
         /* If showing QR code, launch receiving screen*/
-        Fragment f = mNavStacks[mNavThreadId].peek();
-        if( f instanceof RequestQRCodeFragment) {
-            if(!SettingFragment.getMerchantModePref())
-            {
-                startReceivedSuccess();
+        RequestQRCodeFragment f = requestMatchesQR(mUUID, mTxId);
+        Common.LogD(TAG, "RequestFragment? " + f);
+        if (f != null) {
+            long diff = f.requestDifference(mUUID, mTxId);
+            if (diff == 0) {
+                if (!SettingFragment.getMerchantModePref()) {
+                    startReceivedSuccess();
+                } else {
+                    hideSoftKeyboard(mFragmentLayout);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
+                    resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
+                    switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
+                    ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
+                }
             } else {
-                hideSoftKeyboard(mFragmentLayout);
-                Bundle bundle = new Bundle();
-                bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
-                resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
-                switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-                ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
+                // Request the remainer of the funds
+                f.updateWithAmount(diff);
             }
         } else {
             showIncomingBitcoinDialog();
         }
     }
 
-
+    private RequestQRCodeFragment requestMatchesQR(String uuid, String txid) {
+        Fragment f = mNavStacks[mNavThreadId].peek();
+        if (!(f instanceof RequestQRCodeFragment)) {
+            return null;
+        }
+        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        if (qr.isShowingQRCodeFor(uuid, txid)) {
+            return qr;
+        } else {
+            return null;
+        }
+    }
 
     // callback for funds sent
     private String mIncomingUUID, mIncomingTxID;
