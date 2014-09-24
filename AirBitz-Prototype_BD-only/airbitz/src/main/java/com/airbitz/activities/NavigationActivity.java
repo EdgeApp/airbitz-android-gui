@@ -1,6 +1,8 @@
 package com.airbitz.activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
@@ -105,6 +108,11 @@ public class NavigationActivity extends BaseActivity
 
     private int mFragmentViewHeight = 0;
     private int mNavBarViewHeight = 0;
+
+    private AlarmManager mAlarmMgr;
+    private PendingIntent mAlarmIntent; // target for mAlarmReceiver
+    private BroadcastReceiver mAlarmReceiver;
+
 
 
     //******************* HockeyApp support - COMMENT OUT FOR PRODUCTION!!!
@@ -495,6 +503,8 @@ public class NavigationActivity extends BaseActivity
         checkForCrashes();
         checkForUpdates();
 
+        checkLoginExpired();
+
         //Look for Connection change events
         registerReceiver(ConnectivityChangeReceiver, new IntentFilter( ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -517,6 +527,7 @@ public class NavigationActivity extends BaseActivity
         super.onPause();
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
+        AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
     }
 
     /*
@@ -889,4 +900,16 @@ public class NavigationActivity extends BaseActivity
             }
         }
     };
+
+    private void checkLoginExpired() {
+        if(AirbitzApplication.getmBackgroundedTime()==0 || !AirbitzApplication.isLoggedIn())
+            return;
+
+        long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
+
+        Common.LogD(TAG, "delta logout time = "+milliDelta);
+        if(milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout()*60*1000) {
+            Logout();
+        }
+    }
 }
