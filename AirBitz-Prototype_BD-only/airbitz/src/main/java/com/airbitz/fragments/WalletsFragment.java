@@ -578,6 +578,8 @@ public class WalletsFragment extends Fragment
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         UpdateBalances();
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletAdapter.notifyDataSetChanged();
 
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);

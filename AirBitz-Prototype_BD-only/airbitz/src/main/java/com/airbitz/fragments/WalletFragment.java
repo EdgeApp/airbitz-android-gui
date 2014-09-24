@@ -348,6 +348,11 @@ public class WalletFragment extends Fragment
                     Bundle bundle = new Bundle();
                     bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
                     bundle.putString(Transaction.TXID, trans.getID());
+                    if(trans.getAmountSatoshi() < 0) {
+                        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+                    } else {
+                        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
+                    }
 
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
@@ -548,6 +553,8 @@ public class WalletFragment extends Fragment
         startTransactionTask();
 
         UpdateBalances();
+        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+        mTransactionAdapter.notifyDataSetChanged();
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
     }

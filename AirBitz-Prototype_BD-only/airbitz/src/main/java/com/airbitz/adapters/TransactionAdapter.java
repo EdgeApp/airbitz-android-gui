@@ -130,7 +130,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         String name = transaction.getName();
         viewHolder.nameTextView.setText(name);
         Uri payeeImage = mContactList.get(name);
-        if(mContactList!=null && payeeImage!=null) {
+        if(mContactList!=null && payeeImage!=null && !name.isEmpty()) {
             viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
             if(payeeImage.getScheme().contains("content")) {
                 viewHolder.contactImageView.setImageURI(null);

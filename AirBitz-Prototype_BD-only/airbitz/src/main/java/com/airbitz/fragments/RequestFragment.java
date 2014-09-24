@@ -43,6 +43,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
+    public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
 
     private String mUUID = null;
     private EditText mBitcoinField;
@@ -344,6 +345,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             mSavedSelection=0;
             mSavedBitcoin=null;
             mSavedFiat=null;
+        } else if(bundle!=null && bundle.getString(MERCHANT_MODE)!=null) {
+            mFiatField.requestFocus();
         } else {
             mFromIndex=0;
             mSelectedWallet = mWallets.get(mFromIndex);

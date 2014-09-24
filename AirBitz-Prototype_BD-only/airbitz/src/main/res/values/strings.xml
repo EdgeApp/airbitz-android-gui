@@ -21,6 +21,7 @@
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
+    <string name="string_payment_received">** Payment Received **</string>
 
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
@@ -153,6 +154,7 @@
     <string name="settings_general_title">GENERAL</string>
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_language">Language</string>
+    <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
     <string name="settings_title_usd">US dollar</string>
