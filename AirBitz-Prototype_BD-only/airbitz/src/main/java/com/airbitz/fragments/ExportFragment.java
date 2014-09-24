@@ -82,7 +82,7 @@ public class ExportFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Fragment frag = new ExportSavingOptionFragment();
-                bundle = new Bundle();
+                bundle = getArguments();
                 bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.CSV.ordinal());
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());

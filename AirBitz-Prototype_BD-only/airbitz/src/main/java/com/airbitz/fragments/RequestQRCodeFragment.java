@@ -297,7 +297,7 @@ public class RequestQRCodeFragment extends Fragment {
         intent.setType("message/rfc822").setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
-        String filename = Common.createTempFileFromString(getEmailContent(fullName));
+        String filename = Common.createTempFileFromString("email.html", getEmailContent(fullName));
         Uri htmlFile = Uri.parse("file://" + filename);
         uris.add(htmlFile);
         if(mQRBitmap!=null) {

@@ -401,7 +401,8 @@
                     android:drawableRight="@drawable/arrow_right"
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"/>
+                    android:paddingLeft="56.7dp"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_dropbox"
                     android:layout_width="44.1dp"
@@ -421,7 +422,8 @@
                     android:drawableRight="@drawable/arrow_right"
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"/>
+                    android:paddingLeft="56.7dp"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_view"
                     android:layout_width="44.1dp"
