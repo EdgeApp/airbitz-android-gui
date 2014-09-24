@@ -18,6 +18,7 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static Login airbitzLogin = new Login();
+    private static long mBackgroundedTime=0;
     private static Context mContext;
     private static int mLastNavTab = 0;
 
@@ -53,6 +54,9 @@ public class AirbitzApplication extends Application {
     public static Context getContext() {return mContext; }
     public static void setLastNavTab(int tab) {mLastNavTab = tab;}
     public static int getLastNavTab() {return mLastNavTab;}
+
+    public static void setBackgroundedTime(long time) {mBackgroundedTime = time;}
+    public static long getmBackgroundedTime() {return mBackgroundedTime;}
 
     private static class Login {
         private String mUsername = null;
