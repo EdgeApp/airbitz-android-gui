@@ -363,16 +363,6 @@ public class NavigationActivity extends BaseActivity
         transaction.commitAllowingStateLoss();
     }
 
-    public void popFragmentImmediate(int threadId) {
-        hideSoftKeyboard(mFragmentLayout);
-        Fragment fragment = mNavStacks[threadId].pop();
-        getFragmentManager().executePendingTransactions();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.remove(fragment);
-        transaction.commitAllowingStateLoss();
-    }
-
-
     ViewGroup.LayoutParams mFragmentLayoutParams;
     private ViewGroup.LayoutParams getFragmentLayoutParams() {
         if(mFragmentLayoutParams==null) {
@@ -580,7 +570,12 @@ public class NavigationActivity extends BaseActivity
             {
                 startReceivedSuccess();
             } else {
-                ShowOkMessageDialog("", "** Payment Received **", 10000);
+                hideSoftKeyboard(mFragmentLayout);
+                Bundle bundle = new Bundle();
+                bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
+                resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
+                switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
+                ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
             }
         } else {
             showIncomingBitcoinDialog();
