@@ -304,6 +304,9 @@
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
     <string name="received_bitcoin_title">Received Bitcoin</string>
     <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
+    <string name="received_partial_bitcoin_title">Warning. Partial payment Received</string>
+    <string name="received_partial_bitcoin_message">Warning. Partial payment Received</string>
+    <string name="bitcoing_remaining">%1$s Remaining...</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
