@@ -10,6 +10,7 @@
     <dimen name="venue_list_small_height_175">112dp</dimen>
     <dimen name="wallet_list_view_height">70dp</dimen>
     <dimen name="transaction_list_view_height">69.5dp</dimen>
+    <dimen name="tabbar_height">56.7dp</dimen>
 
     <dimen name="offset_height">20dp</dimen>
     <dimen name="new_height">135dp</dimen>

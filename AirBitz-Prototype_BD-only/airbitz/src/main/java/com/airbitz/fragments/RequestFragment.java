@@ -328,8 +328,13 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mAutoUpdatingTextFields = false;
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
+
+        // If large display, keep the calculator open
+        ((NavigationActivity) getActivity()).lockCalculator();
+
         loadNonArchivedWallets();
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
@@ -373,11 +378,15 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     @Override public void onPause() {
         super.onPause();
+
         mSavedBitcoin = mBitcoinField.getText().toString();
         mSavedFiat = mFiatField.getText().toString();
         mSavedSelection = pickWalletSpinner.getSelectedItemPosition();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
+
+        // If calculator is locked open, unlock it
+        ((NavigationActivity) getActivity()).unlockCalculator();
     }
 
     @Override
