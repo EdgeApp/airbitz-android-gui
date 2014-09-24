@@ -274,6 +274,12 @@
     <string name="export_saving_dropbox_label">Dropbox</string>
     <string name="export_saving_view_label">View</string>
 
+    <!-- Strings for Export Saving Option fragment -->
+    <string name="export_saving_option_no_transactions_title">No Transactions</string>
+    <string name="export_saving_option_no_transactions_message">There are no transactions to export in your date range</string>
+    <string name="export_saving_option_email_subject">AirBitz Bitcoin Wallet Transactions</string>
+    <string name="export_saving_option_no_email_apps">There are no email applications installed</string>
+
     <!-- Strings for Offline Wallet fragment -->
     <string name="offline_wallet_title">Offline Wallet</string>
     <string name="offline_wallet_public_address_title">PUBLIC ADDRESS</string>

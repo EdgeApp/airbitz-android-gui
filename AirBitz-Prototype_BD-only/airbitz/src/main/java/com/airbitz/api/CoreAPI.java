@@ -743,6 +743,29 @@ public class CoreAPI {
         public String getCategory() { return mCategory; }
     }
 
+    public String GetCSVExportData(String uuid, long start, long end) {
+        tABC_Error pError = new tABC_Error();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        SWIGTYPE_p_int64_t startTime = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(startTime), start); //0 means all transactions
+
+        SWIGTYPE_p_int64_t endTime = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(endTime), end); //0 means all transactions
+
+        tABC_CC result = core.ABC_CsvExport(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, startTime, endTime, ppChar, pError);
+
+        if (result == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp)); // will be null for NoRecoveryQuestions
+        } else {
+            Common.LogD(TAG, pError.getSzDescription() +";"+ pError.getSzSourceFile() +";"+ pError.getSzSourceFunc() +";"+ pError.getNSourceLine());
+            return null;
+        }
+    }
+
 
     //************ Transaction handling
     public Transaction getTransaction(String walletUUID, String szTxId)
