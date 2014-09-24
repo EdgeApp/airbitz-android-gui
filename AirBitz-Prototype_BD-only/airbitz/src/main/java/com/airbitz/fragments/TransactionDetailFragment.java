@@ -1101,6 +1101,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(String searchResult) {
+            if (getActivity() == null) {
+                return;
+            }
             try {
                 mArrayNearBusinesses.clear();
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
@@ -1211,6 +1214,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(List<Business> businesses) {
+            if (getActivity() == null || businesses == null) {
+                return ;
+            }
             for(Business business : businesses) {
                 BusinessSearchResult bsresult = new BusinessSearchResult(business.getId(), business.getName());
                 if(!mArrayOnlineBusinesses.contains(bsresult)) {
@@ -1330,7 +1336,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(BusinessDetail business) {
-            if(business!=null && business.getSquareImageLink()!=null) {
+            if (getActivity() == null) {
+                return;
+            }
+            if (business!=null && business.getSquareImageLink()!=null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
                 Common.LogD(TAG, "Got "+uri);
                 mCombinedPhotos.put(mName, uri);
