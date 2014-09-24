@@ -614,22 +614,30 @@ public class NavigationActivity extends BaseActivity
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff == 0) {
-                if (!SettingFragment.getMerchantModePref()) {
-                    startReceivedSuccess();
-                } else {
-                    hideSoftKeyboard(mFragmentLayout);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
-                    resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
-                    switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-                    ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
-                }
+                // sender paid exact amount
+                handleReceiveFromQR();
+            } else if (diff < 0) {
+                // sender paid too much
+                handleReceiveFromQR();
             } else {
                 // Request the remainer of the funds
                 f.updateWithAmount(diff);
             }
         } else {
             showIncomingBitcoinDialog();
+        }
+    }
+
+    private void handleReceiveFromQR() {
+        if (!SettingFragment.getMerchantModePref()) {
+            startReceivedSuccess();
+        } else {
+            hideSoftKeyboard(mFragmentLayout);
+            Bundle bundle = new Bundle();
+            bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
+            resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
+            switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
+            ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
         }
     }
 
