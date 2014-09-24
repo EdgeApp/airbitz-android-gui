@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,14 +17,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
+import com.airbitz.models.Transaction;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
@@ -63,6 +66,7 @@ public class RequestQRCodeFragment extends Fragment {
     private String mAddress;
     private String mContentURL;
     private String mRequestURI;
+    private long mAmountSatoshi;
 
     private List<String> mContactNames = new ArrayList<String>();
     private Map<String, String> mContactPhones = new LinkedHashMap<String, String>();
@@ -76,15 +80,13 @@ public class RequestQRCodeFragment extends Fragment {
     static final int PICK_CONTACT_SMS =1;
     static final int PICK_CONTACT_EMAIL=2;
 
-    private long mSatoshi;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
         mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
+        mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
     }
 
     @Override
@@ -111,7 +113,7 @@ public class RequestQRCodeFragment extends Fragment {
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
-        mBitcoinAmount.setText(mCoreAPI.getUserBTCSymbol()+" "+bundle.getString(RequestFragment.BITCOIN_VALUE));
+        mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
@@ -187,8 +189,8 @@ public class RequestQRCodeFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Common.LogD(TAG, "Starting Receive Request at:"+System.currentTimeMillis());
-            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", bundle.getString(RequestFragment.BITCOIN_VALUE));
+            Common.LogD(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
+            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
             if(mID!=null) {
                 Common.LogD(TAG, "Starting Request Address at:"+System.currentTimeMillis());
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
@@ -199,7 +201,6 @@ public class RequestQRCodeFragment extends Fragment {
                     mQRBitmap = addWhiteBorder(mQRBitmap);
                     Common.LogD(TAG, "Ending QRCodeBitmap at:"+System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
-                    mSatoshi = mCoreAPI.denominationToSatoshi(bundle.getString(RequestFragment.BITCOIN_VALUE));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -316,8 +317,8 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private String getEmailContent(String fullName) {
-        String amountBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 8);
-        String amountMBTC = mCoreAPI.formatSatoshi(mSatoshi, false, 5);
+        String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
+        String amountMBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 5);
 
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
@@ -475,5 +476,78 @@ public class RequestQRCodeFragment extends Fragment {
                 break;
 
         }
+    }
+
+    public boolean isShowingQRCodeFor(String walletUUID, String txId) {
+        Common.LogD(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
+        Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+        if (tx.getOutputs() == null || mAddress == null) {
+            return false;
+        }
+        Common.LogD(TAG, "isShowingQRCodeFor: hasOutputs");
+        for (CoreAPI.TxOutput output : tx.getOutputs()) {
+            Common.LogD(TAG, output.getmInput() + " " + mAddress + " " + output.getAddress());
+            if (!output.getmInput() && mAddress.equals(output.getAddress())) {
+                return true;
+            }
+        }
+        Common.LogD(TAG, "isShowingQRCodeFor: noMatch");
+        return false;
+    }
+
+    public long requestDifference(String walletUUID, String txId) {
+        Common.LogD(TAG, "requestDifference: " + walletUUID + " " + txId);
+        if (mAmountSatoshi > 0) {
+            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            return mAmountSatoshi - tx.getAmountSatoshi();
+        } else {
+            return 0;
+        }
+    }
+
+    public void updateWithAmount(long newAmount) {
+        mAmountSatoshi = newAmount;
+        mBitcoinAmount.setText(
+            String.format(getResources().getString(R.string.bitcoing_remaining),
+                          mCoreAPI.formatSatoshi(mAmountSatoshi, true)));
+
+        if (mCreateBitmapTask != null) {
+            mCreateBitmapTask.cancel(true);
+        }
+        // Create a new request and qr code
+        mCreateBitmapTask = new CreateBitmapTask();
+        mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        // Alert the user
+        alertPartialPayment();
+    }
+
+    private AlertDialog mPartialDialog;
+    private Handler mHandler = new Handler();
+    final Runnable dialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if (mPartialDialog != null) {
+                mPartialDialog.dismiss();
+                mPartialDialog = null;
+            }
+        }
+    };
+
+    private void alertPartialPayment() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getResources().getString(R.string.received_partial_bitcoin_message))
+               .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
+               .setCancelable(true)
+               .setNeutralButton(getResources().getString(R.string.string_ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            mPartialDialog.cancel();
+                            mPartialDialog = null;
+                        }
+                    });
+        mPartialDialog = builder.create();
+        mPartialDialog.show();
+        mHandler.postDelayed(dialogKiller, 5000);
     }
 }
