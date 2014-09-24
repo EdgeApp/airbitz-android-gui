@@ -404,9 +404,6 @@ public class CoreAPI {
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         tABC_CC result = core.ABC_SignIn(username, password, null, pVoid, pError);
-        if (result == tABC_CC.ABC_CC_Ok) {
-            accountSync(username, password);
-        }
         return result == tABC_CC.ABC_CC_Ok;
     }
 
@@ -2245,9 +2242,6 @@ public class CoreAPI {
                         AirbitzApplication.getUsername(),
                         AirbitzApplication.getPassword(),
                         password, oldPIN, null, null, Error);
-        if (tABC_CC.ABC_CC_Ok == cc) {
-            accountSync(AirbitzApplication.getUsername(), password);
-        }
         return cc;
     }
 
@@ -2273,9 +2267,6 @@ public class CoreAPI {
         tABC_Error Error = new tABC_Error();
         tABC_CC cc = core.ABC_ChangePasswordWithRecoveryAnswers(
                         username, recoveryAnswers, password, pin, null, null, Error);
-        if (tABC_CC.ABC_CC_Ok == cc) {
-            accountSync(username, password);
-        }
         return cc;
     }
 
