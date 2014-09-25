@@ -2,6 +2,8 @@ package com.airbitz.activities;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,10 +18,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -80,6 +81,7 @@ public class NavigationActivity extends BaseActivity
     private Uri mDataUri;
 
     private boolean keyBoardUp = false;
+    private boolean mCalcLocked = false;
 
     public enum Tabs { BD, REQUEST, SEND, WALLET, SETTING }
     private NavigationBarFragment mNavBarFragment;
@@ -429,8 +431,37 @@ public class NavigationActivity extends BaseActivity
         return mCalculatorView;
     }
 
+    public void lockCalculator() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        if (metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH) {
+            return;
+        }
+        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
+        RelativeLayout.LayoutParams params =
+            (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
+
+        // Move calculator above the tab bar
+        params.setMargins(0, 0, 0, tbHeight);
+        mCalculatorView.setLayoutParams(params);
+        mCalcLocked = true;
+        showCalculator();
+    }
+
+    public void unlockCalculator() {
+        if (!mCalcLocked) {
+            return;
+        }
+        RelativeLayout.LayoutParams params =
+            (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        mCalculatorView.setLayoutParams(params);
+        mCalcLocked = false;
+        hideCalculator();
+    }
+
     public void hideCalculator() {
-        if(mCalculatorView.getVisibility()==View.VISIBLE) {
+        if (!mCalcLocked && mCalculatorView.getVisibility()==View.VISIBLE) {
             mCalculatorView.setVisibility(View.GONE);
             mCalculatorView.setEnabled(false);
         }
@@ -443,6 +474,7 @@ public class NavigationActivity extends BaseActivity
             mHandler.postDelayed(delayedShowCalculator, 100);
         }
     }
+
     final Runnable delayedShowCalculator = new Runnable() {
         @Override
         public void run() {
@@ -471,10 +503,12 @@ public class NavigationActivity extends BaseActivity
 
         boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
 
-        hideCalculator();
+        if (!mCalcLocked) {
+            hideCalculator();
+        }
 
         if (mNavStacks[mNavThreadId].size() == 1) {
-            if(!calcVisible) {
+            if(!calcVisible || mCalcLocked) {
                 // This emulates user pressing Home button, rather than finish this activity
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
@@ -580,22 +614,30 @@ public class NavigationActivity extends BaseActivity
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff == 0) {
-                if (!SettingFragment.getMerchantModePref()) {
-                    startReceivedSuccess();
-                } else {
-                    hideSoftKeyboard(mFragmentLayout);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
-                    resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
-                    switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-                    ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
-                }
+                // sender paid exact amount
+                handleReceiveFromQR();
+            } else if (diff < 0) {
+                // sender paid too much
+                handleReceiveFromQR();
             } else {
                 // Request the remainer of the funds
                 f.updateWithAmount(diff);
             }
         } else {
             showIncomingBitcoinDialog();
+        }
+    }
+
+    private void handleReceiveFromQR() {
+        if (!SettingFragment.getMerchantModePref()) {
+            startReceivedSuccess();
+        } else {
+            hideSoftKeyboard(mFragmentLayout);
+            Bundle bundle = new Bundle();
+            bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
+            resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
+            switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
+            ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
         }
     }
 
