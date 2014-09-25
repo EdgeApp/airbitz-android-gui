@@ -85,8 +85,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="31dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="6.3dp">
+                    android:layout_marginBottom="2.5dp"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:id="@+id/textview_account"
@@ -124,8 +124,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="31dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="6.3dp">
+                    android:layout_marginBottom="2.5dp"
+                    android:layout_marginTop="2.5dp">
 
                     <TextView
                         android:id="@+id/textview_from"
@@ -163,8 +163,8 @@
                     android:layout_height="31dp"
                     android:layout_below="@id/layout_from"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="6.3dp">
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="2.5dp">
 
                     <TextView
                         android:id="@+id/textview_to"
@@ -206,8 +206,8 @@
                 android:layout_below="@id/layout_export_data"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="12.6dp"
-                android:layout_marginBottom="6.3dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="2.5dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -255,8 +255,8 @@
                 android:layout_below="@id/layout_export_last_period"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="12.6dp"
-                android:layout_marginBottom="6.3dp"
+                android:layout_marginTop="2.5dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -305,7 +305,7 @@
                 android:id="@+id/layout_data"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
-                android:layout_marginTop="18.9dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="6.3dp"
                 android:layout_below="@id/layout_export_this_period">
 
@@ -320,7 +320,8 @@
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
                     android:gravity="center_vertical"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="gone" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_print"
                     android:layout_width="44.1dp"
@@ -340,7 +341,8 @@
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="gone" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_sd_card"
                     android:layout_width="44.1dp"
@@ -381,7 +383,8 @@
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="gone" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_google_drive"
                     android:layout_width="44.1dp"
@@ -389,7 +392,8 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ico_gdrive"
                     android:padding="12.6dp"
-                    android:layout_below="@id/fragment_exportsaving_button_email"/>
+                    android:layout_below="@id/fragment_exportsaving_button_email"
+                    android:visibility="gone" />
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_dropbox"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
@@ -402,7 +406,8 @@
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="gone" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_dropbox"
                     android:layout_width="44.1dp"
@@ -410,7 +415,8 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ico_dropbox"
                     android:padding="12.6dp"
-                    android:layout_below="@id/fragment_exportsaving_button_google_drive"/>
+                    android:layout_below="@id/fragment_exportsaving_button_google_drive"
+                    android:visibility="gone" />
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_view"
                     android:layout_below="@id/fragment_exportsaving_button_dropbox"
@@ -423,7 +429,8 @@
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_view"
                     android:layout_width="44.1dp"
@@ -431,7 +438,8 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ico_view"
                     android:padding="12.6dp"
-                    android:layout_below="@id/fragment_exportsaving_button_dropbox"/>
+                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
+                    android:visibility="visible" />
             </RelativeLayout>
 
 
