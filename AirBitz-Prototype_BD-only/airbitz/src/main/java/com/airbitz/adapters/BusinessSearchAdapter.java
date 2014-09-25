@@ -1,6 +1,7 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +56,15 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
             convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
 
         final Business business = mLocationValue.get(position);
-
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
-        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+
+        if (business.getType().equalsIgnoreCase("business")) {
+            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.BOLD);
+        } else if (business.getType().equalsIgnoreCase("category")) {
+            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
+        } else {
+            // Assert. no other type
+        }
         textView.setText(business.getName());
         textView.setTextColor(business.isCached() ? sGreenText : sGrayText);
 
