@@ -70,7 +70,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="56.7dp"
+        android:layout_height="@dimen/tabbar_height"
         android:id="@+id/normal_navigation_bar"
         android:weightSum="5">
         <ImageView

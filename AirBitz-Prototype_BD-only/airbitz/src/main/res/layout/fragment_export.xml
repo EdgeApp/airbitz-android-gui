@@ -99,7 +99,8 @@
                 android:paddingRight="18.9dp"
                 android:paddingLeft="56.7dp"
                 android:focusable="false"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:visibility="gone" />
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
@@ -120,7 +121,8 @@
                 android:paddingLeft="56.7dp"
                 android:gravity="center_vertical"
                 android:focusable="false"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:visibility="gone" />
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
@@ -141,7 +143,8 @@
                 android:paddingLeft="56.7dp"
                 android:gravity="center_vertical"
                 android:focusable="false"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:visibility="gone" />
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
