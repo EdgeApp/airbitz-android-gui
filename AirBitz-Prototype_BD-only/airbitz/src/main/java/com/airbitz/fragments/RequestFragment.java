@@ -363,7 +363,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             focus(mFiatField);
         } else {
             mFromIndex=0;
-            mSelectedWallet = mWallets.get(mFromIndex);
+            if(mWallets!=null && !mWallets.isEmpty())
+                mSelectedWallet = mWallets.get(mFromIndex);
         }
 
         mAutoUpdatingTextFields = true;
