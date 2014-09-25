@@ -658,6 +658,10 @@ public class SendConfirmationFragment extends Fragment {
 
         mAutoUpdatingTextFields = false;
 
+        mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
+        mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
+        mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
+
         if (mSavedBitcoin != null) {
             mBitcoinField.setText(mSavedBitcoin);
             mPinEdittext.requestFocus();
@@ -669,6 +673,13 @@ public class SendConfirmationFragment extends Fragment {
             mBitcoinField.setText("");
             mFiatField.requestFocus();
         }
+
+        mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
+        mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
+        mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
+        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
+        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
+        mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
 
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
