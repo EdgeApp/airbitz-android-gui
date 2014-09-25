@@ -294,10 +294,11 @@ public class RequestQRCodeFragment extends Fragment {
 
         String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        intent.setType("message/rfc822").setType("text/html");
+        intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
-        String filename = Common.createTempFileFromString("email.html", getEmailContent(fullName));
+        String html = getEmailContent(fullName);
+        String filename = Common.createTempFileFromString("email.html", html);
         Uri htmlFile = Uri.parse("file://" + filename);
         uris.add(htmlFile);
         if(mQRBitmap!=null) {
@@ -312,8 +313,8 @@ public class RequestQRCodeFragment extends Fragment {
         }
 
         intent.putExtra(Intent.EXTRA_STREAM, uris);
-        intent.putExtra(Intent.EXTRA_TEXT, "Please open the attachment to view the Bitcoin Request");
-        startActivity(intent);
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html).toString());
+        startActivity(Intent.createChooser(intent, "email"));
     }
 
     private String getEmailContent(String fullName) {

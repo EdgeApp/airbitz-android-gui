@@ -67,12 +67,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private ArrayList<QuestionView> mQuestionViews;
 
     private GetRecoveryQuestions mFetchAllQuestionsTask;
+    private AttemptAnswerVerificationTask mAttemptAnswerVerificationTask;
+    private SaveQuestionsTask mSaveQuestionsTask;
+
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mStringQuestions;
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mNumericQuestions;
 
-    private SaveQuestionsTask mSaveQuestionsTask;
 
     private CoreAPI mCoreAPI;
     private View mView;
@@ -87,12 +89,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
-             mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
-        } else {
-
-            return mView;
-        }
+        mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -154,7 +151,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override public void onResume() {
         super.onResume();
-        if(mQuestionViews==null) {
+        if(mAnswers.isEmpty()) {
             if(mMode==SIGN_UP || mMode==CHANGE_QUESTIONS) {
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -167,11 +164,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 }
             }
         } else { // coming back from signup page
-            String[] answers = mAnswers.split("\n");
-            for(int i=0; i<mQuestionViews.size(); i++) {
-                mQuestionViews.get(i).setAnswer(answers[i]);
-            }
-            setListWithQuestionViews(mQuestionViews);
+            String[] questions = mAnswers.split("\n");
+            InitializeRecoveryViews(questions);
         }
     }
 
@@ -224,8 +218,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     signIn();
                 }
                 if(mMode==FORGOT_PASSWORD) {
-                    AttemptAnswerVerificationTask task = new AttemptAnswerVerificationTask();
-                    task.execute(mAnswers, getArguments().getString(USERNAME));
+                    mAttemptAnswerVerificationTask = new AttemptAnswerVerificationTask();
+                    mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME));
                 } else {
                     mSaveQuestionsTask = new SaveQuestionsTask(questions, mAnswers);
                     mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -680,6 +674,20 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mFetchAllQuestionsTask!=null) {
+            mFetchAllQuestionsTask.cancel(true);
+        }
+        if(mSaveQuestionsTask!=null) {
+            mSaveQuestionsTask.cancel(true);
+        }
+        if(mAttemptAnswerVerificationTask!=null) {
+            mAttemptAnswerVerificationTask.cancel(true);
+        }
     }
 }
 
