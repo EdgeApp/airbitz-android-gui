@@ -30,11 +30,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.ContactSearchAdapter;
+import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.Transaction;
@@ -68,9 +72,6 @@ public class RequestQRCodeFragment extends Fragment {
     private String mRequestURI;
     private long mAmountSatoshi;
 
-    private List<String> mContactNames = new ArrayList<String>();
-    private Map<String, String> mContactPhones = new LinkedHashMap<String, String>();
-
     private Bundle bundle;
 
     private Wallet mWallet;
@@ -91,10 +92,6 @@ public class RequestQRCodeFragment extends Fragment {
 
     @Override
     public void onPause() {
-//        if(mContentURL!=null) { // delete temp file
-//            Log.d("WalletQRCodeFragment", "deleting temp file");
-//            getActivity().getContentResolver().delete(Uri.parse(mContentURL), null, null);
-//        }
         mCoreAPI.prioritizeAddress(null, mWallet.getUUID());
         super.onPause();
     }
@@ -244,8 +241,9 @@ public class RequestQRCodeFragment extends Fragment {
     }
 
     private void startSMS() {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intent, PICK_CONTACT_SMS);
+//        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//        startActivityForResult(intent, PICK_CONTACT_SMS);
+        ((NavigationActivity)getActivity()).pushFragment(new ContactPickerFragment(), NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
     private void finishSMS(String name, String phone) {
@@ -287,6 +285,7 @@ public class RequestQRCodeFragment extends Fragment {
     private void startEmail() {
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT_EMAIL);
+//        ((NavigationActivity)getActivity()).pushFragment(new ContactPickerFragment(), NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
     private void finishEmail(String fullName, String email) {
@@ -294,13 +293,13 @@ public class RequestQRCodeFragment extends Fragment {
 
         String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        intent.setType("text/html");
+        intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
         String html = getEmailContent(fullName);
-        String filename = Common.createTempFileFromString("email.html", html);
-        Uri htmlFile = Uri.parse("file://" + filename);
-        uris.add(htmlFile);
+//        String filename = Common.createTempFileFromString("email.html", html);
+//        Uri htmlFile = Uri.parse("file://" + filename);
+//        uris.add(htmlFile);
         if(mQRBitmap!=null) {
             mContentURL = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), mQRBitmap, mAddress, null);
             if(mContentURL!=null) {
@@ -313,7 +312,8 @@ public class RequestQRCodeFragment extends Fragment {
         }
 
         intent.putExtra(Intent.EXTRA_STREAM, uris);
-        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html).toString());
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
+        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
         startActivity(Intent.createChooser(intent, "email"));
     }
 
