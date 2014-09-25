@@ -538,8 +538,6 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void onResume() {
-        super.onResume();
-
         checkForCrashes();
         checkForUpdates();
 
@@ -560,6 +558,8 @@ public class NavigationActivity extends BaseActivity
             mCoreAPI.restoreConnectivity();
         }
         switchFragmentThread(mNavThreadId);
+
+        super.onResume();
     }
 
     @Override
@@ -974,8 +974,10 @@ public class NavigationActivity extends BaseActivity
         Common.LogD(TAG, "delta logout time = "+milliDelta);
         if(milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout()*60*1000) {
             AirbitzApplication.Logout();
+            mCoreAPI.ClearCacheKeys();
             DisplayLoginOverlay(false);
             startActivity(new Intent(this, NavigationActivity.class));
+            finish();
         }
     }
 }
