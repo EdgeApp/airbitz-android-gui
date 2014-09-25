@@ -2378,6 +2378,10 @@ public class CoreAPI {
         stopAllAsyncUpdates();
         mCoreSettings = null;
 
+        ClearCacheKeys();
+    }
+
+    public void ClearCacheKeys() {
         tABC_Error error = new tABC_Error();
         tABC_CC result = core.ABC_ClearKeyCache(error);
         if(result != tABC_CC.ABC_CC_Ok) {
