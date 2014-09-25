@@ -431,10 +431,16 @@ public class NavigationActivity extends BaseActivity
         return mCalculatorView;
     }
 
+    public boolean isLargeDpi() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return !(metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH);
+    }
+
     public void lockCalculator() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if (metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH) {
+        if (!isLargeDpi()) {
             return;
         }
         int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
