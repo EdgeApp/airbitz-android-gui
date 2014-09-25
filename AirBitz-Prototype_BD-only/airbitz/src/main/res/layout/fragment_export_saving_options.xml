@@ -321,7 +321,7 @@
                     android:paddingLeft="56.7dp"
                     android:gravity="center_vertical"
                     android:enabled="false"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_print"
                     android:layout_width="44.1dp"
@@ -329,6 +329,7 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ico_print"
                     android:padding="12.6dp"/>
+
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_sd_card"
                     android:layout_below="@id/fragment_exportsaving_button_print"
@@ -342,7 +343,7 @@
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
                     android:enabled="false"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_sd_card"
                     android:layout_width="44.1dp"
@@ -351,6 +352,7 @@
                     android:src="@drawable/ico_sdcard"
                     android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_print"/>
+
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_email"
                     android:layout_below="@id/fragment_exportsaving_button_sd_card"
@@ -371,6 +373,7 @@
                     android:src="@drawable/ico_email_small"
                     android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_sd_card"/>
+
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_google_drive"
                     android:layout_below="@id/fragment_exportsaving_button_email"
@@ -384,7 +387,7 @@
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
                     android:enabled="false"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_google_drive"
                     android:layout_width="44.1dp"
@@ -393,7 +396,8 @@
                     android:src="@drawable/ico_gdrive"
                     android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_email"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
+
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_dropbox"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
@@ -407,7 +411,7 @@
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
                     android:enabled="false"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_dropbox"
                     android:layout_width="44.1dp"
@@ -416,7 +420,8 @@
                     android:src="@drawable/ico_dropbox"
                     android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
+
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_view"
                     android:layout_below="@id/fragment_exportsaving_button_dropbox"
@@ -429,7 +434,7 @@
                     android:gravity="center_vertical"
                     android:paddingRight="18.9dp"
                     android:paddingLeft="56.7dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:visibility="visible" />
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_view"

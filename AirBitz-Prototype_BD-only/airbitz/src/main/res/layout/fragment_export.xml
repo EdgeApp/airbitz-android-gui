@@ -53,11 +53,46 @@
     </RelativeLayout>
 
 
+    <RelativeLayout
+        android:id="@+id/fragment_export_wallet_layout"
+        android:layout_width="match_parent"
+        android:layout_height="31dp"
+        android:layout_below="@id/fragment_category_layout_header"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/textview_account"
+            android:layout_width="100.8dp"
+            android:layout_height="match_parent"
+            android:text="@string/export_saving_wallet_label"
+            android:gravity="right|center_vertical"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="12.6dp"
+            android:layout_marginLeft="6.3dp"
+            android:textSize="15sp"
+            android:layout_alignParentLeft="true"/>
+
+        <com.airbitz.objects.HighlightOnPressSpinner
+            android:id="@+id/fragment_export_account_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/textview_account"
+            android:text="Checking"
+            android:background="@drawable/bg_btn_blue_stretch"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="18.9dp"
+            android:textSize="15sp"/>
+
+    </RelativeLayout>
+
     <ScrollView
         android:id="@+id/layout_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_category_layout_header">
+        android:layout_below="@id/fragment_export_wallet_layout">
 
         <RelativeLayout
             android:layout_width="match_parent"
