@@ -6,13 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2/22/14.
@@ -25,12 +33,19 @@ public class ExportFragment extends Fragment{
     private HighlightOnPressButton mPdfbutton;
     private HighlightOnPressButton mWalletPrivateSeed;
 
+    private HighlightOnPressSpinner mWalletSpinner;
+
 
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressImageButton mBackButton;
     private TextView mTitleTextView;
 
     private Bundle bundle;
+    private List<Wallet> mWalletList;
+    private Wallet mWallet;
+    private List<String> mWalletNameList;
+
+    private CoreAPI mCoreApi;
 
     View mView;
 
@@ -38,6 +53,15 @@ public class ExportFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        bundle = getArguments();
+        mCoreApi = CoreAPI.getApi();
+        mWalletList = mCoreApi.getCoreWallets(false);
+        String uuid = getArguments().getString(RequestFragment.FROM_UUID);
+        mWallet = mCoreApi.getWalletFromUUID(uuid);
+        mWalletNameList = new ArrayList<String>();
+        for(Wallet wallet : mWalletList) {
+            mWalletNameList.add(wallet.getName());
+        }
     }
 
     @Override
@@ -62,7 +86,26 @@ public class ExportFragment extends Fragment{
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        bundle = new Bundle();
+        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_export_account_spinner);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.item_request_wallet_spinner, mWalletNameList);
+        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+        mWalletSpinner.setAdapter(dataAdapter);
+        for(int i=0; i<mWalletList.size(); i++) {
+            if(mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
+                mWalletSpinner.setSelection(i);
+            }
+        }
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mWallet = mWalletList.get(i);
+                bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,55 +123,36 @@ public class ExportFragment extends Fragment{
 
         mCSVButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment frag = new ExportSavingOptionFragment();
-                bundle = getArguments();
-                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.CSV.ordinal());
-                frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            }
+            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.CSV.ordinal()); }
         });
+
         mQuickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment frag = new ExportSavingOptionFragment();
-                bundle = getArguments();
-                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quicken.ordinal());
-                frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            }
+            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quicken.ordinal()); }
         });
+
         mQuickBooksButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment frag = new ExportSavingOptionFragment();
-                bundle = getArguments();
-                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal());
-                frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            }
+            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal()); }
         });
+
         mPdfbutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment frag = new ExportSavingOptionFragment();
-                bundle = getArguments();
-                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PDF.ordinal());
-                frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            }
+            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PDF.ordinal()); }
         });
+
         mWalletPrivateSeed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment frag = new ExportSavingOptionFragment();
-                bundle = getArguments();
-                bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal());
-                frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
-            }
+            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal()); }
         });
 
         return mView;
+    }
+
+    private void gotoExportSavings(int type) {
+        Fragment frag = new ExportSavingOptionFragment();
+        bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, type);
+        frag.setArguments(bundle);
+        ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
     }
 }

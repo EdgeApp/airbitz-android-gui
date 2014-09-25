@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -78,12 +77,10 @@ public class ExportSavingOptionFragment extends Fragment {
     private HighlightOnPressButton mViewButton;
     private ImageView mViewImage;
 
-    private ScrollView mScrollView;
-
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
 
-    private Bundle bundle;
+    private Bundle mBundle;
 
     private List<Button> mTimeButtons;
     private List<Wallet> mWalletList;
@@ -94,7 +91,6 @@ public class ExportSavingOptionFragment extends Fragment {
     private Calendar mFromDate;
     private Calendar mToDate;
 
-    private String mPrivateSeed; // for private seed type
     private int mExportType;
 
     View mView;
@@ -103,11 +99,10 @@ public class ExportSavingOptionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        bundle = getArguments();
-        mExportType = bundle.getInt(EXPORT_TYPE);
+        mBundle = getArguments();
+        mExportType = mBundle.getInt(EXPORT_TYPE);
 
         mCoreApi = CoreAPI.getApi();
-        mWalletList = mCoreApi.getCoreWallets(false);
         mWalletList = mCoreApi.getCoreWallets(false);
         String uuid = getArguments().getString(RequestFragment.FROM_UUID);
         mWallet = mCoreApi.getWalletFromUUID(uuid);
@@ -129,8 +124,6 @@ public class ExportSavingOptionFragment extends Fragment {
         today = Calendar.getInstance();
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
-
-        mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_exportsaving_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_exportsaving_button_help);
@@ -221,7 +214,7 @@ public class ExportSavingOptionFragment extends Fragment {
                 Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
                 String dataOrFile;
                 if(mExportType == ExportTypes.PrivateSeed.ordinal())
-                    dataOrFile = mPrivateSeed;
+                    dataOrFile = mCoreApi.getPrivateSeed(mWallet);
                 else
                     dataOrFile = getExportData(w, mExportType);
                 exportWithEmail(w, dataOrFile);
@@ -245,7 +238,9 @@ public class ExportSavingOptionFragment extends Fragment {
         mViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//TODO
+                if(mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()){
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(mWallet.getName()+" Private Seed", mCoreApi.getPrivateSeed(mWallet));
+                }
             }
         });
 
@@ -505,7 +500,7 @@ public class ExportSavingOptionFragment extends Fragment {
     }
 
     private void showExportButtons() {
-        int type = bundle.getInt(EXPORT_TYPE);
+        int type = mBundle.getInt(EXPORT_TYPE);
         if(type == ExportTypes.CSV.ordinal()){
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
@@ -538,8 +533,13 @@ public class ExportSavingOptionFragment extends Fragment {
         }else if(type == ExportTypes.PrivateSeed.ordinal()){
             mGoogleDriveButton.setVisibility(View.GONE);
             mGoogleDriveImage.setVisibility(View.GONE);
+            mPrintButton.setVisibility(View.GONE);
+            mPrintImage.setVisibility(View.GONE);
             mDropBoxButton.setVisibility(View.GONE);
             mDropBoxImage.setVisibility(View.GONE);
+            mViewButton.setVisibility(View.VISIBLE);
+            mSDCardButton.setVisibility(View.GONE);
+            mSDCardImage.setVisibility(View.GONE);
         }
     }
 
@@ -653,7 +653,7 @@ public class ExportSavingOptionFragment extends Fragment {
                 filepath = Common.createTempFileFromString("export.csv", temp);
             }
         } else if(type == ExportTypes.PrivateSeed.ordinal()) {
-            filepath = Common.createTempFileFromString("export.txt", mPrivateSeed = mCoreApi.getPrivateSeed(wallet));
+            filepath = Common.createTempFileFromString("export.txt", mCoreApi.getPrivateSeed(wallet));
         } else if(type == ExportTypes.Quicken.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
         } else if(type == ExportTypes.Quickbooks.ordinal()) {
