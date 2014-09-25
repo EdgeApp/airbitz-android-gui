@@ -211,6 +211,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                     int inType = edittext.getInputType();
                     edittext.setInputType(InputType.TYPE_NULL);
                     edittext.setInputType(inType);
+                    mFiatField.setText("");
+                    mBitcoinField.setText("");
                     mAutoUpdatingTextFields = true;
                     mBitcoinField.addTextChangedListener(mBTCTextWatcher);
                     mCalculator.setEditText(mBitcoinField);
@@ -233,6 +235,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 edittext.setInputType(inType);
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
+                    mFiatField.setText("");
+                    mBitcoinField.setText("");
                     mFiatField.addTextChangedListener(mFiatTextWatcher);
                     mCalculator.setEditText(mFiatField);
                     mAutoUpdatingTextFields = false;
