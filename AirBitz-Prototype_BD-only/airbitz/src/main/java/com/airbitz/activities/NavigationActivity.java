@@ -805,7 +805,6 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void Logout() {
-//        sendCredentialsToService(null, null);
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         DisplayLoginOverlay(false);
@@ -926,7 +925,9 @@ public class NavigationActivity extends BaseActivity
 
         Common.LogD(TAG, "delta logout time = "+milliDelta);
         if(milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout()*60*1000) {
-            Logout();
+            AirbitzApplication.Logout();
+            DisplayLoginOverlay(false);
+            startActivity(new Intent(this, NavigationActivity.class));
         }
     }
 }
