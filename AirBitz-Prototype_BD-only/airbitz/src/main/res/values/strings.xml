@@ -65,7 +65,10 @@
     <string name="activity_signup_title">Sign Up</string>
     <string name="activity_navigation_signin_failed">Sign-in failed</string>
     <string name="activity_navigation_signin_failed_unexpected">Sign-in failed unexpectedly</string>
-    <string name="activity_signup_failed">Sign Up failed</string>
+    <string name="activity_signup_failed">Sign Up Failed</string>
+    <string name="activity_change_password_failed">Change Password Failed</string>
+    <string name="activity_change_pin_failed">Change PIN Failed</string>
+    <string name="activity_change_recovery_failed">Change Recovery Questions Failed</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
