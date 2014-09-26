@@ -241,42 +241,42 @@ public class SettingFragment extends Fragment {
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mDefaultCurrencyButton, mCurrencyItems, "Select an item", mCoreAPI.SettingsCurrencyIndex());
+                showCurrencyDialog(mDefaultCurrencyButton, mCurrencyItems);
             }
         });
 
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);
+                showExchangeDialog(mUSDollarButton, mUSDExchangeItems);
             }
         });
 
         mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mCanadianDollarButton, mCanadianExchangeItems, "Select an item", 0);
+                showExchangeDialog(mCanadianDollarButton, mCanadianExchangeItems);
             }
         });
 
         mEuroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mEuroButton, mEuroExchangeItems, "Select an item", 0);
+                showExchangeDialog(mEuroButton, mEuroExchangeItems);
             }
         });
 
         mPesoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mPesoButton, mPesoExchangeItems, "Select an item", 0);
+                showExchangeDialog(mPesoButton, mPesoExchangeItems);
             }
         });
 
         mYuanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mYuanButton, mYuanExchangeItems, "Select an item", 0);
+                showExchangeDialog(mYuanButton, mYuanExchangeItems);
             }
         });
 
@@ -557,59 +557,79 @@ public class SettingFragment extends Fragment {
         frag.show();
     }
 
-    AlertDialog mDefaultExchangeDialog;
-    private void showSelectorDialog(final Button button, final String[] items, String title, int index) {
-        if(mDefaultExchangeDialog!=null && mDefaultExchangeDialog.isShowing())
-            return;
-
+    private AlertDialog.Builder defaultDialogLayout(final String[] items, int index) {
         LinearLayout linearLayout = new LinearLayout(getActivity());
-        LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lLP =
+            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                          ViewGroup.LayoutParams.MATCH_PARENT);
         linearLayout.setLayoutParams(lLP);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        mTextPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
 
+        NumberPicker mTextPicker =
+            new NumberPicker(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustomLight));
         mTextPicker.setMaxValue(items.length - 1);
+        mTextPicker.setId(R.id.dialog_number_picker);
         mTextPicker.setMinValue(0);
         mTextPicker.setValue(index);
         mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mTextPicker.setDisplayedValues(items);
-        mTextPicker.setOnValueChangedListener( new NumberPicker.
-                OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int
-                    oldVal, int newVal) {
-                if(Arrays.equals(mCurrencyItems, items)) {
-                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[newVal];
-                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
-                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
-                }
-            }
-        });
-
         linearLayout.addView(mTextPicker);
 
-        mDefaultExchangeDialog = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
-                .setTitle(title)
-                .setView(linearLayout)
-                .setCancelable(false)
-                .setPositiveButton(R.string.string_ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                  int num = mTextPicker.getValue();
-                                  button.setText(items[num]);
-                                  saveCurrentSettings();
-                            }
-                        }
-                )
-                .setNegativeButton(R.string.string_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        }
-                )
-                .create();
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+            .setTitle(R.string.dialog_select_an_item)
+            .setView(linearLayout)
+            .setNegativeButton(R.string.string_cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                }
+            );
+    }
+
+    AlertDialog mCurrencyDialog;
+    private void showCurrencyDialog(final Button button, final String[] items) {
+        if (mCurrencyDialog != null && mCurrencyDialog.isShowing()) {
+            return;
+        }
+        mCurrencyDialog = defaultDialogLayout(items, mCoreAPI.SettingsCurrencyIndex())
+            .setPositiveButton(R.string.string_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        NumberPicker picker = (NumberPicker) mCurrencyDialog.findViewById(R.id.dialog_number_picker);
+                        mCurrencyNum = mCoreAPI.getCurrencyNumbers()[picker.getValue()];
+                        mDefaultCurrencyButton.setText(mCoreAPI.getCurrencyAcronym(mCurrencyNum));
+                        saveCurrentSettings();
+                    }
+                }
+            )
+            .create();
+        mCurrencyDialog.show();
+    }
+
+    AlertDialog mDefaultExchangeDialog;
+    private void showExchangeDialog(final Button button, final String[] items) {
+        if (mDefaultExchangeDialog != null && mDefaultExchangeDialog.isShowing()) {
+            return;
+        }
+        int index = findInArray(button, items);
+        mDefaultExchangeDialog = defaultDialogLayout(items, index)
+            .setPositiveButton(R.string.string_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        NumberPicker picker = (NumberPicker) mDefaultExchangeDialog.findViewById(R.id.dialog_number_picker);
+                        int num = picker.getValue();
+                        button.setText(items[num]);
+                        saveCurrentSettings();
+                    }
+                }
+            )
+            .create();
         mDefaultExchangeDialog.show();
+    }
+
+    private int findInArray(Button val, String[] arr) {
+        return Math.max(0, Arrays.asList(arr).indexOf(val.getText().toString()));
     }
 
     @Override
