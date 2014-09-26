@@ -398,7 +398,18 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString()))
             {
                 bUserNameFieldIsValid = false;
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                if (mMode == CHANGE_PIN)
+                {
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_change_pin_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                }
+                else if (mMode == CHANGE_PASSWORD)
+                {
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_change_password_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                }
+                else
+                {
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
+                }
             }
         }
         return bUserNameFieldIsValid;
