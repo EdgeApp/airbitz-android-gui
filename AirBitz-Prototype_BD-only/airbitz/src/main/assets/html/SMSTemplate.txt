@@ -1,0 +1,18 @@
+Bitcoin Payment Request
+From: [[abtag FROM]]
+
+Please scan QR code or click on the links to pay
+
+Click to Pay
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+Address: [[abtag ADDRESS]]
+Amount: [[abtag AMOUNT_BTC]] BTC
+Amount: [[abtag AMOUNT_MBTC]] mBTC
+
+Sent from the Airbitz Mobile Bitcoin Wallet + Business Directory
+
+Download Airbitz for iOS or Android
+https://airbitz.co/app
