@@ -43,7 +43,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private final String TAG = getClass().getSimpleName();
 
     public static final String MODE = "com.airbitz.passwordrecovery.type";
-    public static final String ANSWERS = "com.airbitz.passwordrecovery.questions";
+    public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
     public static final String PIN = "com.airbitz.passwordrecovery.pin";
@@ -151,21 +151,27 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override public void onResume() {
         super.onResume();
+        String[] answers = {"", "", "", "", "", ""};
         if(mAnswers.isEmpty()) {
             if(mMode==SIGN_UP || mMode==CHANGE_QUESTIONS) {
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 mTitleTextView.setText(getString(R.string.activity_recovery_title));
-                String answers = getArguments().getString(ANSWERS);
-                if(answers!=null) {
-                    String[] choices = answers.split("\n");
-                    InitializeRecoveryViews(choices);
+                String questionString = getArguments().getString(QUESTIONS);
+                if(questionString!=null) {
+                    String[] questions = questionString.split("\n");
+                    InitializeRecoveryViews(questions, answers);
                 }
             }
         } else { // coming back from signup page
-            String[] questions = mAnswers.split("\n");
-            InitializeRecoveryViews(questions);
+            answers = mAnswers.split("\n");
+            mTitleTextView.setText(getString(R.string.activity_recovery_title));
+            String questionString = getArguments().getString(QUESTIONS);
+            if(questionString!=null) {
+                String[] questions = questionString.split("\n");
+                InitializeRecoveryViews(questions, answers);
+            }
         }
     }
 
@@ -236,12 +242,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
 
         setListWithQuestionViews(mQuestionViews);
     }
@@ -255,14 +261,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mQuestionViews.get(0).getEditText().requestFocus();
     }
 
-    private void InitializeRecoveryViews(String[] questions) {
+    private void InitializeRecoveryViews(String[] questions, String[] answers) {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
         for(String question : questions) {
             List<String> qs = new ArrayList<String>();
             qs.add(question);
             qs.add(UNSELECTED_QUESTION);
-            QuestionView qv = new QuestionView(getActivity(), qs, QuestionType.STRING, position++);
+            QuestionView qv = new QuestionView(getActivity(), qs, answers[position], QuestionType.STRING, position++);
             mQuestionViews.add(qv);
         }
 
@@ -295,7 +301,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             if (success) {
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_VIA_QUESTIONS);
-                bundle.putString(PasswordRecoveryFragment.ANSWERS,  answers);
+                bundle.putString(PasswordRecoveryFragment.QUESTIONS,  answers);
                 bundle.putString(PasswordRecoveryFragment.USERNAME,  getArguments().getString(USERNAME));
                 Fragment frag = new SignUpFragment();
                 frag.setArguments(bundle);
@@ -465,7 +471,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         private QuestionView me = this;
 
-        public QuestionView(Context context, List<String> questions, QuestionType type, int position) {
+        public QuestionView(Context context, List<String> questions, String answer, QuestionType type, int position) {
             super(context);
             mContext = context;
             mType = type;
@@ -479,6 +485,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             final View redRing = findViewById(R.id.item_recovery_answer_redring);
             mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
             mText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+            mText.setText(answer);
 
             mSpinner = (Spinner) findViewById(R.id.item_recovery_question_spinner);
             mSpinner.setFocusable(true);
