@@ -164,10 +164,12 @@ public class CoreAPI {
             else
                 Common.LogD(TAG, "block exchange event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
-            if(mOnDataSync!=null)
+            if (mOnDataSync != null) {
+                mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
                 mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
-            else
+            } else {
                 Common.LogD(TAG, "data sync event has no listener");
+            }
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
             if(mOnRemotePasswordChange!=null)
                 mPeriodicTaskHandler.post(RemotePasswordChangeUpdater);
