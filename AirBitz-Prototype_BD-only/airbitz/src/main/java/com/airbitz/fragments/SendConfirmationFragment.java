@@ -461,19 +461,21 @@ public class SendConfirmationFragment extends Fragment {
         protected void onPostExecute(final Long max) {
             Common.LogD(TAG, "Max calculation finished");
             mMaxAmountTask = null;
-            if(max<0) {
-                Common.LogD(TAG, "Max calculation error");
-            }
-            mAmountMax = max;
-            mAmountToSendSatoshi = max;
-            mAutoUpdatingTextFields = true;
-            mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
-            mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
-            mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
+            if(isAdded()) {
+                if(max<0) {
+                    Common.LogD(TAG, "Max calculation error");
+                }
+                mAmountMax = max;
+                mAmountToSendSatoshi = max;
+                mAutoUpdatingTextFields = true;
+                mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
+                mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
+                mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
 
-            calculateFees();
-            mPinEdittext.requestFocus();
+                calculateFees();
+                mPinEdittext.requestFocus();
+            }
             mAutoUpdatingTextFields = false;
         }
 
@@ -509,12 +511,12 @@ public class SendConfirmationFragment extends Fragment {
         @Override
         protected void onPostExecute(final Long fees) {
             Common.LogD(TAG, "Fee calculation ended");
-            if(mActivity==null)
-                return;
-            mCalculateFeesTask = null;
-            mFees = fees;
-            UpdateFeeFields(fees);
-            mSlideLayout.setEnabled(true);
+            if(isAdded()) {
+                mCalculateFeesTask = null;
+                mFees = fees;
+                UpdateFeeFields(fees);
+                mSlideLayout.setEnabled(true);
+            }
         }
 
         @Override
@@ -697,5 +699,7 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField = null;
         if(mCalculateFeesTask !=null)
             mCalculateFeesTask.cancel(true);
+        if(mMaxAmountTask!=null)
+            mMaxAmountTask.cancel(true);
     }
 }
