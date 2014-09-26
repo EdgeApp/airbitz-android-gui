@@ -11,7 +11,6 @@ import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -368,7 +367,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             } else {
                 if(mChangeTask==null) {
                     mChangeTask = new ChangeTask();
-                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getArguments().getString(PasswordRecoveryFragment.ANSWERS),
+                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getArguments().getString(PasswordRecoveryFragment.QUESTIONS),
                             getArguments().getString(PasswordRecoveryFragment.USERNAME));
                 }
             }
