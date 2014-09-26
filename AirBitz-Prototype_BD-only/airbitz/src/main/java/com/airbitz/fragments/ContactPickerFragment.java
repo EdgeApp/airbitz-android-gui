@@ -4,9 +4,10 @@ import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,12 +25,10 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
-import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.Contact;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,31 +39,45 @@ import java.util.Map;
 public class ContactPickerFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
+    public final static String TYPE = "com.airbitz.contact_picker_fragment.type";
+    public final static String EMAIL = "com.airbitz.contact_picker_fragment.email";
+    public final static String SMS = "com.airbitz.contact_picker_fragment.sms";
+
     private EditText mContactName;
+    private TextView mFragmentTitle;
     private ListView mSearchListView;
 
-    private Bundle bundle;
+    private boolean mEmailSearch = false;
 
-    private List<String> mContactNames;
-    private List<Contact> mContacts;
-    private HashMap<String, Uri> mContactPhotos;
+    private Bundle mBundle;
+
+    private List<Contact> mContacts = new ArrayList<Contact>();
+    private List<Contact> mFilteredContacts = new ArrayList<Contact>();
     private ContactSearchAdapter mSearchAdapter;
 
-    private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
+
+    // Callback interface for a selection
+    private ContactSelection mContactSelection;
+    public interface ContactSelection {
+        public void onContactSelection(Contact contact);
+    }
+    public void setContactSelectionListener(ContactSelection listener) {
+        mContactSelection = listener;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
-                Common.LogD(TAG, "SEND");
-
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
-
-                Common.LogD(TAG, "REQUEST");
+        mBundle = getArguments();
+        if (mBundle != null) {
+            if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(EMAIL)) {
+                Common.LogD(TAG, "Email");
+                mEmailSearch = true;
+            } else if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(SMS)) {
+                Common.LogD(TAG, "SMS");
+                mEmailSearch = false;
             }
         }
 
@@ -76,20 +89,29 @@ public class ContactPickerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
+        mFragmentTitle = (TextView) mView.findViewById(R.id.fragment_contact_picker_title);
+        if(mEmailSearch) {
+            mFragmentTitle.setText("Email Search");
+        } else {
+
+            mFragmentTitle.setText("SMS Search");
+        }
+
         mContactName = (EditText) mView.findViewById(R.id.fragment_contact_picker_edittext_name);
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
-        mContacts = new ArrayList<Contact>();
-        mContactPhotos = new LinkedHashMap<String, Uri>();
-        mSearchAdapter = new ContactSearchAdapter(getActivity(), mContacts);
+        mSearchAdapter = new ContactSearchAdapter(getActivity(), mFilteredContacts);
         mSearchListView.setAdapter(mSearchAdapter);
 
         mContactName.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
+        mContactName.setText("");
         mContactName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus)
+                if(hasFocus) {
                     updateAutoCompleteArray(mContactName.getText().toString());
+                    mActivity.showSoftKeyboard(mContactName);
+                }
             }
         });
 
@@ -99,7 +121,7 @@ public class ContactPickerFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     ((NavigationActivity) getActivity()).hideSoftKeyboard(mContactName);
 
-                    //TODO send info back to RequestQRCodeFragment
+                    //TODO send info back to RequestQRCodeFragment ?
 
                     return true;
                 }
@@ -127,11 +149,14 @@ public class ContactPickerFragment extends Fragment {
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String name = (String) mSearchAdapter.getItem(i);
-                mContactName.setText(name);
+                Contact contact = (Contact) mSearchAdapter.getItem(i);
+                mContactName.setText(contact.getName());
 
-                //TODO send info back to RequestQRCodeFragment
-
+                if(mContactSelection!=null) {
+                    ((NavigationActivity)getActivity()).popFragment();
+                    mActivity.getFragmentManager().executePendingTransactions();
+                    mContactSelection.onContactSelection(contact);
+                }
             }
         });
 
@@ -142,87 +167,106 @@ public class ContactPickerFragment extends Fragment {
     }
 
     private void updateAutoCompleteArray(String strTerm) {
-        mContacts.clear();
-        // go through all the contacts
-        mContacts.addAll(GetMatchedContactsByEmail(getActivity(), strTerm));
+        mFilteredContacts.clear();
+        mFilteredContacts.addAll(GetMatchedContacts(strTerm, mEmailSearch));
         mSearchAdapter.notifyDataSetChanged();
+    }
 
-//                    mArrayAutoComplete = [arrayAutoComplete sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGenerateContactsTask = new GenerateContactsTask();
+        mGenerateContactsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override public void onPause() {
         super.onPause();
+        if(mGenerateContactsTask!=null)
+            mGenerateContactsTask.cancel(true);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
 
-    public static LinkedHashMap<String, Uri> GetMatchedContactsByName(Context context, String searchTerm) {
-        LinkedHashMap<String, Uri> contactList = new LinkedHashMap<String, Uri>();
-        ContentResolver cr = context.getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI, ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-        Cursor cur;
-        if (searchTerm == null) {
-            cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    columns, null, null, null);
-        } else {
-            cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    columns, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " ASC");
-        }
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                if (photoURI != null) {
-                    Uri thumbUri = Uri.parse(photoURI);
-                    contactList.put(name, thumbUri);
-                }
+    private List<Contact> GetMatchedContacts(String term, boolean emailSearch) {
+        List<Contact> contacts = new ArrayList<Contact>();
+
+        for(Contact contact : mContacts) {
+            if(emailSearch && contact.getName()!=null && contact.getEmail()!=null) {
+                if(contact.getName().contains(term) || contact.getEmail().contains(term))
+                    contacts.add(contact);
+            } else if(!emailSearch && contact.getName()!=null && contact.getPhone()!=null) { // phone search
+                if(contact.getName().contains(term) || contact.getPhone().contains(term))
+                    contacts.add(contact);
             }
         }
-        cur.close();
-        return contactList;
+        return contacts;
     }
 
-    private List<Contact> GetMatchedContactsByEmail(Context context, String term) {
+    GenerateContactsTask mGenerateContactsTask = null;
+    public class GenerateContactsTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            ((NavigationActivity)getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mContacts = GenerateListOfContacts(mActivity);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            updateAutoCompleteArray(mContactName.getText().toString());
+            mGenerateContactsTask = null;
+            mActivity.showModalProgress(false);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mGenerateContactsTask = null;
+            mActivity.showModalProgress(false);
+        }
+    }
+
+
+    private List<Contact> GenerateListOfContacts(Context context) {
         List<Contact> contacts = new ArrayList<Contact>();
-        ContentResolver cr = context .getContentResolver();
-        Cursor cur = cr .query(ContactsContract.Contacts.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
+        ContentResolver cr = context.getContentResolver();
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        if (cur.getCount() > 0) {
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                String thumbnail = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
 
-            while (cur.moveToNext()) {
+//                if(name!=null && thumbnail!=null)
+//                    mContactPhotos.put(name, Uri.parse(thumbnail));
 
-                String contactId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-
-                // Create query to use CommonDataKinds classes to fetch emails
+                // name and emails
                 Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId, null, null);
 
-                            /*
-                            //You can use all columns defined for ContactsContract.Data
-                            // Query to get phone numbers by directly call data table column
-
-                            Cursor c = getContentResolver().query(Data.CONTENT_URI,
-                                      new String[] {Data._ID, Phone.NUMBER, Phone.TYPE, Phone.LABEL},
-                                      Data.CONTACT_ID + "=?" + " AND "
-                                              + Data.MIMETYPE + "= + Phone.CONTENT_ITEM_TYPE + ",
-                                      new String[] {String.valueOf(contactId)}, null);
-                            */
-
                 while (emails.moveToNext()) {
-                    // This gets several email addresses
                     String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    String name = emails.getString(emails.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                    String thumbnail = emails.getString(emails.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
                     contacts.add(new Contact(name, emailAddress, null, thumbnail));
                 }
                 emails.close();
+
+                // name and phones
+                if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{contactId}, null);
+                    while (phones.moveToNext()) {
+                        String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contacts.add(new Contact(name, null, phoneNumber, thumbnail));
+                    }
+                    phones.close();
+                }
             }
         }
-        cur.close();
+        cursor.close();
         return contacts;
     }
 
