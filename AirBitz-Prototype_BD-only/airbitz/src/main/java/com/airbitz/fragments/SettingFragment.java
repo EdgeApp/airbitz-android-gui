@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -49,8 +50,6 @@ public class SettingFragment extends Fragment {
 
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
 
-    private static final int MAX_TIME_VALUE = 60;
-
     static final int USD_NUM = 840;
     static final int CAD_NUM = 124;
     static final int EUR_NUM = 978;
@@ -94,12 +93,7 @@ public class SettingFragment extends Fragment {
 
     private HighlightOnPressButton mLogoutButton;
 
-    private NumberPicker mNumberPicker;
-    private NumberPicker mTextPicker;
-    private int mNumberSelection;
-    private int mTextSelection;
-    private int mAutoLogoffMinutes;
-    private String[] mAutoLogoffStrings = { "Day(s)", "Hour(s)", "Minute(s)" };
+    private AutoLogoffDialogManager mAutoLogoffManager;
 
     private String[] mCurrencyItems;
     private int mCurrencyNum;
@@ -156,6 +150,7 @@ public class SettingFragment extends Fragment {
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
         mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
+        mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
         mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
 
         mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
@@ -230,53 +225,53 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mAutoLogoffButton.setText("1 Hour");
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAutoLogoffDialog();
+                mAutoLogoffManager.create();
+                mAutoLogoffManager.show();
             }
         });
 
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mDefaultCurrencyButton, mCurrencyItems, "Select an item", mCoreAPI.SettingsCurrencyIndex());
+                showCurrencyDialog(mDefaultCurrencyButton, mCurrencyItems);
             }
         });
 
         mUSDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mUSDollarButton, mUSDExchangeItems, "Select an item", 0);
+                showExchangeDialog(mUSDollarButton, mUSDExchangeItems);
             }
         });
 
         mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mCanadianDollarButton, mCanadianExchangeItems, "Select an item", 0);
+                showExchangeDialog(mCanadianDollarButton, mCanadianExchangeItems);
             }
         });
 
         mEuroButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mEuroButton, mEuroExchangeItems, "Select an item", 0);
+                showExchangeDialog(mEuroButton, mEuroExchangeItems);
             }
         });
 
         mPesoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mPesoButton, mPesoExchangeItems, "Select an item", 0);
+                showExchangeDialog(mPesoButton, mPesoExchangeItems);
             }
         });
 
         mYuanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectorDialog(mYuanButton, mYuanExchangeItems, "Select an item", 0);
+                showExchangeDialog(mYuanButton, mYuanExchangeItems);
             }
         });
 
@@ -330,27 +325,7 @@ public class SettingFragment extends Fragment {
 
         //Options
         //Autologoff
-        mAutoLogoffMinutes = settings.getMinutesAutoLogout();
-        int amount;
-        String strType;
-        if (mAutoLogoffMinutes < MAX_TIME_VALUE) {
-            strType = "minute";
-            amount = mAutoLogoffMinutes;
-        }
-        else if (mAutoLogoffMinutes < 24 * MAX_TIME_VALUE) {
-            strType = "hour";
-            amount = mAutoLogoffMinutes / 60;
-        }
-        else {
-            strType = "day";
-            amount = mAutoLogoffMinutes / (24*MAX_TIME_VALUE);
-        }
-
-        String timeText = amount + " " + strType;
-        if (amount != 1) {
-            timeText += "s";
-        }
-        mAutoLogoffButton.setText(timeText);
+        mAutoLogoffManager.setMinutes(settings.getMinutesAutoLogout());
 
         // Default Currency
         mCurrencyNum = mCoreSettings.getCurrencyNum();
@@ -419,7 +394,7 @@ public class SettingFragment extends Fragment {
 
         //Options
         //Autologoff
-        mCoreSettings.setMinutesAutoLogout(mAutoLogoffMinutes);
+        mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
@@ -494,122 +469,79 @@ public class SettingFragment extends Fragment {
         }
     }
 
-    private void showAutoLogoffDialog() {
+    private AlertDialog.Builder defaultDialogLayout(final String[] items, int index) {
         LinearLayout linearLayout = new LinearLayout(getActivity());
-        View blankView = new View(getActivity());
-        LinearLayout.LayoutParams bLP = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.two_mm), ViewGroup.LayoutParams.MATCH_PARENT);
-        blankView.setLayoutParams(bLP);
-        LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lLP =
+            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                          ViewGroup.LayoutParams.MATCH_PARENT);
         linearLayout.setLayoutParams(lLP);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        mNumberPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
-        mTextPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
 
-        mTextPicker.setMaxValue(2);
-        mTextPicker.setMinValue(0);
-        mTextPicker.setDisplayedValues( mAutoLogoffStrings);
-        mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        mNumberPicker.setMaxValue(MAX_TIME_VALUE);
-        mNumberPicker.setMinValue(1);
-
-        String[] current = mAutoLogoffButton.getText().toString().split(" ");
-        if(current[0]!=null && current[1]!=null) {
-            mNumberPicker.setValue(Integer.valueOf(current[0]));
-            String temp = current[1];
-            for(int i=0; i<mAutoLogoffStrings.length; i++) {
-                if(mAutoLogoffStrings[i].contains(temp+"(s)")) {
-                    mTextPicker.setValue(i);
-                }
-            }
-        }
-
-        linearLayout.addView(mNumberPicker);
-        linearLayout.addView(blankView);
-        linearLayout.addView(mTextPicker);
-
-        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
-                .setTitle(getResources().getString(R.string.dialog_title))
-                .setView(linearLayout)
-                .setPositiveButton(R.string.string_ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                mNumberSelection = mNumberPicker.getValue();
-                                mTextSelection = mTextPicker.getValue();
-                                if(mTextSelection==0)
-                                    mAutoLogoffMinutes = mNumberSelection * 60 * 24;
-                                else if (mTextSelection==1)
-                                    mAutoLogoffMinutes = mNumberSelection * 60;
-                                else if (mTextSelection==2)
-                                    mAutoLogoffMinutes = mNumberSelection;
-
-                                mAutoLogoffButton.setText(mNumberSelection + " " +mAutoLogoffStrings[mTextSelection].substring(0, mAutoLogoffStrings[mTextSelection].indexOf('(')));
-                            }
-                        }
-                )
-                .setNegativeButton(R.string.string_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        }
-                )
-                .create();
-        frag.show();
-    }
-
-    AlertDialog mDefaultExchangeDialog;
-    private void showSelectorDialog(final Button button, final String[] items, String title, int index) {
-        if(mDefaultExchangeDialog!=null && mDefaultExchangeDialog.isShowing())
-            return;
-
-        LinearLayout linearLayout = new LinearLayout(getActivity());
-        LinearLayout.LayoutParams lLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        linearLayout.setLayoutParams(lLP);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        mTextPicker = new NumberPicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
-
+        NumberPicker mTextPicker =
+            new NumberPicker(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustomLight));
         mTextPicker.setMaxValue(items.length - 1);
+        mTextPicker.setId(R.id.dialog_number_picker);
         mTextPicker.setMinValue(0);
         mTextPicker.setValue(index);
         mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mTextPicker.setDisplayedValues(items);
-        mTextPicker.setOnValueChangedListener( new NumberPicker.
-                OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int
-                    oldVal, int newVal) {
-                if(Arrays.equals(mCurrencyItems, items)) {
-                    mCurrencyNum = mCoreAPI.getCurrencyNumbers()[newVal];
-                    mCoreAPI.SaveCurrencyNumber(mCurrencyNum);
-                    mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
-                }
-            }
-        });
-
         linearLayout.addView(mTextPicker);
 
-        mDefaultExchangeDialog = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
-                .setTitle(title)
-                .setView(linearLayout)
-                .setCancelable(false)
-                .setPositiveButton(R.string.string_ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                  int num = mTextPicker.getValue();
-                                  button.setText(items[num]);
-                                  saveCurrentSettings();
-                            }
-                        }
-                )
-                .setNegativeButton(R.string.string_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        }
-                )
-                .create();
+        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+            .setTitle(R.string.dialog_select_an_item)
+            .setView(linearLayout)
+            .setNegativeButton(R.string.string_cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                }
+            );
+    }
+
+    AlertDialog mCurrencyDialog;
+    private void showCurrencyDialog(final Button button, final String[] items) {
+        if (mCurrencyDialog != null && mCurrencyDialog.isShowing()) {
+            return;
+        }
+        mCurrencyDialog = defaultDialogLayout(items, mCoreAPI.SettingsCurrencyIndex())
+            .setPositiveButton(R.string.string_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        NumberPicker picker = (NumberPicker) mCurrencyDialog.findViewById(R.id.dialog_number_picker);
+                        mCurrencyNum = mCoreAPI.getCurrencyNumbers()[picker.getValue()];
+                        mDefaultCurrencyButton.setText(mCoreAPI.getCurrencyAcronym(mCurrencyNum));
+                        saveCurrentSettings();
+                    }
+                }
+            )
+            .create();
+        mCurrencyDialog.show();
+    }
+
+    AlertDialog mDefaultExchangeDialog;
+    private void showExchangeDialog(final Button button, final String[] items) {
+        if (mDefaultExchangeDialog != null && mDefaultExchangeDialog.isShowing()) {
+            return;
+        }
+        int index = findInArray(button, items);
+        mDefaultExchangeDialog = defaultDialogLayout(items, index)
+            .setPositiveButton(R.string.string_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        NumberPicker picker = (NumberPicker) mDefaultExchangeDialog.findViewById(R.id.dialog_number_picker);
+                        int num = picker.getValue();
+                        button.setText(items[num]);
+                        saveCurrentSettings();
+                    }
+                }
+            )
+            .create();
         mDefaultExchangeDialog.show();
+    }
+
+    private int findInArray(Button val, String[] arr) {
+        return Math.max(0, Arrays.asList(arr).indexOf(val.getText().toString()));
     }
 
     @Override
@@ -622,6 +554,135 @@ public class SettingFragment extends Fragment {
         super.onPause();
         if(AirbitzApplication.isLoggedIn()) {
             saveCurrentSettings();
+        }
+    }
+
+    static class AutoLogoffDialogManager {
+        static final String[] mAutoLogoffStrings = { "Day(s)", "Hour(s)", "Minute(s)" };
+        static final int MAX_TIME_VALUE = 60;
+
+        private int mNumberSelection;
+        private int mTextSelection;
+        private AlertDialog mDialog;
+        private Button mButton;
+        private Activity mActivity;
+        private int mMinutes;
+        private NumberPicker mNumberPicker;
+        private NumberPicker mTextPicker;
+
+        AutoLogoffDialogManager(Button button, Activity activity) {
+            this.mButton = button;
+            this.mActivity = activity;
+        }
+
+        public void setMinutes(int minutes) {
+            this.mMinutes = minutes;
+            if (mMinutes < MAX_TIME_VALUE) {
+                mNumberSelection = mMinutes;
+                mTextSelection = 2;
+            } else if (mMinutes < 24 * MAX_TIME_VALUE) {
+                mNumberSelection = mMinutes / 60;
+                mTextSelection = 1;
+            } else {
+                mNumberSelection = mMinutes / (24 * MAX_TIME_VALUE);
+                mTextSelection = 0;
+            }
+            setButtonText();
+        }
+
+        private void setButtonText() {
+            String strType = mAutoLogoffStrings[mTextSelection];
+            String timeText = mNumberSelection + " " + strType;
+            if (mNumberSelection == 1) {
+                timeText = timeText.replaceAll("\\(s\\)", "");
+            } else {
+                timeText = timeText.replaceAll("\\(|\\)", "");
+            }
+            mButton.setText(timeText);
+        }
+
+        public int getMinutes() {
+            return mMinutes;
+        }
+
+        private void createNumberPicker() {
+            mNumberPicker = new NumberPicker(
+                    new ContextThemeWrapper(mActivity, R.style.AlertDialogCustomLight));
+            mNumberPicker.setMaxValue(MAX_TIME_VALUE);
+            mNumberPicker.setMinValue(1);
+            mNumberPicker.setValue(mNumberSelection);
+        }
+
+        private void createTextPicker() {
+            mTextPicker = new NumberPicker(
+                    new ContextThemeWrapper(mActivity, R.style.AlertDialogCustomLight));
+
+            mTextPicker.setMaxValue(2);
+            mTextPicker.setMinValue(0);
+            mTextPicker.setDisplayedValues(mAutoLogoffStrings);
+            mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+            mTextPicker.setValue(mTextSelection);
+        }
+
+        public void create() {
+            if (mDialog != null) {
+                mTextPicker.setValue(mTextSelection);
+                mNumberPicker.setValue(mNumberSelection);
+                return;
+            }
+            LinearLayout linearLayout = new LinearLayout(mActivity);
+            View blankView = new View(mActivity);
+
+            LinearLayout.LayoutParams bLP =
+                new LinearLayout.LayoutParams(
+                        (int)mActivity.getResources().getDimension(R.dimen.two_mm),
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+            blankView.setLayoutParams(bLP);
+
+            LinearLayout.LayoutParams lLP =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                              ViewGroup.LayoutParams.MATCH_PARENT);
+            linearLayout.setLayoutParams(lLP);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            createNumberPicker();
+            createTextPicker();
+
+            linearLayout.addView(mNumberPicker);
+            linearLayout.addView(blankView);
+            linearLayout.addView(mTextPicker);
+
+            mDialog = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom))
+                .setTitle(mActivity.getResources().getString(R.string.dialog_title))
+                .setView(linearLayout)
+                .setPositiveButton(R.string.string_ok,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            mNumberSelection = mNumberPicker.getValue();
+                            mTextSelection = mTextPicker.getValue();
+                            if (mTextSelection == 0) {
+                                mMinutes = mNumberSelection * 60 * 24;
+                            } else if (mTextSelection == 1) {
+                                mMinutes = mNumberSelection * 60;
+                            } else if (mTextSelection == 2) {
+                                mMinutes = mNumberSelection;
+                            }
+                            setButtonText();
+                        }
+                    }
+                )
+                .setNegativeButton(R.string.string_cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }
+                )
+                .create();
+        }
+
+        public void show() {
+            mDialog.show();
         }
     }
 }
