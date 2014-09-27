@@ -73,7 +73,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     int mFromIndex =0;
     private View mView;
 
-    private String mSavedBitcoin;
+    private Long mSavedSatoshi;
     private String mSavedFiat;
     private int mSavedSelection;
     private boolean mBtc = false;
@@ -346,7 +346,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mCoreAPI.addExchangeRateChangeListener(this);
         Bundle bundle = getArguments();
         if(mUUID==null && bundle!=null && bundle.getString(FROM_UUID)!=null) {
-            mSavedBitcoin = null;
             mUUID = bundle.getString(FROM_UUID);
             mSelectedWallet = mCoreAPI.getWalletFromUUID(mUUID);
             for (int i = 0; i < mWallets.size(); i++) {
@@ -355,10 +354,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                     mFromIndex = i;
                 }
             }
-            mSavedBitcoin=null;
-            mSavedSelection=0;
-            mSavedBitcoin=null;
-            mSavedFiat=null;
         } else if(bundle!=null && bundle.getString(MERCHANT_MODE)!=null) {
             focus(mFiatField);
         } else {
@@ -368,10 +363,10 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         }
 
         mAutoUpdatingTextFields = true;
-            if(mSavedBitcoin!=null) {
+            if(mSavedSatoshi != null) {
                 mFromIndex = mSavedSelection;
                 mFiatField.setText(mSavedFiat);
-                mBitcoinField.setText(mSavedBitcoin);
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
                 pickWalletSpinner.setSelection(mFromIndex);
             } else {
                 mFiatField.setText("");
@@ -384,7 +379,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     @Override public void onPause() {
         super.onPause();
 
-        mSavedBitcoin = mBitcoinField.getText().toString();
+        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         mSavedFiat = mFiatField.getText().toString();
         mSavedSelection = pickWalletSpinner.getSelectedItemPosition();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
