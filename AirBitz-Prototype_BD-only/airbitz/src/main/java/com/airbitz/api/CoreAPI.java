@@ -15,6 +15,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.Contact;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -937,7 +939,7 @@ public class CoreAPI {
 
     }
 
-    private class TxDetails extends tABC_TxDetails {
+    public class TxDetails extends tABC_TxDetails {
         long mAmountSatoshi; /** amount of bitcoins in satoshi (including fees if any) */
         long mAmountFeesAirbitzSatoshi;   /** airbitz fees in satoshi */
         long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
@@ -1444,6 +1446,8 @@ public class CoreAPI {
         return val > maxFiat;
     }
 
+    private tABC_TxDetails mReceiveRequestDetails;
+
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, long satoshi) {
         //first need to create a transaction details struct
         double value = SatoshiToCurrency(satoshi, wallet.getCurrencyNum());
@@ -1474,16 +1478,63 @@ public class CoreAPI {
 
         if (result == tABC_CC.ABC_CC_Ok)
         {
+            mReceiveRequestDetails = details;
             return getStringAtPtr(core.longp_value(lp));
         }
         else
         {
             String message = result.toString() + "," + error.getSzDescription() + ", " +
                     error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-            Common.LogD("WalletQRCodeFragment", message);
+            Common.LogD(TAG, message);
             return null;
         }
     }
+
+    public void finalizeRequest(Contact contact, String type, String requestId, Wallet wallet)
+    {
+        if(mReceiveRequestDetails != null) {
+            tABC_TxDetails details = mReceiveRequestDetails;
+            TxDetails txDetails = new TxDetails(details.getCPtr(details));
+
+            if (contact.getName() != null) {
+                details.setSzName(contact.getName());
+            } else if (contact.getEmail()!=null) {
+                details.setSzName(contact.getEmail());
+            } else if (contact.getPhone()!=null) {
+                details.setSzName(contact.getPhone());
+            }
+            Calendar now = Calendar.getInstance();
+
+            String notes = String.format("%s / %s requested via %s on %s.",
+                    formatSatoshi(txDetails.getmAmountSatoshi()),
+                    formatDefaultCurrency(txDetails.getmAmountCurrency()),
+                    type,
+                    String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM %1$Tp", now));
+
+            details.setSzNotes(notes);
+
+            tABC_Error Error = new tABC_Error();
+            // Update the Details
+            if (tABC_CC.ABC_CC_Ok != core.ABC_ModifyReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(),
+                requestId,
+                txDetails,
+                Error))
+            {
+                Common.LogD(TAG, Error.toString());
+            }
+            // Finalize this request so it isn't used elsewhere
+            if (tABC_CC.ABC_CC_Ok != core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                wallet.getUUID(),
+                requestId,
+                Error))
+            {
+                Common.LogD(TAG, Error.toString());
+            }
+            mReceiveRequestDetails = null;
+        }
+    }
+
 
     public class TxResult {
         private String txid=null;
