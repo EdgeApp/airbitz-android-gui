@@ -97,8 +97,11 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
         mFiatField = (EditText) mView.findViewById(R.id.edittext_dollar);
 
-        if (!mBtc && ((NavigationActivity) getActivity()).isLargeDpi()) {
-            focus(mFiatField);
+        if (((NavigationActivity) getActivity()).isLargeDpi()) {
+            if (!mBtc) {
+                focus(mFiatField);
+            }
+            mCalculator.hideDoneButton();
         }
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_request_help_button);
@@ -387,6 +390,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         // If calculator is locked open, unlock it
         ((NavigationActivity) getActivity()).unlockCalculator();
+        if (((NavigationActivity) getActivity()).isLargeDpi()) {
+            mCalculator.showDoneButton();
+        }
     }
 
     @Override

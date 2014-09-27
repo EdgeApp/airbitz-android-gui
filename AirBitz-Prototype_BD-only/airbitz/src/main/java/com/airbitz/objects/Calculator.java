@@ -29,6 +29,7 @@ public class Calculator extends LinearLayout {
 
     private EditText mEditText;
     private Boolean userIsInTheMiddleOfTypingANumber = false;
+    private View mDone;
     DecimalFormat mDF = new DecimalFormat("@###########");
 
     private static final String DIGITS = "0123456789.";
@@ -76,6 +77,7 @@ public class Calculator extends LinearLayout {
     // constructor
     private void init() {
         mView = inflate(getContext(), R.layout.calculator, this);
+        mDone = mView.findViewById(R.id.imageButtonDone);
     }
 
     // This is where the text enters and the results return
@@ -89,6 +91,14 @@ public class Calculator extends LinearLayout {
         mDF.setMaximumFractionDigits(6);
         mDF.setMinimumIntegerDigits(1);
         mDF.setMaximumIntegerDigits(8);
+    }
+
+    public void hideDoneButton() {
+        mDone.setVisibility(View.INVISIBLE);
+    }
+
+    public void showDoneButton() {
+        mDone.setVisibility(View.VISIBLE);
     }
 
     public void setOperand(double operand) {
