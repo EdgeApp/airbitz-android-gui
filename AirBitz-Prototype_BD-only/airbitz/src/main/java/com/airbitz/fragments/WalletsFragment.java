@@ -39,7 +39,6 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
-import com.airbitz.utils.ListViewUtility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -279,8 +278,6 @@ public class WalletsFragment extends Fragment
         mLatestWalletListView = (DynamicListView) mView.findViewById(R.id.fragment_wallets_listview);
         setupLatestWalletListView();
 
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(), getActivity());
-
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBalanceLabel.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -299,7 +296,6 @@ public class WalletsFragment extends Fragment
                     size = mLatestWalletAdapter.getArchivePos();
                 }
                 mLatestWalletListView.setArchiveClosed(archiveClosed);
-                ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
             }
         });
 
@@ -323,7 +319,6 @@ public class WalletsFragment extends Fragment
                         size = mLatestWalletAdapter.getArchivePos();
                     }
                     mLatestWalletListView.setArchiveClosed(archiveClosed);
-                    ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, size, getActivity());
                 }
             }
         });
@@ -460,7 +455,6 @@ public class WalletsFragment extends Fragment
         mLatestWalletList.addAll(list);
         mLatestWalletAdapter.swapWallets();
         mLatestWalletAdapter.notifyDataSetChanged();
-        ListViewUtility.setWalletListViewHeightBasedOnChildren(mLatestWalletListView, mLatestWalletList.size(),getActivity());
     }
 
     @Override
