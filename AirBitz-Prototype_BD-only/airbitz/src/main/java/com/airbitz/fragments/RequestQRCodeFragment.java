@@ -264,7 +264,13 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         } else {
             mmsIntent.setType("text/plain");
         }
-        String textToSend = fillTemplate("html/SMSTemplate.txt", contact.getName());
+        String name = getString(R.string.request_qr_unknown);
+        if(mCoreAPI.coreSettings().getBNameOnPayments()) {
+            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
+                    mCoreAPI.coreSettings().getSzLastName();
+        }
+
+        String textToSend = fillTemplate("html/SMSTemplate.txt", name);
         mmsIntent.putExtra("sms_body", textToSend);
         mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
 
@@ -291,7 +297,14 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact.getEmail()});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
-        String html = fillTemplate("html/EmailTemplate.html", contact.getName());
+
+        String name = getString(R.string.request_qr_unknown);
+        if(mCoreAPI.coreSettings().getBNameOnPayments()) {
+            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
+            mCoreAPI.coreSettings().getSzLastName();
+        }
+
+        String html = fillTemplate("html/EmailTemplate.html", name);
 //        String filename = Common.createTempFileFromString("email.html", html);
 //        Uri htmlFile = Uri.parse("file://" + filename);
 //        uris.add(htmlFile);
@@ -342,7 +355,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         List<String> replaceList = new ArrayList<String>();
         if(fullName==null)
-            replaceList.add("NULL ERROR");
+            replaceList.add("");
         else
             replaceList.add(fullName);
         replaceList.add(bitcoinURL);
