@@ -1,6 +1,5 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ClipData;
@@ -8,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,27 +16,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.ContactSearchAdapter;
-import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.objects.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
@@ -47,9 +36,8 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 
 public class RequestQRCodeFragment extends Fragment implements ContactPickerFragment.ContactSelection {
@@ -82,6 +70,8 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private CoreAPI.TxDetails mTxDetails;
+
     static final int PICK_CONTACT_SMS =1;
     static final int PICK_CONTACT_EMAIL=2;
 
@@ -185,9 +175,9 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     @Override
     public void onContactSelection(Contact contact) {
         if(emailType) {
-            finishEmail(contact.getName(), contact.getEmail());
+            finishEmail(contact);
         } else {
-            finishSMS(contact.getName(), contact.getPhone());
+            finishSMS(contact);
         }
     }
 
@@ -255,8 +245,6 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     }
 
     private void startSMS() {
-//        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//        startActivityForResult(intent, PICK_CONTACT_SMS);
         emailType = false;
         ContactPickerFragment fragment = new ContactPickerFragment();
         fragment.setContactSelectionListener(this);
@@ -266,40 +254,23 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
-    private void finishSMS(String name, String phone) {
-        Intent smsIntent = new Intent(Intent.ACTION_SEND);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //At least KitKat
-        {
-//            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity()); //Need to change the build to API 19
-//
-//            smsIntent.putExtra(Intent.EXTRA_TEXT, mRequestURI);
-//
-//            if (defaultSmsPackageName != null)//Can be null in case that there is no default, then the user would be able to choose any app that support this intent.
-//            {
-//                smsIntent.setPackage(defaultSmsPackageName);
-//            }
-            smsIntent = new Intent(Intent.ACTION_SENDTO);
-            if(mQRBitmap!=null) {
-                smsIntent.setData(Uri.parse("mmsto:" + Uri.encode(phone)));
-            } else {
-                smsIntent.setData(Uri.parse("smsto:" + Uri.encode(phone)));
-            }
-        }
-        else //For earlier versions, the old method
-        {
-            smsIntent.putExtra("address", phone);
-            smsIntent.setType("text/plain");
-        }
-        smsIntent.putExtra("sms_body", mRequestURI);
-
-        //TODO Hangouts does not recognize this
+    private void finishSMS(Contact contact) {
+        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
+        mmsIntent.putExtra("address", contact.getPhone());
         if(mQRBitmap!=null) {
+            mmsIntent.setType("image/jpg");
             mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
-            smsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+        } else {
+            mmsIntent.setType("text/plain");
         }
+        String textToSend = fillTemplate("html/SMSTemplate.txt", contact.getName());
+        mmsIntent.putExtra("sms_body", textToSend);
+        mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
 
-        startActivity(smsIntent);
+        startActivity(Intent.createChooser(mmsIntent, "mms"));
+
+        mCoreAPI.finalizeRequest(contact, "SMS", mID, mWallet);
     }
 
     private void startEmail() {
@@ -312,15 +283,15 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
-    private void finishEmail(String fullName, String email) {
+    private void finishEmail(Contact contact) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
 
         String error = "";
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {email});
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title) + " " + fullName);
-        String html = getEmailContent(fullName);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact.getEmail()});
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
+        String html = fillTemplate("html/EmailTemplate.html", contact.getName());
 //        String filename = Common.createTempFileFromString("email.html", html);
 //        Uri htmlFile = Uri.parse("file://" + filename);
 //        uris.add(htmlFile);
@@ -339,9 +310,11 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
         intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
         startActivity(Intent.createChooser(intent, "email"));
+
+        mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
     }
 
-    private String getEmailContent(String fullName) {
+    private String fillTemplate(String templateFilename, String fullName) {
         String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
         String amountMBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 5);
 
@@ -356,7 +329,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             redirectURL = "https://airbitz.co/blf/?address="+address;
         }
 
-        String content = Common.loadAssetTextAsString(getActivity(), "html/EmailTemplate.html");
+        String content = Common.loadAssetTextAsString(getActivity(), templateFilename);
 
         List<String> searchList  = new ArrayList<String>();
         searchList.add("[[abtag FROM]]");
@@ -386,122 +359,6 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         return content;
     }
 
-//    //code
-//    @Override
-//    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-//        super.onActivityResult(reqCode, resultCode, data);
-//        switch (reqCode) {
-//            case (PICK_CONTACT_SMS) :
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Uri result = data.getData();
-//
-//                    // get the id from the Uri
-//                    String id = result.getLastPathSegment();
-//
-//                    // query the phone numbers for the selected phone number id
-//                    final Cursor c = getActivity().getContentResolver().query(
-//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
-//                            new String[]{id}, null);
-//
-//                    int phoneIdx = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-//                    final int phoneType = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
-//                    if(c.getCount() == 1) { // contact has a single phone number
-//                        // get the only phone number
-//                        if(c.moveToFirst()) {
-//                            String phone = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                            String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//                            finishSMS(name, phone);
-//                        } else {
-//                            Log.w(TAG, "No Contact results");
-//                        }
-//                    } else if(c.getCount() > 1) { // contact has multiple phone numbers
-//                        final CharSequence[] numbers = new CharSequence[c.getCount()];
-//
-//                        int i=0;
-//                        if(c.moveToFirst()) {
-//                            final String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//                            while(!c.isAfterLast()) { // for each phone number, add it to the numbers array
-//                                String type = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(this.getResources(), c.getInt(phoneType), ""); // insert a type string in front of the number
-//                                String number = type + ": " + c.getString(phoneIdx);
-//                                numbers[i++] = number;
-//                                c.moveToNext();
-//                            }
-//                            // build and show a simple dialog that allows the user to select a number
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                            builder.setTitle("Select Phone Number");
-//                            builder.setItems(numbers, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int item) {
-//                                    String number = (String) numbers[item];
-//                                    int index = number.indexOf(":");
-//                                    number = number.substring(index + 2);
-//                                    finishSMS(name, number);
-//                                }
-//                            });
-//                            AlertDialog alert = builder.create();
-//                            alert.setOwnerActivity(getActivity());
-//                            alert.show();
-//                        } else Log.w(TAG, "No results");
-//                    }
-//                }
-//                break;
-//            case (PICK_CONTACT_EMAIL) :
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Uri result = data.getData();
-//
-//                    // get the id from the Uri
-//                    String id = result.getLastPathSegment();
-//
-//                    // query the phone numbers for the selected phone number id
-//                    final Cursor c = getActivity().getContentResolver().query(
-//                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-//                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
-//                            new String[]{id}, null);
-//
-//                    if(c.getCount() == 1) { // contact has a single phone number
-//                        // get the only phone number
-//                        if(c.moveToFirst()) {
-//                            String email = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-//                            String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
-//                            finishEmail(name, email);
-//                        } else {
-//                            Log.w(TAG, "No Contact results");
-//                        }
-//                    } else if(c.getCount() > 1) { // contact has multiple phone numbers
-//                        final CharSequence[] numbers = new CharSequence[c.getCount()];
-//
-//                        int i=0;
-//                        if(c.moveToFirst()) {
-//                            final String name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME_PRIMARY));
-//                            while(!c.isAfterLast()) { // for each phone number, add it to the numbers array
-//                                String type = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(this.getResources(), c.getInt(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)), ""); // insert a type string in front of the number
-//                                String email = type + ":" + c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-//                                numbers[i++] = email;
-//                                c.moveToNext();
-//                            }
-//                            // build and show a simple dialog that allows the user to select a number
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                            builder.setTitle("Select Email address");
-//                            builder.setItems(numbers, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int item) {
-//                                    String email = (String) numbers[item];
-//                                    int index = email.indexOf(":");
-//                                    email = email.substring(index + 1);
-//                                    finishEmail(name, email);
-//                                }
-//                            });
-//                            AlertDialog alert = builder.create();
-//                            alert.setOwnerActivity(getActivity());
-//                            alert.show();
-//                        } else Log.w(TAG, "No results");
-//                    }
-//                }
-//                break;
-//
-//        }
-//    }
 
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
         Common.LogD(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);

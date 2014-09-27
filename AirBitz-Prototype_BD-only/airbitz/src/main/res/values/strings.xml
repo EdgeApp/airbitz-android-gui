@@ -233,7 +233,7 @@
     <string name="request_amount_hint">Amt (Optional)</string>
 
     <!-- Strings for Request fragment -->
-    <string name="request_qr_email_title">Airbitz Bitcoin Request from</string>
+    <string name="request_qr_email_title">Airbitz Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
     <string name="request_qr_image_store_error">A QR code could not be stored on your device for attaching. You need an external SD card, or you must detach the USB connector.</string>
 
