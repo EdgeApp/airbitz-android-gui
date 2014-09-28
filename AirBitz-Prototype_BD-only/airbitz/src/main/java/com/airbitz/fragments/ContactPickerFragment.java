@@ -183,7 +183,6 @@ public class ContactPickerFragment extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-
     private List<Contact> GetMatchedContacts(String term, boolean emailSearch) {
         List<Contact> contacts = new ArrayList<Contact>();
 
