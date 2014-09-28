@@ -27,6 +27,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
 import com.airbitz.objects.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -47,9 +48,7 @@ public class ContactPickerFragment extends Fragment {
     private EditText mContactName;
     private TextView mFragmentTitle;
     private ListView mSearchListView;
-    private HighlightOnPressButton mCancelButton;
-
-    private boolean mEmailSearch = false;
+    private HighlightOnPressImageButton mCancelButton;
 
     private Bundle mBundle;
 
@@ -73,15 +72,6 @@ public class ContactPickerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
-        if (mBundle != null) {
-            if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(EMAIL)) {
-                Common.LogD(TAG, "Email");
-                mEmailSearch = true;
-            } else if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(SMS)) {
-                Common.LogD(TAG, "SMS");
-                mEmailSearch = false;
-            }
-        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mActivity = (NavigationActivity) getActivity();
@@ -92,7 +82,7 @@ public class ContactPickerFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
         mFragmentTitle = (TextView) mView.findViewById(R.id.fragment_contact_picker_title);
-        if(mEmailSearch) {
+        if(mBundle.getString(TYPE).equals(EMAIL)) {
             mFragmentTitle.setText("Email Search");
         } else {
 
@@ -103,7 +93,7 @@ public class ContactPickerFragment extends Fragment {
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
         mSearchAdapter = new ContactSearchAdapter(getActivity(), mFilteredContacts);
         mSearchListView.setAdapter(mSearchAdapter);
-        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_cancel_button);
+        mCancelButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_contact_picker_button_back);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,7 +168,7 @@ public class ContactPickerFragment extends Fragment {
 
     private void updateAutoCompleteArray(String strTerm) {
         mFilteredContacts.clear();
-        mFilteredContacts.addAll(GetMatchedContacts(strTerm, mEmailSearch));
+        mFilteredContacts.addAll(GetMatchedContacts(strTerm, mBundle.getString(TYPE).equals(EMAIL)));
         mSearchAdapter.notifyDataSetChanged();
     }
 
@@ -240,43 +230,47 @@ public class ContactPickerFragment extends Fragment {
         }
     }
 
-
     private List<Contact> GenerateListOfContacts(Context context) {
         List<Contact> contacts = new ArrayList<Contact>();
         ContentResolver cr = context.getContentResolver();
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                String thumbnail = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+        if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(EMAIL)) {
+            Uri uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+            String[] projection    = new String[] {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+                    ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
 
-//                if(name!=null && thumbnail!=null)
-//                    mContactPhotos.put(name, Uri.parse(thumbnail));
+            Cursor people = cr.query(uri, projection, null, null, null);
 
-                // name and emails
-                Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId, null, null);
+            int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
+            int indexEmail = people.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
-                while (emails.moveToNext()) {
-                    String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    contacts.add(new Contact(name, emailAddress, null, thumbnail));
-                }
-                emails.close();
+            people.moveToFirst();
+            do {
+                String name   = people.getString(indexName);
+                String email = people.getString(indexEmail);
+                String thumbnail = people.getString(indexThumbnail);
+                contacts.add(new Contact(name, email, null, thumbnail));
+            } while (people.moveToNext());
+        } else {
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String[] projection    = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
 
-                // name and phones
-                if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{contactId}, null);
-                    while (phones.moveToNext()) {
-                        String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        contacts.add(new Contact(name, null, phoneNumber, thumbnail));
-                    }
-                    phones.close();
-                }
-            }
+            Cursor people = cr.query(uri, projection, null, null, null);
+
+            int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+
+            people.moveToFirst();
+            do {
+                String name   = people.getString(indexName);
+                String number = people.getString(indexNumber);
+                String thumbnail = people.getString(indexThumbnail);
+                contacts.add(new Contact(name, null, number, thumbnail));
+            } while (people.moveToNext());
         }
-        cursor.close();
         return contacts;
     }
 
