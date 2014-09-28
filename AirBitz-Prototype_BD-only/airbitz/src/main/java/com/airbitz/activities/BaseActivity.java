@@ -104,6 +104,6 @@ public class BaseActivity extends FragmentActivity {
 
     public void showSoftKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(v, 0);
+        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 }
