@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Telephony;
 import android.text.Html;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -255,8 +256,33 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     }
 
     private void finishSMS(Contact contact) {
+//        //no apps can perform this intent
+//        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO);
+//        mmsIntent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
+
+//        // no apps can perform this intent
+//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
+//        mmsIntent.setClassName("com.android.mms", "com.android.mms.ui.ComposeMessageActivity");
+//        mmsIntent.putExtra("address", contact.getPhone());
+
+//        // no apps can perform this intent
+//        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts ("smsto", contact.getPhone(), null));
+
+//        //working but many choices
         Intent mmsIntent = new Intent(Intent.ACTION_SEND);
         mmsIntent.putExtra("address", contact.getPhone());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // Android 4.4 and up
+        {
+            //uncomment this to enable default package
+            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(mActivity);
+            if (defaultSmsPackageName != null) // Can be null in case that there is no default, then the user would be able to choose any app that supports this intent.
+            {
+                mmsIntent.setPackage(defaultSmsPackageName);
+            }
+        }
+
+
         if(mQRBitmap!=null) {
             mmsIntent.setType("image/jpg");
             mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
@@ -264,12 +290,12 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         } else {
             mmsIntent.setType("text/plain");
         }
+
         String name = getString(R.string.request_qr_unknown);
         if(mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
                     mCoreAPI.coreSettings().getSzLastName();
         }
-
         String textToSend = fillTemplate("html/SMSTemplate.txt", name);
         mmsIntent.putExtra("sms_body", textToSend);
         mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
@@ -292,7 +318,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private void finishEmail(Contact contact) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
 
-        String error = "";
+        String error = null;
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact.getEmail()});
@@ -319,12 +345,16 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             error = getString(R.string.request_qr_bitmap_error);
         }
 
-        intent.putExtra(Intent.EXTRA_STREAM, uris);
-        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
-        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
-        startActivity(Intent.createChooser(intent, "email"));
+        if(error!=null) {
+            mActivity.ShowOkMessageDialog("", error);
+        } else {
+            intent.putExtra(Intent.EXTRA_STREAM, uris);
+            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
+            intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
+            startActivity(Intent.createChooser(intent, "email"));
 
-        mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
+            mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
+        }
     }
 
     private String fillTemplate(String templateFilename, String fullName) {
