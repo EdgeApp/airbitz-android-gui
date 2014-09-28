@@ -160,9 +160,6 @@ public class ContactPickerFragment extends Fragment {
             }
         });
 
-        mContactName.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mContactName.requestFocus();
-
         return mView;
     }
 
@@ -185,7 +182,6 @@ public class ContactPickerFragment extends Fragment {
             mGenerateContactsTask.cancel(true);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
-
 
     private List<Contact> GetMatchedContacts(String term, boolean emailSearch) {
         List<Contact> contacts = new ArrayList<Contact>();
@@ -219,6 +215,7 @@ public class ContactPickerFragment extends Fragment {
         @Override
         protected void onPostExecute(Void v) {
             updateAutoCompleteArray(mContactName.getText().toString());
+            mContactName.requestFocus();
             mGenerateContactsTask = null;
             mActivity.showModalProgress(false);
         }
