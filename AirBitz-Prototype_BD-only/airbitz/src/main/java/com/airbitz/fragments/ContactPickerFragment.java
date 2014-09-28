@@ -121,8 +121,14 @@ public class ContactPickerFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     ((NavigationActivity) getActivity()).hideSoftKeyboard(mContactName);
 
-                    //TODO send info back to RequestQRCodeFragment ?
-
+                    ((NavigationActivity)getActivity()).popFragment();
+                    mActivity.getFragmentManager().executePendingTransactions();
+                    String name = mContactName.getText().toString();
+                    if(mBundle.getString(TYPE).equals(EMAIL)) {
+                        mContactSelection.onContactSelection(new Contact(name, name, null, null));
+                    } else {
+                        mContactSelection.onContactSelection(new Contact(name, null, name, null));
+                    }
                     return true;
                 }
                 return false;
