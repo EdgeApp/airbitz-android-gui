@@ -160,9 +160,6 @@ public class ContactPickerFragment extends Fragment {
             }
         });
 
-        mContactName.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mContactName.requestFocus();
-
         return mView;
     }
 
@@ -219,6 +216,7 @@ public class ContactPickerFragment extends Fragment {
         @Override
         protected void onPostExecute(Void v) {
             updateAutoCompleteArray(mContactName.getText().toString());
+            mContactName.requestFocus();
             mGenerateContactsTask = null;
             mActivity.showModalProgress(false);
         }
