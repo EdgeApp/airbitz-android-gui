@@ -26,6 +26,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
 import com.airbitz.objects.Contact;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ContactPickerFragment extends Fragment {
     private EditText mContactName;
     private TextView mFragmentTitle;
     private ListView mSearchListView;
+    private HighlightOnPressButton mCancelButton;
 
     private boolean mEmailSearch = false;
 
@@ -101,6 +103,14 @@ public class ContactPickerFragment extends Fragment {
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
         mSearchAdapter = new ContactSearchAdapter(getActivity(), mFilteredContacts);
         mSearchListView.setAdapter(mSearchAdapter);
+        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_cancel_button);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+                ((NavigationActivity)getActivity()).showNavBar();
+            }
+        });
 
         mContactName.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
