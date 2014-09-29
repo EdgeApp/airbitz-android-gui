@@ -225,6 +225,7 @@ public class LandingFragment extends Fragment {
                     ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if(questions.length == 1) { // Error string
                     Common.LogD(TAG, questionString);
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_account_title), questions[0]);
                 }
             }
         }

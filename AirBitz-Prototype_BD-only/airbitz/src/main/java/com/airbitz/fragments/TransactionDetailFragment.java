@@ -353,8 +353,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        getContactsList();
-
         mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -664,6 +662,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         return mView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getContactsList();
+    }
+
     private void updateAutoCompleteArray(String strTerm) {
         // if there is anything in the payee field
 
@@ -684,9 +689,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 // add the matches from other businesses
                 for (BusinessSearchResult business : mArrayOnlineBusinesses) {
                     // if it matches what the user has currently typed
-                    if (business.getName().contains(strTerm)) {
+                    if (business.getName().toLowerCase().contains(strTerm.toLowerCase())) {
                         // if it isn't already in the near array
-                        if (!mArrayNearBusinesses.contains(business.getName())) {
+                        if (!mArrayNearBusinesses.contains(business.getName().toLowerCase())) {
                             // add this business to the auto complete array
                             mArrayAutoComplete.add(business);
                         }
@@ -1246,17 +1251,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     public void getContactsList() {
+        mContactNames.clear();
         ContentResolver cr = getActivity().getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME};
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                columns, null, null, null);
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
+        if (cursor!=null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                 mContactNames.add(name);
             }
         }
-        cur.close();
+        cursor.close();
     }
 
     public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {

@@ -20,7 +20,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -299,11 +298,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                         }
                     }
                 }
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals("URI")) {
-                String uriString = bundle.getString(NavigationActivity.URI);
-                bundle.putString(NavigationActivity.URI, ""); //to clear the URI after reading once
-                if(!uriString.isEmpty()) {
-                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriString);
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
+                String uriData = bundle.getString(NavigationActivity.URI_DATA);
+                bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
+                if(!uriData.isEmpty()) {
+                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
                     if(info!=null && info.getSzAddress()!=null) {
                         GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
                     }
@@ -532,7 +531,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public void updateWalletOtherList(){
         mWalletOtherList = new ArrayList<Wallet>();
         for(Wallet wallet: mWallets){
-            if(mFromWallet!=null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
+            if(mFromWallet!=null && mFromWallet.getUUID()!=null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mWalletOtherList.add(wallet);
             }
         }
