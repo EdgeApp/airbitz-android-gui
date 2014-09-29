@@ -121,7 +121,7 @@ public class WalletsFragment extends Fragment
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-        mLatestWalletList = mCoreAPI.loadWallets(false);
+        mLatestWalletList = getWallets(true);
     }
 
     @Override
@@ -287,15 +287,9 @@ public class WalletsFragment extends Fragment
         archiveHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int pos = mLatestWalletAdapter.getArchivePos();
-                mLatestWalletAdapter.switchCloseAfterArchive(pos);
-                mLatestWalletAdapter.notifyDataSetChanged();
                 archiveClosed = !archiveClosed;
-                int size = mLatestWalletAdapter.getCount();
-                if(archiveClosed) {
-                    size = mLatestWalletAdapter.getArchivePos();
-                }
-                mLatestWalletListView.setArchiveClosed(archiveClosed);
+                updateWalletList(archiveClosed);
+                mLatestWalletAdapter.notifyDataSetChanged();
             }
         });
 
@@ -310,15 +304,8 @@ public class WalletsFragment extends Fragment
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
                     archiveClosed = !archiveClosed;
-                    int pos = a.getPosition(wallet);
-                    a.switchCloseAfterArchive(pos);
+                    updateWalletList(archiveClosed);
                     mLatestWalletAdapter.notifyDataSetChanged();
-
-                    int size = mLatestWalletAdapter.getCount();
-                    if(archiveClosed) {
-                        size = mLatestWalletAdapter.getArchivePos();
-                    }
-                    mLatestWalletListView.setArchiveClosed(archiveClosed);
                 }
             }
         });
@@ -564,16 +551,11 @@ public class WalletsFragment extends Fragment
         super.onResume();
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         archiveClosed = prefs.getBoolean("archiveClosed", false);
-        if (archiveClosed) {
-            archiveClosed = false;
-            archiveHeader.performClick();
-        }
+        updateWalletList(archiveClosed);
 
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         UpdateBalances();
-        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-        mLatestWalletAdapter.notifyDataSetChanged();
 
         mCoreAPI.addExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
@@ -599,4 +581,42 @@ public class WalletsFragment extends Fragment
         }
     }
 
+    public void updateWalletList(boolean archiveClosed) {
+        List<Wallet> walletList = getWallets(archiveClosed);
+        mLatestWalletList.clear();
+        mLatestWalletList.addAll(walletList);
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletAdapter.notifyDataSetChanged();
+        mParentLayout.invalidate();
+    }
+
+    public List<Wallet> getWallets(boolean archiveClosed) {
+        List<Wallet> list = new ArrayList<Wallet>();
+        List<Wallet> coreList = mCoreAPI.getCoreWallets(false);
+
+        if(coreList==null)
+            coreList = new ArrayList<Wallet>();
+        Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
+        headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
+        list.add(headerWallet);//Wallet HEADER
+        // Loop through and find non-archived wallets first
+        for (Wallet wallet : coreList) {
+            if (!wallet.isArchived() && wallet.getName()!=null)
+                list.add(wallet);
+        }
+        Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
+        archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
+        list.add(archiveWallet); //Archive HEADER
+
+        if(!archiveClosed) {
+            // Loop through and add archived wallets now
+            for (Wallet wallet : coreList) {
+                if (wallet.isArchived() && wallet.getName() != null)
+                    list.add(wallet);
+            }
+        }
+        return list;
+    }
 }
