@@ -684,9 +684,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 // add the matches from other businesses
                 for (BusinessSearchResult business : mArrayOnlineBusinesses) {
                     // if it matches what the user has currently typed
-                    if (business.getName().contains(strTerm)) {
+                    if (business.getName().toLowerCase().contains(strTerm.toLowerCase())) {
                         // if it isn't already in the near array
-                        if (!mArrayNearBusinesses.contains(business.getName())) {
+                        if (!mArrayNearBusinesses.contains(business.getName().toLowerCase())) {
                             // add this business to the auto complete array
                             mArrayAutoComplete.add(business);
                         }
