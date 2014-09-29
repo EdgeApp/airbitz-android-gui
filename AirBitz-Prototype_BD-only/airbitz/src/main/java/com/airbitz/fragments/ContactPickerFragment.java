@@ -244,17 +244,19 @@ public class ContactPickerFragment extends Fragment {
 
             Cursor people = cr.query(uri, projection, null, null, null);
 
-            int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
-            int indexEmail = people.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+            if(people!=null) {
+                int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
+                int indexEmail = people.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+                int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
-            people.moveToFirst();
-            do {
-                String name   = people.getString(indexName);
-                String email = people.getString(indexEmail);
-                String thumbnail = people.getString(indexThumbnail);
-                contacts.add(new Contact(name, email, null, thumbnail));
-            } while (people.moveToNext());
+                people.moveToFirst();
+                do {
+                    String name = people.getString(indexName);
+                    String email = people.getString(indexEmail);
+                    String thumbnail = people.getString(indexThumbnail);
+                    contacts.add(new Contact(name, email, null, thumbnail));
+                } while (people.moveToNext());
+            }
         } else {
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
             String[] projection    = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -262,17 +264,19 @@ public class ContactPickerFragment extends Fragment {
 
             Cursor people = cr.query(uri, projection, null, null, null);
 
-            int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-            int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+            if(people!=null) {
+                int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
-            people.moveToFirst();
-            do {
-                String name   = people.getString(indexName);
-                String number = people.getString(indexNumber);
-                String thumbnail = people.getString(indexThumbnail);
-                contacts.add(new Contact(name, null, number, thumbnail));
-            } while (people.moveToNext());
+                people.moveToFirst();
+                do {
+                    String name = people.getString(indexName);
+                    String number = people.getString(indexNumber);
+                    String thumbnail = people.getString(indexThumbnail);
+                    contacts.add(new Contact(name, null, number, thumbnail));
+                } while (people.moveToNext());
+            }
         }
         return contacts;
     }
