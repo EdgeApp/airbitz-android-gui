@@ -75,8 +75,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private TextView mTimeTextView;
 
     private View mUserNameRedRingCover;
-    private View mPinRedRingCover;
-    private View mDummyFocus;
 
 
     private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
@@ -120,7 +118,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
 
         mUserNameRedRingCover = mView.findViewById(R.id.activity_signup_username_redring);
-        mDummyFocus = mView.findViewById(R.id.activity_signup_dummy_focus);
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.activity_signup_username_edittext);
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_signup_password_edittext);
@@ -258,8 +255,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 }
             }
         });
-
-        setupUI(getArguments());
 
         mUserNameEditText.requestFocus();
         
@@ -719,5 +714,11 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupUI(getArguments());
     }
 }
