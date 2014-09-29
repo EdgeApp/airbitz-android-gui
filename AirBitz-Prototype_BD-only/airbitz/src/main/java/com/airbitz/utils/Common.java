@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.tABC_CC;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -207,5 +208,43 @@ public class Common {
         alert.show();
     }
 
-
+    public static String errorMap(Context context, tABC_CC code)
+    {
+        if(code==tABC_CC.ABC_CC_AccountAlreadyExists) {
+            return context.getString(R.string.server_error_account_already_exists);
+        }
+        else if(code==tABC_CC.ABC_CC_AccountDoesNotExist) {
+            return context.getString(R.string.server_error_account_does_not_exists);
+        }
+        else if(code==tABC_CC.ABC_CC_BadPassword) {
+            return context.getString(R.string.server_error_bad_password);
+        }
+        else if(code==tABC_CC.ABC_CC_WalletAlreadyExists) {
+            return context.getString(R.string.server_error_wallet_exists);
+        }
+        else if(code==tABC_CC.ABC_CC_InvalidWalletID) {
+            return context.getString(R.string.server_error_invalid_wallet);
+        }
+        else if(code==tABC_CC.ABC_CC_URLError || code== tABC_CC.ABC_CC_ServerError) {
+            return context.getString(R.string.server_error_no_connection);
+        }
+        else if(code==tABC_CC.ABC_CC_NoRecoveryQuestions) {
+            return context.getString(R.string.server_error_no_recovery_questions);
+        }
+        else if(code==tABC_CC.ABC_CC_NotSupported) {
+            return context.getString(R.string.server_error_not_supported);
+        }
+        else if(code==tABC_CC.ABC_CC_InsufficientFunds) {
+            return context.getString(R.string.server_error_insufficient_funds);
+        }
+        else if(code==tABC_CC.ABC_CC_Synchronizing) {
+            return context.getString(R.string.server_error_synchronizing);
+        }
+        else if(code==tABC_CC.ABC_CC_NonNumericPin) {
+            return context.getString(R.string.server_error_non_numeric_pin);
+        }
+        else {
+            return context.getString(R.string.server_error_other);
+        }
+    }
 }

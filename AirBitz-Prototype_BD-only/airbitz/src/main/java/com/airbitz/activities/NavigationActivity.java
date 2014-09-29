@@ -70,7 +70,8 @@ public class NavigationActivity extends BaseActivity
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
 
-    public static final String URI = "com.airbitz.navigation.uri";
+    public static final String URI_DATA = "com.airbitz.navigation.uri";
+    public static final String URI_SOURCE = "URI";
     private final String TAG = getClass().getSimpleName();
 
     private CoreAPI mCoreAPI;
@@ -584,7 +585,7 @@ public class NavigationActivity extends BaseActivity
      * Handle bitcoin:<address> Uri's coming from OS
      */
     private void onBitcoinUri(Uri dataUri) {
-        Common.LogD(TAG, "Received onCreate intent = "+dataUri.toString());
+        Common.LogD(TAG, "Received onBitcoin with uri = "+dataUri.toString());
         if(!AirbitzApplication.isLoggedIn()) {
             mDataUri = dataUri;
             return;
@@ -593,8 +594,8 @@ public class NavigationActivity extends BaseActivity
 
         if(mNavThreadId !=Tabs.SEND.ordinal()) {
             Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, "URI");
-            bundle.putString(URI, dataUri.toString());
+            bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
+            bundle.putString(URI_DATA, dataUri.toString());
             switchFragmentThread(Tabs.SEND.ordinal(), bundle);
         } else {
             CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(dataUri.toString());
@@ -804,11 +805,11 @@ public class NavigationActivity extends BaseActivity
     public void UserJustLoggedIn() {
         showNavBar();
         if(mDataUri!=null) {
-            onBitcoinUri(mDataUri);
-            mDataUri = null;
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
+            onBitcoinUri(mDataUri);
+            mDataUri = null;
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
