@@ -659,10 +659,10 @@ public class CoreAPI {
 
         tABC_CC result = core.ABC_GetRecoveryQuestions(username, ppChar, pError);
         String questionString = getStringAtPtr(core.longp_value(lp));
-        if (result == tABC_CC.ABC_CC_Ok || result == tABC_CC.ABC_CC_NoRecoveryQuestions) {
-            return questionString; // will be null for NoRecoveryQuestions
+        if (result == tABC_CC.ABC_CC_Ok) {
+            return questionString;
         } else {
-            return pError.getSzDescription() +";"+ pError.getSzSourceFile() +";"+ pError.getSzSourceFunc() +";"+ pError.getNSourceLine();
+            return Common.errorMap(mContext, result);
         }
     }
 
