@@ -96,7 +96,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void switchCloseAfterArchive(int pos){
         archivePos = pos;
-        closeAfterArchive = !closeAfterArchive;
+        closeAfterArchive = false; //!closeAfterArchive;
     }
 
     @Override
