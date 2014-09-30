@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="212dp"
     android:background="@drawable/bkg_calculator" >
 
     <LinearLayout
@@ -11,7 +11,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:weightSum="9"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="6dp"
         android:layout_height="50dp" >
 
         <LinearLayout
@@ -263,7 +263,7 @@
         android:id="@+id/row4"
         android:layout_below="@id/row3"
         android:weightSum="9"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="6dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp" >
