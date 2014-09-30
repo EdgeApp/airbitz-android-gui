@@ -1,7 +1,6 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
@@ -35,6 +35,7 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
+
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -58,9 +59,6 @@ public class DirectoryDetailFragment extends Fragment {
     private boolean locationEnabled;
 
     private TextView mAboutField;
-
-    private Intent mIntent;
-
 
     private CurrentLocationManager mLocationManager;
 
@@ -94,8 +92,7 @@ public class DirectoryDetailFragment extends Fragment {
     View mView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mBusinessId = getArguments().getString(BIZID);
@@ -105,7 +102,7 @@ public class DirectoryDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView==null) {
             mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
         } else {
             return mView;
@@ -125,6 +122,7 @@ public class DirectoryDetailFragment extends Fragment {
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
         mDiscountTextView = (TextView) mView.findViewById(R.id.textview_discount);
         mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
+        mDistanceTextView.setVisibility(View.GONE);
 
         if(mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
@@ -135,9 +133,9 @@ public class DirectoryDetailFragment extends Fragment {
 
         int timeout = 5000;
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            @Override public void run() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
                 if (mTask.getStatus() == AsyncTask.Status.RUNNING)
                     mTask.cancel(true);
             }
@@ -178,13 +176,14 @@ public class DirectoryDetailFragment extends Fragment {
         mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 getActivity().onBackPressed();
             }
         });
         mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-//                Common.showHelpInfoDialog(DirectoryDetailActivity.this, "Info", "Business directory info");
+            @Override
+            public void onClick(View view) {
             }
         });
 
@@ -193,7 +192,6 @@ public class DirectoryDetailFragment extends Fragment {
 
     private void getMapLink() {
         String address = mDetail.getAddress();
-
         String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
 
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -201,15 +199,12 @@ public class DirectoryDetailFragment extends Fragment {
                         + "daddr="
                         + daddr
                         + "&dirflg=d"));
-
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
                 "com.google.android.maps.MapsActivity"));
-
         startActivity(intent);
     }
 
     private void setDistance(String strDistance) {
-
         double businessDistance = 0;
         try {
             businessDistance = Double.parseDouble(strDistance);
@@ -234,6 +229,7 @@ public class DirectoryDetailFragment extends Fragment {
                 businessDistance = Math.ceil(businessDistance * 10) / 10;
                 mDistanceTextView.setText(String.valueOf(businessDistance) + " miles");
             }
+            mDistanceTextView.setVisibility(View.VISIBLE);
         }catch (Exception e) {
             mDistanceTextView.setText("-");
         }
@@ -250,25 +246,21 @@ public class DirectoryDetailFragment extends Fragment {
 
     private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
         AirbitzAPI mApi = AirbitzAPI.getApi();
-        Context mContext;
-        ProgressDialog mProgressDialog;
+        Activity mActivity;
 
-        public GetBusinessDetailTask(Context context) {
-            mContext = context;
+        public GetBusinessDetailTask(Activity activity) {
+            mActivity = activity;
         }
 
-        @Override protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage(getString(R.string.fragment_directory_detail_getting_venue_data));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+        @Override
+        protected void onPreExecute() {
+            ((NavigationActivity) mActivity).showModalProgress(true);
         }
 
-        @Override protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
             String latLong = "";
-            if(locationEnabled) {
+            if (locationEnabled) {
                 android.location.Location currentLoc = mLocationManager.getLocation();
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
@@ -276,16 +268,14 @@ public class DirectoryDetailFragment extends Fragment {
             return mApi.getBusinessByIdAndLatLong(params[0],latLong);
         }
 
-        @Override protected void onCancelled() {
-            if(null != mProgressDialog) {
-                mProgressDialog.dismiss();
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                        Toast.LENGTH_LONG).show();
-            }
+        @Override
+        protected void onCancelled() {
+            ((NavigationActivity) mActivity).showModalProgress(false);
             super.onCancelled();
         }
 
-        @Override protected void onPostExecute(String results) {
+        @Override
+        protected void onPostExecute(String results) {
             try {
                 mDetail = new BusinessDetail(new JSONObject(results));
                 Location location = mDetail.getLocationObjectArray();
@@ -409,9 +399,8 @@ public class DirectoryDetailFragment extends Fragment {
                 }
 
                 // Set photo
-                Picasso.with(getActivity()).load(mDetail.getPrimaryImage().getPhotoThumbnailLink()).into(mBackImage);
-//                GetBackgroundImageTask task = new GetBackgroundImageTask(mBackImage);
-//                task.execute(mDetail.getPrimaryImage().getPhotoLink());
+                String imgUrl = mDetail.getPrimaryImage().getPhotoThumbnailLink();
+                Picasso.with(getActivity()).load(imgUrl).into(mBackImage);
 
                 if (mLat != 0 && mLon != 0) {
                     mAddressButton.setOnClickListener(new View.OnClickListener() {
@@ -425,9 +414,9 @@ public class DirectoryDetailFragment extends Fragment {
                     @Override public void onClick(View view) {
 
                         if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
-                            mIntent = new Intent(Intent.ACTION_DIAL);
-                            mIntent.setData(Uri.parse("tel:" + mDetail.getPhone()));
-                            startActivity(mIntent);
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + mDetail.getPhone()));
+                            startActivity(intent);
                         }
 
                     }
@@ -435,9 +424,9 @@ public class DirectoryDetailFragment extends Fragment {
                 mWebButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
                         if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
-                            mIntent = new Intent(Intent.ACTION_VIEW);
-                            mIntent.setData(Uri.parse(mDetail.getWebsite()));
-                            startActivity(mIntent);
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mDetail.getWebsite()));
+                            startActivity(intent);
                         }
                     }
                 });
@@ -451,7 +440,7 @@ public class DirectoryDetailFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
                         Toast.LENGTH_LONG).show();
             }
-            mProgressDialog.dismiss();
+            ((NavigationActivity) mActivity).showModalProgress(false);
         }
 
         private void setSchedule(List<Hour> hours) {
@@ -476,72 +465,5 @@ public class DirectoryDetailFragment extends Fragment {
             mDaysTextView.setText(daysSb.toString());
             mHoursTextView.setText(hoursSb.toString());
         }
-
-//        String createScheduleString(List<Hour> hours) {
-//            String schedule = "";
-//            for (Hour hour : hours) {
-//                String startHour = hour.getHourStart();
-//                String endHour = hour.getHourEnd();
-//
-//                String hourString = "";
-//
-//                if (startHour.equalsIgnoreCase("null")) {
-//                    if (!endHour.equalsIgnoreCase("null")) {
-//                        hourString = endHour;
-//                    }
-//                } else if (endHour.equalsIgnoreCase("null")) {
-//                    hourString = startHour;
-//                }
-//
-//                schedule += hour.getDayOfWeek() + " " + hourString + "\n";
-//            }
-//            schedule = schedule.substring(0, schedule.length() - 1);
-//            return schedule;
-//        }
-    }
-
-    private class GetBackgroundImageTask extends AsyncTask<String, Void, Bitmap> {
-
-        ImageView mTargetView;
-
-        public GetBackgroundImageTask(ImageView targetView) {
-            mTargetView = targetView;
-        }
-
-        @Override protected Bitmap doInBackground(String... params) {
-            Bitmap image = null;
-
-            try {
-                InputStream in = new URL(params[0]).openStream();
-                image = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e(TAG, "" + e.getMessage());
-                e.printStackTrace();
-            }
-
-            return image;
-        }
-
-        @Override protected void onPostExecute(Bitmap bitmap) {
-            mTargetView.setImageBitmap(bitmap);
-        }
-    }
-
-    private float getStateFromSharedPreferences(String key) {
-        Activity activity = getActivity();
-        if(activity!=null) {
-            SharedPreferences pref = activity.getSharedPreferences(BusinessDirectoryFragment.PREF_NAME,
-                    Context.MODE_PRIVATE);
-            return pref.getFloat(key, -1);
-        }
-        return -1;
-    }
-
-    private double getLatFromSharedPreference() {
-        return mLocationManager.getLocation().getLatitude();
-    }
-
-    private double getLonFromSharedPreference() {
-        return mLocationManager.getLocation().getLongitude();
     }
 }

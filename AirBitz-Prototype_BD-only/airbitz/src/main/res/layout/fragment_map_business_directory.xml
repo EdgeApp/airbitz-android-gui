@@ -8,14 +8,6 @@
     tools:context="com.airbitz.activities.NavigationActivity"
     tools:ignore="MergeRootFrame">
 
-    <LinearLayout
-        android:id="@+id/fragment_mapbusinessdirectory_dummy_focus"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical" />
-
     <!-- Header -->
 
     <include
