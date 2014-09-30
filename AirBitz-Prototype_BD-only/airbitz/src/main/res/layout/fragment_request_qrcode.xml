@@ -63,14 +63,15 @@
     <LinearLayout
         android:id="@+id/layout_container"
         android:layout_width="match_parent"
-        android:layout_height="195.3dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="15.75dp"
         android:layout_marginTop="9.45dp"
         android:layout_marginRight="12.6dp"
         android:layout_marginLeft="12.6dp"
         android:background="@drawable/emboss_down"
-        android:layout_below="@id/fragment_request_qrcode_qr_container">
+        android:layout_below="@id/fragment_request_qrcode_qr_container"
+        android:paddingBottom="6dp">
         
         <TextView
             android:id="@+id/textview_waiting"
@@ -79,16 +80,18 @@
             android:text="Waiting for Payment..."
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:layout_marginTop="12.6dp"
-            android:gravity="center_horizontal"/>
+            android:layout_marginTop="6dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="2dp" />
         <TextView
             android:id="@+id/textview_bitcoin_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:layout_marginTop="6.3dp"
-            android:gravity="center_horizontal"/>
+            android:textSize="19dp"
+            android:layout_marginTop="1dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="1dp" />
         <TextView
             android:id="@+id/textview_address"
             android:layout_width="match_parent"
@@ -96,17 +99,17 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:textColor="@android:color/white"
-            android:textSize="12sp"
+            android:textSize="13dp"
             android:layout_marginRight="18.9dp"
             android:layout_marginLeft="18.9dp"
-            android:layout_marginTop="6.3dp"
-            android:layout_marginBottom="6.3dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"
             android:gravity="center_horizontal"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
-            android:layout_marginBottom="12.6dp"
+            android:layout_marginBottom="3dp"
             android:layout_marginRight="12.6dp"
             android:layout_marginLeft="12.6dp"
             android:gravity="center"
@@ -149,7 +152,9 @@
             android:text="@string/string_cancel"
             android:textColor="@android:color/white"
             android:background="@drawable/btn_blue"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="6dp" />
 
     </LinearLayout>
 
