@@ -250,12 +250,12 @@ public class ContactPickerFragment extends Fragment {
                 int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
                 people.moveToFirst();
-                do {
+                while (people.moveToNext()) {
                     String name = people.getString(indexName);
                     String email = people.getString(indexEmail);
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, email, null, thumbnail));
-                } while (people.moveToNext());
+                };
             }
         } else {
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -270,12 +270,12 @@ public class ContactPickerFragment extends Fragment {
                 int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
 
                 people.moveToFirst();
-                do {
+                while (people.moveToNext()) {
                     String name = people.getString(indexName);
                     String number = people.getString(indexNumber);
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, null, number, thumbnail));
-                } while (people.moveToNext());
+                };
             }
         }
         return contacts;
