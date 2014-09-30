@@ -96,6 +96,9 @@ public class CurrentLocationManager implements
         mLocationRequest.setFastestInterval(30000);
         locationClient.requestLocationUpdates(mLocationRequest, this);
         mCurrentLocation = locationClient.getLastLocation();
+        if (mCurrentLocation != null) {
+            onLocationChanged(mCurrentLocation);
+        }
     }
 
     @Override
