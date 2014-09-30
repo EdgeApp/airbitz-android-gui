@@ -29,12 +29,10 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
-    private final Picasso p;
 
     public VenueAdapter(Context context, List<BusinessSearchResult> venues) {
         mContext = context;
         mVenues = venues;
-        p =  new Picasso.Builder(context).build();
     }
 
     static class VenueViewHolderItem {
@@ -48,6 +46,7 @@ public class VenueAdapter extends BaseAdapter {
         TextView textViewAddressItem;
         TextView textViewDiscountItem;
         TextView textViewDistanceItem;
+        TextView addressTextView;
         int position;
     }
 
@@ -70,7 +69,7 @@ public class VenueAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         VenueViewHolderItem viewHolder;
 
-        if(convertView==null) {
+        if (convertView==null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_venues, parent, false);
             TextView venueNameTextView = (TextView) convertView.findViewById(R.id.textview_business_name);
@@ -83,79 +82,6 @@ public class VenueAdapter extends BaseAdapter {
             addressTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
             discountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
-            final BusinessSearchResult result = mVenues.get(position);
-
-            // Address
-            if (!TextUtils.isEmpty(result.getAddress())) {
-                addressTextView.setText(result.getAddress());
-                addressTextView.setVisibility(View.VISIBLE);
-            } else {
-                addressTextView.setVisibility(View.INVISIBLE);
-            }
-
-            // Discount
-            String discount = result.getBizDiscount();
-            double discountDouble = 0;
-            try {
-                discountDouble = Double.parseDouble(discount);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (discountDouble != 0) {
-                discountTextView.setText("BTC Discount " + (int) (discountDouble * 100) + "%");
-                discountTextView.setVisibility(View.VISIBLE);
-            } else {
-                discountTextView.setVisibility(View.GONE);
-            }
-
-            // Distance
-            try{
-                double distance = Double.parseDouble(mVenues.get(position).getDistance());
-                distance = Common.metersToMiles(distance);
-                if (distance < 1.0){
-                    double distFeet = Common.milesToFeet(distance);
-                    if(distFeet<=1000){
-                        int intDist = (int) Math.floor(distFeet);
-                        String distanceString = ""+intDist;
-                        distanceTextView.setText(distanceString+" feet");
-                    }else{
-                        distance = Math.ceil(distance*10)/10;
-                        String distanceString = ""+distance;
-                        distanceString = distanceString.substring(1,distanceString.length());
-                        distanceTextView.setText(distanceString+" miles");
-                    }
-                } else if (distance >= 1000){
-                    int distanceInInt = (int) distance;
-                    distanceTextView.setText(String.valueOf(distanceInInt)+" miles");
-                } else {
-                    distance = Math.ceil(distance*10)/10;
-                    distanceTextView.setText(String.valueOf(distance)+" miles");
-                }
-                distanceTextView.setVisibility(View.VISIBLE);
-            } catch (Exception e){
-                distanceTextView.setVisibility(View.INVISIBLE);
-            }
-            ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
-            venueNameTextView.setText(mVenues.get(position).getName());
-
-            if(position==0){
-                RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
-                int height = (int) mContext.getResources().getDimension(R.dimen.new_height);
-                RelativeLayout.LayoutParams ilp = new RelativeLayout.LayoutParams(mainLayout.getLayoutParams().width, height);
-                mainLayout.setLayoutParams(ilp);
-                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(distanceTextView.getLayoutParams().width, distanceTextView.getLayoutParams().height);
-                llp.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.offset_height), 0, 0); // llp.setMargins(left, top, right, bottom);
-                distanceTextView.setLayoutParams(llp);
-            }else{
-                RelativeLayout mainLayout = (RelativeLayout)convertView.findViewById(R.id.mainLayout);
-                mainLayout.getLayoutParams().height = (int) mContext.getResources().getDimension(R.dimen.venue_list_small_height_175);
-                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(distanceTextView.getLayoutParams().width, distanceTextView.getLayoutParams().height);
-                llp.setMargins(0, 0, 0, 0); // llp.setMargins(left, top, right, bottom);
-                distanceTextView.setLayoutParams(llp);
-            }
-
-            p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(backgroundView);
-
             viewHolder = new VenueViewHolderItem();
             viewHolder.relativeLayoutItem = (RelativeLayout) convertView.findViewById(R.id.mainLayout);
             viewHolder.venueBackgroundItem = (ImageView) convertView.findViewById(R.id.venueBackground);
@@ -167,12 +93,24 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.textViewAddressItem = (TextView) convertView.findViewById(R.id.textview_address);
             viewHolder.textViewDiscountItem = (TextView) convertView.findViewById(R.id.textview_discount);
             viewHolder.textViewDistanceItem = (TextView) convertView.findViewById(R.id.textview_distance);
+            viewHolder.addressTextView = addressTextView;
+
             convertView.setTag(viewHolder);
-        }else{
+        } else {
             viewHolder = (VenueViewHolderItem) convertView.getTag();
         }
 
+        String imgUrl = mVenues.get(position).getProfileImage().getImageThumbnail();
+        Picasso.with(mContext).load(imgUrl).noFade().into(viewHolder.venueBackgroundItem);
+
         final BusinessSearchResult result = mVenues.get(position);
+        // Address
+        if (!TextUtils.isEmpty(result.getAddress())) {
+            viewHolder.addressTextView.setText(result.getAddress());
+            viewHolder.addressTextView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.addressTextView.setVisibility(View.INVISIBLE);
+        }
 
         if(position==0){
             int height = (int) mContext.getResources().getDimension(R.dimen.new_height);
@@ -191,8 +129,6 @@ public class VenueAdapter extends BaseAdapter {
             llp.topMargin = 0;
             viewHolder.textViewDistanceItem.setLayoutParams(llp);
         }
-
-        p.load(mVenues.get(position).getProfileImage().getImageThumbnail()).noFade().into(viewHolder.venueBackgroundItem);
 
         viewHolder.textViewBusinessNameItem.setText(mVenues.get(position).getName());
         // Address
@@ -217,7 +153,7 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.textViewDiscountItem.setVisibility(View.GONE);
         }
         // Distance
-        try{
+        try {
             double distance = Double.parseDouble(mVenues.get(position).getDistance());
             distance = Common.metersToMiles(distance);
             if (distance < 1.0){
@@ -244,5 +180,12 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.textViewDistanceItem.setVisibility(View.INVISIBLE);
         }
         return convertView;
+    }
+
+    public void warmupCache(List<BusinessSearchResult> venues) {
+        for (BusinessSearchResult b : venues) {
+            String url = b.getProfileImage().getImageThumbnail();
+            Picasso.with(mContext).load(url).fetch();
+        }
     }
 }

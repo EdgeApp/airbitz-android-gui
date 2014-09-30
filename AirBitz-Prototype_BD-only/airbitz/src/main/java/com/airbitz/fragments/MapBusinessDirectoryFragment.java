@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -81,8 +80,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private Marker mUserLocationMarker;
-
-    private LinearLayout mDummyFocus;
 
     private EditText mSearchEdittext;
     private EditText mLocationEdittext;
@@ -183,8 +180,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
         mVenueListView.setAdapter(mVenueAdapter);
 
-        mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_mapbusinessdirectory_dummy_focus);
-
         mapView = (LinearLayout) view.findViewById(R.id.map_view);
         mMapView =  (MapView) view.findViewById(R.id.custom_map_fragment);
         mMapView.onCreate(savedInstanceState);
@@ -278,13 +273,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                         e.printStackTrace();
                     }
                 }else {
-                    if(!mLocationEdittext.hasFocus()){
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(0, 0);
-                    }
-                    /*if (!mSearchEdittext.getText().toString().isEmpty() && mSearchEdittext.getText().toString().charAt(0) == ' ') {
-                        mSearchEdittext.setText(mSearchEdittext.getText().toString().substring(1));
-                    }*/
                 }
             }
         });
@@ -356,11 +344,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                                 latLong);
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }
-                }else{
-                    if(!mSearchEdittext.hasFocus()){
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
                 }
             }
@@ -653,8 +636,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 }
             }
         });
-
-        mDummyFocus.requestFocus();
     }
 
     @Override
