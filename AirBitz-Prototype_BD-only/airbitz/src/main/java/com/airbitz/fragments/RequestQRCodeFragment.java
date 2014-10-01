@@ -272,25 +272,18 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         Intent mmsIntent = new Intent(Intent.ACTION_SEND);
         mmsIntent.putExtra("address", contact.getPhone());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // Android 4.4 and up
-        {
-            //uncomment this to enable default package
-            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(mActivity);
-            if (defaultSmsPackageName != null) // Can be null in case that there is no default, then the user would be able to choose any app that supports this intent.
-            {
-                mmsIntent.setPackage(defaultSmsPackageName);
-            }
-        }
+        String defaultName = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Telephony.Sms.getDefaultSmsPackage(mActivity) : null; // Android 4.4 and up
 
+        // removed for sms messages only
+//        if(mQRBitmap!=null) {
+//            mmsIntent.setType("image/jpg");
+//            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
+//            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+//        } else {
+//            mmsIntent.setType("text/plain");
+//        }
 
-        if(mQRBitmap!=null) {
-            mmsIntent.setType("image/jpg");
-            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
-            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
-        } else {
-            mmsIntent.setType("text/plain");
-        }
-
+        mmsIntent.setType("text/plain");
         String name = getString(R.string.request_qr_unknown);
         if(mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
@@ -299,6 +292,10 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         String textToSend = fillTemplate("html/SMSTemplate.txt", name);
         mmsIntent.putExtra("sms_body", textToSend);
         mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
+
+        if(defaultName!=null) {
+            mmsIntent.setPackage(defaultName);
+        }
 
         startActivity(Intent.createChooser(mmsIntent, "mms"));
 
