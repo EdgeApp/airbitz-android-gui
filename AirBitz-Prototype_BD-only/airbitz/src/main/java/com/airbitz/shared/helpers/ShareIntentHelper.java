@@ -8,15 +8,15 @@ import android.net.Uri;
  * Created by dannyroa on 3/19/14.
  */
 public class ShareIntentHelper {
-    
+
     public static void dialIntent(Activity activity, String phone) {
 
         String uri = String.format("tel:%s", phone);
 
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse(uri));
         activity.startActivity(intent);
-        
+
     }
 
     public static void directionsIntent(Activity activity,String label,  double latitude, double longitude) {
@@ -30,5 +30,5 @@ public class ShareIntentHelper {
         activity.startActivity(intent);
 
     }
-    
+
 }

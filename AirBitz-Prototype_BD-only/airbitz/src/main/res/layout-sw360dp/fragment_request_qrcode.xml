@@ -56,8 +56,9 @@
         android:layout_below="@+id/fragment_category_layout_header">
         <ImageView
             android:id="@+id/qr_code_view"
-            android:layout_width="252dp"
-            android:layout_height="252dp"/>
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_margin="4dp" />
     </LinearLayout>
 
     <LinearLayout
