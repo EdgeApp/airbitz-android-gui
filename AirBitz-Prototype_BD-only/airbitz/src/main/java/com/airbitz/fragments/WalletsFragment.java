@@ -78,7 +78,7 @@ public class WalletsFragment extends Fragment
 
     private TextView mBalanceLabel;
 
-    private boolean archiveClosed = false;
+    private boolean mArchiveClosed = false;
 
     private RelativeLayout mBalanceSwitchLayout;
 
@@ -287,8 +287,8 @@ public class WalletsFragment extends Fragment
         archiveHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                archiveClosed = !archiveClosed;
-                updateWalletList(archiveClosed);
+                mArchiveClosed = !mArchiveClosed;
+                updateWalletList(mArchiveClosed);
                 mLatestWalletAdapter.notifyDataSetChanged();
             }
         });
@@ -303,8 +303,8 @@ public class WalletsFragment extends Fragment
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
                 } else if (wallet.isArchiveHeader()) {
-                    archiveClosed = !archiveClosed;
-                    updateWalletList(archiveClosed);
+                    mArchiveClosed = !mArchiveClosed;
+                    updateWalletList(mArchiveClosed);
                     mLatestWalletAdapter.notifyDataSetChanged();
                 }
             }
@@ -336,7 +336,7 @@ public class WalletsFragment extends Fragment
         mLatestWalletListView.setWalletList(mLatestWalletList);
         mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletListView.setArchiveClosed(mArchiveClosed);
         mLatestWalletListView.setOnListReorderedListener(this);
     }
 
@@ -437,17 +437,10 @@ public class WalletsFragment extends Fragment
         UpdateBalances();
     }
 
-    private void refreshWalletListView(List<Wallet> list) {
-        mLatestWalletList.clear();
-        mLatestWalletList.addAll(list);
-        mLatestWalletAdapter.swapWallets();
-        mLatestWalletAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onWalletUpdated() {
         Common.LogD(TAG, "wallet list updated");
-        refreshWalletListView(mCoreAPI.loadWallets(false));
+        updateWalletList(mArchiveClosed);
         UpdateBalances();
     }
 
@@ -482,7 +475,7 @@ public class WalletsFragment extends Fragment
             if (!success) {
                 Common.LogD(TAG, "AddWalletTask failed");
             } else {
-                refreshWalletListView(mCoreAPI.loadWallets(false));
+                updateWalletList(mArchiveClosed);
             }
         }
 
@@ -550,8 +543,8 @@ public class WalletsFragment extends Fragment
     public void onResume() {
         super.onResume();
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
-        archiveClosed = prefs.getBoolean("archiveClosed", false);
-        updateWalletList(archiveClosed);
+        mArchiveClosed = prefs.getBoolean("archiveClosed", false);
+        updateWalletList(mArchiveClosed);
 
         mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
@@ -564,7 +557,7 @@ public class WalletsFragment extends Fragment
     @Override public void onPause() {
         super.onPause();
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
-        prefs.edit().putBoolean("archiveClosed", archiveClosed).apply();
+        prefs.edit().putBoolean("archiveClosed", mArchiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
