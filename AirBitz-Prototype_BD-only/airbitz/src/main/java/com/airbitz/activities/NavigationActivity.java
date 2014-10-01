@@ -242,7 +242,7 @@ public class NavigationActivity extends BaseActivity
 
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // Disappear if transparent page shows
-                if (position == 0 || position == 2) {
+                if ((position == 0 || position == 2) && positionOffsetPixels==0) {
                     mViewPager.setVisibility(View.GONE);
                 }
             }
