@@ -1,7 +1,7 @@
 Bitcoin Payment Request
 From: [[abtag FROM]]
 
-Please scan QR code or click on the links to pay
+Please click on the links to pay
 
 Click to Pay
 [[abtag REDIRECT_URL]]
