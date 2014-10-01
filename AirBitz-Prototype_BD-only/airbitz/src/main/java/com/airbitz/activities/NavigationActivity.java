@@ -39,6 +39,7 @@ import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.PasswordRecoveryFragment;
 import com.airbitz.fragments.RequestFragment;
 import com.airbitz.fragments.RequestQRCodeFragment;
+import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
@@ -600,7 +601,16 @@ public class NavigationActivity extends BaseActivity
         } else {
             CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(dataUri.toString());
             if(info!=null && info.address!=null) {
-                ((SendFragment) mNavFragments[Tabs.SEND.ordinal()]).GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                switchFragmentThread(Tabs.SEND.ordinal());
+                Fragment fragment = new SendConfirmationFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SendFragment.IS_UUID, false);
+                bundle.putString(SendFragment.UUID, info.address);
+                bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
+                bundle.putString(SendFragment.LABEL, info.label);
+                bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
+                fragment.setArguments(bundle);
+                pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
     }
