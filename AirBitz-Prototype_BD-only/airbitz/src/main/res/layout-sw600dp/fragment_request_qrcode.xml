@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp"
+        android:id="@+id/fragment_category_layout_header"
+        android:background="@drawable/bg_dark_header">
+
+        <com.airbitz.objects.HighlightOnPressImageButton
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:id="@+id/fragment_wallet_qrcode_button_back"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_back"
+            android:padding="12.6dp"/>
+
+        <TextView
+            android:id="@+id/fragment_category_textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request Bitcoin"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"/>
+
+
+        <com.airbitz.objects.HighlightOnPressImageButton
+            android:layout_width="44.1dp"
+            android:layout_height="44.1dp"
+            android:id="@+id/fragment_wallet_qrcode_button_help"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_help"
+            android:padding="12.6dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_request_qrcode_qr_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9.45dp"
+        android:background="@drawable/bg_white_corners"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/fragment_category_layout_header">
+        <ImageView
+            android:id="@+id/qr_code_view"
+            android:layout_width="500dp"
+            android:layout_height="500dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="15.75dp"
+        android:layout_marginTop="9.45dp"
+        android:layout_marginRight="12.6dp"
+        android:layout_marginLeft="12.6dp"
+        android:background="@drawable/emboss_down"
+        android:layout_below="@id/fragment_request_qrcode_qr_container"
+        android:paddingBottom="6dp">
+        
+        <TextView
+            android:id="@+id/textview_waiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Waiting for Payment..."
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="6dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="2dp" />
+        <TextView
+            android:id="@+id/textview_bitcoin_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="19dp"
+            android:layout_marginTop="1dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="1dp" />
+        <TextView
+            android:id="@+id/textview_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:textColor="@android:color/white"
+            android:textSize="13dp"
+            android:layout_marginRight="18.9dp"
+            android:layout_marginLeft="18.9dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="37.8dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="12.6dp"
+            android:layout_marginLeft="12.6dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/fragment_qrcode_copy_button"
+                android:layout_width="75.6dp"
+                android:layout_height="37.8dp"
+                android:layout_marginRight="3.15dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btn_copy"
+                android:layout_gravity="center_horizontal"/>
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/button_email_address"
+                android:layout_width="75.6dp"
+                android:layout_height="37.8dp"
+                android:layout_marginLeft="3.15dp"
+                android:layout_marginRight="3.15dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btn_email"
+                android:layout_gravity="center_horizontal"/>
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/button_sms_address"
+                android:layout_width="75.6dp"
+                android:layout_height="37.8dp"
+                android:layout_marginLeft="3.15dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btn_sms"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <com.airbitz.objects.HighlightOnPressButton
+            android:id="@+id/fragment_qrcode_cancel_button"
+            android:layout_width="245.7dp"
+            android:layout_height="37.8dp"
+            android:text="@string/string_cancel"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_blue"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="6dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
