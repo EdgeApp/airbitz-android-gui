@@ -824,7 +824,6 @@ public class NavigationActivity extends BaseActivity
             DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
-            resetFragmentThreadToBaseFragment(Tabs.BD.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
     }
