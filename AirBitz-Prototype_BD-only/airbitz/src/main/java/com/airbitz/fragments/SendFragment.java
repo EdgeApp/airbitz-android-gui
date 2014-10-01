@@ -481,13 +481,21 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     }
 
     public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
+        if(mToEdittext!=null) {
+            mActivity.hideSoftKeyboard(mToEdittext);
+        }
         Fragment fragment = new SendConfirmationFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_UUID, isUUID);
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
+        if(mFromWallet==null) {
+            if(mCoreAPI==null) {
+                mCoreAPI = CoreAPI.getApi();
+            }
+            mFromWallet = mCoreAPI.getCoreWallets(false).get(0);
+        }
         bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
         if(mActivity!=null)
