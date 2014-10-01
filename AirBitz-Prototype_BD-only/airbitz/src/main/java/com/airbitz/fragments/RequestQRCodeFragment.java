@@ -36,6 +36,8 @@ import com.airbitz.models.Transaction;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
+import org.apache.http.protocol.HTTP;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -261,20 +263,13 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 //        mmsIntent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
 
 //        // no apps can perform this intent
-//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
-//        mmsIntent.setClassName("com.android.mms", "com.android.mms.ui.ComposeMessageActivity");
-//        mmsIntent.putExtra("address", contact.getPhone());
-
-//        // no apps can perform this intent
 //        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts ("smsto", contact.getPhone(), null));
 
 //        //working but many choices
-        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
-        mmsIntent.putExtra("address", contact.getPhone());
-
-        String defaultName = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Telephony.Sms.getDefaultSmsPackage(mActivity) : null; // Android 4.4 and up
-
-        // removed for sms messages only
+//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
+//        mmsIntent.putExtra("address", contact.getPhone());
+//
+        // removed for sms messages only so Google voice doesn't discard
 //        if(mQRBitmap!=null) {
 //            mmsIntent.setType("image/jpg");
 //            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
@@ -283,21 +278,26 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 //            mmsIntent.setType("text/plain");
 //        }
 
-        mmsIntent.setType("text/plain");
+        String defaultName = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            defaultName = Telephony.Sms.getDefaultSmsPackage(mActivity); // Android 4.4 and up
+        }
+
         String name = getString(R.string.request_qr_unknown);
         if(mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
                     mCoreAPI.coreSettings().getSzLastName();
         }
         String textToSend = fillTemplate("html/SMSTemplate.txt", name);
-        mmsIntent.putExtra("sms_body", textToSend);
-        mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
 
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
         if(defaultName!=null) {
-            mmsIntent.setPackage(defaultName);
+            intent.setPackage(defaultName);
         }
+        intent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
+        intent.putExtra("sms_body", textToSend);
 
-        startActivity(Intent.createChooser(mmsIntent, "mms"));
+        startActivity(Intent.createChooser(intent, "SMS"));
 
         mCoreAPI.finalizeRequest(contact, "SMS", mID, mWallet);
     }
