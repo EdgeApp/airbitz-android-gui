@@ -297,6 +297,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/send_confirmation_enter_send_pin"
                     android:textColor="@android:color/white"
+                    android:singleLine="true"
                     android:paddingRight="20dp"
                     android:gravity="center_vertical|end"
                     android:textSize="16sp"
