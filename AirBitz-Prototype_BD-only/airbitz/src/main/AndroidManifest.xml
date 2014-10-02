@@ -11,6 +11,20 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.NFC" />
 
+    <!--
+     To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
+     option is required to comply with the Google+ Sign-In developer policies
+    -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <!-- To retrieve the account name (email) as part of sign-in: -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature
         android:name="android.hardware.nfc"
@@ -26,6 +40,7 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
 
     <application
         android:name=".AirbitzApplication"
@@ -67,21 +82,21 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter android:label="NavigationActivity" >
+            <intent-filter android:label="Airbitz" >
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
                 <data android:scheme="bitcoin" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter android:label="NavigationActivity" >
+            <intent-filter android:label="Airbitz" >
                 <action android:name="android.intent.action.VIEW" />
 
                 <data android:mimeType="application/bitcoin-paymentrequest" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter android:label="NavigationActivity" >
+            <intent-filter android:label="Airbitz" >
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
                 <data android:mimeType="application/bitcoin-paymentrequest" />
@@ -92,33 +107,6 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <uses-library android:name="com.google.android.maps" />
 
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="852573192e7c47b3cf3990b031922286cfd1477d" />
-
-        <service
-            android:name=".objects.AirbitzService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":remoteairbitzservice" >
-        </service>
-
-        <activity
-            android:name=".activities.BaseActivity"
-            android:label="@string/title_activity_base" >
-        </activity>
     </application>
-    <!--
-     To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
-     option is required to comply with the Google+ Sign-In developer policies
-    -->
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-
-    <!-- To retrieve the account name (email) as part of sign-in: -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
 </manifest>
