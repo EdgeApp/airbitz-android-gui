@@ -36,6 +36,8 @@ import com.airbitz.models.Transaction;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
+import org.apache.http.protocol.HTTP;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -261,34 +263,24 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 //        mmsIntent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
 
 //        // no apps can perform this intent
-//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
-//        mmsIntent.setClassName("com.android.mms", "com.android.mms.ui.ComposeMessageActivity");
-//        mmsIntent.putExtra("address", contact.getPhone());
-
-//        // no apps can perform this intent
 //        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts ("smsto", contact.getPhone(), null));
 
 //        //working but many choices
-        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
-        mmsIntent.putExtra("address", contact.getPhone());
+//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
+//        mmsIntent.putExtra("address", contact.getPhone());
+//
+        // removed for sms messages only so Google voice doesn't discard
+//        if(mQRBitmap!=null) {
+//            mmsIntent.setType("image/jpg");
+//            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
+//            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
+//        } else {
+//            mmsIntent.setType("text/plain");
+//        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // Android 4.4 and up
-        {
-            //uncomment this to enable default package
-            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(mActivity);
-            if (defaultSmsPackageName != null) // Can be null in case that there is no default, then the user would be able to choose any app that supports this intent.
-            {
-                mmsIntent.setPackage(defaultSmsPackageName);
-            }
-        }
-
-
-        if(mQRBitmap!=null) {
-            mmsIntent.setType("image/jpg");
-            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
-            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
-        } else {
-            mmsIntent.setType("text/plain");
+        String defaultName = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            defaultName = Telephony.Sms.getDefaultSmsPackage(mActivity); // Android 4.4 and up
         }
 
         String name = getString(R.string.request_qr_unknown);
@@ -297,10 +289,15 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
                     mCoreAPI.coreSettings().getSzLastName();
         }
         String textToSend = fillTemplate("html/SMSTemplate.txt", name);
-        mmsIntent.putExtra("sms_body", textToSend);
-        mmsIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
 
-        startActivity(Intent.createChooser(mmsIntent, "mms"));
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        if(defaultName!=null) {
+            intent.setPackage(defaultName);
+        }
+        intent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
+        intent.putExtra("sms_body", textToSend);
+
+        startActivity(Intent.createChooser(intent, "SMS"));
 
         mCoreAPI.finalizeRequest(contact, "SMS", mID, mWallet);
     }

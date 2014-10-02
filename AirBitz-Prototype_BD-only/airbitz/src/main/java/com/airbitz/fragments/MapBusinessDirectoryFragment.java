@@ -527,8 +527,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }
         });
 
-        // Hide map if "On the Web" search
-        if (getString(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
+        // Hide map if "On the Web" search or no play services support
+        if (!CurrentLocationManager.supportsPlayServices(getActivity())
+                || getString(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
             mDragLayout.setVisibility(View.GONE);
             flMapContainer.setVisibility(View.GONE);
         }

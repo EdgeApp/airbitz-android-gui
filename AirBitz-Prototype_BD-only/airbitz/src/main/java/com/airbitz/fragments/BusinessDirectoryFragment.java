@@ -118,6 +118,7 @@ public class BusinessDirectoryFragment extends Fragment implements
     private Spinner mMoreSpinner;
 
     private CurrentLocationManager mLocationManager;
+    private Location mLastLocation;
 
     private ObservableScrollView mScrollView;
 
@@ -168,18 +169,14 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     protected static int CATEGORY_TIMEOUT = 15000;
     Handler mHandler = new Handler();
-    boolean alreadyLoaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if(mLocationManager==null) {
-            alreadyLoaded = false;
+        if (mLocationManager == null) {
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
             mLocationManager.addLocationChangeListener(this);
-        } else {
-            alreadyLoaded = true;
         }
     }
 
@@ -654,6 +651,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mGetVenuesTask = new GetVenuesTask(getActivity());
         mGetVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, latLon);
 
+        mLastLocation = new Location(location);
         mLocationManager.removeLocationChangeListener(this);
     }
 
@@ -761,7 +759,12 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         checkLocationManager();
-        if(alreadyLoaded && mVenueListView!=null && mVenuesLoaded!=null) {
+        if (mLastLocation != null &&
+                (System.currentTimeMillis() - mLastLocation.getTime()) > 30 * 60 * 1000) {
+            mVenuesLoaded = null;
+            mLastLocation = null;
+        }
+        if(mVenueListView != null && mVenuesLoaded != null) {
             setVenueListView(mVenuesLoaded);
         } else {
             mVenuesLoaded = new ArrayList<BusinessSearchResult>();
@@ -866,9 +869,9 @@ public class BusinessDirectoryFragment extends Fragment implements
             Categories jsonParsingResult = null;
             try {
                 jsonParsingResult = api.getHttpCategories(strings[0]);
-                mNextUrl = jsonParsingResult.getNextLink();
+                String nextUrl = jsonParsingResult.getNextLink();
                 mCategories = jsonParsingResult;
-                getMoreBusinessCategory(mCategories, mNextUrl);
+                getMoreBusinessCategory(mCategories, nextUrl);
             } catch (Exception e) {
 
             }

@@ -673,7 +673,9 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
-            mFiatField.requestFocus();
+            if(mActivity.isLargeDpi()) {
+                mFiatField.requestFocus();
+            }
         }
 
         mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);

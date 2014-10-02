@@ -2333,7 +2333,7 @@ public class CoreAPI {
         }
         else
         {
-            Common.LogD(TAG, error.toString());
+            Common.LogD(TAG, error.getSzDescription());
             return false;
         }
     }
