@@ -139,7 +139,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private boolean mCameraChangeListenerEnabled = false;
 
     private List<LatLng> mMarkersLatLngList;
-    private String mLastSearchResult;
 
     private CurrentLocationManager mLocationManager;
 
@@ -176,6 +175,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
 
         mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
+        mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
+            }
+        });
+        mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
+        mVenueListView.setAdapter(mVenueAdapter);
 
         mDummyFocus = (LinearLayout) view.findViewById(R.id.fragment_mapbusinessdirectory_dummy_focus);
 
@@ -579,6 +585,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     private void search() {
+        // Clear existing venues
+        mVenues.clear();
         if (mLocationName.equalsIgnoreCase("Current Location")) {
             if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
                 mGetVenuesAsyncTask.cancel(true);
@@ -676,7 +684,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mCurrentLocation = mLocationManager.getLocation();
         mMapView.onResume();
         checkLocationManager();
-        if(!alreadyLoaded && mCurrentLocation!=null) {
+
+        if (!mVenues.isEmpty()) {
+            List<BusinessSearchResult> venues =
+                new ArrayList<BusinessSearchResult>(mVenues);
+            mVenues.clear();
+            updateVenueResults(venues);
+        } else {
             search();
         }
         initializeMap();
@@ -704,9 +718,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     private void onLayoutFinished() {
-        if(alreadyLoaded && mMarkersLatLngList!=null && mLastSearchResult!=null) {
+        if(alreadyLoaded && mMarkersLatLngList!=null) {
             zoomToContainAllMarkers(mMarkersLatLngList);
-            updateVenueResults(mLastSearchResult);
         }
     }
 
@@ -902,6 +915,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     protected void initializeMarkerWithBusinessSearchResult() {
+        if (flMapContainer == null || flMapContainer.getVisibility() != View.VISIBLE) {
+            return;
+        }
 
         Common.LogD(TAG, "initializeMarkerWithBusinessSearchResult");
 
@@ -1209,11 +1225,22 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
     private void updateVenueResults(String searchResult) {
         try {
-            mLastSearchResult = searchResult;
             SearchResult result = new SearchResult(new JSONObject(searchResult));
-            mVenues = result.getBusinessSearchObjectArray();
-            mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
-            mVenueListView.setAdapter(mVenueAdapter);
+            updateVenueResults(result.getBusinessSearchObjectArray());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateVenueResults(List<BusinessSearchResult> venues) {
+        if (venues == null) {
+            return;
+        }
+        try {
+            mVenues.addAll(venues);
+            mVenueAdapter.notifyDataSetChanged();
             if(mGoogleMap == null){
                 initializeMap();
             }
@@ -1221,14 +1248,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 mGoogleMap.clear();
                 initializeMarkerWithBusinessSearchResult();
             }
-            mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
