@@ -105,20 +105,19 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
-
-    //******************* HockeyApp support - COMMENT OUT FOR PRODUCTION!!!
+    //******************* HockeyApp support
 
     private void checkForCrashes() {
-        CrashManager.register(this, "***REMOVED***");
+        if(AirbitzApplication.isDebugging())
+            CrashManager.register(this, "***REMOVED***");
     }
 
     private void checkForUpdates() {
-        // Remove this for store builds!
-        UpdateManager.register(this, "***REMOVED***");
+        if(AirbitzApplication.isDebugging())
+            UpdateManager.register(this, "***REMOVED***");
     }
+
     //******************* end HockeyApp support
-
-
 
 
     // For Fragments to implement if they need to customize on back presses

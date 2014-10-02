@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
@@ -147,7 +148,7 @@ public class Common {
     }
 
     public static void LogD(String title, String message) {
-        if (AirbitzApplication.DEBUG_LOGGING)
+        if(AirbitzApplication.isDebugging())
             Log.d(title, message);
     }
 
