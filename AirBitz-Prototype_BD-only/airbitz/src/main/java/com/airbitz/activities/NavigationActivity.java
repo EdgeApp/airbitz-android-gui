@@ -1,10 +1,8 @@
 package com.airbitz.activities;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,12 +49,12 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
 
 
 /**
@@ -106,14 +104,6 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
-
-    private int mFragmentViewHeight = 0;
-    private int mNavBarViewHeight = 0;
-
-    private AlarmManager mAlarmMgr;
-    private PendingIntent mAlarmIntent; // target for mAlarmReceiver
-    private BroadcastReceiver mAlarmReceiver;
-
 
 
     //******************* HockeyApp support - COMMENT OUT FOR PRODUCTION!!!
