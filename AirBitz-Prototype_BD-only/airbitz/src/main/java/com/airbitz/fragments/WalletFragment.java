@@ -535,6 +535,8 @@ public class WalletFragment extends Fragment
     }
 
     private void updateTransactionsListView(List<Transaction> transactions) {
+        updatePhotosUris(transactions);
+
         mTransactions.clear();
         mTransactions.addAll(transactions);
         mTransactionAdapter.createRunningSatoshi();
@@ -653,6 +655,22 @@ public class WalletFragment extends Fragment
         }
     }
 
+    private void updatePhotosUris(List<Transaction> transactions) {
+        try {
+            AirbitzAPI api = AirbitzAPI.getApi();
+            for (Transaction t : transactions) {
+                if (mCombinedPhotos.get(t.getName()) != null) {
+                    continue;
+                }
+                BusinessDetail bd = api.getHttpBusiness((int)t.getmBizId(), true);
+                Uri uri = Uri.parse(bd.getSquareImageLink());
+                mCombinedPhotos.put(t.getName(), uri);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void FindBizIdThumbnails() {
         for(Transaction transaction : mTransactions) {
             if(!mCombinedPhotos.containsKey(transaction.getName()) && transaction.getmBizId()!=0) {
@@ -681,7 +699,6 @@ public class WalletFragment extends Fragment
         protected void onPostExecute(BusinessDetail business) {
             if(business!=null && business.getSquareImageLink()!=null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
-                Common.LogD(TAG, "Got "+uri);
                 mCombinedPhotos.put(mName, uri);
                 mTransactionAdapter.notifyDataSetChanged();
             }
