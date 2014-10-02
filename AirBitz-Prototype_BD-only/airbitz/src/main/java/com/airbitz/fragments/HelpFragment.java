@@ -1,13 +1,11 @@
 package com.airbitz.fragments;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,35 +17,29 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Created by tom 8/16/2014
  */
 public class HelpFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
-    public static final String INFO = "file:///android_asset/html/info.html";
-    public static final String EXPORT_WALLET = "file:///android_asset/html/infoExportWallet.html";
-    public static final String EXPORT_WALLET_OPTIONS = "file:///android_asset/html/infoExportWalletOptions.html";
-    public static final String IMPORT_WALLET = "file:///android_asset/html/infoImportWallet.html";
-    public static final String RECIPIENT = "file:///android_asset/html/infoRecipient.html";
-    public static final String REQUEST = "file:///android_asset/html/infoRequest.html";
-    public static final String REQUEST_QR = "file:///android_asset/html/infoRequestQR.html";
-    public static final String SEND = "file:///android_asset/html/infoSend.html";
-    public static final String SEND_CONFIRMATION = "file:///android_asset/html/infoSendConfirmation.html";
-    public static final String SETTINGS = "file:///android_asset/html/infoSettings.html";
-    public static final String TRANSACTION_DETAILS = "file:///android_asset/html/infoTransactionDetails.html";
-    public static final String TRANSACTIONS = "file:///android_asset/html/infoTransactions.html";
-    public static final String WALLETS = "file:///android_asset/html/infoWallets.html";
+    public static final int INFO = R.raw.info;
+    public static final int EXPORT_WALLET = R.raw.info_export_wallet;
+    public static final int EXPORT_WALLET_OPTIONS = R.raw.info_export_wallet_options;
+    public static final int IMPORT_WALLET = R.raw.info_import_wallet;
+    public static final int RECIPIENT = R.raw.info_recipient;
+    public static final int REQUEST = R.raw.info_request;
+    public static final int REQUEST_QR = R.raw.info_request_qr;
+    public static final int SEND = R.raw.info_send;
+    public static final int SEND_CONFIRMATION = R.raw.info_send_confirmation;
+    public static final int SETTINGS = R.raw.info_settings;
+    public static final int TRANSACTION_DETAILS = R.raw.info_transaction_details;
+    public static final int TRANSACTIONS = R.raw.info_transactions;
+    public static final int WALLETS = R.raw.info_wallets;
+
 
     Spanned mHtml=null;
-    String mFilePath=null;
+    int mID =0;
 
     public HelpFragment() {}
 
@@ -55,8 +47,8 @@ public class HelpFragment extends Fragment {
         mHtml = html;
     }
 
-    public HelpFragment(String file) {
-            mFilePath = file;
+    public HelpFragment(int resourceID) {
+            mID = resourceID;
     }
 
     @Override
@@ -72,8 +64,8 @@ public class HelpFragment extends Fragment {
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
-            if(!mFilePath.equals(INFO)) {
-                webView.loadUrl(mFilePath);
+            if(mID!=INFO) {
+                webView.loadData(Common.readRawTextFile(getActivity(), mID), "text/html; charset=UTF-8", null);
             } else {
                 //Get file contents and replace * with versionbuild
                 String version = "version error";
@@ -86,7 +78,7 @@ public class HelpFragment extends Fragment {
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                String original = Common.loadAssetTextAsString(getActivity(), "html/info.html");
+                String original = Common.readRawTextFile(getActivity(), R.raw.info);
                 String replaced = original.replace("*", version + " " + String.valueOf(build));
 
                 webView.loadData(replaced, "text/html; charset=UTF-8", null);

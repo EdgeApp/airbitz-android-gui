@@ -81,6 +81,26 @@ public class Common {
         return null;
     }
 
+    public static String readRawTextFile(Context ctx, int resId)
+    {
+        InputStream inputStream = ctx.getResources().openRawResource(resId);
+
+        InputStreamReader inputreader = new InputStreamReader(inputStream);
+        BufferedReader buffreader = new BufferedReader(inputreader);
+        String line;
+        StringBuilder text = new StringBuilder();
+
+        try {
+            while (( line = buffreader.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        return text.toString();
+    }
+
     public static String createTempFileFromString(String name, String data) {
         String strDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp";
         File file = new File(strDir);

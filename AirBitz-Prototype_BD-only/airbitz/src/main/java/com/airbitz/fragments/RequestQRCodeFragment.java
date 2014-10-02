@@ -36,10 +36,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
-import org.apache.http.protocol.HTTP;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -288,13 +285,13 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
                     mCoreAPI.coreSettings().getSzLastName();
         }
-        String textToSend = fillTemplate("html/SMSTemplate.txt", name);
+        String textToSend = fillTemplate(R.raw.sms_template, name);
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         if(defaultName!=null) {
             intent.setPackage(defaultName);
         }
-        intent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
+        intent.setData(Uri.parse("smsto:" + contact.getPhone()));  // This ensures only SMS apps respond
         intent.putExtra("sms_body", textToSend);
 
         startActivity(Intent.createChooser(intent, "SMS"));
@@ -327,7 +324,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             mCoreAPI.coreSettings().getSzLastName();
         }
 
-        String html = fillTemplate("html/EmailTemplate.html", name);
+        String html = fillTemplate(R.raw.email_template, name);
 //        String filename = Common.createTempFileFromString("email.html", html);
 //        Uri htmlFile = Uri.parse("file://" + filename);
 //        uris.add(htmlFile);
@@ -354,7 +351,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         }
     }
 
-    private String fillTemplate(String templateFilename, String fullName) {
+    private String fillTemplate(int id, String fullName) {
         String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
         String amountMBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 5);
 
@@ -369,7 +366,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             redirectURL = "https://airbitz.co/blf/?address="+address;
         }
 
-        String content = Common.loadAssetTextAsString(getActivity(), templateFilename);
+        String content = Common.readRawTextFile(getActivity(), id);
 
         List<String> searchList  = new ArrayList<String>();
         searchList.add("[[abtag FROM]]");
