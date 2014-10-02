@@ -281,7 +281,7 @@ public class DynamicListView extends ListView {
 
     @Override
     public boolean onTouchEvent (MotionEvent event) {
-        View child = FindWalletViewFromEvent(event);
+//        View child = FindWalletViewFromEvent(event);
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
