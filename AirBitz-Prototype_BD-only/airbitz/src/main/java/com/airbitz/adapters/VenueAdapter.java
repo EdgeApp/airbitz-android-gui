@@ -134,7 +134,6 @@ public class VenueAdapter extends BaseAdapter {
                 distanceTextView.setVisibility(View.VISIBLE);
             } catch (Exception e){
                 distanceTextView.setVisibility(View.INVISIBLE);
-                e.printStackTrace();
             }
             ImageView backgroundView = (ImageView) convertView.findViewById(R.id.venueBackground);
             venueNameTextView.setText(mVenues.get(position).getName());
@@ -243,7 +242,6 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.textViewDistanceItem.setVisibility(View.VISIBLE);
         } catch (Exception e){
             viewHolder.textViewDistanceItem.setVisibility(View.INVISIBLE);
-            e.printStackTrace();
         }
         return convertView;
     }
