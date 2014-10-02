@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_wallet_parent_layout"
     android:layout_width="match_parent"
+    android:focusableInTouchMode="true"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -123,7 +124,7 @@
                 android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="17dp" />
+                android:textSize="17sp" />
 
         </RelativeLayout>
 
