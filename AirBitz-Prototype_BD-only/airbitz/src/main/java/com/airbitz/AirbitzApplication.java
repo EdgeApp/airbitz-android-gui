@@ -3,14 +3,13 @@ package com.airbitz;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 
 /**
  * Created by tom on 6/17/14.
  * Holds App statics for login info during the app lifecycle
  */
 public class AirbitzApplication extends Application {
-
-    public static final boolean DEBUG_LOGGING = true;
 
     public static boolean AUTOLOGIN = false;
     public static String autologinName = "tbmainnet"; public static String autologinPassword = "Aaaaaaaa1@";
@@ -30,6 +29,11 @@ public class AirbitzApplication extends Application {
 
     public static boolean isLoggedIn() {
         return airbitzLogin.getUsername() != null;
+    }
+
+    public static boolean isDebugging() {
+        ApplicationInfo appInfo = mContext.getApplicationInfo();
+        return (appInfo!=null && ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0));
     }
 
     public static void Login(String uname, String password) {
