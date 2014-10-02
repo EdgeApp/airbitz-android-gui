@@ -72,8 +72,8 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private NavigationActivity mActivity;
     private CoreAPI.TxDetails mTxDetails;
 
-    static final int PICK_CONTACT_SMS =1;
-    static final int PICK_CONTACT_EMAIL=2;
+    static final int PICK_CONTACT_SMS = 1;
+    static final int PICK_CONTACT_EMAIL = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,13 +93,13 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_request_qrcode, container, false);
         } else {
             return mView;
         }
 
-        ((NavigationActivity)getActivity()).hideNavBar();
+        ((NavigationActivity) getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
@@ -140,7 +140,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-                ((NavigationActivity)getActivity()).showNavBar();
+                ((NavigationActivity) getActivity()).showNavBar();
             }
         });
 
@@ -148,23 +148,24 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-                ((NavigationActivity)getActivity()).showNavBar();
+                ((NavigationActivity) getActivity()).showNavBar();
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
         return mView;
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
-        if(mQRBitmap==null) {
+        if (mQRBitmap == null) {
             mCreateBitmapTask = new CreateBitmapTask();
             mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -174,8 +175,17 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
     @Override
     public void onContactSelection(Contact contact) {
-        if(emailType) {
-            finishEmail(contact);
+        if (emailType) {
+            if (mQRBitmap != null) {
+                mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
+                if (mContentURL != null) {
+                    finishEmail(contact, Uri.parse(mContentURL));
+                } else {
+                    showNoQRAttached(contact);
+                }
+            } else {
+                mActivity.ShowOkMessageDialog("", getString(R.string.request_qr_bitmap_error));
+            }
         } else {
             finishSMS(contact);
         }
@@ -185,24 +195,24 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            ((NavigationActivity) getActivity()).showModalProgress(true);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             Common.LogD(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-            if(mID!=null) {
-                Common.LogD(TAG, "Starting Request Address at:"+System.currentTimeMillis());
+            if (mID != null) {
+                Common.LogD(TAG, "Starting Request Address at:" + System.currentTimeMillis());
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
-                try{
+                try {
                     // data in barcode is like bitcoin:address?amount=0.001
-                    Common.LogD(TAG, "Starting QRCodeBitmap at:"+System.currentTimeMillis());
+                    Common.LogD(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
                     mQRBitmap = addWhiteBorder(mQRBitmap);
-                    Common.LogD(TAG, "Ending QRCodeBitmap at:"+System.currentTimeMillis());
+                    Common.LogD(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -211,7 +221,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         @Override
         protected void onPostExecute(Void v) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
             mCreateBitmapTask = null;
             mBitcoinAddress.setText(mAddress);
             if (mQRBitmap != null) {
@@ -223,13 +233,13 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
         }
     }
 
     private Bitmap addWhiteBorder(Bitmap inBitmap) {
-        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth()*(1+BORDER_THICKNESS*2)),
-                (int) (inBitmap.getHeight()*(1+BORDER_THICKNESS*2)), Bitmap.Config.ARGB_8888);
+        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth() * (1 + BORDER_THICKNESS * 2)),
+                (int) (inBitmap.getHeight() * (1 + BORDER_THICKNESS * 2)), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(imageBitmap);
         Paint p = new Paint();
         p.setColor(Color.WHITE);
@@ -251,44 +261,24 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.SMS);
         fragment.setArguments(bundle);
-        ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
     private void finishSMS(Contact contact) {
-//        //no apps can perform this intent
-//        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO);
-//        mmsIntent.setData(Uri.parse("smsto:"+contact.getPhone()));  // This ensures only SMS apps respond
-
-//        // no apps can perform this intent
-//        Intent mmsIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts ("smsto", contact.getPhone(), null));
-
-//        //working but many choices
-//        Intent mmsIntent = new Intent(Intent.ACTION_SEND);
-//        mmsIntent.putExtra("address", contact.getPhone());
-//
-        // removed for sms messages only so Google voice doesn't discard
-//        if(mQRBitmap!=null) {
-//            mmsIntent.setType("image/jpg");
-//            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
-//            mmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mContentURL));
-//        } else {
-//            mmsIntent.setType("text/plain");
-//        }
-
         String defaultName = null;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             defaultName = Telephony.Sms.getDefaultSmsPackage(mActivity); // Android 4.4 and up
         }
 
         String name = getString(R.string.request_qr_unknown);
-        if(mCoreAPI.coreSettings().getBNameOnPayments()) {
+        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
                     mCoreAPI.coreSettings().getSzLastName();
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        if(defaultName!=null) {
+        if (defaultName != null) {
             intent.setPackage(defaultName);
         }
         intent.setData(Uri.parse("smsto:" + contact.getPhone()));  // This ensures only SMS apps respond
@@ -306,50 +296,53 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.EMAIL);
         fragment.setArguments(bundle);
-        ((NavigationActivity)getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
-    private void finishEmail(Contact contact) {
+    private void finishEmail(Contact contact, Uri uri) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
 
-        String error = null;
+        if (uri != null) {
+            uris.add(Uri.parse(mContentURL));
+        }
+
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact.getEmail()});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
 
         String name = getString(R.string.request_qr_unknown);
-        if(mCoreAPI.coreSettings().getBNameOnPayments()) {
+        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFirstName() + " " +
-            mCoreAPI.coreSettings().getSzLastName();
+                    mCoreAPI.coreSettings().getSzLastName();
         }
 
         String html = fillTemplate(R.raw.email_template, name);
-//        String filename = Common.createTempFileFromString("email.html", html);
-//        Uri htmlFile = Uri.parse("file://" + filename);
-//        uris.add(htmlFile);
-        if(mQRBitmap!=null) {
-            mContentURL = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), mQRBitmap, mAddress, null);
-            if(mContentURL!=null) {
-                uris.add(Uri.parse(mContentURL));
-            } else {
-                error = getString(R.string.request_qr_image_store_error);
-            }
-        } else {
-            error = getString(R.string.request_qr_bitmap_error);
-        }
 
-        if(error!=null) {
-            mActivity.ShowOkMessageDialog("", error);
-        } else {
-            intent.putExtra(Intent.EXTRA_STREAM, uris);
-            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
-            intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
-            startActivity(Intent.createChooser(intent, "email"));
+        intent.putExtra(Intent.EXTRA_STREAM, uris);
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
+        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
+        startActivity(Intent.createChooser(intent, "email"));
 
-            mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
-        }
+        mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
     }
+
+    private void showNoQRAttached(final Contact contact) {
+        getString(R.string.request_qr_image_store_error);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.request_qr_image_store_error))
+                .setTitle("")
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finishEmail(contact, null);
+                                dialog.cancel();
+                            }
+                        });
+        builder.create().show();
+    }
+
 
     private String fillTemplate(int id, String fullName) {
         String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
