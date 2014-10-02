@@ -578,6 +578,7 @@ public class WalletsFragment extends Fragment
         List<Wallet> walletList = getWallets(archiveClosed);
         mLatestWalletList.clear();
         mLatestWalletList.addAll(walletList);
+        mLatestWalletAdapter.swapWallets();
         mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
         mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
         mLatestWalletListView.setArchiveClosed(archiveClosed);
