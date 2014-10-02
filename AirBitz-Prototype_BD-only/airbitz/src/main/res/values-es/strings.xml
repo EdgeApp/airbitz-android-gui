@@ -682,6 +682,14 @@
   <string name="transaction_details_from">
     "De: "
   </string>
+
+    <string name="transaction_details_advanced_txid">"Transacción ID"</string>
+    <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
+    <string name="transaction_details_advanced_source">"Fuente"</string>
+    <string name="transaction_details_advanced_destination">"Destino"</string>
+    <string name="transaction_details_advanced_miner_fee">"Tarifa Minero"</string>
+
+
   <string name="export_title">
     Exportación
   </string>

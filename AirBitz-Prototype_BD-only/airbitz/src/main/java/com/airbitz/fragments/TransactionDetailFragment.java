@@ -948,7 +948,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             SpannableStringBuilder s = new SpannableStringBuilder();
             start = 0;
             end = 0;
-            s.append("Transaction ID").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(getString(R.string.transaction_details_advanced_txid)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
@@ -969,7 +969,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             //Total Sent - formatSatoshi
             start = s.length();
-            s.append("Total Sent").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(getString(R.string.transaction_details_advanced_total_sent)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
@@ -981,7 +981,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             //Source - inAddresses
             start = s.length();
-            s.append("Source").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(getString(R.string.transaction_details_advanced_source)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
             s.append(inAddresses);
@@ -989,7 +989,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             //Destination - outAddresses
             start = s.length();
-            s.append("Destination").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(getString(R.string.transaction_details_advanced_destination)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
             s.append(outAddresses);
@@ -998,7 +998,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             //Miner Fee - formatSatoshi
             start = s.length();
-            s.append("Miner Fee").setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(getString(R.string.transaction_details_advanced_miner_fee)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
