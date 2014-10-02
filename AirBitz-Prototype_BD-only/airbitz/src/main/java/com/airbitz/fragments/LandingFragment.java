@@ -84,23 +84,6 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         activityRootView = view.findViewById(R.id.fragment_landing_container);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                boolean oldKeyboardState = keyboardUp;
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if(heightDiff < 100) {
-                    keyboardUp = false;
-                } else {
-                    keyboardUp = true;
-                }
-                if(oldKeyboardState && !keyboardUp) {
-                    collapseVertically(false);
-                } else {
-
-                }
-            }
-        });
 
         mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -143,6 +126,7 @@ public class LandingFragment extends Fragment {
             public void onClick(View view) {
                 ((NavigationActivity)getActivity()).hideSoftKeyboard(mPasswordEditText);
                 ((NavigationActivity)getActivity()).hideSoftKeyboard(mUserNameEditText);
+                collapseVertically(false);
                 attemptLogin();
             }
         });

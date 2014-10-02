@@ -1,0 +1,9 @@
+
+### IMPORTANT NOTICE REGARDING VERSION 1.2.x!!
+* **IMPORTANT! As of version 1.2.0, all old accounts made on v1.1.x are no longer accessible. Use versions 1.1.x or lower to access accounts made with those versions. Accounts made with 1.2.0 or later are hosted on new production servers for our final release and are completely separate. 1.1.x accounts will be deprecated in 1 month. Please move your funds.**
+
+### Airbitz Android Change Log v1.2.3
+* Email/SMS requests fully functional
+
+### Outstanding Issues
+* Crash when tapping external payment request link if app is not logged in

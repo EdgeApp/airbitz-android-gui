@@ -428,7 +428,7 @@ public class DirectoryDetailFragment extends Fragment {
                     @Override public void onClick(View view) {
 
                         if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
-                            mIntent = new Intent(Intent.ACTION_CALL);
+                            mIntent = new Intent(Intent.ACTION_DIAL);
                             mIntent.setData(Uri.parse("tel:" + mDetail.getPhone()));
                             startActivity(mIntent);
                         }

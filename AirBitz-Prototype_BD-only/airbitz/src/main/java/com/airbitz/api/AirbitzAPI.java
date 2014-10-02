@@ -1,6 +1,7 @@
 package com.airbitz.api;
 
 import android.util.Log;
+import android.util.LruCache;
 
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
@@ -56,7 +57,15 @@ public class AirbitzAPI {
         return mInstance;
     }
 
+    private LruCache mApiCache;
+
     private AirbitzAPI(){
+        int cacheSize = 2 * 1024 * 1024; // 2MiB
+        mApiCache = new LruCache<String, String>(cacheSize) {
+            protected int sizeOf(String key, String value) {
+                return value.length();
+            }
+        };
     }
 
     public static String getServerRoot(){
@@ -328,12 +337,22 @@ public class AirbitzAPI {
     }
 
     public BusinessDetail getHttpBusiness(int bizId){
+        return getHttpBusiness(bizId, false);
+    }
 
+    public BusinessDetail getHttpBusiness(int bizId, boolean cacheOnly){
         String url = API_BUSINESS+bizId +"/";
-
-        String response = getRequest(url, "");
-
-        try{
+        String response = (String) mApiCache.get(url);
+        if (response == null && !cacheOnly) {
+            response = getRequest(url, "");
+            synchronized (mApiCache) {
+                mApiCache.put(url, response);
+            }
+        }
+        if (response == null) {
+            return null;
+        }
+        try {
             return new BusinessDetail(new JSONObject(response));
         }catch (JSONException e){
             Log.e(TAG, ""+e.getMessage());
@@ -342,7 +361,6 @@ public class AirbitzAPI {
         }
         return null;
     }
-
 
     public String getBusinessPhoto(String bizId){
 
