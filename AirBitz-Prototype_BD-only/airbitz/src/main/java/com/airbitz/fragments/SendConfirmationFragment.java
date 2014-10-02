@@ -66,7 +66,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private EditText mFiatField;
     private EditText mBitcoinField;
-    private String mSavedBitcoin;
+    private String mSavedBitcoin = "";
     private String mSavedFiat;
 
     private HighlightOnPressImageButton mBackButton;
@@ -383,9 +383,6 @@ public class SendConfirmationFragment extends Fragment {
 
         mDummyFocus.requestFocus();
 
-        if(mAmountToSendSatoshi>0) {
-            mPinEdittext.requestFocus();
-        }
         return mView;
     }
 
@@ -654,9 +651,26 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     @Override public void onResume() {
+        bundle = this.getArguments();
+        if (bundle == null) {
+            System.out.println("Send confirmation bundle is null");
+        } else {
+            mUUIDorURI = bundle.getString(SendFragment.UUID);
+            mLabel = bundle.getString(SendFragment.LABEL, "");
+            mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
+            mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
+            mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
+            mWalletForConversions = mSourceWallet;
+            if(mIsUUID) {
+                mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
+            }
+        }
+
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        mActivity.hideCalculator();
 
         mAutoUpdatingTextFields = false;
 
@@ -664,7 +678,7 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
-        if (mSavedBitcoin != null) {
+        if (mSavedBitcoin != null && !mSavedBitcoin.isEmpty()) {
             mBitcoinField.setText(mSavedBitcoin);
             mPinEdittext.requestFocus();
         } else if (mAmountToSendSatoshi > 0) {
