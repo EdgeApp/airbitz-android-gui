@@ -250,7 +250,7 @@
     <!-- Strings for Request QR Code fragment -->
     <string name="request_qr_email_title">Airbitz Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
-    <string name="request_qr_image_store_error">A QR code could not be stored on your device for attaching. You need an external SD card, or you must detach the USB connector.</string>
+    <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email.</string>
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_title">Request Bitcoin</string>
