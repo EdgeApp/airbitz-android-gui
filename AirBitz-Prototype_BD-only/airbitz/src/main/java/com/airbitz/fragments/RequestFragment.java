@@ -83,8 +83,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-        FakeBitmapTask task = new FakeBitmapTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         loadNonArchivedWallets();
     }
 
@@ -400,17 +398,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         if(mSelectedWallet!=null) {
             setConversionText(mSelectedWallet.getCurrencyNum());
             updateTextFieldContents();
-        }
-    }
-
-    // THis is here only because the first call takes a long time, so making a faux call before QR code gets it
-    public class FakeBitmapTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            if(mWallets!=null && mWallets.size()>0) {
-                String id = mCoreAPI.createReceiveRequestFor(mWallets.get(0), "", "", 0);
-            }
-            return null;
         }
     }
 
