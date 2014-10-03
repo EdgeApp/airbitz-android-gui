@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.CategoryTypeEnum;
@@ -44,6 +45,7 @@ public class CategoryFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     private EditText mAddField;
     private EditText mSearchField;
+    private TextView mTitleTextView;
 
     private View dummyFocus;
 
@@ -107,7 +109,9 @@ public class CategoryFragment extends Fragment {
 
         mParentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        //  Inflate Fields
+        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+
         mAddField = (EditText) mView.findViewById(R.id.add_field);
         mSearchField = (EditText) mView.findViewById(R.id.search_field);
 
