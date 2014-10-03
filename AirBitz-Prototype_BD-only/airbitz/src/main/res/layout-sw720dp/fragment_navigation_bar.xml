@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="182dp" >
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id="@+id/popup_directory_button"
             android:background="@drawable/tab_popup_directory"
             android:layout_marginRight="-20dp"
@@ -23,9 +23,9 @@
             />
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id="@+id/popup_request_button"
             android:background="@drawable/tab_popup_request"
             android:layout_marginLeft="-20dp"
@@ -34,9 +34,9 @@
             android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id="@+id/popup_send_button"
             android:background="@drawable/tab_popup_send"
             android:visibility="invisible"
@@ -45,9 +45,9 @@
             android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id="@+id/popup_wallet_button"
             android:background="@drawable/tab_popup_wallet"
             android:layout_marginLeft="-20dp"
@@ -56,9 +56,9 @@
             android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id="@+id/popup_setting_button"
             android:background="@drawable/tab_popup_settings"
             android:layout_marginLeft="-20dp"
@@ -74,9 +74,9 @@
         android:id="@+id/normal_navigation_bar"
         android:weightSum="5">
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:id="@+id/directory_button"
             android:background="@drawable/ico_tab_directory"
@@ -89,9 +89,9 @@
             android:background="@android:color/darker_gray">
         </LinearLayout>
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:id="@+id/request_button"
             android:background="@drawable/ico_tab_request"
@@ -103,9 +103,9 @@
             android:background="@android:color/darker_gray">
         </LinearLayout>
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:id="@+id/send_button"
             android:background="@drawable/ico_tab_send"
@@ -117,9 +117,9 @@
             android:background="@android:color/darker_gray">
         </LinearLayout>
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:id="@+id/wallet_button"
             android:background="@drawable/ico_tab_wallet"
@@ -131,9 +131,9 @@
             android:background="@android:color/darker_gray">
         </LinearLayout>
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:id="@+id/setting_button"
             android:background="@drawable/ico_tab_settings"
