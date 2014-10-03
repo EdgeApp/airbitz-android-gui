@@ -133,17 +133,19 @@ public class Common {
             cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                     columns, ContactsContract.Contacts.DISPLAY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + searchTerm + "%"), null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
         }
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                if (photoURI != null) {
-                    Uri thumbUri = Uri.parse(photoURI);
-                    contactList.put(name, thumbUri);
+        if (cur != null) {
+            if (cur.getCount() > 0) {
+                while (cur.moveToNext()) {
+                    String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    String photoURI = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                    if (photoURI != null) {
+                        Uri thumbUri = Uri.parse(photoURI);
+                        contactList.put(name, thumbUri);
+                    }
                 }
             }
+            cur.close();
         }
-        cur.close();
         return contactList;
     }
 
