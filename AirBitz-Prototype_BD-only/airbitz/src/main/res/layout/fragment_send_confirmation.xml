@@ -341,7 +341,7 @@
                     android:text="@string/send_confirmation_slide_to_confirm"
                     android:gravity="center"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"/>
+                    android:textSize="15sp"/>
 
             </RelativeLayout>
 

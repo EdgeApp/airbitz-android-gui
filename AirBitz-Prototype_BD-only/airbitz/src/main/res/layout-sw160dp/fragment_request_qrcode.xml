@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:text="Waiting for Payment..."
             android:textColor="@android:color/white"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:layout_marginTop="6dp"
             android:gravity="center_horizontal"
             android:layout_marginBottom="2dp" />
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginTop="1dp"
             android:gravity="center_horizontal"
             android:layout_marginBottom="1dp" />
@@ -100,7 +100,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:textColor="@android:color/white"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:layout_marginRight="18.9dp"
             android:layout_marginLeft="18.9dp"
             android:layout_marginTop="2dp"

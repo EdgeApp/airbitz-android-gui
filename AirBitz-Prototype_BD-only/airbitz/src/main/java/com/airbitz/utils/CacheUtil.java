@@ -65,7 +65,6 @@ public class CacheUtil {
         List<Business> listRecentBusiness = new ArrayList<Business>();
 
         cachePref = context.getSharedPreferences(MOSTRECENT_BUSINESSSEARCH_SHARED_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
 
         if ((cachePref.getString(BIZ1_NAME_KEY, null) == null) && (cachePref.getString(BIZ2_NAME_KEY, null) == null)) {
             return null;
@@ -114,7 +113,6 @@ public class CacheUtil {
         List<LocationSearchResult> listRecentLocation = new ArrayList<LocationSearchResult>();
 
         cachePref = context.getSharedPreferences(MOSTRECENT_LOCATIONSEARCH_SHARED_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = cachePref.edit();
 
         if ((cachePref.getString(LOC1_KEY, null) == null) &&
                 (cachePref.getString(LOC2_KEY, null) == null)) {
