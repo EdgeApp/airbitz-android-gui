@@ -36,7 +36,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="12.6dp"
         android:text="item"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:textColor="@color/gray_text"/>
@@ -64,7 +64,7 @@
         android:layout_marginRight="1dp"
         android:text="amount"
         android:textColor="@color/dark_blue_text"
-        android:textSize="14dp"
+        android:textSize="14sp"
         android:layout_centerVertical="true"/>
 
 

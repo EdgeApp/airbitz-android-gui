@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:textSize="19dp"
+            android:textSize="19sp"
             android:layout_marginTop="1dp"
             android:gravity="center_horizontal"
             android:layout_marginBottom="1dp" />
@@ -100,7 +100,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:textColor="@android:color/white"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:layout_marginRight="18.9dp"
             android:layout_marginLeft="18.9dp"
             android:layout_marginTop="2dp"

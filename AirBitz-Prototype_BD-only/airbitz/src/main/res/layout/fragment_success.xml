@@ -69,7 +69,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:text="Received!"
-            android:textSize="26dp"
+            android:textSize="26sp"
             android:textColor="@android:color/white"/>
 
         <TextView
@@ -81,7 +81,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
             android:text="B25.000"
-            android:textSize="26dp"
+            android:textSize="26sp"
             android:textColor="@android:color/white"/>
 
         <View
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="$2,000.00"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginTop="10dp"
             android:textColor="@android:color/white"/>
 

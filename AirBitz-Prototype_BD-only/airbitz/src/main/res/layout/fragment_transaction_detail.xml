@@ -35,7 +35,7 @@
             android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16dp"/>
+            android:textSize="16sp"/>
 
 
         <com.airbitz.objects.HighlightOnPressImageButton
@@ -68,7 +68,7 @@
             android:text="November 13, 2013 04:56 PM"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="13dp"/>
+            android:textSize="13sp"/>
 
         <RelativeLayout
             android:id="@+id/transaction_detail_layout_name"
@@ -216,7 +216,6 @@
                     android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center_vertical"
                     android:textSize="21sp"/>
 
@@ -271,7 +270,6 @@
                     android:textColorHint="@android:color/white"
                     android:background="@drawable/bg_edittext"
                     android:gravity="center"
-                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"/>
@@ -300,9 +298,7 @@
             android:padding="12dp"
             android:orientation="vertical"
             android:weightSum="100"
-            android:background="@drawable/rounded_edge_blue_bg"
-            android:layout_below="@id/layout_sent_detail"
-            >
+            android:background="@drawable/rounded_edge_blue_bg" >
 
             <TextView
                 android:id="@+id/transaction_detail_textview_category"
@@ -356,7 +352,6 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="-15dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/blue_triangle"/>
 

@@ -120,10 +120,9 @@
                             android:text="Import Wallet:"
                             android:gravity="right|center_vertical"
                             android:textColor="@android:color/white"
-                            android:layout_alignParentTop="true"
                             android:layout_marginRight="40dp"
                             android:layout_marginLeft="10dp"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:layout_weight="1"
                             android:layout_gravity="right"
                             android:textStyle="bold"/>
@@ -132,7 +131,6 @@
                             android:id="@+id/button_from"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/textview_account"
                             android:text="Checking"
                             android:textStyle="bold"
                             android:background="@drawable/btn_trans_rounded"
@@ -144,7 +142,7 @@
                             android:paddingRight="20dp"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:textSize="18dp"
+                            android:textSize="18sp"
                             android:layout_weight="1"/>
 
                     </LinearLayout>
@@ -168,10 +166,9 @@
                         android:text="Private Key:"
                         android:gravity="right"
                         android:textColor="@android:color/white"
-                        android:layout_below="@id/textview_account"
                         android:layout_marginRight="20dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:layout_weight="1"
                         android:textStyle="bold"/>
 
@@ -179,7 +176,6 @@
                         android:id="@+id/edittext_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/textview_to"
                         android:hint="Enter bitcoin address (optional)"
                         android:textColorHint="@android:color/white"
                         android:background="@drawable/rounded_edge_black_transparent_30"
@@ -191,7 +187,7 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:drawableRight="@drawable/ico_login"
                         android:layout_weight="1"/>
                     </LinearLayout>
@@ -201,8 +197,7 @@
                 <RelativeLayout
                     android:id="@+id/layout_camera"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/layout_data">
+                    android:layout_height="wrap_content">
 
                     <FrameLayout
                         android:id="@+id/layout_camera_preview"
@@ -248,8 +243,7 @@
                         android:layout_marginLeft="20dp"
                         android:adjustViewBounds="true"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/gallery_button"
-                        android:layout_weight="1"/>
+                        android:src="@drawable/gallery_button"/>
 
 
                     <View
