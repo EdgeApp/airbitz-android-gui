@@ -1145,7 +1145,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     private void showMessageProgress(String message, boolean visible) {
-        ((NavigationActivity)getActivity()).showModalProgress(visible);
+        if(isAdded()) {
+            ((NavigationActivity) getActivity()).showModalProgress(visible);
+        }
     }
 
 
