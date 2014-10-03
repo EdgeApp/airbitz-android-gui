@@ -105,21 +105,6 @@ public class NavigationActivity extends BaseActivity
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
 
-    //******************* HockeyApp support
-
-    private void checkForCrashes() {
-        if(AirbitzApplication.isDebugging())
-            CrashManager.register(this, "***REMOVED***");
-    }
-
-    private void checkForUpdates() {
-        if(AirbitzApplication.isDebugging())
-            UpdateManager.register(this, "***REMOVED***");
-    }
-
-    //******************* end HockeyApp support
-
-
     // For Fragments to implement if they need to customize on back presses
     public interface OnBackPress {
         public boolean onBackPress();
@@ -526,8 +511,15 @@ public class NavigationActivity extends BaseActivity
 
     @Override
     public void onResume() {
-        checkForCrashes();
-        checkForUpdates();
+        //******************* HockeyApp support
+        // Always check for crashes and send to Hockey if user chooses to
+        CrashManager.register(this, "***REMOVED***");
+
+        // Only allow updates for debug builds
+        if(AirbitzApplication.isDebugging()) {
+            UpdateManager.register(this, "***REMOVED***");
+        }
+        //******************* end HockeyApp support
 
         checkLoginExpired();
 
