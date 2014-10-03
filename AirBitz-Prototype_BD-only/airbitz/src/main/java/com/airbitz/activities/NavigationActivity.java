@@ -179,7 +179,7 @@ public class NavigationActivity extends BaseActivity
 
     public void initiateCore() {
         mCoreAPI = CoreAPI.getApi();
-        String seed = mCoreAPI.getSeedData();
+        String seed = CoreAPI.getSeedData();
         mCoreAPI.Initialize(this, seed, seed.length());
     }
 
@@ -352,14 +352,6 @@ public class NavigationActivity extends BaseActivity
             mFragmentLayoutParams = mFragmentLayout.getLayoutParams();
         }
         return mFragmentLayoutParams;
-    }
-
-    ViewGroup.LayoutParams mNavBarFragmentLayoutParams;
-    private ViewGroup.LayoutParams getNavBarFragmentLayoutParams() {
-        if(mNavBarFragmentLayoutParams==null) {
-            mNavBarFragmentLayoutParams = mNavBarFragmentLayout.getLayoutParams();
-        }
-        return mNavBarFragmentLayoutParams;
     }
 
     int mNavBarStart;
@@ -649,22 +641,16 @@ public class NavigationActivity extends BaseActivity
         }
     }
 
-    // callback for funds sent
-    private String mIncomingUUID, mIncomingTxID;
-
     public void onSentFunds(String walletUUID, String txId) {
         Common.LogD(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
-
-        mIncomingUUID = walletUUID;
-        mIncomingTxID = txId;
 
         getFragmentManager().executePendingTransactions();
 
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
         bundle.putBoolean(WalletsFragment.CREATE, true);
-        bundle.putString(Transaction.TXID, mIncomingTxID);
-        bundle.putString(Wallet.WALLET_UUID, mIncomingUUID);
+        bundle.putString(Transaction.TXID, txId);
+        bundle.putString(Wallet.WALLET_UUID, walletUUID);
 
         Common.LogD(TAG, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
