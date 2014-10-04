@@ -54,7 +54,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private int mMode;
 
     private enum QuestionType { STRING, NUMERIC }
-    public final String UNSELECTED_QUESTION = getString(R.string.activity_recovery_question_default);
     String mAnswers = "";
 
     private ImageButton mBackButton;
@@ -268,7 +267,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         for(String question : questions) {
             List<String> qs = new ArrayList<String>();
             qs.add(question);
-            qs.add(UNSELECTED_QUESTION);
+            qs.add(getString(R.string.activity_recovery_question_default));
             QuestionView qv = new QuestionView(getActivity(), qs, answers[position], QuestionType.STRING, position++);
             mQuestionViews.add(qv);
         }
@@ -426,7 +425,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
             for (QuestionView qv : mQuestionViews) {
                 String selected = qv.chosenQuestion;
-                if (!selected.equals(UNSELECTED_QUESTION)) {
+                if (!selected.equals(getString(R.string.activity_recovery_question_default))) {
                     unusedQuestions.remove(selected);
                 }
             }
@@ -445,12 +444,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 }
                 qv.setAvailableQuestions(unchosen);
 
-                if(!qv.chosenQuestion.equals(UNSELECTED_QUESTION)) {
+                if(!qv.chosenQuestion.equals(getString(R.string.activity_recovery_question_default))) {
                     unchosen.add(0, qv.chosenQuestion);
                     qv.mSpinner.setSelection(0);
                 } else {
                     qv.setAvailableQuestions(unchosen);
-                    int index = unchosen.indexOf(UNSELECTED_QUESTION);
+                    int index = unchosen.indexOf(getString(R.string.activity_recovery_question_default));
                     qv.mSpinner.setSelection(index);
                 }
             }
@@ -598,7 +597,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 }
             });
 
-            chosenQuestion = UNSELECTED_QUESTION;
+            chosenQuestion = getString(R.string.activity_recovery_question_default);
             if(mMode==FORGOT_PASSWORD) {
                 findViewById(R.id.item_recovery_question_down_arrow).setVisibility(View.GONE);
                 mSpinner.setSelection(0);
