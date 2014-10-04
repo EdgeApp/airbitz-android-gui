@@ -61,7 +61,6 @@ public class DirectoryDetailFragment extends Fragment {
 
     private Intent mIntent;
 
-    private RelativeLayout mParentLayout;
 
     private CurrentLocationManager mLocationManager;
 
@@ -112,13 +111,11 @@ public class DirectoryDetailFragment extends Fragment {
             return mView;
         }
 
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
-
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
         }else{
             locationEnabled = true;
         }
@@ -263,7 +260,7 @@ public class DirectoryDetailFragment extends Fragment {
         @Override protected void onPreExecute() {
             mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Getting venue data...");
+            mProgressDialog.setMessage(getString(R.string.fragment_directory_detail_getting_venue_data));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
@@ -282,7 +279,7 @@ public class DirectoryDetailFragment extends Fragment {
         @Override protected void onCancelled() {
             if(null != mProgressDialog) {
                 mProgressDialog.dismiss();
-                Toast.makeText(getActivity().getApplicationContext(), "Timeout retrieving data",
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
                         Toast.LENGTH_LONG).show();
             }
             super.onCancelled();
@@ -303,7 +300,7 @@ public class DirectoryDetailFragment extends Fragment {
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
                     if (mLat != 0 && mLon != 0) {
-                        mAddressButton.setText("Directions");
+                        mAddressButton.setText(getString(R.string.fragment_directory_detail_directions));
                     } else {
                         mAddressButton.setVisibility(View.GONE);
                     }
@@ -405,7 +402,7 @@ public class DirectoryDetailFragment extends Fragment {
                     e.printStackTrace();
                 }
                 if (discountDouble != 0) {
-                    mDiscountTextView.setText("Discount " + (int) (discountDouble * 100) + "%");
+                    mDiscountTextView.setText(getString(R.string.fragment_directory_detail_discount) + (int) (discountDouble * 100) + "%");
                     mDiscountTextView.setVisibility(View.VISIBLE);
                 } else {
                     mDiscountTextView.setVisibility(View.GONE);
@@ -451,7 +448,7 @@ public class DirectoryDetailFragment extends Fragment {
                 mPhoneButton.setVisibility(View.GONE);
                 mWebButton.setVisibility(View.GONE);
                 mHourContainer.setVisibility(View.GONE);
-                Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
                         Toast.LENGTH_LONG).show();
             }
             mProgressDialog.dismiss();

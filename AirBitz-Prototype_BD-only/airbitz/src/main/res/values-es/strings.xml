@@ -114,6 +114,11 @@
     <string name="fragment_business_no_categories_retrieved">No hay categorías recuperados del servidor</string>
     <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
 
+    <string name="fragment_directory_detail_getting_venue_data">Obtener datos venue…</string>
+    <string name="fragment_directory_detail_timeout_retrieving_data">Tiempo de espera de la obtención de datos…</string>
+    <string name="fragment_directory_detail_directions">Direcciones</string>
+    <string name="fragment_directory_detail_discount">"Descuento "</string>
+
   <string name="server_error_account_already_exists">
     Esta cuenta ya existe.
   </string>

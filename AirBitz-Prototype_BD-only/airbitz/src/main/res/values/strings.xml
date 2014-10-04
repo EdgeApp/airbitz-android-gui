@@ -43,11 +43,16 @@
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
     <string name="no_location_found">Unable to get a current location. Please enable Location Services.</string>
-    <string name="fragment_business_retrieving_data">Retrieving data...</string>
+    <string name="fragment_business_retrieving_data">Retrieving data…</string>
     <string name="fragment_business_no_results">No Results Found</string>
     <string name="fragment_business_cannot_retrieve_data">Can not retrieve data</string>
     <string name="fragment_business_no_categories_retrieved">No categories retrieved from server</string>
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
+
+    <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
+    <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>
+    <string name="fragment_directory_detail_directions">Directions</string>
+    <string name="fragment_directory_detail_discount">"Discount "</string>
 
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>
