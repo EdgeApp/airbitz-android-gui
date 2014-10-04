@@ -71,11 +71,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         ObservableScrollView.ScrollViewListener,
         CurrentLocationManager.OnLocationChange {
 
-    public static final String LAT_KEY = "LAT_KEY";
-    public static final String LON_KEY = "LON_KEY";
+    private final String TAG = getClass().getSimpleName();
+
     public static final String PREF_NAME = "PREF_NAME";
-    public static final String LOCATION_CACHE_SHARED_PREF = "LOCATION_CACHE_PREF";
-    public static final String BUSINESS_CACHE_SHARED_PREF = "BUSINESS_CACHE_PREF";
 
     private Categories mCategories;
 
@@ -255,7 +253,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             @Override public void onClick(View view) {
                 mMoreCategoriesProgressDialog = new ProgressDialog(getActivity());
                 mMoreCategoriesProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mMoreCategoriesProgressDialog.setMessage("Retrieving data...");
+                mMoreCategoriesProgressDialog.setMessage(getString(R.string.fragment_business_retrieving_data));
                 mMoreCategoriesProgressDialog.setIndeterminate(true);
                 mMoreCategoriesProgressDialog.setCancelable(false);
                 mMoreCategoriesProgressDialog.show();
@@ -702,7 +700,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
             mBusinessList.clear();
             if (businesses == null) {
-                mBusinessList.add(new Business("No Results Found", "", ""));
+                mBusinessList.add(new Business(getString(R.string.fragment_business_no_results), "", ""));
             } else {
 
                 // Add all businesses first
@@ -735,10 +733,10 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     //    @Override
     public boolean onBackPressed() {
-        System.out.println("Back Pressed");
+        Common.LogD(TAG, "Back Pressed");
         mLocationWords = "";
         if (mBusinessLayout.getVisibility() == View.GONE) {
-            System.out.println("Backing out of Search");
+            Common.LogD(TAG, "Backing out of Search");
             mDummyFocusLayout.requestFocus();
             mLocationField.setVisibility(View.GONE);
             mSearchListView.setVisibility(View.GONE);
@@ -830,7 +828,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             mLocationList.add(new LocationSearchResult(getString(R.string.on_the_web), false));
 
             if (result == null) {
-                mLocationList.add(new LocationSearchResult("No Results Found", false));
+                mLocationList.add(new LocationSearchResult(getString(R.string.fragment_business_no_results), false));
             } else {
 
                 // Add cached location searches
@@ -927,7 +925,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
                 if (mMoreCategoriesProgressDialog!=null && mMoreCategoriesProgressDialog.isShowing()) {
                     if (categories == null) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
+                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
                                 Toast.LENGTH_LONG).show();
                     }
                     mMoreCategoriesProgressDialog.dismiss();
@@ -947,7 +945,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             } else {
                 mMoreButton.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
-                        Toast.makeText(getActivity().getApplicationContext(), "No categories retrieved from server",
+                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_no_categories_retrieved),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
@@ -998,7 +996,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
         }else{
             locationEnabled = true;
         }

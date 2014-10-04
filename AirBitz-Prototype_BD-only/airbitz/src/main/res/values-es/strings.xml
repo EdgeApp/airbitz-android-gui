@@ -107,6 +107,13 @@
   <string name="no_location_found">
     No se puede obtener una localización actual. Por favor, activa los servicios de localización.
   </string>
+
+    <string name="fragment_business_retrieving_data">Recuperando datos...</string>
+    <string name="fragment_business_no_results">No se encontraron resultados</string>
+    <string name="fragment_business_cannot_retrieve_data">No se pueden recuperar los datos</string>
+    <string name="fragment_business_no_categories_retrieved">No hay categorías recuperados del servidor</string>
+    <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
+
   <string name="server_error_account_already_exists">
     Esta cuenta ya existe.
   </string>
