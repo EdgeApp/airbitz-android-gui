@@ -347,6 +347,9 @@
     <string name="fragment_contact_picker_title_email">Email Search</string>
     <string name="fragment_contact_picker_title_sms">SMS Search</string>
 
+    <!-- Strings for MapBusinessDirectory fragment -->
+    <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>
+
     <!-- Errors -->
     <string name="error_invalid_recovery_title">Sign Up Failed</string>
     <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
