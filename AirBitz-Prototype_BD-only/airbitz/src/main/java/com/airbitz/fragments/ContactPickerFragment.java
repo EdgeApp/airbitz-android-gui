@@ -83,10 +83,10 @@ public class ContactPickerFragment extends Fragment {
 
         mFragmentTitle = (TextView) mView.findViewById(R.id.fragment_contact_picker_title);
         if(mBundle.getString(TYPE).equals(EMAIL)) {
-            mFragmentTitle.setText("Email Search");
+            mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_email));
         } else {
 
-            mFragmentTitle.setText("SMS Search");
+            mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_sms));
         }
 
         mContactName = (EditText) mView.findViewById(R.id.fragment_contact_picker_edittext_name);
