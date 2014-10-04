@@ -145,6 +145,9 @@
   <string name="server_error_insufficient_funds">
     La insuficiencia de fondos
   </string>
+
+    <string name="fragment_send_send_bitcoin_invalid">Dirección bitcoin no válida</string>
+
   <string name="server_error_synchronizing">
     Sincronización con la red.
   </string>

@@ -229,6 +229,8 @@
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_failure_insufficient_funds">You do not have enough funds to send this transaction.</string>
 
+    <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
+
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
     <string name="send_confirmation_from_title">Send From:</string>
@@ -325,7 +327,6 @@
     <string name="export_saving_option_no_transactions_message">There are no transactions to export in your date range</string>
     <string name="export_saving_option_email_subject">AirBitz Bitcoin Wallet Transactions</string>
     <string name="export_saving_option_no_email_apps">There are no email applications installed</string>
-
     <string name="export_saving_option_private_seed">Private Seed</string>
     <string name="export_saving_option_pick_date">Pick a Date</string>
 
