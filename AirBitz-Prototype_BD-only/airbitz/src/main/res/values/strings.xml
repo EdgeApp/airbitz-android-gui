@@ -269,6 +269,8 @@
     <string name="request_button_import">Import</string>
     <string name="request_amount_hint">Amt (Optional)</string>
 
+    <string name="request_invalid_amount">Invalid Amount</string>
+
     <!-- Strings for Request QR Code fragment -->
     <string name="request_qr_email_title">Airbitz Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
