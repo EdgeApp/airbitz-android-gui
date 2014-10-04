@@ -204,6 +204,11 @@
     <string name="settings_categories_transfer">Transfer:</string>
     <string name="settings_categories_exchange">Exchange:</string>
 
+    <string name="settings_days">Day(s)</string>
+    <string name="settings_hours">Hour(s)</string>
+    <string name="settings_minutes">Minute(s)</string>
+
+
     <!-- Strings for Category Fragment -->
     <string name="fragment_category_cancel_title">Cancel Changes</string>
     <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you've made?</string>

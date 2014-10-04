@@ -528,6 +528,10 @@
     Cambio:
   </string>
 
+    <string name="settings_days">Día</string>
+    <string name="settings_hours">Hora</string>
+    <string name="settings_minutes">Minuto</string>
+
     <string name="fragment_category_cancel_title">Cancelar los Cambios</string>
     <string name="fragment_category_cancel_message">¿Seguro que quieres cancelar cualquier cambio que haya hecho?</string>
     <string name="fragment_category_income">Ingresos:</string>
