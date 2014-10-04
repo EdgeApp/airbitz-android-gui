@@ -334,6 +334,10 @@
     <string name="received_success_received_title">Received!</string>
     <string name="question">Question</string>
 
+    <!-- Strings for Contact Picker fragment -->
+    <string name="fragment_contact_picker_title_email">Email Search</string>
+    <string name="fragment_contact_picker_title_sms">SMS Search</string>
+
     <!-- Errors -->
     <string name="error_invalid_recovery_title">Sign Up Failed</string>
     <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
