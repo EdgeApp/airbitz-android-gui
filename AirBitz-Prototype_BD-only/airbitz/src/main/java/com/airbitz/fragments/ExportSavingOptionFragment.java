@@ -239,7 +239,7 @@ public class ExportSavingOptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()){
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(mWallet.getName()+" Private Seed", mCoreApi.getPrivateSeed(mWallet));
+                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(mWallet.getName()+" "+getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
                 }
             }
         });
@@ -579,7 +579,7 @@ public class ExportSavingOptionFragment extends Fragment {
 
 
         AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
-                .setTitle("Pick a Date")
+                .setTitle(getString(R.string.export_saving_option_pick_date))
                 .setView(linearLayout)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
