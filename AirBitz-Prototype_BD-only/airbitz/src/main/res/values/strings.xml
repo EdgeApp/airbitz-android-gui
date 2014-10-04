@@ -208,10 +208,9 @@
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
 
-
     <!-- Strings for Category Fragment -->
     <string name="fragment_category_cancel_title">Cancel Changes</string>
-    <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you've made?</string>
+    <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you made?</string>
     <string name="fragment_category_income">Income:</string>
     <string name="fragment_category_expense">Expense:</string>
     <string name="fragment_category_transfer">Transfer:</string>
