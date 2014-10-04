@@ -409,6 +409,10 @@
   <string name="activity_recovery_error_save_failed">
     Respuestas Guardar recuperación fracasaron
   </string>
+
+    <string name="activity_recovery_error_wrong_answers_title">Respuestas Incorrectas</string>
+    <string name="activity_recovery_error_wrong_answers_message">Las respuestas no son correctos. Por favor, inténtelo de nuevo.</string>
+
   <string name="activity_forgot_title">
     Olvidé mi contraseña
   </string>

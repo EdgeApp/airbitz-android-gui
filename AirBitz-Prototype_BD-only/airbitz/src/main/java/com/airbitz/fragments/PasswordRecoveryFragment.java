@@ -54,7 +54,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private int mMode;
 
     private enum QuestionType { STRING, NUMERIC }
-    public final String UNSELECTED_QUESTION = "Question";
+    public final String UNSELECTED_QUESTION = getString(R.string.activity_recovery_question_default);
     String mAnswers = "";
 
     private ImageButton mBackButton;
@@ -308,7 +308,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 frag.setArguments(bundle);
                 ((NavigationActivity)getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog("Wrong Answers", "The given answers were incorrect. Please try again.");
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.activity_recovery_error_wrong_answers_title),
+                        getString(R.string.activity_recovery_error_wrong_answers_message));
             }
         }
 
