@@ -43,12 +43,7 @@ import java.util.List;
  */
 public class CategoryFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
-    
-    private String INCOME = getString(R.string.fragment_category_income);
-    private String EXPENSE = getString(R.string.fragment_category_expense);
-    private String TRANSFER = getString(R.string.fragment_category_transfer);
-    private String EXCHANGE = getString(R.string.fragment_category_exchange);
-    
+
     private EditText mAddField;
     private EditText mSearchField;
     private TextView mTitleTextView;
@@ -203,8 +198,8 @@ public class CategoryFragment extends Fragment {
                     mAddPopUpContainer.setVisibility(View.VISIBLE);
                     mAddTriangleContainer.setVisibility(View.VISIBLE);
                     if(mAddField.getText().toString().isEmpty()){
-                        mAddField.append(EXPENSE);
-                        currentType = EXPENSE;
+                        mAddField.append(getString(R.string.fragment_category_expense));
+                        currentType = getString(R.string.fragment_category_expense);
                         mAddField.setSelection(mAddField.getText().toString().length());
                     }else{
                         mAddField.setSelection(mAddField.getText().toString().indexOf(':')+1,mAddField.getText().toString().length());
@@ -241,7 +236,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!doEdit) {
-                    if ((currentType.equals(INCOME) && !editable.toString().startsWith(INCOME)) || (currentType.equals(EXPENSE) && !editable.toString().startsWith(EXPENSE)) || (currentType.equals(TRANSFER) && !editable.toString().startsWith(TRANSFER)) || (currentType.equals(EXCHANGE) && !editable.toString().startsWith(EXCHANGE))) {
+                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) || (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) || (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) || (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
                         doEdit = true;
                         editable.clear();
                         editable.append(mCategoryOld);
@@ -259,7 +254,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddExpensePopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = EXPENSE;
+                currentType = getString(R.string.fragment_category_expense);
                 doEdit = false;
             }
         });
@@ -270,7 +265,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddIncomePopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = INCOME;
+                currentType = getString(R.string.fragment_category_income);
                 doEdit = false;
             }
         });
@@ -281,7 +276,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddTransferPopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = TRANSFER;
+                currentType = getString(R.string.fragment_category_transfer);
                 doEdit = false;
             }
         });
@@ -292,7 +287,7 @@ public class CategoryFragment extends Fragment {
                 doEdit = true;
                 mAddField.setText(mAddExchangePopUpTextView.getText());
                 mAddField.setSelection(mAddField.getText().toString().length());
-                currentType = EXCHANGE;
+                currentType = getString(R.string.fragment_category_exchange);
                 doEdit = false;
             }
         });
@@ -391,7 +386,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!popupDoEdit) {
-                    if ((mPopUpCurrentType.equals(INCOME) && !editable.toString().startsWith(INCOME)) || (mPopUpCurrentType.equals(EXPENSE) && !editable.toString().startsWith(EXPENSE)) || (mPopUpCurrentType.equals(TRANSFER) && !editable.toString().startsWith(TRANSFER)) || (mPopUpCurrentType.equals(EXCHANGE) && !editable.toString().startsWith(EXCHANGE))) {
+                    if ((mPopUpCurrentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) || (mPopUpCurrentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) || (mPopUpCurrentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) || (mPopUpCurrentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
                         popupDoEdit = true;
                         editable.clear();
                         editable.append(mPopUpCategoryOld);
@@ -409,7 +404,7 @@ public class CategoryFragment extends Fragment {
                 popupDoEdit = true;
                 mItemPopUpEdittext.setText(mItemPopUpExpenseTextView.getText());
                 mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
-                mPopUpCurrentType = EXPENSE;
+                mPopUpCurrentType = getString(R.string.fragment_category_expense);
                 popupDoEdit = false;
             }
         });
@@ -420,7 +415,7 @@ public class CategoryFragment extends Fragment {
                 popupDoEdit = true;
                 mItemPopUpEdittext.setText(mItemPopUpIncomeTextView.getText());
                 mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
-                mPopUpCurrentType = INCOME;
+                mPopUpCurrentType = getString(R.string.fragment_category_income);
                 popupDoEdit = false;
             }
         });
@@ -431,7 +426,7 @@ public class CategoryFragment extends Fragment {
                 popupDoEdit = true;
                 mItemPopUpEdittext.setText(mItemPopUpTransferTextView.getText());
                 mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
-                mPopUpCurrentType = TRANSFER;
+                mPopUpCurrentType = getString(R.string.fragment_category_transfer);
                 popupDoEdit = false;
             }
         });
@@ -442,7 +437,7 @@ public class CategoryFragment extends Fragment {
                 popupDoEdit = true;
                 mItemPopUpEdittext.setText(mItemPopUpExchangeTextView.getText());
                 mItemPopUpEdittext.setSelection(mItemPopUpEdittext.getText().toString().length());
-                mPopUpCurrentType = EXCHANGE;
+                mPopUpCurrentType = getString(R.string.fragment_category_exchange);
                 popupDoEdit = false;
             }
         });
@@ -491,17 +486,17 @@ public class CategoryFragment extends Fragment {
     }
 
     private void updateAddBlanks(String term){
-        mAddExpensePopUpTextView.setText(EXPENSE + term);
-        mAddIncomePopUpTextView.setText(INCOME + term);
-        mAddTransferPopUpTextView.setText(TRANSFER + term);
-        mAddExchangePopUpTextView.setText(EXCHANGE + term);
+        mAddExpensePopUpTextView.setText(getString(R.string.fragment_category_expense) + term);
+        mAddIncomePopUpTextView.setText(getString(R.string.fragment_category_income) + term);
+        mAddTransferPopUpTextView.setText(getString(R.string.fragment_category_transfer) + term);
+        mAddExchangePopUpTextView.setText(getString(R.string.fragment_category_exchange) + term);
     }
 
     private void updateItemBlanks(String term){
-        mItemPopUpExpenseTextView.setText(EXPENSE + term);
-        mItemPopUpIncomeTextView.setText(INCOME + term);
-        mItemPopUpTransferTextView.setText(TRANSFER + term);
-        mItemPopUpExchangeTextView.setText(EXCHANGE + term);
+        mItemPopUpExpenseTextView.setText(getString(R.string.fragment_category_expense) + term);
+        mItemPopUpIncomeTextView.setText(getString(R.string.fragment_category_income) + term);
+        mItemPopUpTransferTextView.setText(getString(R.string.fragment_category_transfer) + term);
+        mItemPopUpExchangeTextView.setText(getString(R.string.fragment_category_exchange) + term);
     }
 
     private void goAddNewCategory(){
