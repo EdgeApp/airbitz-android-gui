@@ -836,14 +836,14 @@
   <string name="offline_wallet_print_button_title">
     Almacenamiento externo / Imprimir
   </string>
-  <string name="received_success_title">
+  <string name="received_success_sending_title">
     Enviar Bitcoin
   </string>
-  <string name="received_success_sending_title">
-    Enviando…
+  <string name="received_success_sending">
+    Enviando
   </string>
-  <string name="received_success_received_title">
-    Recibido!
+  <string name="received_success_receiving">
+    Recibir
   </string>
   <string name="question">
     Pregunta

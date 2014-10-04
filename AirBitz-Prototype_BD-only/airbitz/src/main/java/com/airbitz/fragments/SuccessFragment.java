@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.models.FragmentSourceEnum;
 import com.airbitz.utils.Common;
 
 /**
@@ -81,12 +80,12 @@ public class SuccessFragment extends Fragment {
 
         String fromSource = mBundle.getString(WalletsFragment.FROM_SOURCE);
         if(fromSource.contains(TYPE_REQUEST)) {
-            mTitleTextView.setText("Request Bitcoin");
-            mSendingTextView.setText("Receiving");
+            mTitleTextView.setText(getString(R.string.request_title));
+            mSendingTextView.setText(getString(R.string.received_success_receiving));
             mHandler.post(mRequestAnimationRunner);
         } else if (fromSource.contains(TYPE_SEND)) {
-            mTitleTextView.setText("Sending Bitcoin");
-            mSendingTextView.setText("Sending");
+            mTitleTextView.setText(getString(R.string.received_success_sending_title));
+            mSendingTextView.setText(getString(R.string.received_success_sending));
             mHandler.post(mSendAnimationRunner);
         }
 
