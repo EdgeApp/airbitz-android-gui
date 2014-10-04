@@ -200,17 +200,17 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if(mTransaction!=null) {
                     if (mTransaction.getCategory().isEmpty()) {
                         currentType = defaultCat.toString() + ":";
-                    } else if (mTransaction.getCategory().startsWith("Income:")) {
-                        currentType = "Income:";
+                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_income))) {
+                        currentType = getString(R.string.fragment_category_income);
                         catSelected = true;
-                    } else if (mTransaction.getCategory().startsWith("Expense:")) {
-                        currentType = "Expense:";
+                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_expense))) {
+                        currentType = getString(R.string.fragment_category_expense);
                         catSelected = true;
-                    } else if (mTransaction.getCategory().startsWith("Transfer:")) {
-                        currentType = "Transfer:";
+                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_transfer))) {
+                        currentType = getString(R.string.fragment_category_transfer);
                         catSelected = true;
-                    } else if (mTransaction.getCategory().startsWith("Exchange:")) {
-                        currentType = "Exchange:";
+                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_exchange))) {
+                        currentType = getString(R.string.fragment_category_exchange);
                         catSelected = true;
                     }
 
@@ -245,7 +245,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), "Enable location services for better results", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
         } else {
             locationEnabled = true;
         }
@@ -306,19 +306,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
         for (int index = 0; index < mCategories.size(); index++) {
             String cat = mCategories.get(index);
-            if (cat.equals("Income:")) {
+            if (cat.equals(getString(R.string.fragment_category_income))) {
                 baseIncomePosition = index;
                 originalBaseIncomePosition = index;
             }
-            if (cat.equals("Expense:")) {
+            if (cat.equals(getString(R.string.fragment_category_expense))) {
                 baseExpensePosition = index;
                 originalBaseExpensePosition = index;
             }
-            if (cat.equals("Transfer:")) {
+            if (cat.equals(getString(R.string.fragment_category_transfer))) {
                 baseTransferPosition = index;
                 originalBaseTransferPosition = index;
             }
-            if (cat.equals("Exchange:")) {
+            if (cat.equals(getString(R.string.fragment_category_exchange))) {
                 baseExchangePosition = index;
                 originalBaseExchangePosition = index;
             }
@@ -495,7 +495,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                         doEdit = false;
                         catSelected = true;
                     }
-                    if ((currentType.equals("Income:") && !editable.toString().startsWith("Income:")) || (currentType.equals("Expense:") && !editable.toString().startsWith("Expense:")) || (currentType.equals("Transfer:") && !editable.toString().startsWith("Transfer:")) || (currentType.equals("Exchange:") && !editable.toString().startsWith("Exchange:"))) {
+                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) || 
+                            (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
+                            (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
+                            (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
                         doEdit = true;
                         editable.clear();
                         editable.append(mCategoryOld);
@@ -539,14 +542,14 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 catSelected = true;
-                if (mCategories.get(i).startsWith("Income:")) {
-                    currentType = "Income:";
-                } else if (mCategories.get(i).startsWith("Expense:")) {
-                    currentType = "Expense:";
-                } else if (mCategories.get(i).startsWith("Transfer:")) {
-                    currentType = "Transfer:";
-                } else if (mCategories.get(i).startsWith("Exchange:")) {
-                    currentType = "Exchange:";
+                if (mCategories.get(i).startsWith(getString(R.string.fragment_category_income))) {
+                    currentType = getString(R.string.fragment_category_income);
+                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_expense))) {
+                    currentType = getString(R.string.fragment_category_expense);
+                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_transfer))) {
+                    currentType = getString(R.string.fragment_category_transfer);
+                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_exchange))) {
+                    currentType = getString(R.string.fragment_category_exchange);
                 }
                 //TODO move the strings around depending on negative/positive value
                 doEdit = true;
@@ -857,13 +860,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
 
     private void highlightEditableText(EditText editText) {
-        if (editText.getText().toString().startsWith("Income:")) {
+        if (editText.getText().toString().startsWith(getString(R.string.fragment_category_income))) {
             editText.setSelection(7, editText.length());
-        } else if (editText.getText().toString().startsWith("Expense:")) {
+        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_expense))) {
             editText.setSelection(8, editText.length());
-        } else if (editText.getText().toString().startsWith("Transfer:")) {
+        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_transfer))) {
             editText.setSelection(9, editText.length());
-        } else if (editText.getText().toString().startsWith("Exchange:")) {
+        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_exchange))) {
             editText.setSelection(9, editText.length());
         }
     }
@@ -871,29 +874,29 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private void updateBlanks(String term) {
         if (baseIncomePosition < mCategories.size()) {
             mCategories.remove(baseIncomePosition);
-            mCategories.add(baseIncomePosition, "Income:" + term);
+            mCategories.add(baseIncomePosition, getString(R.string.fragment_category_income) + term);
         }
         if (baseExpensePosition < mCategories.size()) {
             mCategories.remove(baseExpensePosition);
-            mCategories.add(baseExpensePosition, "Expense:" + term);
+            mCategories.add(baseExpensePosition, getString(R.string.fragment_category_expense) + term);
         }
         if (baseTransferPosition < mCategories.size()) {
             mCategories.remove(baseTransferPosition);
-            mCategories.add(baseTransferPosition, "Transfer:" + term);
+            mCategories.add(baseTransferPosition, getString(R.string.fragment_category_transfer) + term);
         }
         if (baseExchangePosition < mCategories.size()) {
             mCategories.remove(baseExchangePosition);
-            mCategories.add(baseExchangePosition, "Exchange:" + term);
+            mCategories.add(baseExchangePosition, getString(R.string.fragment_category_exchange) + term);
         }
 
         mOriginalCategories.remove(originalBaseIncomePosition);
-        mOriginalCategories.add(originalBaseIncomePosition, "Income:" + term);
+        mOriginalCategories.add(originalBaseIncomePosition, getString(R.string.fragment_category_income) + term);
         mOriginalCategories.remove(originalBaseExpensePosition);
-        mOriginalCategories.add(originalBaseExpensePosition, "Expense:" + term);
+        mOriginalCategories.add(originalBaseExpensePosition, getString(R.string.fragment_category_expense) + term);
         mOriginalCategories.remove(originalBaseTransferPosition);
-        mOriginalCategories.add(originalBaseTransferPosition, "Transfer:" + term);
+        mOriginalCategories.add(originalBaseTransferPosition, getString(R.string.fragment_category_transfer) + term);
         mOriginalCategories.remove(originalBaseExchangePosition);
-        mOriginalCategories.add(originalBaseExchangePosition, "Exchange:" + term);
+        mOriginalCategories.add(originalBaseExchangePosition, getString(R.string.fragment_category_exchange) + term);
     }
 
     private void ShowAdvancedDetails(boolean hasFocus) {
@@ -1033,7 +1036,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if (transaction.getAmountSatoshi() < 0)
         {
             coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
-            feeFormatted = "+" + mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + " fee";
+            feeFormatted = "+" + mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
         }
         else
         {
