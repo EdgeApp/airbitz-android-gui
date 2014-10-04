@@ -508,6 +508,14 @@
   <string name="settings_categories_exchange">
     Cambio:
   </string>
+
+    <string name="fragment_category_cancel_title">Cancelar los Cambios</string>
+    <string name="fragment_category_cancel_message">¿Seguro que quieres cancelar cualquier cambio que haya hecho?</string>
+    <string name="fragment_category_income">Ingresos:</string>
+    <string name="fragment_category_expense">Gastos:</string>
+    <string name="fragment_category_transfer">Transferencia:</string>
+    <string name="fragment_category_exchange">Cambio:</string>
+
   <string name="dialog_days">
     Días
   </string>
