@@ -113,7 +113,7 @@ public class WalletFragment extends Fragment
             if(bundle.getString(WalletsFragment.FROM_SOURCE)!=null) {
                 String walletUUID = bundle.getString(Wallet.WALLET_UUID);
                 if (walletUUID == null || walletUUID.isEmpty()) {
-                    Log.d("WalletFragment", "no detail info");
+                    Common.LogD(TAG, "no detail info");
                 } else {
                     mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                 }
