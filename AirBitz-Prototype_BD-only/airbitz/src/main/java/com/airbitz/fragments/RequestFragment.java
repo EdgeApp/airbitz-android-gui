@@ -132,7 +132,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             public void onClick(View view) {
                 if (!mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString()) < 0) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-                    builder.setMessage("Invalid Amount")
+                    builder.setMessage(getString(R.string.request_invalid_amount))
                             .setCancelable(false)
                             .setNeutralButton(getResources().getString(R.string.string_ok),
                                     new DialogInterface.OnClickListener() {

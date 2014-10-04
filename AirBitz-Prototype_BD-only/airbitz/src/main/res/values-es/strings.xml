@@ -664,6 +664,9 @@
   <string name="request_amount_hint">
     Cantidad (Opcional)
   </string>
+
+    <string name="request_invalid_amount">cantidad no válida</string>
+
   <string name="request_qr_email_title">
     Airbitz Bitcoin Solicitud
   </string>
