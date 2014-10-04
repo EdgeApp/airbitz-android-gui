@@ -803,6 +803,10 @@
   <string name="export_saving_option_no_email_apps">
     No hay aplicaciones de correo electrónico instalados
   </string>
+
+    <string name="export_saving_option_private_seed">Semilla privada</string>
+    <string name="export_saving_option_pick_date">Elige una Fecha</string>
+
   <string name="offline_wallet_title">
     Desconectado Monedero
   </string>
