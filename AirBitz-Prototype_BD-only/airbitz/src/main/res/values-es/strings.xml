@@ -837,6 +837,14 @@
   <string name="question">
     Pregunta
   </string>
+
+    <!-- Strings for Contact Picker fragment -->
+    <string name="fragment_contact_picker_title_email">Email Búsqueda</string>
+    <string name="fragment_contact_picker_title_sms">SMS Búsqueda</string>
+
+    <!-- Strings for MapBusinessDirectory fragment -->
+    <string name="fragment_map_directory_unable_create_map">¡Lo siento! incapaz de crear mapas, buscar actualizaciones a Google Play Services</string>
+
   <string name="error_invalid_recovery_title">
     Regístrese Error
   </string>
