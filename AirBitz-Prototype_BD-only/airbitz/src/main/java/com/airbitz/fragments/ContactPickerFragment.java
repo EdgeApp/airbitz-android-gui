@@ -49,6 +49,7 @@ public class ContactPickerFragment extends Fragment {
     private TextView mFragmentTitle;
     private ListView mSearchListView;
     private HighlightOnPressImageButton mCancelButton;
+    private HighlightOnPressImageButton mHelpButton;
 
     private Bundle mBundle;
 
@@ -88,6 +89,14 @@ public class ContactPickerFragment extends Fragment {
 
             mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_sms));
         }
+
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_contact_picker_button_help);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.RECIPIENT), NavigationActivity.Tabs.REQUEST.ordinal());
+            }
+        });
+
 
         mContactName = (EditText) mView.findViewById(R.id.fragment_contact_picker_edittext_name);
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
