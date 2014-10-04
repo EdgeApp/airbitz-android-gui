@@ -300,6 +300,8 @@
     <string name="transaction_details_advanced_destination">"Destination"</string>
     <string name="transaction_details_advanced_miner_fee">"Miner Fee"</string>
 
+    <string name="transaction_details_advanced_fee">" fee"</string>
+
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
     <string name="export_account_title">Account:</string>
