@@ -254,7 +254,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
     private void copyToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("bitcoin address", mAddress);
+        ClipData clip = ClipData.newPlainText(getString(R.string.request_qr_title), mAddress);
         clipboard.setPrimaryClip(clip);
     }
 
