@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="export_array">
+        <item>CSV</item>
+        <item>Quicken</item>
+        <item>Quickbooks</item>
+        <item>View</item>
+    </array>
+
+    <array name="export_saving_option_array">
+        <item>Print</item>
+        <item>Email</item>
+        <item>Google Drive</item>
+        <item>Dropbox</item>
+        <item>Ver</item>
+    </array>
+
+    <!--Settings-->
+    <array name = "category_defaults">
+                 <item> Gastos: Viaje en avión </item>
+                 <item> Gastos: Alcohol &amp; Bares </item>
+                 <item> Gastos: Previsión </item>
+                 <item> Gastos: Parques </item>
+                 <item> Gastos: Artes </item>
+                 <item> Gastos: ATM Fee </item>
+                 <item> Gastos: Auto &amp; Transporte </item>
+                 <item> Gastos: Auto Insurance </item>
+                 <item> Gastos: Auto Pago </item>
+                 <item> Gastos: Artículos para el bebé </item>
+                 <item> Gastos: Babysitter &amp; Daycare </item>
+                 <item> Gastos: Banco Fee </item>
+                 <item> Gastos: Bills &amp; Utilidades </item>
+                 <item> Gastos: Libros </item>
+                 <item> Gastos: Books &amp; Suministros </item>
+                 <item> Gastos: Car Wash </item>
+                 <item> Gastos: Cash &amp; Cajero automático </item>
+                 <item> Gastos: Caridad </item>
+                 <item> Gastos: Ropa </item>
+                 <item> Gastos: cafés bar </item>
+                 <item> Gastos: Tarjeta de crédito Pago </item>
+                 <item> Gastos: Dentista </item>
+                 <item> Gastos: Depósito de Ahorro </item>
+                 <item> Gastos: Doctor </item>
+                 <item> Gastos: Educación </item>
+                 <item> Gastos: Electrónica &amp; Software </item>
+                 <item> Gastos: Entretenimiento </item>
+                 <item> Gastos: Eyecare </item>
+                 <item> Gastos: comida rápida </item>
+                 <item> Gastos: Comisiones y amp; Cargos </item>
+                 <item> Gastos: Financial </item>
+                 <item> Gastos: Asesor Financiero </item>
+                 <item> Gastos: Food &amp; Comedor </item>
+                 <item> Gastos: Mobiliario </item>
+                 <item> Gastos: Gas &amp; Combustible </item>
+                 <item> Gastos: Regalo </item>
+                 <item> Gastos: Regalos y amp; Donaciones </item>
+                 <item> Gastos: Comestibles </item>
+                 <item> Gastos: Gimnasio </item>
+                 <item> Gastos: Hair </item>
+                 <item> Gastos: Salud &amp; Fitness </item>
+                 <item> Gastos: HOA Dues </item>
+                 <item> Gastos: Aficiones </item>
+                 <item> Gastos: Home </item>
+                 <item> Gastos: Home Improvement </item>
+                 <item> Gastos: Home Insurance </item>
+                 <item> Gastos: Teléfono de la casa </item>
+                 <item> Gastos: Inicio Servicios </item>
+                 <item> gastos: Casa y jardín </item>
+                 <item> Gastos: Hotel </item>
+                 <item> Gastos: Interés Exp </item>
+                 <item> Gastos: Internet </item>
+                 <item> Gastos: IRA Contribución </item>
+                 <item> Gastos: Kids </item>
+                 <item> Gastos: actividades para niños </item>
+                 <item> Gastos: Late Fee </item>
+                 <item> Gastos: lavandería </item>
+                 <item> Gastos: Lawn &amp; Jardín </item>
+                 <item> Gastos: Life Insurance </item>
+                 <item> gastos:. Varios </item>
+                 <item> Gastos: Teléfono móvil </item>
+                 <item> Gastos: Mortgage &amp; Alquiler </item>
+                 <item> Gastos: Hipoteca Interés </item>
+                 <item> Gastos: Películas y amp; DVDs </item>
+                 <item> Gastos: Music </item>
+                 <item> Gastos: Newspaper &amp; Revistas </item>
+                 <item> Gasto: No estoy seguro </item>
+                 <item> Gastos: Parking </item>
+                 <item> Gastos: Cuidado Personal </item>
+                 <item> Gastos: Pet Food &amp; Suministros </item>
+                 <item> Gastos: Pet Grooming </item>
+                 <item> Gastos: Animales domésticos </item>
+                 <item> Gastos: Farmacia </item>
+                 <item> Gastos: Propiedad </item>
+                 <item> Gastos: transporte público </item>
+                 <item> Gastos: Registro </item>
+                 <item> Gastos: Alquiler de coches &amp; Taxi </item>
+                 <item> Gastos: Restaurantes </item>
+                 <item> Gastos: Servicio &amp; Piezas </item>
+                 <item> Gastos: Servicio Fee </item>
+                 <item> Gastos: Shopping </item>
+                 <item> Gastos: Spa &amp; Masaje </item>
+                 <item> Gastos: Artículos Deportivos </item>
+                 <item> Gastos: Deportes </item>
+                 <item> Gastos: Student Loan </item>
+                 <item> gastos: Impuestos </item>
+                 <item> Gastos: Televisión </item>
+                 <item> Gastos: Peajes </item>
+                 <item> Gastos: Juguetes </item>
+                 <item> gastos: Comisiones de Comercio </item>
+                 <item> Gastos: Viajes </item>
+                 <item> gastos: matrícula </item>
+                 <item> Gastos: Utilidades </item>
+                 <item> Gastos: Alquiler </item>
+                 <item> Gastos: Vet </item>
+
+                 <item> Ingresos: Consultoría Ingresos </item>
+                 <item> Ingresos: Div Ingresos </item>
+                 <item> Ingresos: Sueldo Neto </item>
+                 <item> Ingresos: Otros Ingresos </item>
+                 <item> Ingresos: Alquiler </item>
+                 <item> Ingresos: Ventas </item>
+
+                 <item> Tipo: Comprar Bitcoin </item>
+                 <item> Tipo: Vender Bitcoin </item>
+
+                 <item> Transferir: Bitcoin.de </item>
+                 <item> Transferir: Bitfinex </item>
+                 <item> Transferir: Bitstamp </item>
+                 <item> Transferir: BTC-e </item>
+                 <item> Transferir: BTCChina </item>
+                 <item> Transferir: BTER </item>
+                 <item> Transferir: CAVirtex </item>
+                 <item> Transferir: Coinbase </item>
+                 <item> Transferir: CoinMKT </item>
+                 <item> Transferir: Huobi </item>
+                 <item> Transferir: Kraken </item>
+                 <item> Transferir: MintPal </item>
+                 <item> Transferir: OKCoin </item>
+                 <item> Transferir: Bóveda de Satoshi </item>
+                 <item> Transferir: Monedero: Airbitz </item>
+                 <item> Transferir: Monedero: Armería </item>
+                 <item> Transferir: Monedero: Bitcoin Core </item>
+                 <item> Transferir: Monedero: Blockchain </item>
+                 <item> Transferir: Monedero: Electrum </item>
+                 <item> Transferir: Monedero: bits múltiples </item>
+                 <item> Transferir: Monedero: El micelio </item>
+                 <item> Transferir: Monedero: Monedero oscuro </item>
+             </array>
+
+    <string-array name="transaction_categories_list">
+             <item>Ingresos:</item>
+             <item>Gastos:</item>
+             <item>Transferir:</item>
+             <item>Tipo:</item>
+         </string-array>
+</resources>
