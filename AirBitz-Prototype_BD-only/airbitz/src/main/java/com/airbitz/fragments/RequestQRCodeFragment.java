@@ -53,6 +53,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private HighlightOnPressButton mCopyButton;
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
+    private TextView mTitleTextView;
 
     private Bitmap mQRBitmap;
     private String mID;
@@ -102,6 +103,9 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         ((NavigationActivity) getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
         mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
@@ -250,7 +254,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
     private void copyToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("bitcoin address", mAddress);
+        ClipData clip = ClipData.newPlainText(getString(R.string.request_qr_title), mAddress);
         clipboard.setPrimaryClip(clip);
     }
 

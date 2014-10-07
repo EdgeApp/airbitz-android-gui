@@ -17,22 +17,6 @@
     </array>
 
     <!--Settings-->
-    <array name="auto_logoff_array">
-        <item>5 minutes</item>
-        <item>15 minutes</item>
-    </array>
-
-    <array name="language_array">
-        <item>English</item>
-    </array>
-
-    <array name="default_currency_array">
-        <item>USD</item>
-        <item>Canadian</item>
-        <item>Euro</item>
-        <item>Peso</item>
-        <item>Yaun</item>
-    </array>
 
     <array name="category_defaults">
         <item>Expense:Air Travel</item>

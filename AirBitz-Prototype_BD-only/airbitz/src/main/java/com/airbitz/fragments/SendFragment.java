@@ -382,7 +382,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                     GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
             } else if(info!=null) {
                 stopCamera();
-                ShowMessageAndStartCameraDialog("Send Bitcoin", "Invalid bitcoin address");
+                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
         }
     }
@@ -411,7 +411,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
             } else if(info!=null) {
                 stopCamera();
-                ShowMessageAndStartCameraDialog("Send Bitcoin", "Invalid bitcoin address");
+                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
         }
     }
