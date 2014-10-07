@@ -257,7 +257,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         });
 
         mUserNameEditText.requestFocus();
-        
+
         return mView;
     }
 
@@ -613,6 +613,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mCreateAccountTask = null;
             mActivity.showModalProgress(false);
             if (success) {
+                AirbitzApplication.Login(mUsername, mPassword);
                 mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
                 mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
@@ -667,6 +668,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).popFragment();
                 ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.BD.ordinal());
+
+                mCoreAPI.setupAccountSettings();
+                mCoreAPI.startAllAsyncUpdates();
             }
         }
 
