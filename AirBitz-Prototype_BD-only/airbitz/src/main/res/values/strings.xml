@@ -43,6 +43,16 @@
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
     <string name="no_location_found">Unable to get a current location. Please enable Location Services.</string>
+    <string name="fragment_business_retrieving_data">Retrieving data…</string>
+    <string name="fragment_business_no_results">No Results Found</string>
+    <string name="fragment_business_cannot_retrieve_data">Can not retrieve data</string>
+    <string name="fragment_business_no_categories_retrieved">No categories retrieved from server</string>
+    <string name="fragment_business_enable_location_services">Enable location services for better results</string>
+
+    <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
+    <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>
+    <string name="fragment_directory_detail_directions">Directions</string>
+    <string name="fragment_directory_detail_discount">"Discount "</string>
 
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>
@@ -148,6 +158,9 @@
     <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
     <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
 
+    <string name="activity_recovery_error_wrong_answers_title">Wrong Answers</string>
+    <string name="activity_recovery_error_wrong_answers_message">The given answers were incorrect. Please try again</string>
+
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
     <string name="activity_forgot_submit">Submit</string>
@@ -191,6 +204,17 @@
     <string name="settings_categories_transfer">Transfer:</string>
     <string name="settings_categories_exchange">Exchange:</string>
 
+    <string name="settings_days">Day(s)</string>
+    <string name="settings_hours">Hour(s)</string>
+    <string name="settings_minutes">Minute(s)</string>
+
+    <!-- Strings for Category Fragment -->
+    <string name="fragment_category_cancel_title">Cancel Changes</string>
+    <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you made?</string>
+    <string name="fragment_category_income">Income:</string>
+    <string name="fragment_category_expense">Expense:</string>
+    <string name="fragment_category_transfer">Transfer:</string>
+    <string name="fragment_category_exchange">Exchange:</string>
 
     <!-- Strings for AutoLogoff Dialog -->
     <string name="dialog_days">Days</string>
@@ -211,6 +235,8 @@
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_failure_insufficient_funds">You do not have enough funds to send this transaction.</string>
+
+    <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
@@ -247,6 +273,8 @@
     <string name="request_button_import">Import</string>
     <string name="request_amount_hint">Amt (Optional)</string>
 
+    <string name="request_invalid_amount">Invalid Amount</string>
+
     <!-- Strings for Request QR Code fragment -->
     <string name="request_qr_email_title">Airbitz Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
@@ -271,6 +299,8 @@
     <string name="transaction_details_advanced_source">"Source"</string>
     <string name="transaction_details_advanced_destination">"Destination"</string>
     <string name="transaction_details_advanced_miner_fee">"Miner Fee"</string>
+
+    <string name="transaction_details_advanced_fee">" fee"</string>
 
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
@@ -308,6 +338,8 @@
     <string name="export_saving_option_no_transactions_message">There are no transactions to export in your date range</string>
     <string name="export_saving_option_email_subject">AirBitz Bitcoin Wallet Transactions</string>
     <string name="export_saving_option_no_email_apps">There are no email applications installed</string>
+    <string name="export_saving_option_private_seed">Private Seed</string>
+    <string name="export_saving_option_pick_date">Pick a Date</string>
 
     <!-- Strings for Offline Wallet fragment -->
     <string name="offline_wallet_title">Offline Wallet</string>
@@ -317,10 +349,17 @@
     <string name="offline_wallet_print_button_title">External Storage / Print</string>
 
     <!-- Strings for Received Success fragment -->
-    <string name="received_success_title">Send Bitcoin</string>
-    <string name="received_success_sending_title">Sending…</string>
-    <string name="received_success_received_title">Received!</string>
+    <string name="received_success_sending_title">Send Bitcoin</string>
+    <string name="received_success_sending">Sending</string>
+    <string name="received_success_receiving">Receiving</string>
     <string name="question">Question</string>
+
+    <!-- Strings for Contact Picker fragment -->
+    <string name="fragment_contact_picker_title_email">Email Search</string>
+    <string name="fragment_contact_picker_title_sms">SMS Search</string>
+
+    <!-- Strings for MapBusinessDirectory fragment -->
+    <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>
 
     <!-- Errors -->
     <string name="error_invalid_recovery_title">Sign Up Failed</string>

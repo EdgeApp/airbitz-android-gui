@@ -113,7 +113,7 @@ public class SendConfirmationFragment extends Fragment {
 
         bundle = this.getArguments();
         if (bundle == null) {
-            System.out.println("Send confirmation bundle is null");
+            Common.LogD(TAG, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -653,7 +653,7 @@ public class SendConfirmationFragment extends Fragment {
     @Override public void onResume() {
         bundle = this.getArguments();
         if (bundle == null) {
-            System.out.println("Send confirmation bundle is null");
+            Common.LogD(TAG, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");

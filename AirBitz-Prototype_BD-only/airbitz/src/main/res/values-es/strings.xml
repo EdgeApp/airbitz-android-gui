@@ -107,6 +107,18 @@
   <string name="no_location_found">
     No se puede obtener una localización actual. Por favor, activa los servicios de localización.
   </string>
+
+    <string name="fragment_business_retrieving_data">Recuperando datos...</string>
+    <string name="fragment_business_no_results">No se encontraron resultados</string>
+    <string name="fragment_business_cannot_retrieve_data">No se pueden recuperar los datos</string>
+    <string name="fragment_business_no_categories_retrieved">No hay categorías recuperados del servidor</string>
+    <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
+
+    <string name="fragment_directory_detail_getting_venue_data">Obtener datos venue…</string>
+    <string name="fragment_directory_detail_timeout_retrieving_data">Tiempo de espera de la obtención de datos…</string>
+    <string name="fragment_directory_detail_directions">Direcciones</string>
+    <string name="fragment_directory_detail_discount">"Descuento "</string>
+
   <string name="server_error_account_already_exists">
     Esta cuenta ya existe.
   </string>
@@ -133,6 +145,9 @@
   <string name="server_error_insufficient_funds">
     La insuficiencia de fondos
   </string>
+
+    <string name="fragment_send_send_bitcoin_invalid">Dirección bitcoin no válida</string>
+
   <string name="server_error_synchronizing">
     Sincronización con la red.
   </string>
@@ -394,6 +409,10 @@
   <string name="activity_recovery_error_save_failed">
     Respuestas Guardar recuperación fracasaron
   </string>
+
+    <string name="activity_recovery_error_wrong_answers_title">Respuestas Incorrectas</string>
+    <string name="activity_recovery_error_wrong_answers_message">Las respuestas no son correctos. Por favor, inténtelo de nuevo.</string>
+
   <string name="activity_forgot_title">
     Olvidé mi contraseña
   </string>
@@ -455,7 +474,7 @@
     GENERAL
   </string>
   <string name="settings_title_auto_logoff">
-    Registro automático después
+    Cerrar la sesión en
   </string>
   <string name="settings_title_language">
     Idioma
@@ -508,6 +527,18 @@
   <string name="settings_categories_exchange">
     Cambio:
   </string>
+
+    <string name="settings_days">Día</string>
+    <string name="settings_hours">Hora</string>
+    <string name="settings_minutes">Minuto</string>
+
+    <string name="fragment_category_cancel_title">Cancelar los Cambios</string>
+    <string name="fragment_category_cancel_message">¿Seguro que quieres cancelar cualquier cambio que haya hecho?</string>
+    <string name="fragment_category_income">Ingresos:</string>
+    <string name="fragment_category_expense">Gastos:</string>
+    <string name="fragment_category_transfer">Transferencia:</string>
+    <string name="fragment_category_exchange">Cambio:</string>
+
   <string name="dialog_days">
     Días
   </string>
@@ -637,6 +668,9 @@
   <string name="request_amount_hint">
     Cantidad (Opcional)
   </string>
+
+    <string name="request_invalid_amount">cantidad no válida</string>
+
   <string name="request_qr_email_title">
     Airbitz Bitcoin Solicitud
   </string>
@@ -688,7 +722,7 @@
     <string name="transaction_details_advanced_source">"Fuente"</string>
     <string name="transaction_details_advanced_destination">"Destino"</string>
     <string name="transaction_details_advanced_miner_fee">"Tarifa Minero"</string>
-
+    <string name="transaction_details_advanced_fee">" tarifa"</string>
 
   <string name="export_title">
     Exportación
@@ -783,6 +817,10 @@
   <string name="export_saving_option_no_email_apps">
     No hay aplicaciones de correo electrónico instalados
   </string>
+
+    <string name="export_saving_option_private_seed">Semilla privada</string>
+    <string name="export_saving_option_pick_date">Elige una Fecha</string>
+
   <string name="offline_wallet_title">
     Desconectado Monedero
   </string>
@@ -798,18 +836,26 @@
   <string name="offline_wallet_print_button_title">
     Almacenamiento externo / Imprimir
   </string>
-  <string name="received_success_title">
+  <string name="received_success_sending_title">
     Enviar Bitcoin
   </string>
-  <string name="received_success_sending_title">
-    Enviando…
+  <string name="received_success_sending">
+    Enviando
   </string>
-  <string name="received_success_received_title">
-    Recibido!
+  <string name="received_success_receiving">
+    Recibir
   </string>
   <string name="question">
     Pregunta
   </string>
+
+    <!-- Strings for Contact Picker fragment -->
+    <string name="fragment_contact_picker_title_email">Email Búsqueda</string>
+    <string name="fragment_contact_picker_title_sms">SMS Búsqueda</string>
+
+    <!-- Strings for MapBusinessDirectory fragment -->
+    <string name="fragment_map_directory_unable_create_map">¡Lo siento! incapaz de crear mapas, buscar actualizaciones a Google Play Services</string>
+
   <string name="error_invalid_recovery_title">
     Regístrese Error
   </string>

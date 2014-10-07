@@ -37,6 +37,7 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -283,7 +284,7 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        mAccountTitle.setText("Account: "+AirbitzApplication.getUsername());
+        mAccountTitle.setText(getString(R.string.settings_account_title)+": "+AirbitzApplication.getUsername());
         try {
             String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
             Integer iVersionCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
@@ -558,8 +559,8 @@ public class SettingFragment extends Fragment {
     }
 
     static class AutoLogoffDialogManager {
-        static final String[] mAutoLogoffStrings = { "Day(s)", "Hour(s)", "Minute(s)" };
         static final int MAX_TIME_VALUE = 60;
+        List<String> mAutoLogoffStrings = new ArrayList<String>();
 
         private int mNumberSelection;
         private int mTextSelection;
@@ -573,6 +574,9 @@ public class SettingFragment extends Fragment {
         AutoLogoffDialogManager(Button button, Activity activity) {
             this.mButton = button;
             this.mActivity = activity;
+            mAutoLogoffStrings.add(mActivity.getString(R.string.settings_days));
+            mAutoLogoffStrings.add(mActivity.getString(R.string.settings_hours));
+            mAutoLogoffStrings.add(mActivity.getString(R.string.settings_minutes));
         }
 
         public void setMinutes(int minutes) {
@@ -591,7 +595,7 @@ public class SettingFragment extends Fragment {
         }
 
         private void setButtonText() {
-            String strType = mAutoLogoffStrings[mTextSelection];
+            String strType = mAutoLogoffStrings.get(mTextSelection);
             String timeText = mNumberSelection + " " + strType;
             if (mNumberSelection == 1) {
                 timeText = timeText.replaceAll("\\(s\\)", "");
@@ -619,7 +623,7 @@ public class SettingFragment extends Fragment {
 
             mTextPicker.setMaxValue(2);
             mTextPicker.setMinValue(0);
-            mTextPicker.setDisplayedValues(mAutoLogoffStrings);
+            mTextPicker.setDisplayedValues(mAutoLogoffStrings.toArray(new String[mAutoLogoffStrings.size()]));
             mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
             mTextPicker.setValue(mTextSelection);
         }
