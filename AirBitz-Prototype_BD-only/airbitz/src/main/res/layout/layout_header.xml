@@ -27,9 +27,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/fragment_category_button_back"
         android:layout_toLeftOf="@+id/fragment_category_button_help"
-        android:layout_height="wrap_content" >
+        android:layout_centerInParent="true"
+        android:gravity="center" >
 
         <!-- NOTE: this needs to be in a ViewGroup since gravity doesn't work properly on AutofitTextView. -->
 
@@ -58,6 +60,7 @@
         android:src="@drawable/btn_help"
         android:padding="12.6dp"
         android:contentDescription="@string/string_help_button"
-        android:visibility="gone"/>
+        android:visibility="invisible"
+        android:clickable="false"/>
 
 </RelativeLayout>
