@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
@@ -16,8 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -32,7 +29,6 @@ import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,7 +71,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     private Long mSavedSatoshi;
     private String mSavedFiat;
-    private int mSavedSelection;
+    private int mSavedIndex;
     private boolean mBtc = false;
 
     @Override
@@ -365,9 +361,10 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         mAutoUpdatingTextFields = true;
             if(mSavedSatoshi != null) {
-                mFromIndex = mSavedSelection;
-                mFiatField.setText(mSavedFiat);
+                mFromIndex = mSavedIndex;
+                mSelectedWallet = mWallets.get(mFromIndex);
                 mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+                mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
                 pickWalletSpinner.setSelection(mFromIndex);
             } else {
                 mFiatField.setText("");
@@ -381,16 +378,12 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         super.onPause();
 
         mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        mSavedFiat = mFiatField.getText().toString();
-        mSavedSelection = pickWalletSpinner.getSelectedItemPosition();
+        mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
 
         // If calculator is locked open, unlock it
         ((NavigationActivity) getActivity()).unlockCalculator();
-        if (((NavigationActivity) getActivity()).isLargeDpi()) {
-            mCalculator.showDoneButton();
-        }
     }
 
     @Override
