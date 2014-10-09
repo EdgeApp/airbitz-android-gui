@@ -66,8 +66,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private EditText mFiatField;
     private EditText mBitcoinField;
-    private String mSavedBitcoin = "";
-    private String mSavedFiat;
+    private long mSavedBitcoin = -1;
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -92,7 +91,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mLabel;
     private Boolean mIsUUID;
     private long mAmountMax;
-    private long mAmountToSendSatoshi;
+    private long mAmountToSendSatoshi=-1;
     private long mFees;
 
     private CoreAPI mCoreAPI;
@@ -559,7 +558,6 @@ public class SendConfirmationFragment extends Fragment {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
-//        mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
         if((mFees+mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
@@ -672,17 +670,18 @@ public class SendConfirmationFragment extends Fragment {
 
         mActivity.hideCalculator();
 
-        mAutoUpdatingTextFields = false;
-
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
-        if (mSavedBitcoin != null && !mSavedBitcoin.isEmpty()) {
-            mBitcoinField.setText(mSavedBitcoin);
-            mPinEdittext.requestFocus();
-        } else if (mAmountToSendSatoshi > 0) {
+        mAutoUpdatingTextFields = true;
+
+        if (mSavedBitcoin > -1) {
+            mAmountToSendSatoshi = mSavedBitcoin;
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
+            if(mWalletForConversions!=null) {
+                mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
+            }
             mPinEdittext.requestFocus();
         } else {
             mFiatField.setText("");
@@ -704,15 +703,15 @@ public class SendConfirmationFragment extends Fragment {
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
         mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
         mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
+
+        mAutoUpdatingTextFields = false;
+
         super.onResume();
     }
 
     @Override public void onPause() {
         super.onPause();
-        mSavedBitcoin = mBitcoinField.getText().toString();
-        mSavedFiat = mFiatField.getText().toString();
-        mBitcoinField = null;
-        mFiatField = null;
+        mSavedBitcoin = mAmountToSendSatoshi;
         if(mCalculateFeesTask !=null)
             mCalculateFeesTask.cancel(true);
         if(mMaxAmountTask!=null)

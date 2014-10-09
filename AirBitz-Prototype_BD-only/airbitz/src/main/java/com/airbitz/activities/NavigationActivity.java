@@ -426,6 +426,9 @@ public class NavigationActivity extends BaseActivity
         params.setMargins(0, 0, 0, 0);
         mCalculatorView.setLayoutParams(params);
         mCalcLocked = false;
+        if (isLargeDpi()) {
+            mCalculatorView.showDoneButton();
+        }
         hideCalculator();
     }
 

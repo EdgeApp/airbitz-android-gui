@@ -2,22 +2,10 @@
 <pre-dex-items>
 
     <item
-        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/support-v4-19.0.1-969b5fe03c21bb40da29facde81330e6457276c8.jar"
-        jar="/home/thorton/local/packages/android-studio/sdk/extras/android/m2repository/com/android/support/support-v4/19.0.1/support-v4-19.0.1.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="920802528981dd0dc30bacefc1add1a3e8f6913e"/>
-    <item
-        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/picasso-2.3.4-8f1b3c552977d78743bdb7f4901c51cf1389a470.jar"
-        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
+        dex="/Users/tom/Documents/AndroidStudioProjects/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/picasso-2.3.4-71f15d5d30c0693584519a102dd48071e5cbb43e.jar"
+        jar="/Users/tom/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="3b646ddbdac8a33fc45b64564011da81d23e4635"/>
-    <item
-        dex="/home/thorton/programming/repos/airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/prod/debug/commons-io-2.4-1d92a76fb19971ef2ce02ecc3f2e5f94af535121.jar"
-        jar="/home/thorton/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
 
 </pre-dex-items>
