@@ -430,10 +430,9 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void hideCalculator() {
-        if (!mCalcLocked && mCalculatorView.getVisibility()==View.VISIBLE) {
+            mHandler.removeCallbacks(delayedShowCalculator);
             mCalculatorView.setVisibility(View.GONE);
             mCalculatorView.setEnabled(false);
-        }
     }
 
     public void showCalculator() {
