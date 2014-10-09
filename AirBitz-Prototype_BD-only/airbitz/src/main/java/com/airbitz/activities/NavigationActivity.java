@@ -403,8 +403,6 @@ public class NavigationActivity extends BaseActivity
     }
 
     public void lockCalculator() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
         if (!isLargeDpi()) {
             return;
         }
