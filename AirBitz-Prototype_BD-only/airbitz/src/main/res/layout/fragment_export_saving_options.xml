@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root">
+    android:orientation="vertical">
 
 
     <RelativeLayout
+        android:id="@+id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_category_layout_header"
         android:background="#40000000"
         android:padding="4dp">
 
@@ -18,39 +18,39 @@
             android:id="@+id/fragment_exportsaving_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
+            android:contentDescription="@string/string_back_button"
             android:padding="12dp"
-            android:contentDescription="@string/string_back_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back" />
 
         <TextView
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/export_saving_title"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="16sp"/>
+            android:text="@string/export_saving_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <com.airbitz.objects.HighlightOnPressImageButton
             android:id="@+id/fragment_exportsaving_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/string_help_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_help_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help" />
     </RelativeLayout>
 
     <ScrollView
@@ -70,47 +70,47 @@
                 android:id="@+id/layout_export_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/emboss_down"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:background="@drawable/emboss_down"
                 android:gravity="center_horizontal"
-                android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:paddingRight="10dp">
+                android:paddingRight="10dp"
+                android:paddingTop="5dp">
 
                 <RelativeLayout
                     android:id="@+id/layout_account"
                     android:layout_width="match_parent"
                     android:layout_height="31dp"
-                    android:gravity="center_vertical"
                     android:layout_marginBottom="2.5dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:id="@+id/textview_account"
                         android:layout_width="100.8dp"
                         android:layout_height="match_parent"
-                        android:text="@string/export_saving_wallet_label"
-                        android:gravity="right|center_vertical"
-                        android:textColor="@android:color/white"
-                        android:layout_marginRight="12.6dp"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginLeft="6.3dp"
-                        android:textSize="15sp"
-                        android:layout_alignParentLeft="true"/>
+                        android:layout_marginRight="12.6dp"
+                        android:gravity="right|center_vertical"
+                        android:text="@string/export_saving_wallet_label"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
 
                     <com.airbitz.objects.HighlightOnPressSpinner
                         android:id="@+id/fragment_exportsaving_account_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginRight="18.9dp"
                         android:layout_toRightOf="@id/textview_account"
-                        android:text="Checking"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
+                        android:text="Checking"
                         android:textColor="@android:color/white"
-                        android:layout_marginRight="18.9dp"
-                        android:textSize="15sp"/>
+                        android:textSize="15sp" />
 
                 </RelativeLayout>
 
@@ -119,82 +119,83 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/layout_account">
-                <RelativeLayout
-                    android:id="@+id/layout_from"
-                    android:layout_width="match_parent"
-                    android:layout_height="31dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="2.5dp"
-                    android:layout_marginTop="2.5dp">
 
-                    <TextView
-                        android:id="@+id/textview_from"
-                        android:layout_width="100.8dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/export_saving_from_label"
-                        android:gravity="right|center_vertical"
-                        android:textColor="@android:color/white"
-                        android:layout_marginRight="12.6dp"
-                        android:layout_marginLeft="6.3dp"
-                        android:textSize="15sp"
-                        android:layout_alignParentLeft="true"/>
-
-                    <com.airbitz.objects.HighlightOnPressButton
-                        android:id="@+id/fragment_exportsaving_from_spinner"
+                    <RelativeLayout
+                        android:id="@+id/layout_from"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="10/15/2014 12:20pm"
-                        android:layout_toRightOf="@+id/textview_from"
-                        android:background="@drawable/bg_btn_blue_stretch"
-                        android:gravity="center"
-                        android:textColor="@android:color/white"
-                        android:drawableLeft="@drawable/ico_calendar"
-                        android:paddingLeft="12.6dp"
-                        android:drawablePadding="-25.2dp"
-                        android:layout_marginRight="18.9dp"
-                        android:textSize="12sp"/>
+                        android:layout_height="31dp"
+                        android:layout_marginBottom="2.5dp"
+                        android:layout_marginTop="2.5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/textview_from"
+                            android:layout_width="100.8dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="6.3dp"
+                            android:layout_marginRight="12.6dp"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/export_saving_from_label"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp" />
+
+                        <com.airbitz.objects.HighlightOnPressButton
+                            android:id="@+id/fragment_exportsaving_from_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="18.9dp"
+                            android:layout_toRightOf="@+id/textview_from"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:drawableLeft="@drawable/ico_calendar"
+                            android:drawablePadding="-25.2dp"
+                            android:gravity="center"
+                            android:paddingLeft="12.6dp"
+                            android:text="10/15/2014 12:20pm"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
 
 
-                </RelativeLayout>
+                    </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/layout_to"
-                    android:layout_width="match_parent"
-                    android:layout_height="31dp"
-                    android:layout_below="@id/layout_from"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="2.5dp">
-
-                    <TextView
-                        android:id="@+id/textview_to"
-                        android:layout_width="100.8dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/export_saving_to_label"
-                        android:gravity="right|center_vertical"
-                        android:textColor="@android:color/white"
-                        android:layout_marginRight="12.6dp"
-                        android:layout_marginLeft="6.3dp"
-                        android:textSize="15sp"
-                        android:layout_alignParentLeft="true"/>
-
-
-                    <com.airbitz.objects.HighlightOnPressButton
-                        android:id="@+id/fragment_exportsaving_to_spinner"
+                    <RelativeLayout
+                        android:id="@+id/layout_to"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="10/15/2014 12:20pm"
-                        android:layout_toRightOf="@+id/textview_to"
-                        android:background="@drawable/bg_btn_blue_stretch"
-                        android:gravity="center"
-                        android:textColor="@android:color/white"
-                        android:drawableLeft="@drawable/ico_calendar"
-                        android:paddingLeft="12.6dp"
-                        android:drawablePadding="-25.2dp"
-                        android:layout_marginRight="18.9dp"
-                        android:textSize="12sp"/>
+                        android:layout_height="31dp"
+                        android:layout_below="@id/layout_from"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="2.5dp"
+                        android:gravity="center_vertical">
 
-                </RelativeLayout>
+                        <TextView
+                            android:id="@+id/textview_to"
+                            android:layout_width="100.8dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="6.3dp"
+                            android:layout_marginRight="12.6dp"
+                            android:gravity="right|center_vertical"
+                            android:text="@string/export_saving_to_label"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp" />
+
+
+                        <com.airbitz.objects.HighlightOnPressButton
+                            android:id="@+id/fragment_exportsaving_to_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="18.9dp"
+                            android:layout_toRightOf="@+id/textview_to"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:drawableLeft="@drawable/ico_calendar"
+                            android:drawablePadding="-25.2dp"
+                            android:gravity="center"
+                            android:paddingLeft="12.6dp"
+                            android:text="10/15/2014 12:20pm"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                    </RelativeLayout>
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -204,246 +205,253 @@
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
                 android:layout_below="@id/layout_export_data"
+                android:layout_marginBottom="2.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="2.5dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
                 <Button
+                    android:id="@+id/button_yesterday"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="6.3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/emboss_down"
+                    android:gravity="center"
                     android:text="@string/export_account_yesterday"
                     android:textColor="@android:color/white"
-                    android:id="@+id/button_yesterday"
-                    android:layout_marginRight="6.3dp"
-                    android:textSize="15sp"
-                    android:gravity="center"
-                    android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/button_last_week"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/export_account_last_week"
-                    android:textColor="@android:color/white"
-                    android:id="@+id/button_last_week"
-                    android:textSize="15sp"
                     android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
-                    android:gravity="center"
+                    android:layout_weight="1"
                     android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:gravity="center"
+                    android:text="@string/export_account_last_week"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/button_last_month"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="6.3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/emboss_down"
+                    android:gravity="center"
                     android:text="@string/export_account_last_month"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    android:id="@+id/button_last_month"
-                    android:layout_marginLeft="6.3dp"
-                    android:gravity="center"
-                    android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:textSize="15sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_export_this_period"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
                 android:layout_below="@id/layout_export_last_period"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="2.5dp"
-                android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
                 <Button
+                    android:id="@+id/button_today"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="6.3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/emboss_down"
+                    android:gravity="center"
                     android:text="@string/export_account_today"
                     android:textColor="@android:color/white"
-                    android:id="@+id/button_today"
-                    android:layout_marginRight="6.3dp"
-                    android:textSize="15sp"
-                    android:gravity="center"
-                    android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/button_this_week"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/export_account_this_week"
-                    android:textColor="@android:color/white"
-                    android:id="@+id/button_this_week"
-                    android:textSize="15sp"
                     android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
-                    android:gravity="center"
+                    android:layout_weight="1"
                     android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:gravity="center"
+                    android:text="@string/export_account_this_week"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
 
                 <Button
+                    android:id="@+id/button_this_month"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="6.3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/emboss_down"
+                    android:gravity="center"
                     android:text="@string/export_account_this_month"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    android:id="@+id/button_this_month"
-                    android:layout_marginLeft="6.3dp"
-                    android:gravity="center"
-                    android:background="@drawable/emboss_down"
-                    android:layout_weight="1"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/layout_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:id="@+id/layout_data"
+                android:layout_below="@id/layout_export_this_period"
+                android:layout_marginBottom="6.3dp"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="6.3dp"
-                android:layout_below="@id/layout_export_this_period">
+                android:background="@android:color/transparent">
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_print"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_print_label"
-                    android:textColor="#005f96"
                     android:background="@drawable/wallet_list_top_archive"
                     android:drawableRight="@drawable/arrow_right"
-                    android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"
-                    android:gravity="center_vertical"
                     android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
+                    android:paddingRight="18.9dp"
+                    android:text="@string/export_saving_print_label"
+                    android:textColor="#005f96"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_print"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ico_print"
-                    android:padding="12.6dp"/>
+                    android:padding="12.6dp"
+                    android:src="@drawable/ico_print" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_sd_card"
-                    android:layout_below="@id/fragment_exportsaving_button_print"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_save_SD_label"
-                    android:textColor="#005f96"
+                    android:layout_below="@id/fragment_exportsaving_button_print"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
-                    android:gravity="center_vertical"
-                    android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"
                     android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
+                    android:paddingRight="18.9dp"
+                    android:text="@string/export_saving_save_SD_label"
+                    android:textColor="#005f96"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_sd_card"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
+                    android:layout_below="@id/fragment_exportsaving_button_print"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ico_sdcard"
                     android:padding="12.6dp"
-                    android:layout_below="@id/fragment_exportsaving_button_print"/>
+                    android:src="@drawable/ico_sdcard" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_email"
-                    android:layout_below="@id/fragment_exportsaving_button_sd_card"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_email_label"
-                    android:textColor="#005f96"
+                    android:layout_below="@id/fragment_exportsaving_button_sd_card"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
                     android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
                     android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"/>
+                    android:text="@string/export_saving_email_label"
+                    android:textColor="#005f96" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_email"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
+                    android:layout_below="@id/fragment_exportsaving_button_sd_card"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ico_email_small"
                     android:padding="12.6dp"
-                    android:layout_below="@id/fragment_exportsaving_button_sd_card"/>
+                    android:src="@drawable/ico_email_small" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_google_drive"
-                    android:layout_below="@id/fragment_exportsaving_button_email"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_google_drive_label"
-                    android:textColor="#005f96"
+                    android:layout_below="@id/fragment_exportsaving_button_email"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
-                    android:gravity="center_vertical"
-                    android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"
                     android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
+                    android:paddingRight="18.9dp"
+                    android:text="@string/export_saving_google_drive_label"
+                    android:textColor="#005f96"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_google_drive"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ico_gdrive"
-                    android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_email"
+                    android:background="@android:color/transparent"
+                    android:padding="12.6dp"
+                    android:src="@drawable/ico_gdrive"
                     android:visibility="visible" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_dropbox"
-                    android:layout_below="@id/fragment_exportsaving_button_google_drive"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_dropbox_label"
-                    android:textColor="#005f96"
+                    android:layout_below="@id/fragment_exportsaving_button_google_drive"
                     android:background="@drawable/wallet_list_standard"
                     android:drawableRight="@drawable/arrow_right"
-                    android:gravity="center_vertical"
-                    android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"
                     android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
+                    android:paddingRight="18.9dp"
+                    android:text="@string/export_saving_dropbox_label"
+                    android:textColor="#005f96"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_dropbox"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ico_dropbox"
-                    android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
+                    android:background="@android:color/transparent"
+                    android:padding="12.6dp"
+                    android:src="@drawable/ico_dropbox"
                     android:visibility="visible" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_view"
-                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/export_saving_view_label"
-                    android:textColor="#005f96"
+                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
                     android:background="@drawable/wallet_list_bottom"
                     android:drawableRight="@drawable/arrow_right"
-                    android:gravity="center_vertical"
-                    android:paddingRight="18.9dp"
-                    android:paddingLeft="56.7dp"
                     android:enabled="true"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="56.7dp"
+                    android:paddingRight="18.9dp"
+                    android:text="@string/export_saving_view_label"
+                    android:textColor="#005f96"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/fragment_exportsaving_image_view"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ico_view"
-                    android:padding="12.6dp"
                     android:layout_below="@id/fragment_exportsaving_button_dropbox"
+                    android:background="@android:color/transparent"
+                    android:padding="12.6dp"
+                    android:src="@drawable/ico_view"
                     android:visibility="visible" />
             </RelativeLayout>
 

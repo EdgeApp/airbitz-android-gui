@@ -3,46 +3,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:background="#addff1">
+    android:background="#addff1"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/imageview_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:scaleType="fitXY"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
         android:adjustViewBounds="true"
         android:padding="2dp"
-        android:src="@drawable/ico_dots"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
-        android:layout_centerVertical="true"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/ico_dots" />
 
     <ImageView
         android:id="@+id/imageview_arrow"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:src="@drawable/arrow_right"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:layout_centerVertical="true"/>
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_right" />
 
     <TextView
         android:id="@+id/textview_business_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:layout_toLeftOf="@id/imageview_arrow"
+        android:layout_toRightOf="@id/imageview_icon"
         android:ellipsize="none"
         android:singleLine="false"
-        android:layout_toRightOf="@id/imageview_icon"
-        android:layout_toLeftOf="@id/imageview_arrow"
         android:text="item"
-        android:layout_margin="10dp"
-        android:textSize="15sp"
         android:textColor="@android:color/holo_blue_dark"
-        android:layout_centerVertical="true"/>
-
+        android:textSize="15sp" />
 
 
 </RelativeLayout>

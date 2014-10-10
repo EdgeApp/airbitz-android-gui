@@ -26,96 +26,97 @@
 
     <!-- Main Content -->
 
-        <!-- Map View -->
+    <!-- Map View -->
 
-        <LinearLayout
-            android:id="@+id/map_view_layout"
+    <LinearLayout
+        android:id="@+id/map_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/map_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="240dp"
+            android:foreground="@drawable/map_container_shadows">
 
-            <FrameLayout
-                android:id="@+id/map_container"
+            <LinearLayout
+                android:id="@+id/map_view"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:foreground="@drawable/map_container_shadows">
+                android:layout_height="480dp"
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/map_view"
+                <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/custom_map_fragment"
                     android:layout_width="match_parent"
-                    android:layout_height="480dp"
-                    android:layout_gravity="center"
-                    android:orientation="vertical" >
+                    android:layout_height="match_parent" />
 
-                    <com.google.android.gms.maps.MapView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:id="@+id/custom_map_fragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+            </LinearLayout>
 
-                    </LinearLayout>
+            <ImageButton
+                android:id="@+id/locateMeButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="10dp"
+                android:background="@drawable/ico_locate_me" />
 
-                <ImageButton
-                    android:id="@+id/locateMeButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="bottom|right"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ico_locate_me" />
+        </FrameLayout>
 
-            </FrameLayout>
+        <RelativeLayout
+            android:id="@+id/list_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
-            <RelativeLayout
-                android:id="@+id/list_view_container"
+            <ListView
+                android:id="@+id/map_fragment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/transparent"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/dragLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_alignParentTop="true"
+                android:background="#000000"
+                android:orientation="vertical">
 
-                <ListView
-                    android:id="@+id/map_fragment_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical"
-                    android:layout_alignParentTop="true" />
-
-                <LinearLayout
-                    android:id="@+id/dragLayout"
+                <ImageView
+                    android:id="@+id/dragImageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#000000"
-                    android:orientation="vertical"
-                    android:layout_alignParentTop="true">
+                    android:background="@drawable/gradient_background_grey"
+                    android:padding="8dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ico_drag" />
 
-                    <ImageView
-                        android:id="@+id/dragImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_background_grey"
-                        android:padding="8dp"
-                        android:scaleType="center"
-                        android:src="@drawable/ico_drag" />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="@android:color/black"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="#88FFFFFF" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@android:color/black" />
 
-                </LinearLayout>
-            </RelativeLayout>
-        </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#88FFFFFF" />
 
-        <!-- Search ListView -->
-        <ListView
-            android:id="@+id/listview_search"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/gray_border"
-            android:dividerHeight="1px"
-            android:visibility="gone" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Search ListView -->
+    <ListView
+        android:id="@+id/listview_search"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/gray_border"
+        android:dividerHeight="1px"
+        android:visibility="gone" />
 
 
 </LinearLayout>

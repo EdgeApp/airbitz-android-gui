@@ -7,24 +7,24 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
-        android:id="@+id/fragment_category_layout_header"
         android:background="@drawable/bg_dark_header">
 
         <ImageButton
             android:id="@+id/settings_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
-            android:visibility="gone"
+            android:contentDescription="@string/string_back_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_back_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/settings_textview_title"
@@ -39,16 +39,16 @@
 
         <com.airbitz.objects.HighlightOnPressImageButton
             android:id="@+id/settings_button_help"
-            android:src="@drawable/btn_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/string_help_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_help_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help" />
 
     </RelativeLayout>
 
@@ -67,8 +67,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView
@@ -85,29 +85,29 @@
 
                 <RadioGroup
                     android:id="@+id/settings_denomination_denomination_group"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="30dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
 
                     <RadioButton
                         android:id="@+id/settings_denomination_buttons_bitcoin"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/wallet_list_top_archive"
-                        android:drawableRight="@drawable/radio_button"
                         android:button="@null"
+                        android:checked="true"
                         android:drawablePadding="15dp"
+                        android:drawableRight="@drawable/radio_button"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="13dp"
                         android:paddingTop="13dp"
-                        android:checked="true"
                         android:text="@string/settings_denomination_buttons_bitcoin"
                         android:textColor="@color/settings_button_text"
                         android:textSize="13sp" />
@@ -117,9 +117,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/wallet_list_standard"
+                        android:button="@null"
                         android:drawablePadding="20dp"
                         android:drawableRight="@drawable/radio_button"
-                        android:button="@null"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
@@ -134,8 +134,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/wallet_list_bottom"
-                        android:drawableRight="@drawable/radio_button"
                         android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
                         android:gravity="left"
                         android:paddingBottom="13dp"
                         android:paddingLeft="15dp"
@@ -152,8 +152,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView
@@ -170,14 +170,14 @@
 
                 <LinearLayout
                     android:id="@+id/credentials_buttons"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="30dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
 
                     <com.airbitz.objects.HighlightOnPressButton
                         android:id="@+id/settings_button_change_password"
@@ -231,8 +231,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView
@@ -249,113 +249,118 @@
 
                 <LinearLayout
                     android:id="@+id/user_buttons"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="30dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/wallet_list_top_archive"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
 
                         <Switch
                             android:id="@+id/settings_toggle_send_user_info"
-                            android:background="@android:color/transparent"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:textOn=""
-                            android:textOff=""
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@android:color/transparent"
+                            android:checked="false"
+                            android:switchMinWidth="0dp"
                             android:text="@string/settings_button_send_user_info"
                             android:textColor="@color/settings_button_text"
+                            android:textOff=""
+                            android:textOn=""
                             android:textSize="13sp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_alignParentRight="true"
                             android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector"
-                            android:switchMinWidth="0dp"
-                            android:checked="false" />
+                            android:track="@drawable/toggle_selector" />
 
                     </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@drawable/wallet_list_standard">
+                        android:background="@drawable/wallet_list_standard"
+                        android:orientation="horizontal">
+
                         <EditText
                             android:id="@+id/settings_edit_first_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"
-                            android:background="@drawable/emboss_down_lighta"
-                            android:gravity="left|center_vertical"
-                            android:enabled="false"
                             android:layout_marginBottom="3.15dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginTop="3.15dp"
-                            android:paddingLeft="9.45dp"
+                            android:background="@drawable/emboss_down_lighta"
+                            android:enabled="false"
+                            android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_first_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:textColorHint="@color/settings_edit_hint"
+                            android:paddingLeft="9.45dp"
+                            android:singleLine="true"
                             android:textColor="@color/settings_edit_text"
-                            android:textSize="14sp"
-                            android:singleLine="true"/>
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textSize="14sp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@drawable/wallet_list_standard">
+                        android:background="@drawable/wallet_list_standard"
+                        android:orientation="horizontal">
+
                         <EditText
                             android:id="@+id/settings_edit_last_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"
-                            android:background="@drawable/bg_edittext"
-                            android:gravity="left|center_vertical"
                             android:layout_marginBottom="3.15dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:enabled="false"
                             android:layout_marginTop="3.15dp"
-                            android:paddingLeft="9.45dp"
+                            android:background="@drawable/bg_edittext"
+                            android:enabled="false"
+                            android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_last_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:textColorHint="@color/settings_edit_hint"
+                            android:paddingLeft="9.45dp"
+                            android:singleLine="true"
                             android:textColor="@color/settings_edit_text"
-                            android:textSize="14sp"
-                            android:singleLine="true" />
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textSize="14sp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@drawable/wallet_list_bottom">
+                        android:background="@drawable/wallet_list_bottom"
+                        android:orientation="horizontal">
+
                         <EditText
                             android:id="@+id/settings_edit_nick_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"
-                            android:background="@drawable/bg_edittext"
-                            android:gravity="left|center_vertical"
                             android:layout_marginBottom="3.15dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginTop="3.15dp"
+                            android:background="@drawable/bg_edittext"
                             android:enabled="false"
-                            android:paddingLeft="9.45dp"
+                            android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_nick_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:textColorHint="@color/settings_edit_hint"
+                            android:paddingLeft="9.45dp"
+                            android:singleLine="true"
                             android:textColor="@color/settings_edit_text"
-                            android:textSize="14sp"
-                            android:singleLine="true" />
+                            android:textColorHint="@color/settings_edit_hint"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -365,8 +370,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView
@@ -379,32 +384,33 @@
                     android:paddingTop="2dp"
                     android:text="@string/settings_options_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/misc_views"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="30dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_auto_logoff"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -417,11 +423,11 @@
                             android:id="@+id/settings_button_auto_logoff"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch"/>
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -434,15 +440,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_currency"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -455,11 +462,11 @@
                             android:id="@+id/settings_button_currency"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch" />
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -469,20 +476,21 @@
                         android:orientation="vertical" />
 
                     <RelativeLayout
+                        android:id="@+id/category_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:id="@+id/category_container">
+                        android:background="@drawable/wallet_list_solo_archived">
+
                         <TextView
                             android:id="@+id/settings_title_categories"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:gravity="left"
                             android:clickable="false"
+                            android:drawablePadding="15dp"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
+                            android:gravity="left"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -495,13 +503,13 @@
                             android:id="@+id/settings_button_category"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
+                            android:layout_marginRight="9.45dp"
+                            android:background="@drawable/arrow_right"
                             android:clickable="false"
                             android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@drawable/arrow_right" />
+                            android:focusableInTouchMode="false" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -514,27 +522,27 @@
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
 
                         <Switch
                             android:id="@+id/settings_toggle_merchant_mode"
-                            android:background="@android:color/transparent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textOn=""
-                            android:textOff=""
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="9.45dp"
+                            android:background="@android:color/transparent"
+                            android:checked="false"
+                            android:gravity="center_vertical"
+                            android:switchMinWidth="0dp"
                             android:text="@string/settings_title_merchant_mode"
                             android:textColor="@color/settings_button_text"
+                            android:textOff=""
+                            android:textOn=""
                             android:textSize="13sp"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
-                            android:layout_marginRight="9.45dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_alignParentRight="true"
                             android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector"
-                            android:switchMinWidth="0dp"
-                            android:checked="false" />
+                            android:track="@drawable/toggle_selector" />
 
                     </RelativeLayout>
 
@@ -546,8 +554,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginTop="5dp"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <TextView
@@ -564,28 +572,29 @@
 
                 <LinearLayout
                     android:id="@+id/exchange_views"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="30dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent">
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_top_archive"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_usd"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -598,26 +607,27 @@
                             android:id="@+id/settings_button_usd"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch"/>
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_standard"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_canadian"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -630,26 +640,27 @@
                             android:id="@+id/settings_button_canadian"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch" />
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_standard"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_euro"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -662,26 +673,27 @@
                             android:id="@+id/settings_button_euro"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch" />
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_standard"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_peso"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -694,26 +706,27 @@
                             android:id="@+id/settings_button_peso"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch"/>
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
                         android:background="@drawable/wallet_list_bottom"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/settings_title_yuan"
                             android:layout_width="160dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawablePadding="15dp"
                             android:gravity="left"
-                            android:layout_weight="1"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="13dp"
@@ -726,11 +739,11 @@
                             android:id="@+id/settings_button_yuan"
                             android:layout_width="100dp"
                             android:layout_height="25.2dp"
-                            android:layout_weight="1"
-                            android:textColor="@android:color/white"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@drawable/bg_btn_blue_stretch" />
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -740,23 +753,23 @@
                 android:id="@+id/settings_button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_button_logout"
-                android:textColor="@android:color/white"
-                android:textStyle="normal"
-                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_blue"
                 android:padding="5dp"
-                android:background="@drawable/btn_blue" />
+                android:text="@string/settings_button_logout"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/fragment_settings_debug_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/fragment_settings_debug_info"
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

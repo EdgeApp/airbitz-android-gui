@@ -57,7 +57,7 @@
         <item name="android:paddingRight">6.3dp</item>
     </style>
 
-    <style name="CategoryItemDetail" >
+    <style name="CategoryItemDetail">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed</item>
         <item name="android:drawableRight">@drawable/arrow_right</item>
@@ -72,7 +72,7 @@
         <item name="android:paddingBottom">@dimen/content_padding</item>
     </style>
 
-    <style name="CategoryItemDetailTop" >
+    <style name="CategoryItemDetailTop">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed_top</item>
         <item name="android:drawableRight">@drawable/arrow_right</item>

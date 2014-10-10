@@ -67,10 +67,10 @@
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
+                    android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_h4"
-                    tools:text="Category 1 | Category 2 | Category 3 | Category 4 | Category 5"
-                    android:singleLine="true"/>
+                    tools:text="Category 1 | Category 2 | Category 3 | Category 4 | Category 5" />
 
                 <TextView
                     android:id="@+id/textview_discount"

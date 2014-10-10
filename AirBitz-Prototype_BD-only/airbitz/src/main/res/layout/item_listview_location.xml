@@ -15,11 +15,11 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:ellipsize="end"
-        android:singleLine="true"
         android:shadowColor="@android:color/white"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
+        android:singleLine="true"
         android:text="Text"
         android:textColor="@color/gray_text"
         android:textSize="@dimen/text_size_h4" />
