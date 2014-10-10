@@ -15,39 +15,35 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AndroidLocationManager {
 
     public static final String TAG = AndroidLocationManager.class.getSimpleName();
-
-    static AndroidLocationManager mInstance = null;
     static final long MIN_TIME = 30000;
     static final long MIN_DIST = 100;
     static final int TWO_MINUTES = 1000 * 60 * 2;
-
+    static AndroidLocationManager mInstance = null;
     private Context mContext;
     private LocationManager mLocationManager;
     private List<OnLocationChange> mObservers;
     private Location mCurrentLocation;
+    private LocationListener mManagerListener = new LocationListener() {
+
+        public void onLocationChanged(Location location) {
+            AndroidLocationManager.this.onLocationChanged(location);
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
     public AndroidLocationManager(Context context) {
         mContext = context;
         this.mLocationManager =
-            (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.mObservers = new CopyOnWriteArrayList<OnLocationChange>();
-    }
-
-    public void addLocationChangeListener(OnLocationChange listener) {
-        if (mObservers.isEmpty()) {
-            attemptConnection();
-        }
-        if(!mObservers.contains(listener)) {
-            mObservers.add(listener);
-            Log.d(TAG, "Listener added: "+listener);
-        }
-        if (null != listener && null != mCurrentLocation){
-            listener.OnCurrentLocationChange(mCurrentLocation);
-        }
-    }
-
-    public void removeLocationChangeListener(OnLocationChange listener) {
-        mLocationManager.removeUpdates(mManagerListener);
     }
 
     public static AndroidLocationManager getLocationManager(Context context) {
@@ -55,6 +51,23 @@ public class AndroidLocationManager {
             mInstance = new AndroidLocationManager(context);
         }
         return mInstance;
+    }
+
+    public void addLocationChangeListener(OnLocationChange listener) {
+        if (mObservers.isEmpty()) {
+            attemptConnection();
+        }
+        if (!mObservers.contains(listener)) {
+            mObservers.add(listener);
+            Log.d(TAG, "Listener added: " + listener);
+        }
+        if (null != listener && null != mCurrentLocation) {
+            listener.OnCurrentLocationChange(mCurrentLocation);
+        }
+    }
+
+    public void removeLocationChangeListener(OnLocationChange listener) {
+        mLocationManager.removeUpdates(mManagerListener);
     }
 
     public Location getLocation() {
@@ -65,17 +78,17 @@ public class AndroidLocationManager {
         mCurrentLocation = getLastLocation();
         try {
             mLocationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME, MIN_DIST,
-                mManagerListener);
+                    LocationManager.GPS_PROVIDER,
+                    MIN_TIME, MIN_DIST,
+                    mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "", e);
         }
         try {
             mLocationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                MIN_TIME, MIN_DIST,
-                mManagerListener);
+                    LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME, MIN_DIST,
+                    mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "", e);
         }
@@ -102,19 +115,6 @@ public class AndroidLocationManager {
             }
         }
     }
-
-    private LocationListener mManagerListener = new LocationListener() {
-
-        public void onLocationChanged(Location location) {
-            AndroidLocationManager.this.onLocationChanged(location);
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-        public void onProviderEnabled(String provider) { }
-
-        public void onProviderDisabled(String provider) { }
-    };
 
     public Location getLastLocation() {
         Location bestResult = null;
@@ -145,7 +145,7 @@ public class AndroidLocationManager {
         // because the user has likely moved
         if (isSignificantlyNewer) {
             return true;
-        // If the new location is more than two minutes older, it must be worse
+            // If the new location is more than two minutes older, it must be worse
         } else if (isSignificantlyOlder) {
             return false;
         }

@@ -14,29 +14,40 @@ import com.airbitz.R;
  * Created by tom on 8/5/14.
  * Network AsyncTask that checks for a connection first and includes a timeout for no response
  */
-public class ConnectionAsyncTask  extends AsyncTask<Object, Object, Object> {
+public class ConnectionAsyncTask extends AsyncTask<Object, Object, Object> {
     private final int DIALOG_TIMEOUT_MILLIS = 60000;
     boolean connected = false;
     Handler mHandler;
     Context mContext;
+    private ProgressDialog mProgressDialog;
+    Runnable mProgressDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+                onCancelled();
+            }
+        }
+    };
 
-    public ConnectionAsyncTask() {}
+    public ConnectionAsyncTask() {
+    }
 
     public void ConnectionAsyncTask(Context context) {
         mContext = context;
     }
 
-    private boolean connected(){
+    private boolean connected() {
         ConnectivityManager check = (ConnectivityManager) AirbitzApplication.getContext().
                 getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (check != null && check.getActiveNetworkInfo()!=null) {
+        if (check != null && check.getActiveNetworkInfo() != null) {
             connected = check.getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED;
         }
         return connected;
     }
 
-    protected void onPreExecute(){
-        if(!connected()) {
+    protected void onPreExecute() {
+        if (!connected()) {
             onCancelled();
         }
         showModalProgress(true);
@@ -57,30 +68,19 @@ public class ConnectionAsyncTask  extends AsyncTask<Object, Object, Object> {
         showModalProgress(false);
     }
 
-    private ProgressDialog mProgressDialog;
     public void showModalProgress(final boolean show) {
-        if(show) {
+        if (show) {
             mProgressDialog = ProgressDialog.show(mContext, null, null);
             mProgressDialog.setContentView(R.layout.layout_modal_indefinite_progress);
             mProgressDialog.setCancelable(false);
-            if(mHandler==null)
+            if (mHandler == null)
                 mHandler = new Handler();
             mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
         } else {
-            if(mProgressDialog!=null) {
+            if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
             }
         }
     }
-
-    Runnable mProgressDialogKiller = new Runnable() {
-        @Override
-        public void run() {
-            if(mProgressDialog!=null) {
-                mProgressDialog.dismiss();
-                onCancelled();
-            }
-        }
-    };
 }

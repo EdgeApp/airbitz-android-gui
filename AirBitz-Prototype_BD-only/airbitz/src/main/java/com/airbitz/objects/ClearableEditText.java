@@ -3,10 +3,9 @@ package com.airbitz.objects;
 /**
  * Created on 3/5/14.
  */
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,21 +13,13 @@ import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
 
-import com.airbitz.R;
-
 public class ClearableEditText extends EditText implements OnTouchListener,
-        OnFocusChangeListener{
-
-    public interface Listener {
-        void didClearText();
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
+        OnFocusChangeListener {
 
     private Drawable xD;
     private Listener listener;
+    private OnTouchListener l;
+    private OnFocusChangeListener f;
 
     public ClearableEditText(Context context) {
         super(context);
@@ -45,6 +36,10 @@ public class ClearableEditText extends EditText implements OnTouchListener,
         init();
     }
 
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public void setOnTouchListener(OnTouchListener l) {
         this.l = l;
@@ -54,9 +49,6 @@ public class ClearableEditText extends EditText implements OnTouchListener,
     public void setOnFocusChangeListener(OnFocusChangeListener f) {
         this.f = f;
     }
-
-    private OnTouchListener l;
-    private OnFocusChangeListener f;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -121,5 +113,9 @@ public class ClearableEditText extends EditText implements OnTouchListener,
         Drawable x = visible ? xD : null;
         setCompoundDrawables(getCompoundDrawables()[0],
                 getCompoundDrawables()[1], x, getCompoundDrawables()[3]);
+    }
+
+    public interface Listener {
+        void didClearText();
     }
 }

@@ -1,18 +1,15 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,14 +31,10 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
 import com.airbitz.utils.Common;
-
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,45 +43,35 @@ import java.util.List;
  */
 public class DirectoryDetailFragment extends Fragment {
 
-    private static final String TAG = DirectoryDetailFragment.class.getSimpleName();
     public static final String BIZID = "bizId";
     public static final String BIZNAME = "bizName";
     public static final String BIZDISTANCE = "bizDistance";
-
+    private static final String TAG = DirectoryDetailFragment.class.getSimpleName();
+    View mView;
     private boolean locationEnabled;
-
     private TextView mAboutField;
-
     private CurrentLocationManager mLocationManager;
-
     private TextView mTitleTextView;
     private ImageView mLogo;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private BusinessDetail mDetail;
     private ImageView mBackImage;
-
     private double mLat;
     private double mLon;
-
     private LinearLayout mHourContainer;
     private TextView mDaysTextView;
     private TextView mHoursTextView;
     private Button mAddressButton;
     private Button mPhoneButton;
     private Button mWebButton;
-
     private String mBusinessId;
     private String mBusinessName;
     private String mBusinessDistance;
-
     private TextView mCategoriesTextView;
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
-
     private GetBusinessDetailTask mTask;
-
-    View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,7 +84,7 @@ public class DirectoryDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView==null) {
+        if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_business_detail, container, false);
         } else {
             return mView;
@@ -113,7 +95,7 @@ public class DirectoryDetailFragment extends Fragment {
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
             Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             locationEnabled = true;
         }
 
@@ -124,7 +106,7 @@ public class DirectoryDetailFragment extends Fragment {
         mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
         mDistanceTextView.setVisibility(View.GONE);
 
-        if(mBusinessDistance != null && mBusinessDistance != "null") {
+        if (mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
         }
 
@@ -198,7 +180,8 @@ public class DirectoryDetailFragment extends Fragment {
                 Uri.parse("http://maps.google.com/maps?"
                         + "daddr="
                         + daddr
-                        + "&dirflg=d"));
+                        + "&dirflg=d")
+        );
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
                 "com.google.android.maps.MapsActivity"));
         startActivity(intent);
@@ -222,7 +205,7 @@ public class DirectoryDetailFragment extends Fragment {
                     mDistanceTextView.setText(distanceString + " miles");
                 }
 
-            }else if (businessDistance >= 1000) {
+            } else if (businessDistance >= 1000) {
                 int distanceInInt = (int) businessDistance;
                 mDistanceTextView.setText(String.valueOf(distanceInInt) + " miles");
             } else {
@@ -230,7 +213,7 @@ public class DirectoryDetailFragment extends Fragment {
                 mDistanceTextView.setText(String.valueOf(businessDistance) + " miles");
             }
             mDistanceTextView.setVisibility(View.VISIBLE);
-        }catch (Exception e) {
+        } catch (Exception e) {
             mDistanceTextView.setText("-");
         }
     }
@@ -265,7 +248,7 @@ public class DirectoryDetailFragment extends Fragment {
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
-            return mApi.getBusinessByIdAndLatLong(params[0],latLong);
+            return mApi.getBusinessByIdAndLatLong(params[0], latLong);
         }
 
         @Override
@@ -283,7 +266,7 @@ public class DirectoryDetailFragment extends Fragment {
                 mLon = location.getLongitude();
 
                 setDistance(mDetail.getDistance());
-                if( mLat== 0 && mLon == 0 ){
+                if (mLat == 0 && mLon == 0) {
                     mAddressButton.setClickable(false);
                 }
 
@@ -335,32 +318,32 @@ public class DirectoryDetailFragment extends Fragment {
 
                 //set drawables round if others are missing
                 //Address
-                if(mAddressButton.getVisibility()==View.VISIBLE){
-                    if(mPhoneButton.getVisibility()==View.GONE && mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE) {
+                if (mAddressButton.getVisibility() == View.VISIBLE) {
+                    if (mPhoneButton.getVisibility() == View.GONE && mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
                         mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
                     }
                 }
                 //Phone Number
-                if(mPhoneButton.getVisibility()==View.VISIBLE){
-                    if(mWebButton.getVisibility()==View.GONE && mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
-                        if(mAddressButton.getVisibility()==View.GONE) {
+                if (mPhoneButton.getVisibility() == View.VISIBLE) {
+                    if (mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
+                        if (mAddressButton.getVisibility() == View.GONE) {
                             mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
-                        }else{
+                        } else {
                             mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
                         }
-                    }else if(mAddressButton.getVisibility()==View.GONE){
+                    } else if (mAddressButton.getVisibility() == View.GONE) {
                         mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
                 //Web Button
-                if(mWebButton.getVisibility()==View.VISIBLE){
-                    if(mHourContainer.getVisibility()==View.GONE && mAboutField.getVisibility()==View.GONE){
-                        if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                if (mWebButton.getVisibility() == View.VISIBLE) {
+                    if (mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
+                        if (mAddressButton.getVisibility() == View.GONE && mPhoneButton.getVisibility() == View.GONE) {
                             mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
-                        }else{
+                        } else {
                             mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
                         }
-                    }else if(mAddressButton.getVisibility()==View.GONE && mPhoneButton.getVisibility()==View.GONE){
+                    } else if (mAddressButton.getVisibility() == View.GONE && mPhoneButton.getVisibility() == View.GONE) {
                         mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
@@ -411,7 +394,8 @@ public class DirectoryDetailFragment extends Fragment {
                     });
                 }
                 mPhoneButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
+                    @Override
+                    public void onClick(View view) {
 
                         if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
                             Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -422,7 +406,8 @@ public class DirectoryDetailFragment extends Fragment {
                     }
                 });
                 mWebButton.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
+                    @Override
+                    public void onClick(View view) {
                         if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setData(Uri.parse(mDetail.getWebsite()));

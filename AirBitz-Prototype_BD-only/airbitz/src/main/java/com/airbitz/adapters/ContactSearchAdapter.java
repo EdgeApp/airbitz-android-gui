@@ -14,23 +14,21 @@ import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.objects.Contact;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tom on 9/25/14.
  */
 public class ContactSearchAdapter extends ArrayAdapter {
+    private final Picasso picasso;
     private Context mContext;
     private List<Contact> mContacts;
-    private final Picasso picasso;
 
-    public ContactSearchAdapter(Context context, List<Contact> contacts){
+    public ContactSearchAdapter(Context context, List<Contact> contacts) {
         super(context, R.layout.item_listview_transaction_detail);
         mContext = context;
         mContacts = contacts;
-        picasso =  new Picasso.Builder(context).build();
+        picasso = new Picasso.Builder(context).build();
     }
 
     @Override
@@ -41,12 +39,6 @@ public class ContactSearchAdapter extends ArrayAdapter {
     @Override
     public Object getItem(int position) {
         return mContacts.get(position);
-    }
-
-    static class ViewHolderItem {
-        ImageView imageView;
-        TextView textView;
-        TextView infoView;
     }
 
     @Override
@@ -76,14 +68,20 @@ public class ContactSearchAdapter extends ArrayAdapter {
 
         Contact contact = mContacts.get(position);
         textView.setText(contact.getName());
-        if(contact.getEmail()!=null) {
+        if (contact.getEmail() != null) {
             infoView.setText(contact.getEmail());
-        } else if (contact.getPhone()!=null) {
+        } else if (contact.getPhone() != null) {
             infoView.setText(contact.getPhone());
         }
 
-        if(contact.getName()!=null && contact.getThumbnail()!=null)
+        if (contact.getName() != null && contact.getThumbnail() != null)
             picasso.load(Uri.parse(contact.getThumbnail())).noFade().into(imageView); //mPhotos.get(contact.getName())).noFade().into(imageView);
         return convertView;
+    }
+
+    static class ViewHolderItem {
+        ImageView imageView;
+        TextView textView;
+        TextView infoView;
     }
 }

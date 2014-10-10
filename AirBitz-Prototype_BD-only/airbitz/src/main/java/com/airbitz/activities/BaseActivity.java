@@ -1,14 +1,10 @@
 package com.airbitz.activities;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Spanned;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,15 +12,29 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.airbitz.R;
 
-import java.io.File;
-
 public class BaseActivity extends FragmentActivity {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     Handler mHandler;
+    Runnable mProgressDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
+            ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
+        }
+    };
+    AlertDialog mMessageDialog;
+    Runnable mMessageDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if (mMessageDialog.isShowing()) {
+                mMessageDialog.dismiss();
+            }
+        }
+    };
 
     public void showModalProgress(final boolean show) {
         View v = findViewById(R.id.modal_indefinite_progress);
-        if(show) {
+        if (show) {
             v.setVisibility(View.VISIBLE);
             v.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -32,7 +42,7 @@ public class BaseActivity extends FragmentActivity {
                     return true; // intercept all touches
                 }
             });
-            if(mHandler==null)
+            if (mHandler == null)
                 mHandler = new Handler();
             mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
         } else {
@@ -41,20 +51,11 @@ public class BaseActivity extends FragmentActivity {
         }
     }
 
-    Runnable mProgressDialogKiller = new Runnable() {
-        @Override
-        public void run() {
-            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
-            ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
-        }
-    };
-
-    AlertDialog mMessageDialog;
     public void ShowOkMessageDialog(String title, String message) {
-        if(mMessageDialog!=null) {
+        if (mMessageDialog != null) {
             mMessageDialog.dismiss();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(title)
                 .setCancelable(false)
@@ -63,7 +64,8 @@ public class BaseActivity extends FragmentActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
         mMessageDialog = builder.create();
         mMessageDialog.show();
     }
@@ -72,15 +74,6 @@ public class BaseActivity extends FragmentActivity {
         mHandler.postDelayed(mMessageDialogKiller, timeoutMillis);
         ShowOkMessageDialog(title, message);
     }
-
-    Runnable mMessageDialogKiller = new Runnable() {
-        @Override
-        public void run() {
-            if(mMessageDialog.isShowing()) {
-                mMessageDialog.dismiss();
-            }
-        }
-    };
 
     public void ShowMessageDialogBackPress(String title, String reason) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
@@ -92,7 +85,8 @@ public class BaseActivity extends FragmentActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 BaseActivity.this.onBackPressed();
                             }
-                        });
+                        }
+                );
         AlertDialog alert = builder.create();
         alert.show();
     }

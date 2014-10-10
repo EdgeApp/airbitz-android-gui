@@ -17,8 +17,8 @@ public class Categories {
     private String mLastUpdate;
     private List<Category> mCategoryArray;
 
-    public Categories(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse !=null){
+    public Categories(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mCountValue = jsonResponse.getInt("count");
             mNextLink = jsonResponse.getString("next");
             mPreviousLink = jsonResponse.getString("previous");
@@ -27,55 +27,54 @@ public class Categories {
         }
     }
 
-    public void addCategories(Categories categories){
+    public void addCategories(Categories categories) {
         mCategoryArray.addAll(categories.mCategoryArray);
     }
 
-    public void setCountValue(int countValue){
-        mCountValue = countValue;
-    }
-
-    public int getCountValue(){
+    public int getCountValue() {
         return mCountValue;
     }
 
-    public void setNextLink(String nextLink){
-        mNextLink = nextLink;
+    public void setCountValue(int countValue) {
+        mCountValue = countValue;
     }
 
-    public String getNextLink(){
+    public String getNextLink() {
         return mNextLink;
     }
 
-    public void setPreviousLink(String previousLink){
-        mPreviousLink = previousLink;
+    public void setNextLink(String nextLink) {
+        mNextLink = nextLink;
     }
 
-    public String getPreviousLink(){
+    public String getPreviousLink() {
         return mPreviousLink;
     }
 
-    public void setLastUpdate(String lastUpdate){
-        mLastUpdate = lastUpdate;
+    public void setPreviousLink(String previousLink) {
+        mPreviousLink = previousLink;
     }
 
-    public String getLastUpdate(){
+    public String getLastUpdate() {
         return mLastUpdate;
     }
 
-    public void setBusinessCategoryArray(ArrayList<Category> categoryArray){
-        mCategoryArray = categoryArray;
+    public void setLastUpdate(String lastUpdate) {
+        mLastUpdate = lastUpdate;
     }
 
-    public List<Category> getBusinessCategoryArray(){
+    public List<Category> getBusinessCategoryArray() {
         return mCategoryArray;
     }
 
+    public void setBusinessCategoryArray(ArrayList<Category> categoryArray) {
+        mCategoryArray = categoryArray;
+    }
 
-    public void removeBusinessCategoryArray(){
-       if(mCategoryArray != null){
-           mCategoryArray.clear();
-       }
+    public void removeBusinessCategoryArray() {
+        if (mCategoryArray != null) {
+            mCategoryArray.clear();
+        }
     }
 
 }

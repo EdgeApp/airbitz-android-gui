@@ -44,7 +44,7 @@ public class HighlightOnPressSpinner extends Spinner {
         protected int _disabledAlpha = 100;
 
         public SAutoBgButtonBackgroundDrawable(Drawable d) {
-            super(new Drawable[] { d });
+            super(new Drawable[]{d});
         }
 
         @Override

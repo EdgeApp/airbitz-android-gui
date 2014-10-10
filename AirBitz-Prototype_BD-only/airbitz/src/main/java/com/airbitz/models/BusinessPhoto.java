@@ -16,19 +16,19 @@ public class BusinessPhoto {
     private String mPreviousLink;
     private List<Image> mImages;
 
-    public BusinessPhoto(){
+    public BusinessPhoto() {
 
     }
 
-    public BusinessPhoto(int countValue, String nextLink, String previousLink, ArrayList<Image> images){
+    public BusinessPhoto(int countValue, String nextLink, String previousLink, ArrayList<Image> images) {
         mCountValue = countValue;
         mNextLink = nextLink;
         mPreviousLink = previousLink;
         mImages = images;
     }
 
-    public BusinessPhoto(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public BusinessPhoto(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mCountValue = jsonResponse.getInt("count");
             mNextLink = jsonResponse.getString("next");
             mPreviousLink = jsonResponse.getString("previous");
@@ -36,35 +36,35 @@ public class BusinessPhoto {
         }
     }
 
-    public void setCountValue(int countValue){
-        mCountValue = countValue;
-    }
-
-    public void setNextLink(String nextLink){
-        mNextLink = nextLink;
-    }
-
-    public void setPreviousLink(String previousLink){
-        mPreviousLink = previousLink;
-    }
-
-    public int getCountValue(){
+    public int getCountValue() {
         return mCountValue;
     }
 
-    public String getNextLink(){
+    public void setCountValue(int countValue) {
+        mCountValue = countValue;
+    }
+
+    public String getNextLink() {
         return mNextLink;
     }
 
-    public String getPreviousLink(){
+    public void setNextLink(String nextLink) {
+        mNextLink = nextLink;
+    }
+
+    public String getPreviousLink() {
         return mPreviousLink;
     }
 
-    public void setImages(ArrayList<Image> images){
-        mImages = images;
+    public void setPreviousLink(String previousLink) {
+        mPreviousLink = previousLink;
     }
 
-    public List<Image> getImages(){
+    public List<Image> getImages() {
         return mImages;
+    }
+
+    public void setImages(ArrayList<Image> images) {
+        mImages = images;
     }
 }

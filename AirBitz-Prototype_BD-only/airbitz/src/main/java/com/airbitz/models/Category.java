@@ -18,49 +18,49 @@ public class Category {
     private String mCategoryName;
     private String mCategoryLevel;
 
-    public Category(){
+    public Category() {
     }
 
-    public Category(String name, String level){
+    public Category(String name, String level) {
         mCategoryName = name;
         mCategoryLevel = level;
     }
 
-    public Category(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public Category(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mCategoryName = jsonResponse.getString("name");
             mCategoryLevel = jsonResponse.getString("level");
         }
     }
 
-    public static List<Category> generateCategoryListFromJSONObject(JSONArray objectArray){
+    public static List<Category> generateCategoryListFromJSONObject(JSONArray objectArray) {
         List<Category> resultList = new ArrayList<Category>();
-        for(int counter=0; counter < objectArray.length(); counter++){
-            try{
+        for (int counter = 0; counter < objectArray.length(); counter++) {
+            try {
                 resultList.add(new Category(objectArray.getJSONObject(counter)));
-            }catch (JSONException e){
-                Log.d(TAG, ""+e.getMessage());
-            }catch (Exception e){
-                Log.d(TAG, ""+e.getMessage());
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
             }
         }
         return resultList;
     }
 
-    public void setCategoryName(String name){
-        mCategoryName = name;
-    }
-
-    public void setCategoryLevel(String level){
-        mCategoryLevel = level;
-    }
-
-    public String getCategoryName(){
+    public String getCategoryName() {
         return mCategoryName;
     }
 
-    public String getCategoryLevel(){
+    public void setCategoryName(String name) {
+        mCategoryName = name;
+    }
+
+    public String getCategoryLevel() {
         return mCategoryLevel;
+    }
+
+    public void setCategoryLevel(String level) {
+        mCategoryLevel = level;
     }
 
 }

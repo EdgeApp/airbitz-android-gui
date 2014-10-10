@@ -2,15 +2,16 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,11 +28,10 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.Calculator;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 /**
@@ -91,7 +91,7 @@ public class SendConfirmationFragment extends Fragment {
     private String mLabel;
     private Boolean mIsUUID;
     private long mAmountMax;
-    private long mAmountToSendSatoshi=-1;
+    private long mAmountToSendSatoshi = -1;
     private long mFees;
 
     private CoreAPI mCoreAPI;
@@ -101,6 +101,15 @@ public class SendConfirmationFragment extends Fragment {
     private boolean mAutoUpdatingTextFields = false;
 
     private View mView;
+    /**
+     * Wrap the fee calculation in an AsyncTask
+     */
+    private MaxAmountTask mMaxAmountTask;
+    private CalculateFeesTask mCalculateFeesTask;
+    /**
+     * Represents an asynchronous send or transfer
+     */
+    private SendOrTransferTask mSendOrTransferTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +121,7 @@ public class SendConfirmationFragment extends Fragment {
 
         bundle = this.getArguments();
         if (bundle == null) {
-            Common.LogD(TAG, "Send confirmation bundle is null");
+            Log.d(TAG, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -120,7 +129,7 @@ public class SendConfirmationFragment extends Fragment {
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
             mWalletForConversions = mSourceWallet;
-            if(mIsUUID) {
+            if (mIsUUID) {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
         }
@@ -179,28 +188,30 @@ public class SendConfirmationFragment extends Fragment {
         mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
         String balance = mCoreAPI.formatSatoshi(mSourceWallet.getBalanceSatoshi(), true);
-        mFromEdittext.setText(mSourceWallet.getName()+" ("+balance+")");
-        if(mToWallet!=null) {
+        mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
+        if (mToWallet != null) {
             mToEdittext.setText(mToWallet.getName());
         } else {
             String temp = mUUIDorURI;
-            if(mUUIDorURI.length()>20) {
-                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length()-5, mUUIDorURI.length());
+            if (mUUIDorURI.length() > 20) {
+                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length() - 5, mUUIDorURI.length());
             }
             mToEdittext.setText(temp);
         }
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.length()>=4) {
-                    InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(
+                if (editable.length() >= 4) {
+                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
                     mParentLayout.requestFocus();
@@ -213,8 +224,8 @@ public class SendConfirmationFragment extends Fragment {
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Common.LogD(TAG, "PIN field focus changed");
-                if(hasFocus) {
+                Log.d(TAG, "PIN field focus changed");
+                if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     showPINkeyboard();
                 } else {
@@ -225,14 +236,16 @@ public class SendConfirmationFragment extends Fragment {
 
         mBTCTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mAutoUpdatingTextFields && !mBitcoinField.getText().toString().isEmpty()) {
+                if (!mAutoUpdatingTextFields && !mBitcoinField.getText().toString().isEmpty()) {
                     updateTextFieldContents(true);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
@@ -242,14 +255,16 @@ public class SendConfirmationFragment extends Fragment {
 
         mFiatTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mAutoUpdatingTextFields && !mFiatField.getText().toString().isEmpty()) {
+                if (!mAutoUpdatingTextFields && !mFiatField.getText().toString().isEmpty()) {
                     updateTextFieldContents(false);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
@@ -260,7 +275,7 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Common.LogD(TAG, "Bitcoin field focus changed");
+                Log.d(TAG, "Bitcoin field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mBitcoinField);
@@ -274,7 +289,7 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Common.LogD(TAG, "Fiat field focus changed");
+                Log.d(TAG, "Fiat field focus changed");
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
@@ -288,7 +303,7 @@ public class SendConfirmationFragment extends Fragment {
         TextView.OnEditorActionListener tvListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (keyEvent!=null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     mPinEdittext.requestFocus();
                     return true;
                 }
@@ -297,7 +312,7 @@ public class SendConfirmationFragment extends Fragment {
         };
 
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch (View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
@@ -359,7 +374,7 @@ public class SendConfirmationFragment extends Fragment {
         mMaxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mMaxAmountTask!=null)
+                if (mMaxAmountTask != null)
                     mMaxAmountTask.cancel(true);
                 mMaxAmountTask = new MaxAmountTask();
                 mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -400,7 +415,6 @@ public class SendConfirmationFragment extends Fragment {
         ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
     }
 
-
     public void touchEventsEnded() {
         int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);
         if (mConfirmSwipeButton.getX() <= successThreshold) {
@@ -410,8 +424,7 @@ public class SendConfirmationFragment extends Fragment {
         }
     }
 
-    private void updateTextFieldContents(boolean btc)
-    {
+    private void updateTextFieldContents(boolean btc) {
         double currency;
         long satoshi;
 
@@ -419,66 +432,17 @@ public class SendConfirmationFragment extends Fragment {
         if (btc) {
             mAmountToSendSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
             mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
-       } else {
-            try
-            {
+        } else {
+            try {
                 currency = Double.valueOf(mFiatField.getText().toString());
                 satoshi = mCoreAPI.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
                 mAmountToSendSatoshi = satoshi;
                 mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
-            }
-            catch(NumberFormatException e) {  } //not a double, ignore
+            } catch (NumberFormatException e) {
+            } //not a double, ignore
         }
         mAutoUpdatingTextFields = false;
         calculateFees();
-    }
-
-    /**
-     * Wrap the fee calculation in an AsyncTask
-     */
-    private MaxAmountTask mMaxAmountTask;
-    public class MaxAmountTask extends AsyncTask<Void, Void, Long> {
-
-        MaxAmountTask() { }
-
-        @Override
-        protected void onPreExecute() {
-            Common.LogD(TAG, "Max calculation called");
-        }
-
-        @Override
-        protected Long doInBackground(Void... params) {
-            Common.LogD(TAG, "Max calculation started");
-            String dest = mIsUUID ? mWalletForConversions.getUUID() : mUUIDorURI;
-            return mCoreAPI.maxSpendable(mSourceWallet.getUUID(), dest, mIsUUID);
-        }
-
-        @Override
-        protected void onPostExecute(final Long max) {
-            Common.LogD(TAG, "Max calculation finished");
-            mMaxAmountTask = null;
-            if(isAdded()) {
-                if(max<0) {
-                    Common.LogD(TAG, "Max calculation error");
-                }
-                mAmountMax = max;
-                mAmountToSendSatoshi = max;
-                mAutoUpdatingTextFields = true;
-                mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
-                mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
-                mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
-
-                calculateFees();
-                mPinEdittext.requestFocus();
-            }
-            mAutoUpdatingTextFields = false;
-        }
-
-        @Override
-        protected void onCancelled() {
-            mMaxAmountTask = null;
-        }
     }
 
     private void calculateFees() {
@@ -487,38 +451,6 @@ public class SendConfirmationFragment extends Fragment {
         }
         mCalculateFeesTask = new CalculateFeesTask();
         mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private CalculateFeesTask mCalculateFeesTask;
-    public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
-
-        @Override
-        protected void onPreExecute() {
-            mSlideLayout.setEnabled(false);
-        }
-
-        @Override
-        protected Long doInBackground(Void... params) {
-            Common.LogD(TAG, "Fee calculation started");
-            String dest = mIsUUID ? mWalletForConversions.getUUID() : mUUIDorURI;
-            return mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
-        }
-
-        @Override
-        protected void onPostExecute(final Long fees) {
-            Common.LogD(TAG, "Fee calculation ended");
-            if(isAdded()) {
-                mCalculateFeesTask = null;
-                mFees = fees;
-                UpdateFeeFields(fees);
-                mSlideLayout.setEnabled(true);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCalculateFeesTask = null;
-        }
     }
 
     private void UpdateFeeFields(Long fees) {
@@ -538,13 +470,13 @@ public class SendConfirmationFragment extends Fragment {
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
-        } else if ((fees+mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
+        } else if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
             mConversionTextView.setTextColor(color);
             mBitcoinField.setTextColor(color);
             mFiatField.setTextColor(color);
 
             String coinFeeString = "+ " + mCoreAPI.formatSatoshi(fees, false);
-            mBTCDenominationTextView.setText(coinFeeString+" "+mCoreAPI.getDefaultBTCDenomination());
+            mBTCDenominationTextView.setText(coinFeeString + " " + mCoreAPI.getDefaultBTCDenomination());
 
             double fiatFee = mCoreAPI.SatoshiToCurrency(fees, mWalletForConversions.getCurrencyNum());
             String fiatFeeString = "+ " + mCoreAPI.formatCurrency(fiatFee, mWalletForConversions.getCurrencyNum(), false);
@@ -558,13 +490,13 @@ public class SendConfirmationFragment extends Fragment {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
         String userPIN = mCoreAPI.GetUserPIN();
-        if((mFees+mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
+        if ((mFees + mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
-        } else if (mAmountToSendSatoshi==0) {
+        } else if (mAmountToSendSatoshi == 0) {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (enteredPIN!=null && userPIN!=null && userPIN.equals(enteredPIN)) {
+        } else if (enteredPIN != null && userPIN != null && userPIN.equals(enteredPIN)) {
             // show the sending screen
             SuccessFragment mSuccessFragment = new SuccessFragment();
             Bundle bundle = new Bundle();
@@ -582,76 +514,24 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void resetSlider() {
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX",-(mRightThreshold-mConfirmSwipeButton.getX()),0);
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), 0);
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
     }
 
-    private void finishSlider(){
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX",-(mRightThreshold-mConfirmSwipeButton.getX()),-(mRightThreshold-(mLeftThreshold - mConfirmCenter)));
+    private void finishSlider() {
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), -(mRightThreshold - (mLeftThreshold - mConfirmCenter)));
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
     }
 
-    /**
-     * Represents an asynchronous send or transfer
-     */
-    private SendOrTransferTask mSendOrTransferTask;
-
-    public class SendOrTransferTask extends AsyncTask<Void, Void, CoreAPI.TxResult> {
-        private Wallet mFromWallet;
-        private final String mAddress;
-        private final long mSatoshi;
-        private final String mLabel;
-
-        SendOrTransferTask(Wallet fromWallet, String address, long amount, String label) {
-            mFromWallet = fromWallet;
-            mAddress = address;
-            mSatoshi = amount;
-            mLabel = label;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            Common.LogD(TAG, "SEND called");
-        }
-
-        @Override
-        protected CoreAPI.TxResult doInBackground(Void... params) {
-            Common.LogD(TAG, "Initiating SEND");
-            return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi, mLabel);
-        }
-
-        @Override
-        protected void onPostExecute(final CoreAPI.TxResult txResult) {
-            Common.LogD(TAG, "SEND done");
-            mSendOrTransferTask = null;
-            if (txResult.getError() != null) {
-                Common.LogD(TAG, "Error during send "+txResult.getError());
-                if(mActivity!=null) {
-                    mActivity.popFragment(); // stop the sending screen
-                    mActivity.getFragmentManager().executePendingTransactions();
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
-                }
-            } else {
-                if(mActivity!=null)
-                    mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mActivity.popFragment(); // stop the sending screen
-            mSendOrTransferTask = null;
-        }
-    }
-
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         bundle = this.getArguments();
         if (bundle == null) {
-            Common.LogD(TAG, "Send confirmation bundle is null");
+            Log.d(TAG, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -659,7 +539,7 @@ public class SendConfirmationFragment extends Fragment {
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
             mWalletForConversions = mSourceWallet;
-            if(mIsUUID) {
+            if (mIsUUID) {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
         }
@@ -679,14 +559,14 @@ public class SendConfirmationFragment extends Fragment {
         if (mSavedBitcoin > -1) {
             mAmountToSendSatoshi = mSavedBitcoin;
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
-            if(mWalletForConversions!=null) {
+            if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             }
             mPinEdittext.requestFocus();
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
-            if(mActivity.isLargeDpi()) {
+            if (mActivity.isLargeDpi()) {
                 mFiatField.requestFocus();
             }
         }
@@ -709,12 +589,137 @@ public class SendConfirmationFragment extends Fragment {
         super.onResume();
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         mSavedBitcoin = mAmountToSendSatoshi;
-        if(mCalculateFeesTask !=null)
+        if (mCalculateFeesTask != null)
             mCalculateFeesTask.cancel(true);
-        if(mMaxAmountTask!=null)
+        if (mMaxAmountTask != null)
             mMaxAmountTask.cancel(true);
+    }
+
+    public class MaxAmountTask extends AsyncTask<Void, Void, Long> {
+
+        MaxAmountTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG, "Max calculation called");
+        }
+
+        @Override
+        protected Long doInBackground(Void... params) {
+            Log.d(TAG, "Max calculation started");
+            String dest = mIsUUID ? mWalletForConversions.getUUID() : mUUIDorURI;
+            return mCoreAPI.maxSpendable(mSourceWallet.getUUID(), dest, mIsUUID);
+        }
+
+        @Override
+        protected void onPostExecute(final Long max) {
+            Log.d(TAG, "Max calculation finished");
+            mMaxAmountTask = null;
+            if (isAdded()) {
+                if (max < 0) {
+                    Log.d(TAG, "Max calculation error");
+                }
+                mAmountMax = max;
+                mAmountToSendSatoshi = max;
+                mAutoUpdatingTextFields = true;
+                mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
+                mFiatSignTextView.setText(mCoreAPI.getCurrencyDenomination(mWalletForConversions.getCurrencyNum()));
+                mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
+
+                calculateFees();
+                mPinEdittext.requestFocus();
+            }
+            mAutoUpdatingTextFields = false;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mMaxAmountTask = null;
+        }
+    }
+
+    public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
+
+        @Override
+        protected void onPreExecute() {
+            mSlideLayout.setEnabled(false);
+        }
+
+        @Override
+        protected Long doInBackground(Void... params) {
+            Log.d(TAG, "Fee calculation started");
+            String dest = mIsUUID ? mWalletForConversions.getUUID() : mUUIDorURI;
+            return mCoreAPI.calcSendFees(mSourceWallet.getUUID(), dest, mAmountToSendSatoshi, mIsUUID);
+        }
+
+        @Override
+        protected void onPostExecute(final Long fees) {
+            Log.d(TAG, "Fee calculation ended");
+            if (isAdded()) {
+                mCalculateFeesTask = null;
+                mFees = fees;
+                UpdateFeeFields(fees);
+                mSlideLayout.setEnabled(true);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mCalculateFeesTask = null;
+        }
+    }
+
+    public class SendOrTransferTask extends AsyncTask<Void, Void, CoreAPI.TxResult> {
+        private final String mAddress;
+        private final long mSatoshi;
+        private final String mLabel;
+        private Wallet mFromWallet;
+
+        SendOrTransferTask(Wallet fromWallet, String address, long amount, String label) {
+            mFromWallet = fromWallet;
+            mAddress = address;
+            mSatoshi = amount;
+            mLabel = label;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG, "SEND called");
+        }
+
+        @Override
+        protected CoreAPI.TxResult doInBackground(Void... params) {
+            Log.d(TAG, "Initiating SEND");
+            return mCoreAPI.InitiateTransferOrSend(mFromWallet, mAddress, mSatoshi, mLabel);
+        }
+
+        @Override
+        protected void onPostExecute(final CoreAPI.TxResult txResult) {
+            Log.d(TAG, "SEND done");
+            mSendOrTransferTask = null;
+            if (txResult.getError() != null) {
+                Log.d(TAG, "Error during send " + txResult.getError());
+                if (mActivity != null) {
+                    mActivity.popFragment(); // stop the sending screen
+                    mActivity.getFragmentManager().executePendingTransactions();
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+                }
+            } else {
+                if (mActivity != null)
+                    mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mActivity.popFragment(); // stop the sending screen
+            mSendOrTransferTask = null;
+        }
     }
 }

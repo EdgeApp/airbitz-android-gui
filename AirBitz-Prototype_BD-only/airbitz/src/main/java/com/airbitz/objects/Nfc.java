@@ -17,14 +17,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * @author Tom, adapted from coinbase DisplayQrOrNfcFragment
  */
-public class Nfc
-{
+public class Nfc {
     private final static String TAG = "Nfc";
     private static Nfc mInstance;
     private static Activity mActivity;
     private static NfcManager mNfcManager;
     private static NfcAdapter mNfcAdapter;
     private boolean detecting = false;
+    // Callback interface for adding and removing Nfc listeners
+    private List<OnNfcReceived> mObservers = new CopyOnWriteArrayList<OnNfcReceived>();
+    private BroadcastReceiver mNfcReciever;
+
+
+    private Nfc() {
+    }
 
     // return null if no NFC capability
     public static Nfc getNfc(Activity activity) {
@@ -33,32 +39,22 @@ public class Nfc
             mActivity = activity;
             // Check for available NFC Adapter
             PackageManager pm = activity.getPackageManager();
-            if(pm.hasSystemFeature(PackageManager.FEATURE_NFC)) {
+            if (pm.hasSystemFeature(PackageManager.FEATURE_NFC)) {
                 Log.d(TAG, "NFC feature found");
                 mNfcManager = (NfcManager) activity.getSystemService(Context.NFC_SERVICE);
                 mNfcAdapter = mNfcManager.getDefaultAdapter();
             }
         }
-        if(mNfcAdapter!=null)
+        if (mNfcAdapter != null)
             return mInstance;
         else
             return null;
     }
 
-    private Nfc() { }
-
-
-    // Callback interface for adding and removing Nfc listeners
-    private List<OnNfcReceived> mObservers = new CopyOnWriteArrayList<OnNfcReceived>();
-
-    public interface OnNfcReceived {
-        public void OnNfcReceived(String data);
-    }
-
     public void addNfcListener(OnNfcReceived listener) {
-        if(!mObservers.contains(listener)) {
+        if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            Log.d("CurrentLocationManager", "Listener added: "+listener);
+            Log.d("CurrentLocationManager", "Listener added: " + listener);
         }
     }
 
@@ -68,25 +64,25 @@ public class Nfc
     }
 
     private void notifyListeners(String data) {
-        for(OnNfcReceived o : mObservers) {
+        for (OnNfcReceived o : mObservers) {
             o.OnNfcReceived(data);
         }
     }
 
     // Start an NDEF message
     protected void startNfc(String uri) {
-        if(!detecting) {
+        if (!detecting) {
             Log.d(TAG, "Enable nfc forground mode");
             startDetectingNfcStateChanges();
-            NdefMessage message = new NdefMessage(new NdefRecord[] { NdefRecord.createUri(uri) });
+            NdefMessage message = new NdefMessage(new NdefRecord[]{NdefRecord.createUri(uri)});
             mNfcAdapter.setNdefPushMessage(message, mActivity);
             detecting = true;
         }
     }
 
-     // Stop an NDEF message
+    // Stop an NDEF message
     protected void stopNfc() {
-        if(detecting) {
+        if (detecting) {
             Log.d(TAG, "Disable nfc forground mode");
             mNfcAdapter.disableForegroundDispatch(mActivity);
             stopDetectingNfcStateChanges();
@@ -94,7 +90,6 @@ public class Nfc
         }
     }
 
-    private BroadcastReceiver mNfcReciever;
     protected void initializeNfc() {
 //        nfcPendingIntent = PendingIntent.getActivity(mActivity, 0, new Intent(mActivity, mActivity.getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
@@ -109,7 +104,6 @@ public class Nfc
         };
     }
 
-
     public void startDetectingNfcStateChanges() {
 //        mActivity.registerReceiver(nfcStateChangeBroadcastReceiver, nfcStateChangeIntentFilter);
     }
@@ -118,13 +112,16 @@ public class Nfc
 //        mActivity.unregisterReceiver(nfcStateChangeBroadcastReceiver);
     }
 
-
-
     protected void startSettingsActivity() {
         if (android.os.Build.VERSION.SDK_INT >= 16) {
             mActivity.startActivity(new Intent(Activity.NFC_SERVICE));
         } else {
             mActivity.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
         }
+    }
+
+
+    public interface OnNfcReceived {
+        public void OnNfcReceived(String data);
     }
 }

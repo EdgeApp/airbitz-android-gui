@@ -28,10 +28,10 @@ public class MoreCategoryAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
 
-    public MoreCategoryAdapter(Context context, Categories categories){
+    public MoreCategoryAdapter(Context context, Categories categories) {
         mContext = context;
         mCategories = categories;
-        if(mCategories!=null){
+        if (mCategories != null) {
             mListCategory = categories.getBusinessCategoryArray();
         } else {
             mListCategory = new ArrayList<Category>();
@@ -41,7 +41,7 @@ public class MoreCategoryAdapter extends BaseAdapter {
 
     public void setCategories(Categories categories) {
         mCategories = categories;
-        if(mCategories!=null){
+        if (mCategories != null) {
             mListCategory = categories.getBusinessCategoryArray();
         } else {
             mListCategory = new ArrayList<Category>();
@@ -64,8 +64,8 @@ public class MoreCategoryAdapter extends BaseAdapter {
         return position;
     }
 
-    public Category getListItemName(int position){
-      return mListCategory.get(position);
+    public Category getListItemName(int position) {
+        return mListCategory.get(position);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MoreCategoryAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.item_listview_business, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.textview_business_title);
         textView.setText(mListCategory.get(position).getCategoryName());
-        Typeface latoBlackTypeFace=Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
+        Typeface latoBlackTypeFace = Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
         textView.setTypeface(latoBlackTypeFace);
         ImageView iconImage = (ImageView) convertView.findViewById(R.id.imageview_icon);
         iconImage.setImageResource(R.drawable.ico_more_cat);

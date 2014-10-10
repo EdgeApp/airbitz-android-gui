@@ -13,26 +13,12 @@ import com.airbitz.R;
  */
 public class ObservableScrollView extends ScrollView {
 
+    int[] locSticky = {0, 0};
+    int[] locFrame = {0, 0};
+    ;
     private ScrollViewListener scrollViewListener = null;
-    private Context mContext;;
+    private Context mContext;
     private LinearLayout stickyPopUp;
-
-    int[] locSticky = {0,0};
-    int[] locFrame = {0,0};
-
-    public void setContext(Context context){
-        mContext = context;
-    }
-
-    public void setSticky(LinearLayout stickyLayout){
-        stickyPopUp = stickyLayout;
-    }
-
-
-    public interface ScrollViewListener {
-        void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy);
-
-    }
 
     public ObservableScrollView(Context context) {
         super(context);
@@ -42,8 +28,17 @@ public class ObservableScrollView extends ScrollView {
         super(context, attrs, defStyle);
     }
 
+
     public ObservableScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public void setSticky(LinearLayout stickyLayout) {
+        stickyPopUp = stickyLayout;
     }
 
     public void setScrollViewListener(ScrollViewListener scrollViewListener) {
@@ -59,12 +54,12 @@ public class ObservableScrollView extends ScrollView {
         this.getLocationOnScreen(locFrame);
         stickyView.getLocationOnScreen(locSticky);
 
-        if(locSticky[1]<=locFrame[1]) {
-            if (stickyPopUp.getVisibility() == VISIBLE || unstickyPopUp.getVisibility() == VISIBLE){
+        if (locSticky[1] <= locFrame[1]) {
+            if (stickyPopUp.getVisibility() == VISIBLE || unstickyPopUp.getVisibility() == VISIBLE) {
                 stickyPopUp.setVisibility(VISIBLE);
                 unstickyPopUp.setVisibility(GONE);
             }
-        }else{
+        } else {
             if (stickyPopUp.getVisibility() == VISIBLE || unstickyPopUp.getVisibility() == VISIBLE) {
                 stickyPopUp.setVisibility(GONE);
                 unstickyPopUp.setVisibility(VISIBLE);
@@ -79,5 +74,10 @@ public class ObservableScrollView extends ScrollView {
             }
         }
         super.onScrollChanged(x, y, oldx, oldy);
+    }
+
+    public interface ScrollViewListener {
+        void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx, int oldy);
+
     }
 }

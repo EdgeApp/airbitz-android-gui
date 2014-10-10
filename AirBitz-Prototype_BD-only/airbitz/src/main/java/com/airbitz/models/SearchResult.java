@@ -18,14 +18,14 @@ public class SearchResult {
     private List<BusinessSearchResult> mBusinessSearchResultObjectsArray;
 
 
-    public SearchResult(int countValue, String nextLink, String previousLink){
+    public SearchResult(int countValue, String nextLink, String previousLink) {
         mCountValue = countValue;
         mNextLink = nextLink;
         mPreviousLink = previousLink;
     }
 
-    public SearchResult(JSONObject responseJson) throws JSONException{
-        if(responseJson != null){
+    public SearchResult(JSONObject responseJson) throws JSONException {
+        if (responseJson != null) {
             mCountValue = responseJson.getInt("count");
             mNextLink = responseJson.getString("next");
             mPreviousLink = responseJson.getString("previous");
@@ -34,36 +34,36 @@ public class SearchResult {
 
     }
 
-    public void setCountValue(int countValue){
-        mCountValue = countValue;
-    }
-
-    public int getCountValue(){
+    public int getCountValue() {
         return mCountValue;
     }
 
-    public void setNextLink(String nextLink){
-        mNextLink = nextLink;
+    public void setCountValue(int countValue) {
+        mCountValue = countValue;
     }
 
-    public String getNextLink(){
+    public String getNextLink() {
         return mNextLink;
     }
 
-    public void setPreviousLink(String previousLink){
-        mPreviousLink = previousLink;
+    public void setNextLink(String nextLink) {
+        mNextLink = nextLink;
     }
 
-    public String getPreviousLink(){
+    public String getPreviousLink() {
         return mPreviousLink;
     }
 
-    public void setBusinessSearchObjectArray(ArrayList<BusinessSearchResult> businessSearchResultArray){
-        mBusinessSearchResultObjectsArray = businessSearchResultArray;
+    public void setPreviousLink(String previousLink) {
+        mPreviousLink = previousLink;
     }
 
-    public List<BusinessSearchResult> getBusinessSearchObjectArray(){
+    public List<BusinessSearchResult> getBusinessSearchObjectArray() {
         return mBusinessSearchResultObjectsArray;
+    }
+
+    public void setBusinessSearchObjectArray(ArrayList<BusinessSearchResult> businessSearchResultArray) {
+        mBusinessSearchResultObjectsArray = businessSearchResultArray;
     }
 
 }
