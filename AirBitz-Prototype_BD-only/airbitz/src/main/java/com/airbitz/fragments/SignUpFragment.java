@@ -482,7 +482,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         }
 
         String username = mUserNameEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
+        Editable pass = mPasswordEditText.getText();
+        char[] password = new char[pass.length()];
+        pass.getChars(0, pass.length(), password, 0);
         String pin = mWithdrawalPinEditText.getText().toString();
 
         // Reset errors.
@@ -520,7 +522,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
         tABC_CC success;
 
-        String mUsername, mPassword;
+        String mUsername;
+        char[] mPassword;
 
         @Override
         protected void onPreExecute() {
@@ -532,13 +535,14 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         protected Boolean doInBackground(String... params) {
             String answers = params[0];
             mUsername = params[1];
-            mPassword = mPasswordEditText.getText().toString();
+            Editable pass = mPasswordEditText.getText();
+            mPassword = new char[pass.length()];
+            pass.getChars(0, pass.length(), mPassword, 0);
             if (mMode == CHANGE_PASSWORD) {
                 mUsername = AirbitzApplication.getUsername();
-                Log.d(TAG, "changing password to " + mPassword);
-                success = mCoreAPI.ChangePassword(mPassword);
+                success = mCoreAPI.ChangePassword(String.valueOf(mPassword));
             } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword,
+                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, String.valueOf(mPassword),
                         mWithdrawalPinEditText.getText().toString());
             } else {
                 mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
@@ -587,14 +591,14 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
-        private final String mPassword;
+        private final char[] mPassword;
         private final String mPin;
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pData = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
         private String mFailureReason;
 
-        CreateAccountTask(String email, String password, String pin) {
+        CreateAccountTask(String email, char[] password, String pin) {
             mUsername = email;
             mPassword = password;
             mPin = pin;
@@ -603,7 +607,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC code = core.ABC_CreateAccount(mUsername, mPassword, mPin, null, pVoid, pError);
+            tABC_CC code = core.ABC_CreateAccount(mUsername, String.valueOf(mPassword), mPin, null, pVoid, pError);
             mFailureReason = pError.getSzDescription();
             return code == tABC_CC.ABC_CC_Ok;
         }
@@ -614,7 +618,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mActivity.showModalProgress(false);
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
-                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, mPassword, mPin);
+                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, String.valueOf(mPassword), mPin);
                 mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);

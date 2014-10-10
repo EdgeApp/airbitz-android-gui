@@ -831,7 +831,7 @@ public class NavigationActivity extends BaseActivity
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
-    public void attemptLogin(String username, String password) {
+    public void attemptLogin(String username, char[] password) {
         mUserLoginTask = new UserLoginTask();
         mUserLoginTask.execute(username, password);
     }
@@ -907,7 +907,8 @@ public class NavigationActivity extends BaseActivity
     }
 
     public class UserLoginTask extends AsyncTask {
-        String mUsername, mPassword;
+        String mUsername;
+        char[] mPassword;
 
         @Override
         protected void onPreExecute() {
@@ -917,7 +918,7 @@ public class NavigationActivity extends BaseActivity
         @Override
         protected Boolean doInBackground(Object... params) {
             mUsername = (String) params[0];
-            mPassword = (String) params[1];
+            mPassword = (char[]) params[1];
             return mCoreAPI.SignIn(mUsername, mPassword);
         }
 

@@ -311,7 +311,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private void signIn() {
         Bundle bundle = getArguments();
         String username = bundle.getString(USERNAME);
-        String password = bundle.getString(PASSWORD);
+        char[] password = bundle.getCharArray(PASSWORD);
         String pin = bundle.getString(PIN);
 
         AirbitzApplication.Login(username, password);
