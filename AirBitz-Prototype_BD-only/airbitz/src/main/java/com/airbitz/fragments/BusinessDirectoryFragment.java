@@ -68,8 +68,8 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     static String TAG = AirbitzAPI.class.getSimpleName();
     static final int MAX_VENUES = 500;
-    static final int PAGE_SIZE = 50;
-    static final int VENUE_LOAD_AHEAD = 10;
+    static final int PAGE_SIZE = 20;
+    static final int VENUE_LOAD_AHEAD = 3;
 
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
@@ -660,6 +660,7 @@ public class BusinessDirectoryFragment extends Fragment implements
             mVenuesLoaded = new ArrayList<BusinessSearchResult>();
             mLastLocation = null;
         }
+        Common.LogD(TAG, "mVenuesLoaded: " + mVenuesLoaded.size());
         if (mVenuesLoaded.isEmpty()) {
             // if no venues, then request location
             mLocationManager.addLocationChangeListener(this);
