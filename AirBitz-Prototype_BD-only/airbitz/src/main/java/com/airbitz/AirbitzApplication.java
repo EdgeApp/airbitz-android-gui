@@ -34,7 +34,7 @@ public class AirbitzApplication extends Application {
         return (appInfo != null && ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0));
     }
 
-    public static void Login(String uname, String password) {
+    public static void Login(String uname, char[] password) {
         if (uname != null && password != null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
@@ -56,7 +56,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static String getPassword() {
-        return airbitzLogin.getPassword();
+        return String.valueOf(airbitzLogin.getPassword());
     }
 
     public static Context getContext() {
@@ -81,7 +81,7 @@ public class AirbitzApplication extends Application {
 
     private static class Login {
         private String mUsername = null;
-        private String mPassword = null;
+        private char[] mPassword = null;
 
         public String getUsername() {
             return mUsername;
@@ -91,11 +91,11 @@ public class AirbitzApplication extends Application {
             mUsername = name;
         }
 
-        public String getPassword() {
+        public char[] getPassword() {
             return mPassword;
         }
 
-        public void setPassword(String word) {
+        public void setPassword(char[] word) {
             mPassword = word;
         }
     }

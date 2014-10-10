@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -183,30 +184,22 @@ public class LandingFragment extends Fragment {
 
         // Store values at the time of the login attempt.
         String username = mUserNameEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
+        Editable pass = mPasswordEditText.getText();
+        char[] password = new char[pass.length()];
+        pass.getChars(0, pass.length(), password, 0);
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid mUsername.
+        // Check for empty username.
         if (TextUtils.isEmpty(username)) {
-            mUserNameEditText.setError(getString(R.string.error_field_required));
-            focusView = mUserNameEditText;
-            cancel = true;
-        } else if (!isUsernameValid(username)) {
             mUserNameEditText.setError(getString(R.string.error_invalid_credentials));
             focusView = mUserNameEditText;
             cancel = true;
         }
 
-        // Check for a valid mPassword.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordEditText.setError(getString(R.string.error_field_required));
-            if (null == focusView) {
-                focusView = mPasswordEditText;
-                cancel = true;
-            }
-        } else if (!isPasswordValid(password)) {
+        // Check for empty password.
+        if (password.length<1) {
             mPasswordEditText.setError(getString(R.string.error_invalid_credentials));
             if (null == focusView) {
                 focusView = mPasswordEditText;
@@ -226,11 +219,6 @@ public class LandingFragment extends Fragment {
     private boolean isUsernameValid(String username) {
         //TODO real logic for good mUsername
         return !username.isEmpty();
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO real logic for good mPassword
-        return !password.isEmpty();
     }
 
     @Override
