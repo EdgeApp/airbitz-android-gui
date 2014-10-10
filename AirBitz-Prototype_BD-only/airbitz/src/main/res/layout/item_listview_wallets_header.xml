@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
     android:background="@drawable/bg_wallets_header"
-    android:text="@string/fragment_wallets_list_wallets_title"
-    android:textColor="@android:color/white"
+    android:clickable="false"
     android:gravity="center"
-    android:clickable="false"/>
+    android:text="@string/fragment_wallets_list_wallets_title"
+    android:textColor="@android:color/white" />

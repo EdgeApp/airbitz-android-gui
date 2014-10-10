@@ -1,154 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:id="@+id/nav_bar_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:id="@+id/fragment_navigation_bar_popup_container"
         android:layout_width="match_parent"
-        android:layout_height="82dp" >
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:id="@+id/popup_directory_button"
-            android:background="@drawable/tab_popup_directory"
-            android:layout_marginRight="-10dp"
-            android:visibility="invisible"
-            android:layout_weight="1"
-            />
+        android:layout_height="82dp"
+        android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/popup_directory_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="-10dp"
+            android:layout_weight="1"
+            android:background="@drawable/tab_popup_directory"
             android:scaleType="centerInside"
+            android:visibility="invisible" />
+
+        <ImageView
             android:id="@+id/popup_request_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-10dp"
+            android:layout_marginRight="-10dp"
+            android:layout_weight="1"
             android:background="@drawable/tab_popup_request"
-            android:layout_marginLeft="-10dp"
-            android:layout_marginRight="-10dp"
-            android:visibility="invisible"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:scaleType="centerInside"
+            android:visibility="invisible" />
+
+        <ImageView
             android:id="@+id/popup_send_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-10dp"
+            android:layout_marginRight="-10dp"
+            android:layout_weight="1"
             android:background="@drawable/tab_popup_send"
-            android:visibility="invisible"
-            android:layout_marginLeft="-10dp"
-            android:layout_marginRight="-10dp"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:scaleType="centerInside"
+            android:visibility="invisible" />
+
+        <ImageView
             android:id="@+id/popup_wallet_button"
-            android:background="@drawable/tab_popup_wallet"
-            android:layout_marginLeft="-10dp"
-            android:layout_marginRight="-10dp"
-            android:visibility="invisible"
-            android:layout_weight="1"
-            />
-        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:id="@+id/popup_setting_button"
-            android:background="@drawable/tab_popup_settings"
             android:layout_marginLeft="-10dp"
-            android:visibility="invisible"
+            android:layout_marginRight="-10dp"
             android:layout_weight="1"
-            />
+            android:background="@drawable/tab_popup_wallet"
+            android:scaleType="centerInside"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/popup_setting_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-10dp"
+            android:layout_weight="1"
+            android:background="@drawable/tab_popup_settings"
+            android:scaleType="centerInside"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/normal_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabbar_height"
-        android:id="@+id/normal_navigation_bar"
+        android:orientation="horizontal"
         android:weightSum="5">
+
         <ImageView
+            android:id="@+id/directory_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:soundEffectsEnabled="true"
-            android:hapticFeedbackEnabled="true"
-            android:adjustViewBounds="true"
-            android:id="@+id/directory_button"
-            android:background="@drawable/ico_tab_directory"
             android:layout_weight="1"
-            />
+            android:adjustViewBounds="true"
+            android:background="@drawable/ico_tab_directory"
+            android:hapticFeedbackEnabled="true"
+            android:scaleType="centerCrop"
+            android:soundEffectsEnabled="true" />
 
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray">
-        </LinearLayout>
+            android:background="@android:color/darker_gray"></LinearLayout>
+
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:soundEffectsEnabled="true"
-            android:hapticFeedbackEnabled="true"
-            android:adjustViewBounds="true"
             android:id="@+id/request_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@drawable/ico_tab_request"
-            android:layout_weight="1"
-            />
+            android:hapticFeedbackEnabled="true"
+            android:scaleType="centerCrop"
+            android:soundEffectsEnabled="true" />
+
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray">
-        </LinearLayout>
+            android:background="@android:color/darker_gray"></LinearLayout>
+
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:soundEffectsEnabled="true"
-            android:hapticFeedbackEnabled="true"
-            android:adjustViewBounds="true"
             android:id="@+id/send_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@drawable/ico_tab_send"
-            android:layout_weight="1"
-            />
+            android:hapticFeedbackEnabled="true"
+            android:scaleType="centerCrop"
+            android:soundEffectsEnabled="true" />
+
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray">
-        </LinearLayout>
+            android:background="@android:color/darker_gray"></LinearLayout>
+
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:soundEffectsEnabled="true"
-            android:hapticFeedbackEnabled="true"
-            android:adjustViewBounds="true"
             android:id="@+id/wallet_button"
-            android:background="@drawable/ico_tab_wallet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            />
+            android:adjustViewBounds="true"
+            android:background="@drawable/ico_tab_wallet"
+            android:hapticFeedbackEnabled="true"
+            android:scaleType="centerCrop"
+            android:soundEffectsEnabled="true" />
+
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray">
-        </LinearLayout>
+            android:background="@android:color/darker_gray"></LinearLayout>
+
         <ImageView
+            android:id="@+id/setting_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:soundEffectsEnabled="true"
-            android:hapticFeedbackEnabled="true"
-            android:adjustViewBounds="true"
-            android:id="@+id/setting_button"
-            android:background="@drawable/ico_tab_settings"
             android:layout_weight="1"
-            />
+            android:adjustViewBounds="true"
+            android:background="@drawable/ico_tab_settings"
+            android:hapticFeedbackEnabled="true"
+            android:scaleType="centerCrop"
+            android:soundEffectsEnabled="true" />
     </LinearLayout>
 
 </LinearLayout>

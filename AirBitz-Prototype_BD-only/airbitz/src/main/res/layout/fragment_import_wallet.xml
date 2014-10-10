@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root">
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/bottom_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom_padding"
         android:layout_alignParentBottom="true">
+
         <ImageButton
+            android:id="@+id/directory_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
-            android:background="@drawable/bg_tab_bar"
-            android:id="@+id/directory_button"
-            android:src="@drawable/ico_tab_directory"
             android:layout_weight="1"
-            android:visibility="invisible"
-            />
+            android:background="@drawable/bg_tab_bar"
+            android:padding="15dp"
+            android:src="@drawable/ico_tab_directory"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_category_layout_header"
         android:background="#40000000"
         android:padding="4dp">
 
@@ -34,232 +34,231 @@
             android:id="@+id/fragment_category_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:padding="12.6dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/string_add_button"
-            android:src="@drawable/btn_back"/>
+            android:padding="12.6dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back" />
 
         <TextView
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Import Wallet"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="16sp"/>
+            android:text="Import Wallet"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <ImageButton
             android:id="@+id/fragment_category_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/string_help_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_help_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/layout_data"
-        android:layout_below="@id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/fragment_category_layout_header"
         android:orientation="vertical">
 
         <!--<ScrollView-->
-            <!--android:id="@+id/layout_scroll"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/layout_header"-->
-            <!--android:layout_above="@id/bottom_padding">-->
+        <!--android:id="@+id/layout_scroll"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/layout_header"-->
+        <!--android:layout_above="@id/bottom_padding">-->
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/layout_send"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp">
 
-                <RelativeLayout
-                    android:id="@+id/layout_send"
+                <LinearLayout
+                    android:id="@+id/layout_from"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edge_black_transparent_30"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/textview_from"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="40dp"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:text="Import Wallet:"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/button_from"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_trans_rounded"
+                        android:gravity="center"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:text="Checking"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_from"
                     android:layout_marginBottom="5dp"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp">
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <LinearLayout
-                        android:id="@+id/layout_from"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp">
-
-                        <TextView
-                            android:id="@+id/textview_from"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="Import Wallet:"
-                            android:gravity="right|center_vertical"
-                            android:textColor="@android:color/white"
-                            android:layout_marginRight="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="15sp"
-                            android:layout_weight="1"
-                            android:layout_gravity="right"
-                            android:textStyle="bold"/>
-
-                        <Button
-                            android:id="@+id/button_from"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Checking"
-                            android:textStyle="bold"
-                            android:background="@drawable/btn_trans_rounded"
-                            android:gravity="center"
-                            android:textColor="@android:color/white"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:paddingBottom="10dp"
-                            android:paddingTop="10dp"
-                            android:textSize="18sp"
-                            android:layout_weight="1"/>
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/layout_to"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_below="@id/layout_from"
-                        android:weightSum="2"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="5dp">
-
-                        <TextView
+                    <TextView
                         android:id="@+id/textview_to"
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
-                        android:text="Private Key:"
-                        android:gravity="right"
-                        android:textColor="@android:color/white"
-                        android:layout_marginRight="20dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="15sp"
+                        android:layout_marginRight="20dp"
                         android:layout_weight="1"
-                        android:textStyle="bold"/>
+                        android:gravity="right"
+                        android:text="Private Key:"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                        <EditText
+                    <EditText
                         android:id="@+id/edittext_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter bitcoin address (optional)"
-                        android:textColorHint="@android:color/white"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
-                        android:gravity="center"
-                        android:textColor="@android:color/white"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:drawableRight="@drawable/ico_login"
+                        android:gravity="center"
+                        android:hint="Enter bitcoin address (optional)"
+                        android:paddingBottom="10dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:paddingBottom="10dp"
                         android:paddingTop="10dp"
-                        android:textSize="15sp"
-                        android:drawableRight="@drawable/ico_login"
-                        android:layout_weight="1"/>
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_camera"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <FrameLayout
-                        android:id="@+id/layout_camera_preview"
-                        android:background="@android:color/darker_gray"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_centerHorizontal="true">
-
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/textview_scan_qrcode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/send_scan_text"
-                        android:gravity="center"
-                        android:shadowColor="@android:color/black"
-                        android:shadowDy="4"
-                        android:shadowRadius="1"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:layout_marginTop="20dp"/>
+                        android:textColorHint="@android:color/white"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/button_flash"
-                        android:layout_width="40dp"
-                        android:layout_height="80dp"
-                        android:scaleType="centerInside"
-                        android:adjustViewBounds="true"
-                        android:layout_gravity="center"
-                        android:src="@drawable/btn_flash_off"
-                        android:layout_marginRight="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:background="@android:color/transparent" />
+            </RelativeLayout>
 
-                    <ImageButton
-                        android:id="@+id/button_gallery"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:scaleType="centerInside"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:adjustViewBounds="true"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/gallery_button"/>
+            <RelativeLayout
+                android:id="@+id/layout_camera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:id="@+id/layout_camera_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:background="@android:color/darker_gray">
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textview_scan_qrcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:shadowColor="@android:color/black"
+                    android:shadowDy="4"
+                    android:shadowRadius="1"
+                    android:text="@string/send_scan_text"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/button_flash"
+                    android:layout_width="40dp"
+                    android:layout_height="80dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="20dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_flash_off" />
+
+                <ImageButton
+                    android:id="@+id/button_gallery"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/gallery_button" />
 
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:layout_margin="12.6dp"
-                        android:background="@drawable/camera_frame"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12.6dp"
+                    android:background="@drawable/camera_frame"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
 
-                </RelativeLayout>
+            </RelativeLayout>
 
 
-
-            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

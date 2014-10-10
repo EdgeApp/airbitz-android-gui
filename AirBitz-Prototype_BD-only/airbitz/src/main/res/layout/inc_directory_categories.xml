@@ -16,7 +16,7 @@
         android:paddingRight="15dp"
         android:paddingTop="10dp">
 
-        <LinearLayout 
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -79,8 +79,8 @@
         android:id="@+id/layout_near_you"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <View
             android:id="@+id/flag_for_sticky"

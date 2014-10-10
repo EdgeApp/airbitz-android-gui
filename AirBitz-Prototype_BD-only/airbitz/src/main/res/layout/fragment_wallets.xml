@@ -112,62 +112,62 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/fragment_wallets_addwallet_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_wallet_addwallet_height"
-        android:orientation="vertical"
+        android:layout_marginLeft="12.6dp"
+        android:layout_marginRight="12.6dp"
+        android:layout_marginTop="44.1dp"
         android:background="@drawable/bg_add_wallet"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginRight="12.6dp"
-        android:layout_marginLeft="12.6dp"
-        android:layout_marginTop="44.1dp"
         android:focusableInTouchMode="true"
-        android:id="@+id/fragment_wallets_addwallet_layout"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <EditText
+            android:id="@+id/fragment_wallets_addwallet_name_edittext"
             android:layout_width="match_parent"
             android:layout_height="31.5dp"
             android:layout_margin="9.45dp"
-            android:id="@+id/fragment_wallets_addwallet_name_edittext"
             android:background="@drawable/emboss_down"
-            android:textColor="@android:color/white"
-            android:textColorHint="@color/text_hint"
-            android:inputType="textVisiblePassword|textNoSuggestions|textCapWords"
+            android:gravity="center_vertical"
             android:hint="@string/fragment_wallets_addwallet_name_hint"
             android:imeOptions="actionDone"
+            android:inputType="textVisiblePassword|textNoSuggestions|textCapWords"
+            android:paddingLeft="9.45dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/text_hint"
             android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            android:paddingLeft="9.45dp"/>
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/fragment_wallets_addwallet_currency_layout"
             android:layout_width="match_parent"
             android:layout_height="25.2dp"
+            android:layout_marginBottom="6dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:layout_marginBottom="6dp"
             android:visibility="visible">
 
             <TextView
                 android:layout_width="138.6dp"
                 android:layout_height="match_parent"
-                android:text="@string/fragment_wallets_addwallet_currency_textview"
-                android:textSize="15sp"
                 android:gravity="center"
-                android:textColor="@android:color/white"/>
+                android:text="@string/fragment_wallets_addwallet_currency_textview"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
 
             <com.airbitz.objects.HighlightOnPressSpinner
                 android:id="@+id/fragment_wallets_addwallet_currency_spinner"
                 android:layout_width="138.6dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_marginLeft="6.3dp"
-                android:spinnerMode="dropdown"
-                android:popupBackground="@drawable/rounded_edge_white_bg"
+                android:background="@drawable/bg_btn_blue_stretch"
                 android:dropDownVerticalOffset="0dp"
-                android:background="@drawable/bg_btn_blue_stretch"/>
+                android:gravity="center"
+                android:popupBackground="@drawable/rounded_edge_white_bg"
+                android:spinnerMode="dropdown" />
 
         </LinearLayout>
 
@@ -175,41 +175,41 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="63dp"
-            android:padding="18.9dp"
             android:orientation="horizontal"
+            android:padding="18.9dp"
             android:visibility="gone">
 
             <TextView
                 android:id="@+id/fragment_wallets_addwallet_online_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/fragment_wallets_addwallet_online_textview"
-                android:gravity="center"
-                android:textSize="15sp"
                 android:layout_weight="1"
-                android:textColor="@android:color/white"/>
+                android:gravity="center"
+                android:text="@string/fragment_wallets_addwallet_online_textview"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
 
 
             <Switch
                 android:id="@+id/fragment_wallets_addwallet_onoff_switch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:textOff=""
                 android:textOn=""
                 android:thumb="@drawable/btn_toggle_thumb"
-                android:track="@drawable/toggle_selector"
-                android:layout_weight="1"/>
+                android:track="@drawable/toggle_selector" />
 
             <TextView
                 android:id="@+id/fragment_wallets_addwallet_offline_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/fragment_wallets_addwallet_offline_textview"
-                android:gravity="center"
-                android:textSize="15sp"
                 android:layout_weight="1"
-                android:textColor="#444444"/>
+                android:gravity="center"
+                android:text="@string/fragment_wallets_addwallet_offline_textview"
+                android:textColor="#444444"
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -230,9 +230,9 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/btn_cancel"
                 android:text="@string/string_cancel"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"/>
+                android:textStyle="bold" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_done_button"
@@ -242,9 +242,9 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/btn_green"
                 android:text="@string/string_done"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"/>
+                android:textStyle="bold" />
 
 
         </LinearLayout>
@@ -256,8 +256,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/fragment_wallets_addwallet_layout"
-        android:visibility="gone"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
 
 </RelativeLayout>
 

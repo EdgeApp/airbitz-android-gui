@@ -4,12 +4,12 @@
     android:id="@+id/textview_currency"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textSize="18sp"
-    android:text="currency"
     android:background="@android:color/transparent"
-    android:textColor="#FFFFFF"
     android:gravity="center"
+    android:paddingLeft="15.75dp"
     android:paddingRight="15.75dp"
-    android:paddingLeft="15.75dp">
+    android:text="currency"
+    android:textColor="#FFFFFF"
+    android:textSize="18sp">
 
 </TextView>

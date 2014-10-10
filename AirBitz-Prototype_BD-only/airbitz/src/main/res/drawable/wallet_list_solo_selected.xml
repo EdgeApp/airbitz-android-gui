@@ -4,19 +4,24 @@
     <item>
         <shape>
             <solid android:color="#ffffff" />
-            <corners android:radius="6dp"/>
+            <corners android:radius="6dp" />
         </shape>
     </item>
     <item android:top="6dp">
         <shape>
             <solid android:color="#999999" />
-            <corners android:bottomRightRadius="6dp" android:bottomLeftRadius="6dp"/>
+            <corners
+                android:bottomLeftRadius="6dp"
+                android:bottomRightRadius="6dp" />
         </shape>
     </item>
-    <item android:top="1dp" android:right=".5dp" android:left=".5dp">
+    <item
+        android:left=".5dp"
+        android:right=".5dp"
+        android:top="1dp">
         <shape>
             <solid android:color="@color/blue_highlight" />
-            <corners android:radius="6dp"/>
+            <corners android:radius="6dp" />
         </shape>
     </item>
 </layer-list>

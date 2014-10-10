@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="25.2dp"
     android:background="#FFFFFF"
-    android:text="Name"
     android:gravity="center_vertical"
     android:paddingLeft="12.6dp"
+    android:text="Name"
     android:textColor="#000000">
 
 </TextView>

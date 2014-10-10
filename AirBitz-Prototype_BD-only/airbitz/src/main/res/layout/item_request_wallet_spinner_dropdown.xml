@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="37.8dp"
     android:background="@android:color/white"
-    android:textColor="@android:color/black"
-    android:text="Wallet"
+    android:ellipsize="end"
     android:gravity="center_vertical"
-    android:textSize="14sp"
     android:paddingLeft="12.6dp"
     android:paddingRight="12.6dp"
-    android:ellipsize="end"
-    android:singleLine="true">
+    android:singleLine="true"
+    android:text="Wallet"
+    android:textColor="@android:color/black"
+    android:textSize="14sp">
 
 </TextView>

@@ -4,7 +4,9 @@
     <item>
         <shape>
             <solid android:color="#ffffff" />
-            <corners android:topLeftRadius="6dp" android:topRightRadius="6dp"/>
+            <corners
+                android:topLeftRadius="6dp"
+                android:topRightRadius="6dp" />
         </shape>
     </item>
     <item android:top="6dp">
@@ -12,10 +14,16 @@
             <solid android:color="#999999" />
         </shape>
     </item>
-    <item android:top="1dp" android:bottom="1dp" android:right=".5dp" android:left=".5dp">
+    <item
+        android:bottom="1dp"
+        android:left=".5dp"
+        android:right=".5dp"
+        android:top="1dp">
         <shape>
             <solid android:color="@color/listitem_normal" />
-            <corners android:topLeftRadius="6dp" android:topRightRadius="6dp"/>
+            <corners
+                android:topLeftRadius="6dp"
+                android:topRightRadius="6dp" />
         </shape>
     </item>
 </layer-list>

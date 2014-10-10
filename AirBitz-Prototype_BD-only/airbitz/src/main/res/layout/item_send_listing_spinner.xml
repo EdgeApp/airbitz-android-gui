@@ -4,8 +4,8 @@
     android:id="@+id/item_send_listing_spinner_textview"
     android:layout_width="match_parent"
     android:layout_height="37.8dp"
-    android:gravity="left"
     android:background="@android:color/transparent"
+    android:gravity="left"
     android:textColor="@android:color/black">
 
 </TextView>

@@ -47,12 +47,12 @@
 
             <ListView
                 android:id="@+id/fragment_layout"
-                android:divider="@null"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
-                android:orientation="vertical"
-                android:layout_alignParentTop="true" />
+                android:divider="@null"
+                android:orientation="vertical" />
 
             <TextView
                 android:id="@+id/business_fragment_no_result_view"
@@ -67,7 +67,7 @@
                 android:visibility="gone" />
 
         </FrameLayout>
-        
+
     </FrameLayout>
 
 </RelativeLayout>

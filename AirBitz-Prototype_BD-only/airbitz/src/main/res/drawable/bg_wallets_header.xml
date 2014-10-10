@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list  xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="#ff0079B9"/>
-            <corners android:bottomLeftRadius="3dp" android:bottomRightRadius="3dp"/>
+            <solid android:color="#ff0079B9" />
+            <corners
+                android:bottomLeftRadius="3dp"
+                android:bottomRightRadius="3dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="#ff1b60A1"/>
-            <corners android:radius="3dp"/>
+            <solid android:color="#ff1b60A1" />
+            <corners android:radius="3dp" />
         </shape>
     </item>
 </layer-list>
