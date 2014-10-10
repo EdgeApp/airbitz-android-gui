@@ -162,7 +162,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
         if (mLocationManager == null) {
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-            mLocationManager.addLocationChangeListener(this);
         }
     }
 
