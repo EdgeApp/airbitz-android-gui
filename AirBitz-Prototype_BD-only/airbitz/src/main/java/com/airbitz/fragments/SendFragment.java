@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,9 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -56,58 +57,50 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class SendFragment extends Fragment implements Camera.PreviewCallback {
-    private final String TAG = getClass().getSimpleName();
-
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
-
+    private static int RESULT_LOAD_IMAGE = 678;
+    private final String TAG = getClass().getSimpleName();
+    Runnable cameraDelayRunner = new Runnable() {
+        @Override
+        public void run() {
+            startCamera();
+        }
+    };
     private Handler mHandler;
     private EditText mToEdittext;
-
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
-
     private HighlightOnPressImageButton mHelpButton;
-
     private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
-
     private ListView mListingListView;
     private RelativeLayout mListviewContainer;
-
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
-
     private FrameLayout mPreviewFrame;
-
     private View dummyFocus;
-
     private HighlightOnPressSpinner walletSpinner;
     private List<Wallet> mWalletOtherList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private List<Wallet> mCurrentListing;
-
     private WalletPickerAdapter listingAdapter;
-
     private int BACK_CAMERA_INDEX = 0;
-
     private boolean mFlashOn = false;
-
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(mCoreAPI==null)
+        if (mCoreAPI == null)
             mCoreAPI = CoreAPI.getApi();
 
         mActivity = (NavigationActivity) getActivity();
@@ -158,7 +151,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
 
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
@@ -171,14 +165,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mFlashOn){
+                if (!mFlashOn) {
                     mFlashButton.setImageResource(R.drawable.btn_flash_on);
                     mFlashOn = true;
                     Camera.Parameters parameters = mCamera.getParameters();
                     parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                     mCamera.setParameters(parameters);
-                }
-                else{
+                } else {
                     mFlashButton.setImageResource(R.drawable.btn_flash_off);
                     mFlashOn = false;
                     Camera.Parameters parameters = mCamera.getParameters();
@@ -191,22 +184,22 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     dummyFocus.requestFocus();
 
                     String strTo = mToEdittext.getText().toString();
-                    if(strTo==null || strTo.isEmpty()) {
-                        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
+                    if (strTo == null || strTo.isEmpty()) {
+                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
                         mListviewContainer.setVisibility(View.GONE);
                         return true;
                     }
 
                     boolean bIsUUID = false;
                     CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
-                    if(results.address!=null) {
+                    if (results.address != null) {
                         GotoSendConfirmation(strTo, 0, "", bIsUUID);
                     } else {
-                        ((NavigationActivity)getActivity()).hideSoftKeyboard(mToEdittext);
+                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
                         ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
                     }
                     return true;
@@ -217,10 +210,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
         mToEdittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -231,9 +226,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     goAutoCompleteWalletListing();
-                }else{
+                } else {
                     mListviewContainer.setVisibility(View.GONE);
                 }
             }
@@ -250,7 +245,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if(mListviewContainer.getVisibility()==View.VISIBLE) {
+                    if (mListviewContainer.getVisibility() == View.VISIBLE) {
                         mListviewContainer.setVisibility(View.GONE);
                         return true;
                     }
@@ -269,24 +264,24 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.SEND), NavigationActivity.Tabs.SEND.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.SEND), NavigationActivity.Tabs.SEND.ordinal());
             }
         });
 
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
 
 
-        if(!mWallets.isEmpty()) {
+        if (!mWallets.isEmpty()) {
             mFromWallet = mWallets.get(0);
         }
         Bundle bundle = getArguments();
-        if(bundle!=null) {
+        if (bundle != null) {
             String uuid = bundle.getString(UUID); // From a wallet with this UUID
-            if(uuid!=null) {
+            if (uuid != null) {
                 mFromWallet = mCoreAPI.getWalletFromUUID(uuid);
-                if(mFromWallet!=null) {
-                    for(int i=0; i<mWallets.size(); i++) {
-                        if(mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
+                if (mFromWallet != null) {
+                    for (int i = 0; i < mWallets.size(); i++) {
+                        if (mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
                             final int finalI = i;
                             walletSpinner.post(new Runnable() {
                                 @Override
@@ -301,9 +296,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
-                if(!uriData.isEmpty()) {
+                if (!uriData.isEmpty()) {
                     CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
-                    if(info!=null && info.getSzAddress()!=null) {
+                    if (info != null && info.getSzAddress() != null) {
                         GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
                     }
                 }
@@ -316,7 +311,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     }
 
     public void stopCamera() {
-        Common.LogD(TAG, "stopCamera");
+        Log.d(TAG, "stopCamera");
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -330,7 +325,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         //Get back camera unless there is none, then try the front camera - fix for Nexus 7
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras == 0) {
-            Common.LogD(TAG, "No cameras!");
+            Log.d(TAG, "No cameras!");
             return;
         }
 
@@ -344,28 +339,28 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             cameraIndex++;
         }
 
-        if(cameraIndex>=numCameras)
-            cameraIndex=0; //Front facing camera if no other camera index returned
+        if (cameraIndex >= numCameras)
+            cameraIndex = 0; //Front facing camera if no other camera index returned
 
         try {
-            Common.LogD(TAG, "Opening Camera");
+            Log.d(TAG, "Opening Camera");
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
-            Common.LogD(TAG, "Camera Does Not exist");
+            Log.d(TAG, "Camera Does Not exist");
             return;
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
         mPreviewFrame.removeView(mPreview);
         mPreviewFrame.addView(mPreview);
-        if(mCamera!=null)
+        if (mCamera != null)
             mCamera.setPreviewCallback(SendFragment.this);
         Camera.Parameters params = mCamera.getParameters();
-        if(params!=null) {
+        if (params != null) {
             List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-            if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
+            if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            if(supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+            if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             mCamera.setParameters(params);
         }
@@ -374,20 +369,19 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        if(mListviewContainer.getVisibility()==View.GONE) {
+        if (mListviewContainer.getVisibility() == View.GONE) {
             CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
-            if(info!=null && info.address!=null) {
-                Common.LogD(TAG, "Bitcoin found");
-                    stopCamera();
-                    GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-            } else if(info!=null) {
+            if (info != null && info.address != null) {
+                Log.d(TAG, "Bitcoin found");
+                stopCamera();
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            } else if (info != null) {
                 stopCamera();
                 ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
         }
     }
 
-    private static int RESULT_LOAD_IMAGE = 678;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -405,11 +399,11 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
             CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
-            if(info!=null && info.address!=null) {
-                Common.LogD(TAG, "Bitcoin found");
+            if (info != null && info.address != null) {
+                Log.d(TAG, "Bitcoin found");
                 stopCamera();
                 GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-            } else if(info!=null) {
+            } else if (info != null) {
                 stopCamera();
                 ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
@@ -419,7 +413,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     // Select a picture from the Gallery
     private void PickAPicture() {
         mToEdittext.clearFocus();
-        Intent in = new   Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
@@ -439,25 +433,25 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 reader.reset();
             }
         }
-        if(rawResult!=null) {
-            Common.LogD(TAG, "QR code found "+rawResult.getText());
+        if (rawResult != null) {
+            Log.d(TAG, "QR code found " + rawResult.getText());
             return mCoreAPI.CheckURIResults(rawResult.getText());
         } else {
-            Common.LogD(TAG, "No QR code found");
+            Log.d(TAG, "No QR code found");
             return null;
         }
     }
 
     private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
-        if(thumbnail==null) {
-            Common.LogD(TAG, "No picture selected");
+        if (thumbnail == null) {
+            Log.d(TAG, "No picture selected");
         } else {
-            Common.LogD(TAG, "Picture selected");
+            Log.d(TAG, "Picture selected");
             Result rawResult = null;
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
             int h = thumbnail.getHeight();
-            int[] pixels = new int[w*h];
+            int[] pixels = new int[w * h];
             thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
             RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
             if (source != null) {
@@ -470,18 +464,18 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                     reader.reset();
                 }
             }
-            if(rawResult!=null) {
-                Common.LogD(TAG, "QR code found "+rawResult.getText());
+            if (rawResult != null) {
+                Log.d(TAG, "QR code found " + rawResult.getText());
                 return mCoreAPI.CheckURIResults(rawResult.getText());
             } else {
-                Common.LogD(TAG, "No QR code found");
+                Log.d(TAG, "No QR code found");
             }
         }
         return null;
     }
 
     public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
-        if(mToEdittext!=null) {
+        if (mToEdittext != null) {
             mActivity.hideSoftKeyboard(mToEdittext);
         }
         Fragment fragment = new SendConfirmationFragment();
@@ -490,15 +484,15 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
-        if(mFromWallet==null) {
-            if(mCoreAPI==null) {
+        if (mFromWallet == null) {
+            if (mCoreAPI == null) {
                 mCoreAPI = CoreAPI.getApi();
             }
             mFromWallet = mCoreAPI.getCoreWallets(false).get(0);
         }
         bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
-        if(mActivity!=null)
+        if (mActivity != null)
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
     }
 
@@ -508,13 +502,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mWallets = mCoreAPI.getCoreActiveWallets();
 
         dummyFocus.requestFocus();
-        if(mHandler==null)
+        if (mHandler == null)
             mHandler = new Handler();
         mHandler.postDelayed(cameraDelayRunner, 500);
 
 
-        if(walletSpinner != null && walletSpinner.getAdapter()!=null) {
-            ((WalletPickerAdapter)walletSpinner.getAdapter()).notifyDataSetChanged();
+        if (walletSpinner != null && walletSpinner.getAdapter() != null) {
+            ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
         }
     }
 
@@ -523,34 +517,28 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             mHandler.postDelayed(cameraDelayRunner, 500);
-        }
-        else {
+        } else {
             if (mCamera != null) {
                 stopCamera();
             }
         }
     }
 
-    Runnable cameraDelayRunner = new Runnable() {
-        @Override
-        public void run() { startCamera(); }
-    };
-
-    public void updateWalletOtherList(){
+    public void updateWalletOtherList() {
         mWalletOtherList = new ArrayList<Wallet>();
-        for(Wallet wallet: mWallets){
-            if(mFromWallet!=null && mFromWallet.getUUID()!=null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
+        for (Wallet wallet : mWallets) {
+            if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mWalletOtherList.add(wallet);
             }
         }
     }
 
-    public void goAutoCompleteWalletListing(){
+    public void goAutoCompleteWalletListing() {
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
-        if(text.isEmpty()) {
-            for(Wallet w : mWalletOtherList) {
-                if(!w.isArchived()){
+        if (text.isEmpty()) {
+            for (Wallet w : mWalletOtherList) {
+                if (!w.isArchived()) {
                     mCurrentListing.add(w);
                 }
             }
@@ -561,7 +549,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                 }
             }
         }
-        if(mCurrentListing.isEmpty() || !mToEdittext.hasFocus()) {
+        if (mCurrentListing.isEmpty() || !mToEdittext.hasFocus()) {
             mListviewContainer.setVisibility(View.GONE);
         } else {
             mListviewContainer.setVisibility(View.VISIBLE);
@@ -572,7 +560,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     @Override
     public void onPause() {
         super.onPause();
-        if(mHandler != null)
+        if (mHandler != null)
             mHandler.removeCallbacks(cameraDelayRunner);
         stopCamera();
     }
@@ -594,7 +582,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                                 startCamera();
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
         AlertDialog alert = builder.create();
         alert.show();
     }

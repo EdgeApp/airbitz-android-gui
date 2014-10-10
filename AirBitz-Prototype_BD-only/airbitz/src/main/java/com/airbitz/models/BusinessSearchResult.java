@@ -62,9 +62,9 @@ public class BusinessSearchResult {
         mBizName = bizName;
     }
 
-    public BusinessSearchResult(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
-            if(jsonResponse.has("bizId")){
+    public BusinessSearchResult(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
+            if (jsonResponse.has("bizId")) {
                 mBizId = jsonResponse.getString("bizId");
             }
             mBizName = jsonResponse.getString("name");
@@ -86,15 +86,15 @@ public class BusinessSearchResult {
         }
     }
 
-    public static List<BusinessSearchResult> generateBusinessObjectListFromJSON(JSONArray objectArray){
+    public static List<BusinessSearchResult> generateBusinessObjectListFromJSON(JSONArray objectArray) {
         List<BusinessSearchResult> resultList = new ArrayList<BusinessSearchResult>();
-        for(int counter=0; counter < objectArray.length(); counter++){
-            try{
+        for (int counter = 0; counter < objectArray.length(); counter++) {
+            try {
                 resultList.add(new BusinessSearchResult(objectArray.getJSONObject(counter)));
-            }catch (JSONException e){
-                Log.d(TAG, ""+e.getMessage());
-            }catch (Exception e){
-                Log.d(TAG, ""+e.getMessage());
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
             }
         }
         return resultList;
@@ -102,7 +102,7 @@ public class BusinessSearchResult {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof BusinessSearchResult){
+        if (o instanceof BusinessSearchResult) {
             BusinessSearchResult toCompare = (BusinessSearchResult) o;
             return this.mBizId.equals(toCompare.getId());
         }
@@ -114,118 +114,120 @@ public class BusinessSearchResult {
         return mBizId.hashCode();
     }
 
-    public void setId(String id){
-        mBizId = id;
-    }
-
-    public String getId(){
+    public String getId() {
         return mBizId;
     }
 
-    public void setName(String name){
-        mBizName = name;
+    public void setId(String id) {
+        mBizId = id;
     }
 
-    public String getName(){
+    public String getName() {
         return mBizName;
     }
 
-    public void setCategoryObjectArray(List<Category> categoryArray){
+    public void setName(String name) {
+        mBizName = name;
+    }
+
+    public void setCategoryObjectArray(List<Category> categoryArray) {
         mCategoryArray = categoryArray;
     }
 
-    public List<Category> getCategoryObject(){
+    public List<Category> getCategoryObject() {
         return mCategoryArray;
     }
 
-    public void setSocialObjectArray(List<Social> socialArray){
-        mSocialArray = socialArray;
-    }
-
-    public List<Social> getSocialObjectArray(){
+    public List<Social> getSocialObjectArray() {
         return mSocialArray;
     }
 
-    public void setProfileImageObjectArray(ProfileImage profileImage){
+    public void setSocialObjectArray(List<Social> socialArray) {
+        mSocialArray = socialArray;
+    }
+
+    public void setProfileImageObjectArray(ProfileImage profileImage) {
         mProfileImage = profileImage;
     }
 
-    public ProfileImage getProfileImage(){
+    public ProfileImage getProfileImage() {
         return mProfileImage;
     }
 
-    public ProfileImage getSquareProfileImage() { return mSquareProfileImage; }
-
-    public void setWebsite(String website){
-        mBizWebsite = website;
+    public ProfileImage getSquareProfileImage() {
+        return mSquareProfileImage;
     }
 
-    public String getWebsite(){
+    public String getWebsite() {
         return mBizWebsite;
     }
 
-    public void setPhone(String phone){
-        mBizPhone = phone;
+    public void setWebsite(String website) {
+        mBizWebsite = website;
     }
 
-    public String getPhone(){
+    public String getPhone() {
         return mBizPhone;
     }
 
-    public void setAddress(String address){
-        mBizAddress = address;
+    public void setPhone(String phone) {
+        mBizPhone = phone;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return mBizAddress;
     }
 
-    public void setCity(String city){
-        mBizCity = city;
+    public void setAddress(String address) {
+        mBizAddress = address;
     }
 
-    public String getCity(){
+    public String getCity() {
         return mBizCity;
     }
 
-    public void setCounty(String county){
-        mBizCounty = county;
+    public void setCity(String city) {
+        mBizCity = city;
     }
 
-    public String getCounty(){
+    public String getCounty() {
         return mBizCounty;
     }
 
-    public void setState(String state){
-        mBizState = state;
+    public void setCounty(String county) {
+        mBizCounty = county;
     }
 
-    public String getState(){
+    public String getState() {
         return mBizState;
     }
 
-    public void setPostalCode(String postalCode){
-        mBizPostalCode = postalCode;
+    public void setState(String state) {
+        mBizState = state;
     }
 
-    public String getPostalCode(){
+    public String getPostalCode() {
         return mBizPostalCode;
     }
 
-    public void setCountry(String country){
-        mBizCountry = country;
+    public void setPostalCode(String postalCode) {
+        mBizPostalCode = postalCode;
     }
 
-    public String getCountry(){
+    public String getCountry() {
         return mBizCountry;
     }
 
-    public void setLocationObject(Location location){
-        mLocation = location;
+    public void setCountry(String country) {
+        mBizCountry = country;
     }
 
-    public Location getLocationObject(){
+    public Location getLocationObject() {
         return mLocation;
+    }
+
+    public void setLocationObject(Location location) {
+        mLocation = location;
     }
 
     public String getBizDiscount() {

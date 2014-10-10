@@ -1,12 +1,13 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,12 +22,12 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.Calculator;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
 
 import java.util.List;
@@ -35,38 +36,30 @@ import java.util.List;
  * Created on 2/13/14.
  */
 public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
-    private final String TAG = getClass().getSimpleName();
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
-
+    private final String TAG = getClass().getSimpleName();
+    int mFromIndex = 0;
     private String mUUID = null;
     private EditText mBitcoinField;
     private EditText mFiatField;
     private boolean mAutoUpdatingTextFields = false;
-
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
-
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
-
     private HighlightOnPressSpinner pickWalletSpinner;
-
     private HighlightOnPressButton mExpandButton;
-
     private TextView mTitleTextView;
     private TextView mWalletTextView;
     private TextView mConverterTextView;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
-
     private Calculator mCalculator;
-
     private CoreAPI mCoreAPI;
-    int mFromIndex =0;
     private View mView;
 
     private Long mSavedSatoshi;
@@ -119,7 +112,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        if(!mWallets.isEmpty()) {
+        if (!mWallets.isEmpty()) {
             mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
         }
 
@@ -165,10 +158,12 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         final TextWatcher mBTCTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -181,14 +176,16 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         final TextWatcher mFiatTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mAutoUpdatingTextFields) {
+                if (!mAutoUpdatingTextFields) {
                     updateTextFieldContents();
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
@@ -245,7 +242,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         });
 
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch (View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
@@ -261,7 +258,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
@@ -275,7 +272,8 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
 
         return mView;
@@ -300,23 +298,23 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         String bitcoin = mBitcoinField.getText().toString();
         String fiat = mFiatField.getText().toString();
         if (btc) {
-            if(!mCoreAPI.TooMuchBitcoin(bitcoin)) {
+            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
                 satoshi = mCoreAPI.denominationToSatoshi(bitcoin);
                 mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
             } else {
                 //TODO ???
-                Common.LogD(TAG, "Too much bitcoin");
+                Log.d(TAG, "Too much bitcoin");
             }
         } else {
             try {
-                if(!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
+                if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
                     currency = Double.parseDouble(fiat);
                     satoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
                     mBitcoinField.setText(mCoreAPI.formatSatoshi(satoshi, false));
                 } else {
-                    Common.LogD(TAG, "Too much fiat");
+                    Log.d(TAG, "Too much fiat");
                 }
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 //not a double, ignore
             }
         }
@@ -342,7 +340,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         setConversionText(mSelectedWallet.getCurrencyNum());
         mCoreAPI.addExchangeRateChangeListener(this);
         Bundle bundle = getArguments();
-        if(mUUID==null && bundle!=null && bundle.getString(FROM_UUID)!=null) {
+        if (mUUID == null && bundle != null && bundle.getString(FROM_UUID) != null) {
             mUUID = bundle.getString(FROM_UUID);
             mSelectedWallet = mCoreAPI.getWalletFromUUID(mUUID);
             for (int i = 0; i < mWallets.size(); i++) {
@@ -351,30 +349,31 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                     mFromIndex = i;
                 }
             }
-        } else if(bundle!=null && bundle.getString(MERCHANT_MODE)!=null) {
+        } else if (bundle != null && bundle.getString(MERCHANT_MODE) != null) {
             focus(mFiatField);
         } else {
-            mFromIndex=0;
-            if(mWallets!=null && !mWallets.isEmpty())
+            mFromIndex = 0;
+            if (mWallets != null && !mWallets.isEmpty())
                 mSelectedWallet = mWallets.get(mFromIndex);
         }
 
         mAutoUpdatingTextFields = true;
-            if(mSavedSatoshi != null) {
-                mFromIndex = mSavedIndex;
-                mSelectedWallet = mWallets.get(mFromIndex);
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
-                mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
-                pickWalletSpinner.setSelection(mFromIndex);
-            } else {
-                mFiatField.setText("");
-                mBitcoinField.setText("");
-                pickWalletSpinner.setSelection(mFromIndex);
-            }
+        if (mSavedSatoshi != null) {
+            mFromIndex = mSavedIndex;
+            mSelectedWallet = mWallets.get(mFromIndex);
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+            mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
+            pickWalletSpinner.setSelection(mFromIndex);
+        } else {
+            mFiatField.setText("");
+            mBitcoinField.setText("");
+            pickWalletSpinner.setSelection(mFromIndex);
+        }
         mAutoUpdatingTextFields = false;
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
 
         mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
@@ -388,7 +387,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     @Override
     public void OnExchangeRatesChange() {
-        if(mSelectedWallet!=null) {
+        if (mSelectedWallet != null) {
             setConversionText(mSelectedWallet.getCurrencyNum());
             updateTextFieldContents();
         }
@@ -396,7 +395,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
     private void loadNonArchivedWallets() {
         mWallets = mCoreAPI.getCoreActiveWallets();
-        if( pickWalletSpinner!=null && pickWalletSpinner.getAdapter() != null) {
+        if (pickWalletSpinner != null && pickWalletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
         }
     }

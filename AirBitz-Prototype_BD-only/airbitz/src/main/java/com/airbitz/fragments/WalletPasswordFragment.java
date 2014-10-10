@@ -1,9 +1,9 @@
 package com.airbitz.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.utils.Common;
 
 /**
  * Created on 2/24/14.
@@ -29,25 +28,25 @@ public class WalletPasswordFragment extends Fragment {
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
+    private View mView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    private View mView;
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         ViewGroup parentViewGroup = (ViewGroup) mView.getParent();
-        if( null != parentViewGroup ) {
-            parentViewGroup.removeView( mView );
+        if (null != parentViewGroup) {
+            parentViewGroup.removeView(mView);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView!=null)
+        if (mView != null)
             return mView;
         mView = inflater.inflate(R.layout.fragment_wallet_password, container, false);
 
@@ -67,12 +66,12 @@ public class WalletPasswordFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
 
-                if(!hasFocus){
+                if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                   if(((EditText) view).getText().length() != 0){
+                    if (((EditText) view).getText().length() != 0) {
 
-                   }
+                    }
                 }
             }
         });
@@ -82,20 +81,19 @@ public class WalletPasswordFragment extends Fragment {
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 int keyAction = keyEvent.getAction();
                 String test = "";
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                         Context.INPUT_METHOD_SERVICE);
 
 
-                if(keyAction == KeyEvent.ACTION_UP){
+                if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
                             imm.hideSoftInputFromWindow(mPasswordEdittext.getWindowToken(), 0);
                             mValidPasswordImageView.setVisibility(View.VISIBLE);
 
-                            if(mPasswordEdittext.getText().toString().equals("Password")){
+                            if (mPasswordEdittext.getText().toString().equals("Password")) {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_approved);
-                            }
-                            else{
+                            } else {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_not_approved);
                             }
                             return true;
@@ -103,20 +101,18 @@ public class WalletPasswordFragment extends Fragment {
                             imm.hideSoftInputFromWindow(mPasswordEdittext.getWindowToken(), 0);
                             mValidPasswordImageView.setVisibility(View.VISIBLE);
 
-                            if(mPasswordEdittext.getText().toString().equals("Password")){
+                            if (mPasswordEdittext.getText().toString().equals("Password")) {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_approved);
                                 Handler handler = new Handler();
-                                handler.postDelayed(new Runnable()
-                                {
+                                handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
 //                                        mIntent = new Intent(WalletPasswordFragment.this, TransactionActivity.class);
 //                                        startActivity(mIntent);
 //                                        finish();
                                     }
-                                }, 2000 );
-                            }
-                            else{
+                                }, 2000);
+                            } else {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_not_approved);
                             }
 

@@ -1,6 +1,7 @@
 package com.airbitz.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -9,10 +10,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,7 +53,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,7 +63,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,83 +72,58 @@ import java.util.List;
  */
 public class MapBusinessDirectoryFragment extends Fragment implements
         CurrentLocationManager.OnLocationChange {
+    private static final int INVALID_POINTER_ID = -1;
+    private int mActivePointerId = INVALID_POINTER_ID;
+    private static String mLocationWords = "";
     private final String TAG = getClass().getSimpleName();
-
+    int mapHeight;
+    int aPosBottom = -10000;
+    int dragBarHeight = 0;
+    boolean alreadyLoaded = false;
+    View view;
     private GoogleMap mGoogleMap;
     private ImageButton mLocateMeButton;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private Marker mUserLocationMarker;
-
     private EditText mSearchEdittext;
     private EditText mLocationEdittext;
-
     private RelativeLayout llListContainer;
-
     private FrameLayout flMapContainer;
-
     private boolean locationEnabled;
-
-    int mapHeight;
-
     private LinearLayout mDragLayout;
     private TextView mTitleTextView;
     private ListView mSearchListView;
-
     private LinearLayout mMapLayout;
-
     private ArrayAdapter<Business> mBusinessSearchAdapter;
     private ArrayList<BusinessVenue> mBusinessVenueList;
-
     private ListView mVenueListView;
     private VenueAdapter mVenueAdapter;
-
     private float aPosY;
-    int aPosBottom=-10000;
-
-    private static final int INVALID_POINTER_ID = -1;
-    private int mActivePointerId = INVALID_POINTER_ID;
-
     private ArrayList<LocationSearchResult> mLocation;
     private ArrayList<Business> mBusinessList;
-
     private Location mCurrentLocation;
-
     private LocationAdapter mLocationAdapter;
-
     private LinearLayout mapView;
     private MapView mMapView;
-
     private String mLocationName;
     private String mBusinessName;
     private String mBusinessType;
     private Bundle mVenueBundle;
-
     private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
     private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
     private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
-
-
     private List<BusinessSearchResult> mVenues = new ArrayList<BusinessSearchResult>();
-    private static String mLocationWords = "";
-
     private boolean mCameraChangeListenerEnabled = false;
-
     private List<LatLng> mMarkersLatLngList;
-
     private CurrentLocationManager mLocationManager;
-
     private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
 
-    int dragBarHeight = 0;
-    boolean alreadyLoaded = false;
-
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mVenueBundle = this.getArguments();
@@ -157,7 +131,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
         mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
 
-        if(mLocationManager==null) {
+        if (mLocationManager == null) {
             alreadyLoaded = false;
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         } else {
@@ -165,15 +139,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    View view;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
 
         mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
         mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showDirectoryDetailFragment(mVenues.get(i).getId(), mVenues.get(i).getName(), mVenues.get(i).getDistance());
             }
         });
@@ -181,7 +154,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mVenueListView.setAdapter(mVenueAdapter);
 
         mapView = (LinearLayout) view.findViewById(R.id.map_view);
-        mMapView =  (MapView) view.findViewById(R.id.custom_map_fragment);
+        mMapView = (MapView) view.findViewById(R.id.custom_map_fragment);
         mMapView.onCreate(savedInstanceState);
 
         try {
@@ -223,17 +196,21 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mBusinessVenueList = new ArrayList<BusinessVenue>();
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if(mLocationEdittext.getVisibility()==View.VISIBLE){
+            @Override
+            public void onClick(View view) {
+                if (mLocationEdittext.getVisibility() == View.VISIBLE) {
                     showViewAnimatorChild(0);
-                }else{
+                } else {
                     getActivity().onBackPressed();
                 }
-            };
+            }
+
+            ;
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
 //                Common.showHelpInfoDialog(this,
 //                        "Info",
 //                        "Business directory info");
@@ -244,7 +221,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mSearchListView.setAdapter(mBusinessSearchAdapter);
 
         mSearchEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View view, boolean hasFocus) {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
 
                 if (hasFocus) {
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
@@ -258,11 +236,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                                 ? null
                                 : CacheUtil.getCachedBusinessSearchData(getActivity()));
                         String latLong = "";
-                        if(locationEnabled) {
+                        if (locationEnabled) {
                             latLong = String.valueOf(mCurrentLocation.getLatitude());
                             latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                         }
-                        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                        if (mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                             mBusinessAutoCompleteAsyncTask.cancel(true);
                         }
                         mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
@@ -272,28 +250,30 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                 }
             }
         });
 
         mSearchEdittext.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
 
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
                 mLocationEdittext.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
 
                 String latLong = "";
-                if(locationEnabled) {
+                if (locationEnabled) {
                     latLong = String.valueOf(mCurrentLocation.getLatitude());
                     latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
@@ -305,7 +285,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     final List<Business> cachedBusinesses = (TextUtils.isEmpty(query)
                             ? CacheUtil.getCachedBusinessSearchData(getActivity())
                             : null);
-                    if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                    if (mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mBusinessAutoCompleteAsyncTask.cancel(true);
                     }
                     mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusinesses);
@@ -322,21 +302,22 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mSearchListView.setAdapter(mLocationAdapter);
 
         mLocationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View view, boolean hasFocus) {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
 
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
 
                     // Search
                     String latLong = "";
-                    if(locationEnabled) {
+                    if (locationEnabled) {
                         latLong = String.valueOf(mCurrentLocation.getLatitude());
                         latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                     }
                     mLocationWords = "";
 
                     try {
-                        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                        if (mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                             mLocationAutoCompleteAsyncTask.cancel(true);
                         }
                         mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(CacheUtil.getCachedLocationSearchData(getActivity()));
@@ -352,7 +333,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocationEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     showViewAnimatorChild(0);
                     mBusinessType = "business";
                     mBusinessName = mSearchEdittext.getText().toString();
@@ -367,7 +348,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mSearchEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     showViewAnimatorChild(0);
                     mBusinessType = "business";
                     mBusinessName = mSearchEdittext.getText().toString();
@@ -380,23 +361,25 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
 
         mLocationEdittext.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
                 mLocationWords = editable.toString();
 
                 String latLong = "";
-                if(locationEnabled) {
+                if (locationEnabled) {
                     latLong = String.valueOf(mCurrentLocation.getLatitude());
                     latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
@@ -405,7 +388,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     List<LocationSearchResult> cachedLocationSearch = (TextUtils.isEmpty(mLocationWords)
                             ? CacheUtil.getCachedLocationSearchData(getActivity())
                             : null);
-                    if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                    if (mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mLocationAutoCompleteAsyncTask.cancel(true);
                     }
                     mLocationAutoCompleteAsyncTask = new LocationAutoCompleteAsynctask(cachedLocationSearch);
@@ -417,7 +400,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
 
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 boolean locationFieldShouldFocus = false;
 
@@ -455,12 +439,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
 
         mDragLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View view, MotionEvent event) {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
                 String DEBUG_TAG = "TEST MOVE";
                 int action = event.getActionMasked();
                 switch (action) {
                     case (MotionEvent.ACTION_DOWN):
-                        //Common.LogD(TAG, "action down");
+                        //Log.d(TAG, "action down");
                         // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
 
@@ -473,7 +458,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                         return true;
 
                     case (MotionEvent.ACTION_MOVE):
-                        //Common.LogD(TAG, "action move");
+                        //Log.d(TAG, "action move");
                         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) flMapContainer.getLayoutParams();
                         int currentHeight = param.height;
 
@@ -487,25 +472,25 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
                         param.height += yMove;
 
-                        int barY = (int)mDragLayout.getY();
+                        int barY = (int) mDragLayout.getY();
 
                         if (param.height <= 0 || (barY + dragBarHeight >= aPosY && yMove > 0)) {
-//                            Common.LogD(TAG, "height is out of bounds.");
-//                            Common.LogD(TAG, "Height: " + (barY + dragBarHeight) + " aPosY: " + aPosY + " param height: " + param.height + " yMove: " + yMove);
+//                            Log.d(TAG, "height is out of bounds.");
+//                            Log.d(TAG, "Height: " + (barY + dragBarHeight) + " aPosY: " + aPosY + " param height: " + param.height + " yMove: " + yMove);
                             param.height = currentHeight;
                         } else if (param.height > (aPosBottom - dragBarHeight - 10)) {
                             param.height = currentHeight;
-//                            Common.LogD(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" bottom: "+aPosBottom);
+//                            Log.d(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" bottom: "+aPosBottom);
                         }
 
                         flMapContainer.setLayoutParams(param);
 
                         int padding = (mapHeight - param.height) / 2;
 
-                        if(mGoogleMap == null){
+                        if (mGoogleMap == null) {
                             initializeMap();
                         }
-                        if(mGoogleMap != null) {
+                        if (mGoogleMap != null) {
                             mGoogleMap.setPadding(0, padding, 0, padding);
                         }
 
@@ -547,7 +532,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     private void showViewAnimatorChild(int num) {
-        if(num==0) {
+        if (num == 0) {
             mSearchListView.setVisibility(View.GONE);
             mMapLayout.setVisibility(View.VISIBLE);
             mLocationEdittext.setVisibility(View.GONE);
@@ -571,12 +556,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         // Clear existing venues
         mVenues.clear();
         if (mLocationName.equalsIgnoreCase("Current Location")) {
-            if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                 mGetVenuesAsyncTask.cancel(true);
             }
             mGetVenuesAsyncTask = new GetVenuesByLatLongTask(getActivity());
             String latlong = "";
-            if(locationEnabled){
+            if (locationEnabled) {
                 latlong += mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
             }
             if (mBusinessType.equalsIgnoreCase("business")) {
@@ -586,7 +571,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
                                 Toast.LENGTH_LONG).show();
@@ -595,7 +581,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 }
             }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
         } else {
-            if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+            if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                 mGetVenuesAsyncTask.cancel(true);
             }
             mGetVenuesAsyncTask = new GetVenuesByBusinessAndLocation(getActivity());
@@ -616,8 +602,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocateMeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(locationEnabled) {
-                    Common.LogD("TAG_LOC",
+                if (locationEnabled) {
+                    Log.d("TAG_LOC",
                             "CUR LOC: " + mCurrentLocation.getLatitude()
                                     + "; "
                                     + mCurrentLocation.getLongitude()
@@ -639,28 +625,28 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         mMapView.onPause();
-        if(mLocationManager!=null) {
+        if (mLocationManager != null) {
             mLocationManager.removeLocationChangeListener(this);
         }
-        if(mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+        if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             mGetVenuesAsyncTask.cancel(true);
         }
-        if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+        if (mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             mGetVenuesByBoundAsyncTask.cancel(true);
         }
-        if(mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+        if (mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             mBusinessAutoCompleteAsyncTask.cancel(true);
         }
-        if(mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+        if (mLocationAutoCompleteAsyncTask != null && mLocationAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLocationAutoCompleteAsyncTask.cancel(true);
         }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mCurrentLocation = mLocationManager.getLocation();
         mMapView.onResume();
@@ -668,7 +654,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         if (!mVenues.isEmpty()) {
             List<BusinessSearchResult> venues =
-                new ArrayList<BusinessSearchResult>(mVenues);
+                    new ArrayList<BusinessSearchResult>(mVenues);
             mVenues.clear();
             updateVenueResults(venues);
         } else {
@@ -688,18 +674,19 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
     private void checkLocationManager() {
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
             Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             locationEnabled = true;
         }
     }
 
     private void onLayoutFinished() {
-        if(alreadyLoaded && mMarkersLatLngList!=null) {
+        if (alreadyLoaded && mMarkersLatLngList != null) {
             zoomToContainAllMarkers(mMarkersLatLngList);
         }
     }
@@ -730,15 +717,16 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         }
 
         mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override public void onMyLocationChange(Location location) {
+            @Override
+            public void onMyLocationChange(Location location) {
                 mCurrentLocation = location;
                 drawCurrentLocationMarker(location);
             }
         });
 
-        if(locationEnabled){
+        if (locationEnabled) {
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        }else{
+        } else {
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
@@ -753,18 +741,18 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         if (mCurrentLocation != null) {
             currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         } else {
-                mCurrentLocation = new Location("dummyProvider");
-            if(locationEnabled) {
+            mCurrentLocation = new Location("dummyProvider");
+            if (locationEnabled) {
                 mCurrentLocation.setLatitude(mCurrentLocation.getLatitude());
                 mCurrentLocation.setLongitude(mCurrentLocation.getLongitude());
                 currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             }
         }
         try {
-            if(locationEnabled) {
+            if (locationEnabled) {
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 10);
                 mGoogleMap.animateCamera(cameraUpdate);
-                Common.LogD("TAG LOC",
+                Log.d("TAG LOC",
                         "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
             }
 
@@ -774,7 +762,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
-        if(locationEnabled) {
+        if (locationEnabled) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
         }
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -783,17 +771,19 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override public void onInfoWindowClick(Marker marker) {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
                 if (marker.getTitle().equalsIgnoreCase(getString(R.string.your_location))) {
 
                 } else {
-                    showDirectoryDetailFragment(""+mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
+                    showDirectoryDetailFragment("" + mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
                 }
             }
         });
 
         mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override public void onCameraChange(CameraPosition cameraPosition) {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
                 if (mCameraChangeListenerEnabled) {
                     LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     LatLng southWestLatLng = latLngBounds.southwest;
@@ -802,12 +792,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     String northEast = "" + northEastLatLng.latitude + "%2C" + northEastLatLng.longitude;
                     String bound = southWest + "%7C" + northEast;
                     String userLatLong = "";
-                    if(locationEnabled) {
+                    if (locationEnabled) {
                         userLatLong = "" + mCurrentLocation.getLatitude()
                                 + ","
                                 + mCurrentLocation.getLongitude();
                     }
-                    if(mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING){
+                    if (mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mGetVenuesByBoundAsyncTask.cancel(true);
                     }
                     mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
@@ -820,7 +810,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
 
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override public boolean onMarkerClick(Marker marker) {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
                 mCameraChangeListenerEnabled = false;
                 marker.showInfoWindow();
                 return true;
@@ -828,14 +819,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
         mGoogleMap.setMyLocationEnabled(false);
         showViewAnimatorChild(0);
-    //}
+        //}
     }
 
     private void drawCurrentLocationMarker(Location location) {//todo
         if (mUserLocationMarker != null) {
             mUserLocationMarker.remove();
         }
-        if(locationEnabled) {
+        if (locationEnabled) {
             LatLng currentPosition;
             // added default location to prevent breaking
             if (location != null) {
@@ -864,10 +855,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         if (location == null) {
             location = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
-        if(mGoogleMap == null){
+        if (mGoogleMap == null) {
             initializeMap();
         }
-        if(mGoogleMap != null) {
+        if (mGoogleMap != null) {
             mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                             .position(location)
                             .title(getString(R.string.your_location))
@@ -886,10 +877,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             for (LatLng item : markers) {
                 bc.include(item);
             }
-            if(mGoogleMap == null){
+            if (mGoogleMap == null) {
                 initializeMap();
             }
-            if(mGoogleMap != null) {
+            if (mGoogleMap != null) {
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
             }
         }
@@ -900,7 +891,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             return;
         }
 
-        Common.LogD(TAG, "initializeMarkerWithBusinessSearchResult");
+        Log.d(TAG, "initializeMarkerWithBusinessSearchResult");
 
         mMarkersLatLngList = new ArrayList<LatLng>();
         mMarkerId.put(null, 0);
@@ -919,10 +910,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
                         businessSearchResult.getLocationObject().getLongitude());
                 mMarkersLatLngList.add(locationLatLng);
-                if(mGoogleMap == null){
+                if (mGoogleMap == null) {
                     initializeMap();
                 }
-                if(mGoogleMap != null) {
+                if (mGoogleMap != null) {
                     Marker marker = mGoogleMap.addMarker(new MarkerOptions()
                                     .position(locationLatLng)
                                     .title(businessSearchResult.getName())
@@ -957,7 +948,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     @Override
     public void OnCurrentLocationChange(Location location) {
         mLocationManager.removeLocationChangeListener(this);
-        if(!alreadyLoaded) {
+        if (!alreadyLoaded) {
             mCurrentLocation = mLocationManager.getLocation();
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 7));
         }
@@ -971,6 +962,52 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         return mMarkerId;
     }
 
+    private boolean isNewVenuesAdded(List<BusinessSearchResult> newVenues) {
+        for (BusinessSearchResult item : newVenues) {
+            if (!mVenues.contains(item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void showMessageProgress(String message, boolean visible) {
+        if (isAdded()) {
+            ((NavigationActivity) getActivity()).showModalProgress(visible);
+        }
+    }
+
+    private void updateVenueResults(String searchResult) {
+        try {
+            SearchResult result = new SearchResult(new JSONObject(searchResult));
+            updateVenueResults(result.getBusinessSearchObjectArray());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateVenueResults(List<BusinessSearchResult> venues) {
+        if (venues == null) {
+            return;
+        }
+        try {
+            mVenues.addAll(venues);
+            mVenueAdapter.notifyDataSetChanged();
+            if (mGoogleMap == null) {
+                initializeMap();
+            }
+            if (mGoogleMap != null) {
+                mGoogleMap.clear();
+                initializeMarkerWithBusinessSearchResult();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>> {
 
         private List<LocationSearchResult> mCacheData = null;
@@ -979,12 +1016,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mCacheData = cacheData;
         }
 
-        @Override protected List<LocationSearchResult> doInBackground(String... strings) {
+        @Override
+        protected List<LocationSearchResult> doInBackground(String... strings) {
             return AirbitzAPI.getApi().getHttpAutoCompleteLocation(strings[0], strings[1]);
         }
 
-        @Override protected void onPostExecute(List<LocationSearchResult> result) {
-            if(getActivity()==null)
+        @Override
+        protected void onPostExecute(List<LocationSearchResult> result) {
+            if (getActivity() == null)
                 return;
 
             mLocation.clear();
@@ -1017,7 +1056,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mLocationAutoCompleteAsyncTask = null;
         }
 
-        @Override protected void onCancelled(List<LocationSearchResult> JSONResult){
+        @Override
+        protected void onCancelled(List<LocationSearchResult> JSONResult) {
             mLocationAutoCompleteAsyncTask = null;
             super.onCancelled();
         }
@@ -1031,7 +1071,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mCacheData = cacheData;
         }
 
-        @Override protected List<Business> doInBackground(String... strings) {
+        @Override
+        protected List<Business> doInBackground(String... strings) {
             List<Business> jsonParsingResult = AirbitzAPI.getApi().getHttpAutoCompleteBusiness(strings[0],
                     strings[1],
                     strings[2]);
@@ -1039,8 +1080,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             return jsonParsingResult;
         }
 
-        @Override protected void onPostExecute(List<Business> businesses) {
-            if(getActivity() == null)
+        @Override
+        protected void onPostExecute(List<Business> businesses) {
+            if (getActivity() == null)
                 return;
 
             mBusinessList.clear();
@@ -1063,7 +1105,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mBusinessSearchAdapter.notifyDataSetChanged();
             mBusinessAutoCompleteAsyncTask = null;
         }
-        @Override protected void onCancelled(List<Business> JSONResult){
+
+        @Override
+        protected void onCancelled(List<Business> JSONResult) {
             mBusinessAutoCompleteAsyncTask = null;
             super.onCancelled();
         }
@@ -1078,17 +1122,20 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mContext = context;
         }
 
-        @Override protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
         }
 
-        @Override protected void onCancelled() {
+        @Override
+        protected void onCancelled() {
             mGetVenuesByBoundAsyncTask = null;
             super.onCancelled();
         }
 
-        @Override protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
 
-            Common.LogD(TAG, "GetVenuesByBoundTask params: " + params);
+            Log.d(TAG, "GetVenuesByBoundTask params: " + params);
             if (mBusinessType.equalsIgnoreCase("category")) {
 
                 return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], "", "", "");
@@ -1098,13 +1145,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }
         }
 
-        @Override protected void onPostExecute(String searchResult) {
-            if(getActivity() == null)
+        @Override
+        protected void onPostExecute(String searchResult) {
+            if (getActivity() == null)
                 return;
 
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
-                Common.LogD(TAG, "New Venues have been added: "+isNewVenuesAdded(results.getBusinessSearchObjectArray()));
+                Log.d(TAG, "New Venues have been added: " + isNewVenuesAdded(results.getBusinessSearchObjectArray()));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     updateVenueResults(searchResult);
                 }
@@ -1115,23 +1163,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    private boolean isNewVenuesAdded(List<BusinessSearchResult> newVenues) {
-        for (BusinessSearchResult item : newVenues) {
-            if (!mVenues.contains(item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void showMessageProgress(String message, boolean visible) {
-        if(isAdded()) {
-            ((NavigationActivity) getActivity()).showModalProgress(visible);
-        }
-    }
-
-
     private class GetVenuesByLatLongTask extends AsyncTask<String, Void, String> {
 
         AirbitzAPI mApi = AirbitzAPI.getApi();
@@ -1141,22 +1172,26 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mContext = context;
         }
 
-        @Override protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
             showMessageProgress(getString(R.string.fragment_directory_detail_getting_venue_data), true);
         }
 
-        @Override protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
             return mApi.getSearchByLatLongAndBusiness(params[0], params[1], params[2], "", "", "");
         }
 
-        @Override protected void onCancelled() {
+        @Override
+        protected void onCancelled() {
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
-        @Override protected void onPostExecute(String searchResult) {
-            if(getActivity() == null)
+        @Override
+        protected void onPostExecute(String searchResult) {
+            if (getActivity() == null)
                 return;
 
             updateVenueResults(searchResult);
@@ -1175,13 +1210,15 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             mContext = context;
         }
 
-        @Override protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
             showMessageProgress(getString(R.string.fragment_directory_detail_getting_venue_data), true);
-       }
+        }
 
-        @Override protected String doInBackground(String... params) {
+        @Override
+        protected String doInBackground(String... params) {
             String latLong = "";
-            if(locationEnabled) {
+            if (locationEnabled) {
                 latLong = String.valueOf(mCurrentLocation.getLatitude())
                         + "," + String.valueOf(mCurrentLocation.getLongitude());
             }
@@ -1189,50 +1226,22 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     params[2], latLong);
         }
 
-        @Override protected void onCancelled() {
+        @Override
+        protected void onCancelled() {
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
             super.onCancelled();
         }
 
-        @Override protected void onPostExecute(String searchResult) {
-            if(getActivity() == null)
+        @Override
+        protected void onPostExecute(String searchResult) {
+            if (getActivity() == null)
                 return;
 
             updateVenueResults(searchResult);
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
-        }
-    }
-
-    private void updateVenueResults(String searchResult) {
-        try {
-            SearchResult result = new SearchResult(new JSONObject(searchResult));
-            updateVenueResults(result.getBusinessSearchObjectArray());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateVenueResults(List<BusinessSearchResult> venues) {
-        if (venues == null) {
-            return;
-        }
-        try {
-            mVenues.addAll(venues);
-            mVenueAdapter.notifyDataSetChanged();
-            if(mGoogleMap == null){
-                initializeMap();
-            }
-            if(mGoogleMap != null) {
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

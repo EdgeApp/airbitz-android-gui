@@ -1,23 +1,11 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +27,7 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
     private Context mContext;
 
     public SettingsCategoryAdapter(Context context, List<String> currentCategories, List<String> categories, List<TextView> popUpViews, RelativeLayout popUpContainer, List<Integer> currentPosPopUp) {
-        super(context, R.layout.item_listview_settings_categories,currentCategories);
+        super(context, R.layout.item_listview_settings_categories, currentCategories);
         mCurrentCategories = currentCategories;
         mCategories = categories;
         mContext = context;
@@ -61,14 +49,14 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
         mCategoryName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     System.out.println("Cat name has focus");
                     mPopUpViews.get(0).setText(mCurrentCategories.get(pos));
                     mPopUpViews.get(0).requestFocus();
                     mPopUpContainer.setVisibility(View.VISIBLE);
                     mCurrentPosPopUp.add(pos);
-                    for(String s :mCategories){
-                        if(s.compareTo(mCurrentCategories.get(pos))==0){
+                    for (String s : mCategories) {
+                        if (s.compareTo(mCurrentCategories.get(pos)) == 0) {
                             mCurrentPosPopUp.add(mCategories.indexOf(s));
                         }
                     }

@@ -19,70 +19,69 @@ import java.util.List;
 public class Hour {
 
     public static final String TAG = Hour.class.getSimpleName();
+    private static SimpleDateFormat sMilitaryFormat = new SimpleDateFormat("HH:mm:ss");
+    private static SimpleDateFormat sAmPmFormat = new SimpleDateFormat("hh:mm a");
     private String mDayOfWeek;
     private String mHourStart;
     private String mHourEnd;
 
-    private static SimpleDateFormat sMilitaryFormat = new SimpleDateFormat("HH:mm:ss");
-    private static SimpleDateFormat sAmPmFormat = new SimpleDateFormat("hh:mm a");
-
-    public Hour(){
+    public Hour() {
 
     }
 
-    public Hour(String dayOfWeek, String hourStart, String hourEnd){
+    public Hour(String dayOfWeek, String hourStart, String hourEnd) {
         mDayOfWeek = dayOfWeek;
         mHourStart = hourStart;
         mHourEnd = mHourEnd;
     }
 
-    public Hour(JSONObject jsonResponse) throws JSONException{
-        if (jsonResponse != null){
+    public Hour(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mDayOfWeek = jsonResponse.getString("dayOfWeek");
             mHourStart = jsonResponse.getString("hourStart");
             mHourEnd = jsonResponse.getString("hourEnd");
         }
     }
 
-    public static List<Hour> generateHourListFromJSONObject(JSONArray objectArray){
+    public static List<Hour> generateHourListFromJSONObject(JSONArray objectArray) {
         List<Hour> resultList = new ArrayList<Hour>();
-        for(int counter=0; counter < objectArray.length(); counter++){
-            try{
+        for (int counter = 0; counter < objectArray.length(); counter++) {
+            try {
                 resultList.add(new Hour(objectArray.getJSONObject(counter)));
-            }catch (JSONException e){
-                Log.d(TAG, ""+e.getMessage());
-            }catch (Exception e){
-                Log.d(TAG, ""+e.getMessage());
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
             }
         }
         return resultList;
     }
 
-    public void setDayOfWeek(String dayOfWeek){
-        mDayOfWeek = dayOfWeek;
-    }
-
-    public void setHourStart(String hourStart){
-        mHourStart = hourStart;
-    }
-
-    public void setHourEnd(String hourEnd){
-        mHourEnd = hourEnd;
-    }
-
-    public String getDayOfWeek(){
+    public String getDayOfWeek() {
         return mDayOfWeek;
     }
 
-    public String getHourStart(){
+    public void setDayOfWeek(String dayOfWeek) {
+        mDayOfWeek = dayOfWeek;
+    }
+
+    public String getHourStart() {
         return mHourStart;
     }
 
-    public String getHourEnd(){
+    public void setHourStart(String hourStart) {
+        mHourStart = hourStart;
+    }
+
+    public String getHourEnd() {
         return mHourEnd;
     }
 
-    public String setHourEnd(){
+    public void setHourEnd(String hourEnd) {
+        mHourEnd = hourEnd;
+    }
+
+    public String setHourEnd() {
         return mHourEnd;
     }
 

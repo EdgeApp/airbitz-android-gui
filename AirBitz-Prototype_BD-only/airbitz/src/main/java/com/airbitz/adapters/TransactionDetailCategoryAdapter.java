@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -20,7 +19,7 @@ public class TransactionDetailCategoryAdapter extends ArrayAdapter {
     private Context mContext;
     private List<String> mCategories;
 
-    public TransactionDetailCategoryAdapter(Context context, List<String> categories){
+    public TransactionDetailCategoryAdapter(Context context, List<String> categories) {
         super(context, R.layout.item_listview_transaction_detail, categories);
         mContext = context;
         mCategories = categories;

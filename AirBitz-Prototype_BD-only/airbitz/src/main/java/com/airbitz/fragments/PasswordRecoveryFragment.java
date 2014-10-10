@@ -1,13 +1,14 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,22 +41,18 @@ import java.util.Map;
  * Created on 2/10/14.
  */
 public class PasswordRecoveryFragment extends Fragment implements NavigationActivity.OnBackPress {
-    private final String TAG = getClass().getSimpleName();
-
     public static final String MODE = "com.airbitz.passwordrecovery.type";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
     public static final String PIN = "com.airbitz.passwordrecovery.pin";
-
-    public static int SIGN_UP=0;
+    public static int SIGN_UP = 0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
-    private int mMode;
-
-    private enum QuestionType { STRING, NUMERIC }
+    private final String TAG = getClass().getSimpleName();
     String mAnswers = "";
-
+    boolean ignoreSelected = false;
+    private int mMode;
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
     private TextView mTitleTextView;
@@ -79,8 +76,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private View mView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
@@ -105,14 +101,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
         mBackButton = (ImageButton) mView.findViewById(R.id.activity_password_recovery_back_button);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
-            if(mMode == CHANGE_QUESTIONS) {
+            if (mMode == CHANGE_QUESTIONS) {
                 mSkipStepButton.setVisibility(View.GONE);
                 mPasswordEditText.setVisibility(View.VISIBLE);
                 mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
-            } else if(mMode == FORGOT_PASSWORD) {
+            } else if (mMode == FORGOT_PASSWORD) {
                 mSkipStepButton.setVisibility(View.INVISIBLE);
                 mPasswordEditText.setVisibility(View.GONE);
                 mBackButton.setVisibility(View.VISIBLE);
@@ -148,17 +144,18 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         return mView;
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         String[] answers = {"", "", "", "", "", ""};
-        if(mAnswers.isEmpty()) {
-            if(mMode==SIGN_UP || mMode==CHANGE_QUESTIONS) {
+        if (mAnswers.isEmpty()) {
+            if (mMode == SIGN_UP || mMode == CHANGE_QUESTIONS) {
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 mTitleTextView.setText(getString(R.string.activity_recovery_title));
                 String questionString = getArguments().getString(QUESTIONS);
-                if(questionString!=null) {
+                if (questionString != null) {
                     String[] questions = questionString.split("\n");
                     InitializeRecoveryViews(questions, answers);
                 }
@@ -167,7 +164,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             answers = mAnswers.split("\n");
             mTitleTextView.setText(getString(R.string.activity_recovery_title));
             String questionString = getArguments().getString(QUESTIONS);
-            if(questionString!=null) {
+            if (questionString != null) {
                 String[] questions = questionString.split("\n");
                 InitializeRecoveryViews(questions, answers);
             }
@@ -176,10 +173,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override
     public boolean onBackPress() {
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(getView());
-        if(mMode==CHANGE_QUESTIONS) {
+        ((NavigationActivity) getActivity()).hideSoftKeyboard(getView());
+        if (mMode == CHANGE_QUESTIONS) {
             ((NavigationActivity) getActivity()).popFragment();
-        } else if(mMode == FORGOT_PASSWORD) {
+        } else if (mMode == FORGOT_PASSWORD) {
             ((NavigationActivity) getActivity()).Logout();
         }
         return true;
@@ -192,15 +189,15 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         String questions = "";
         mAnswers = "";
 
-        if(mMode ==CHANGE_QUESTIONS && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
+        if (mMode == CHANGE_QUESTIONS && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
 
         int count = 0;
         for (View view : mQuestionViews) {
             QuestionView qaView = (QuestionView) view;
-            if (mMode!=FORGOT_PASSWORD && qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default))) {
+            if (mMode != FORGOT_PASSWORD && qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default))) {
                 allQuestionsSelected = false;
                 break;
             }
@@ -218,12 +215,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             }
             count++;
         }
-        if (allQuestionsSelected || mMode==FORGOT_PASSWORD) {
+        if (allQuestionsSelected || mMode == FORGOT_PASSWORD) {
             if (allAnswersValid) {
-                if(mMode==SIGN_UP) {
+                if (mMode == SIGN_UP) {
                     signIn();
                 }
-                if(mMode==FORGOT_PASSWORD) {
+                if (mMode == FORGOT_PASSWORD) {
                     mAttemptAnswerVerificationTask = new AttemptAnswerVerificationTask();
                     mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME));
                 } else {
@@ -231,10 +228,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 }
             } else {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -264,7 +261,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private void InitializeRecoveryViews(String[] questions, String[] answers) {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
-        for(String question : questions) {
+        for (String question : questions) {
             List<String> qs = new ArrayList<String>();
             qs.add(question);
             qs.add(getString(R.string.activity_recovery_question_default));
@@ -275,15 +272,113 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         setListWithQuestionViews(mQuestionViews);
     }
 
+    private List<String> getUnchosenQuestions(List<String> questions) {
+        List<String> unusedQuestions = new ArrayList<String>(questions);
+
+        for (QuestionView qv : mQuestionViews) {
+            String selected = qv.chosenQuestion;
+            if (!selected.equals(getString(R.string.activity_recovery_question_default))) {
+                unusedQuestions.remove(selected);
+            }
+        }
+
+        return unusedQuestions;
+    }
+
+    private void updateQuestionLists(QuestionView notThis) {
+        for (QuestionView qv : mQuestionViews) {
+            if (qv != notThis) {
+                List<String> unchosen;
+                if (qv.mType == QuestionType.STRING) {
+                    unchosen = getUnchosenQuestions(mStringQuestions);
+                } else {
+                    unchosen = getUnchosenQuestions(mNumericQuestions);
+                }
+                qv.setAvailableQuestions(unchosen);
+
+                if (!qv.chosenQuestion.equals(getString(R.string.activity_recovery_question_default))) {
+                    unchosen.add(0, qv.chosenQuestion);
+                    qv.mSpinner.setSelection(0);
+                } else {
+                    qv.setAvailableQuestions(unchosen);
+                    int index = unchosen.indexOf(getString(R.string.activity_recovery_question_default));
+                    qv.mSpinner.setSelection(index);
+                }
+            }
+        }
+    }
+
+    private void signIn() {
+        Bundle bundle = getArguments();
+        String username = bundle.getString(USERNAME);
+        String password = bundle.getString(PASSWORD);
+        String pin = bundle.getString(PIN);
+
+        AirbitzApplication.Login(username, password);
+        mCoreAPI.SetUserPIN(pin);
+        CreateDefaultCategories();
+    }
+
+    private void CreateDefaultCategories() {
+        String[] defaults = getResources().getStringArray(R.array.category_defaults);
+
+        for (String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+            Log.d(TAG, "Category creation failed");
+        }
+    }
+
+    public void ShowSkipQuestionsAlert() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
+                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        signIn();
+                        ((NavigationActivity) getActivity()).popFragment();
+                        ((NavigationActivity) getActivity()).finishSignup();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mFetchAllQuestionsTask != null) {
+            mFetchAllQuestionsTask.cancel(true);
+        }
+        if (mSaveQuestionsTask != null) {
+            mSaveQuestionsTask.cancel(true);
+        }
+        if (mAttemptAnswerVerificationTask != null) {
+            mAttemptAnswerVerificationTask.cancel(true);
+        }
+    }
+
+    private enum QuestionType {STRING, NUMERIC}
+
     /**
      * Attempt to verify answers
      */
     public class AttemptAnswerVerificationTask extends AsyncTask<String, Void, Boolean> {
         private String username;
         private String answers;
+
         @Override
         public void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            ((NavigationActivity) getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -296,26 +391,27 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
 
             if (success) {
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_VIA_QUESTIONS);
-                bundle.putString(PasswordRecoveryFragment.QUESTIONS,  answers);
-                bundle.putString(PasswordRecoveryFragment.USERNAME,  getArguments().getString(USERNAME));
+                bundle.putString(PasswordRecoveryFragment.QUESTIONS, answers);
+                bundle.putString(PasswordRecoveryFragment.USERNAME, getArguments().getString(USERNAME));
                 Fragment frag = new SignUpFragment();
                 frag.setArguments(bundle);
-                ((NavigationActivity)getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
+                ((NavigationActivity) getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.activity_recovery_error_wrong_answers_title),
+                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.activity_recovery_error_wrong_answers_title),
                         getString(R.string.activity_recovery_error_wrong_answers_message));
             }
         }
 
         @Override
-        protected void onCancelled() { ((NavigationActivity)getActivity()).showModalProgress(false); }
+        protected void onCancelled() {
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+        }
     }
-
 
     /**
      * Represents an asynchronous question fetch task
@@ -325,42 +421,42 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            ((NavigationActivity) getActivity()).showModalProgress(true);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             mChoices = mCoreAPI.GetQuestionChoices();
-                if(mChoices.length > 0) {
+            if (mChoices.length > 0) {
 
-                    for(CoreAPI.QuestionChoice choice : mChoices) {
-                        String category = choice.getCategory();
-                        if(category.equals("string")) {
-                            mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                            mStringQuestions.add(choice.getQuestion());
-                        } else if(category.equals("numeric")) {
-                            mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                            mNumericQuestions.add(choice.getQuestion());
-                        }
+                for (CoreAPI.QuestionChoice choice : mChoices) {
+                    String category = choice.getCategory();
+                    if (category.equals("string")) {
+                        mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        mStringQuestions.add(choice.getQuestion());
+                    } else if (category.equals("numeric")) {
+                        mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        mNumericQuestions.add(choice.getQuestion());
                     }
-                    mStringQuestions.add(getString(R.string.activity_recovery_question_default));
-                    mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
-                    return true;
-                } else {
-                    Common.LogD(TAG, "No Questions");
-                    return false;
                 }
+                mStringQuestions.add(getString(R.string.activity_recovery_question_default));
+                mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
+                return true;
+            } else {
+                Log.d(TAG, "No Questions");
+                return false;
             }
+        }
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
 
             if (success) {
                 InitializeQuestionViews();
             }
 
-            if(mMode==CHANGE_QUESTIONS)
+            if (mMode == CHANGE_QUESTIONS)
                 mPasswordEditText.requestFocus();
 
             mFetchAllQuestionsTask = null;
@@ -369,7 +465,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onCancelled() {
             mFetchAllQuestionsTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
         }
 
     }
@@ -388,7 +484,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
+            ((NavigationActivity) getActivity()).showModalProgress(true);
         }
 
         @Override
@@ -400,14 +496,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
             if (!success) {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
+                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                if(mMode==SIGN_UP) {
+                if (mMode == SIGN_UP) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
                     ((NavigationActivity) getActivity()).UserJustLoggedIn();
-                } else if(mMode==CHANGE_QUESTIONS) {
+                } else if (mMode == CHANGE_QUESTIONS) {
                     ((NavigationActivity) getActivity()).popFragment();
                 }
             }
@@ -416,60 +512,20 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onCancelled() {
             mSaveQuestionsTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
+            ((NavigationActivity) getActivity()).showModalProgress(false);
         }
     }
 
-    private List<String> getUnchosenQuestions(List<String> questions) {
-        List<String> unusedQuestions = new ArrayList<String>(questions);
-
-            for (QuestionView qv : mQuestionViews) {
-                String selected = qv.chosenQuestion;
-                if (!selected.equals(getString(R.string.activity_recovery_question_default))) {
-                    unusedQuestions.remove(selected);
-                }
-            }
-
-        return unusedQuestions;
-    }
-
-    private void updateQuestionLists(QuestionView notThis) {
-        for (QuestionView qv : mQuestionViews) {
-            if (qv!=notThis) {
-                List<String> unchosen;
-                if(qv.mType== QuestionType.STRING) {
-                    unchosen = getUnchosenQuestions(mStringQuestions);
-                } else  {
-                    unchosen = getUnchosenQuestions(mNumericQuestions);
-                }
-                qv.setAvailableQuestions(unchosen);
-
-                if(!qv.chosenQuestion.equals(getString(R.string.activity_recovery_question_default))) {
-                    unchosen.add(0, qv.chosenQuestion);
-                    qv.mSpinner.setSelection(0);
-                } else {
-                    qv.setAvailableQuestions(unchosen);
-                    int index = unchosen.indexOf(getString(R.string.activity_recovery_question_default));
-                    qv.mSpinner.setSelection(index);
-                }
-            }
-        }
-    }
-
-
-
-    boolean ignoreSelected = false;
     private class QuestionView extends LinearLayout {
-        Context mContext;
         public QuestionType mType;
         public String chosenQuestion = "";
+        Context mContext;
+        int mPosition;
         private int mCharLimit = 0;
         private Spinner mSpinner;
         private EditText mText;
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
-        int mPosition;
-
         private QuestionView me = this;
 
         public QuestionView(Context context, List<String> questions, String answer, QuestionType type, int position) {
@@ -499,11 +555,11 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    Common.LogD(TAG, "spinner selection");
-                    if (ignoreSelected || mMode==FORGOT_PASSWORD) return;
+                    Log.d(TAG, "spinner selection");
+                    if (ignoreSelected || mMode == FORGOT_PASSWORD) return;
 
                     chosenQuestion = currentQuestionList.get(i);
-                    Common.LogD(TAG, "spinner selection not ignored="+chosenQuestion);
+                    Log.d(TAG, "spinner selection not ignored=" + chosenQuestion);
                     if (mType == QuestionType.STRING) {
                         if (mStringCategory.containsKey(chosenQuestion))
                             mCharLimit = mStringCategory.get(chosenQuestion);
@@ -520,7 +576,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) { }
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
             });
 
             mSpinner.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -540,7 +597,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if (hasFocus) {
-                        ((NavigationActivity)getActivity()).showSoftKeyboard(mText);
+                        ((NavigationActivity) getActivity()).showSoftKeyboard(mText);
                     }
                 }
             });
@@ -569,11 +626,11 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 }
             });
 
-            mText.setOnEditorActionListener(new TextView.OnEditorActionListener()  {
+            mText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                        if(mMode==SIGN_UP || mMode==CHANGE_QUESTIONS) {
+                        if (mMode == SIGN_UP || mMode == CHANGE_QUESTIONS) {
                             if (mPosition < mQuestionViews.size() - 1) {
                                 mQuestionViews.get(mPosition + 1).getSpinner().requestFocus();
                                 return true;
@@ -598,7 +655,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             });
 
             chosenQuestion = getString(R.string.activity_recovery_question_default);
-            if(mMode==FORGOT_PASSWORD) {
+            if (mMode == FORGOT_PASSWORD) {
                 findViewById(R.id.item_recovery_question_down_arrow).setVisibility(View.GONE);
                 mSpinner.setSelection(0);
                 mSpinner.setClickable(false);
@@ -626,9 +683,13 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             return mSpinner;
         }
 
-        public EditText getEditText() { return mText; }
+        public EditText getEditText() {
+            return mText;
+        }
 
-        public void setAnswer(String answer) { mText.setText(answer); }
+        public void setAnswer(String answer) {
+            mText.setText(answer);
+        }
 
         public String getText() {
             return mText.getText().toString();
@@ -636,66 +697,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         public int getMinimumCharacters() {
             return mCharLimit;
-        }
-    }
-
-    private void signIn() {
-        Bundle bundle = getArguments();
-        String username = bundle.getString(USERNAME);
-        String password = bundle.getString(PASSWORD);
-        String pin = bundle.getString(PIN);
-
-        AirbitzApplication.Login(username, password);
-        mCoreAPI.SetUserPIN(pin);
-        CreateDefaultCategories();
-    }
-
-    private void CreateDefaultCategories() {
-        String[] defaults = getResources().getStringArray(R.array.category_defaults);
-
-        for(String cat : defaults)
-            mCoreAPI.addCategory(cat);
-
-        List<String> cats = mCoreAPI.loadCategories();
-        if(cats.size()==0 || cats.get(0).equals(defaults)) {
-            Common.LogD(TAG, "Category creation failed");
-        }
-    }
-
-
-    public void ShowSkipQuestionsAlert(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
-                .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        signIn();
-                        ((NavigationActivity)getActivity()).popFragment();
-                        ((NavigationActivity)getActivity()).finishSignup();
-                    }
-                })
-                .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mFetchAllQuestionsTask!=null) {
-            mFetchAllQuestionsTask.cancel(true);
-        }
-        if(mSaveQuestionsTask!=null) {
-            mSaveQuestionsTask.cancel(true);
-        }
-        if(mAttemptAnswerVerificationTask!=null) {
-            mAttemptAnswerVerificationTask.cancel(true);
         }
     }
 }

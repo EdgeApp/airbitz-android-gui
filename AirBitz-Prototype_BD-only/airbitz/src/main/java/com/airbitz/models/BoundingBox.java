@@ -13,19 +13,19 @@ public class BoundingBox {
     private double mWidth;
     private double mHeight;
 
-    public BoundingBox(){
+    public BoundingBox() {
 
     }
 
-    public BoundingBox(double y, double x, double width, double height){
+    public BoundingBox(double y, double x, double width, double height) {
         mY = y;
         mX = x;
         mWidth = width;
         mHeight = height;
     }
 
-    public BoundingBox(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public BoundingBox(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mX = jsonResponse.getDouble("x");
             mY = jsonResponse.getDouble("y");
             mWidth = jsonResponse.getDouble("width");
@@ -33,35 +33,35 @@ public class BoundingBox {
         }
     }
 
-    public void setY(double y){
-        mY = y;
-    }
-
-    public double getY(){
+    public double getY() {
         return mY;
     }
 
-    public void setX(double x){
-        mX = x;
+    public void setY(double y) {
+        mY = y;
     }
 
-    public double getX(){
+    public double getX() {
         return mX;
     }
 
-    public void setWidth(double width){
-        mWidth = width;
+    public void setX(double x) {
+        mX = x;
     }
 
-    public double getWidth(){
+    public double getWidth() {
         return mWidth;
     }
 
-    public void setHeight(double height){
+    public void setWidth(double width) {
+        mWidth = width;
+    }
+
+    public void setHeight(double height) {
         mHeight = height;
     }
 
-    public double setHeight(){
+    public double setHeight() {
         return mHeight;
     }
 

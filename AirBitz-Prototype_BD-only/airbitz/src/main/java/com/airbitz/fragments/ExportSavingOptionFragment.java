@@ -1,11 +1,11 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -39,11 +38,9 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class ExportSavingOptionFragment extends Fragment {
-    private final String TAG = getClass().getSimpleName();
-
-    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF }
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
-
+    private final String TAG = getClass().getSimpleName();
+    View mView;
     private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mFromButton;
     private HighlightOnPressButton mToButton;
@@ -93,11 +90,8 @@ public class ExportSavingOptionFragment extends Fragment {
 
     private int mExportType;
 
-    View mView;
-
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
         mExportType = mBundle.getInt(EXPORT_TYPE);
@@ -107,15 +101,15 @@ public class ExportSavingOptionFragment extends Fragment {
         String uuid = getArguments().getString(RequestFragment.FROM_UUID);
         mWallet = mCoreApi.getWalletFromUUID(uuid);
         mWalletNameList = new ArrayList<String>();
-        for(Wallet wallet : mWalletList) {
+        for (Wallet wallet : mWalletList) {
             mWalletNameList.add(wallet.getName());
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
-             mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
         } else {
 
             return mView;
@@ -173,11 +167,11 @@ public class ExportSavingOptionFragment extends Fragment {
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.item_request_wallet_spinner, mWalletNameList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNameList);
         dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
         mWalletSpinner.setAdapter(dataAdapter);
-        for(int i=0; i<mWalletList.size(); i++) {
-            if(mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
+        for (int i = 0; i < mWalletList.size(); i++) {
+            if (mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
                 mWalletSpinner.setSelection(i);
             }
         }
@@ -189,7 +183,8 @@ public class ExportSavingOptionFragment extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
 
         showExportButtons();
@@ -213,7 +208,7 @@ public class ExportSavingOptionFragment extends Fragment {
             public void onClick(View view) {
                 Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
                 String dataOrFile;
-                if(mExportType == ExportTypes.PrivateSeed.ordinal())
+                if (mExportType == ExportTypes.PrivateSeed.ordinal())
                     dataOrFile = mCoreApi.getPrivateSeed(mWallet);
                 else
                     dataOrFile = getExportData(w, mExportType);
@@ -238,8 +233,8 @@ public class ExportSavingOptionFragment extends Fragment {
         mViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()){
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(mWallet.getName()+" "+getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
+                if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()) {
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
                 }
             }
         });
@@ -254,7 +249,7 @@ public class ExportSavingOptionFragment extends Fragment {
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
@@ -480,7 +475,7 @@ public class ExportSavingOptionFragment extends Fragment {
                 String[] dateTime = mToButton.getText().toString().split(" ");
                 String[] date = dateTime[0].split("/");
                 String[] time = dateTime[1].split(":");
-                showSelectorDialog(mToButton, Integer.valueOf(date[0]),Integer.valueOf(date[1]),Integer.valueOf(date[2]),Integer.valueOf(time[0]),Integer.valueOf(time[1]),dateTime[2]);
+                showSelectorDialog(mToButton, Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2]), Integer.valueOf(time[0]), Integer.valueOf(time[1]), dateTime[2]);
             }
         });
 
@@ -490,7 +485,7 @@ public class ExportSavingOptionFragment extends Fragment {
                 String[] dateTime = mFromButton.getText().toString().split(" ");
                 String[] date = dateTime[0].split("/");
                 String[] time = dateTime[1].split(":");
-                showSelectorDialog(mFromButton, Integer.valueOf(date[0]),Integer.valueOf(date[1]),Integer.valueOf(date[2]),Integer.valueOf(time[0]),Integer.valueOf(time[1]),dateTime[2]);
+                showSelectorDialog(mFromButton, Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2]), Integer.valueOf(time[0]), Integer.valueOf(time[1]), dateTime[2]);
             }
         });
 
@@ -501,36 +496,36 @@ public class ExportSavingOptionFragment extends Fragment {
 
     private void showExportButtons() {
         int type = mBundle.getInt(EXPORT_TYPE);
-        if(type == ExportTypes.CSV.ordinal()){
+        if (type == ExportTypes.CSV.ordinal()) {
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
             mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(type == ExportTypes.Quicken.ordinal()){
+            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+        } else if (type == ExportTypes.Quicken.ordinal()) {
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
             mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(type == ExportTypes.Quickbooks.ordinal()){
+            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+        } else if (type == ExportTypes.Quickbooks.ordinal()) {
             mPrintButton.setVisibility(View.GONE);
             mPrintImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.GONE);
             mViewImage.setVisibility(View.GONE);
             mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
             mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-            mDropBoxButton.setPadding((int)getResources().getDimension(R.dimen.nine_mm),0,(int)getResources().getDimension(R.dimen.three_mm),0);
-        }else if(type == ExportTypes.PDF.ordinal()){
+            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+        } else if (type == ExportTypes.PDF.ordinal()) {
 
-        }else if(type == ExportTypes.PrivateSeed.ordinal()){
+        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             mGoogleDriveButton.setVisibility(View.GONE);
             mGoogleDriveImage.setVisibility(View.GONE);
             mPrintButton.setVisibility(View.GONE);
@@ -543,11 +538,11 @@ public class ExportSavingOptionFragment extends Fragment {
         }
     }
 
-    private void HighlightTimeButton(int pos){
-        for(int i = 0;i < mTimeButtons.size();i++){
-            if(i==pos){
+    private void HighlightTimeButton(int pos) {
+        for (int i = 0; i < mTimeButtons.size(); i++) {
+            if (i == pos) {
                 mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.btn_cancel));
-            }else{
+            } else {
                 mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.emboss_down));
             }
         }
@@ -561,24 +556,24 @@ public class ExportSavingOptionFragment extends Fragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        final TimePicker timePicker = new TimePicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
+        final TimePicker timePicker = new TimePicker(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustomLight));
         timePicker.setIs24HourView(false);
-        if(AMPM.equals("pm")&& indexHour!=12){
+        if (AMPM.equals("pm") && indexHour != 12) {
             indexHour += 12;
-        }else if(AMPM.equals("am")&& indexHour==12){
+        } else if (AMPM.equals("am") && indexHour == 12) {
             indexHour -= 12;
         }
         timePicker.setCurrentHour(indexHour);
         timePicker.setCurrentMinute(indexMinute);
-        final DatePicker datePicker = new DatePicker(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustomLight));
+        final DatePicker datePicker = new DatePicker(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustomLight));
         datePicker.setCalendarViewShown(false);
-        datePicker.init(indexYear,indexMonth-1,indexDay,null);
+        datePicker.init(indexYear, indexMonth - 1, indexDay, null);
 
         linearLayout.addView(datePicker);
         linearLayout.addView(timePicker);
 
 
-        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(),R.style.AlertDialogCustom))
+        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                 .setTitle(getString(R.string.export_saving_option_pick_date))
                 .setView(linearLayout)
                 .setPositiveButton(R.string.string_ok,
@@ -586,28 +581,28 @@ public class ExportSavingOptionFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 HighlightTimeButton(7);
                                 int time = 0;
-                                String tempAMPM="";
-                                if(timePicker.getCurrentHour()>12){
-                                    time = timePicker.getCurrentHour()-12;
-                                    tempAMPM="pm";
-                                }else if(timePicker.getCurrentHour()==0){
-                                    time = timePicker.getCurrentHour()+12;
-                                    tempAMPM="am";
-                                }else{
+                                String tempAMPM = "";
+                                if (timePicker.getCurrentHour() > 12) {
+                                    time = timePicker.getCurrentHour() - 12;
+                                    tempAMPM = "pm";
+                                } else if (timePicker.getCurrentHour() == 0) {
+                                    time = timePicker.getCurrentHour() + 12;
+                                    tempAMPM = "am";
+                                } else {
                                     time = timePicker.getCurrentHour();
-                                    tempAMPM="am";
+                                    tempAMPM = "am";
                                 }
-                                if(timePicker.getCurrentHour()==12){
-                                    tempAMPM="pm";
+                                if (timePicker.getCurrentHour() == 12) {
+                                    tempAMPM = "pm";
                                 }
                                 String tempMin = "";
-                                if(timePicker.getCurrentMinute()<10){
-                                    tempMin = "0"+timePicker.getCurrentMinute();
-                                }else{
-                                    tempMin = ""+timePicker.getCurrentMinute();
+                                if (timePicker.getCurrentMinute() < 10) {
+                                    tempMin = "0" + timePicker.getCurrentMinute();
+                                } else {
+                                    tempMin = "" + timePicker.getCurrentMinute();
                                 }
-                                button.setText((datePicker.getMonth()+1)+"/"+datePicker.getDayOfMonth()+"/"+datePicker.getYear()+" "+time+":"+tempMin+" "+tempAMPM);
-                                if(button == mFromButton) {
+                                button.setText((datePicker.getMonth() + 1) + "/" + datePicker.getDayOfMonth() + "/" + datePicker.getYear() + " " + time + ":" + tempMin + " " + tempAMPM);
+                                if (button == mFromButton) {
                                     mFromDate.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
                                     mFromDate.set(Calendar.MONTH, datePicker.getMonth());
                                     mFromDate.set(Calendar.YEAR, datePicker.getYear());
@@ -635,47 +630,45 @@ public class ExportSavingOptionFragment extends Fragment {
     }
 
     private void setupUI(int type) {
-        if(type == ExportTypes.PrivateSeed.ordinal()) {
+        if (type == ExportTypes.PrivateSeed.ordinal()) {
             mDatesLayout.setVisibility(View.GONE);
             mLastPeriodLayout.setVisibility(View.GONE);
             mThisPeriodLayout.setVisibility(View.GONE);
         }
     }
 
-    private String getExportData(Wallet wallet, int type)
-    {
+    private String getExportData(Wallet wallet, int type) {
         String filepath = null;
 
         // for now just hard code
-        if(type == ExportTypes.CSV.ordinal()) {
-            String temp = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis()/1000, mToDate.getTimeInMillis()/1000);
-            if(temp!=null) {
+        if (type == ExportTypes.CSV.ordinal()) {
+            String temp = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+            if (temp != null) {
                 filepath = Common.createTempFileFromString("export.csv", temp);
             }
-        } else if(type == ExportTypes.PrivateSeed.ordinal()) {
+        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             filepath = Common.createTempFileFromString("export.txt", mCoreApi.getPrivateSeed(wallet));
-        } else if(type == ExportTypes.Quicken.ordinal()) {
+        } else if (type == ExportTypes.Quicken.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
-        } else if(type == ExportTypes.Quickbooks.ordinal()) {
+        } else if (type == ExportTypes.Quickbooks.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
-        } else if(type == ExportTypes.PDF.ordinal()) {
+        } else if (type == ExportTypes.PDF.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportPDF" ofType:@"pdf"];
         }
         return filepath;
     }
 
-    private String mimeTypeFor(int type)
-    {
+    private String mimeTypeFor(int type) {
         String strMimeType;
-        if(type == ExportTypes.CSV.ordinal()) {
+        if (type == ExportTypes.CSV.ordinal()) {
             strMimeType = "text/plain";
-        } else if(type == ExportTypes.Quicken.ordinal()) {
+        } else if (type == ExportTypes.Quicken.ordinal()) {
             strMimeType = "application/qif";
-        } else if(type == ExportTypes.Quickbooks.ordinal()) {
+        } else if (type == ExportTypes.Quickbooks.ordinal()) {
             strMimeType = "application/qbooks";
-        } else if(type == ExportTypes.PDF.ordinal()) {
+        } else if (type == ExportTypes.PDF.ordinal()) {
             strMimeType = "application/pdf";
-        } else if(type == ExportTypes.PrivateSeed.ordinal()) {
+        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             strMimeType = "text/plain";
         } else {
             strMimeType = "???";
@@ -686,8 +679,8 @@ public class ExportSavingOptionFragment extends Fragment {
     private void exportWithEmail(Wallet wallet, String data) {
         // Compose
         String filename = getExportData(wallet, mExportType);
-        if(filename==null) {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.export_saving_option_no_transactions_title),
+        if (filename == null) {
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.export_saving_option_no_transactions_title),
                     getString(R.string.export_saving_option_no_transactions_message));
             return;
         }
@@ -702,8 +695,10 @@ public class ExportSavingOptionFragment extends Fragment {
         try {
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException ex) {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog("", getString(R.string.export_saving_option_no_email_apps));
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getString(R.string.export_saving_option_no_email_apps));
         }
     }
+
+    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF}
 
 }

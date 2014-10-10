@@ -1,7 +1,7 @@
 package com.airbitz.adapters;
 
-import android.app.FragmentManager;
 import android.app.Fragment;
+import android.app.FragmentManager;
 
 import java.util.List;
 
@@ -10,20 +10,20 @@ import java.util.List;
  */
 public class NavigationAdapter extends FragmentPagerAdapter {
 
-        private final List<Fragment> mFragments;
+    private final List<Fragment> mFragments;
 
-        public NavigationAdapter(FragmentManager manager, List<Fragment> fragments) {
-            super(manager);
-            mFragments = fragments;
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
+    public NavigationAdapter(FragmentManager manager, List<Fragment> fragments) {
+        super(manager);
+        mFragments = fragments;
     }
+
+    @Override
+    public int getCount() {
+        return mFragments.size();
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        return mFragments.get(position);
+    }
+}

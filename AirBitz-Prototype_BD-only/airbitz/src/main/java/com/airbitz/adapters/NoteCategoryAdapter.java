@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created on 3/3/14.
  */
-public class NoteCategoryAdapter extends BaseAdapter{
+public class NoteCategoryAdapter extends BaseAdapter {
 
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private Context mContext;
@@ -28,10 +28,10 @@ public class NoteCategoryAdapter extends BaseAdapter{
     private LayoutInflater mInflater;
     private int mCurrentPosition = 0;
 
-    public NoteCategoryAdapter(Context context, Categories categories){
+    public NoteCategoryAdapter(Context context, Categories categories) {
         mContext = context;
         mCategories = categories;
-        if(mCategories!=null){
+        if (mCategories != null) {
             mListCategory = categories.getBusinessCategoryArray();
         } else {
             mListCategory = new ArrayList<Category>();
@@ -54,7 +54,7 @@ public class NoteCategoryAdapter extends BaseAdapter{
         return position;
     }
 
-    public Category getListItemName(int position){
+    public Category getListItemName(int position) {
         return mListCategory.get(position);
     }
 
@@ -67,7 +67,7 @@ public class NoteCategoryAdapter extends BaseAdapter{
         relativeLayout.setBackgroundResource(android.R.color.transparent);
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
         textView.setText(mListCategory.get(position).getCategoryName());
-        Typeface latoBlackTypeFace=Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
+        Typeface latoBlackTypeFace = Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
         textView.setTypeface(latoBlackTypeFace);
 
 

@@ -24,25 +24,25 @@ public class Image {
     private BoundingBox mBoundingBox;
     private List<String> mTags;
 
-    public Image(){
+    public Image() {
     }
 
-    public Image(String photoLink, double photoHeight, double mPhotoWidth){
+    public Image(String photoLink, double photoHeight, double mPhotoWidth) {
         mPhotoLink = photoLink;
         mPhotoHeight = photoHeight;
         mPhotoWidth = mPhotoWidth;
     }
 
-    public Image(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public Image(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
 //            mPhotoLink = "http://107.170.22.83"+jsonResponse.getString("image");
             String serverRoot = AirbitzAPI.getServerRoot();
-            serverRoot = serverRoot.substring(0,serverRoot.length()-1);
-            mPhotoLink = serverRoot+jsonResponse.getString("image");
+            serverRoot = serverRoot.substring(0, serverRoot.length() - 1);
+            mPhotoLink = serverRoot + jsonResponse.getString("image");
             mPhotoHeight = jsonResponse.getDouble("width");
             mPhotoWidth = jsonResponse.getDouble("height");
             mBoundingBox = new BoundingBox(jsonResponse.getJSONObject("bounding_box"));
-            mPhotoThumbnailLink = serverRoot+jsonResponse.getString("thumbnail");
+            mPhotoThumbnailLink = serverRoot + jsonResponse.getString("thumbnail");
 
             mTags = new ArrayList<String>();
             final JSONArray tags = jsonResponse.getJSONArray("tags");
@@ -54,15 +54,15 @@ public class Image {
         }
     }
 
-    public static List<Image> generateImageListFromJSONObject(JSONArray objectArray){
+    public static List<Image> generateImageListFromJSONObject(JSONArray objectArray) {
         List<Image> resultList = new ArrayList<Image>();
-        for(int counter=0; counter < objectArray.length(); counter++){
-            try{
+        for (int counter = 0; counter < objectArray.length(); counter++) {
+            try {
                 resultList.add(new Image(objectArray.getJSONObject(counter)));
-            }catch (JSONException e){
-                Log.d(TAG, ""+e.getMessage());
-            }catch (Exception e){
-                Log.d(TAG, ""+e.getMessage());
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
             }
         }
         return resultList;
@@ -72,36 +72,36 @@ public class Image {
         return mPhotoThumbnailLink;
     }
 
-    public void setPhotoLink(String photoLink){
-        mPhotoLink = photoLink;
-    }
-
-    public String getPhotoLink(){
+    public String getPhotoLink() {
         return mPhotoLink;
     }
 
-    public void setPhotoWidth(double photoWidth){
-        mPhotoWidth = photoWidth;
+    public void setPhotoLink(String photoLink) {
+        mPhotoLink = photoLink;
     }
 
-    public double getPhotoWidth(){
+    public double getPhotoWidth() {
         return mPhotoWidth;
     }
 
-    public void setPhotoHeight(double photoHeight){
-        mPhotoHeight = photoHeight;
+    public void setPhotoWidth(double photoWidth) {
+        mPhotoWidth = photoWidth;
     }
 
-    public double getPhotoHeight(){
+    public double getPhotoHeight() {
         return mPhotoHeight;
     }
 
-    public void setBoundingBoxObject(BoundingBox boundingBox){
-        mBoundingBox = boundingBox;
+    public void setPhotoHeight(double photoHeight) {
+        mPhotoHeight = photoHeight;
     }
 
-    public BoundingBox getBoundingBoxObject(){
+    public BoundingBox getBoundingBoxObject() {
         return mBoundingBox;
+    }
+
+    public void setBoundingBoxObject(BoundingBox boundingBox) {
+        mBoundingBox = boundingBox;
     }
 
     public List<String> getTags() {

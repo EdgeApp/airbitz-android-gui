@@ -1,4 +1,3 @@
-
 package com.airbitz.adapters;
 
 import android.content.Context;
@@ -20,15 +19,13 @@ import java.util.List;
  */
 public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implements Filterable {
 
-    private Context mContext;
-    private List<LocationSearchResult> mLocationValue;
-
     private static int sGrayText;
     private static int sGreenText;
     private static int sBlueText;
-
     private static String sCurrentLocation;
     private static String sOnTheWeb;
+    private Context mContext;
+    private List<LocationSearchResult> mLocationValue;
 
     public LocationAdapter(Context context, List<LocationSearchResult> locationValue) {
         super(context, R.layout.item_listview_location, locationValue);
@@ -44,15 +41,18 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
         sOnTheWeb = context.getString(R.string.on_the_web);
     }
 
-    @Override public int getCount() {
+    @Override
+    public int getCount() {
         return mLocationValue.size();
     }
 
-    @Override public LocationSearchResult getItem(int position) {
+    @Override
+    public LocationSearchResult getItem(int position) {
         return mLocationValue.get(position);
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
 
@@ -63,7 +63,7 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
         textView.setText(location.getLocationName());
 
         if (sCurrentLocation.equals(location.getLocationName()) ||
-            sOnTheWeb.equals(location.getLocationName())) {
+                sOnTheWeb.equals(location.getLocationName())) {
             textView.setTextColor(sBlueText);
         } else {
             textView.setTextColor(location.isCached() ? sGreenText : sGrayText);

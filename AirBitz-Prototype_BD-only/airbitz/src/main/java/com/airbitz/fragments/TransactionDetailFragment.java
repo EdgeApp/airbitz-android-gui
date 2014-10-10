@@ -1,5 +1,6 @@
 package com.airbitz.fragments;
 
+import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -23,6 +23,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -79,11 +80,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
-
+    Picasso mPicassoBuilder;
     private HighlightOnPressButton mDoneButton;
-    private RelativeLayout         mAdvanceDetailsButtonLayout;
+    private RelativeLayout mAdvanceDetailsButtonLayout;
     private HighlightOnPressButton mAdvanceDetailsButton;
-
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
     private TextView mTitleTextView;
@@ -95,27 +95,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private TextView mBitcoinValueTextview;
     private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
-
     private TextView mCategoryTextView;
     private LinearLayout mCategoryEdittextLayout;
     private LinearLayout mCategoryPopupLayout;
-
-
     private View mDummyFocus;
-
-
     private CurrentLocationManager mLocationManager;
     private boolean locationEnabled;
-
     private String mCategoryOld = "";
-
     private String currentType = "";
     private boolean doEdit = false;
     private boolean catSelected = false;
     private defaultCategoryEnum defaultCat = defaultCategoryEnum.Income;//TODO set this based on type of transaction
-
     private Bundle bundle;
-
     private int baseIncomePosition = 0;//TODO set these three from categories retrieved
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
@@ -124,21 +115,16 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private int originalBaseExpensePosition = 1;
     private int originalBaseTransferPosition = 2;
     private int originalBaseExchangePosition = 3;
-
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
-
     private LinearLayout mSentDetailLayout;
     private LinearLayout mNoteDetailLayout;
-
     private EditText mFiatValueEdittext;
     private String mFiatValue;
     private TextView mFiatDenominationLabel;
     private LinearLayout mEdittextNotesLayout;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
-
-
     private List<BusinessSearchResult> mBusinesses;
     private List<BusinessSearchResult> mArrayNearBusinesses, mArrayOnlineBusinesses;
     private List<String> mContactNames;
@@ -146,31 +132,22 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private ConcurrentHashMap<String, String> mArrayAddresses;
     private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mCombinedPhotos;
-    private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();;
+    ;
+    private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();
     private long mBizId;
-
     private List<String> mCategories;
     private List<String> mOriginalCategories;
-
     private boolean mFromSend = false;
     private boolean mFromRequest = false;
-
     private ListView mSearchListView;
     private ListView mCategoryListView;
     private TransactionDetailSearchAdapter mSearchAdapter;
     private TransactionDetailCategoryAdapter mCategoryAdapter;
-
     private Calculator mCalculator;
-
     private Wallet mWallet;
     private Transaction mTransaction;
-
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
-
-
-    Picasso mPicassoBuilder;
-
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
@@ -181,23 +158,23 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
-                Common.LogD(TAG, "SEND");
+                Log.d(TAG, "SEND");
                 mFromSend = true;
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
-                Common.LogD(TAG, "REQUEST");
+                Log.d(TAG, "REQUEST");
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
             String txId = bundle.getString(Transaction.TXID);
             if (walletUUID.isEmpty()) {
-                Common.LogD(TAG, "no detail info");
+                Log.d(TAG, "no detail info");
             } else {
                 mCoreAPI = CoreAPI.getApi();
                 mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
-                if(mTransaction!=null) {
+                if (mTransaction != null) {
                     if (mTransaction.getCategory().isEmpty()) {
                         currentType = defaultCat.toString() + ":";
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_income))) {
@@ -229,17 +206,16 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         } else {
 //            return mView;
         }
 
 
-
         FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
-        mPicassoBuilder =  new Picasso.Builder(getActivity()).build();
+        mPicassoBuilder = new Picasso.Builder(getActivity()).build();
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -495,7 +471,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                         doEdit = false;
                         catSelected = true;
                     }
-                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) || 
+                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
                             (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
                             (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
                             (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
@@ -729,13 +705,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void updatePhoto() {
         Uri payeeImage = mCombinedPhotos.get(mPayeeEditText.getText().toString());
-        if(mCombinedPhotos !=null && payeeImage!=null) {
+        if (mCombinedPhotos != null && payeeImage != null) {
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 
-            if(payeeImage.getScheme().contains("content")) {
+            if (payeeImage.getScheme().contains("content")) {
                 mPayeeImageView.setImageURI(payeeImage);
             } else {
-                Common.LogD(TAG, "loading remote "+payeeImage.toString());
+                Log.d(TAG, "loading remote " + payeeImage.toString());
                 mPicassoBuilder.load(payeeImage).noFade().into(mPayeeImageView);
             }
         } else {
@@ -784,15 +760,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mSentDetailLayout.setVisibility(View.GONE);
             mDoneButton.setVisibility(View.GONE);
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 75.0f);
                 mNoteDetailLayout.setLayoutParams(params);
             }
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 6.66f);
                 mCategoryTextView.setLayoutParams(params);
@@ -800,8 +774,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             mCategoryPopupLayout.setVisibility(View.VISIBLE);
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 13.2f);
                 mCategoryEdittextLayout.setLayoutParams(params);
@@ -819,15 +792,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mDoneButton.setVisibility(View.VISIBLE);
 
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 50.0f);
                 mNoteDetailLayout.setLayoutParams(params);
             }
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
                 mCategoryTextView.setLayoutParams(params);
@@ -835,8 +806,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             mCategoryPopupLayout.setVisibility(View.GONE);
 
-            if (true)
-            {
+            if (true) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 0, 20.0f);
                 mCategoryEdittextLayout.setLayoutParams(params);
@@ -848,14 +818,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
     }
 
-    private void updateBizId()
-    {
+    private void updateBizId() {
         mBizId = 0;
-        if (mBizIds.containsKey(mPayeeEditText.getText().toString()))
-        {
+        if (mBizIds.containsKey(mPayeeEditText.getText().toString())) {
             mBizId = mBizIds.get(mPayeeEditText.getText().toString());
         }
-        Common.LogD(TAG, "Biz ID: " + String.valueOf(mBizId));
+        Log.d(TAG, "Biz ID: " + String.valueOf(mBizId));
     }
 
 
@@ -1033,13 +1001,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         long coinValue = 0;
         String feeFormatted;
-        if (transaction.getAmountSatoshi() < 0)
-        {
+        if (transaction.getAmountSatoshi() < 0) {
             coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
             feeFormatted = "+" + mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
-        }
-        else
-        {
+        } else {
             coinValue = transaction.getAmountSatoshi();
             feeFormatted = "";
         }
@@ -1050,10 +1015,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         // If no value set, then calculate it
         if (transaction.getAmountFiat() == 0.0) {
             currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
-                                                    false, false);
+                    false, false);
         } else {
             currencyValue = mCoreAPI.formatCurrency(transaction.getAmountFiat(),
-                                                    mWallet.getCurrencyNum(), false);
+                    mWallet.getCurrencyNum(), false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
@@ -1096,89 +1061,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
     }
 
-    class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
-
-        public NearBusinessSearchAsyncTask() {
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return api.getSearchByRadius("16093", "", strings[0], "", "1");
-        }
-
-        @Override
-        protected void onPostExecute(String searchResult) {
-            if (getActivity() == null) {
-                return;
-            }
-            try {
-                mArrayNearBusinesses.clear();
-                SearchResult results = new SearchResult(new JSONObject(searchResult));
-                for(BusinessSearchResult business : results.getBusinessSearchObjectArray()) {
-                    if (!business.getName().isEmpty()) {
-                        mArrayNearBusinesses.add(business);
-
-                        // create the address
-                        // create the address
-                        String strAddress = "";
-                        if (business.getAddress()!=null) {
-                            strAddress += business.getAddress();
-                        }
-                        if (business.getCity()!=null) {
-                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getCity();
-                        }
-                        if (business.getState()!=null) {
-                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getState();
-                        }
-                        if (business.getPostalCode()!=null) {
-                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
-                        }
-                        if (strAddress.length() > 0) {
-                            mArrayAddresses.put(business.getName(), strAddress);
-                        }
-
-                        // set the biz id if available
-                        long numBizId = Long.valueOf(business.getId());
-                        if (numBizId!=0)
-                        {
-                            mBizIds.put(business.getName(), numBizId);
-                        }
-
-                        // check if we can get a thumbnail
-                        ProfileImage pImage = business.getSquareProfileImage();
-                        if(pImage!=null) {
-                            String thumbnail = pImage.getImageThumbnail();
-                            if(thumbnail!=null) {
-                                Uri uri = Uri.parse(thumbnail);
-                                mCombinedPhotos.put(business.getName(), uri);
-                                Common.LogD(TAG, "Adding " + business.getName() + " thumbnail");
-                            }
-                        }
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                this.cancel(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.cancel(true);
-            }
-            combineMatchLists();
-            updateAutoCompleteArray(mPayeeEditText.getText().toString());
-            updateBizId();
-            updatePhoto();
-            mSearchAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected void onCancelled() {
-            mNearBusinessSearchAsyncTask = null;
-            super.onCancelled();
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -1202,63 +1084,19 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void startOnlineBusinessSearch(String term) {
-        if(!mArrayAutoCompleteQueries.contains(term)) {
+        if (!mArrayAutoCompleteQueries.contains(term)) {
             mArrayAutoCompleteQueries.add(term);
             mOnlineBusinessSearchAsyncTask = new OnlineBusinessSearchAsyncTask();
             mOnlineBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, term);
         }
     }
 
-    class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, List<Business>> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
-
-        public OnlineBusinessSearchAsyncTask() {
-        }
-
-        @Override
-        protected List<Business> doInBackground(String... strings) {
-            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
-        }
-
-        @Override
-        protected void onPostExecute(List<Business> businesses) {
-            if (getActivity() == null || businesses == null) {
-                return ;
-            }
-            for(Business business : businesses) {
-                BusinessSearchResult bsresult = new BusinessSearchResult(business.getId(), business.getName());
-                if(!mArrayOnlineBusinesses.contains(bsresult)) {
-                    mArrayOnlineBusinesses.add(bsresult);
-                }
-                if(!mBizIds.containsKey(bsresult.getName()) && !bsresult.getId().isEmpty()) {
-                    mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
-                }
-
-                if(!mCombinedPhotos.containsKey(business.getName()) && !business.getId().isEmpty()) {
-                    FindBizIdThumbnail(business.getName(), Long.valueOf(business.getId()));
-                }
-            }
-            combineMatchLists();
-
-            updateAutoCompleteArray(mPayeeEditText.getText().toString());
-            updateBizId();
-            updatePhoto();
-            mSearchAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected void onCancelled() {
-            mOnlineBusinessSearchAsyncTask = null;
-            super.onCancelled();
-        }
-    }
-
     public void getContactsList() {
         mContactNames.clear();
         ContentResolver cr = getActivity().getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY};
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
-        if (cursor!=null && cursor.getCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                 mContactNames.add(name);
@@ -1321,10 +1159,136 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void FindBizIdThumbnail(String name, long id) {
-            if(id!=0) {
-                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (id != 0) {
+            GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+
+        public NearBusinessSearchAsyncTask() {
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return api.getSearchByRadius("16093", "", strings[0], "", "1");
+        }
+
+        @Override
+        protected void onPostExecute(String searchResult) {
+            if (getActivity() == null) {
+                return;
             }
+            try {
+                mArrayNearBusinesses.clear();
+                SearchResult results = new SearchResult(new JSONObject(searchResult));
+                for (BusinessSearchResult business : results.getBusinessSearchObjectArray()) {
+                    if (!business.getName().isEmpty()) {
+                        mArrayNearBusinesses.add(business);
+
+                        // create the address
+                        // create the address
+                        String strAddress = "";
+                        if (business.getAddress() != null) {
+                            strAddress += business.getAddress();
+                        }
+                        if (business.getCity() != null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getCity();
+                        }
+                        if (business.getState() != null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getState();
+                        }
+                        if (business.getPostalCode() != null) {
+                            strAddress += (strAddress.length() > 0 ? ", " : "") + business.getPostalCode();
+                        }
+                        if (strAddress.length() > 0) {
+                            mArrayAddresses.put(business.getName(), strAddress);
+                        }
+
+                        // set the biz id if available
+                        long numBizId = Long.valueOf(business.getId());
+                        if (numBizId != 0) {
+                            mBizIds.put(business.getName(), numBizId);
+                        }
+
+                        // check if we can get a thumbnail
+                        ProfileImage pImage = business.getSquareProfileImage();
+                        if (pImage != null) {
+                            String thumbnail = pImage.getImageThumbnail();
+                            if (thumbnail != null) {
+                                Uri uri = Uri.parse(thumbnail);
+                                mCombinedPhotos.put(business.getName(), uri);
+                                Log.d(TAG, "Adding " + business.getName() + " thumbnail");
+                            }
+                        }
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                this.cancel(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.cancel(true);
+            }
+            combineMatchLists();
+            updateAutoCompleteArray(mPayeeEditText.getText().toString());
+            updateBizId();
+            updatePhoto();
+            mSearchAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mNearBusinessSearchAsyncTask = null;
+            super.onCancelled();
+        }
+    }
+
+    class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, List<Business>> {
+        private AirbitzAPI api = AirbitzAPI.getApi();
+
+        public OnlineBusinessSearchAsyncTask() {
+        }
+
+        @Override
+        protected List<Business> doInBackground(String... strings) {
+            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
+        }
+
+        @Override
+        protected void onPostExecute(List<Business> businesses) {
+            if (getActivity() == null || businesses == null) {
+                return;
+            }
+            for (Business business : businesses) {
+                BusinessSearchResult bsresult = new BusinessSearchResult(business.getId(), business.getName());
+                if (!mArrayOnlineBusinesses.contains(bsresult)) {
+                    mArrayOnlineBusinesses.add(bsresult);
+                }
+                if (!mBizIds.containsKey(bsresult.getName()) && !bsresult.getId().isEmpty()) {
+                    mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
+                }
+
+                if (!mCombinedPhotos.containsKey(business.getName()) && !business.getId().isEmpty()) {
+                    FindBizIdThumbnail(business.getName(), Long.valueOf(business.getId()));
+                }
+            }
+            combineMatchLists();
+
+            updateAutoCompleteArray(mPayeeEditText.getText().toString());
+            updateBizId();
+            updatePhoto();
+            mSearchAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mOnlineBusinessSearchAsyncTask = null;
+            super.onCancelled();
+        }
     }
 
     class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
@@ -1347,9 +1311,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             if (getActivity() == null) {
                 return;
             }
-            if (business!=null && business.getSquareImageLink()!=null) {
+            if (business != null && business.getSquareImageLink() != null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
-                Common.LogD(TAG, "Got "+uri);
+                Log.d(TAG, "Got " + uri);
                 mCombinedPhotos.put(mName, uri);
                 updatePhoto();
                 updateBizId();

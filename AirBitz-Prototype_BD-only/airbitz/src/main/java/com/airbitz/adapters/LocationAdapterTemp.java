@@ -23,7 +23,7 @@ public class LocationAdapterTemp extends ArrayAdapter<String> implements Filtera
     private Context mContext;
     private List<String> mLocationValue;
 
-    public LocationAdapterTemp(Context context, List<String> locationValue){
+    public LocationAdapterTemp(Context context, List<String> locationValue) {
         super(context, R.layout.item_listview_location, locationValue);
         mContext = context;
         mLocationValue = locationValue;

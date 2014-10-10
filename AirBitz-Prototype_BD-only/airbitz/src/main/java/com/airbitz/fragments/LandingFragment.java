@@ -2,26 +2,21 @@ package com.airbitz.fragments;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -33,26 +28,23 @@ import com.airbitz.utils.Common;
 
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
-
+    View activityRootView;
+    boolean keyboardUp = false;
     private ImageView mLogoImageView;
-
     private TextView mDetailTextView;
     private LinearLayout mSwipeTextLayout;
-
     private ImageView mRightArrow;
     private ImageView mLeftArrow;
-
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
-
     private CoreAPI mCoreAPI;
-    View activityRootView;
-
-    boolean keyboardUp = false;
+    /**
+     * Represents an asynchronous question fetch task
+     */
+    private GetRecoveryQuestionsTask mRecoveryQuestionsTask;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
     }
@@ -99,7 +91,7 @@ public class LandingFragment extends Fragment {
             }
         });
 
-        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()  {
+        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -124,8 +116,8 @@ public class LandingFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).hideSoftKeyboard(mPasswordEditText);
-                ((NavigationActivity)getActivity()).hideSoftKeyboard(mUserNameEditText);
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mPasswordEditText);
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mUserNameEditText);
                 collapseVertically(false);
                 attemptLogin();
             }
@@ -134,7 +126,7 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( ((NavigationActivity)getActivity()).networkIsAvailable()) {
+                if (((NavigationActivity) getActivity()).networkIsAvailable()) {
                     ((NavigationActivity) getActivity()).startSignUp();
                 } else {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
@@ -150,7 +142,7 @@ public class LandingFragment extends Fragment {
         leftBounce.setDuration(500);
         leftBounce.setRepeatMode(ValueAnimator.REVERSE);
         leftBounce.start();
-        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow,"translationX", 0, 50);
+        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
         rightBounce.setRepeatCount(ValueAnimator.INFINITE);
         rightBounce.setDuration(500);
         rightBounce.setRepeatMode(ValueAnimator.REVERSE);
@@ -177,52 +169,6 @@ public class LandingFragment extends Fragment {
         mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
         mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
     }
-
-    /**
-     * Represents an asynchronous question fetch task
-     */
-    private GetRecoveryQuestionsTask mRecoveryQuestionsTask;
-    public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        public void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String questionString) {
-            ((NavigationActivity)getActivity()).showModalProgress(false);
-
-            mRecoveryQuestionsTask = null;
-
-            if(questionString==null) {
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
-                        getString(R.string.fragment_forgot_no_recovery_questions_text));
-            } else { // Some message or questions
-                String[] questions = questionString.split("\n");
-                if(questions.length > 1) { // questions came back
-                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
-                } else if(questions.length == 1) { // Error string
-                    Common.LogD(TAG, questionString);
-                    ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_account_title), questions[0]);
-                }
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mRecoveryQuestionsTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
-        }
-
-    }
-
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -256,13 +202,13 @@ public class LandingFragment extends Fragment {
         // Check for a valid mPassword.
         if (TextUtils.isEmpty(password)) {
             mPasswordEditText.setError(getString(R.string.error_field_required));
-            if(null == focusView) {
+            if (null == focusView) {
                 focusView = mPasswordEditText;
                 cancel = true;
             }
         } else if (!isPasswordValid(password)) {
             mPasswordEditText.setError(getString(R.string.error_invalid_credentials));
-            if(null == focusView) {
+            if (null == focusView) {
                 focusView = mPasswordEditText;
                 cancel = true;
             }
@@ -293,7 +239,47 @@ public class LandingFragment extends Fragment {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
+    }
+
+    public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        public void onPreExecute() {
+            ((NavigationActivity) getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String questionString) {
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+
+            mRecoveryQuestionsTask = null;
+
+            if (questionString == null) {
+                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
+                        getString(R.string.fragment_forgot_no_recovery_questions_text));
+            } else { // Some message or questions
+                String[] questions = questionString.split("\n");
+                if (questions.length > 1) { // questions came back
+                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
+                } else if (questions.length == 1) { // Error string
+                    Log.d(TAG, questionString);
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_account_title), questions[0]);
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mRecoveryQuestionsTask = null;
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+        }
+
     }
 }

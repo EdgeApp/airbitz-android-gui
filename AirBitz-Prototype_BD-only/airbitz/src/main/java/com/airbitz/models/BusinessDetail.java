@@ -68,8 +68,8 @@ public class BusinessDetail {
         this.mLocation = mLocation;
     }
 
-    public BusinessDetail(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public BusinessDetail(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mBizId = jsonResponse.getString("bizId");
             mBizName = jsonResponse.getString("name");
             mBizDistance = jsonResponse.getString("distance");
@@ -90,10 +90,10 @@ public class BusinessDetail {
             mHasPhysicalBusiness = jsonResponse.getBoolean("has_physical_business");
             mHasOnlineBusiness = jsonResponse.getBoolean("has_online_business");
             mHasBitconDiscount = jsonResponse.getString("has_bitcoin_discount");
-            if(!jsonResponse.isNull("location")) {
+            if (!jsonResponse.isNull("location")) {
                 mLocation = new Location(jsonResponse.getJSONObject("location"));
-            }else{
-                mLocation = new Location(0,0);
+            } else {
+                mLocation = new Location(0, 0);
             }
 
         }
@@ -103,155 +103,155 @@ public class BusinessDetail {
         return mBizDistance;
     }
 
-    public void setName(String name){
-        mBizName = name;
-    }
-
-    public String getName(){
+    public String getName() {
         return mBizName;
     }
 
-    public void setId(String id){
-        mBizId = id;
+    public void setName(String name) {
+        mBizName = name;
     }
 
-    public String getId(){
+    public String getId() {
         return mBizId;
     }
 
-    public void setCategoryObject(List<Category> category){
-        mCategory = category;
+    public void setId(String id) {
+        mBizId = id;
     }
 
-    public List<Category> getCategoryObject(){
+    public List<Category> getCategoryObject() {
         return mCategory;
     }
 
-    public void setSocialObjectArray(ArrayList<Social> socialArray){
-        mSocialArray = socialArray;
+    public void setCategoryObject(List<Category> category) {
+        mCategory = category;
     }
 
-    public List<Social> getSocialObjectArray(){
+    public List<Social> getSocialObjectArray() {
         return mSocialArray;
     }
 
-    public void setImages(ArrayList<Image> imageArray){
-        mImageArray = imageArray;
+    public void setSocialObjectArray(ArrayList<Social> socialArray) {
+        mSocialArray = socialArray;
     }
 
-    public List<Image> getImages(){
+    public List<Image> getImages() {
         return mImageArray;
     }
 
-    public void setDescription(String description){
-        mBizDescription = description;
+    public void setImages(ArrayList<Image> imageArray) {
+        mImageArray = imageArray;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return mBizDescription;
     }
 
-    public void setWebsite(String website){
-        mBizWebsite = website;
+    public void setDescription(String description) {
+        mBizDescription = description;
     }
 
-    public String getWebsite(){
+    public String getWebsite() {
         return mBizWebsite;
     }
 
-    public void setPhone(String phone){
-        mBizPhone = phone;
+    public void setWebsite(String website) {
+        mBizWebsite = website;
     }
 
-    public String getPhone(){
+    public String getPhone() {
         return mBizPhone;
     }
 
-    public void setAddress(String address){
-        mBizAddress = address;
+    public void setPhone(String phone) {
+        mBizPhone = phone;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return mBizAddress;
     }
 
-    public void setCity(String city){
-        mBizCity = city;
+    public void setAddress(String address) {
+        mBizAddress = address;
     }
 
-    public String getCity(){
+    public String getCity() {
         return mBizCity;
     }
 
-    public void setCounty(String county){
-        mBizCounty = county;
+    public void setCity(String city) {
+        mBizCity = city;
     }
 
-    public String getCounty(){
+    public String getCounty() {
         return mBizCounty;
     }
 
-    public void setState(String state){
-        mBizState = state;
+    public void setCounty(String county) {
+        mBizCounty = county;
     }
 
-    public String getState(){
+    public String getState() {
         return mBizState;
     }
 
-    public void setPostalCode(String postalCode){
-        mBizPostalCode = postalCode;
+    public void setState(String state) {
+        mBizState = state;
     }
 
-    public String getPostalCode(){
+    public String getPostalCode() {
         return mBizPostalCode;
     }
 
-    public void setCountry(String country){
-        mBizCountry = country;
+    public void setPostalCode(String postalCode) {
+        mBizPostalCode = postalCode;
     }
 
-    public String getCountry(){
+    public String getCountry() {
         return mBizCountry;
     }
 
-    public void setHourObjectArray(ArrayList<Hour> hourArray){
-        mHourArray = hourArray;
+    public void setCountry(String country) {
+        mBizCountry = country;
     }
 
-    public List<Hour> getHourObjectArray(){
+    public List<Hour> getHourObjectArray() {
         return mHourArray;
     }
 
-    public void setPhysicalBusiness(boolean flag){
+    public void setHourObjectArray(ArrayList<Hour> hourArray) {
+        mHourArray = hourArray;
+    }
+
+    public void setPhysicalBusiness(boolean flag) {
         mHasPhysicalBusiness = flag;
     }
 
-    public boolean getFlagPhysicalBusiness(){
+    public boolean getFlagPhysicalBusiness() {
         return mHasPhysicalBusiness;
     }
 
-    public void setOnlineBusiness(boolean flag){
+    public void setOnlineBusiness(boolean flag) {
         mHasOnlineBusiness = flag;
     }
 
-    public boolean getFlagOnlineBusiness(){
+    public boolean getFlagOnlineBusiness() {
         return mHasOnlineBusiness;
     }
 
-    public void setHasBitconDiscount(String flag){
+    public void setHasBitconDiscount(String flag) {
         mHasBitconDiscount = flag;
     }
 
-    public String getFlagBitcoinDiscount(){
+    public String getFlagBitcoinDiscount() {
         return mHasBitconDiscount;
     }
 
-    public void setLocationObject(Location location){
+    public void setLocationObject(Location location) {
         mLocation = location;
     }
 
-    public Location getLocationObjectArray(){
+    public Location getLocationObjectArray() {
         return mLocation;
     }
 
@@ -276,10 +276,10 @@ public class BusinessDetail {
 
     public String getSquareImageLink() {
         JSONObject temp = null;
-        String url=null;
+        String url = null;
         try {
             temp = new JSONObject(mSquareImage);
-            url = AirbitzAPI.getServerRoot()+temp.getString("image");
+            url = AirbitzAPI.getServerRoot() + temp.getString("image");
         } catch (JSONException e) {
             e.printStackTrace();
         }

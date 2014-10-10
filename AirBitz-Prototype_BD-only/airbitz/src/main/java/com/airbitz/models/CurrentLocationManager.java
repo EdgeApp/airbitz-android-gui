@@ -2,12 +2,11 @@ package com.airbitz.models;
 
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class CurrentLocationManager {
 
@@ -18,14 +17,6 @@ public class CurrentLocationManager {
     private PlayLocationManager mPlay;
     private AndroidLocationManager mAndroid;
 
-    public interface OnLocationChange {
-        public void OnCurrentLocationChange(Location location);
-    }
-
-    public static boolean supportsPlayServices(Context context) {
-        return ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-    }
-
     public CurrentLocationManager(Context context) {
         mContext = context;
         if (supportsPlayServices(context)) {
@@ -33,6 +24,17 @@ public class CurrentLocationManager {
         } else {
             mAndroid = new AndroidLocationManager(mContext);
         }
+    }
+
+    public static boolean supportsPlayServices(Context context) {
+        return ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+    }
+
+    public static CurrentLocationManager getLocationManager(Context context) {
+        if (null == mInstance) {
+            mInstance = new CurrentLocationManager(context);
+        }
+        return mInstance;
     }
 
     public void addLocationChangeListener(OnLocationChange listener) {
@@ -49,13 +51,6 @@ public class CurrentLocationManager {
         } else {
             mAndroid.removeLocationChangeListener(listener);
         }
-    }
-
-    public static CurrentLocationManager getLocationManager(Context context) {
-        if (null == mInstance) {
-            mInstance = new CurrentLocationManager(context);
-        }
-        return mInstance;
     }
 
     public Location getLocation() {
@@ -100,5 +95,9 @@ public class CurrentLocationManager {
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d("TAG_LOC", "Connection to LocationClient failed");
+    }
+
+    public interface OnLocationChange {
+        public void OnCurrentLocationChange(Location location);
     }
 }

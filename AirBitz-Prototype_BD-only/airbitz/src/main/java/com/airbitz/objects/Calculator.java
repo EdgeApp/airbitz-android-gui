@@ -5,7 +5,6 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -18,33 +17,14 @@ import java.text.DecimalFormat;
  * from http://innovativenetsolutions.com/2013/01/calculator-app/
  */
 public class Calculator extends LinearLayout {
-    // 3 + 6 = 9
-    // 3 & 6 are called the operand.
-    // The + is called the operator.
-    // 9 is the result of the operation.
-    private double mOperand;
-    private double mWaitingOperand;
-    private String mWaitingOperator;
-    private double mCalculatorMemory;
-
-    private EditText mEditText;
-    private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private View mDone;
-    DecimalFormat mDF = new DecimalFormat("@###########");
-
-    private static final String DIGITS = "0123456789.";
-
-    View mView;
-
     // operator types
     public static final String ADD = "+";
     public static final String SUBTRACT = "-";
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
-    public static final String PERCENT = "%" ;
-
-    public static final String BACK = "back" ;
-    public static final String CLEAR = "C" ;
+    public static final String PERCENT = "%";
+    public static final String BACK = "back";
+    public static final String CLEAR = "C";
     public static final String CLEARMEMORY = "MC";
     public static final String ADDTOMEMORY = "M+";
     public static final String SUBTRACTFROMMEMORY = "M-";
@@ -56,6 +36,20 @@ public class Calculator extends LinearLayout {
     public static final String SINE = "sin";
     public static final String COSINE = "cos";
     public static final String TANGENT = "tan";
+    private static final String DIGITS = "0123456789.";
+    DecimalFormat mDF = new DecimalFormat("@###########");
+    View mView;
+    // 3 + 6 = 9
+    // 3 & 6 are called the operand.
+    // The + is called the operator.
+    // 9 is the result of the operation.
+    private double mOperand;
+    private double mWaitingOperand;
+    private String mWaitingOperator;
+    private double mCalculatorMemory;
+    private EditText mEditText;
+    private Boolean userIsInTheMiddleOfTypingANumber = false;
+    private View mDone;
 
     // public static final String EQUALS = "=";
 
@@ -110,13 +104,13 @@ public class Calculator extends LinearLayout {
     }
 
     // used on screen orientation change
-    public void setMemory(double calculatorMemory) {
-        mCalculatorMemory = calculatorMemory;
+    public double getMemory() {
+        return mCalculatorMemory;
     }
 
     // used on screen orientation change
-    public double getMemory() {
-        return mCalculatorMemory;
+    public void setMemory(double calculatorMemory) {
+        mCalculatorMemory = calculatorMemory;
     }
 
     public String toString() {
@@ -145,7 +139,7 @@ public class Calculator extends LinearLayout {
             mWaitingOperand = 0;
             // mCalculatorMemory = 0;
         } else if (operator.equals(PERCENT)) {
-            mOperand = mWaitingOperand*mOperand*0.01;
+            mOperand = mWaitingOperand * mOperand * 0.01;
 //        } else if (operator.equals(CLEARMEMORY)) {
 //            mCalculatorMemory = 0;
 //        } else if (operator.equals(ADDTOMEMORY)) {
@@ -185,7 +179,7 @@ public class Calculator extends LinearLayout {
 
         if (mWaitingOperator.equals(ADD)) {
             mOperand = mWaitingOperand + mOperand;
-        }  else if (mWaitingOperator.equals(SUBTRACT)) {
+        } else if (mWaitingOperator.equals(SUBTRACT)) {
             mOperand = mWaitingOperand - mOperand;
         } else if (mWaitingOperator.equals(MULTIPLY)) {
             mOperand = mWaitingOperand * mOperand;
@@ -197,7 +191,7 @@ public class Calculator extends LinearLayout {
     }
 
     public void onButtonClick(View v) {
-        if(mEditText==null)
+        if (mEditText == null)
             return;
 
         Editable editable = mEditText.getText();
@@ -209,7 +203,7 @@ public class Calculator extends LinearLayout {
         }
         String buttonTag = v.getTag().toString();
 
-        if(buttonTag.equals("back")) {
+        if (buttonTag.equals("back")) {
             String s = mEditText.getText().toString();
             if (s.length() == 1) { // 1 character, just set to 0
                 performOperation(Calculator.CLEAR);
@@ -217,7 +211,7 @@ public class Calculator extends LinearLayout {
             } else if (s.length() > 1) {
                 mEditText.setText(s.substring(0, s.length() - 1));
             }
-        } else if(buttonTag.equals("done")) {
+        } else if (buttonTag.equals("done")) {
             mEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
         } else if (DIGITS.contains(buttonTag)) {
 
@@ -246,14 +240,14 @@ public class Calculator extends LinearLayout {
             if (userIsInTheMiddleOfTypingANumber) {
                 try {
                     setOperand(Double.parseDouble(mEditText.getText().toString()));
-                } catch(NumberFormatException e) { // ignore any non-double
+                } catch (NumberFormatException e) { // ignore any non-double
                 }
                 userIsInTheMiddleOfTypingANumber = false;
             }
 
             performOperation(buttonTag);
             mEditText.setText(mDF.format(getResult()));
-            if(buttonTag.equals("=")) {
+            if (buttonTag.equals("=")) {
             }
         }
 

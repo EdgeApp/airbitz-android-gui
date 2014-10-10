@@ -22,14 +22,12 @@ import java.io.InputStreamReader;
 @TargetApi(11)
 public class PhotoHandler {
 
+    private static String mMimeType = "image/jpg";
     private Context mContext;
     private byte[] mData;
     private Camera.CameraInfo mCameraInfo;
 
-    private static String mMimeType = "image/jpg";
-
-    public PhotoHandler(Context context, byte[] data, Camera.CameraInfo info)
-    {
+    public PhotoHandler(Context context, byte[] data, Camera.CameraInfo info) {
         Log.d("TAG custom", "Constructing Photohandler...");
         this.mContext = context;
         mData = data;
@@ -37,7 +35,77 @@ public class PhotoHandler {
         Log.d("TAG custom", "Finish Constructing Photohandler...  " + mContext);
     }
 
-    private void saveData(String filename, byte[] data){
+    public static Bitmap decodeFile(String path) {
+
+        int orientation;
+
+        try {
+
+            if (path == null) {
+
+                return null;
+            }
+            // decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+
+            // Find the correct scale value. It should be the power of 2.
+            final int REQUIRED_SIZE = 70;
+            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+            int scale = 4;
+            while (true) {
+                if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+                    break;
+                width_tmp /= 2;
+                height_tmp /= 2;
+                scale++;
+            }
+            // decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            Bitmap bm = BitmapFactory.decodeFile(path, o2);
+
+
+            Bitmap bitmap = bm;
+
+            ExifInterface exif = new ExifInterface(path);
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Log.e("orientation", "" + orientation);
+            Matrix m = new Matrix();
+
+            if ((orientation == 3)) {
+
+                m.postRotate(180);
+                m.postScale((float) bm.getWidth(), (float) bm.getHeight());
+
+                Log.e("in orientation", "" + orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+                return bitmap;
+            } else if (orientation == 6) {
+
+                m.postRotate(90);
+
+                Log.e("in orientation", "" + orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+                return bitmap;
+            } else if (orientation == 8) {
+
+                m.postRotate(270);
+
+                Log.e("in orientation", "" + orientation);
+
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+                return bitmap;
+            }
+            return bitmap;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    private void saveData(String filename, byte[] data) {
 
         try {
             FileOutputStream outputStream = mContext.openFileOutput(filename, Context.MODE_PRIVATE);
@@ -63,91 +131,15 @@ public class PhotoHandler {
         }
     }
 
-
     private File getDir() {
         String rootDir = "";
-        if(Environment.isExternalStorageEmulated()){
+        if (Environment.isExternalStorageEmulated()) {
             rootDir = Environment.getExternalStorageDirectory().toString();
         } else {
             rootDir = Environment.getDataDirectory().toString();
         }
-        File photoDirectory = new File(rootDir+"/Selfie/");
+        File photoDirectory = new File(rootDir + "/Selfie/");
         photoDirectory.mkdirs();
         return photoDirectory;
-    }
-
-
-    public static Bitmap decodeFile(String path) {
-
-        int orientation;
-
-        try {
-
-            if(path==null){
-
-                return null;
-            }
-            // decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-            // Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE = 70;
-            int width_tmp = o.outWidth, height_tmp = o.outHeight;
-            int scale = 4;
-            while (true) {
-                if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
-                    break;
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale++;
-            }
-            // decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize=scale;
-            Bitmap bm = BitmapFactory.decodeFile(path, o2);
-
-
-            Bitmap bitmap = bm;
-
-            ExifInterface exif = new ExifInterface(path);
-            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-            Log.e("orientation", "" + orientation);
-            Matrix m=new Matrix();
-
-            if((orientation==3)){
-
-                m.postRotate(180);
-                m.postScale((float)bm.getWidth(), (float)bm.getHeight());
-
-                Log.e("in orientation", "" + orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-                return  bitmap;
-            }
-            else if(orientation==6){
-
-                m.postRotate(90);
-
-                Log.e("in orientation", "" + orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-                return  bitmap;
-            }
-
-            else if(orientation==8){
-
-                m.postRotate(270);
-
-                Log.e("in orientation", "" + orientation);
-
-                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-                return  bitmap;
-            }
-            return bitmap;
-        }
-        catch (Exception e) {
-        }
-        return null;
     }
 }
