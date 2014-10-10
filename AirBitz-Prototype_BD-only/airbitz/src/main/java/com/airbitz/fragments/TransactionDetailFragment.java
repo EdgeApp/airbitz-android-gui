@@ -168,8 +168,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
 
-
-    Picasso mPicassoBuilder;
+    private Picasso mPicasso;
 
     private CoreAPI mCoreAPI;
     private View mView;
@@ -239,8 +238,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
-        mPicassoBuilder =  new Picasso.Builder(getActivity()).build();
-
+        mPicasso = Picasso.with(getActivity());
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -729,11 +727,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if(mCombinedPhotos !=null && payeeImage!=null) {
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 
-            if(payeeImage.getScheme().contains("content")) {
+            if (payeeImage.getScheme().contains("content")) {
                 mPayeeImageView.setImageURI(payeeImage);
             } else {
                 Common.LogD(TAG, "loading remote "+payeeImage.toString());
-                mPicassoBuilder.load(payeeImage).noFade().into(mPayeeImageView);
+                mPicasso.load(payeeImage).noFade().into(mPayeeImageView);
             }
         } else {
             mPayeeImageViewFrame.setVisibility(View.GONE);
