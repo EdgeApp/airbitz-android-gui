@@ -44,7 +44,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private LinkedHashMap<String, Uri> mContactList;
     private long[] mRunningSatoshi;
 
-    private final Picasso mPicassoBuilder;
+    private final Picasso mPicasso;
     private SimpleDateFormat mFormatter;
 
     public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList){
@@ -56,7 +56,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mContactList = contactList;
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
-        mPicassoBuilder =  new Picasso.Builder(context).build();
+        mPicasso = Picasso.with(context);
         mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
     }
 
@@ -137,7 +137,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.contactImageView.setImageURI(payeeImage);
             } else {
                 Common.LogD(TAG, "loading remote "+payeeImage.toString());
-                mPicassoBuilder.load(payeeImage).noFade().into(viewHolder.contactImageView);
+                mPicasso.load(payeeImage).noFade().into(viewHolder.contactImageView);
             }
         } else {
             viewHolder.contactImageViewFrame.setVisibility(View.GONE);

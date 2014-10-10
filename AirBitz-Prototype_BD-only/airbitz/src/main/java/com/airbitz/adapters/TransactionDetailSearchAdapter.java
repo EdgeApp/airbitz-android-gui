@@ -36,7 +36,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
     private List<String> mContactNames;
     private Map<String,Uri> mContactPhotos;
     private List<Object> mCombined;
-    private final Picasso p;
+    private final Picasso mPicasso;
 
     public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<String> contactNames, List<Object> combined, Map<String, Uri> contactPhotos){
         super(context, R.layout.item_listview_transaction_detail, combined);
@@ -45,7 +45,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
         mContactNames = contactNames;
         mContactPhotos = contactPhotos;
         mCombined = combined;
-        p =  new Picasso.Builder(context).build();
+        mPicasso = Picasso.with(context);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             viewHolder.textView.setText(nameForImage);
 
             if(business.getSquareProfileImage()!=null)
-                p.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(viewHolder.imageView);
+                mPicasso.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(viewHolder.imageView);
 
 
             // create the address
@@ -116,8 +116,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             viewHolder.textView.setText(nameForImage);
             viewHolder.addressView.setVisibility(View.GONE);
         }
-        p.load(mContactPhotos.get(nameForImage)).noFade().into(viewHolder.imageView);
+        mPicasso.load(mContactPhotos.get(nameForImage)).noFade().into(viewHolder.imageView);
         return convertView;
     }
-
 }
