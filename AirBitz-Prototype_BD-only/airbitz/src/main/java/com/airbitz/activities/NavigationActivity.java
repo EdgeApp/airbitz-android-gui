@@ -1,5 +1,6 @@
 package com.airbitz.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -63,12 +65,13 @@ import java.util.Stack;
  * the custom Navigation Bar for Airbitz
  * Created by Thomas Baker on 4/22/14.
  */
-public class NavigationActivity extends BaseActivity
+public class NavigationActivity extends Activity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
+    private final int DIALOG_TIMEOUT_MILLIS = 120000;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -942,4 +945,92 @@ public class NavigationActivity extends BaseActivity
             ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
+
+    Runnable mProgressDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            findViewById(R.id.modal_indefinite_progress).setVisibility(View.INVISIBLE);
+            ShowOkMessageDialog(getResources().getString(R.string.string_connection_problem_title), getResources().getString(R.string.string_no_connection_response));
+        }
+    };
+
+    AlertDialog mMessageDialog;
+    Runnable mMessageDialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if (mMessageDialog.isShowing()) {
+                mMessageDialog.dismiss();
+            }
+        }
+    };
+
+    public void showModalProgress(final boolean show) {
+        View v = findViewById(R.id.modal_indefinite_progress);
+        if (show) {
+            v.setVisibility(View.VISIBLE);
+            v.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true; // intercept all touches
+                }
+            });
+            if (mHandler == null)
+                mHandler = new Handler();
+            mHandler.postDelayed(mProgressDialogKiller, DIALOG_TIMEOUT_MILLIS);
+        } else {
+            mHandler.removeCallbacks(mProgressDialogKiller);
+            v.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void ShowOkMessageDialog(String title, String message) {
+        if (mMessageDialog != null) {
+            mMessageDialog.dismiss();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
+                );
+        mMessageDialog = builder.create();
+        mMessageDialog.show();
+    }
+
+    public void ShowOkMessageDialog(String title, String message, int timeoutMillis) {
+        mHandler.postDelayed(mMessageDialogKiller, timeoutMillis);
+        ShowOkMessageDialog(title, message);
+    }
+
+    public void ShowMessageDialogBackPress(String title, String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                NavigationActivity.this.onBackPressed();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void hideSoftKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public void showSoftKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+    }
+
 }

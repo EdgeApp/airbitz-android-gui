@@ -108,7 +108,6 @@
                         android:layout_toRightOf="@id/textview_account"
                         android:background="@drawable/bg_btn_blue_stretch"
                         android:gravity="center"
-                        android:text="Checking"
                         android:textColor="@android:color/white"
                         android:textSize="15sp" />
 
@@ -151,7 +150,6 @@
                             android:drawablePadding="-25.2dp"
                             android:gravity="center"
                             android:paddingLeft="12.6dp"
-                            android:text="10/15/2014 12:20pm"
                             android:textColor="@android:color/white"
                             android:textSize="12sp" />
 
@@ -191,7 +189,6 @@
                             android:drawablePadding="-25.2dp"
                             android:gravity="center"
                             android:paddingLeft="12.6dp"
-                            android:text="10/15/2014 12:20pm"
                             android:textColor="@android:color/white"
                             android:textSize="12sp" />
 

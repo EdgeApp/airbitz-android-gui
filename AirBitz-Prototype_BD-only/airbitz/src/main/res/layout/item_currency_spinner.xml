@@ -8,7 +8,6 @@
     android:gravity="center"
     android:paddingLeft="15.75dp"
     android:paddingRight="15.75dp"
-    android:text="currency"
     android:textColor="#FFFFFF"
     android:textSize="18sp">
 

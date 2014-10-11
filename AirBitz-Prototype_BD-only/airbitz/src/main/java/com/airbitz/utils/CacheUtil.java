@@ -54,9 +54,7 @@ public class CacheUtil {
             }
 
         }
-
-        editor.commit();
-
+        editor.apply();
     }
 
     public static List<Business> getCachedBusinessSearchData(Context context) {
@@ -102,8 +100,7 @@ public class CacheUtil {
                 editor.putString(LOC1_KEY, recentData);
             }
         }
-
-        editor.commit();
+        editor.apply();
     }
 
     public static List<LocationSearchResult> getCachedLocationSearchData(Context context) {

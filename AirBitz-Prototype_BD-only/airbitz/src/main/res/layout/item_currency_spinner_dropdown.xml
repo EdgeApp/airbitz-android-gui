@@ -4,11 +4,10 @@
     android:id="@+id/textview_currency"
     android:layout_width="match_parent"
     android:layout_height="37.8dp"
-    android:background="#FFFFFF"
+    android:background="@android:color/white"
     android:gravity="center_vertical"
     android:paddingLeft="15.75dp"
     android:paddingRight="15.75dp"
-    android:text="currency"
     android:textColor="#000000"
     android:textSize="18sp">
 

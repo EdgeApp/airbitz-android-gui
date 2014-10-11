@@ -98,7 +98,6 @@
                     android:background="@android:color/transparent"
                     android:gravity="left|center_vertical"
                     android:singleLine="true"
-                    android:text="My Wallet"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textSize="15sp"
@@ -140,7 +139,6 @@
                     android:background="@android:color/transparent"
                     android:gravity="left|center_vertical"
                     android:singleLine="true"
-                    android:text="John"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textSize="15sp"
@@ -167,7 +165,6 @@
                     android:layout_height="34.65dp"
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
-                    android:text="B"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
                     android:textStyle="bold" />
@@ -179,7 +176,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
-                    android:text="+001 BTC"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -196,7 +192,6 @@
                     android:paddingLeft="4dp"
                     android:paddingRight="6.3dp"
                     android:singleLine="true"
-                    android:text="1231.43209344"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textSize="20sp" />
@@ -222,7 +217,6 @@
                     android:layout_height="34.65dp"
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
-                    android:text="$"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
                     android:textStyle="bold" />
@@ -234,7 +228,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
-                    android:text="+00001 USD"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -251,7 +244,6 @@
                     android:paddingLeft="4dp"
                     android:paddingRight="6.3dp"
                     android:singleLine="true"
-                    android:text="093598720975"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textSize="20sp" />
@@ -266,7 +258,6 @@
                 android:layout_marginTop="0dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="1.00 BTC - $876.13 USD"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
 

@@ -5,12 +5,10 @@
     <string name="action_settings">Settings</string>
     <string name="loading">Loading…</string>
     <string name="synchronizing">Synchronizing…</string>
-    <string name="no_break_space_character">\u00A0</string>
     <string name="google_maps_api_key">***REMOVED***</string>
 
     <!-- Generic strings -->
     <string name="string_ok">OK</string>
-    <string name="string_back">Back</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
     <string name="string_cancel">Cancel</string>
@@ -36,17 +34,12 @@
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
     <string name="category_or_business_name">Business Name or Category</string>
-    <string name="address">Address</string>
-    <string name="phone_number">Phone Number</string>
-    <string name="web">Web</string>
     <string name="your_location">Your Location</string>
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
     <string name="no_location_found">Unable to get a current location. Please enable Location Services.</string>
-    <string name="fragment_business_retrieving_data">Retrieving data…</string>
     <string name="fragment_business_no_results">No Results Found</string>
     <string name="fragment_business_cannot_retrieve_data">Can not retrieve data</string>
-    <string name="fragment_business_no_categories_retrieved">No categories retrieved from server</string>
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
 
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
@@ -78,11 +71,8 @@
     <string name="fragment_landing_signin_button">Sign In</string>
     <string name="fragment_landing_signup_button">Sign Up</string>
     <string name="fragment_landing_forgot_text">Forgot Password</string>
-    <string name="fragment_landing_forgot_image_description">Arrow Button</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
-    <string name="fragment_forgot_no_username_details">Please enter a User Name</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
-    <string name="fragment_forgot_no_account_message">We were unable to find your account. Be sure your username is correct.</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_text">This user does not have any recovery questions set!</string>
 
@@ -97,7 +87,6 @@
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
-    <string name="activity_signup_button_next">Next Step</string>
     <string name="activity_signup_username_hint">User Name</string>
     <string name="activity_signup_password_hint">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
@@ -120,9 +109,6 @@
     <string name="activity_signup_password_change_title">Change Password</string>
     <string name="activity_signup_password_change_good">Password successfully changed.</string>
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
-    <string name="activity_signup_password_change_via_questions_good">Password successfully changed.</string>
-    <string name="activity_signup_password_change_via_questions_bad">Password could not be changed.</string>
-    <string name="activity_signup_change_bad">Unsuccessful change. Try again.</string>
     <string name="activity_signup_enter_username">You must enter a user name</string>
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
@@ -147,7 +133,6 @@
     <string name="activity_recovery_prompt_title">Skip this step</string>
     <string name="activity_recovery_prompt_skip">**WARNING** You will NEVER be able to recover your password if it is forgotten!!</string>
     <string name="activity_recovery_first_wallet_name">My Wallet</string>
-    <string name="activity_recovery_alert_title">Alert</string>
     <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
     <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>
     <string name="activity_recovery_question_default">Question</string>
@@ -164,7 +149,6 @@
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
     <string name="activity_forgot_submit">Submit</string>
-    <string name="activity_forgot_no_questions">You skipped password recovery questions when you created your account. You cannot recover your password this way.</string>
 
     <!-- Strings for Settings fragment -->
     <string name="settings_title">Settings</string>
@@ -183,9 +167,7 @@
     <string name="settings_edit_first_name">First Name (optional)</string>
     <string name="settings_edit_last_name">Last Name (optional)</string>
     <string name="settings_edit_nick_name">Nickname (optional)</string>
-    <string name="settings_general_title">GENERAL</string>
     <string name="settings_title_auto_logoff">Auto log off after</string>
-    <string name="settings_title_language">Language</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
@@ -195,8 +177,6 @@
     <string name="settings_title_peso">Mexican Peso</string>
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Log Out</string>
-    <string name="settings_button_cancel">Cancel</string>
-    <string name="settings_button_done">Done</string>
     <string name="settings_categories_add_new">Add New</string>
 
     <string name="settings_categories_expense">Expense:</string>
@@ -217,9 +197,6 @@
     <string name="fragment_category_exchange">Exchange:</string>
 
     <!-- Strings for AutoLogoff Dialog -->
-    <string name="dialog_days">Days</string>
-    <string name="dialog_hours">Hours</string>
-    <string name="dialog_mins">Mins</string>
     <string name="dialog_title">Set Auto Logoff time</string>
     <string name="dialog_select_an_item">Select an item</string>
 
@@ -234,7 +211,6 @@
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
-    <string name="fragment_send_failure_insufficient_funds">You do not have enough funds to send this transaction.</string>
 
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
 
@@ -286,13 +262,11 @@
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
     <string name="transaction_details_advanced_title">Advanced Details</string>
-    <string name="transaction_details_to_title">To:</string>
     <string name="transaction_details_category_title">Category</string>
     <string name="transaction_details_notes_title">Notes</string>
-    <string name="transaction_details_category_hint">Add category</string>
-    <string name="transaction_details_notes_hint">Add transaction note</string>
     <string name="transaction_details_to">"To: "</string>
     <string name="transaction_details_from">"From: "</string>
+    <string name="transaction_details_payee_hint">Enter Payee</string>
 
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>
@@ -304,15 +278,10 @@
 
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
-    <string name="export_account_title">Account:</string>
-    <string name="export_account_button_hint">Account:</string>
-    <string name="export_account_from_title">From:</string>
-    <string name="export_account_to_title">To:</string>
     <string name="export_account_this_week">This Week</string>
     <string name="export_account_last_week">Last Week</string>
     <string name="export_account_this_month">This Month</string>
     <string name="export_account_last_month">Last Month</string>
-    <string name="export_account_this_year">This Year</string>
     <string name="export_account_yesterday">Yesterday</string>
     <string name="export_account_today">Today</string>
     <string name="export_csv_title">CSV</string>
@@ -352,7 +321,6 @@
     <string name="received_success_sending_title">Send Bitcoin</string>
     <string name="received_success_sending">Sending</string>
     <string name="received_success_receiving">Receiving</string>
-    <string name="question">Question</string>
 
     <!-- Strings for Contact Picker fragment -->
     <string name="fragment_contact_picker_title_email">Email Search</string>
@@ -362,16 +330,9 @@
     <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>
 
     <!-- Errors -->
-    <string name="error_invalid_recovery_title">Sign Up Failed</string>
-    <string name="error_invalid_username_details">User Name must be at least 3 characters</string>
-    <string name="error_invalid_password_details_start">Your password is not strong enough.</string>
-    <string name="error_invalid_confirmation_details">Passwords do not match</string>
-    <string name="error_invalid_pin_details">Withdrawal PIN must be 4  digits</string>
-    <string name="error_field_required">This field is required</string>
     <string name="error_invalid_credentials">Invalid User Name or Password</string>
     <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
     <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
-    <string name="title_activity_base">BaseActivity</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
@@ -380,9 +341,8 @@
     <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
     <string name="received_partial_bitcoin_title">Partial Payment Received</string>
     <string name="received_partial_bitcoin_message">Warning: Partial Payment Received</string>
-    <string name="bitcoing_remaining">%1$s Remaining...</string>
+    <string name="bitcoing_remaining">%1$s Remaining…</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
