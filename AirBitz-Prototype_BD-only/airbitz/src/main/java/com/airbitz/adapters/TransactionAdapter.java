@@ -29,7 +29,6 @@ import java.util.List;
 public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private final String TAG = getClass().getSimpleName();
-    private final Picasso mPicassoBuilder;
     private Context mContext;
     private Wallet mWallet;
     private boolean mSearch;
@@ -53,7 +52,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
         mPicasso = Picasso.with(context);
-        mPicassoBuilder = new Picasso.Builder(context).build();
         mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
     }
 
