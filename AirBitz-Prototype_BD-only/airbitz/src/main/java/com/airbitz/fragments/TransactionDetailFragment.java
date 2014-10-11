@@ -714,7 +714,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mPayeeImageView.setImageURI(payeeImage);
             } else {
                 Log.d(TAG, "loading remote " + payeeImage.toString());
-                mPicassoBuilder.load(payeeImage).noFade().into(mPayeeImageView);
+                mPicasso.load(payeeImage).noFade().into(mPayeeImageView);
             }
         } else {
             mPayeeImageViewFrame.setVisibility(View.GONE);
