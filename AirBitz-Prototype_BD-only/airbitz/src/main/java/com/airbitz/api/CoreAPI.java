@@ -47,7 +47,7 @@ public class CoreAPI {
 
     private final String CERT_FILENAME = "ca-certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
-    private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 5;
+    private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 10;
     private static int CONFIRMED_CONFIRMATION_COUNT = 3;
     public static int ABC_DENOMINATION_BTC = 0;
     public static int ABC_DENOMINATION_MBTC = 1;
