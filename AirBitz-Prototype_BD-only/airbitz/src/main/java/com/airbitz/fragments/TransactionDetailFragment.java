@@ -80,7 +80,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
-    Picasso mPicassoBuilder;
+
     private HighlightOnPressButton mDoneButton;
     private RelativeLayout mAdvanceDetailsButtonLayout;
     private HighlightOnPressButton mAdvanceDetailsButton;
@@ -148,6 +148,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+
+    private Picasso mPicasso;
+
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
@@ -215,8 +218,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
-        mPicassoBuilder = new Picasso.Builder(getActivity()).build();
-
+        mPicasso = Picasso.with(getActivity());
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
@@ -1061,110 +1063,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mNearBusinessSearchAsyncTask != null) {
-            mNearBusinessSearchAsyncTask.cancel(true);
-        }
-        mTransaction.setName(mPayeeEditText.getText().toString());
-        mTransaction.setCategory(mCategoryEdittext.getText().toString());
-        mTransaction.setNotes(mNoteEdittext.getText().toString());
-        double amountFiat;
-        try {
-            amountFiat = Double.valueOf(mFiatValueEdittext.getText().toString());
-        } catch (Exception e) {
-            amountFiat = 0.0;
-        }
-        mTransaction.setAmountFiat(amountFiat);
-        mTransaction.setmBizId(mBizId);
-        mCoreAPI.storeTransaction(mTransaction);
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    }
-
-    private void startOnlineBusinessSearch(String term) {
-        if (!mArrayAutoCompleteQueries.contains(term)) {
-            mArrayAutoCompleteQueries.add(term);
-            mOnlineBusinessSearchAsyncTask = new OnlineBusinessSearchAsyncTask();
-            mOnlineBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, term);
-        }
-    }
-
-    public void getContactsList() {
-        mContactNames.clear();
-        ContentResolver cr = getActivity().getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY};
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                mContactNames.add(name);
-            }
-        }
-        cursor.close();
-    }
-
-    public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
-        mBusinesses.clear();
-        for (int i = 0; i < mArrayNearBusinesses.size(); i++) {
-            if (mArrayNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
-                int j = 0;
-                boolean flag = false;
-                while (!flag && j != mBusinesses.size()) {
-                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mArrayNearBusinesses.get(i).getName().toLowerCase()) > 0) {
-                        mBusinesses.add(j, mArrayNearBusinesses.get(i));
-                        flag = true;
-                    }
-                    j++;
-                }
-                if (j == mBusinesses.size() && !flag) {
-                    mBusinesses.add(mArrayNearBusinesses.get(i));
-                }
-            }
-        }
-        return mBusinesses;
-    }
-
-    public void combineMatchLists() {
-        while (!mBusinesses.isEmpty() | !mContactNames.isEmpty()) {
-            if (mBusinesses.isEmpty()) {
-                mArrayAutoComplete.add(mContactNames.get(0));
-                mContactNames.remove(0);
-            } else if (mContactNames.isEmpty()) {
-                mArrayAutoComplete.add(mBusinesses.get(0));
-                mBusinesses.remove(0);
-            } else if (mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase()) < 0) {
-                mArrayAutoComplete.add(mBusinesses.get(0));
-                mBusinesses.remove(0);
-            } else {
-                mArrayAutoComplete.add(mContactNames.get(0));
-                mContactNames.remove(0);
-            }
-        }
-    }
-
-    public void goSearch() {
-        mArrayAutoComplete.clear();
-        mArrayNearBusinesses.clear();
-        mBusinesses.clear();
-        if (locationEnabled) {
-            if (mLocationManager.getLocation() != null) {
-                mNearBusinessSearchAsyncTask = new NearBusinessSearchAsyncTask();
-                mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
-            } else {
-                mLocationManager.addLocationChangeListener(this);
-            }
-        }
-    }
-
-    private void FindBizIdThumbnail(String name, long id) {
-        if (id != 0) {
-            GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-    }
-
     class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
         private AirbitzAPI api = AirbitzAPI.getApi();
 
@@ -1247,6 +1145,36 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mNearBusinessSearchAsyncTask != null) {
+            mNearBusinessSearchAsyncTask.cancel(true);
+        }
+        mTransaction.setName(mPayeeEditText.getText().toString());
+        mTransaction.setCategory(mCategoryEdittext.getText().toString());
+        mTransaction.setNotes(mNoteEdittext.getText().toString());
+        double amountFiat;
+        try {
+            amountFiat = Double.valueOf(mFiatValueEdittext.getText().toString());
+        } catch (Exception e) {
+            amountFiat = 0.0;
+        }
+        mTransaction.setAmountFiat(amountFiat);
+        mTransaction.setmBizId(mBizId);
+        mCoreAPI.storeTransaction(mTransaction);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
+    private void startOnlineBusinessSearch(String term) {
+        if(!mArrayAutoCompleteQueries.contains(term)) {
+            mArrayAutoCompleteQueries.add(term);
+            mOnlineBusinessSearchAsyncTask = new OnlineBusinessSearchAsyncTask();
+            mOnlineBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, term);
+        }
+    }
+
     class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, List<Business>> {
         private AirbitzAPI api = AirbitzAPI.getApi();
 
@@ -1289,6 +1217,80 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mOnlineBusinessSearchAsyncTask = null;
             super.onCancelled();
         }
+    }
+
+    public void getContactsList() {
+        mContactNames.clear();
+        ContentResolver cr = getActivity().getContentResolver();
+        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
+        if (cursor!=null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                mContactNames.add(name);
+            }
+        }
+        cursor.close();
+    }
+
+    public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
+        mBusinesses.clear();
+        for (int i = 0; i < mArrayNearBusinesses.size(); i++) {
+            if (mArrayNearBusinesses.get(i).getName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                int j = 0;
+                boolean flag = false;
+                while (!flag && j != mBusinesses.size()) {
+                    if (mBusinesses.get(j).getName().toLowerCase().compareTo(mArrayNearBusinesses.get(i).getName().toLowerCase()) > 0) {
+                        mBusinesses.add(j, mArrayNearBusinesses.get(i));
+                        flag = true;
+                    }
+                    j++;
+                }
+                if (j == mBusinesses.size() && !flag) {
+                    mBusinesses.add(mArrayNearBusinesses.get(i));
+                }
+            }
+        }
+        return mBusinesses;
+    }
+
+    public void combineMatchLists() {
+        while (!mBusinesses.isEmpty() | !mContactNames.isEmpty()) {
+            if (mBusinesses.isEmpty()) {
+                mArrayAutoComplete.add(mContactNames.get(0));
+                mContactNames.remove(0);
+            } else if (mContactNames.isEmpty()) {
+                mArrayAutoComplete.add(mBusinesses.get(0));
+                mBusinesses.remove(0);
+            } else if (mBusinesses.get(0).getName().toLowerCase().compareTo(mContactNames.get(0).toLowerCase()) < 0) {
+                mArrayAutoComplete.add(mBusinesses.get(0));
+                mBusinesses.remove(0);
+            } else {
+                mArrayAutoComplete.add(mContactNames.get(0));
+                mContactNames.remove(0);
+            }
+        }
+    }
+
+    public void goSearch() {
+        mArrayAutoComplete.clear();
+        mArrayNearBusinesses.clear();
+        mBusinesses.clear();
+        if (locationEnabled) {
+            if (mLocationManager.getLocation() != null) {
+                mNearBusinessSearchAsyncTask = new NearBusinessSearchAsyncTask();
+                mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+            } else {
+                mLocationManager.addLocationChangeListener(this);
+            }
+        }
+    }
+
+    private void FindBizIdThumbnail(String name, long id) {
+            if(id!=0) {
+                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
     }
 
     class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
