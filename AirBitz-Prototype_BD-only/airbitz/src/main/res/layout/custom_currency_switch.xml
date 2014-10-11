@@ -24,7 +24,6 @@
             android:layout_height="37.8dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="B110.015"
             android:textColor="@color/semi_black_text"
             android:textSize="16sp" />
 
@@ -35,7 +34,6 @@
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:padding="9.45dp"
-            android:text="BTC"
             android:textColor="@color/semi_black_text"
             android:textSize="12sp" />
     </RelativeLayout>
@@ -52,7 +50,6 @@
             android:layout_height="37.8dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="$1050.67"
             android:textColor="@color/semi_black_text"
             android:textSize="16sp" />
 
@@ -62,7 +59,6 @@
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"
             android:padding="9.45dp"
-            android:text="USD"
             android:textColor="@color/semi_black_text"
             android:textSize="12sp" />
     </RelativeLayout>
@@ -82,7 +78,6 @@
             android:shadowColor="@android:color/black"
             android:shadowDy="4"
             android:shadowRadius="1"
-            android:text="B110.015"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -103,7 +98,6 @@
             android:shadowColor="#000000"
             android:shadowDy="3"
             android:shadowRadius="1"
-            android:text="BTC"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
     </RelativeLayout>

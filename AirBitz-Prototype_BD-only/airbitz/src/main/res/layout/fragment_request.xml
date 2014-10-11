@@ -166,7 +166,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="6dp"
-                        android:text="mBTC"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:textStyle="normal" />
@@ -211,7 +210,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="6dp"
-                        android:text="USD"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:textStyle="normal" />

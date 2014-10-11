@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Request Bitcoin"
+            android:text="@string/request_qr_title"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -82,7 +82,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="6dp"
             android:gravity="center_horizontal"
-            android:text="Waiting for Payment..."
+            android:text="@string/request_qr_waiting_for_payment"
             android:textColor="@android:color/white"
             android:textSize="15sp" />
 

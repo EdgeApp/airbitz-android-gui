@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@drawable/bg_app"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
@@ -66,7 +65,6 @@
             android:layout_height="0dp"
             android:layout_weight="5"
             android:gravity="center"
-            android:text="November 13, 2013 04:56 PM"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 
@@ -88,7 +86,7 @@
                 android:background="@drawable/bg_edittext"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Payee"
+                android:hint="@string/transaction_details_payee_hint"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textNoSuggestions|textCapWords"
                 android:paddingLeft="6dp"
@@ -171,7 +169,6 @@
                 android:layout_weight="5"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="To: My Wallet"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -196,7 +193,6 @@
                     android:ellipsize="none"
                     android:gravity="center_vertical|right"
                     android:singleLine="true"
-                    android:text="mBTC"
                     android:textColor="@android:color/white"
                     android:textSize="16sp" />
 
@@ -214,7 +210,6 @@
                     android:ellipsize="none"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="-1.64593"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textSize="21sp" />
@@ -230,7 +225,6 @@
                     android:ellipsize="none"
                     android:gravity="right"
                     android:singleLine="true"
-                    android:text="+0.0001"
                     android:textColor="@android:color/white"
                     android:textSize="12sp" />
 
@@ -254,7 +248,6 @@
                     android:ellipsize="none"
                     android:gravity="center_vertical|right"
                     android:singleLine="true"
-                    android:text="USD"
                     android:textColor="@android:color/white"
                     android:textSize="16sp" />
 
@@ -268,7 +261,6 @@
                     android:layout_weight="64"
                     android:background="@drawable/bg_edittext"
                     android:gravity="center"
-                    android:hint="3.456"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
@@ -331,7 +323,6 @@
                     android:paddingLeft="8dp"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
-                    android:text="Transfer:Wallet:TestCAD"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
@@ -397,7 +388,6 @@
                     android:inputType="textNoSuggestions|textAutoCorrect|textCapSentences"
                     android:padding="8dp"
                     android:singleLine="true"
-                    android:text="Test Stuff that/'s long enough to wrap around for a second line "
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"

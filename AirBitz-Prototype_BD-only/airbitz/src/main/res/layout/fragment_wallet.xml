@@ -121,7 +121,6 @@
                 android:imeOptions="actionDone"
                 android:inputType="textCapWords|textNoSuggestions"
                 android:selectAllOnFocus="true"
-                android:text="Wallet"
                 android:textColor="@android:color/white"
                 android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:textSize="17sp" />
@@ -148,7 +147,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@android:color/transparent"
                 android:divider="@drawable/wallet_list_divider"
-                android:dividerHeight="0dp"></ListView>
+                android:dividerHeight="0dp" />
 
             <FrameLayout
                 android:id="@android:id/empty"

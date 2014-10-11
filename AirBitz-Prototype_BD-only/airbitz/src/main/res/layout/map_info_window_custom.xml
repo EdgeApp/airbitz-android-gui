@@ -48,7 +48,7 @@
                     <LinearLayout
                         android:id="@+id/padding_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -59,7 +59,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="Your Location"
                         android:textColor="@android:color/black"
                         android:textStyle="bold"
                         android:visibility="gone" />
@@ -84,7 +83,6 @@
                             android:shadowDx="3"
                             android:shadowDy="3"
                             android:shadowRadius="1"
-                            android:text="TITLE"
                             android:textColor="@android:color/white"
                             android:textStyle="bold" />
 
@@ -96,7 +94,6 @@
                             android:shadowDx="3"
                             android:shadowDy="3"
                             android:shadowRadius="1"
-                            android:text="ADDRESS"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
                 </LinearLayout>

@@ -2,10 +2,52 @@
 <pre-dex-items>
 
     <item
-        dex="/Users/tom/Documents/AndroidStudioProjects/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/picasso-2.3.4-71f15d5d30c0693584519a102dd48071e5cbb43e.jar"
-        jar="/Users/tom/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/core-3.0.1-e575777188e1ef7b79f6094ce8bb29ccdb0de296.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.0.1/9ebf6cd580d67601fbf88fd007aab4703b19e4c2/core-3.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9ebf6cd580d67601fbf88fd007aab4703b19e4c2"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/classes-d539020abd1f6d67e0d8be00c43f29f3a09b6b1d.jar"
+        jar="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/HockeySDK-3.0.2-7a48e9e6fcc1ff8682ae20c329123caf9e10197e.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/net.hockeyapp.android/HockeySDK/3.0.2/8a3412e04f95700d4b65d40d1ee28d401a5ba28/HockeySDK-3.0.2.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="08a3412e04f95700d4b65d40d1ee28d401a5ba28"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/commons-io-2.4-c6a9df1a356b5efe5364e4421c2cb70d0490cc63.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/gson-2.2.4-abfaabb727d48e0107f30152c9a743c597e3dbb8.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/retrofit-1.4.1-39709e0618815c37af44f1e0b0eab04942074b7a.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.4.1/23de973a4908bc6f5ac6524af3251a19ad81a7b1/retrofit-1.4.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="23de973a4908bc6f5ac6524af3251a19ad81a7b1"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/picasso-2.3.4-62539fc51de4512af63a690a024a379faf2249ca.jar"
+        jar="/home/tom/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="3b646ddbdac8a33fc45b64564011da81d23e4635"/>
+    <item
+        dex="/media/truecrypt1/Airbitz/airbitz-wallet-ui-android/AirBitz-Prototype_BD-only/airbitz/build/intermediates/pre-dexed/dev/debug/support-v4-19.0.1-b3782cd885ab99e3649166f10f9e9ce649eaa974.jar"
+        jar="/media/truecrypt1/android-studio/sdk/extras/android/m2repository/com/android/support/support-v4/19.0.1/support-v4-19.0.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="587da9a481ffd341d2fa091704489b89845ddacd"/>
 
 </pre-dex-items>

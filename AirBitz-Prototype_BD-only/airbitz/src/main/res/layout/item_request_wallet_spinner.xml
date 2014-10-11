@@ -8,7 +8,6 @@
     android:ellipsize="end"
     android:gravity="center"
     android:singleLine="true"
-    android:text="wallet"
     android:textColor="@android:color/white">
 
 </TextView>

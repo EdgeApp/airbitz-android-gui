@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#addff1"
+    android:background="@color/listitem_normal"
     android:padding="10dp">
 
     <ImageView
@@ -39,7 +39,6 @@
         android:layout_toRightOf="@id/imageview_icon"
         android:ellipsize="none"
         android:singleLine="false"
-        android:text="item"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="15sp" />
 

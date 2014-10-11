@@ -99,9 +99,7 @@ if (hasProperty('storeFile')) {
     android.buildTypes.release.signingConfig = null
 }
 
-
 dependencies {
-    compile 'me.grantland:autofittextview:0.1.+'
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.squareup.picasso:picasso:2.3.4'
