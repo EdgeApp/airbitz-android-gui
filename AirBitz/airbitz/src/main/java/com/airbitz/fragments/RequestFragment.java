@@ -112,10 +112,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        if (!mWallets.isEmpty()) {
-            mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-        }
-
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -335,10 +331,11 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         ((NavigationActivity) getActivity()).lockCalculator();
 
         loadNonArchivedWallets();
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
-        setConversionText(mSelectedWallet.getCurrencyNum());
-        mCoreAPI.addExchangeRateChangeListener(this);
+
+        if (!mWallets.isEmpty()) {
+            mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
+        }
+
         Bundle bundle = getArguments();
         if (mUUID == null && bundle != null && bundle.getString(FROM_UUID) != null) {
             mUUID = bundle.getString(FROM_UUID);
@@ -356,6 +353,15 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             if (mWallets != null && !mWallets.isEmpty())
                 mSelectedWallet = mWallets.get(mFromIndex);
         }
+
+        if(mSelectedWallet==null && mWallets!=null) {
+            mSelectedWallet = mWallets.get(0);
+        }
+
+        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+        setConversionText(mSelectedWallet.getCurrencyNum());
+        mCoreAPI.addExchangeRateChangeListener(this);
 
         mAutoUpdatingTextFields = true;
         if (mSavedSatoshi != null) {
