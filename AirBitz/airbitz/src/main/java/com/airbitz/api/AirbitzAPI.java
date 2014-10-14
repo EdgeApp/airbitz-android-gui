@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import java.net.HttpURLConnection;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
@@ -43,8 +42,7 @@ public class AirbitzAPI {
 
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
-    // private static final String SERVER_ROOT = "https://api.airbitz.co/";
-    private static final String SERVER_ROOT = "http://admin.airbitz.co/";
+    private static final String SERVER_ROOT = "https://api.airbitz.co/";
     private static final String API_PATH = SERVER_ROOT + "api/v1/";
     private static final String API_SEARCH = API_PATH + "search/";
     private static final String API_BUSINESS = API_PATH + "business/";
@@ -84,16 +82,15 @@ public class AirbitzAPI {
 
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
-        HttpURLConnection urlConnection = null;
+        HttpsURLConnection urlConnection = null;
         Log.d(TAG, url + params.toString());
         if (api.mApiCache.get(url + params) != null) {
             return (String) api.mApiCache.get(url + params);
         }
         try {
             URL sendUrl = new URL(url + params);
-            urlConnection = (HttpURLConnection) sendUrl.openConnection();
-            // String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
-            String token = "0ccff150ed4633136f04eab2d8454d928e6ff584";
+            urlConnection = (HttpsURLConnection) sendUrl.openConnection();
+            String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
             urlConnection.setRequestProperty("Authorization", "Token " + token + "");
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(in));
