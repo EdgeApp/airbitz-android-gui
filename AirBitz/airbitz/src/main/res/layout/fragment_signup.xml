@@ -197,7 +197,7 @@
             <LinearLayout
                 android:id="@+id/activity_signup_popup_layout"
                 android:layout_width="289.8dp"
-                android:layout_height="119.7dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:animateLayoutChanges="true"
@@ -206,7 +206,16 @@
                 android:padding="6.3dp"
                 android:paddingTop="9.45dp"
                 android:visibility="gone"
-                android:weightSum="6">
+                android:weightSum="7">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity_signup_password_requirements"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="0dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

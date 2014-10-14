@@ -243,6 +243,8 @@
   <string name="activity_signup_new_pin">
     Nuevo PIN
   </string>
+
+    <string name="activity_signup_password_requirements">Requisitos de Contraseña</string>
   <string name="activity_signup_password_help">
     La contraseña debe tener mayúsculas y minúsculas letra, número y carácter especial con un mínimo de 10 caracteres
   </string>
