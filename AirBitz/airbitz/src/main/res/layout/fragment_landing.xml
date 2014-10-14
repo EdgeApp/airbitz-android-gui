@@ -44,13 +44,6 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/fragment_landing_arrowleft_imageview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/fragment_landing_arrow_description"
-                android:src="@drawable/ico_arrow_left" />
-
             <TextView
                 android:id="@+id/fragment_landing_swipe_textview"
                 android:layout_width="wrap_content"
@@ -58,7 +51,7 @@
                 android:padding="6.3dp"
                 android:text="@string/fragment_landing_swipe_text"
                 android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/fragment_landing_arrowright_imageview"
