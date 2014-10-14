@@ -30,12 +30,10 @@ import com.airbitz.utils.Common;
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     View activityRootView;
-    boolean keyboardUp = false;
     private ImageView mLogoImageView;
     private TextView mDetailTextView;
     private LinearLayout mSwipeTextLayout;
     private ImageView mRightArrow;
-    private ImageView mLeftArrow;
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private CoreAPI mCoreAPI;
@@ -67,7 +65,6 @@ public class LandingFragment extends Fragment {
         HighlightOnPressButton mForgotPasswordButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_button);
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
-        mLeftArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowleft_imageview);
 
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -138,11 +135,6 @@ public class LandingFragment extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
 
-        ObjectAnimator leftBounce = ObjectAnimator.ofFloat(mLeftArrow, "translationX", 0, -50);
-        leftBounce.setRepeatCount(ValueAnimator.INFINITE);
-        leftBounce.setDuration(500);
-        leftBounce.setRepeatMode(ValueAnimator.REVERSE);
-        leftBounce.start();
         ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
         rightBounce.setRepeatCount(ValueAnimator.INFINITE);
         rightBounce.setDuration(500);
@@ -214,21 +206,6 @@ public class LandingFragment extends Fragment {
         } else {
             ((NavigationActivity) getActivity()).attemptLogin(username, password);
         }
-    }
-
-    private boolean isUsernameValid(String username) {
-        //TODO real logic for good mUsername
-        return !username.isEmpty();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String> {
