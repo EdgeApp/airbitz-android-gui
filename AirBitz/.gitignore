@@ -2,4 +2,6 @@
 /build
 /local.properties
 /.idea/workspace.xml
+/airbitz/src/main/obj/
+/airbitz/src/main/libs/
 .DS_Store

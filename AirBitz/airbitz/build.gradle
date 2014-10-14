@@ -23,6 +23,29 @@ repositories {
     }
 }
 
+task buildAirbitzCore(type:Exec) {
+    def walletPath = '../../airbitz-wallet-ui-android/AirBitz/airbitz'
+    def walletMain = "$walletPath/src/main"
+    def libraryPath = 'build/abc/android-arm/libabc.so'
+
+    workingDir '../../../airbitz-walletcore/deps'
+
+    // build the dependencies, make sure swig and ndk-build are in your path
+    commandLine 'bash', '-c', """\
+        make abc.build-android-arm \
+        && cp ../src/ABC.h $walletMain/jni/ \
+        && cp $libraryPath $walletMain/jni/ \
+        && cp $libraryPath $walletMain/jniLibs/armeabi/ \
+        && cd $walletPath \
+        && swig -java -package com.airbitz.api \
+                -outdir src/main/java/com/airbitz/api \
+                -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i \
+        && cd src/main/jni/ \
+        && ndk-build \
+        && cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/ 
+    """
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1'
