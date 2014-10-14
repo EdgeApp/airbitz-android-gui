@@ -605,6 +605,7 @@
     Cantidad (Opcional)
   </string>
 
+    <string name="request_next">Contiguo</string>
     <string name="request_invalid_amount">cantidad no válida</string>
 
   <string name="request_qr_email_title">
