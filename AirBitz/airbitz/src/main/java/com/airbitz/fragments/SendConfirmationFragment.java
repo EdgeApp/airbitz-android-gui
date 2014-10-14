@@ -32,6 +32,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.Numberpad;
 import com.airbitz.utils.Common;
 
 /**
@@ -77,6 +78,7 @@ public class SendConfirmationFragment extends Fragment {
     private float rX = 0;
 
     private Calculator mCalculator;
+    private Numberpad mNumberpad;
 
     private RelativeLayout mSlideLayout;
 
@@ -152,6 +154,7 @@ public class SendConfirmationFragment extends Fragment {
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mCalculator = mActivity.getCalculatorView();
+        mNumberpad = mActivity.getNumberpadView();
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
@@ -210,26 +213,25 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() >= 4) {
-                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
+                if (!mAutoUpdatingTextFields && editable.length() >= 4) {
+                    hidePINkeyboard();
                     mParentLayout.requestFocus();
                 }
             }
         };
         mPinEdittext.addTextChangedListener(mPINTextWatcher);
 
-        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+
+        mNumberpad.setEditText(mPinEdittext);
+
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d(TAG, "PIN field focus changed");
                 if (hasFocus) {
-                    mAutoUpdatingTextFields = true;
                     showPINkeyboard();
                 } else {
-                    mAutoUpdatingTextFields = false;
+                    hidePINkeyboard();
                 }
             }
         });
@@ -313,17 +315,21 @@ public class SendConfirmationFragment extends Fragment {
 
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                mAutoUpdatingTextFields = true;
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.onTouchEvent(event);
                 edittext.setInputType(inType);
+                mAutoUpdatingTextFields = false;
                 return true; // the listener has consumed the event, no keyboard popup
             }
         };
 
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
+        mPinEdittext.setOnTouchListener(preventOSKeyboard);
+
         mBitcoinField.setOnEditorActionListener(tvListener);
         mFiatField.setOnEditorActionListener(tvListener);
 
@@ -411,7 +417,17 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void showPINkeyboard() {
-        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
+        ((NavigationActivity)getActivity()).showNumberpad();
+        mPinEdittext.post(new Runnable() {
+            @Override
+            public void run() {
+                mPinEdittext.setSelection(0, mPinEdittext.getText().length());
+            }
+        });
+    }
+
+    private void hidePINkeyboard() {
+        ((NavigationActivity)getActivity()).hideNumberpad();
     }
 
     public void touchEventsEnded() {
