@@ -2,25 +2,17 @@ package com.airbitz.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.tABC_CC;
 
@@ -40,7 +32,6 @@ import java.util.LinkedHashMap;
 public class Common {
 
     public static final String TAG = Common.class.getSimpleName();
-    public static final String UNAVAILABLE = "unavailable";
 
     public static double metersToMiles(double meters) {
         return meters * (1.0 / 1609.344);
@@ -68,13 +59,13 @@ public class Common {
             }
             return buf.toString();
         } catch (IOException e) {
-            Common.LogD(TAG, "Error opening asset " + name);
+            Log.d(TAG, "Error opening asset " + name);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    Common.LogD(TAG, "Error closing asset " + name);
+                    Log.d(TAG, "Error closing asset " + name);
                 }
             }
         }
@@ -82,8 +73,7 @@ public class Common {
         return null;
     }
 
-    public static String readRawTextFile(Context ctx, int resId)
-    {
+    public static String readRawTextFile(Context ctx, int resId) {
         InputStream inputStream = ctx.getResources().openRawResource(resId);
 
         InputStreamReader inputreader = new InputStreamReader(inputStream);
@@ -92,7 +82,7 @@ public class Common {
         StringBuilder text = new StringBuilder();
 
         try {
-            while (( line = buffreader.readLine()) != null) {
+            while ((line = buffreader.readLine()) != null) {
                 text.append(line);
                 text.append('\n');
             }
@@ -107,7 +97,7 @@ public class Common {
         File file = new File(strDir);
         if (!file.exists())
             file.mkdirs();
-        String strFile = strDir + "/"+name;
+        String strFile = strDir + "/" + name;
         try {
             FileOutputStream fos = new FileOutputStream(strFile);
             Writer out = new OutputStreamWriter(fos, "UTF-8");
@@ -116,7 +106,7 @@ public class Common {
             out.close();
             return strFile;
         } catch (Throwable t) {
-            LogD(TAG, "createFileFromString failed for "+name);
+            Log.d(TAG, "createFileFromString failed for " + name);
             return null;
         }
     }
@@ -147,11 +137,6 @@ public class Common {
             cur.close();
         }
         return contactList;
-    }
-
-    public static void LogD(String title, String message) {
-        if(AirbitzApplication.isDebugging())
-            Log.d(title, message);
     }
 
     public static String convertStreamToString(InputStream inputStream) {
@@ -231,42 +216,30 @@ public class Common {
         alert.show();
     }
 
-    public static String errorMap(Context context, tABC_CC code)
-    {
-        if(code==tABC_CC.ABC_CC_AccountAlreadyExists) {
+    public static String errorMap(Context context, tABC_CC code) {
+        if (code == tABC_CC.ABC_CC_AccountAlreadyExists) {
             return context.getString(R.string.server_error_account_already_exists);
-        }
-        else if(code==tABC_CC.ABC_CC_AccountDoesNotExist) {
+        } else if (code == tABC_CC.ABC_CC_AccountDoesNotExist) {
             return context.getString(R.string.server_error_account_does_not_exists);
-        }
-        else if(code==tABC_CC.ABC_CC_BadPassword) {
+        } else if (code == tABC_CC.ABC_CC_BadPassword) {
             return context.getString(R.string.server_error_bad_password);
-        }
-        else if(code==tABC_CC.ABC_CC_WalletAlreadyExists) {
+        } else if (code == tABC_CC.ABC_CC_WalletAlreadyExists) {
             return context.getString(R.string.server_error_wallet_exists);
-        }
-        else if(code==tABC_CC.ABC_CC_InvalidWalletID) {
+        } else if (code == tABC_CC.ABC_CC_InvalidWalletID) {
             return context.getString(R.string.server_error_invalid_wallet);
-        }
-        else if(code==tABC_CC.ABC_CC_URLError || code== tABC_CC.ABC_CC_ServerError) {
+        } else if (code == tABC_CC.ABC_CC_URLError || code == tABC_CC.ABC_CC_ServerError) {
             return context.getString(R.string.server_error_no_connection);
-        }
-        else if(code==tABC_CC.ABC_CC_NoRecoveryQuestions) {
+        } else if (code == tABC_CC.ABC_CC_NoRecoveryQuestions) {
             return context.getString(R.string.server_error_no_recovery_questions);
-        }
-        else if(code==tABC_CC.ABC_CC_NotSupported) {
+        } else if (code == tABC_CC.ABC_CC_NotSupported) {
             return context.getString(R.string.server_error_not_supported);
-        }
-        else if(code==tABC_CC.ABC_CC_InsufficientFunds) {
+        } else if (code == tABC_CC.ABC_CC_InsufficientFunds) {
             return context.getString(R.string.server_error_insufficient_funds);
-        }
-        else if(code==tABC_CC.ABC_CC_Synchronizing) {
+        } else if (code == tABC_CC.ABC_CC_Synchronizing) {
             return context.getString(R.string.server_error_synchronizing);
-        }
-        else if(code==tABC_CC.ABC_CC_NonNumericPin) {
+        } else if (code == tABC_CC.ABC_CC_NonNumericPin) {
             return context.getString(R.string.server_error_non_numeric_pin);
-        }
-        else {
+        } else {
             return context.getString(R.string.server_error_other);
         }
     }

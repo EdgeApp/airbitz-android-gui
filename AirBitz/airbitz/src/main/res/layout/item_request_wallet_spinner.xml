@@ -2,12 +2,12 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_request_wallet_spinner_textview"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:text="wallet"
+    android:ellipsize="end"
     android:gravity="center"
     android:singleLine="true"
-    android:ellipsize="end"
     android:textColor="@android:color/white">
 
 </TextView>

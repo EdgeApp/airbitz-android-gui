@@ -7,67 +7,67 @@
     android:background="@drawable/emboss_down_deep">
 
     <RelativeLayout
+        android:id="@+id/top_switch"
         android:layout_width="match_parent"
-        android:layout_height="37.8dp"
-        android:id="@+id/top_switch">
+        android:layout_height="37.8dp">
 
         <ImageView
             android:id="@+id/top_coin"
             android:layout_width="37.8dp"
             android:layout_height="37.8dp"
             android:padding="9.45dp"
-            android:src="@drawable/ico_coin_btc_dark"/>
+            android:src="@drawable/ico_coin_btc_dark" />
+
         <Button
             android:id="@+id/back_button_top"
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="B110.015"
             android:textColor="@color/semi_black_text"
             android:textSize="16sp" />
+
         <TextView
             android:id="@+id/top_type"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
-            android:padding="9.45dp"
             android:layout_alignParentRight="true"
-            android:text="BTC"
-            android:textSize="12sp"
             android:gravity="center"
-            android:textColor="@color/semi_black_text"/>
+            android:padding="9.45dp"
+            android:textColor="@color/semi_black_text"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/bottom_switch"
         android:layout_width="match_parent"
         android:layout_height="37.8dp"
-        android:id="@+id/bottom_switch"
         android:layout_below="@id/top_switch">
+
         <Button
             android:id="@+id/back_button_bottom"
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="$1050.67"
             android:textColor="@color/semi_black_text"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/bottom_type"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
-            android:padding="9.45dp"
             android:layout_alignParentRight="true"
-            android:textSize="12sp"
+            android:padding="9.45dp"
             android:textColor="@color/semi_black_text"
-            android:text="USD"/>
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/switchable"
         android:layout_width="match_parent"
         android:layout_height="37.8dp"
-        android:layout_above="@id/bottom_switch"
-        android:id="@+id/switchable">
+        android:layout_above="@id/bottom_switch">
 
         <Button
             android:id="@+id/button_mover"
@@ -75,32 +75,31 @@
             android:layout_height="37.8dp"
             android:background="@drawable/btn_green"
             android:gravity="center"
-            android:text="B110.015"
             android:shadowColor="@android:color/black"
             android:shadowDy="4"
             android:shadowRadius="1"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/button_mover_coin"
             android:layout_width="37.8dp"
             android:layout_height="37.8dp"
             android:padding="9.45dp"
-            android:src="@drawable/ico_coin_btc_white"/>
+            android:src="@drawable/ico_coin_btc_white" />
+
         <TextView
             android:id="@+id/button_mover_type"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
-            android:padding="9.45dp"
             android:layout_alignParentRight="true"
-            android:text="BTC"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
+            android:padding="9.45dp"
             android:shadowColor="#000000"
             android:shadowDy="3"
-            android:shadowRadius="1"/>
+            android:shadowRadius="1"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
     </RelativeLayout>
 
 </RelativeLayout>

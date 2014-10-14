@@ -1,7 +1,7 @@
 package com.airbitz.fragments;
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,33 +24,26 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class ExportFragment extends Fragment{
+public class ExportFragment extends Fragment {
 
+    View mView;
     private HighlightOnPressButton mCSVButton;
     private HighlightOnPressButton mQuickenButton;
     private HighlightOnPressButton mQuickBooksButton;
     private HighlightOnPressButton mPdfbutton;
     private HighlightOnPressButton mWalletPrivateSeed;
-
     private HighlightOnPressSpinner mWalletSpinner;
-
-
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressImageButton mBackButton;
     private TextView mTitleTextView;
-
     private Bundle bundle;
     private List<Wallet> mWalletList;
     private Wallet mWallet;
     private List<String> mWalletNameList;
-
     private CoreAPI mCoreApi;
 
-    View mView;
-
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
         mCoreApi = CoreAPI.getApi();
@@ -59,14 +51,14 @@ public class ExportFragment extends Fragment{
         String uuid = getArguments().getString(RequestFragment.FROM_UUID);
         mWallet = mCoreApi.getWalletFromUUID(uuid);
         mWalletNameList = new ArrayList<String>();
-        for(Wallet wallet : mWalletList) {
+        for (Wallet wallet : mWalletList) {
             mWalletNameList.add(wallet.getName());
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(mView==null) {
+        if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_export, container, false);
         } else {
 
@@ -88,11 +80,11 @@ public class ExportFragment extends Fragment{
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_export_account_spinner);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.item_request_wallet_spinner, mWalletNameList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNameList);
         dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
         mWalletSpinner.setAdapter(dataAdapter);
-        for(int i=0; i<mWalletList.size(); i++) {
-            if(mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
+        for (int i = 0; i < mWalletList.size(); i++) {
+            if (mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
                 mWalletSpinner.setSelection(i);
             }
         }
@@ -104,7 +96,8 @@ public class ExportFragment extends Fragment{
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
@@ -117,33 +110,43 @@ public class ExportFragment extends Fragment{
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET), NavigationActivity.Tabs.WALLET.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
         mCSVButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.CSV.ordinal()); }
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.CSV.ordinal());
+            }
         });
 
         mQuickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quicken.ordinal()); }
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quicken.ordinal());
+            }
         });
 
         mQuickBooksButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal()); }
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.Quickbooks.ordinal());
+            }
         });
 
         mPdfbutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PDF.ordinal()); }
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PDF.ordinal());
+            }
         });
 
         mWalletPrivateSeed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal()); }
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal());
+            }
         });
 
         return mView;

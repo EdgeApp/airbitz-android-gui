@@ -7,14 +7,12 @@ import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 
 /**
  * Created by matt on 7/23/14.
  */
-public class HighlightOnPressButton extends Button{
+public class HighlightOnPressButton extends Button {
 
     protected ColorFilter _pressedFilter = new LightingColorFilter(Color.LTGRAY, 1);
 
@@ -46,7 +44,7 @@ public class HighlightOnPressButton extends Button{
         protected int _disabledAlpha = 100;
 
         public SAutoBgButtonBackgroundDrawable(Drawable d) {
-            super(new Drawable[] { d });
+            super(new Drawable[]{d});
         }
 
         @Override

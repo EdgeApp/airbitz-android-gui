@@ -3,37 +3,37 @@
     android:id="@+id/activity_signup_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MergeRootFrame"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    tools:ignore="MergeRootFrame">
 
     <RelativeLayout
+        android:id="@+id/activity_signup_header_layout"
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
-        android:id="@+id/activity_signup_header_layout"
         android:background="@drawable/bg_dark_header">
 
         <ImageButton
+            android:id="@+id/activity_signup_back_button"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:id="@+id/activity_signup_back_button"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
+            android:contentDescription="@string/string_back_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_back_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back" />
 
         <TextView
             android:id="@+id/activity_signup_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/activity_signup_title"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16sp"/>
+            android:text="@string/activity_signup_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -51,129 +51,129 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:layout_marginTop="25.2dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="25.2dp"
+                android:background="@drawable/rounded_edge_blue_bg"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:background="@drawable/rounded_edge_blue_bg">
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp">
 
 
                 <EditText
                     android:id="@+id/activity_signup_username_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
-                    android:hint="@string/activity_signup_username_hint"
-                    android:textColor="@android:color/white"
+                    android:layout_marginTop="25.4dp"
                     android:background="@drawable/bg_edittext"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:inputType="textVisiblePassword"
-                    android:paddingRight="12.6dp"
                     android:ems="10"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="14sp"
+                    android:hint="@string/activity_signup_username_hint"
+                    android:inputType="textVisiblePassword"
                     android:paddingLeft="12.6dp"
-                    android:layout_marginTop="25.4dp"/>
+                    android:paddingRight="12.6dp"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/text_hint"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="14sp" />
 
                 <View
+                    android:id="@+id/activity_signup_username_redring"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
-                    android:layout_marginTop="25.2dp"
                     android:layout_marginBottom="12.6dp"
+                    android:layout_marginTop="25.2dp"
                     android:background="@drawable/edit_text_red_ring"
                     android:focusable="false"
-                    android:visibility="invisible"
-                    android:id="@+id/activity_signup_username_redring"/>
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/activity_signup_password_help"
-                    android:gravity="left|center_vertical"
-                    android:textSize="10sp"
-                    android:layout_below="@id/activity_signup_username_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/activity_signup_password_help"
-                    android:textColor="@color/disabled_hint_color"
+                    android:layout_below="@id/activity_signup_username_edittext"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left|center_vertical"
                     android:paddingLeft="6.3dp"
                     android:paddingRight="6.3dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"/>
+                    android:text="@string/activity_signup_password_help"
+                    android:textColor="@color/disabled_hint_color"
+                    android:textSize="10sp" />
 
                 <EditText
                     android:id="@+id/activity_signup_password_edittext"
-                    android:layout_below="@id/activity_signup_password_help"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
+                    android:layout_below="@id/activity_signup_password_help"
+                    android:layout_marginBottom="6.3dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
                     android:hint="@string/activity_signup_password_hint"
                     android:inputType="textPassword"
+                    android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:background="@drawable/bg_edittext"
                     android:selectAllOnFocus="true"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:ems="10"
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
-                    android:textSize="14sp"
-                    android:paddingLeft="12.6dp"
-                    android:layout_marginBottom="6.3dp"/>
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/activity_signup_repassword_edittext"
-                    android:layout_below="@id/activity_signup_password_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
-                    android:selectAllOnFocus="true"
+                    android:layout_below="@id/activity_signup_password_edittext"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
                     android:hint="@string/activity_signup_password_confirm_hint"
                     android:inputType="textPassword"
+                    android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:background="@drawable/bg_edittext"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:ems="10"
+                    android:selectAllOnFocus="true"
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
-                    android:textSize="14sp"
-                    android:paddingLeft="12.6dp"
-                    android:layout_marginTop="3dp"/>
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="14sp" />
 
                 <LinearLayout
+                    android:id="@+id/activity_signup_withdrawal_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_below="@id/activity_signup_repassword_edittext"
-                    android:id="@+id/activity_signup_withdrawal_layout"
                     android:layout_marginTop="18.9dp"
+                    android:orientation="horizontal"
                     android:weightSum="2">
 
                     <TextView
                         android:id="@+id/activity_signup_withdrawal_textview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/activity_signup_pin_label"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:layout_weight="1"/>
+                        android:textSize="14sp" />
 
                     <EditText
                         android:id="@+id/activity_signup_withdrawal_edittext"
-                        android:textCursorDrawable="@drawable/bold_cursor_white"
                         android:layout_width="match_parent"
                         android:layout_height="37.8dp"
-                        android:textColor="@android:color/white"
-                        android:paddingLeft="12.6dp"
-                        android:paddingRight="12.6dp"
-                        android:selectAllOnFocus="true"
-                        android:password="true"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:gravity="center"
+                        android:hint="@string/activity_signup_pin_hint"
                         android:inputType="phone"
                         android:maxLength="4"
-                        android:background="@drawable/bg_edittext"
-                        android:layout_weight="1"
-                        android:hint="@string/activity_signup_pin_hint"
+                        android:paddingLeft="12.6dp"
+                        android:paddingRight="12.6dp"
+                        android:password="true"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@android:color/white"
                         android:textColorHint="@color/text_hint"
-                        android:textSize="14sp"
-                        android:gravity="center" />
+                        android:textCursorDrawable="@drawable/bold_cursor_white"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -182,31 +182,31 @@
                     style="@style/BlackDropShadow"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
-                    android:text="@string/string_next_step"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="30dp"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/white"
                     android:layout_below="@id/activity_signup_withdrawal_layout"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/btn_blue"/>
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/btn_blue"
+                    android:text="@string/string_next_step"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/activity_signup_popup_layout"
-                android:animateLayoutChanges="true"
                 android:layout_width="289.8dp"
                 android:layout_height="119.7dp"
-                android:padding="6.3dp"
-                android:paddingTop="9.45dp"
-                android:orientation="vertical"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:animateLayoutChanges="true"
                 android:background="@drawable/password_popup"
-                android:weightSum="6"
-                android:visibility="gone">
+                android:orientation="vertical"
+                android:padding="6.3dp"
+                android:paddingTop="9.45dp"
+                android:visibility="gone"
+                android:weightSum="6">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -220,14 +220,15 @@
                         android:layout_height="18.9dp"
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
-                        android:src="@drawable/red_x"/>
+                        android:src="@drawable/red_x" />
+
                     <TextView
                         android:id="@+id/activity_signup_switch_text_1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_uppercase"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -242,14 +243,15 @@
                         android:layout_height="18.9dp"
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
-                        android:src="@drawable/red_x"/>
+                        android:src="@drawable/red_x" />
+
                     <TextView
+                        android:id="@+id/activity_signup_switch_text_2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/activity_signup_switch_text_2"
                         android:text="@string/activity_signup_popup_lowercase"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -264,14 +266,15 @@
                         android:layout_height="18.9dp"
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
-                        android:src="@drawable/red_x"/>
+                        android:src="@drawable/red_x" />
+
                     <TextView
+                        android:id="@+id/activity_signup_switch_text_3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/activity_signup_switch_text_3"
                         android:text="@string/activity_signup_popup_number"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -286,14 +289,15 @@
                         android:layout_height="18.9dp"
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
-                        android:src="@drawable/red_x"/>
+                        android:src="@drawable/red_x" />
+
                     <TextView
+                        android:id="@+id/activity_signup_switch_text_4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/activity_signup_switch_text_4"
                         android:text="@string/activity_signup_popup_specialcharacter"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -308,33 +312,36 @@
                         android:layout_height="18.9dp"
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
-                        android:src="@drawable/red_x"/>
+                        android:src="@drawable/red_x" />
+
                     <TextView
+                        android:id="@+id/activity_signup_switch_text_5"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/activity_signup_switch_text_5"
                         android:text="@string/activity_signup_popup_length"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/activity_signup_time_textview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="37.8dp"
                     android:layout_weight="1"
+                    android:paddingLeft="37.8dp"
                     android:text="Time to crack: -- seconds"
-                    android:textSize="12sp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </RelativeLayout>
     </ScrollView>
 
-    <View android:layout_width="0dp"
+    <View
+        android:id="@+id/activity_signup_dummy_focus"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:id="@+id/activity_signup_dummy_focus"/>
+        android:focusableInTouchMode="true" />
 
 </RelativeLayout>

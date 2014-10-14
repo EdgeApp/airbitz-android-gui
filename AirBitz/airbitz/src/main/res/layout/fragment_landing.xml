@@ -3,69 +3,69 @@
     android:id="@+id/fragment_landing_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_app"
     tools:context="com.airbitz.activities.LandingActivity"
-    tools:ignore="MergeRootFrame"
-    android:background="@drawable/bg_app">
+    tools:ignore="MergeRootFrame">
 
     <LinearLayout
         android:id="@+id/fragment_landing_main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         android:orientation="vertical"
-        android:visibility="visible"
-        android:background="@android:color/transparent">
+        android:visibility="visible">
 
         <ImageView
+            android:id="@+id/fragment_landing_logo_imageview"
             android:layout_width="wrap_content"
             android:layout_height="100.8dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="6.3dp"
             android:contentDescription="@string/fragment_landing_logo_description"
-            android:src="@drawable/img_logo"
-            android:id="@+id/fragment_landing_logo_imageview" />
+            android:src="@drawable/img_logo" />
 
         <TextView
+            android:id="@+id/fragment_landing_detail_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/fragment_landing_detail_textview"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:layout_marginTop="31.5dp"
             android:layout_marginBottom="31.5dp"
+            android:layout_marginTop="31.5dp"
+            android:gravity="center"
+            android:text="@string/fragment_landing_detail_text"
             android:textColor="@android:color/white"
-            android:text="@string/fragment_landing_detail_text"/>
+            android:textSize="15sp" />
 
 
         <LinearLayout
+            android:id="@+id/fragment_landing_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:id="@+id/fragment_landing_swipe_layout"
             android:layout_marginBottom="31.5dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/fragment_landing_arrowleft_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/fragment_landing_arrowleft_imageview"
-                android:src="@drawable/ico_arrow_left"
-                android:contentDescription="@string/fragment_landing_arrow_description"/>
+                android:contentDescription="@string/fragment_landing_arrow_description"
+                android:src="@drawable/ico_arrow_left" />
 
             <TextView
+                android:id="@+id/fragment_landing_swipe_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/fragment_landing_swipe_textview"
                 android:padding="6.3dp"
-                android:textSize="12sp"
+                android:text="@string/fragment_landing_swipe_text"
                 android:textColor="@android:color/white"
-                android:text="@string/fragment_landing_swipe_text"/>
+                android:textSize="12sp" />
 
             <ImageView
+                android:id="@+id/fragment_landing_arrowright_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ico_arrow_right"
-                android:id="@+id/fragment_landing_arrowright_imageview"
-                android:contentDescription="@string/fragment_landing_arrow_description"/>
+                android:contentDescription="@string/fragment_landing_arrow_description"
+                android:src="@drawable/ico_arrow_right" />
         </LinearLayout>
 
 
@@ -79,91 +79,92 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <EditText
+                    android:id="@+id/fragment_landing_username_edittext"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
-                    android:inputType="textVisiblePassword|textNoSuggestions"
-                    android:hint="@string/fragment_landing_username_hint"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="6.3dp"
+                    android:background="@drawable/bg_edittext"
                     android:ems="10"
+                    android:hint="@string/fragment_landing_username_hint"
+                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:nextFocusDown="@+id/fragment_landing_password_edittext"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
-                    android:nextFocusDown="@+id/fragment_landing_password_edittext"
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="14sp"
-                    android:id="@+id/fragment_landing_username_edittext"
-                    android:paddingLeft="12.6dp"
-                    android:paddingRight="12.6dp"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_edittext"/>
+                    android:textSize="14sp" />
 
                 <EditText
+                    android:id="@+id/fragment_landing_password_edittext"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
-                    android:inputType="textPassword|textNoSuggestions"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="6.3dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
+                    android:gravity="center_vertical"
                     android:hint="@string/fragment_landing_password_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword|textNoSuggestions"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
+                    android:selectAllOnFocus="true"
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:ems="10"
-                    android:selectAllOnFocus="true"
-                    android:textSize="14sp"
-                    android:imeOptions="actionDone"
-                    android:id="@+id/fragment_landing_password_edittext"
-                    android:layout_marginBottom="6.3dp"
-                    android:paddingLeft="12.6dp"
-                    android:paddingRight="12.6dp"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bg_edittext"/>
+                    android:textSize="14sp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
-                    android:layout_width="245.7dp"
-                    android:layout_height="44.1dp"
-                    android:text="@string/fragment_landing_signin_button"
-                    android:textSize="15sp"
-                    android:textColor="#DDFFFFFF"
                     android:id="@+id/fragment_landing_signin_button"
-                    android:shadowDy="4"
-                    android:shadowColor="#999999"
-                    android:shadowRadius="1"
-                    android:layout_marginTop="6.3dp"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/btn_green"/>
-
-                <com.airbitz.objects.HighlightOnPressButton
                     android:layout_width="245.7dp"
                     android:layout_height="44.1dp"
-                    android:text="@string/fragment_landing_signup_button"
-                    android:textSize="15sp"
-                    android:textColor="#DDFFFFFF"
-                    android:id="@+id/fragment_landing_signup_button"
-                    android:shadowDy="4"
-                    android:shadowColor="#999999"
-                    android:shadowRadius="1"
-                    android:layout_marginTop="6.3dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
-                    android:background="@drawable/btn_blue"/>
+                    android:layout_marginTop="6.3dp"
+                    android:background="@drawable/btn_green"
+                    android:shadowColor="#999999"
+                    android:shadowDy="4"
+                    android:shadowRadius="1"
+                    android:text="@string/fragment_landing_signin_button"
+                    android:textColor="#DDFFFFFF"
+                    android:textSize="15sp" />
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_landing_signup_button"
+                    android:layout_width="245.7dp"
+                    android:layout_height="44.1dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp"
+                    android:background="@drawable/btn_blue"
+                    android:shadowColor="#999999"
+                    android:shadowDy="4"
+                    android:shadowRadius="1"
+                    android:text="@string/fragment_landing_signup_button"
+                    android:textColor="#DDFFFFFF"
+                    android:textSize="15sp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_forgot_password_button"
-                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="@drawable/bg_btn_blue_stretch"
+                    android:drawableRight="@drawable/ico_forgot"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:text="@string/fragment_landing_forgot_text"
-                    android:paddingRight="6.3dp"
                     android:paddingLeft="6.3dp"
-                    android:textSize="11sp"
+                    android:paddingRight="6.3dp"
+                    android:text="@string/fragment_landing_forgot_text"
                     android:textColor="@android:color/white"
-                    android:drawableRight="@drawable/ico_forgot"
-                    android:background="@drawable/bg_btn_blue_stretch" />
+                    android:textSize="11sp"
+                    android:visibility="visible" />
             </LinearLayout>
         </ScrollView>
 

@@ -20,7 +20,8 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
 
     private Context mContext;
     private List<String> mCurrencies;
-    public CurrencyAdapter(Context context, List<String> currencies){
+
+    public CurrencyAdapter(Context context, List<String> currencies) {
         super(context, R.layout.item_currency_spinner, currencies);
         mContext = context;
         mCurrencies = currencies;
@@ -32,7 +33,7 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent){
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.item_currency_spinner_dropdown, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);

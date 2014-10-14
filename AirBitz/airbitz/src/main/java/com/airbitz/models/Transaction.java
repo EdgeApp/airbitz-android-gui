@@ -7,7 +7,16 @@ import com.airbitz.api.CoreAPI;
  */
 public class Transaction {
     public static final String TXID = "com.airbitz.Transaction.TXID";
-
+    long mAmountFeesAirbitzSatoshi;
+    long mAmountFeesMinersSatoshi;
+    /**
+     * miners fees in satoshi
+     */
+    long mBizId;
+    /**
+     * payee business-directory id (0 otherwise)
+     */
+    int mAttributes;
     private String mWalletUUID;
     private String mWalletName;
     private String mID;
@@ -26,14 +35,10 @@ public class Transaction {
     private long mMinerFees;
     private long mABFees;
     private long mBalance;
-    long mAmountFeesAirbitzSatoshi;
-    long mAmountFeesMinersSatoshi;  /** miners fees in satoshi */
-    long mBizId; /** payee business-directory id (0 otherwise) */
-    int mAttributes;
 
     public Transaction() {
         mID = "";
-        mMalleableID="";
+        mMalleableID = "";
         mWalletUUID = "";
         mWalletName = "";
         mName = "";
@@ -44,7 +49,7 @@ public class Transaction {
         mAmountFeesAirbitzSatoshi = 0;
         mAmountFeesMinersSatoshi = 0;
         mBizId = 0;
-        mAttributes=0;
+        mAttributes = 0;
     }
 
     public Transaction(String walletUUID, String id, long date, String name, long satoshi, String category,
@@ -60,74 +65,184 @@ public class Transaction {
         mBizId = bizID;
         mAmountFeesAirbitzSatoshi = ABFees;
         mAmountFeesMinersSatoshi = minersFees;
-        mAttributes=0;
+        mAttributes = 0;
     }
 
-    public String getWalletUUID() { return mWalletUUID; }
-    public void setWalletUUID(String uuid) { this.mWalletUUID = uuid; }
+    public String getWalletUUID() {
+        return mWalletUUID;
+    }
 
-    public String getWalletName() { return mWalletName; }
-    public void setWalletName(String name) { this.mWalletName = name; }
+    public void setWalletUUID(String uuid) {
+        this.mWalletUUID = uuid;
+    }
 
-    public String getID() { return mID; }
-    public void setID(String mID) { this.mID = mID; }
+    public String getWalletName() {
+        return mWalletName;
+    }
 
-    public String getmMalleableID() { return mMalleableID; }
-    public void setmMalleableID(String mID) { this.mMalleableID = mID; }
+    public void setWalletName(String name) {
+        this.mWalletName = name;
+    }
 
-    public long getDate() { return mDate; }
-    public void setDate(long mDate) { this.mDate = mDate; }
+    public String getID() {
+        return mID;
+    }
 
-    public String getName() { return mName; }
-    public void setName(String mName) { this.mName = mName; }
+    public void setID(String mID) {
+        this.mID = mID;
+    }
 
-    public String getAddress() { return mAddress; }
-    public void setAddress(String mAddress) { this.mAddress = mAddress; }
+    public String getmMalleableID() {
+        return mMalleableID;
+    }
 
-    public String getCategory() { return mCategory; }
-    public void setCategory(String mCategory) { this.mCategory = mCategory; }
+    public void setmMalleableID(String mID) {
+        this.mMalleableID = mID;
+    }
 
-    public String getNotes() { return mNotes; }
-    public void setNotes(String mNotes) { this.mNotes = mNotes; }
+    public long getDate() {
+        return mDate;
+    }
 
-    public CoreAPI.TxOutput[] getOutputs() { return mOutputs; }
-    public void setOutputs(CoreAPI.TxOutput[] outputs) { this.mOutputs = outputs; }
+    public void setDate(long mDate) {
+        this.mDate = mDate;
+    }
 
-    public boolean isConfirmed() { return mConfirmed; }
-    public void setConfirmed(boolean mConfirmed) { this.mConfirmed = mConfirmed; }
+    public String getName() {
+        return mName;
+    }
 
-    public boolean isSyncing() { return mSyncing; }
-    public void setSyncing(boolean syncing) { this.mSyncing = syncing; }
+    public void setName(String mName) {
+        this.mName = mName;
+    }
 
-    public int getConfirmations() { return mConfirmations; }
-    public void setConfirmations(int mConfirmations) { this.mConfirmations = mConfirmations; }
+    public String getAddress() {
+        return mAddress;
+    }
 
-    public int getAttributes() { return mAttributes; }
-    public void setAttributes(int mAttributes) { this.mAttributes = mAttributes; }
+    public void setAddress(String mAddress) {
+        this.mAddress = mAddress;
+    }
 
-    public long getAmountSatoshi() { return mAmountSatoshi; }
-    public void setAmountSatoshi(long mAmountSatoshi) { this.mAmountSatoshi = mAmountSatoshi; }
+    public String getCategory() {
+        return mCategory;
+    }
 
-    public double getAmountFiat() { return mAmountFiat; }
-    public void setAmountFiat(double mAmountFiat) { this.mAmountFiat = mAmountFiat; }
+    public void setCategory(String mCategory) {
+        this.mCategory = mCategory;
+    }
 
-    public long getMinerFees() { return mMinerFees; }
-    public void setMinerFees(long mMinerFees) { this.mMinerFees = mMinerFees; }
+    public String getNotes() {
+        return mNotes;
+    }
 
-    public long getABFees() { return mABFees; }
-    public void setABFees(long mABFees) { this.mABFees = mABFees; }
+    public void setNotes(String mNotes) {
+        this.mNotes = mNotes;
+    }
 
-    public long getBalance() { return mBalance; }
-    public void setBalance(long mBalance) { this.mBalance = mBalance; }
+    public CoreAPI.TxOutput[] getOutputs() {
+        return mOutputs;
+    }
 
-    public long getmAmountFeesAirbitzSatoshi() { return mAmountFeesAirbitzSatoshi; }
-    public void setmAmountFeesAirbitzSatoshi(long mAmountFeesAirbitzSatoshi) { this.mAmountFeesAirbitzSatoshi = mAmountFeesAirbitzSatoshi; }
+    public void setOutputs(CoreAPI.TxOutput[] outputs) {
+        this.mOutputs = outputs;
+    }
 
-    public long getmAmountFeesMinersSatoshi() { return mAmountFeesMinersSatoshi; }
-    public void setmAmountFeesMinersSatoshi(long mAmountFeesMinersSatoshi) { this.mAmountFeesMinersSatoshi = mAmountFeesMinersSatoshi; }
+    public boolean isConfirmed() {
+        return mConfirmed;
+    }
 
-    public long getmBizId() { return mBizId; }
-    public void setmBizId(long mBizId) { this.mBizId = mBizId; }
+    public void setConfirmed(boolean mConfirmed) {
+        this.mConfirmed = mConfirmed;
+    }
+
+    public boolean isSyncing() {
+        return mSyncing;
+    }
+
+    public void setSyncing(boolean syncing) {
+        this.mSyncing = syncing;
+    }
+
+    public int getConfirmations() {
+        return mConfirmations;
+    }
+
+    public void setConfirmations(int mConfirmations) {
+        this.mConfirmations = mConfirmations;
+    }
+
+    public int getAttributes() {
+        return mAttributes;
+    }
+
+    public void setAttributes(int mAttributes) {
+        this.mAttributes = mAttributes;
+    }
+
+    public long getAmountSatoshi() {
+        return mAmountSatoshi;
+    }
+
+    public void setAmountSatoshi(long mAmountSatoshi) {
+        this.mAmountSatoshi = mAmountSatoshi;
+    }
+
+    public double getAmountFiat() {
+        return mAmountFiat;
+    }
+
+    public void setAmountFiat(double mAmountFiat) {
+        this.mAmountFiat = mAmountFiat;
+    }
+
+    public long getMinerFees() {
+        return mMinerFees;
+    }
+
+    public void setMinerFees(long mMinerFees) {
+        this.mMinerFees = mMinerFees;
+    }
+
+    public long getABFees() {
+        return mABFees;
+    }
+
+    public void setABFees(long mABFees) {
+        this.mABFees = mABFees;
+    }
+
+    public long getBalance() {
+        return mBalance;
+    }
+
+    public void setBalance(long mBalance) {
+        this.mBalance = mBalance;
+    }
+
+    public long getmAmountFeesAirbitzSatoshi() {
+        return mAmountFeesAirbitzSatoshi;
+    }
+
+    public void setmAmountFeesAirbitzSatoshi(long mAmountFeesAirbitzSatoshi) {
+        this.mAmountFeesAirbitzSatoshi = mAmountFeesAirbitzSatoshi;
+    }
+
+    public long getmAmountFeesMinersSatoshi() {
+        return mAmountFeesMinersSatoshi;
+    }
+
+    public void setmAmountFeesMinersSatoshi(long mAmountFeesMinersSatoshi) {
+        this.mAmountFeesMinersSatoshi = mAmountFeesMinersSatoshi;
+    }
+
+    public long getmBizId() {
+        return mBizId;
+    }
+
+    public void setmBizId(long mBizId) {
+        this.mBizId = mBizId;
+    }
 
 
 }

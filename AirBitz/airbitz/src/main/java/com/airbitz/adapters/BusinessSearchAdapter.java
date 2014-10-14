@@ -20,13 +20,12 @@ import java.util.List;
  */
 public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Filterable {
 
+    private static int sGrayText;
+    private static int sGreenText;
     private Context mContext;
     private List<Business> mLocationValue;
 
-    private static int sGrayText;
-    private static int sGreenText;
-
-    public BusinessSearchAdapter(Context context, List<Business> locationValue){
+    public BusinessSearchAdapter(Context context, List<Business> locationValue) {
         super(context, R.layout.item_listview_location, locationValue);
         mContext = context;
         mLocationValue = locationValue;
@@ -45,15 +44,15 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
         return mLocationValue.get(position);
     }
 
-    public String getItemValue(int position){
+    public String getItemValue(int position) {
         return mLocationValue.get(position).getName();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
 
         final Business business = mLocationValue.get(position);
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);

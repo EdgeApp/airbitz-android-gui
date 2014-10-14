@@ -86,15 +86,7 @@
   <string name="category_or_business_name">
     Nombre del Negocio o Categoría
   </string>
-  <string name="address">
-    Dirección
-  </string>
-  <string name="phone_number">
-    Número de teléfono
-  </string>
-  <string name="web">
-    Web
-  </string>
+
   <string name="your_location">
     Su ubicación
   </string>
@@ -107,6 +99,16 @@
   <string name="no_location_found">
     No se puede obtener una localización actual. Por favor, activa los servicios de localización.
   </string>
+
+    <string name="fragment_business_retrieving_data">Recuperando datos…</string>
+    <string name="fragment_business_cannot_retrieve_data">No se pueden recuperar los datos</string>
+    <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
+
+    <string name="fragment_directory_detail_getting_venue_data">Obtener datos venue…</string>
+    <string name="fragment_directory_detail_timeout_retrieving_data">Tiempo de espera de la obtención de datos…</string>
+    <string name="fragment_directory_detail_directions">Direcciones</string>
+    <string name="fragment_directory_detail_discount">"Descuento "</string>
+
   <string name="server_error_account_already_exists">
     Esta cuenta ya existe.
   </string>
@@ -133,6 +135,9 @@
   <string name="server_error_insufficient_funds">
     La insuficiencia de fondos
   </string>
+
+    <string name="fragment_send_send_bitcoin_invalid">Dirección bitcoin no válida</string>
+
   <string name="server_error_synchronizing">
     Sincronización con la red.
   </string>
@@ -169,20 +174,11 @@
   <string name="fragment_landing_forgot_text">
     Olvidé mi contraseña
   </string>
-  <string name="fragment_landing_forgot_image_description">
-    Flecha Botón
-  </string>
   <string name="fragment_forgot_no_username_title">
     Nombre de Usuario Obligatorio
   </string>
-  <string name="fragment_forgot_no_username_details">
-    Por favor, introduzca un Nombre de Usuario
-  </string>
   <string name="fragment_forgot_no_account_title">
     No hay preguntas de recuperación
-  </string>
-  <string name="fragment_forgot_no_account_message">
-    No hemos podido encontrar tu cuenta. Asegúrese de que su nombre de usuario es correcta.
   </string>
   <string name="fragment_forgot_no_recovery_questions_title">
     No hay preguntas de recuperación
@@ -208,9 +204,6 @@
   <string name="activity_change_pin_failed">
     Cambiar PIN Error
   </string>
-  <string name="activity_change_recovery_failed">
-    Preguntas Cambiar recuperación fracasaron
-  </string>
   <string name="activity_signup_title_change_password">
     Cambiar la contraseña
   </string>
@@ -219,9 +212,6 @@
   </string>
   <string name="activity_signup_title_change_pin">
     Cambie Retiro PIN
-  </string>
-  <string name="activity_signup_button_next">
-    Siguiente Paso
   </string>
   <string name="activity_signup_username_hint">
     Nombre de Usuario
@@ -289,15 +279,6 @@
   <string name="activity_signup_password_change_bad">
     La contraseña no se podía cambiar.
   </string>
-  <string name="activity_signup_password_change_via_questions_good">
-    Contraseña cambiada con éxito.
-  </string>
-  <string name="activity_signup_password_change_via_questions_bad">
-    La contraseña no se podía cambiar.
-  </string>
-  <string name="activity_signup_change_bad">
-    Cambio sin éxito.Try again.Inténtalo de nuevo.
-  </string>
   <string name="activity_signup_enter_username">
     Debe introducir un nombre de usuario
   </string>
@@ -364,9 +345,6 @@
   <string name="activity_recovery_first_wallet_name">
     Mi billetera
   </string>
-  <string name="activity_recovery_alert_title">
-    Alerta
-  </string>
   <string name="activity_recovery_answer_questions_alert">
     Usted debe contestar todas las seis preguntas. Asegúrese de que sus respuestas sean lo suficientemente largos.
   </string>
@@ -394,14 +372,15 @@
   <string name="activity_recovery_error_save_failed">
     Respuestas Guardar recuperación fracasaron
   </string>
+
+    <string name="activity_recovery_error_wrong_answers_title">Respuestas Incorrectas</string>
+    <string name="activity_recovery_error_wrong_answers_message">Las respuestas no son correctos. Por favor, inténtelo de nuevo.</string>
+
   <string name="activity_forgot_title">
     Olvidé mi contraseña
   </string>
   <string name="activity_forgot_submit">
     Enviar
-  </string>
-  <string name="activity_forgot_no_questions">
-    Usted ha omitido preguntas de recuperación de contraseña cuando creó su cuenta. No se puede recuperar la contraseña de esta manera.
   </string>
   <string name="settings_title">
     Ajustes
@@ -451,14 +430,8 @@
   <string name="settings_edit_nick_name">
     Apodo (opcional)
   </string>
-  <string name="settings_general_title">
-    GENERAL
-  </string>
   <string name="settings_title_auto_logoff">
-    Registro automático después
-  </string>
-  <string name="settings_title_language">
-    Idioma
+    Cerrar la sesión en
   </string>
   <string name="settings_title_merchant_mode">
     Modo Merchant
@@ -487,12 +460,6 @@
   <string name="settings_button_logout">
     Salir
   </string>
-  <string name="settings_button_cancel">
-    Cancelar
-  </string>
-  <string name="settings_button_done">
-    Done
-  </string>
   <string name="settings_categories_add_new">
     Crear Nuevo
   </string>
@@ -508,15 +475,18 @@
   <string name="settings_categories_exchange">
     Cambio:
   </string>
-  <string name="dialog_days">
-    Días
-  </string>
-  <string name="dialog_hours">
-    Horas
-  </string>
-  <string name="dialog_mins">
-    Minutos
-  </string>
+
+    <string name="settings_days">Día</string>
+    <string name="settings_hours">Hora</string>
+    <string name="settings_minutes">Minuto</string>
+
+    <string name="fragment_category_cancel_title">Cancelar los Cambios</string>
+    <string name="fragment_category_cancel_message">¿Seguro que quieres cancelar cualquier cambio que haya hecho?</string>
+    <string name="fragment_category_income">Ingresos:</string>
+    <string name="fragment_category_expense">Gastos:</string>
+    <string name="fragment_category_transfer">Transferencia:</string>
+    <string name="fragment_category_exchange">Cambio:</string>
+
   <string name="dialog_title">
     Ajuste automático de la hora de cierre de sesión
   </string>
@@ -552,9 +522,6 @@
   </string>
   <string name="fragment_send_failure_title">
     Enviar fracaso
-  </string>
-  <string name="fragment_send_failure_insufficient_funds">
-    Usted no tiene suficientes fondos para enviar esta transacción.
   </string>
   <string name="send_confirmation_title">
     Enviar Confirmación
@@ -637,6 +604,9 @@
   <string name="request_amount_hint">
     Cantidad (Opcional)
   </string>
+
+    <string name="request_invalid_amount">cantidad no válida</string>
+
   <string name="request_qr_email_title">
     Airbitz Bitcoin Solicitud
   </string>
@@ -661,20 +631,11 @@
   <string name="transaction_details_advanced_title">
     Detalles Avanzada
   </string>
-  <string name="transaction_details_to_title">
-    Para:
-  </string>
   <string name="transaction_details_category_title">
     Categoría
   </string>
   <string name="transaction_details_notes_title">
     Notas
-  </string>
-  <string name="transaction_details_category_hint">
-    Añadir categoría
-  </string>
-  <string name="transaction_details_notes_hint">
-    Añadir nota de operación
   </string>
   <string name="transaction_details_to">
    "Para: "
@@ -683,27 +644,16 @@
     "De: "
   </string>
 
+    <string name="transaction_details_payee_hint">Ingrese Beneficiario</string>
     <string name="transaction_details_advanced_txid">"Transacción ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
     <string name="transaction_details_advanced_source">"Fuente"</string>
     <string name="transaction_details_advanced_destination">"Destino"</string>
     <string name="transaction_details_advanced_miner_fee">"Tarifa Minero"</string>
-
+    <string name="transaction_details_advanced_fee">" tarifa"</string>
 
   <string name="export_title">
     Exportación
-  </string>
-  <string name="export_account_title">
-    Cuenta:
-  </string>
-  <string name="export_account_button_hint">
-    Cuenta:
-  </string>
-  <string name="export_account_from_title">
-    Desde:
-  </string>
-  <string name="export_account_to_title">
-    Para:
   </string>
   <string name="export_account_this_week">
     Esta semana
@@ -716,9 +666,6 @@
   </string>
   <string name="export_account_last_month">
     El mes pasado
-  </string>
-  <string name="export_account_this_year">
-    Este año
   </string>
   <string name="export_account_yesterday">
     Ayer
@@ -783,6 +730,10 @@
   <string name="export_saving_option_no_email_apps">
     No hay aplicaciones de correo electrónico instalados
   </string>
+
+    <string name="export_saving_option_private_seed">Semilla privada</string>
+    <string name="export_saving_option_pick_date">Elige una Fecha</string>
+
   <string name="offline_wallet_title">
     Desconectado Monedero
   </string>
@@ -798,36 +749,23 @@
   <string name="offline_wallet_print_button_title">
     Almacenamiento externo / Imprimir
   </string>
-  <string name="received_success_title">
+  <string name="received_success_sending_title">
     Enviar Bitcoin
   </string>
-  <string name="received_success_sending_title">
-    Enviando…
+  <string name="received_success_sending">
+    Enviando
   </string>
-  <string name="received_success_received_title">
-    Recibido!
+  <string name="received_success_receiving">
+    Recibir
   </string>
-  <string name="question">
-    Pregunta
-  </string>
-  <string name="error_invalid_recovery_title">
-    Regístrese Error
-  </string>
-  <string name="error_invalid_username_details">
-    Nombre de usuario debe tener al menos 3 caracteres
-  </string>
-  <string name="error_invalid_password_details_start">
-    Tu contraseña no es lo suficientemente fuerte.
-  </string>
-  <string name="error_invalid_confirmation_details">
-    Las contraseñas no coinciden
-  </string>
-  <string name="error_invalid_pin_details">
-    Retirada PIN debe tener 4 dígitos
-  </string>
-  <string name="error_field_required">
-    Este campo es obligatorio
-  </string>
+
+    <!-- Strings for Contact Picker fragment -->
+    <string name="fragment_contact_picker_title_email">Email Búsqueda</string>
+    <string name="fragment_contact_picker_title_sms">SMS Búsqueda</string>
+
+    <!-- Strings for MapBusinessDirectory fragment -->
+    <string name="fragment_map_directory_unable_create_map">¡Lo siento! incapaz de crear mapas, buscar actualizaciones a Google Play Services</string>
+
   <string name="error_invalid_credentials">
     No válida Nombre de usuario o contraseña
   </string>
@@ -836,9 +774,6 @@
   </string>
   <string name="error_invalid_wallet_name_description">
     Debe proporcionar un nombre de carpeta
-  </string>
-  <string name="title_activity_base">
-    BaseActivity
   </string>
   <string name="remote_password_change_title">
     Contraseña cambió de forma remota
@@ -866,8 +801,5 @@
   </string>
   <string name="received_bitcoin_negative">
     Ignorar
-  </string>
-  <string name="hello_blank_fragment">
-    Hola fragmento en blanco
   </string>
 </resources>

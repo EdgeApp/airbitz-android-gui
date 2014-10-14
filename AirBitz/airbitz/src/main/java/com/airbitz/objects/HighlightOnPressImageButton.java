@@ -8,9 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-
-import com.airbitz.R;
 
 /**
  * Created by matt on 7/31/14.

@@ -17,7 +17,7 @@ public class MediaScannerWrapper implements MediaScannerConnection.MediaScannerC
     // filePath - where to scan;
     // mime type of media to scan i.e. "image/jpeg".
     // use "*/*" for any media
-    public MediaScannerWrapper(Context ctx, String filePath, String mime){
+    public MediaScannerWrapper(Context ctx, String filePath, String mime) {
         mPath = filePath;
         mMimeType = mime;
         mConnection = new MediaScannerConnection(ctx, this);

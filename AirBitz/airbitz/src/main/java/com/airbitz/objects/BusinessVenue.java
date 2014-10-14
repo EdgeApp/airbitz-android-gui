@@ -2,8 +2,6 @@ package com.airbitz.objects;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONObject;
-
 /**
  * Created on 2/14/14.
  */
@@ -22,7 +20,7 @@ public class BusinessVenue {
     private double mDistanceInMiles;
     private int mPhoneNumber;
 
-    public BusinessVenue(){
+    public BusinessVenue() {
 
     }
 
@@ -106,11 +104,11 @@ public class BusinessVenue {
         this.mPhoneNumber = mPhoneNumber;
     }
 
-    public void setLocation(LatLng mLocation) {
-        this.mLocation = mLocation;
-    }
-
     public LatLng getLocation() {
         return mLocation;
+    }
+
+    public void setLocation(LatLng mLocation) {
+        this.mLocation = mLocation;
     }
 }

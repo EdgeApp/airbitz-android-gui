@@ -47,7 +47,7 @@ public class ResizableImageView extends ImageView {
         protected int _disabledAlpha = 100;
 
         public SAutoBgButtonBackgroundDrawable(Drawable d) {
-            super(new Drawable[] { d });
+            super(new Drawable[]{d});
         }
 
         @Override

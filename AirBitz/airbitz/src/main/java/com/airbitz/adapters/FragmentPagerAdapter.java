@@ -19,13 +19,13 @@ package com.airbitz.adapters;
  * limitations under the License.
  */
 
-        import android.app.Fragment;
-        import android.app.FragmentManager;
-        import android.app.FragmentTransaction;
-        import android.os.Parcelable;
-        import android.support.v4.view.PagerAdapter;
-        import android.util.Log;
-        import android.view.View;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.util.Log;
+import android.view.View;
 
 /**
  * Implementation of {@link android.support.v4.view.PagerAdapter} that
@@ -42,6 +42,10 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
 
     public FragmentPagerAdapter(FragmentManager fm) {
         mFragmentManager = fm;
+    }
+
+    private static String makeFragmentName(int viewId, int index) {
+        return "android:switcher:" + viewId + ":" + index;
     }
 
     /**
@@ -84,13 +88,13 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
             mCurTransaction = mFragmentManager.beginTransaction();
         }
         if (DEBUG) Log.v(TAG, "Detaching item #" + position + ": f=" + object
-                + " v=" + ((Fragment)object).getView());
-        mCurTransaction.detach((Fragment)object);
+                + " v=" + ((Fragment) object).getView());
+        mCurTransaction.detach((Fragment) object);
     }
 
     @Override
     public void setPrimaryItem(View container, int position, Object object) {
-        Fragment fragment = (Fragment)object;
+        Fragment fragment = (Fragment) object;
         if (fragment != mCurrentPrimaryItem) {
             if (mCurrentPrimaryItem != null) {
                 mCurrentPrimaryItem.setMenuVisibility(false);
@@ -113,7 +117,7 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return ((Fragment)object).getView() == view;
+        return ((Fragment) object).getView() == view;
     }
 
     @Override
@@ -123,9 +127,5 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
 
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
-    }
-
-    private static String makeFragmentName(int viewId, int index) {
-        return "android:switcher:" + viewId + ":" + index;
     }
 }

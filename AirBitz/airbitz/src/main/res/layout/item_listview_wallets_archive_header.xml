@@ -3,22 +3,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
-    android:background="@drawable/bg_wallets_header" >
+    android:background="@drawable/bg_wallets_header">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fragment_wallets_list_archive_title"
-        android:textColor="@android:color/white"
-        android:gravity="center"
         android:layout_centerInParent="true"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:gravity="center"
+        android:text="@string/fragment_wallets_list_archive_title"
+        android:textColor="@android:color/white" />
 
     <ImageView
         android:layout_width="@dimen/three_mm"
         android:layout_height="@dimen/three_mm"
-        android:layout_marginRight="@dimen/two_mm"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/collapse_up"/>
+        android:layout_marginRight="@dimen/two_mm"
+        android:background="@drawable/collapse_up" />
 </RelativeLayout>

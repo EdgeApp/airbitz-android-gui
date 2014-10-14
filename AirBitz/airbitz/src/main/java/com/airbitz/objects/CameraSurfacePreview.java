@@ -42,56 +42,53 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
 
-public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.Callback{
-	
-	private SurfaceHolder mHolder;
-    private Camera mCamera;
+public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.Callback {
+
     Context mContext;
+    private SurfaceHolder mHolder;
+    private Camera mCamera;
     private List<Camera.Size> mSupportedPreviewSizes;
     private Camera.Size mPreviewSize;
 
-	public CameraSurfacePreview(Context context, Camera camera) {
-		super(context);
-		mCamera = camera;
-		mContext = context;
+    public CameraSurfacePreview(Context context, Camera camera) {
+        super(context);
+        mCamera = camera;
+        mContext = context;
         mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
 
-		// Install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed.
+        // Install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed.
         mHolder = getHolder();
         mHolder.addCallback(this);
-    
-	}
-	
 
-	@Override
-	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) { }
+    }
 
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		// The Surface has been created, now tell the camera where to draw the preview.
-        try 
-        {
+
+    @Override
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        // The Surface has been created, now tell the camera where to draw the preview.
+        try {
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
             mCamera.setParameters(parameters);
-        	mCamera.setPreviewDisplay(holder);
+            mCamera.setPreviewDisplay(holder);
             mCamera.setDisplayOrientation(90);
             mCamera.startPreview();
-        } 
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             Log.d("TAG", "Error setting camera preview: " + e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) { }
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -103,7 +100,7 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         }
 
         float ratio;
-        if(mPreviewSize.height >= mPreviewSize.width)
+        if (mPreviewSize.height >= mPreviewSize.width)
             ratio = (float) mPreviewSize.height / (float) mPreviewSize.width;
         else
             ratio = (float) mPreviewSize.width / (float) mPreviewSize.height;

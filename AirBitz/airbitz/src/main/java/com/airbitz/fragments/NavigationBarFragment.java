@@ -1,8 +1,7 @@
 package com.airbitz.fragments;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.airbitz.activities.NavigationActivity;
  */
 public class NavigationBarFragment extends Fragment {
 
+    private static ImageView mCurrentActivityButton;
     private ImageView mDirectoryButton;
     private ImageView mSendButton;
     private ImageView mRequestButton;
@@ -28,22 +28,16 @@ public class NavigationBarFragment extends Fragment {
     private ImageView mPopupRequestButton;
     private ImageView mPopupWalletButton;
     private ImageView mPopupSettingButton;
-    private static ImageView mCurrentActivityButton;
     private View mView, mButtons;
     private int selectedTab = 0;
 
     private LinearLayout mContainerLayout;
 
     private NavigationActivity mActivity;
-
-    //Callbacks for containing Activity to implement
-    public interface OnScreenSelectedListener {
-        public void onNavBarSelected(int position);
-    }
+    private int mLastTab = 0;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (NavigationActivity) getActivity();
     }
@@ -51,7 +45,7 @@ public class NavigationBarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(mView!=null)
+        if (mView != null)
             return mView;
 
         mView = inflater.inflate(R.layout.fragment_navigation_bar, container, false);
@@ -73,7 +67,7 @@ public class NavigationBarFragment extends Fragment {
 
         mButtons.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getPointerCount()>1)
+                if (event.getPointerCount() > 1)
                     return false;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
@@ -93,8 +87,6 @@ public class NavigationBarFragment extends Fragment {
         return mView;
     }
 
-    private int mLastTab = 0;
-
     private void checkTabs(MotionEvent ev) {
         selectedTab = getTabNum(ev);
         if (selectedTab == -1 || (selectedTab == mLastTab))
@@ -109,18 +101,17 @@ public class NavigationBarFragment extends Fragment {
     }
 
     private int getTabNum(MotionEvent ev) {
-        if(isOverView(ev.getRawX(), ev.getRawY(), mDirectoryButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mDirectoryButton)) {
             return 0;
-        } else if(isOverView(ev.getRawX(), ev.getRawY(), mRequestButton)) {
+        } else if (isOverView(ev.getRawX(), ev.getRawY(), mRequestButton)) {
             return 1;
-        } else if(isOverView(ev.getRawX(), ev.getRawY(), mSendButton)) {
+        } else if (isOverView(ev.getRawX(), ev.getRawY(), mSendButton)) {
             return 2;
-        } else if(isOverView(ev.getRawX(), ev.getRawY(), mWalletButton)) {
+        } else if (isOverView(ev.getRawX(), ev.getRawY(), mWalletButton)) {
             return 3;
-        } else if(isOverView(ev.getRawX(), ev.getRawY(), mSettingButton)) {
+        } else if (isOverView(ev.getRawX(), ev.getRawY(), mSettingButton)) {
             return 4;
-        }
-        else return -1;
+        } else return -1;
     }
 
     public void selectTab(int position) {
@@ -189,39 +180,40 @@ public class NavigationBarFragment extends Fragment {
 
     private void displayPopup(MotionEvent ev) {
         clearPopups();
-        if(isOverView(ev.getRawX(), ev.getRawY(), mDirectoryButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mDirectoryButton)) {
             mPopupDirectoryButton.setVisibility(View.VISIBLE);
         }
-        if(isOverView(ev.getRawX(), ev.getRawY(), mRequestButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mRequestButton)) {
             mPopupRequestButton.setVisibility(View.VISIBLE);
         }
-        if(isOverView(ev.getRawX(), ev.getRawY(), mSendButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mSendButton)) {
             mPopupSendButton.setVisibility(View.VISIBLE);
         }
-        if(isOverView(ev.getRawX(), ev.getRawY(), mWalletButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mWalletButton)) {
             mPopupWalletButton.setVisibility(View.VISIBLE);
         }
-        if(isOverView(ev.getRawX(), ev.getRawY(), mSettingButton)) {
+        if (isOverView(ev.getRawX(), ev.getRawY(), mSettingButton)) {
             mPopupSettingButton.setVisibility(View.VISIBLE);
         }
     }
 
     /**
      * Determines if given points are inside view
-     * @param x - x coordinate of point
-     * @param y - y coordinate of point
+     *
+     * @param x    - x coordinate of point
+     * @param y    - y coordinate of point
      * @param view - view object to compare
      * @return true if the points are within view bounds, false otherwise
      */
-    private boolean isOverView(float x, float y, View view){
+    private boolean isOverView(float x, float y, View view) {
         int location[] = new int[2];
         view.getLocationOnScreen(location);
         int viewX = location[0];
         int viewY = location[1];
 
         //point is inside view bounds
-        if(( x > viewX && x < (viewX + view.getWidth())) &&
-                ( y > viewY && y < (viewY + view.getHeight()))){
+        if ((x > viewX && x < (viewX + view.getWidth())) &&
+                (y > viewY && y < (viewY + view.getHeight()))) {
             return true;
         } else {
             return false;
@@ -254,5 +246,10 @@ public class NavigationBarFragment extends Fragment {
         super.onResume();
         initializeElements();
         selectTab(selectedTab);
+    }
+
+    //Callbacks for containing Activity to implement
+    public interface OnScreenSelectedListener {
+        public void onNavBarSelected(int position);
     }
 }

@@ -14,9 +14,7 @@ import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.objects.Contact;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tom on 9/25/14.
@@ -26,7 +24,7 @@ public class ContactSearchAdapter extends ArrayAdapter {
     private List<Contact> mContacts;
     private final Picasso mPicasso;
 
-    public ContactSearchAdapter(Context context, List<Contact> contacts){
+    public ContactSearchAdapter(Context context, List<Contact> contacts) {
         super(context, R.layout.item_listview_transaction_detail);
         mContext = context;
         mContacts = contacts;
@@ -43,12 +41,6 @@ public class ContactSearchAdapter extends ArrayAdapter {
         return mContacts.get(position);
     }
 
-    static class ViewHolderItem {
-        ImageView imageView;
-        TextView textView;
-        TextView infoView;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -60,9 +52,9 @@ public class ContactSearchAdapter extends ArrayAdapter {
 
         Contact contact = mContacts.get(position);
         textView.setText(contact.getName());
-        if(contact.getEmail()!=null) {
+        if (contact.getEmail() != null) {
             infoView.setText(contact.getEmail());
-        } else if (contact.getPhone()!=null) {
+        } else if (contact.getPhone() != null) {
             infoView.setText(contact.getPhone());
         }
 
@@ -70,5 +62,11 @@ public class ContactSearchAdapter extends ArrayAdapter {
             mPicasso.load(Uri.parse(contact.getThumbnail())).noFade().into(imageView);
         }
         return convertView;
+    }
+
+    static class ViewHolderItem {
+        ImageView imageView;
+        TextView textView;
+        TextView infoView;
     }
 }

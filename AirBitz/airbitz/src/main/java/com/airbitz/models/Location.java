@@ -11,31 +11,31 @@ public class Location {
     private double mLatitude;
     private double mLongitude;
 
-    public Location(double latitude, double longitude){
+    public Location(double latitude, double longitude) {
         mLatitude = latitude;
         mLongitude = longitude;
     }
 
-    public Location(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse != null){
+    public Location(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
             mLatitude = jsonResponse.getDouble("latitude");
             mLongitude = jsonResponse.getDouble("longitude");
         }
     }
 
-    public void setLatitude(double latitude){
-        mLatitude = latitude;
-    }
-
-    public void setLongitude(double longitude){
-        mLongitude = longitude;
-    }
-
-    public double getLatitude(){
+    public double getLatitude() {
         return mLatitude;
     }
 
-    public double getLongitude(){
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
+    }
+
+    public double getLongitude() {
         return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
     }
 }

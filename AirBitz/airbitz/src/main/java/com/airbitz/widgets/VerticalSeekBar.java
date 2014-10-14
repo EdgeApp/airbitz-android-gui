@@ -2,19 +2,17 @@ package com.airbitz.widgets;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
-import android.widget.TextView;
-
-import com.airbitz.R;
 
 /**
  * Created by tom on 5/6/14.
  */
 public class VerticalSeekBar extends SeekBar {
+
+    private OnSeekBarChangeListener onChangeListener;
+    private int lastProgress = 0;
 
     public VerticalSeekBar(Context context) {
         super(context);
@@ -45,13 +43,11 @@ public class VerticalSeekBar extends SeekBar {
         super.onDraw(c);
     }
 
-    private OnSeekBarChangeListener onChangeListener;
     @Override
-    public void setOnSeekBarChangeListener(OnSeekBarChangeListener onChangeListener){
+    public void setOnSeekBarChangeListener(OnSeekBarChangeListener onChangeListener) {
         this.onChangeListener = onChangeListener;
     }
 
-    private int lastProgress = 0;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
@@ -69,16 +65,20 @@ public class VerticalSeekBar extends SeekBar {
                 int progress = getMax() - (int) (getMax() * event.getY() / getHeight());
 
                 // Ensure progress stays within boundaries
-                if(progress < 0) {progress = 0;}
-                if(progress > getMax()) {progress = getMax();}
+                if (progress < 0) {
+                    progress = 0;
+                }
+                if (progress > getMax()) {
+                    progress = getMax();
+                }
                 setProgress(progress);  // Draw progress
-                if(progress != lastProgress) {
+                if (progress != lastProgress) {
                     // Only enact listener if the progress has actually changed
                     lastProgress = progress;
                     onChangeListener.onProgressChanged(this, progress, true);
                 }
 
-                onSizeChanged(getWidth(), getHeight() , 0, 0);
+                onSizeChanged(getWidth(), getHeight(), 0, 0);
                 setPressed(true);
                 setSelected(true);
                 break;
@@ -98,19 +98,19 @@ public class VerticalSeekBar extends SeekBar {
 
     public synchronized void setProgressAndThumb(int progress) {
         setProgress(progress);
-        onSizeChanged(getWidth(), getHeight() , 0, 0);
-        if(progress != lastProgress) {
+        onSizeChanged(getWidth(), getHeight(), 0, 0);
+        if (progress != lastProgress) {
             // Only enact listener if the progress has actually changed
             lastProgress = progress;
             onChangeListener.onProgressChanged(this, progress, true);
         }
     }
 
-    public synchronized void setMaximum(int maximum) {
-        setMax(maximum);
-    }
-
     public synchronized int getMaximum() {
         return getMax();
+    }
+
+    public synchronized void setMaximum(int maximum) {
+        setMax(maximum);
     }
 }

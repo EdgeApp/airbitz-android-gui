@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/category_page"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/category_page">
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
-        android:id="@+id/layout_header"
         android:background="@drawable/bg_dark_header">
 
         <ImageButton
+            android:id="@+id/button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:id="@+id/button_back"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
             android:padding="12.6dp"
-            android:visibility="invisible"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/transaction_details_category_title"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16sp"/>
+            android:text="@string/transaction_details_category_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <ImageButton
+            android:id="@+id/button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:id="@+id/button_help"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
             android:padding="12.6dp"
-            android:visibility="invisible"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
@@ -53,87 +53,89 @@
         android:id="@+id/layout_search_container"
         android:layout_width="match_parent"
         android:layout_height="75.6dp"
-        android:orientation="vertical"
         android:layout_below="@id/layout_header"
-        android:background="@drawable/bg_search_bar_new">
-        
+        android:background="@drawable/bg_search_bar_new"
+        android:orientation="vertical">
+
         <EditText
             android:id="@+id/search_field"
-            android:layout_marginTop="6.3dp"
             android:layout_width="match_parent"
             android:layout_height="28.35dp"
-            android:layout_marginRight="12.6dp"
             android:layout_marginLeft="12.6dp"
+            android:layout_marginRight="12.6dp"
+            android:layout_marginTop="6.3dp"
+            android:background="@drawable/rounded_edge"
+            android:drawableLeft="@drawable/ico_search"
+            android:drawablePadding="12.6dp"
             android:hint="@string/string_search"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@color/text_hint"
             android:imeOptions="actionDone"
             android:inputType="textAutoComplete|textNoSuggestions"
-            android:drawableLeft="@drawable/ico_search"
-            android:selectAllOnFocus="true"
-            android:drawablePadding="12.6dp"
-            android:textCursorDrawable="@drawable/bold_cursor"
             android:paddingLeft="12.6dp"
-            android:background="@drawable/rounded_edge"/>
+            android:selectAllOnFocus="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/text_hint"
+            android:textCursorDrawable="@drawable/bold_cursor"
+            android:textSize="16sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="28.35dp"
-            android:layout_marginTop="6.3dp"
+            android:layout_marginLeft="12.6dp"
             android:layout_marginRight="12.6dp"
-            android:layout_marginLeft="12.6dp">
+            android:layout_marginTop="6.3dp">
 
             <EditText
                 android:id="@+id/add_field"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginRight="12.6dp"
+                android:layout_toLeftOf="@+id/settings_category_button_add"
+                android:background="@drawable/rounded_edge"
                 android:hint="@string/settings_categories_add_new"
-                android:textSize="16sp"
-                android:paddingLeft="12.6dp"
-                android:textColor="@android:color/black"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
+                android:paddingLeft="12.6dp"
+                android:textColor="@android:color/black"
                 android:textColorHint="#44000000"
                 android:textCursorDrawable="@drawable/bold_cursor"
-                android:layout_toLeftOf="@+id/settings_category_button_add"
-                android:layout_marginRight="12.6dp"
-                android:background="@drawable/rounded_edge"/>
+                android:textSize="16sp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_category_button_add"
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/btn_add_category"/>
+                android:background="@drawable/btn_add_category" />
         </RelativeLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/layout_search_container"
         android:layout_above="@+id/done_cancel_container"
+        android:layout_below="@+id/layout_search_container"
         android:background="#addff1">
-        
+
         <ListView
+            android:id="@+id/category_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/mostly_opaque_black"
-            android:dividerHeight="1px"
-            android:id="@+id/category_list_view"/>
-        
+            android:dividerHeight="1px" />
+
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/done_cancel_container"
         android:layout_width="match_parent"
         android:layout_height="50.4dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_tab_bar"
+        android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="6.3dp"
-        android:paddingTop="6.3dp"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_tab_bar">
+        android:paddingTop="6.3dp">
 
         <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/button_cancel"
@@ -142,7 +144,7 @@
             android:layout_marginRight="6.3dp"
             android:background="@drawable/btn_orange"
             android:text="@string/string_cancel"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
         <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/button_done"
@@ -151,7 +153,7 @@
             android:layout_marginLeft="6.3dp"
             android:background="@drawable/btn_green"
             android:text="@string/string_done"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
@@ -159,19 +161,19 @@
         android:id="@+id/settings_category_dummy_focus"
         android:layout_width="0px"
         android:layout_height="0px"
-        android:orientation="horizontal"
         android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal" />
 
 
     <RelativeLayout
         android:id="@+id/add_popup_triangle_container"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_below="@+id/layout_search_container"
+        android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:clickable="true"
-        android:layout_below="@+id/layout_search_container"
         android:visibility="gone">
 
         <View
@@ -180,70 +182,76 @@
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-25dp"
-            android:background="@drawable/blue_triangle"/>
+            android:background="@drawable/blue_triangle" />
     </RelativeLayout>
-    
+
     <LinearLayout
         android:id="@+id/add_popup_container"
         android:layout_width="match_parent"
         android:layout_height="189dp"
+        android:layout_below="@+id/add_popup_triangle_container"
+        android:background="@drawable/category_popup"
         android:orientation="vertical"
         android:padding="6.3dp"
-        android:background="@drawable/category_popup"
-        android:visibility="gone"
-        android:layout_below="@+id/add_popup_triangle_container">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/add_popup_expense"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
-            android:text="@string/settings_categories_expense"
             android:background="#FFFFFF"
-            android:textColor="@android:color/black"
             android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"/>
+            android:paddingLeft="12.6dp"
+            android:text="@string/settings_categories_expense"
+            android:textColor="@android:color/black" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/mostly_opaque_black"/>
+            android:background="@color/mostly_opaque_black" />
+
         <TextView
             android:id="@+id/add_popup_income"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:text="@string/settings_categories_income"
-            android:textColor="@android:color/black"
             android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"/>
+            android:paddingLeft="12.6dp"
+            android:text="@string/settings_categories_income"
+            android:textColor="@android:color/black" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/mostly_opaque_black"/>
+            android:background="@color/mostly_opaque_black" />
+
         <TextView
             android:id="@+id/add_popup_transfer"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:textColor="@android:color/black"
-            android:text="@string/settings_categories_transfer"
             android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"/>
+            android:paddingLeft="12.6dp"
+            android:text="@string/settings_categories_transfer"
+            android:textColor="@android:color/black" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/mostly_opaque_black"/>
+            android:background="@color/mostly_opaque_black" />
+
         <TextView
             android:id="@+id/add_popup_exchange"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:background="#FFFFFF"
-            android:textColor="@android:color/black"
-            android:text="@string/settings_categories_exchange"
             android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"/>
+            android:paddingLeft="12.6dp"
+            android:text="@string/settings_categories_exchange"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
-    
+
     <RelativeLayout
         android:id="@+id/popup_container"
         android:layout_width="match_parent"
@@ -255,51 +263,56 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:clickable="true"
+            android:layout_above="@+id/item_popup_edittext_container"
             android:background="@color/listitem_normal"
-            android:layout_above="@+id/item_popup_edittext_container"/>
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
         <RelativeLayout
             android:id="@+id/item_popup_edittext_container"
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
-            android:paddingTop="9.45dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/listitem_normal"
             android:paddingBottom="9.45dp"
             android:paddingLeft="9.45dp"
             android:paddingRight="9.45dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/listitem_normal">
+            android:paddingTop="9.45dp">
 
             <EditText
                 android:id="@+id/item_popup_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="12.6dp"
-                android:textSize="16sp"
+                android:layout_toLeftOf="@+id/item_popup_delete"
+                android:background="@drawable/rounded_edge"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
-                android:layout_toLeftOf="@+id/item_popup_delete"
-                android:background="@drawable/rounded_edge"/>
+                android:paddingLeft="12.6dp"
+                android:textSize="16sp" />
+
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/item_popup_delete"
                 android:layout_width="37.8dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="9.45dp"
-                android:background="@drawable/btn_delete_category"/>
+                android:background="@drawable/btn_delete_category" />
+
             <View
+                android:id="@+id/settings_category_list_item_dummy_focus"
                 android:layout_width="0px"
-                android:layout_height="0px"
-                android:id="@+id/settings_category_list_item_dummy_focus" />
+                android:layout_height="0px" />
 
         </RelativeLayout>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/item_popup_listview_triangle"
             android:background="@drawable/category_popup"
-            android:paddingTop="6.3dp"
-            android:layout_above="@+id/item_popup_listview_triangle">
+            android:paddingTop="6.3dp">
+
             <LinearLayout
                 android:id="@+id/item_popup_container"
                 android:layout_width="match_parent"
@@ -312,61 +325,69 @@
                     android:id="@+id/item_popup_expense"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:text="@string/settings_categories_expense"
-                    android:textSize="18sp"
                     android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:text="@string/settings_categories_expense"
                     android:textColor="@android:color/black"
-                    android:gravity="center_vertical"/>
+                    android:textSize="18sp" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black"/>
+                    android:background="@color/mostly_opaque_black" />
+
                 <TextView
                     android:id="@+id/item_popup_income"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
                     android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
                     android:text="@string/settings_categories_income"
-                    android:textSize="18sp"
                     android:textColor="@android:color/black"
-                    android:gravity="center_vertical"/>
+                    android:textSize="18sp" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black"/>
+                    android:background="@color/mostly_opaque_black" />
+
                 <TextView
                     android:id="@+id/item_popup_transfer"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
                     android:background="@android:color/transparent"
-                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
                     android:text="@string/settings_categories_transfer"
-                    android:textSize="18sp"
-                    android:gravity="center_vertical"/>
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black"/>
+                    android:background="@color/mostly_opaque_black" />
+
                 <TextView
                     android:id="@+id/item_popup_exchange"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
                     android:background="@android:color/transparent"
-                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
                     android:text="@string/settings_categories_exchange"
-                    android:textSize="18sp"
-                    android:gravity="center_vertical"/>
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
 
             </LinearLayout>
-        </ScrollView>        <View
+        </ScrollView>
+
+        <View
             android:id="@+id/item_popup_listview_triangle"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:rotation="180"
+            android:layout_above="@+id/item_popup_edittext_container"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-25dp"
             android:background="@drawable/blue_triangle"
-            android:layout_above="@+id/item_popup_edittext_container"/>
+            android:rotation="180" />
 
     </RelativeLayout>
 </RelativeLayout>

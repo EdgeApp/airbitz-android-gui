@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.text.Html;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,10 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Transaction;
+import com.airbitz.models.Wallet;
 import com.airbitz.objects.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.models.Wallet;
-import com.airbitz.models.Transaction;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
@@ -41,8 +42,9 @@ import java.util.List;
 
 
 public class RequestQRCodeFragment extends Fragment implements ContactPickerFragment.ContactSelection {
+    static final int PICK_CONTACT_SMS = 1;
+    static final int PICK_CONTACT_EMAIL = 2;
     private final String TAG = getClass().getSimpleName();
-
     private final double BORDER_THICKNESS = 0.03;
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
@@ -53,27 +55,32 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private HighlightOnPressButton mCopyButton;
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
-
+    private TextView mTitleTextView;
     private Bitmap mQRBitmap;
     private String mID;
     private String mAddress;
     private String mContentURL;
     private String mRequestURI;
     private long mAmountSatoshi;
-
     private boolean emailType = false;
-
     private Bundle bundle;
-
     private Wallet mWallet;
-
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
     private CoreAPI.TxDetails mTxDetails;
-
-    static final int PICK_CONTACT_SMS = 1;
-    static final int PICK_CONTACT_EMAIL = 2;
+    private CreateBitmapTask mCreateBitmapTask;
+    private AlertDialog mPartialDialog;
+    final Runnable dialogKiller = new Runnable() {
+        @Override
+        public void run() {
+            if (mPartialDialog != null) {
+                mPartialDialog.dismiss();
+                mPartialDialog = null;
+            }
+        }
+    };
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +109,9 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         ((NavigationActivity) getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
         mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
@@ -171,8 +181,6 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         }
     }
 
-    private CreateBitmapTask mCreateBitmapTask;
-
     @Override
     public void onContactSelection(Contact contact) {
         if (emailType) {
@@ -191,52 +199,6 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         }
     }
 
-    public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Common.LogD(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
-            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-            if (mID != null) {
-                Common.LogD(TAG, "Starting Request Address at:" + System.currentTimeMillis());
-                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
-                try {
-                    // data in barcode is like bitcoin:address?amount=0.001
-                    Common.LogD(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
-                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
-                    mQRBitmap = addWhiteBorder(mQRBitmap);
-                    Common.LogD(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
-                    mRequestURI = mCoreAPI.getRequestURI();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
-            mCreateBitmapTask = null;
-            mBitcoinAddress.setText(mAddress);
-            if (mQRBitmap != null) {
-                mQRView.setImageBitmap(mQRBitmap);
-            }
-            mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCreateBitmapTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
-        }
-    }
-
     private Bitmap addWhiteBorder(Bitmap inBitmap) {
         Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth() * (1 + BORDER_THICKNESS * 2)),
                 (int) (inBitmap.getHeight() * (1 + BORDER_THICKNESS * 2)), Bitmap.Config.ARGB_8888);
@@ -250,7 +212,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
     private void copyToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("bitcoin address", mAddress);
+        ClipData clip = ClipData.newPlainText(getString(R.string.request_qr_title), mAddress);
         clipboard.setPrimaryClip(clip);
     }
 
@@ -339,10 +301,10 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
                                 finishEmail(contact, null);
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
         builder.create().show();
     }
-
 
     private String fillTemplate(int id, String fullName) {
         String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
@@ -351,17 +313,17 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
 
-        if(mRequestURI.contains("bitcoin:")) {
+        if (mRequestURI.contains("bitcoin:")) {
             String[] typeAddress = mRequestURI.split(":");
             String address = typeAddress[1];
 
             bitcoinURL += address;
-            redirectURL = "https://airbitz.co/blf/?address="+address;
+            redirectURL = "https://airbitz.co/blf/?address=" + address;
         }
 
         String content = Common.readRawTextFile(getActivity(), id);
 
-        List<String> searchList  = new ArrayList<String>();
+        List<String> searchList = new ArrayList<String>();
         searchList.add("[[abtag FROM]]");
         searchList.add("[[abtag BITCOIN_URL]]");
         searchList.add("[[abtag REDIRECT_URL]]");
@@ -371,7 +333,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         searchList.add("[[abtag AMOUNT_MBTC]]");
 
         List<String> replaceList = new ArrayList<String>();
-        if(fullName==null)
+        if (fullName == null)
             replaceList.add("");
         else
             replaceList.add(fullName);
@@ -382,33 +344,31 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         replaceList.add(amountBTC);
         replaceList.add(amountMBTC);
 
-        for (int i=0; i<searchList.size(); i++)
-        {
+        for (int i = 0; i < searchList.size(); i++) {
             content = content.replace(searchList.get(i), replaceList.get(i));
         }
         return content;
     }
 
-
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
-        Common.LogD(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
+        Log.d(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
         Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
         if (tx.getOutputs() == null || mAddress == null) {
             return false;
         }
-        Common.LogD(TAG, "isShowingQRCodeFor: hasOutputs");
+        Log.d(TAG, "isShowingQRCodeFor: hasOutputs");
         for (CoreAPI.TxOutput output : tx.getOutputs()) {
-            Common.LogD(TAG, output.getmInput() + " " + mAddress + " " + output.getAddress());
+            Log.d(TAG, output.getmInput() + " " + mAddress + " " + output.getAddress());
             if (!output.getmInput() && mAddress.equals(output.getAddress())) {
                 return true;
             }
         }
-        Common.LogD(TAG, "isShowingQRCodeFor: noMatch");
+        Log.d(TAG, "isShowingQRCodeFor: noMatch");
         return false;
     }
 
     public long requestDifference(String walletUUID, String txId) {
-        Common.LogD(TAG, "requestDifference: " + walletUUID + " " + txId);
+        Log.d(TAG, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
             Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
             return mAmountSatoshi - tx.getAmountSatoshi();
@@ -420,8 +380,9 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     public void updateWithAmount(long newAmount) {
         mAmountSatoshi = newAmount;
         mBitcoinAmount.setText(
-            String.format(getResources().getString(R.string.bitcoing_remaining),
-                          mCoreAPI.formatSatoshi(mAmountSatoshi, true)));
+                String.format(getResources().getString(R.string.bitcoing_remaining),
+                        mCoreAPI.formatSatoshi(mAmountSatoshi, true))
+        );
 
         if (mCreateBitmapTask != null) {
             mCreateBitmapTask.cancel(true);
@@ -434,32 +395,67 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         alertPartialPayment();
     }
 
-    private AlertDialog mPartialDialog;
-    private Handler mHandler = new Handler();
-    final Runnable dialogKiller = new Runnable() {
-        @Override
-        public void run() {
-            if (mPartialDialog != null) {
-                mPartialDialog.dismiss();
-                mPartialDialog = null;
-            }
-        }
-    };
-
     private void alertPartialPayment() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getResources().getString(R.string.received_partial_bitcoin_message))
-               .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
-               .setCancelable(true)
-               .setNeutralButton(getResources().getString(R.string.string_ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            mPartialDialog.cancel();
-                            mPartialDialog = null;
+                .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
+                .setCancelable(true)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mPartialDialog.cancel();
+                                mPartialDialog = null;
+                            }
                         }
-                    });
+                );
         mPartialDialog = builder.create();
         mPartialDialog.show();
         mHandler.postDelayed(dialogKiller, 5000);
+    }
+
+    public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            ((NavigationActivity) getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
+            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
+            if (mID != null) {
+                Log.d(TAG, "Starting Request Address at:" + System.currentTimeMillis());
+                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+                try {
+                    // data in barcode is like bitcoin:address?amount=0.001
+                    Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
+                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                    mQRBitmap = addWhiteBorder(mQRBitmap);
+                    Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
+                    mRequestURI = mCoreAPI.getRequestURI();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mCreateBitmapTask = null;
+            mBitcoinAddress.setText(mAddress);
+            if (mQRBitmap != null) {
+                mQRView.setImageBitmap(mQRBitmap);
+            }
+            mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
+        }
+
+        @Override
+        protected void onCancelled() {
+            mCreateBitmapTask = null;
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+        }
     }
 }

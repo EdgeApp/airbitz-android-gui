@@ -1,63 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
 
     <RelativeLayout
+        android:id="@+id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="44.1dp"
-        android:id="@+id/fragment_category_layout_header"
         android:background="#40000000">
 
         <ImageButton
+            android:id="@+id/fragment_category_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:id="@+id/fragment_category_button_back"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
             android:padding="12.6dp"
-            android:visibility="invisible"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Status"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="16sp"/>
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <ImageButton
+            android:id="@+id/fragment_category_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:id="@+id/fragment_category_button_help"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
             android:padding="12.6dp"
-            android:visibility="invisible"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_sending"
-        android:layout_below="@id/fragment_category_layout_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/fragment_category_layout_header"
         android:padding="20dp">
 
 
@@ -65,22 +64,23 @@
             android:id="@+id/textview_sending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <ImageView
-            android:layout_above="@id/textview_sending"
             android:id="@+id/imageview_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ico_sending_3"
+            android:layout_above="@id/textview_sending"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_centerHorizontal="true"/>
+            android:src="@drawable/ico_sending_3" />
 
     </RelativeLayout>
 

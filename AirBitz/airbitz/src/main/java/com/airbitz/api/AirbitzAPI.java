@@ -7,6 +7,7 @@ import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
+import com.airbitz.utils.Common;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -77,43 +78,16 @@ public class AirbitzAPI {
     }
 
     public static String getRequest(String url, String params) {
+        AirbitzAPI api = AirbitzAPI.getApi();
+
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
         HttpsURLConnection urlConnection = null;
         Log.d(TAG, url + params.toString());
+        if (api.mApiCache.get(url + params) != null) {
+            return (String) api.mApiCache.get(url + params);
+        }
         try {
-
-            /*KeyStore keyStore = KeyStore.getInstance("JLS");
-            String algorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
-            tmf.init(keyStore);
-
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, tmf.getTrustManagers(), null);
-
-            //HttpsURLConnection httpsURLConnection = new
-
-            //HttpClient httpClient = new DefaultHttpClient();
-
-            /*String s="Airbitz-Android v 1.0.11";
-            s += " API Level: " + android.os.Build.VERSION.SDK;
-            s += " Model: " + Build.BRAND + " " +android.os.Build.MODEL;
-            httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,s);
-            HttpGet httpGet = new HttpGet();*/
-
-            /*URI uri = new URI(url+params);
-            httpGet.setURI(uri);
-            String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
-            httpGet.addHeader("Authorization", "Token " + token + "");*/
-
-
-
-            /*System.out.println("Before "+System.currentTimeMillis());
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            System.out.println("After "+System.currentTimeMillis());
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));*/
-
             URL sendUrl = new URL(url + params);
             urlConnection = (HttpsURLConnection) sendUrl.openConnection();
             String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
@@ -129,7 +103,7 @@ public class AirbitzAPI {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(urlConnection != null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
             if (bufferedReader != null) {
@@ -141,8 +115,11 @@ public class AirbitzAPI {
             }
         }
         String temp = stringBuffer.toString();
-        if(temp == null){
+        if(temp == null) {
             temp = "{}";
+        }
+        synchronized (api.mApiCache) {
+            api.mApiCache.put(url + params, temp);
         }
         return temp;
     }

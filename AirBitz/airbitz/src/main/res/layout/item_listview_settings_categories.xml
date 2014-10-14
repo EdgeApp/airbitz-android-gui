@@ -3,32 +3,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
-    android:paddingTop="9.45dp"
+    android:background="@android:color/transparent"
     android:paddingBottom="9.45dp"
     android:paddingLeft="12.6dp"
     android:paddingRight="12.6dp"
-    android:background="@android:color/transparent">
+    android:paddingTop="9.45dp">
 
     <EditText
         android:id="@+id/category_field"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="12.6dp"
-        android:textSize="16sp"
+        android:layout_toLeftOf="@+id/category_delete"
+        android:background="@drawable/rounded_edge"
         android:imeOptions="actionDone"
         android:inputType="textVisiblePassword|textNoSuggestions"
-        android:layout_toLeftOf="@+id/category_delete"
-        android:background="@drawable/rounded_edge"/>
+        android:paddingLeft="12.6dp"
+        android:textSize="16sp" />
+
     <com.airbitz.objects.HighlightOnPressButton
         android:id="@+id/category_delete"
         android:layout_width="37.8dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="12.6dp"
-        android:background="@drawable/btn_delete_category"/>
+        android:background="@drawable/btn_delete_category" />
+
     <View
+        android:id="@+id/fragment_category_list_item_dummy_focus"
         android:layout_width="0px"
-        android:layout_height="0px"
-        android:id="@+id/fragment_category_list_item_dummy_focus" />
+        android:layout_height="0px" />
 
 </RelativeLayout>

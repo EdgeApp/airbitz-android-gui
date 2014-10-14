@@ -1,9 +1,9 @@
 package com.airbitz.fragments;
 
+import android.app.Fragment;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -21,8 +21,6 @@ import com.airbitz.utils.Common;
  * Created by tom 8/16/2014
  */
 public class HelpFragment extends Fragment {
-    private final String TAG = getClass().getSimpleName();
-
     public static final int INFO = R.raw.info;
     public static final int EXPORT_WALLET = R.raw.info_export_wallet;
     public static final int EXPORT_WALLET_OPTIONS = R.raw.info_export_wallet_options;
@@ -36,19 +34,19 @@ public class HelpFragment extends Fragment {
     public static final int TRANSACTION_DETAILS = R.raw.info_transaction_details;
     public static final int TRANSACTIONS = R.raw.info_transactions;
     public static final int WALLETS = R.raw.info_wallets;
+    private final String TAG = getClass().getSimpleName();
+    Spanned mHtml = null;
+    int mID = 0;
 
-
-    Spanned mHtml=null;
-    int mID =0;
-
-    public HelpFragment() {}
+    public HelpFragment() {
+    }
 
     public HelpFragment(Spanned html) {
         mHtml = html;
     }
 
     public HelpFragment(int resourceID) {
-            mID = resourceID;
+        mID = resourceID;
     }
 
     @Override
@@ -56,7 +54,7 @@ public class HelpFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_help_info, container, false);
 
-        if(mHtml!=null) {
+        if (mHtml != null) {
             TextView tv = (TextView) v.findViewById(R.id.dialog_help_textview);
             tv.setMovementMethod(LinkMovementMethod.getInstance());
             tv.setVisibility(View.VISIBLE);
@@ -64,7 +62,7 @@ public class HelpFragment extends Fragment {
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
-            if(mID!=INFO) {
+            if (mID != INFO) {
                 webView.loadData(Common.readRawTextFile(getActivity(), mID), "text/html; charset=UTF-8", null);
             } else {
                 //Get file contents and replace * with versionbuild
@@ -86,14 +84,14 @@ public class HelpFragment extends Fragment {
         }
 
         // Watch for button clicks.
-        Button button = (Button)v.findViewById(R.id.dialog_help_close_button);
+        Button button = (Button) v.findViewById(R.id.dialog_help_close_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getActivity().onBackPressed();
             }
         });
 
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(v);
+        ((NavigationActivity) getActivity()).hideSoftKeyboard(v);
 
         return v;
     }

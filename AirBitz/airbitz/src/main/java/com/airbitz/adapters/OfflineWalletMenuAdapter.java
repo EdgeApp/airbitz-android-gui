@@ -12,12 +12,12 @@ import com.airbitz.R;
 /**
  * Created on 2/13/14.
  */
-public class OfflineWalletMenuAdapter extends ArrayAdapter<String>{
+public class OfflineWalletMenuAdapter extends ArrayAdapter<String> {
 
     private Context mContext;
     private String[] mMenus;
 
-    public OfflineWalletMenuAdapter(Context context, String[] menus){
+    public OfflineWalletMenuAdapter(Context context, String[] menus) {
         super(context, R.layout.item_listview_menu_wallet_address, menus);
 
         mContext = context;

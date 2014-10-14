@@ -18,7 +18,7 @@ public class BusinessDetailAdapter extends ArrayAdapter<String> {
     private Context mContext;
     private String[] mBusinessDetailValue;
 
-    public BusinessDetailAdapter(Context context, String[] businessDetailValue){
+    public BusinessDetailAdapter(Context context, String[] businessDetailValue) {
         super(context, R.layout.item_listview_business, businessDetailValue);
         mContext = context;
         mBusinessDetailValue = businessDetailValue;
@@ -32,7 +32,7 @@ public class BusinessDetailAdapter extends ArrayAdapter<String> {
         textView.setText(mBusinessDetailValue[position]);
         ImageView iconImage = (ImageView) convertView.findViewById(R.id.imageview_icon);
 
-        if(position == 0){
+        if (position == 0) {
             iconImage.setImageResource(R.drawable.ico_bitcoin_loc);
         }
 
