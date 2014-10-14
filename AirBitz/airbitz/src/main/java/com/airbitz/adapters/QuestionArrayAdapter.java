@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created on 2/10/14.
  */
-public class QuestionArrayAdapter extends ArrayAdapter<String>{
+public class QuestionArrayAdapter extends ArrayAdapter<String> {
 
     private final Context mContext;
     private final ArrayList<String> mValues;

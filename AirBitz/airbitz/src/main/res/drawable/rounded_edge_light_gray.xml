@@ -7,5 +7,7 @@
         android:bottomLeftRadius="@dimen/border_radius_size"
         android:bottomRightRadius="@dimen/border_radius_size" />
 
-    <stroke android:color="@android:color/transparent" android:width="1px" />
+    <stroke
+        android:width="1px"
+        android:color="@android:color/transparent" />
 </shape>

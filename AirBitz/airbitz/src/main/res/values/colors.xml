@@ -5,11 +5,9 @@
     <color name="blue_text">#0179b8</color>
     <color name="blue_radio_button">#2797d1</color>
     <color name="dark_blue_text">#006699</color>
-    <color name="blue_shadow_text">#cfecfa</color>
     <color name="gray_border">#969fa8</color>
     <color name="gray_selection">#cccccc</color>
     <color name="gray_text">#4c4c4c</color>
-    <color name="dark_gray_text">#2c2c2c</color>
     <color name="blue_highlight">#ff59ddff</color>
     <color name="listitem_normal">#ffaddff1</color>
     <color name="semi_black_text">#99000000</color>
@@ -17,11 +15,6 @@
     <color name="settings_edit_text">#FF999999</color>
     <color name="settings_edit_hint">#FFDDDDDD</color>
     <color name="mostly_opaque_black">#DD000000</color>
-
-    <color name="identifier_pink">#FF00FF</color>
-    <color name="identifier_purple">#ff862eae</color>
-    <color name="identifier_green">#00FF00</color>
-    <color name="identifier_black">#000000</color>
 
     <color name="identifier_white">#FFFFFF</color>
     <color name="identifier_off_text">#444444</color>

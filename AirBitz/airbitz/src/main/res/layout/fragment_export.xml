@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/fragment_category_layout_header"
@@ -16,39 +16,39 @@
             android:id="@+id/fragment_export_back_button"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_back"
+            android:contentDescription="@string/string_back_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_back_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_back" />
 
         <TextView
             android:id="@+id/fragment_category_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/export_title"
-            android:textColor="@android:color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:textSize="16sp"/>
+            android:text="@string/export_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <com.airbitz.objects.HighlightOnPressImageButton
             android:id="@+id/fragment_export_help_button"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_help"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/string_help_button"
             android:padding="12.6dp"
-            android:contentDescription="@string/string_help_button"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_help" />
 
     </RelativeLayout>
 
@@ -58,33 +58,32 @@
         android:layout_width="match_parent"
         android:layout_height="31dp"
         android:layout_below="@id/fragment_category_layout_header"
-        android:gravity="center_vertical"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/textview_account"
             android:layout_width="100.8dp"
             android:layout_height="match_parent"
-            android:text="@string/export_saving_wallet_label"
-            android:gravity="right|center_vertical"
-            android:textColor="@android:color/white"
-            android:layout_marginRight="12.6dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="6.3dp"
-            android:textSize="15sp"
-            android:layout_alignParentLeft="true"/>
+            android:layout_marginRight="12.6dp"
+            android:gravity="right|center_vertical"
+            android:text="@string/export_saving_wallet_label"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <com.airbitz.objects.HighlightOnPressSpinner
             android:id="@+id/fragment_export_account_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="18.9dp"
             android:layout_toRightOf="@id/textview_account"
-            android:text="Checking"
             android:background="@drawable/bg_btn_blue_stretch"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:layout_marginRight="18.9dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
     </RelativeLayout>
 
@@ -95,118 +94,127 @@
         android:layout_below="@id/fragment_export_wallet_layout">
 
         <RelativeLayout
+            android:id="@+id/layout_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:id="@+id/layout_data"
             android:layout_marginLeft="12.6dp"
             android:layout_marginRight="12.6dp"
-            android:layout_marginTop="12.6dp">
+            android:layout_marginTop="12.6dp"
+            android:background="@android:color/transparent">
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_csv"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
-                android:text="@string/export_csv_title"
-                android:textColor="#005f96"
                 android:background="@drawable/wallet_list_top_archive"
                 android:drawableRight="@drawable/arrow_right"
+                android:enabled="true"
                 android:gravity="center_vertical"
-                android:paddingRight="18.9dp"
                 android:paddingLeft="56.7dp"
-                android:enabled="true"/>
+                android:paddingRight="18.9dp"
+                android:text="@string/export_csv_title"
+                android:textColor="#005f96" />
+
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ico_csv"
-                android:padding="12.6dp"/>
+                android:padding="12.6dp"
+                android:src="@drawable/ico_csv" />
+
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_quicken"
-                android:layout_below="@id/button_csv"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_csv"
+                android:background="@drawable/wallet_list_standard"
+                android:drawableRight="@drawable/arrow_right"
+                android:enabled="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="56.7dp"
+                android:paddingRight="18.9dp"
                 android:text="@string/export_quicken_title"
                 android:textColor="#005f96"
-                android:background="@drawable/wallet_list_standard"
-                android:drawableRight="@drawable/arrow_right"
-                android:gravity="center_vertical"
-                android:paddingRight="18.9dp"
-                android:paddingLeft="56.7dp"
-                android:focusable="false"
-                android:enabled="false"
                 android:visibility="gone" />
+
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_csv"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ico_quicken"
                 android:padding="12.6dp"
-                android:layout_below="@id/button_csv"/>
+                android:src="@drawable/ico_quicken" />
+
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_quickbooks"
-                android:layout_below="@id/button_quicken"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_quicken"
+                android:background="@drawable/wallet_list_standard"
+                android:drawableRight="@drawable/arrow_right"
+                android:enabled="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="56.7dp"
+                android:paddingRight="18.9dp"
                 android:text="@string/export_quickbooks_title"
                 android:textColor="#005f96"
-                android:background="@drawable/wallet_list_standard"
-                android:drawableRight="@drawable/arrow_right"
-                android:paddingRight="18.9dp"
-                android:paddingLeft="56.7dp"
-                android:gravity="center_vertical"
-                android:focusable="false"
-                android:enabled="false"
                 android:visibility="gone" />
+
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_quicken"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ico_quickooks"
                 android:padding="12.6dp"
-                android:layout_below="@id/button_quicken"/>
+                android:src="@drawable/ico_quickooks" />
+
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_pdf"
-                android:layout_below="@id/button_quickbooks"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
-                android:text="@string/export_pdf_title"
-                android:textColor="#005f96"
+                android:layout_below="@id/button_quickbooks"
                 android:background="@drawable/wallet_list_standard"
                 android:drawableRight="@drawable/arrow_right"
-                android:paddingRight="18.9dp"
-                android:paddingLeft="56.7dp"
-                android:gravity="center_vertical"
-                android:focusable="false"
                 android:enabled="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="56.7dp"
+                android:paddingRight="18.9dp"
+                android:text="@string/export_pdf_title"
+                android:textColor="#005f96"
                 android:visibility="gone" />
+
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_quickbooks"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ico_pdf"
                 android:padding="12.6dp"
-                android:layout_below="@id/button_quickbooks"/>
+                android:src="@drawable/ico_pdf" />
+
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_wallet"
-                android:layout_below="@id/button_pdf"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
-                android:text="@string/export_print_title"
-                android:textColor="#005f96"
+                android:layout_below="@id/button_pdf"
                 android:background="@drawable/wallet_list_bottom"
                 android:drawableRight="@drawable/arrow_right"
-                android:paddingRight="18.9dp"
-                android:paddingLeft="56.7dp"
+                android:focusable="false"
                 android:gravity="center_vertical"
-                android:focusable="false"/>
+                android:paddingLeft="56.7dp"
+                android:paddingRight="18.9dp"
+                android:text="@string/export_print_title"
+                android:textColor="#005f96" />
+
             <ImageView
                 android:layout_width="44.1dp"
                 android:layout_height="44.1dp"
+                android:layout_below="@id/button_pdf"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ico_wallet"
                 android:padding="12.6dp"
-                android:layout_below="@id/button_pdf"/>
+                android:src="@drawable/ico_wallet" />
         </RelativeLayout>
     </ScrollView>
 

@@ -22,8 +22,8 @@ public class WalletPickerAdapter extends ArrayAdapter {
     private List<Wallet> mWalletList;
     private WalletPickerEnum mSource;
 
-    public WalletPickerAdapter(Context context,List<Wallet> walletList, WalletPickerEnum source){
-        super(context,R.layout.item_request_wallet_spinner,walletList);
+    public WalletPickerAdapter(Context context, List<Wallet> walletList, WalletPickerEnum source) {
+        super(context, R.layout.item_request_wallet_spinner, walletList);
         mContext = context;
         mWalletList = walletList;
         mSource = source;
@@ -34,19 +34,19 @@ public class WalletPickerAdapter extends ArrayAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
-        textView.setText(mWalletList.get(position).getName() + " ("+mWalletList.get(position).getBalanceFormatted()+")");
+        textView.setText(mWalletList.get(position).getName() + " (" + mWalletList.get(position).getBalanceFormatted() + ")");
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         return convertView;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if(mSource == WalletPickerEnum.SendTo){
-            convertView = inflater.inflate(R.layout.item_send_listing_spinner,parent,false);
+        if (mSource == WalletPickerEnum.SendTo) {
+            convertView = inflater.inflate(R.layout.item_send_listing_spinner, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_send_listing_spinner_textview);
-            textView.setText(mWalletList.get(position).getName() + " ("+mWalletList.get(position).getBalanceFormatted()+")");
-        }else {
+            textView.setText(mWalletList.get(position).getName() + " (" + mWalletList.get(position).getBalanceFormatted() + ")");
+        } else {
             convertView = inflater.inflate(R.layout.item_request_wallet_spinner, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_textview);
             textView.setText(mWalletList.get(position).getName());

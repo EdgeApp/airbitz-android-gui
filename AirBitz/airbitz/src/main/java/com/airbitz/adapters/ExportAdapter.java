@@ -54,16 +54,13 @@ public class ExportAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageview_icon);
         nameTextView.setText(mMenus[position]);
 
-        if(position == 0){
+        if (position == 0) {
             imageView.setImageResource(R.drawable.ico_csv);
-        }
-        else if(position == 1){
+        } else if (position == 1) {
             imageView.setImageResource(R.drawable.ico_quicken);
-        }
-        else if(position == 2){
+        } else if (position == 2) {
             imageView.setImageResource(R.drawable.ico_quickooks);
-        }
-        else if(position == 3){
+        } else if (position == 3) {
             imageView.setImageResource(R.drawable.ico_view);
         }
 

@@ -33,11 +33,11 @@ public class Wallet {
         this(name, 0, null);
     }
 
-    public Wallet(String name, long balanceSatoshi){
+    public Wallet(String name, long balanceSatoshi) {
         this(name, balanceSatoshi, null);
     }
 
-    public Wallet(String name, long balance, List<Transaction> list){
+    public Wallet(String name, long balance, List<Transaction> list) {
         mName = name;
         mBalanceSatoshi = balance;
         mTransactions = list;
@@ -56,53 +56,68 @@ public class Wallet {
         return (getAttributes() & 0x1) == 1;
     }
 
-    public void setName(String name){
-        mName = name;
-    }
-    public String getName(){
+    public String getName() {
         return mName;
     }
 
-    public void setUUID(String uuid){
-        mUUID = uuid;
+    public void setName(String name) {
+        mName = name;
     }
-    public String getUUID(){
+
+    public String getUUID() {
         return mUUID;
     }
 
-    public void setCurrencyNum(int num) { mCurrencyNum = num; }
-    public int getCurrencyNum() {return mCurrencyNum; }
+    public void setUUID(String uuid) {
+        mUUID = uuid;
+    }
 
-    public void setLoading(boolean loading) {
-        mLoading = loading;
+    public int getCurrencyNum() {
+        return mCurrencyNum;
+    }
+
+    public void setCurrencyNum(int num) {
+        mCurrencyNum = num;
     }
 
     public boolean isLoading() {
         return mLoading;
     }
 
-    public void setAttributes(long attr) { mAttributes = attr; }
-    public long getAttributes() {return mAttributes; }
+    public void setLoading(boolean loading) {
+        mLoading = loading;
+    }
 
-    public void setBalanceSatoshi(long bal) { mBalanceSatoshi = bal; }
+    public long getAttributes() {
+        return mAttributes;
+    }
+
+    public void setAttributes(long attr) {
+        mAttributes = attr;
+    }
+
     public long getBalanceSatoshi() {
         return mBalanceSatoshi;
     }
 
-    public void setBalanceFormatted(String amount){
-        mBalanceFormatted = amount;
+    public void setBalanceSatoshi(long bal) {
+        mBalanceSatoshi = bal;
     }
 
-    public String getBalanceFormatted(){
+    public String getBalanceFormatted() {
         mBalanceFormatted = mCoreAPI.formatSatoshi(getBalanceSatoshi(), true);
         return mBalanceFormatted;
     }
 
-    public void setTransactions(List<Transaction> list) {
-        mTransactions = list;
+    public void setBalanceFormatted(String amount) {
+        mBalanceFormatted = amount;
     }
 
     public List<Transaction> getTransactions() {
         return mTransactions;
+    }
+
+    public void setTransactions(List<Transaction> list) {
+        mTransactions = list;
     }
 }

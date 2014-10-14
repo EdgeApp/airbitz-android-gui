@@ -5,18 +5,13 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.airbitz.models.CurrentLocationManager.OnLocationChange;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
-import com.airbitz.models.CurrentLocationManager.OnLocationChange;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -29,38 +24,15 @@ public class PlayLocationManager implements
         com.google.android.gms.location.LocationListener {
 
     private static PlayLocationManager mInstance = null;
+    LocationRequest mLocationRequest;
     private LocationClient locationClient;
     private Location mCurrentLocation;
-    LocationRequest mLocationRequest;
     private Context mContext;
-
-    public PlayLocationManager(Context context) {
-        mContext = context;
-    }
-
     // Callback interface for adding and removing location change listeners
     private List<OnLocationChange> mObservers = new CopyOnWriteArrayList<OnLocationChange>();
 
-    public void addLocationChangeListener(OnLocationChange listener) {
-        if(mObservers.isEmpty()) {
-                attemptConnection();
-        }
-        if(!mObservers.contains(listener)) {
-            mObservers.add(listener);
-            Log.d("PlayLocationManager", "Listener added: "+listener);
-        }
-        if(null != listener && null != mCurrentLocation){
-                listener.OnCurrentLocationChange(mCurrentLocation);
-        }
-    }
-
-    public void removeLocationChangeListener(OnLocationChange listener) {
-//        mRemovers.add(listener);
-        mObservers.remove(listener);
-        Log.d("PlayLocationManager", "Listener removed: " + listener);
-        if(mObservers.size() <= 0) {
-            locationClient.disconnect();
-        }
+    public PlayLocationManager(Context context) {
+        mContext = context;
     }
 
     public static PlayLocationManager getLocationManager(Context context) {
@@ -70,15 +42,37 @@ public class PlayLocationManager implements
         return mInstance;
     }
 
+    public void addLocationChangeListener(OnLocationChange listener) {
+        if (mObservers.isEmpty()) {
+            attemptConnection();
+        }
+        if (!mObservers.contains(listener)) {
+            mObservers.add(listener);
+            Log.d("PlayLocationManager", "Listener added: " + listener);
+        }
+        if (null != listener && null != mCurrentLocation) {
+            listener.OnCurrentLocationChange(mCurrentLocation);
+        }
+    }
+
+    public void removeLocationChangeListener(OnLocationChange listener) {
+//        mRemovers.add(listener);
+        mObservers.remove(listener);
+        Log.d("PlayLocationManager", "Listener removed: " + listener);
+        if (mObservers.size() <= 0) {
+            locationClient.disconnect();
+        }
+    }
+
     public Location getLocation() {
-        if(null == mCurrentLocation && locationClient!=null && locationClient.isConnected()){
+        if (null == mCurrentLocation && locationClient != null && locationClient.isConnected()) {
             mCurrentLocation = locationClient.getLastLocation();
         }
         return mCurrentLocation;
     }
 
     public void attemptConnection() {
-        if(locationClient==null || !locationClient.isConnected()) {
+        if (locationClient == null || !locationClient.isConnected()) {
             Log.d("PlayLocationManager", "Attempting connection");
             locationClient = new LocationClient(mContext, this, this);
             locationClient.connect();
@@ -102,7 +96,7 @@ public class PlayLocationManager implements
     @Override
     public void onDisconnected() {
         Log.d("PlayLocationManager", "Disconnected. Please re-connect.");
-        if(mObservers.size()!=0) {
+        if (mObservers.size() != 0) {
             attemptConnection();
         }
     }

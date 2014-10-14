@@ -1,4 +1,3 @@
-
 package com.airbitz.utils;
 
 import android.content.Context;
@@ -75,7 +74,7 @@ public class ListViewUtility {
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView, Context mContext) {
-        if(listView == null){
+        if (listView == null) {
             return;
         }
         ListAdapter listAdapter = listView.getAdapter();
@@ -136,7 +135,7 @@ public class ListViewUtility {
 
     public static void setTransactionListViewHeightBasedOnChildren(ListView listView, int size) {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null || listAdapter.getCount()<1) {
+        if (listAdapter == null || listAdapter.getCount() < 1) {
             return;
         }
         int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();

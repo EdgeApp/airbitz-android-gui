@@ -20,7 +20,41 @@ public class Business {
     private String mId;
     private boolean mIsCached;
 
-    public Business(){
+    public Business() {
+    }
+
+    public Business(String name, String type, String id) {
+        mName = name;
+        mType = type;
+        mId = id;
+    }
+
+    public Business(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
+            mName = jsonResponse.getString("text");
+            mType = jsonResponse.getString("type");
+
+            if (mType.equalsIgnoreCase("business")) {
+                mId = jsonResponse.getString("bizId");
+            } else if (mType.equalsIgnoreCase("category")) {
+                mId = "";
+            }
+        }
+    }
+
+    public static List<Business> generateBusinessObjectListFromJSON(JSONArray objectArray) {
+        JSONArray temp = objectArray;
+        List<Business> resultList = new ArrayList<Business>();
+        for (int counter = 0; counter < objectArray.length(); counter++) {
+            try {
+                resultList.add(new Business(objectArray.getJSONObject(counter)));
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
+            }
+        }
+        return resultList;
     }
 
     public boolean isCached() {
@@ -29,26 +63,6 @@ public class Business {
 
     public void setIsCached(boolean isCached) {
         mIsCached = isCached;
-    }
-
-    public Business(String name, String type, String id){
-        mName = name;
-        mType = type;
-        mId = id;
-    }
-
-    public Business(JSONObject jsonResponse) throws JSONException{
-        if(jsonResponse !=null){
-            mName = jsonResponse.getString("text");
-            mType = jsonResponse.getString("type");
-
-            if(mType.equalsIgnoreCase("business")){
-                mId = jsonResponse.getString("bizId");
-            }
-            else if(mType.equalsIgnoreCase("category")){
-                mId = "";
-            }
-        }
     }
 
     @Override
@@ -70,43 +84,28 @@ public class Business {
         return false;
     }
 
-    public static List<Business> generateBusinessObjectListFromJSON(JSONArray objectArray){
-        JSONArray temp = objectArray;
-        List<Business> resultList = new ArrayList<Business>();
-        for(int counter=0; counter < objectArray.length(); counter++){
-            try{
-                resultList.add(new Business(objectArray.getJSONObject(counter)));
-            }catch (JSONException e){
-                Log.d(TAG, ""+e.getMessage());
-            }catch (Exception e){
-                Log.d(TAG, ""+e.getMessage());
-            }
-        }
-        return resultList;
-    }
-
-    public void setName(String name){
-        mName = name;
-    }
-
-    public void setType(String type){
-        mType = type;
-    }
-
-    public void setId(String id){
-        mId = mId;
-    }
-
-    public String getName(){
+    public String getName() {
         return mName;
     }
 
-    public String getType(){
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getType() {
         return mType;
     }
 
-    public String getId(){
+    public void setType(String type) {
+        mType = type;
+    }
+
+    public String getId() {
         return mId;
+    }
+
+    public void setId(String id) {
+        mId = mId;
     }
 
 }

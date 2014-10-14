@@ -3,8 +3,8 @@
     android:id="@+id/layout_item_business"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="112dp"
-    android:background="@drawable/bg_selected_tab">
+    android:background="@drawable/bg_selected_tab"
+    android:minHeight="112dp">
 
     <RelativeLayout
         android:id="@+id/mainLayout"
@@ -50,7 +50,6 @@
                 android:shadowDx="4"
                 android:shadowDy="4"
                 android:shadowRadius="6"
-                android:text="Business Name"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_h4"
                 android:textStyle="bold" />
@@ -59,8 +58,8 @@
                 android:id="@+id/linear_layout_bottom_container_venue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/content_padding_quarter"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/content_padding_quarter">
 
                 <TextView
                     android:id="@+id/textview_address"
@@ -71,7 +70,6 @@
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
-                    android:text="123 Main Street"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_h4" />
 
@@ -83,7 +81,6 @@
                     android:shadowDx="3"
                     android:shadowDy="3"
                     android:shadowRadius="5"
-                    android:text="BTC Discount 5%"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_h4" />
 
@@ -100,7 +97,6 @@
             android:gravity="center"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
-            android:text=".45 miles"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 </RelativeLayout>

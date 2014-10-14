@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,19 +52,30 @@ public class WalletsFragment extends Fragment
         implements DynamicListView.OnListReordered,
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated {
-    public final String TAG = getClass().getSimpleName();
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
-
+    //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
+    //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
+    public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
+            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
+    public final String TAG = getClass().getSimpleName();
+    //This animation must run after the keyboard is down else a layout redraw occurs causing a visual glitch
+    Runnable mDelayedAnimation = new Runnable() {
+        @Override
+        public void run() {
+            Animation mSlideOutTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top);
+            mAddWalletLayout.startAnimation(mSlideOutTop);
+            mAddWalletLayout.setVisibility(View.INVISIBLE);
+            mInvisibleCover.setVisibility(View.INVISIBLE);
+        }
+    };
     private RelativeLayout mParentLayout;
-
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
     private Button mButtonMover;
-
     private TextView walletsHeader;
     private RelativeLayout archiveHeader;
-
     private LinearLayout mAddWalletLayout;
     private EditText mAddWalletNameEditText;
     private TextView mAddWalletOnlineTextView;
@@ -73,51 +85,69 @@ public class WalletsFragment extends Fragment
     private HighlightOnPressButton mAddWalletDoneButton;
     private HighlightOnPressSpinner mAddWalletCurrencySpinner;
     private LinearLayout mAddWalletCurrencyLayout;
-
     private View mInvisibleCover;
-
     private TextView mBalanceLabel;
-
     private boolean mArchiveClosed = false;
-
     private RelativeLayout mBalanceSwitchLayout;
-
     private DynamicListView mLatestWalletListView;
-
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressImageButton mAddButton;
-
     private ImageView mMoverCoin;
     private TextView mMoverType;
     private TextView mBottomType;
     private TextView mTopType;
-
     private Bundle bundle;
-
     private TextView mTitleTextView;
-
     private WalletAdapter mLatestWalletAdapter;
-
     private boolean mOnBitcoinMode = true;
+    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
 
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+            mLatestWalletAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animator) {
+        }
+
+        @Override
+        public void onAnimationStart(Animator animator) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animator) {
+        }
+    };
+    Runnable animateSwitchUp = new Runnable() {
+        @Override
+        public void run() {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+            animator.setDuration(100);
+            animator.addListener(endListener);
+            animator.start();
+        }
+    };
+    Runnable animateSwitchDown = new Runnable() {
+        @Override
+        public void run() {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, (getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+            animator.setDuration(100);
+            animator.addListener(endListener);
+            animator.start();
+        }
+    };
     private List<Wallet> mLatestWalletList;
-
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
     private View mView;
     private int mCurrencyIndex;
-
-    //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
-    //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
-    public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
-            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
-            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
-
     private AddWalletTask mAddWalletTask;
+    private Handler mHandler = new Handler();
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
@@ -127,16 +157,16 @@ public class WalletsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         bundle = this.getArguments();
-        if(bundle != null && bundle.getBoolean(CREATE)) {
-            Common.LogD(TAG, "onCreateView creating flow to TransactionDetails");
+        if (bundle != null && bundle.getBoolean(CREATE)) {
+            Log.d(TAG, "onCreateView creating flow to TransactionDetails");
             bundle.remove(CREATE);
             bundle.putBoolean(CREATE, false);
             buildFragments();
         } else {
-            Common.LogD(TAG, "onCreateView stopping in Wallets");
+            Log.d(TAG, "onCreateView stopping in Wallets");
         }
 
-        if(mView==null) {
+        if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_wallets, container, false);
 
             mOnBitcoinMode = true;
@@ -189,7 +219,7 @@ public class WalletsFragment extends Fragment
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity)getActivity()).pushFragment(new HelpFragment(HelpFragment.WALLETS), NavigationActivity.Tabs.WALLET.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.WALLETS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
@@ -348,16 +378,16 @@ public class WalletsFragment extends Fragment
     // Sum all wallets except for archived and show in total
     private void UpdateBalances() {
         long totalSatoshis = 0;
-        for(Wallet wallet : mLatestWalletList) {
-            if(!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
-                totalSatoshis+=wallet.getBalanceSatoshi();
+        for (Wallet wallet : mLatestWalletList) {
+            if (!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
+                totalSatoshis += wallet.getBalanceSatoshi();
         }
         mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
         String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
         mFiatBalanceButton.setText(temp);
-        if(mOnBitcoinMode) {
+        if (mOnBitcoinMode) {
             mButtonMover.setText(mBitCoinBalanceButton.getText());
             mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
             mMoverType.setText(mTopType.getText());
@@ -369,47 +399,13 @@ public class WalletsFragment extends Fragment
     }
 
     private void animateBar() {
-        if(mOnBitcoinMode) {
+        if (mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
-        }else{
+        } else {
             mHandler.post(animateSwitchDown);
         }
         UpdateBalances();
     }
-
-    private Handler mHandler = new Handler();
-    Runnable animateSwitchUp = new Runnable() {
-        @Override
-        public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(100);
-            animator.addListener(endListener);
-            animator.start();
-        }
-    };
-
-    Runnable animateSwitchDown = new Runnable() {
-        @Override
-        public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout,"translationY",0,(getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(100);
-            animator.addListener(endListener);
-            animator.start();
-        }
-    };
-
-    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
-
-        @Override
-        public void onAnimationEnd(Animator animator) {
-            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-            mLatestWalletAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onAnimationCancel(Animator animator) { }
-        @Override public void onAnimationStart(Animator animator) { }
-        @Override public void onAnimationRepeat(Animator animator) { }
-    };
 
     private void showWalletFragment(String uUID) {
         Bundle bundle = new Bundle();
@@ -421,12 +417,12 @@ public class WalletsFragment extends Fragment
         ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
     }
 
-    public void addNewWallet(String name, int currencyNum){
-        if(AirbitzApplication.isLoggedIn()) {
+    public void addNewWallet(String name, int currencyNum) {
+        if (AirbitzApplication.isLoggedIn()) {
             mAddWalletTask = new AddWalletTask(name, currencyNum);
             mAddWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
-            Common.LogD(TAG, "not logged in");
+            Log.d(TAG, "not logged in");
         }
     }
 
@@ -439,52 +435,10 @@ public class WalletsFragment extends Fragment
 
     @Override
     public void onWalletUpdated() {
-        Common.LogD(TAG, "wallet list updated");
+        Log.d(TAG, "wallet list updated");
         updateWalletList(mArchiveClosed);
         UpdateBalances();
     }
-
-    /**
-     * Represents an asynchronous creation of the first wallet
-     */
-    public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mWalletName;
-        private final int mCurrencyNum;
-
-        AddWalletTask(String walletName, int currencyNum) {
-            mWalletName = walletName;
-            mCurrencyNum = currencyNum;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            ((NavigationActivity)getActivity()).showModalProgress(true);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    mWalletName, mCurrencyNum);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAddWalletTask = null;
-            ((NavigationActivity)getActivity()).showModalProgress(false);
-            if (!success) {
-                Common.LogD(TAG, "AddWalletTask failed");
-            } else {
-                updateWalletList(mArchiveClosed);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAddWalletTask = null;
-        }
-    }
-
 
     public void showAddWalletLayout() {
         if (mAddWalletLayout.getVisibility() == View.VISIBLE) {
@@ -507,8 +461,8 @@ public class WalletsFragment extends Fragment
         mAddWalletNameEditText.requestFocus();
     }
 
-    private void goDone(){
-        if(!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
+    private void goDone() {
+        if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
                 int[] nums = mCoreAPI.getCurrencyNumbers();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
@@ -528,17 +482,6 @@ public class WalletsFragment extends Fragment
         mHandler.postDelayed(mDelayedAnimation, 100);
     }
 
-    //This animation must run after the keyboard is down else a layout redraw occurs causing a visual glitch
-    Runnable mDelayedAnimation = new Runnable() {
-        @Override
-        public void run() {
-            Animation mSlideOutTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top);
-            mAddWalletLayout.startAnimation(mSlideOutTop);
-            mAddWalletLayout.setVisibility(View.INVISIBLE);
-            mInvisibleCover.setVisibility(View.INVISIBLE);
-        }
-    };
-
     @Override
     public void onResume() {
         super.onResume();
@@ -554,7 +497,8 @@ public class WalletsFragment extends Fragment
         ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         prefs.edit().putBoolean("archiveClosed", mArchiveClosed).apply();
@@ -562,8 +506,8 @@ public class WalletsFragment extends Fragment
         ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
 
-    public void buildFragments(){
-        if(bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST) || bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)){
+    public void buildFragments() {
+        if (bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST) || bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
@@ -590,21 +534,21 @@ public class WalletsFragment extends Fragment
         List<Wallet> list = new ArrayList<Wallet>();
         List<Wallet> coreList = mCoreAPI.getCoreWallets(false);
 
-        if(coreList==null)
+        if (coreList == null)
             coreList = new ArrayList<Wallet>();
         Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
         headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
         list.add(headerWallet);//Wallet HEADER
         // Loop through and find non-archived wallets first
         for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.getName()!=null)
+            if (!wallet.isArchived() && wallet.getName() != null)
                 list.add(wallet);
         }
         Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
         archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
         list.add(archiveWallet); //Archive HEADER
 
-        if(!archiveClosed) {
+        if (!archiveClosed) {
             // Loop through and add archived wallets now
             for (Wallet wallet : coreList) {
                 if (wallet.isArchived() && wallet.getName() != null)
@@ -612,5 +556,46 @@ public class WalletsFragment extends Fragment
             }
         }
         return list;
+    }
+
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mWalletName;
+        private final int mCurrencyNum;
+
+        AddWalletTask(String walletName, int currencyNum) {
+            mWalletName = walletName;
+            mCurrencyNum = currencyNum;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            ((NavigationActivity) getActivity()).showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    mWalletName, mCurrencyNum);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAddWalletTask = null;
+            ((NavigationActivity) getActivity()).showModalProgress(false);
+            if (!success) {
+                Log.d(TAG, "AddWalletTask failed");
+            } else {
+                updateWalletList(mArchiveClosed);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAddWalletTask = null;
+        }
     }
 }

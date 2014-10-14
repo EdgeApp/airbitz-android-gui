@@ -4,28 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
+    android:baselineAligned="false"
     android:gravity="center_vertical">
 
     <FrameLayout
         android:id="@+id/imageview_contact_pic_frame"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="0dp"
-        android:visibility="gone"
-        android:layout_width="50dp"
-        android:layout_height="50dp">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageview_contact_pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="2dp"
-            android:src="@drawable/arrow_right"/>
+            android:src="@drawable/arrow_right" />
 
         <ImageView
-            android:src="@drawable/frame_rounded"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:src="@drawable/frame_rounded" />
 
     </FrameLayout>
 
@@ -33,11 +34,11 @@
         android:id="@+id/layout_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:layout_marginLeft="14dp"
-        android:orientation="vertical"
         android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:weightSum="3">
 
         <TextView
@@ -46,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="1.5dp"
-            android:text="Dec 10 12:00 AM"
             android:textColor="@color/dark_blue_text"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -56,11 +56,10 @@
             style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="0.5dp"
-            android:paddingBottom="0dp"
-            android:singleLine="true"
             android:ellipsize="end"
-            android:text="1zf76dh4TG"
+            android:paddingBottom="0dp"
+            android:paddingTop="0.5dp"
+            android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
@@ -69,11 +68,10 @@
             style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="1.5dp"
-            android:paddingBottom="0.5dp"
-            android:text="2 confirmations"
-            android:singleLine="true"
             android:ellipsize="end"
+            android:paddingBottom="0.5dp"
+            android:paddingTop="1.5dp"
+            android:singleLine="true"
             android:textColor="@color/green_text_dark"
             android:textSize="10sp" />
 
@@ -90,43 +88,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/textview_amount_kredit"
                 style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="0.5dp"
-                android:paddingBottom="7.5dp"
                 android:layout_gravity="right"
                 android:gravity="right"
-                android:text="-B 5.000"
+                android:paddingBottom="7.5dp"
+                android:paddingTop="0.5dp"
+                android:shadowColor="#00000000"
                 android:textColor="@color/green_text_dark"
-                android:textSize="14sp"
-                android:shadowColor="#00000000" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textview_amount_running_total"
                 style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7.5dp"
-                android:layout_marginBottom="0.5dp"
                 android:layout_gravity="right"
+                android:layout_marginBottom="0.5dp"
+                android:layout_marginTop="7.5dp"
                 android:gravity="right"
-                android:text="B 25.000"
                 android:textColor="@color/gray_text"
                 android:textSize="12sp" />
 
         </LinearLayout>
 
         <ImageView
-                android:id="@+id/imageview_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="7dp"
-                android:src="@drawable/arrow_right" />
+            android:id="@+id/imageview_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="7dp"
+            android:src="@drawable/arrow_right" />
 
     </LinearLayout>
 </LinearLayout>

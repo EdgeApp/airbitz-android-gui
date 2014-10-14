@@ -1,72 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="#addff1"-->
-    <!--android:paddingLeft="13dp"-->
-    <!--android:paddingRight="15dp"-->
-    <!--android:paddingTop="15dp"-->
-    <!--android:paddingBottom="15dp"-->
-    <!-->-->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
-    android:background="@color/listitem_normal">
-
-    <ImageView
-        android:id="@+id/imageview_dots"
-        android:layout_width="30.8dp"
-        android:layout_height="37.8dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:padding="12.6dp"
-        android:src="@drawable/ico_dots"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+    android:background="@color/listitem_normal"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/fragment_category_textview_title"
         style="@style/WhiteDropShadow"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="44.1dp"
-        android:layout_alignParentLeft="true"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="12.6dp"
-        android:text="item"
-        android:textSize="15sp"
+        android:layout_marginStart="12.6dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textColor="@color/gray_text"/>
-
-    <ImageView
-        android:id="@+id/imageview_icon"
-        android:layout_width="22.8dp"
-        android:layout_height="28.8dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:paddingTop="9.45dp"
-        android:paddingLeft="5.45dp"
-        android:paddingBottom="9.45dp"
-        android:paddingRight="0dp"
-        android:src="@drawable/arrow_right"
-        android:layout_toLeftOf="@id/imageview_dots"
-        android:layout_centerVertical="true"/>
+        android:textColor="@color/gray_text"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/textview_amount"
         style="@style/WhiteDropShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/imageview_icon"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
-        android:text="amount"
         android:textColor="@color/dark_blue_text"
-        android:textSize="14sp"
-        android:layout_centerVertical="true"/>
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/imageview_icon"
+        android:layout_width="22.8dp"
+        android:layout_height="28.8dp"
+        android:layout_gravity="center_vertical"
+        android:adjustViewBounds="true"
+        android:paddingBottom="9.45dp"
+        android:paddingLeft="5.45dp"
+        android:paddingTop="9.45dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_right" />
+
+    <ImageView
+        android:id="@+id/imageview_dots"
+        android:layout_width="30.8dp"
+        android:layout_height="37.8dp"
+        android:layout_gravity="center_vertical"
+        android:adjustViewBounds="true"
+        android:padding="12.6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ico_dots" />
 
 
-
-</RelativeLayout>
+</LinearLayout>
