@@ -187,7 +187,7 @@
                     android:layout_marginBottom="30dp"
                     android:layout_marginTop="25dp"
                     android:background="@drawable/btn_blue"
-                    android:text="@string/string_next_step"
+                    android:text="@string/activity_recovery_complete_button"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     android:textStyle="bold" />
