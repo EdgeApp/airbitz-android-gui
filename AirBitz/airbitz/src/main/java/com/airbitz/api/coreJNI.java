@@ -296,6 +296,8 @@ public class coreJNI {
   public final static native boolean tABC_AccountSettings_bNameOnPayments_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_minutesAutoLogout_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);
   public final static native int tABC_AccountSettings_minutesAutoLogout_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_recoveryReminderCount_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);
+  public final static native int tABC_AccountSettings_recoveryReminderCount_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_szLanguage_set(long jarg1, tABC_AccountSettings jarg1_, String jarg2);
   public final static native String tABC_AccountSettings_szLanguage_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_currencyNum_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);

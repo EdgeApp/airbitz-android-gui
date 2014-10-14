@@ -4830,6 +4830,34 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1minu
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1recoveryReminderCount_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->recoveryReminderCount = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1recoveryReminderCount_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  result = (int) ((arg1)->recoveryReminderCount);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1szLanguage_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
   char *arg2 = (char *) 0 ;
