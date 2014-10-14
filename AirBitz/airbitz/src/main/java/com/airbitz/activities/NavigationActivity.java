@@ -50,6 +50,7 @@ import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
+import com.airbitz.objects.Numberpad;
 import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
@@ -88,6 +89,7 @@ public class NavigationActivity extends Activity
             mFragmentLayout.invalidate();
         }
     };
+
     final Runnable delayedShowCalculator = new Runnable() {
         @Override
         public void run() {
@@ -95,6 +97,15 @@ public class NavigationActivity extends Activity
             mCalculatorView.setEnabled(true);
         }
     };
+
+    final Runnable delayedShowNumberpad = new Runnable() {
+        @Override
+        public void run() {
+            mNumberpadView.setVisibility(View.VISIBLE);
+            mNumberpadView.setEnabled(true);
+        }
+    };
+
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
         @Override
@@ -125,6 +136,7 @@ public class NavigationActivity extends Activity
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
     private Calculator mCalculatorView;
+    private Numberpad mNumberpadView;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
     private int mNavThreadId;
@@ -171,6 +183,7 @@ public class NavigationActivity extends Activity
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
+        mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
 
         setTypeFaces();
 
@@ -424,6 +437,10 @@ public class NavigationActivity extends Activity
         return mCalculatorView;
     }
 
+    public Numberpad getNumberpadView() {
+        return mNumberpadView;
+    }
+
     public boolean isLargeDpi() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -472,6 +489,16 @@ public class NavigationActivity extends Activity
         if (mCalculatorView.getVisibility() != View.VISIBLE) {
             mHandler.postDelayed(delayedShowCalculator, 100);
         }
+    }
+
+    public void hideNumberpad() {
+        mHandler.removeCallbacks(delayedShowNumberpad);
+        mNumberpadView.setVisibility(View.GONE);
+        mNumberpadView.setEnabled(false);
+    }
+
+    public void showNumberpad() {
+        mHandler.postDelayed(delayedShowNumberpad, 100);
     }
 
     public void onCalculatorButtonClick(View v) {

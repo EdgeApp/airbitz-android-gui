@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@drawable/bkg_calculator"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/row1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/numberpadButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_1"
+            android:tag="1" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_2"
+            android:tag="2" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_3"
+            android:tag="3" />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/row1"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/numberpadButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_4"
+            android:tag="4" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_5"
+            android:tag="5" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_6"
+            android:tag="6" />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/row2"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/numberpadButton7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_7"
+            android:tag="7" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_8"
+            android:tag="8" />
+
+        <ImageButton
+            android:id="@+id/numberpadButton9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_9"
+            android:tag="9" />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/row3"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/numberpadButtonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_back"
+            android:tag="back"
+            android:textColor="@android:color/white" />
+        <ImageButton
+            android:id="@+id/numberpadButton0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_calc_0"
+            android:tag="0" />
+
+        <ImageButton
+            android:id="@+id/numberpadButtonDot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:alpha="0"
+            android:clickable="false"
+            android:background="@drawable/btn_calc_dot" />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"> </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
