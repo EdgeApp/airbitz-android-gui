@@ -407,7 +407,6 @@ public class SendConfirmationFragment extends Fragment {
         mConversionTextView.setTextColor(Color.WHITE);
         mBitcoinField.setTextColor(Color.WHITE);
         mFiatField.setTextColor(Color.WHITE);
-//        mConversionTextView.setText("");
         mAutoUpdatingTextFields = false;
     }
 
@@ -510,6 +509,7 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+            mPinEdittext.requestFocus();
         }
     }
 
