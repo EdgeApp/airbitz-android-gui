@@ -56,7 +56,11 @@ public class AirbitzApplication extends Application {
     }
 
     public static String getPassword() {
-        return String.valueOf(airbitzLogin.getPassword());
+        if(airbitzLogin.getPassword()==null) {
+            return null;
+        } else {
+            return String.valueOf(airbitzLogin.getPassword());
+        }
     }
 
     public static Context getContext() {
