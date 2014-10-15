@@ -204,7 +204,7 @@
                 android:orientation="vertical"
                 android:padding="6.3dp"
                 android:paddingTop="9.45dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:weightSum="7">
 
                 <TextView
