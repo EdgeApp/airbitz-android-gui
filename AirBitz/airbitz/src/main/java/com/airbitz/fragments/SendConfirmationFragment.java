@@ -129,6 +129,8 @@ public class SendConfirmationFragment extends Fragment {
             mLabel = bundle.getString(SendFragment.LABEL, "");
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
+
+            Log.d(TAG, "Amount: "+mAmountToSendSatoshi+" Label: "+mLabel+" UUID: "+mUUIDorURI);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
             mWalletForConversions = mSourceWallet;
             if (mIsUUID) {
@@ -574,6 +576,9 @@ public class SendConfirmationFragment extends Fragment {
 
         if (mSavedBitcoin > -1) {
             mAmountToSendSatoshi = mSavedBitcoin;
+        }
+
+        if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
