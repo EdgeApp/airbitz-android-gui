@@ -197,7 +197,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
                     boolean bIsUUID = false;
                     CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
                     if (results.address != null) {
-                        GotoSendConfirmation(strTo, 0, "", bIsUUID);
+                        GotoSendConfirmation(results.address, results.amountSatoshi, results.label, bIsUUID);
                     } else {
                         ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
                         ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
