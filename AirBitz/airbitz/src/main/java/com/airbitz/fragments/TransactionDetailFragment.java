@@ -1165,18 +1165,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         if (mNearBusinessSearchAsyncTask != null) {
             mNearBusinessSearchAsyncTask.cancel(true);
         }
-        mTransaction.setName(mPayeeEditText.getText().toString());
-        mTransaction.setCategory(mCategoryEdittext.getText().toString());
-        mTransaction.setNotes(mNoteEdittext.getText().toString());
-        double amountFiat;
-        try {
-            amountFiat = Double.valueOf(mFiatValueEdittext.getText().toString());
-        } catch (Exception e) {
-            amountFiat = 0.0;
-        }
-        mTransaction.setAmountFiat(amountFiat);
-        mTransaction.setmBizId(mBizId);
-        mCoreAPI.storeTransaction(mTransaction);
+
+        SaveTransactionAsyncTask task = new SaveTransactionAsyncTask(mTransaction, mBizId, mPayeeEditText.getText().toString(), mCategoryEdittext.getText().toString(), mNoteEdittext.getText().toString(),
+                mFiatValueEdittext.getText().toString());
+        task.execute();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
@@ -1186,6 +1178,48 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mArrayAutoCompleteQueries.add(term);
             mOnlineBusinessSearchAsyncTask = new OnlineBusinessSearchAsyncTask();
             mOnlineBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, term);
+        }
+    }
+
+    class SaveTransactionAsyncTask extends AsyncTask<Void, Void, Void> {
+        Transaction transaction;
+        long Bizid;
+        String Payee, Category, Note, Fiat;
+
+        public SaveTransactionAsyncTask(Transaction tx, long bizId, String payee,
+             String category, String note, String fiat) {
+            transaction = tx;
+            Bizid = bizId;
+            Payee = payee;
+            Category = category;
+            Note = note;
+            Fiat = fiat;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            transaction.setName(Payee);
+            transaction.setCategory(Category);
+            transaction.setNotes(Note);
+            double amountFiat;
+            try {
+                amountFiat = Double.valueOf(Fiat);
+            } catch (Exception e) {
+                amountFiat = 0.0;
+            }
+            transaction.setAmountFiat(amountFiat);
+            transaction.setmBizId(Bizid);
+            mCoreAPI.storeTransaction(mTransaction);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
         }
     }
 

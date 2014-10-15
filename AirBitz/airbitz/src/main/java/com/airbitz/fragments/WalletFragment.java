@@ -505,6 +505,13 @@ public class WalletFragment extends Fragment
         FindBizIdThumbnails();
     }
 
+    Runnable startTxListUpdate = new Runnable() {
+        @Override
+        public void run() {
+            updateTransactionsListView(new ArrayList<Transaction>(mTransactions));
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
@@ -513,14 +520,12 @@ public class WalletFragment extends Fragment
 
         mWallet = mCoreAPI.getWalletFromUUID(mWallet.getUUID());
         if (!mTransactions.isEmpty()) {
-            List<Transaction> txs = new ArrayList<Transaction>(mTransactions);
-            updateTransactionsListView(txs);
+            mHandler.post(startTxListUpdate);
         }
         startTransactionTask();
 
         UpdateBalances();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
-        mTransactionAdapter.notifyDataSetChanged();
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
     }
@@ -528,6 +533,10 @@ public class WalletFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
+        if(mTransactionTask!=null) {
+            mTransactionTask.cancel(true);
+            mTransactionTask = null;
+        }
         mCoreAPI.removeExchangeRateChangeListener(this);
         ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
     }
