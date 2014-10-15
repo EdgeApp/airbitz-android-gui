@@ -415,7 +415,7 @@
     Cambiar PIN de retirada
   </string>
   <string name="settings_button_recovery">
-    Cambio de las preguntas de recuperación
+    Preguntas de Recuperación
   </string>
   <string name="settings_user_title">
     NOMBRE
@@ -648,6 +648,9 @@
   </string>
 
     <string name="transaction_details_payee_hint">Ingrese Beneficiario</string>
+    <string name="transaction_details_recovery_reminder_title">Recuperar contraseña Recordatorio</string>
+    <string name="transaction_details_recovery_reminder_message">Considerar la posibilidad de recuperación de las preguntas en la ficha Configuración en caso de que olvide su contraseña!</string>
+
     <string name="transaction_details_advanced_txid">"Transacción ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
     <string name="transaction_details_advanced_source">"Fuente"</string>
