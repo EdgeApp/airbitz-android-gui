@@ -235,7 +235,7 @@
     Vuelva a escribir la nueva contraseña
   </string>
   <string name="activity_signup_pin_label">
-    Retirada Pin
+    PIN de 4 Dígitos
   </string>
   <string name="activity_signup_pin_hint">
     Crear Pin
@@ -538,7 +538,7 @@
     Max
   </string>
   <string name="send_confirmation_enter_send_pin">
-    Ingrese Enviar Pin
+    Ingrese PIN de 4 Dígitos
   </string>
   <string name="send_confirmation_slide_to_confirm">
     Deslice para Confirmar
