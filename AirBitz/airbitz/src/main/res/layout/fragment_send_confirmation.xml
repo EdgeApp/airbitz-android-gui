@@ -258,6 +258,7 @@
                 android:layout_marginTop="0dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
+                style="@style/WhiteDropShadow"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
 
