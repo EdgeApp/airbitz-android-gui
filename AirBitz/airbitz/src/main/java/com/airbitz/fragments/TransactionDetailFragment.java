@@ -105,6 +105,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private String currentType = "";
     private boolean doEdit = false;
     private boolean catSelected = false;
+    private boolean mHasReminded = false;
     private defaultCategoryEnum defaultCat = defaultCategoryEnum.Income;//TODO set this based on type of transaction
     private Bundle bundle;
     private int baseIncomePosition = 0;//TODO set these three from categories retrieved
@@ -132,7 +133,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private ConcurrentHashMap<String, String> mArrayAddresses;
     private List<Object> mArrayAutoComplete;
     private HashMap<String, Uri> mCombinedPhotos;
-    ;
     private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();
     private long mBizId;
     private List<String> mCategories;
@@ -647,6 +647,20 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public void onResume() {
         super.onResume();
 
+        int reminderCount = mCoreAPI.coreSettings().getRecoveryReminderCount();
+        if(reminderCount > 0 && mFromRequest) {
+            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
+            String txId = bundle.getString(Transaction.TXID);
+            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            if(tx.getAmountSatoshi() >= 2000000 && !mHasReminded) {
+                mHasReminded = true;
+                reminderCount--;
+                mCoreAPI.coreSettings().setRecoveryReminderCount(reminderCount);
+                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.transaction_details_recovery_reminder_title),
+                        getString(R.string.transaction_details_recovery_reminder_message));
+            }
+        }
         getContactsList();
     }
 

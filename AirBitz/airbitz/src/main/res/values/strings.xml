@@ -162,7 +162,7 @@
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change withdrawal PIN</string>
-    <string name="settings_button_recovery">Change recovery questions</string>
+    <string name="settings_button_recovery">Recovery Questions</string>
     <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
@@ -269,6 +269,9 @@
     <string name="transaction_details_to">"To: "</string>
     <string name="transaction_details_from">"From: "</string>
     <string name="transaction_details_payee_hint">Enter Payee</string>
+
+    <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
+    <string name="transaction_details_recovery_reminder_message">Consider entering Recovery Questions in the Settings tab in case you forget your password!</string>
 
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>
