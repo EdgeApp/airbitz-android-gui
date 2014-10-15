@@ -94,7 +94,7 @@
     <string name="activity_signup_old_password">Old Password</string>
     <string name="activity_signup_new_password">New Password</string>
     <string name="activity_signup_new_password_confirm">Re-enter New Password</string>
-    <string name="activity_signup_pin_label">Withdrawal Pin</string>
+    <string name="activity_signup_pin_label">4 Digit Pin</string>
     <string name="activity_signup_pin_hint">Create Pin</string>
     <string name="activity_signup_new_pin">New PIN</string>
     <string name="activity_signup_password_requirements">Password Requirements</string>
@@ -220,7 +220,7 @@
     <string name="send_confirmation_from_title">Send From:</string>
     <string name="send_confirmation_to_title">Send To:</string>
     <string name="send_confirmation_max_button_title">Max</string>
-    <string name="send_confirmation_enter_send_pin">Enter Send Pin</string>
+    <string name="send_confirmation_enter_send_pin">Enter 4 Digit Pin</string>
     <string name="send_confirmation_slide_to_confirm">Slide to Confirm</string>
     <string name="fragment_send_confirmation_send_error_title">Error during send</string>
     <string name="fragment_send_confirmation_insufficient_funds_message">You do not have enough funds to send this transaction.</string>
