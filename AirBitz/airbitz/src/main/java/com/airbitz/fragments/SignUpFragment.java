@@ -73,12 +73,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private ImageView mSwitchImage2;
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
-    private ImageView mSwitchImage5;
     private TextView mQuestion1;
     private TextView mQuestion2;
     private TextView mQuestion3;
     private TextView mQuestion4;
-    private TextView mQuestion5;
     private TextView mTimeTextView;
     private View mUserNameRedRingCover;
     private CreateAccountTask mCreateAccountTask;
@@ -138,12 +136,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
         mSwitchImage3 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_3);
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
-        mSwitchImage5 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_5);
         mQuestion1 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_1);
         mQuestion2 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_2);
         mQuestion3 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_3);
         mQuestion4 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_4);
-        mQuestion5 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_5);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -369,9 +365,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     break;
                 case 3:
                     mSwitchImage4.setImageResource(resource);
-                    break;
-                case 4:
-                    mSwitchImage5.setImageResource(resource);
                     break;
                 default:
                     break;
