@@ -13,11 +13,14 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.SettingFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created on 2/13/14.
@@ -27,10 +30,12 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
+    private boolean mMeters = false;
 
     public VenueAdapter(Context context, List<BusinessSearchResult> venues) {
         mContext = context;
         mVenues = venues;
+        mMeters = isMeters();
     }
 
     @Override
@@ -137,32 +142,45 @@ public class VenueAdapter extends BaseAdapter {
         }
         // Distance
         try {
-            double distance = Double.parseDouble(mVenues.get(position).getDistance());
-            distance = Common.metersToMiles(distance);
-            if (distance < 1.0) {
-                double distFeet = Common.milesToFeet(distance);
-                if (distFeet <= 1000) {
-                    int intDist = (int) Math.floor(distFeet);
-                    String distanceString = "" + intDist;
-                    viewHolder.textViewDistanceItem.setText(distanceString + " feet");
-                } else {
-                    distance = Math.ceil(distance * 10) / 10;
-                    String distanceString = "" + distance;
-                    distanceString = distanceString.substring(1, distanceString.length());
-                    viewHolder.textViewDistanceItem.setText(distanceString + " miles");
-                }
-            } else if (distance >= 1000) {
-                int distanceInInt = (int) distance;
-                viewHolder.textViewDistanceItem.setText(String.valueOf(distanceInInt) + " miles");
-            } else {
-                distance = Math.ceil(distance * 10) / 10;
-                viewHolder.textViewDistanceItem.setText(String.valueOf(distance) + " miles");
-            }
+            double meters = Double.parseDouble(mVenues.get(position).getDistance());
+            viewHolder.textViewDistanceItem.setText(getDistanceString(meters));
             viewHolder.textViewDistanceItem.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             viewHolder.textViewDistanceItem.setVisibility(View.INVISIBLE);
         }
         return convertView;
+    }
+
+    private String getDistanceString(double meters) {
+        String distanceString="";
+
+        if(mMeters) {
+            if(meters<1000) {
+                distanceString = "" + (int) meters + " m";
+            } else {
+                distanceString = "" + BigDecimal.valueOf(meters*0.001).setScale(1, BigDecimal.ROUND_HALF_UP) + " km";
+            }
+        } else {
+            double miles = Common.metersToMiles(meters);
+            if (miles < 1.0) {
+                double distFeet = Common.milesToFeet(miles);
+                if (distFeet <= 1000) {
+                    int intDist = (int) Math.floor(distFeet);
+                    distanceString = "" + intDist + " feet";
+                } else {
+                    miles = Math.ceil(miles * 10) / 10;
+                    distanceString = "" + miles;
+                    distanceString = distanceString.substring(1, distanceString.length()) + " miles";
+                }
+            } else if (miles >= 1000) {
+                int distanceInInt = (int) miles;
+                distanceString = String.valueOf(distanceInInt) + " miles";
+            } else {
+                miles = Math.ceil(miles * 10) / 10;
+                distanceString = String.valueOf(miles) + " miles";
+            }
+        }
+        return distanceString;
     }
 
     public void warmupCache(List<BusinessSearchResult> venues) {
@@ -185,5 +203,17 @@ public class VenueAdapter extends BaseAdapter {
         TextView textViewDistanceItem;
         TextView addressTextView;
         int position;
+    }
+
+    private boolean isMeters() {
+        int type = SettingFragment.getDistancePref();
+        if(type == 1) {
+            return true;
+        } else if (type == 2) {
+            return false;
+        } else { // pull local and determine if en_US
+            String locale = Locale.getDefault().toString();
+            return !locale.equals("en_US");
+        }
     }
 }
