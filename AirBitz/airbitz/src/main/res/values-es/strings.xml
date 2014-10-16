@@ -652,7 +652,7 @@
 
     <string name="transaction_details_payee_hint">Ingrese Beneficiario</string>
     <string name="transaction_details_recovery_reminder_title">Recuperar contraseña Recordatorio</string>
-    <string name="transaction_details_recovery_reminder_message">Considerar la posibilidad de recuperación de las preguntas en la ficha Configuración en caso de que olvide su contraseña!</string>
+    <string name="transaction_details_recovery_reminder_message">Usted recibió Bitcoin! Le recomendamos a la creación de preguntas y respuestas de recuperación de contraseña. De lo contrario no será capaz de acceder a su cuenta si su contraseña se olvida.</string>
 
     <string name="transaction_details_advanced_txid">"Transacción ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
