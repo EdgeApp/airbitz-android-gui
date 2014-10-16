@@ -272,7 +272,7 @@
     <string name="transaction_details_payee_hint">Enter Payee</string>
 
     <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
-    <string name="transaction_details_recovery_reminder_message">Consider entering Recovery Questions in the Settings tab in case you forget your password!</string>
+    <string name="transaction_details_recovery_reminder_message">"You've received Bitcoin! We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
 
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>

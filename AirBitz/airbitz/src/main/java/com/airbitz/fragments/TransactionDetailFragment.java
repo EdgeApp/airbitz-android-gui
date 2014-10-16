@@ -1,8 +1,10 @@
 package com.airbitz.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -24,6 +26,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -154,6 +157,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private AlertDialog mMessageDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -627,8 +631,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
-                getActivity().onBackPressed();
+                goDone();
             }
         });
 
@@ -647,22 +650,58 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public void onResume() {
         super.onResume();
 
+        getContactsList();
+    }
+
+
+    private void goDone() {
         int reminderCount = mCoreAPI.coreSettings().getRecoveryReminderCount();
-        if(reminderCount > 0 && mFromRequest) {
-            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-            String txId = bundle.getString(Transaction.TXID);
-            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
-            if(tx.getAmountSatoshi() >= 2000000 && !mHasReminded) {
+        if(reminderCount > 0 && mWallet.getBalanceSatoshi() >= 2000000 && !mHasReminded) {
                 mHasReminded = true;
                 reminderCount--;
                 mCoreAPI.coreSettings().setRecoveryReminderCount(reminderCount);
                 mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
-                ((NavigationActivity)getActivity()).ShowOkMessageDialog(getString(R.string.transaction_details_recovery_reminder_title),
+                ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                         getString(R.string.transaction_details_recovery_reminder_message));
-            }
+        } else {
+            done();
         }
-        getContactsList();
     }
+
+    private void done() {
+        mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
+        getActivity().onBackPressed();
+    }
+
+    public void ShowReminderDialog(String title, String message) {
+        if (mMessageDialog != null) {
+            mMessageDialog.dismiss();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                done();
+                                Bundle bundle = new Bundle();
+                                bundle.putBoolean(SettingFragment.START_RECOVERY_PASSWORD, true);
+                                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
+                            }
+                        }
+                ).setNegativeButton(getResources().getString(R.string.string_no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        done();
+                    }
+                }
+        );
+        mMessageDialog = builder.create();
+        mMessageDialog.show();
+    }
+
 
     private void updateAutoCompleteArray(String strTerm) {
         // if there is anything in the payee field

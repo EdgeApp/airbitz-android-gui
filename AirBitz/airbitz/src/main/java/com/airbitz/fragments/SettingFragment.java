@@ -53,6 +53,7 @@ public class SettingFragment extends Fragment {
     static final String[] OTHER_EXCHANGES = new String[]{"Coinbase"};
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
+    public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
     private final String TAG = getClass().getSimpleName();
     AlertDialog mCurrencyDialog;
     AlertDialog mDefaultExchangeDialog;
@@ -570,6 +571,10 @@ public class SettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Bundle bundle = getArguments();
+        if(bundle.getBoolean(START_RECOVERY_PASSWORD)) {
+            mChangeRecoveryButton.performClick();
+        }
     }
 
     @Override
