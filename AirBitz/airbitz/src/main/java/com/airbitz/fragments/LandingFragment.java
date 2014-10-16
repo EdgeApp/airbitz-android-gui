@@ -30,9 +30,7 @@ import com.airbitz.utils.Common;
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     View activityRootView;
-    private ImageView mLogoImageView;
     private TextView mDetailTextView;
-    private LinearLayout mSwipeTextLayout;
     private ImageView mRightArrow;
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
@@ -52,17 +50,14 @@ public class LandingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
 
-        mLogoImageView = (ImageView) view.findViewById(R.id.fragment_landing_logo_imageview);
-
         mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
-        mSwipeTextLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
         TextView mSwipeTextView = (TextView) view.findViewById(R.id.fragment_landing_swipe_textview);
 
         mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
         HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
-        HighlightOnPressButton mForgotPasswordButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_forgot_password_button);
+        LinearLayout mForgotPasswordButton = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_button);
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
 
@@ -74,30 +69,6 @@ public class LandingFragment extends Fragment {
         mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         activityRootView = view.findViewById(R.id.fragment_landing_container);
-
-        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                collapseVertically(hasFocus);
-            }
-        });
-
-        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                collapseVertically(hasFocus);
-            }
-        });
-
-        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    collapseVertically(false);
-                }
-                return false;
-            }
-        });
 
         mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +87,6 @@ public class LandingFragment extends Fragment {
             public void onClick(View view) {
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mPasswordEditText);
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mUserNameEditText);
-                collapseVertically(false);
                 attemptLogin();
             }
         });
@@ -142,20 +112,6 @@ public class LandingFragment extends Fragment {
         rightBounce.start();
 
         return view;
-    }
-
-    void collapseVertically(boolean collapse) {
-        if (collapse) {
-            mDetailTextView.setVisibility(View.GONE);
-            mSwipeTextLayout.setVisibility(View.GONE);
-            if (activityRootView.getHeight() < (int) getActivity().getResources().getDimension(R.dimen.fragment_landing_content_total_height)) {
-                mLogoImageView.setVisibility(View.GONE);
-            }
-        } else {
-            mDetailTextView.setVisibility(View.VISIBLE);
-            mSwipeTextLayout.setVisibility(View.VISIBLE);
-            mLogoImageView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void attemptForgotPassword() {

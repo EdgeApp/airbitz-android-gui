@@ -49,7 +49,7 @@
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
-                    android:background="@android:color/white"
+                    android:background="@drawable/btn_white"
                     android:ems="10"
                     android:hint="@string/fragment_landing_username_hint"
                     android:inputType="textVisiblePassword|textNoSuggestions"
@@ -59,8 +59,7 @@
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:textColor="@android:color/black"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textColorHint="@color/identifier_off_text"
                     android:textSize="14sp" />
 
                 <EditText
@@ -69,7 +68,7 @@
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
-                    android:background="@android:color/white"
+                    android:background="@drawable/btn_white"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:hint="@string/fragment_landing_password_hint"
@@ -79,8 +78,7 @@
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
                     android:textColor="@android:color/black"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textColorHint="@color/identifier_off_text"
                     android:textSize="14sp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
@@ -143,10 +141,12 @@
             android:textStyle="bold"/>
 
         <LinearLayout
+            android:id="@+id/fragment_landing_forgot_password_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="12dp"
+            android:clickable="true"
             android:layout_gravity="center_horizontal">
 
             <TextView
@@ -160,7 +160,6 @@
                 android:textStyle="bold"/>
 
             <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/fragment_landing_forgot_password_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
