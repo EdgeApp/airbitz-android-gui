@@ -169,6 +169,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="6.3dp"
                 android:paddingRight="6.3dp"
+                android:clickable="false"
                 android:visibility="visible" />
         </LinearLayout>
 
