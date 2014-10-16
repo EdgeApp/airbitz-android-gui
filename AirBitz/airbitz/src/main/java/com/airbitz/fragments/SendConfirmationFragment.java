@@ -32,7 +32,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.Numberpad;
 import com.airbitz.utils.Common;
 
 /**
@@ -78,7 +77,6 @@ public class SendConfirmationFragment extends Fragment {
     private float rX = 0;
 
     private Calculator mCalculator;
-    private Numberpad mNumberpad;
 
     private RelativeLayout mSlideLayout;
 
@@ -129,8 +127,6 @@ public class SendConfirmationFragment extends Fragment {
             mLabel = bundle.getString(SendFragment.LABEL, "");
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-
-            Log.d(TAG, "Amount: "+mAmountToSendSatoshi+" Label: "+mLabel+" UUID: "+mUUIDorURI);
             mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
             mWalletForConversions = mSourceWallet;
             if (mIsUUID) {
@@ -156,7 +152,6 @@ public class SendConfirmationFragment extends Fragment {
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mCalculator = mActivity.getCalculatorView();
-        mNumberpad = mActivity.getNumberpadView();
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
@@ -215,25 +210,26 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields && editable.length() >= 4) {
-                    hidePINkeyboard();
+                if (editable.length() >= 4) {
+                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
                     mParentLayout.requestFocus();
                 }
             }
         };
         mPinEdittext.addTextChangedListener(mPINTextWatcher);
 
-
-        mNumberpad.setEditText(mPinEdittext);
-
+        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d(TAG, "PIN field focus changed");
                 if (hasFocus) {
+                    mAutoUpdatingTextFields = true;
                     showPINkeyboard();
                 } else {
-                    hidePINkeyboard();
+                    mAutoUpdatingTextFields = false;
                 }
             }
         });
@@ -249,7 +245,7 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields) {
+                if (!mAutoUpdatingTextFields && !mBitcoinField.getText().toString().isEmpty()) {
                     updateTextFieldContents(true);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
@@ -268,7 +264,7 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields) {
+                if (!mAutoUpdatingTextFields && !mFiatField.getText().toString().isEmpty()) {
                     updateTextFieldContents(false);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
@@ -317,21 +313,17 @@ public class SendConfirmationFragment extends Fragment {
 
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                mAutoUpdatingTextFields = true;
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();
                 edittext.setInputType(InputType.TYPE_NULL);
                 edittext.onTouchEvent(event);
                 edittext.setInputType(inType);
-                mAutoUpdatingTextFields = false;
                 return true; // the listener has consumed the event, no keyboard popup
             }
         };
 
         mBitcoinField.setOnTouchListener(preventOSKeyboard);
         mFiatField.setOnTouchListener(preventOSKeyboard);
-        mPinEdittext.setOnTouchListener(preventOSKeyboard);
-
         mBitcoinField.setOnEditorActionListener(tvListener);
         mFiatField.setOnEditorActionListener(tvListener);
 
@@ -403,25 +395,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mConversionTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(event.getRawX() >= (mConversionTextView.getRight() - mConversionTextView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-                        mActivity.pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION_INSUFFICIENT_FUNDS), NavigationActivity.Tabs.SEND.ordinal());
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
         mDummyFocus.requestFocus();
 
         return mView;
@@ -432,24 +405,13 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField.setText("");
         mBitcoinField.setText("");
         mConversionTextView.setTextColor(Color.WHITE);
-        mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         mBitcoinField.setTextColor(Color.WHITE);
         mFiatField.setTextColor(Color.WHITE);
         mAutoUpdatingTextFields = false;
     }
 
     private void showPINkeyboard() {
-        ((NavigationActivity)getActivity()).showNumberpad();
-        mPinEdittext.post(new Runnable() {
-            @Override
-            public void run() {
-                mPinEdittext.setSelection(0, mPinEdittext.getText().length());
-            }
-        });
-    }
-
-    private void hidePINkeyboard() {
-        ((NavigationActivity)getActivity()).hideNumberpad();
+        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
     }
 
     public void touchEventsEnded() {
@@ -502,8 +464,6 @@ public class SendConfirmationFragment extends Fragment {
         }
         if (fees < 0) {
             mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
-            mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
-            mConversionTextView.setCompoundDrawablePadding(10);
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setTextColor(Color.RED);
@@ -511,7 +471,6 @@ public class SendConfirmationFragment extends Fragment {
             mFiatField.setTextColor(Color.RED);
         } else if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
             mConversionTextView.setTextColor(color);
-            mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mBitcoinField.setTextColor(color);
             mFiatField.setTextColor(color);
 
@@ -599,14 +558,10 @@ public class SendConfirmationFragment extends Fragment {
 
         if (mSavedBitcoin > -1) {
             mAmountToSendSatoshi = mSavedBitcoin;
-        }
-
-        if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             }
-            calculateFees();
             mPinEdittext.requestFocus();
         } else {
             mFiatField.setText("");

@@ -14,7 +14,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,7 +34,6 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.objects.Numberpad;
 import com.airbitz.utils.Common;
 
 import java.util.List;
@@ -73,10 +71,12 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private ImageView mSwitchImage2;
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
+    private ImageView mSwitchImage5;
     private TextView mQuestion1;
     private TextView mQuestion2;
     private TextView mQuestion3;
     private TextView mQuestion4;
+    private TextView mQuestion5;
     private TextView mTimeTextView;
     private View mUserNameRedRingCover;
     private CreateAccountTask mCreateAccountTask;
@@ -84,8 +84,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
-    private Numberpad mNumberpad;
-
     /**
      * Represents an asynchronous account creation task
      */
@@ -162,10 +160,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         final TextWatcher mPINTextWatcher = new TextWatcher() {
-            int previousLength = -1;
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                previousLength = mWithdrawalPinEditText.getText().length();
             }
 
             @Override
@@ -174,42 +170,13 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() >= 4 && previousLength != mWithdrawalPinEditText.getText().length()) {
-                    hidePINkeyboard();
-                    mWithdrawalPinEditText.clearFocus();
+                if (editable.length() >= 4) {
+                    mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
+                    mParentLayout.requestFocus();
                 }
             }
         };
         mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
-
-        mNumberpad = mActivity.getNumberpadView();
-        mNumberpad.setEditText(mWithdrawalPinEditText);
-
-        mWithdrawalPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "PIN field focus changed");
-                if (hasFocus) {
-                    showPINkeyboard();
-                } else {
-                    hidePINkeyboard();
-                }
-            }
-        });
-
-        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true; // the listener has consumed the event, no keyboard popup
-            }
-        };
-
-        mWithdrawalPinEditText.setOnTouchListener(preventOSKeyboard);
-
 
         mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -276,7 +243,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus && mMode != CHANGE_PIN) {
+                if (hasFocus) {
                     mActivity.showSoftKeyboard(mUserNameEditText);
                 }
             }
@@ -488,22 +455,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         }
         return crackString;
     }
-
-    private void showPINkeyboard() {
-        ((NavigationActivity)getActivity()).showNumberpad();
-        ((NavigationActivity)getActivity()).hideSoftKeyboard(mWithdrawalPinEditText);
-        mWithdrawalPinEditText.post(new Runnable() {
-            @Override
-            public void run() {
-                mWithdrawalPinEditText.setSelection(0, mWithdrawalPinEditText.getText().length());
-            }
-        });
-    }
-
-    private void hidePINkeyboard() {
-        ((NavigationActivity)getActivity()).hideNumberpad();
-    }
-
 
     @Override
     public boolean onBackPress() {
