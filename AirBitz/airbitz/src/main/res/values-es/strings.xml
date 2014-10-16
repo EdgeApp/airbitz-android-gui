@@ -441,6 +441,9 @@
   <string name="settings_title_currency">
     Moneda predeterminada
   </string>
+  <string name="settings_title_distance">
+    Distancia predeterminada
+  </string>
   <string name="settings_exchange_title">
     INTERCAMBIO DEFAULT
   </string>
