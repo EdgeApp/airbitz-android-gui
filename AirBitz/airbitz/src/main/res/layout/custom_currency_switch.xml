@@ -73,7 +73,7 @@
             android:id="@+id/button_mover"
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
-            android:background="@drawable/btn_green"
+            android:background="@drawable/bg_button_green"
             android:gravity="center"
             android:shadowColor="@android:color/black"
             android:shadowDy="4"

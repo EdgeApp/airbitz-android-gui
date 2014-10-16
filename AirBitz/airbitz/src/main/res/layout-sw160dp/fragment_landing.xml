@@ -88,7 +88,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp"
-                    android:background="@drawable/btn_green"
+                    android:background="@drawable/bg_button_green"
                     style="@style/BlackDropShadow"
                     android:text="@string/fragment_landing_signin_button"
                     android:textColor="@android:color/white"
