@@ -97,6 +97,7 @@ public class SettingFragment extends Fragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
+    private boolean argumentsRead = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -572,8 +573,9 @@ public class SettingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Bundle bundle = getArguments();
-        if(bundle!=null && bundle.getBoolean(START_RECOVERY_PASSWORD)) {
+        if (bundle != null && bundle.getBoolean(START_RECOVERY_PASSWORD)) {
             mChangeRecoveryButton.performClick();
+            bundle.putBoolean(START_RECOVERY_PASSWORD, false);
         }
     }
 
