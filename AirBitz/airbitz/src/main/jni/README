@@ -1,22 +1,11 @@
-5/16/14:
-As of Android Studio 0.5.8, the NDK build process is not mature. Thus, manual efforts are necessary to build and link the native interface to the core library.
-Note that the airbitz build.gradle file turns off automatic ndk building so these manual techniques are not overwritten.
 
-Here is the basic procedure:
+Here is the manual procedure to build the jni files from AirBitz c core .so file:
 
 * Obtain the core library .so file and the ABC.h file
-* Modify certain parts of the ABC.h file and rename to ABC_android.h. Particularly tABC_RequestResults instead of void * for pData expected in return functions, such as SignIn, CreateAccount, etc.
-* Create an ABC.i file for swig. It just references the ABC.h file mostly.
 * build the bridge JNI using swig in a terminal - see the example command. It also creates many classes in the api directory.
-* Perform ndk-build in a terminal at the jni directory (note at this time tempEventA and tempEventB are not in the core .so file, so comment those out in ABC_android.h)
+* Perform ndk-build in a terminal at the jni directory
 * Place the core library libabc.so file in the appropriate jniLibs/XXX directory
 * use the obj directory of the ndk-build, not the libs directory, of libairbitz.so, and place next to the libabc.so library in jniLibs folder.
 * remove the libs and obj directories so Studio isn't confused which libairbitz.so to use
 
-Here's a working swig command issued from the main airbitz directory: swig -java -package com.airbitz.api -outdir src/main/java/com/airbitz/api -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
-
-See SignUpActivity for how to wrap an async task around a core library blocking call.
-
-Core builds
-on MacOS, use "make abc.build-android-arm"
-for testnet, use "./make-testnet abc"
+Example swig command issued from the main airbitz directory: swig -java -package com.airbitz.api -outdir src/main/java/com/airbitz/api -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
