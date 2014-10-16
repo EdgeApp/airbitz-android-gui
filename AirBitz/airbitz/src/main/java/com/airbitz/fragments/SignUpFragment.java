@@ -249,8 +249,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             }
         });
 
-        mUserNameEditText.requestFocus();
-
         return mView;
     }
 
@@ -512,6 +510,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public void onResume() {
         super.onResume();
         setupUI(getArguments());
+        mUserNameEditText.requestFocus();
     }
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
