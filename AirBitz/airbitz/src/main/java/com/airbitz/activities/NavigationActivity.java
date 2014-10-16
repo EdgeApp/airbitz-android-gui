@@ -271,6 +271,7 @@ public class NavigationActivity extends Activity
                 // Disappear if transparent page shows
                 if ((position == 0 || position == 2) && positionOffsetPixels == 0) {
                     mViewPager.setVisibility(View.GONE);
+                    hideSoftKeyboard(mNavBarFragmentLayout);
                 }
             }
 
@@ -278,6 +279,7 @@ public class NavigationActivity extends Activity
                 // Disappear if transparent page shows
                 if (position == 0 || position == 2) {
                     mViewPager.setVisibility(View.GONE);
+                    hideSoftKeyboard(mNavBarFragmentLayout);
                 }
             }
         });
