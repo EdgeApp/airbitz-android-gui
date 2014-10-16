@@ -572,7 +572,7 @@ public class SettingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Bundle bundle = getArguments();
-        if(bundle.getBoolean(START_RECOVERY_PASSWORD)) {
+        if(bundle!=null && bundle.getBoolean(START_RECOVERY_PASSWORD)) {
             mChangeRecoveryButton.performClick();
         }
     }
