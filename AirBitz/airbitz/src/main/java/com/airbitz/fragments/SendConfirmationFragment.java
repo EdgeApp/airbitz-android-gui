@@ -581,8 +581,10 @@ public class SendConfirmationFragment extends Fragment {
 
         mAutoUpdatingTextFields = true;
 
-        if (mSavedBitcoin > -1) {
+        if (mSavedBitcoin > 0) {
             mAmountToSendSatoshi = mSavedBitcoin;
+        }
+        if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
