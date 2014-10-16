@@ -151,7 +151,7 @@
             android:layout_width="138.6dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="6.3dp"
-            android:background="@drawable/btn_green"
+            android:background="@drawable/bg_button_green"
             android:text="@string/string_done"
             android:textColor="#FFFFFF" />
 
