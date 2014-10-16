@@ -100,6 +100,7 @@
     No se puede obtener una localización actual. Por favor, activa los servicios de localización.
   </string>
 
+    <string name="fragment_business_no_results">No se encontraron resultados</string>
     <string name="fragment_business_retrieving_data">Recuperando datos…</string>
     <string name="fragment_business_cannot_retrieve_data">No se pueden recuperar los datos</string>
     <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
@@ -204,6 +205,7 @@
   <string name="activity_change_pin_failed">
     Cambiar PIN Error
   </string>
+    <string name="activity_change_recovery_failed">Preguntas Cambiar recuperación fracasaron</string>
   <string name="activity_signup_title_change_password">
     Cambiar la contraseña
   </string>
