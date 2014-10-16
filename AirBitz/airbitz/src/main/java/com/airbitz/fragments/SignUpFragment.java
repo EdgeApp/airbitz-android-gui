@@ -34,7 +34,6 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;

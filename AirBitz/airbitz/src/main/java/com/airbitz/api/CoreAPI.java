@@ -15,7 +15,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.Contact;
+import com.airbitz.models.Contact;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -24,18 +24,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

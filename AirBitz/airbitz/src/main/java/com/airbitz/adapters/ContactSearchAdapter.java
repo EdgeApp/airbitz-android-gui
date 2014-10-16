@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.objects.Contact;
+import com.airbitz.models.Contact;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

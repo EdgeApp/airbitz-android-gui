@@ -45,9 +45,8 @@ import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
-import com.airbitz.objects.BusinessVenue;
+import com.airbitz.models.BusinessVenue;
 import com.airbitz.utils.CacheUtil;
-import com.airbitz.utils.Common;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -204,8 +203,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     getActivity().onBackPressed();
                 }
             }
-
-            ;
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -1076,7 +1073,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             List<Business> jsonParsingResult = AirbitzAPI.getApi().getHttpAutoCompleteBusiness(strings[0],
                     strings[1],
                     strings[2]);
-            ;
             return jsonParsingResult;
         }
 

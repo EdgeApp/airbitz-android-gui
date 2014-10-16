@@ -9,7 +9,6 @@ import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
-import com.airbitz.utils.Common;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

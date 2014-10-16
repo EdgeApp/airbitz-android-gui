@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">Airbitz</string>
-    <string name="action_settings">Settings</string>
     <string name="loading">Loading…</string>
     <string name="synchronizing">Synchronizing…</string>
-    <string name="google_maps_api_key">***REMOVED***</string>
 
     <!-- Generic strings -->
     <string name="string_ok">OK</string>
@@ -14,7 +12,6 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
     <string name="string_done">Done</string>
-    <string name="string_next_step">Next Step</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -83,7 +80,6 @@
     <string name="activity_signup_failed">Sign Up Failed</string>
     <string name="activity_change_password_failed">Change Password Failed</string>
     <string name="activity_change_pin_failed">Change PIN Failed</string>
-    <string name="activity_change_recovery_failed">Change Recovery Questions Failed</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
@@ -102,7 +98,6 @@
     <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
     <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
     <string name="activity_signup_popup_number">Must have at least one number</string>
-    <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
     <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
     <string name="activity_signup_pin_change_bad">PIN could not be changed.</string>
@@ -149,7 +144,6 @@
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
-    <string name="activity_forgot_submit">Submit</string>
 
     <!-- Strings for Settings fragment -->
     <string name="settings_title">Settings</string>

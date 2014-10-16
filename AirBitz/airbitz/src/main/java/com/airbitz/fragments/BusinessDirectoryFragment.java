@@ -46,7 +46,6 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.CacheUtil;
-import com.airbitz.utils.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
