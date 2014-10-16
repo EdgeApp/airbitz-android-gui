@@ -94,7 +94,7 @@
     <string name="activity_signup_pin_hint">Create Pin</string>
     <string name="activity_signup_new_pin">New PIN</string>
     <string name="activity_signup_password_requirements">Password Requirements</string>
-    <string name="activity_signup_password_help">Password must have upper and lower case letter, a number and a minimum 10 characters</string>
+    <string name="activity_signup_password_help">Password must have an upper and lower case letter, a number and a minimum 10 characters</string>
     <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
     <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
     <string name="activity_signup_popup_number">Must have at least one number</string>
