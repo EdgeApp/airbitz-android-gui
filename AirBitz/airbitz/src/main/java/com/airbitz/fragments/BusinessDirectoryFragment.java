@@ -179,9 +179,11 @@ public class BusinessDirectoryFragment extends Fragment implements
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int newIdx = i - 1;
-                showDirectoryDetailFragment(mVenuesLoaded.get(newIdx).getId(),
-                        mVenuesLoaded.get(newIdx).getName(),
-                        mVenuesLoaded.get(newIdx).getDistance());
+                if(newIdx >= 0 && newIdx < mVenuesLoaded.size()) {
+                    showDirectoryDetailFragment(mVenuesLoaded.get(newIdx).getId(),
+                            mVenuesLoaded.get(newIdx).getName(),
+                            mVenuesLoaded.get(newIdx).getDistance());
+                }
             }
         });
         mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
