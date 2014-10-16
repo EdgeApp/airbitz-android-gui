@@ -21,6 +21,7 @@
     <color name="red">#FF0000</color>
     <color name="max_orange">#FFFFA634</color>
     <color name="text_hint">#99DDDDDD</color>
+    <color name="white_haze">#10FFFFFF</color>
 
     <color name="disabled_color">#999999</color>
     <color name="disabled_hint_color">#DDDDDD</color>
