@@ -559,11 +559,12 @@ public class NavigationActivity extends Activity
     public void onResume() {
         //******************* HockeyApp support
         // Always check for crashes and send to Hockey if user chooses to
-        CrashManager.register(this, "***REMOVED***");
+        String hockeyKey = getString(R.string.hockey_key);
+        CrashManager.register(this, hockeyKey);
 
         // Only allow updates for debug builds
         if (AirbitzApplication.isDebugging()) {
-            UpdateManager.register(this, "***REMOVED***");
+            UpdateManager.register(this, hockeyKey);
         }
         //******************* end HockeyApp support
 
