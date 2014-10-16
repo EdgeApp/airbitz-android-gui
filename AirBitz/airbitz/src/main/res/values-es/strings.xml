@@ -166,10 +166,10 @@
     Contraseña
   </string>
   <string name="fragment_landing_signin_button">
-    Registrarse
+    Iniciar Sesión
   </string>
   <string name="fragment_landing_signup_button">
-    Contratar
+    Nueva Cuenta
   </string>
   <string name="fragment_landing_forgot_text">
     Olvidé mi contraseña

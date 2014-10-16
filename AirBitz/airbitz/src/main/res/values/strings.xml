@@ -68,8 +68,8 @@
     <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
     <string name="fragment_landing_username_hint">User Name</string>
     <string name="fragment_landing_password_hint">Password</string>
-    <string name="fragment_landing_signin_button">Sign In</string>
-    <string name="fragment_landing_signup_button">Sign Up</string>
+    <string name="fragment_landing_signin_button">Log In</string>
+    <string name="fragment_landing_signup_button">Create Account</string>
     <string name="fragment_landing_forgot_text">Forgot Password</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
