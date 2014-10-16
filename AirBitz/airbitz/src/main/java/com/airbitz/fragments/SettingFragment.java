@@ -52,9 +52,11 @@ public class SettingFragment extends Fragment {
     static final String[] USD_EXCHANGES = new String[]{"Bitstamp", "Coinbase"};
     static final String[] OTHER_EXCHANGES = new String[]{"Coinbase"};
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
+    private static final String DISTANCE_PREF = "DistancePref";
     private final String TAG = getClass().getSimpleName();
     AlertDialog mCurrencyDialog;
     AlertDialog mDefaultExchangeDialog;
+    AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
     private ImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -73,6 +75,7 @@ public class SettingFragment extends Fragment {
     private EditText mNicknameEditText;
     private HighlightOnPressButton mAutoLogoffButton;
     private HighlightOnPressButton mDefaultCurrencyButton;
+    private HighlightOnPressButton mDefaultDistanceButton;
     private TextView mAccountTitle;
     private HighlightOnPressButton mUSDollarButton;
     private HighlightOnPressButton mCanadianDollarButton;
@@ -82,6 +85,7 @@ public class SettingFragment extends Fragment {
     private HighlightOnPressButton mLogoutButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private String[] mCurrencyItems;
+    private String[] mDistanceItems;
     private int mCurrencyNum;
     private List<CoreAPI.ExchangeRateSource> mExchanges;
     private String[] mUSDExchangeItems;
@@ -92,11 +96,6 @@ public class SettingFragment extends Fragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
-
-    static public boolean getMerchantModePref() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getBoolean(MERCHANT_MODE_PREF, false);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +111,7 @@ public class SettingFragment extends Fragment {
         }
 
         mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
+        mDistanceItems = getResources().getStringArray(R.array.distance_list);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);
@@ -139,6 +139,7 @@ public class SettingFragment extends Fragment {
         mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
         mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
+        mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
 
         mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
         mCanadianDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_canadian);
@@ -224,6 +225,13 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showCurrencyDialog(mDefaultCurrencyButton, mCurrencyItems);
+            }
+        });
+
+        mDefaultDistanceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDistanceDialog(mDefaultDistanceButton, mDistanceItems);
             }
         });
 
@@ -320,6 +328,8 @@ public class SettingFragment extends Fragment {
 
         mMerchantModeSwitch.setChecked(getMerchantModePref());
 
+        mDefaultDistanceButton.setText(getResources().getStringArray(R.array.distance_list)[getDistancePref()]);
+
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
 
@@ -407,11 +417,14 @@ public class SettingFragment extends Fragment {
             }
         }
 
-        //Advanced Settings TODO
-
         if (AirbitzApplication.isLoggedIn()) {
             mCoreAPI.saveAccountSettings(mCoreSettings);
         }
+    }
+
+    static public boolean getMerchantModePref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getBoolean(MERCHANT_MODE_PREF, false);
     }
 
     private void saveMerchantModePref(boolean state) {
@@ -478,6 +491,37 @@ public class SettingFragment extends Fragment {
                             }
                         }
                 );
+    }
+
+    private void saveDistancePref(int selection) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(DISTANCE_PREF, selection);
+        editor.apply();
+    }
+
+    static public int getDistancePref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(DISTANCE_PREF, 0); // default to Automatic
+    }
+
+    private void showDistanceDialog(final Button button, final String[] items) {
+        if (mDistanceDialog != null && mDistanceDialog.isShowing()) {
+            return;
+        }
+        mDistanceDialog = defaultDialogLayout(items, getDistancePref())
+                .setPositiveButton(R.string.string_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                NumberPicker picker = (NumberPicker) mDistanceDialog.findViewById(R.id.dialog_number_picker);
+                                int index = picker.getValue();
+                                saveDistancePref(index);
+                                mDefaultDistanceButton.setText(mDistanceItems[index]);
+                                saveCurrentSettings();
+                            }
+                        }
+                )
+                .create();
+        mDistanceDialog.show();
     }
 
     private void showCurrencyDialog(final Button button, final String[] items) {

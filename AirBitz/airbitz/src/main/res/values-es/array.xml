@@ -285,4 +285,11 @@
         <item>Tipo:</item>
             
     </string-array>
+
+    <string-array name="distance_list">
+        <item>Automática</item>
+        <item>Kilómetros</item>
+        <item>Miles</item>
+    </string-array>
+
 </resources>
