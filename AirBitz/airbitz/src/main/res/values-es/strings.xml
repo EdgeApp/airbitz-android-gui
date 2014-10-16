@@ -2,26 +2,14 @@
   <string name="app_name">
     Airbitz
   </string>
-  <string name="action_settings">
-    Ajustes
-  </string>
   <string name="loading">
     Loading…
   </string>
   <string name="synchronizing">
     Sincronización…
   </string>
-  <string name="no_break_space_character">
-    \u00A0
-  </string>
-  <string name="google_maps_api_key">
-    ***REMOVED******REMOVED***
-  </string>
   <string name="string_ok">
     Okay
-  </string>
-  <string name="string_back">
-    Volver
   </string>
   <string name="string_yes">
     Sí
@@ -37,9 +25,6 @@
   </string>
   <string name="string_done">
     Done
-  </string>
-  <string name="string_next_step">
-    Siguiente Paso
   </string>
   <string name="string_back_button">
     Botón Atrás vuelve a la pantalla anterior
@@ -259,9 +244,6 @@
   <string name="activity_signup_popup_number">
    Debe tener al menos un número
   </string>
-  <string name="activity_signup_popup_specialcharacter">
-    Debe tener al menos un carácter especial
-  </string>
   <string name="activity_signup_popup_length">
     Debe tener al menos 10 caracteres
   </string>
@@ -382,9 +364,6 @@
 
   <string name="activity_forgot_title">
     Olvidé mi contraseña
-  </string>
-  <string name="activity_forgot_submit">
-    Enviar
   </string>
   <string name="settings_title">
     Ajustes

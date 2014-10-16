@@ -51,7 +51,6 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
-import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;

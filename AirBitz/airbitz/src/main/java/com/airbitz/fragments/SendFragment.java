@@ -39,7 +39,6 @@ import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;

@@ -30,7 +30,6 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -28,7 +28,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.CameraSurfacePreview;
-import com.airbitz.utils.Common;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;

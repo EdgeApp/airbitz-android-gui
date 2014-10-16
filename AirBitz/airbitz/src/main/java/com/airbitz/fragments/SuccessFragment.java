@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.utils.Common;
-
 /**
  * Created on 2/22/14.
  */

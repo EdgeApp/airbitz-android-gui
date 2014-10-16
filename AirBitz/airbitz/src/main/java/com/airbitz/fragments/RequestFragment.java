@@ -28,7 +28,6 @@ import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.Common;
 
 import java.util.List;
 

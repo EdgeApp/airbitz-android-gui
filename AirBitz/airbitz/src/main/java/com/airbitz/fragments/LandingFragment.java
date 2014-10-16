@@ -10,11 +10,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +23,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.utils.Common;
 
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();

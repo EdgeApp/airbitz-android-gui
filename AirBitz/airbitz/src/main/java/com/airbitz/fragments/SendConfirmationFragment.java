@@ -32,7 +32,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.utils.Common;
 
 /**
  * Created on 2/21/14.
