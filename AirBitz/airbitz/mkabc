@@ -7,6 +7,16 @@ LIB_PATH="build/abc/android-arm/libabc.so"
 
 cd $CORE_PATH
 
+if [[ -n $(which ndk-build) ]]; then
+    echo "ndk-build must be installed";
+    exit 1
+fi
+
+if [[ -n $(which swig) ]]; then
+    echo "swig must be installed";
+    exit 1
+fi
+
 make abc.build-android-arm 
 
 cp ../src/ABC.h $WALLET_MAIN/jni/
