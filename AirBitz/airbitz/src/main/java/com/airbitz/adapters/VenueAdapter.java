@@ -30,12 +30,10 @@ public class VenueAdapter extends BaseAdapter {
     public static final String TAG = VenueAdapter.class.getSimpleName();
     private final Context mContext;
     private final List<BusinessSearchResult> mVenues;
-    private boolean mMeters = false;
 
     public VenueAdapter(Context context, List<BusinessSearchResult> venues) {
         mContext = context;
         mVenues = venues;
-        mMeters = isMeters();
     }
 
     @Override
@@ -151,10 +149,10 @@ public class VenueAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private String getDistanceString(double meters) {
+    public static String getDistanceString(double meters) {
         String distanceString="";
 
-        if(mMeters) {
+        if(isMeters()) {
             if(meters<1000) {
                 distanceString = "" + (int) meters + " m";
             } else {
@@ -205,7 +203,7 @@ public class VenueAdapter extends BaseAdapter {
         int position;
     }
 
-    private boolean isMeters() {
+    private static boolean isMeters() {
         int type = SettingFragment.getDistancePref();
         if(type == 1) {
             return true;
