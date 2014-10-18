@@ -24,6 +24,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -244,44 +247,59 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
+        DisplayLoginOverlay(overlay, false);
+    }
+
+    public void DisplayLoginOverlay(boolean overlay, boolean animate) {
         setViewPager();
         if (overlay) {
+            // We are already showing so don't bother
+            if (mViewPager.getCurrentItem() == 1) {
+                return;
+            }
+            mViewPager.setCurrentItem(1, false);
+            if (animate) {
+                Animation anim = new AlphaAnimation(0.0f, 1.0f);
+                anim.setDuration(250);
+                mViewPager.startAnimation(anim);
+            }
             mViewPager.setVisibility(View.VISIBLE);
-            mViewPager.setCurrentItem(1);
         } else {
-            mViewPager.setVisibility(View.GONE);
+            mViewPager.setCurrentItem(0, animate);
         }
     }
 
     private void setViewPager() {
-        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
+        if (mViewPager == null) {
+            mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
+            mViewPager.setVisibility(View.GONE);
+        }
 
-        mOverlayFragments.add(new TransparentFragment());
-        mOverlayFragments.add(new LandingFragment());
-        mOverlayFragments.add(new TransparentFragment());
+        if (mOverlayFragments.size() == 0) {
+            mOverlayFragments.add(new TransparentFragment());
+            mOverlayFragments.add(new LandingFragment());
 
-        NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
-        mViewPager.setAdapter(pageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
+            NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
+            mViewPager.setAdapter(pageAdapter);
+            mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                public void onPageScrollStateChanged(int state) { }
 
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Disappear if transparent page shows
-                if ((position == 0 || position == 2) && positionOffsetPixels == 0) {
-                    mViewPager.setVisibility(View.GONE);
-                    hideSoftKeyboard(mNavBarFragmentLayout);
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    // Disappear if transparent page shows
+                    if ((position == 0) && positionOffsetPixels == 0) {
+                        hideSoftKeyboard(mNavBarFragmentLayout);
+                        mViewPager.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            public void onPageSelected(int position) {
-                // Disappear if transparent page shows
-                if (position == 0 || position == 2) {
-                    mViewPager.setVisibility(View.GONE);
-                    hideSoftKeyboard(mNavBarFragmentLayout);
+                public void onPageSelected(int position) {
+                    // Disappear if transparent page shows
+                    if (position == 0) {
+                        hideSoftKeyboard(mNavBarFragmentLayout);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void setTypeFaces() {
@@ -308,7 +326,7 @@ public class NavigationActivity extends Activity
                 mNavBarFragment.unselectTab(position);
                 mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
                 mNavBarFragment.selectTab(Tabs.BD.ordinal());
-                DisplayLoginOverlay(true);
+                DisplayLoginOverlay(true, true);
             }
         }
     }
@@ -325,7 +343,6 @@ public class NavigationActivity extends Activity
         else
             Log.d(TAG, "switchFragmentThread no fragment showing yet ");
 
-        getFragmentManager().executePendingTransactions();
         Log.d(TAG, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
@@ -352,6 +369,8 @@ public class NavigationActivity extends Activity
         mNavThreadId = id;
 
         Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
+
+        getFragmentManager().executePendingTransactions();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -380,11 +399,11 @@ public class NavigationActivity extends Activity
 
         // Only show visually if we're displaying the thread
         if (mNavThreadId == threadID) {
-            getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
         }
+        getFragmentManager().executePendingTransactions();
     }
 
     public void popFragment() {
@@ -511,8 +530,10 @@ public class NavigationActivity extends Activity
 
     @Override
     public void onBackPressed() {
-        if(mViewPager.getVisibility() == View.VISIBLE) {
-            DisplayLoginOverlay(false);
+        if (mViewPager.getVisibility() == View.VISIBLE) {
+            if (mUserLoginTask == null) {
+                DisplayLoginOverlay(false, true);
+            }
             return;
         }
 
@@ -818,17 +839,16 @@ public class NavigationActivity extends Activity
     public void UserJustLoggedIn() {
         showNavBar();
         if (mDataUri != null) {
-            DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
             onBitcoinUri(mDataUri);
             mDataUri = null;
         } else {
-            DisplayLoginOverlay(false);
             mCoreAPI.setupAccountSettings();
             mCoreAPI.startAllAsyncUpdates();
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
+        DisplayLoginOverlay(false, true);
     }
 
     public void startRecoveryQuestions(String questions, String username) {
@@ -840,7 +860,7 @@ public class NavigationActivity extends Activity
         Fragment frag = new PasswordRecoveryFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
-        DisplayLoginOverlay(false);
+        DisplayLoginOverlay(false, true);
     }
 
     public void startSignUp() {
@@ -848,7 +868,7 @@ public class NavigationActivity extends Activity
         hideNavBar();
         Fragment frag = new SignUpFragment();
         pushFragmentNoAnimation(frag, mNavThreadId);
-        DisplayLoginOverlay(false);
+        DisplayLoginOverlay(false, true);
     }
 
     public void noSignup() {
