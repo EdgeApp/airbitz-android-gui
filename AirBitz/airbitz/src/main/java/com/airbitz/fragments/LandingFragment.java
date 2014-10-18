@@ -103,7 +103,7 @@ public class LandingFragment extends Fragment {
         mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
 
         ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
-        rightBounce.setRepeatCount(ValueAnimator.INFINITE);
+        rightBounce.setRepeatCount(3);
         rightBounce.setDuration(500);
         rightBounce.setRepeatMode(ValueAnimator.REVERSE);
         rightBounce.start();
