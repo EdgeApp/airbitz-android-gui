@@ -23,6 +23,11 @@
     <color name="text_hint">#99DDDDDD</color>
     <color name="white_haze">#10FFFFFF</color>
 
+    <color name="bg_edittext_color">#EE4ca4d4</color>
+    <color name="bg_edittext_border_color">#FF35799e</color>
+
+    <color name="black_shadow">#99000000</color>
+
     <color name="disabled_color">#999999</color>
     <color name="disabled_hint_color">#DDDDDD</color>
     <color name="enabled_hint_color">#999999</color>

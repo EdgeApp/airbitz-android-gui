@@ -36,8 +36,6 @@
             android:textColor="@android:color/white"
             android:textSize="15sp" />
 
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,8 +47,6 @@
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
-                    android:background="@drawable/btn_white"
-                    android:ems="10"
                     android:hint="@string/fragment_landing_username_hint"
                     android:inputType="textVisiblePassword|textNoSuggestions"
                     android:nextFocusDown="@+id/fragment_landing_password_edittext"
@@ -58,9 +54,8 @@
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/identifier_off_text"
-                    android:textSize="14sp" />
+                    style="@style/LandingEditText"
+                    />
 
                 <EditText
                     android:id="@+id/fragment_landing_password_edittext"
@@ -68,8 +63,6 @@
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
-                    android:background="@drawable/btn_white"
-                    android:ems="10"
                     android:gravity="center_vertical"
                     android:hint="@string/fragment_landing_password_hint"
                     android:imeOptions="actionDone"
@@ -77,9 +70,8 @@
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/identifier_off_text"
-                    android:textSize="14sp" />
+                    style="@style/LandingEditText"
+                    />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_signin_button"
@@ -92,8 +84,9 @@
                     style="@style/BlackDropShadow"
                     android:text="@string/fragment_landing_signin_button"
                     android:textColor="@android:color/white"
+                    android:textStyle="bold"
                     android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    />
 
 
             </LinearLayout>
