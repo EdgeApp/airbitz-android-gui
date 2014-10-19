@@ -556,6 +556,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     mActivity.UserJustLoggedIn();
+                    mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
