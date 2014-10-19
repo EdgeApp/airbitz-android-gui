@@ -647,6 +647,26 @@ public class CoreAPI {
         return mChoices;
     }
 
+    public boolean needsRecoveryReminder(Wallet wallet) {
+        int reminderCount = coreSettings().getRecoveryReminderCount();
+        if (reminderCount >= 2) {
+            // We reminded them enough
+            return false;
+        }
+
+        String qs = GetRecoveryQuestionsForUser(AirbitzApplication.getUsername());
+        if (qs != null && qs.length() > 0) {
+            // Recovery questions already set
+            return false;
+        }
+
+        if (wallet.getBalanceSatoshi() < 2000000) {
+            // they does not have enough money to care
+            return false;
+        }
+        return true;
+    }
+
     public String GetRecoveryQuestionsForUser(String username) {
         tABC_Error pError = new tABC_Error();
 
