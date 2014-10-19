@@ -630,6 +630,14 @@ public class NavigationActivity extends Activity
         switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
+    public void clearBD() {
+        Fragment top = mNavStacks[Tabs.BD.ordinal()].peek();
+        while (!(top instanceof BusinessDirectoryFragment)) {
+            mNavStacks[Tabs.BD.ordinal()].pop();
+            top = mNavStacks[Tabs.BD.ordinal()].peek();
+        }
+    }
+
     /*
      * Handle bitcoin:<address> Uri's coming from OS
      */
