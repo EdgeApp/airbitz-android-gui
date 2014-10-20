@@ -647,6 +647,18 @@ public class CoreAPI {
         return mChoices;
     }
 
+    public boolean hasRecoveryQuestionsSet() {
+        String qstring = GetRecoveryQuestionsForUser(AirbitzApplication.getUsername());
+        if (qstring != null) {
+            String[] qs = qstring.split("\n");
+            if (qs.length > 1) {
+                // Recovery questions set
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean needsRecoveryReminder(Wallet wallet) {
         int reminderCount = coreSettings().getRecoveryReminderCount();
         if (reminderCount >= 2) {
@@ -654,8 +666,7 @@ public class CoreAPI {
             return false;
         }
 
-        String qs = GetRecoveryQuestionsForUser(AirbitzApplication.getUsername());
-        if (qs != null && qs.length() > 0) {
+        if (hasRecoveryQuestionsSet()) {
             // Recovery questions already set
             return false;
         }

@@ -658,7 +658,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         int reminderCount = mCoreAPI.coreSettings().getRecoveryReminderCount();
         if (mFromRequest && mCoreAPI.needsRecoveryReminder(mWallet) && !mHasReminded) {
             mHasReminded = true;
-            reminderCount--;
+            reminderCount++;
             mCoreAPI.coreSettings().setRecoveryReminderCount(reminderCount);
             mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
             ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
