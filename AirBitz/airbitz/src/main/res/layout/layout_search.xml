@@ -79,6 +79,7 @@
                     android:background="@drawable/rounded_edge"
                     android:drawableLeft="@drawable/ico_loc"
                     android:drawablePadding="13dp"
+                    android:hint="@string/city_state_county"
                     android:imeOptions="actionSearch"
                     android:inputType="text|textNoSuggestions"
                     android:paddingBottom="5dp"
