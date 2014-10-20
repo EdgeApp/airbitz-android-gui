@@ -234,8 +234,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
-                    mCoreAPI.coreSettings().getSzLastName();
+            name = mCoreAPI.coreSettings().getSzFullName();
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
 
@@ -275,8 +274,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
-                    mCoreAPI.coreSettings().getSzLastName();
+            name = mCoreAPI.coreSettings().getSzFullName();
         }
 
         String html = fillTemplate(R.raw.email_template, name);
