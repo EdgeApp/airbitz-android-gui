@@ -668,7 +668,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();
 
-                mCoreAPI.coreSettings().setRecoveryReminderCount(2); // set reminder count
+                mCoreAPI.coreSettings().setRecoveryReminderCount(0); // set reminder count
                 mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
 
                 ((NavigationActivity)getActivity()).popFragment();
