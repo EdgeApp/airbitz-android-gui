@@ -19,6 +19,9 @@ fi
 
 make abc.build-android-arm 
 
+mkdir -p $WALLET_MAIN/jniLibs/armeabi/
+mkdir -p $WALLET_MAIN/jni/
+
 cp ../src/ABC.h $WALLET_MAIN/jni/
 cp $LIB_PATH $WALLET_MAIN/jni/
 cp $LIB_PATH $WALLET_MAIN/jniLibs/armeabi/
