@@ -53,4 +53,5 @@ local.properties
 *.iml
 *.iws
 
-AirBitz-Prototype_BD-only/airbitz/src/main/res/values/com_crashlytics_export_strings.xml
+AirBitz/airbitz/src/main/res/values/com_crashlytics_export_strings.xml
+all_keys.xml
