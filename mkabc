@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CORE_PATH="../../../airbitz-walletcore/deps"
+CORE_PATH="../airbitz-walletcore/deps"
 WALLET_PATH="../../airbitz-wallet-ui-android/AirBitz/airbitz"
 WALLET_MAIN="$WALLET_PATH/src/main"
 LIB_PATH="build/abc/android-arm/libabc.so"
