@@ -73,8 +73,9 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             nameForImage = business.getName();
             viewHolder.textView.setText(nameForImage);
 
-            if(business.getSquareProfileImage()!=null)
-                mPicasso.load(business.getSquareProfileImage().getImageThumbnail()).noFade().into(viewHolder.imageView);
+            if (business.getSquareProfileImage()!=null) {
+                mPicasso.load(business.getSquareProfileImage().getImageThumbnail()).into(viewHolder.imageView);
+            }
 
 
             // create the address
@@ -100,7 +101,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             viewHolder.textView.setText(nameForImage);
             viewHolder.addressView.setVisibility(View.GONE);
         }
-        mPicasso.load(mContactPhotos.get(nameForImage)).noFade().into(viewHolder.imageView);
+        mPicasso.load(mContactPhotos.get(nameForImage)).into(viewHolder.imageView);
         return convertView;
     }
 
