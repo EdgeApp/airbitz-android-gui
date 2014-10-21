@@ -1287,8 +1287,9 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     mBizIds.put(bsresult.getName(), Long.valueOf(bsresult.getId()));
                 }
 
-                if (!mCombinedPhotos.containsKey(business.getName()) && !business.getId().isEmpty()) {
-                    FindBizIdThumbnail(business.getName(), Long.valueOf(business.getId()));
+                if (business.getSquareImageLink() != null) {
+                    Uri uri = Uri.parse(business.getSquareImageLink());
+                    mCombinedPhotos.put(business.getName(), uri);
                 }
             }
             combineMatchLists();
@@ -1374,10 +1375,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void FindBizIdThumbnail(String name, long id) {
-            if(id!=0) {
-                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
+        if (id != 0) {
+            GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {

@@ -2,6 +2,8 @@ package com.airbitz.models;
 
 import android.util.Log;
 
+import com.airbitz.api.AirbitzAPI;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,7 @@ public class Business {
     private String mName;
     private String mType;
     private String mId;
+    private String mSquareLink;
     private boolean mIsCached;
 
     public Business() {
@@ -36,6 +39,7 @@ public class Business {
 
             if (mType.equalsIgnoreCase("business")) {
                 mId = jsonResponse.getString("bizId");
+                mSquareLink = AirbitzAPI.getServerRoot() + jsonResponse.getString("square_image");
             } else if (mType.equalsIgnoreCase("category")) {
                 mId = "";
             }
@@ -106,6 +110,14 @@ public class Business {
 
     public void setId(String id) {
         mId = mId;
+    }
+
+    public void setSquareLink(String link) {
+        mSquareLink = link;
+    }
+
+    public String getSquareImageLink() {
+        return mSquareLink;
     }
 
 }
