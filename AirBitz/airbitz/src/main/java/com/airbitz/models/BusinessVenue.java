@@ -1,4 +1,4 @@
-package com.airbitz.objects;
+package com.airbitz.models;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -46,7 +46,6 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.CacheUtil;
-import com.airbitz.utils.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -179,9 +178,11 @@ public class BusinessDirectoryFragment extends Fragment implements
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int newIdx = i - 1;
-                showDirectoryDetailFragment(mVenuesLoaded.get(newIdx).getId(),
-                        mVenuesLoaded.get(newIdx).getName(),
-                        mVenuesLoaded.get(newIdx).getDistance());
+                if(newIdx >= 0 && newIdx < mVenuesLoaded.size()) {
+                    showDirectoryDetailFragment(mVenuesLoaded.get(newIdx).getId(),
+                            mVenuesLoaded.get(newIdx).getName(),
+                            mVenuesLoaded.get(newIdx).getDistance());
+                }
             }
         });
         mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {

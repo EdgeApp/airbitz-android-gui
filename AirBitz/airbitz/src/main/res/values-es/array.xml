@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="export_array">
-        <item>CSV</item>
-        <item>Quicken</item>
-        <item>Quickbooks</item>
-        <item>View</item>
-    </array>
-
-    <array name="export_saving_option_array">
-        <item>Print</item>
-        <item>Email</item>
-        <item>Google Drive</item>
-        <item>Dropbox</item>
-        <item>Ver</item>
-    </array>
-
     <!--Settings-->
     <array name="category_defaults">
                 
@@ -285,4 +270,11 @@
         <item>Tipo:</item>
             
     </string-array>
+
+    <string-array name="distance_list">
+        <item>Automática</item>
+        <item>Kilómetros</item>
+        <item>Miles</item>
+    </string-array>
+
 </resources>

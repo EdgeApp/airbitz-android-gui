@@ -32,7 +32,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.utils.Common;
 
 /**
  * Created on 2/21/14.
@@ -245,7 +244,7 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields && !mBitcoinField.getText().toString().isEmpty()) {
+                if (!mAutoUpdatingTextFields) {
                     updateTextFieldContents(true);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
@@ -264,7 +263,7 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields && !mFiatField.getText().toString().isEmpty()) {
+                if (!mAutoUpdatingTextFields) {
                     updateTextFieldContents(false);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
@@ -395,6 +394,25 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
+        mConversionTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if(event.getRawX() >= (mConversionTextView.getRight() - mConversionTextView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // your action here
+                        mActivity.pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION_INSUFFICIENT_FUNDS), NavigationActivity.Tabs.SEND.ordinal());
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         mDummyFocus.requestFocus();
 
         return mView;
@@ -405,9 +423,9 @@ public class SendConfirmationFragment extends Fragment {
         mFiatField.setText("");
         mBitcoinField.setText("");
         mConversionTextView.setTextColor(Color.WHITE);
+        mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         mBitcoinField.setTextColor(Color.WHITE);
         mFiatField.setTextColor(Color.WHITE);
-//        mConversionTextView.setText("");
         mAutoUpdatingTextFields = false;
     }
 
@@ -435,11 +453,12 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             try {
                 currency = Double.valueOf(mFiatField.getText().toString());
-                satoshi = mCoreAPI.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
-                mAmountToSendSatoshi = satoshi;
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             } catch (NumberFormatException e) {
-            } //not a double, ignore
+                currency = 0.0;
+            }
+            satoshi = mCoreAPI.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
+            mAmountToSendSatoshi = satoshi;
+            mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
         }
         mAutoUpdatingTextFields = false;
         calculateFees();
@@ -465,6 +484,9 @@ public class SendConfirmationFragment extends Fragment {
         }
         if (fees < 0) {
             mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
+            mConversionTextView.setCompoundDrawablePadding(10);
+            mConversionTextView.setBackgroundResource(R.color.white_haze);
             mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
             mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setTextColor(Color.RED);
@@ -472,6 +494,8 @@ public class SendConfirmationFragment extends Fragment {
             mFiatField.setTextColor(Color.RED);
         } else if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
             mConversionTextView.setTextColor(color);
+            mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mConversionTextView.setBackgroundResource(android.R.color.transparent);
             mBitcoinField.setTextColor(color);
             mFiatField.setTextColor(color);
 
@@ -510,6 +534,7 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+            mPinEdittext.requestFocus();
         }
     }
 
@@ -556,8 +581,10 @@ public class SendConfirmationFragment extends Fragment {
 
         mAutoUpdatingTextFields = true;
 
-        if (mSavedBitcoin > -1) {
+        if (mSavedBitcoin > 0) {
             mAmountToSendSatoshi = mSavedBitcoin;
+        }
+        if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));

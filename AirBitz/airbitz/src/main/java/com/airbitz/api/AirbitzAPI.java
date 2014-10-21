@@ -3,11 +3,12 @@ package com.airbitz.api;
 import android.util.Log;
 import android.util.LruCache;
 
+import com.airbitz.AirbitzApplication;
+import com.airbitz.R;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Categories;
 import com.airbitz.models.LocationSearchResult;
-import com.airbitz.utils.Common;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,11 +33,6 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class AirbitzAPI {
-
-    /*static {
-        System.loadLibrary("abc");
-        System.loadLibrary("airbitz");
-    }*/
 
     private static AirbitzAPI mInstance = null;
 
@@ -90,7 +86,8 @@ public class AirbitzAPI {
         try {
             URL sendUrl = new URL(url + params);
             urlConnection = (HttpsURLConnection) sendUrl.openConnection();
-            String token = "b24805c59bf8ded704c659de3aa1be966f3065bc";
+            String token = AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key);
+
             urlConnection.setRequestProperty("Authorization", "Token " + token + "");
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(in));

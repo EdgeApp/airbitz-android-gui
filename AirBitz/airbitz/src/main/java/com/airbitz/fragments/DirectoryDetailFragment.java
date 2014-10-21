@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
@@ -191,30 +192,11 @@ public class DirectoryDetailFragment extends Fragment {
         double businessDistance = 0;
         try {
             businessDistance = Double.parseDouble(strDistance);
-            businessDistance = Common.metersToMiles(businessDistance);
-            if (businessDistance < 1) {
-                int distFeet = (int) Common.milesToFeet(businessDistance);
-                if (distFeet <= 1000) {
-                    int intDist = (int) Math.floor(distFeet);
-                    String distanceString = "" + intDist;
-                    mDistanceTextView.setText(distanceString + " feet");
-                } else {
-                    businessDistance = Math.ceil(businessDistance * 10) / 10;
-                    String distanceString = "" + businessDistance;
-                    distanceString = distanceString.substring(1, distanceString.length());
-                    mDistanceTextView.setText(distanceString + " miles");
-                }
 
-            } else if (businessDistance >= 1000) {
-                int distanceInInt = (int) businessDistance;
-                mDistanceTextView.setText(String.valueOf(distanceInInt) + " miles");
-            } else {
-                businessDistance = Math.ceil(businessDistance * 10) / 10;
-                mDistanceTextView.setText(String.valueOf(businessDistance) + " miles");
-            }
+            mDistanceTextView.setText(VenueAdapter.getDistanceString(businessDistance));
             mDistanceTextView.setVisibility(View.VISIBLE);
         } catch (Exception e) {
-            mDistanceTextView.setText("-");
+            mDistanceTextView.setVisibility(View.INVISIBLE);
         }
     }
 

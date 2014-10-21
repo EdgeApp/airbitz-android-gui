@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
-import com.airbitz.objects.Contact;
+import com.airbitz.models.Contact;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
@@ -226,7 +226,6 @@ public class ContactPickerFragment extends Fragment {
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, email, null, thumbnail));
                 }
-                ;
             }
         } else {
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -247,7 +246,6 @@ public class ContactPickerFragment extends Fragment {
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, null, number, thumbnail));
                 }
-                ;
             }
         }
         return contacts;

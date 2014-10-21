@@ -83,6 +83,14 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_minutesAutoLogout_get(swigCPtr, this);
   }
 
+  public void setRecoveryReminderCount(int value) {
+    coreJNI.tABC_AccountSettings_recoveryReminderCount_set(swigCPtr, this, value);
+  }
+
+  public int getRecoveryReminderCount() {
+    return coreJNI.tABC_AccountSettings_recoveryReminderCount_get(swigCPtr, this);
+  }
+
   public void setSzLanguage(String value) {
     coreJNI.tABC_AccountSettings_szLanguage_set(swigCPtr, this, value);
   }

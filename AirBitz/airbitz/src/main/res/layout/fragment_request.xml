@@ -121,22 +121,43 @@
 
                 </LinearLayout>
 
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/button_expand"
+                <RelativeLayout
+                    android:id="@+id/fragment_request_expand"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:layout_alignParentRight="true"
                     android:layout_below="@id/layout_wallet"
-                    android:layout_marginLeft="14dp"
-                    android:background="@drawable/btn_expand" />
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="14dp">
+                    <com.airbitz.objects.HighlightOnPressButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/button_expand"
+                        android:background="@drawable/btn_expand" />
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="32dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/expand_arrow" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_horizontal"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/request_next"
+                        android:textColor="@color/gray_text" />
+
+                    </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/layout_btc_fields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/button_expand"
+                    android:layout_alignTop="@id/fragment_request_expand"
                     android:layout_below="@id/layout_wallet"
-                    android:layout_toLeftOf="@id/button_expand"
+                    android:layout_toLeftOf="@id/fragment_request_expand"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -178,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_below="@id/layout_btc_fields"
-                    android:layout_toLeftOf="@id/button_expand"
+                    android:layout_toLeftOf="@id/fragment_request_expand"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 

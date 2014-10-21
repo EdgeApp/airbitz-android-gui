@@ -29,7 +29,6 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;

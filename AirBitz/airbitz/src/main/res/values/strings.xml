@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">Airbitz</string>
-    <string name="action_settings">Settings</string>
     <string name="loading">Loading…</string>
     <string name="synchronizing">Synchronizing…</string>
-    <string name="google_maps_api_key">***REMOVED***</string>
 
     <!-- Generic strings -->
     <string name="string_ok">OK</string>
@@ -14,7 +12,6 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
     <string name="string_done">Done</string>
-    <string name="string_next_step">Next Step</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -34,6 +31,7 @@
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
     <string name="category_or_business_name">Business Name or Category</string>
+    <string name="city_state_county">City, State/Province, or Country</string>
     <string name="your_location">Your Location</string>
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
@@ -68,8 +66,8 @@
     <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
     <string name="fragment_landing_username_hint">User Name</string>
     <string name="fragment_landing_password_hint">Password</string>
-    <string name="fragment_landing_signin_button">Sign In</string>
-    <string name="fragment_landing_signup_button">Sign Up</string>
+    <string name="fragment_landing_signin_button">Log In</string>
+    <string name="fragment_landing_signup_button">Create Account</string>
     <string name="fragment_landing_forgot_text">Forgot Password</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
@@ -83,7 +81,6 @@
     <string name="activity_signup_failed">Sign Up Failed</string>
     <string name="activity_change_password_failed">Change Password Failed</string>
     <string name="activity_change_pin_failed">Change PIN Failed</string>
-    <string name="activity_change_recovery_failed">Change Recovery Questions Failed</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
@@ -94,14 +91,14 @@
     <string name="activity_signup_old_password">Old Password</string>
     <string name="activity_signup_new_password">New Password</string>
     <string name="activity_signup_new_password_confirm">Re-enter New Password</string>
-    <string name="activity_signup_pin_label">Withdrawal Pin</string>
+    <string name="activity_signup_pin_label">4 Digit Pin</string>
     <string name="activity_signup_pin_hint">Create Pin</string>
     <string name="activity_signup_new_pin">New PIN</string>
-    <string name="activity_signup_password_help">Password must have upper and lower case letter, number, and special character with a minimum 10 characters</string>
+    <string name="activity_signup_password_requirements">Password Requirements</string>
+    <string name="activity_signup_password_help">Password must have an upper and lower case letter, a number and a minimum 10 characters</string>
     <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
     <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
     <string name="activity_signup_popup_number">Must have at least one number</string>
-    <string name="activity_signup_popup_specialcharacter">Must have at least one special character</string>
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
     <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
     <string name="activity_signup_pin_change_bad">PIN could not be changed.</string>
@@ -148,7 +145,6 @@
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
-    <string name="activity_forgot_submit">Submit</string>
 
     <!-- Strings for Settings fragment -->
     <string name="settings_title">Settings</string>
@@ -161,7 +157,7 @@
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change withdrawal PIN</string>
-    <string name="settings_button_recovery">Change recovery questions</string>
+    <string name="settings_button_recovery">Recovery Questions</string>
     <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
@@ -170,6 +166,7 @@
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
     <string name="settings_title_usd">US dollar</string>
     <string name="settings_title_canadian">Canadian dollar</string>
@@ -219,7 +216,7 @@
     <string name="send_confirmation_from_title">Send From:</string>
     <string name="send_confirmation_to_title">Send To:</string>
     <string name="send_confirmation_max_button_title">Max</string>
-    <string name="send_confirmation_enter_send_pin">Enter Send Pin</string>
+    <string name="send_confirmation_enter_send_pin">Enter 4 Digit Pin</string>
     <string name="send_confirmation_slide_to_confirm">Slide to Confirm</string>
     <string name="fragment_send_confirmation_send_error_title">Error during send</string>
     <string name="fragment_send_confirmation_insufficient_funds_message">You do not have enough funds to send this transaction.</string>
@@ -248,6 +245,7 @@
     <string name="request_wallet_title">Wallet:</string>
     <string name="request_button_import">Import</string>
     <string name="request_amount_hint">Amt (Optional)</string>
+    <string name="request_next">Next</string>
 
     <string name="request_invalid_amount">Invalid Amount</string>
 
@@ -267,6 +265,9 @@
     <string name="transaction_details_to">"To: "</string>
     <string name="transaction_details_from">"From: "</string>
     <string name="transaction_details_payee_hint">Enter Payee</string>
+
+    <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
+    <string name="transaction_details_recovery_reminder_message">"You've received Bitcoin! We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
 
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>

@@ -61,7 +61,7 @@ public class ImageHelper {
 
         // Finally, we create a new bitmap of the specified size and draw our new,
         // scaled bitmap onto it.
-        Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+        Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, Config.ARGB_8888);
         Canvas canvas = new Canvas(dest);
         canvas.drawBitmap(source, null, targetRect, null);
 

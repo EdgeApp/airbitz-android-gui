@@ -141,4 +141,10 @@
         <item>Exchange:</item>
     </string-array>
 
+    <string-array name="distance_list">
+        <item>Automatic</item>
+        <item>Kilometers</item>
+        <item>Miles</item>
+    </string-array>
+
 </resources>

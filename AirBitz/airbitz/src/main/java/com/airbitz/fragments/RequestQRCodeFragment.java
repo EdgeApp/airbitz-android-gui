@@ -32,7 +32,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.Contact;
+import com.airbitz.models.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -234,8 +234,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
-                    mCoreAPI.coreSettings().getSzLastName();
+            name = mCoreAPI.coreSettings().getSzFullName();
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
 
@@ -275,8 +274,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFirstName() + " " +
-                    mCoreAPI.coreSettings().getSzLastName();
+            name = mCoreAPI.coreSettings().getSzFullName();
         }
 
         String html = fillTemplate(R.raw.email_template, name);

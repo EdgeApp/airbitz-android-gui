@@ -212,7 +212,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_green"
+                android:background="@drawable/bg_button_green"
                 android:gravity="center_horizontal|center_vertical"
                 android:padding="15dp"
                 android:text="@string/string_done"

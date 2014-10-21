@@ -34,7 +34,6 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
-import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -134,12 +133,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
         mSwitchImage3 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_3);
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
-        mSwitchImage5 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_5);
         mQuestion1 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_1);
         mQuestion2 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_2);
         mQuestion3 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_3);
         mQuestion4 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_4);
-        mQuestion5 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_5);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -251,8 +248,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             }
         });
 
-        mUserNameEditText.requestFocus();
-
         return mView;
     }
 
@@ -334,9 +329,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     break;
                 case 3:
                     mSwitchImage4.setImageResource(resource);
-                    break;
-                case 4:
-                    mSwitchImage5.setImageResource(resource);
                     break;
                 default:
                     break;
@@ -517,6 +509,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public void onResume() {
         super.onResume();
         setupUI(getArguments());
+        mUserNameEditText.requestFocus();
     }
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
@@ -563,6 +556,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     mActivity.UserJustLoggedIn();
+                    mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
@@ -618,7 +612,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mActivity.showModalProgress(false);
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
-                mCreateFirstWalletTask = new CreateFirstWalletTask(mUsername, String.valueOf(mPassword), mPin);
+                mCreateFirstWalletTask = new CreateFirstWalletTask();
                 mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
@@ -637,12 +631,15 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
      */
     public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername, mPassword, mPin;
+        private final String mUsername, mPin;
+        private final char[] mPassword;
 
-        CreateFirstWalletTask(String username, String password, String pin) {
-            mUsername = username;
-            mPassword = password;
-            mPin = pin;
+        CreateFirstWalletTask() {
+            mUsername = mUserNameEditText.getText().toString();
+            Editable pass = mPasswordEditText.getText();
+            mPassword = new char[pass.length()];
+            pass.getChars(0, pass.length(), mPassword, 0);
+            mPin = mWithdrawalPinEditText.getText().toString();
         }
 
         @Override
@@ -653,7 +650,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected Boolean doInBackground(Void... params) {
             String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mCoreAPI.createWallet(mUsername, mPassword, walletName, DOLLAR_CURRENCY_NUMBER);
+            return mCoreAPI.createWallet(mUsername, String.valueOf(mPassword), walletName, DOLLAR_CURRENCY_NUMBER);
         }
 
         @Override
@@ -663,18 +660,20 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!success) {
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
-                Fragment frag = new PasswordRecoveryFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.SIGN_UP);
-                bundle.putString(PasswordRecoveryFragment.USERNAME, mUsername);
-                bundle.putString(PasswordRecoveryFragment.PASSWORD, mPassword);
-                bundle.putString(PasswordRecoveryFragment.PIN, mPin);
-                frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).popFragment();
-                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.BD.ordinal());
+                CreateDefaultCategories();
+
+                AirbitzApplication.Login(mUsername, mPassword);
+                mCoreAPI.SetUserPIN(mPin);
 
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();
+
+                mCoreAPI.coreSettings().setRecoveryReminderCount(0); // set reminder count
+                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+
+                ((NavigationActivity)getActivity()).popFragment();
+                ((NavigationActivity)getActivity()).DisplayLoginOverlay(false);
+                ((NavigationActivity)getActivity()).switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
             }
         }
 
@@ -684,4 +683,17 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mActivity.showModalProgress(false);
         }
     }
+
+    private void CreateDefaultCategories() {
+        String[] defaults = getResources().getStringArray(R.array.category_defaults);
+
+        for (String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+            Log.d(TAG, "Category creation failed");
+        }
+    }
+
 }

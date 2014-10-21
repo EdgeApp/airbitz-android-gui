@@ -2,26 +2,14 @@
   <string name="app_name">
     Airbitz
   </string>
-  <string name="action_settings">
-    Ajustes
-  </string>
   <string name="loading">
     Loading…
   </string>
   <string name="synchronizing">
     Sincronización…
   </string>
-  <string name="no_break_space_character">
-    \u00A0
-  </string>
-  <string name="google_maps_api_key">
-    ***REMOVED******REMOVED***
-  </string>
   <string name="string_ok">
     Okay
-  </string>
-  <string name="string_back">
-    Volver
   </string>
   <string name="string_yes">
     Sí
@@ -37,9 +25,6 @@
   </string>
   <string name="string_done">
     Done
-  </string>
-  <string name="string_next_step">
-    Siguiente Paso
   </string>
   <string name="string_back_button">
     Botón Atrás vuelve a la pantalla anterior
@@ -100,6 +85,7 @@
     No se puede obtener una localización actual. Por favor, activa los servicios de localización.
   </string>
 
+    <string name="fragment_business_no_results">No se encontraron resultados</string>
     <string name="fragment_business_retrieving_data">Recuperando datos…</string>
     <string name="fragment_business_cannot_retrieve_data">No se pueden recuperar los datos</string>
     <string name="fragment_business_enable_location_services">Activar los servicios de ubicación para obtener mejores resultados</string>
@@ -166,10 +152,10 @@
     Contraseña
   </string>
   <string name="fragment_landing_signin_button">
-    Registrarse
+    Iniciar Sesión
   </string>
   <string name="fragment_landing_signup_button">
-    Contratar
+    Nueva Cuenta
   </string>
   <string name="fragment_landing_forgot_text">
     Olvidé mi contraseña
@@ -204,6 +190,7 @@
   <string name="activity_change_pin_failed">
     Cambiar PIN Error
   </string>
+    <string name="activity_change_recovery_failed">Preguntas Cambiar recuperación fracasaron</string>
   <string name="activity_signup_title_change_password">
     Cambiar la contraseña
   </string>
@@ -235,7 +222,7 @@
     Vuelva a escribir la nueva contraseña
   </string>
   <string name="activity_signup_pin_label">
-    Retirada Pin
+    PIN de 4 Dígitos
   </string>
   <string name="activity_signup_pin_hint">
     Crear Pin
@@ -243,6 +230,8 @@
   <string name="activity_signup_new_pin">
     Nuevo PIN
   </string>
+
+    <string name="activity_signup_password_requirements">Requisitos de Contraseña</string>
   <string name="activity_signup_password_help">
     La contraseña debe tener mayúsculas y minúsculas letra, número y carácter especial con un mínimo de 10 caracteres
   </string>
@@ -254,9 +243,6 @@
   </string>
   <string name="activity_signup_popup_number">
    Debe tener al menos un número
-  </string>
-  <string name="activity_signup_popup_specialcharacter">
-    Debe tener al menos un carácter especial
   </string>
   <string name="activity_signup_popup_length">
     Debe tener al menos 10 caracteres
@@ -379,9 +365,6 @@
   <string name="activity_forgot_title">
     Olvidé mi contraseña
   </string>
-  <string name="activity_forgot_submit">
-    Enviar
-  </string>
   <string name="settings_title">
     Ajustes
   </string>
@@ -413,7 +396,7 @@
     Cambiar PIN de retirada
   </string>
   <string name="settings_button_recovery">
-    Cambio de las preguntas de recuperación
+    Preguntas de Recuperación
   </string>
   <string name="settings_user_title">
     NOMBRE
@@ -438,6 +421,9 @@
   </string>
   <string name="settings_title_currency">
     Moneda predeterminada
+  </string>
+  <string name="settings_title_distance">
+    Distancia predeterminada
   </string>
   <string name="settings_exchange_title">
     INTERCAMBIO DEFAULT
@@ -536,7 +522,7 @@
     Max
   </string>
   <string name="send_confirmation_enter_send_pin">
-    Ingrese Enviar Pin
+    Ingrese PIN de 4 Dígitos
   </string>
   <string name="send_confirmation_slide_to_confirm">
     Deslice para Confirmar
@@ -605,6 +591,7 @@
     Cantidad (Opcional)
   </string>
 
+    <string name="request_next">Contiguo</string>
     <string name="request_invalid_amount">cantidad no válida</string>
 
   <string name="request_qr_email_title">
@@ -645,6 +632,9 @@
   </string>
 
     <string name="transaction_details_payee_hint">Ingrese Beneficiario</string>
+    <string name="transaction_details_recovery_reminder_title">Recuperar contraseña Recordatorio</string>
+    <string name="transaction_details_recovery_reminder_message">Usted recibió Bitcoin! Le recomendamos a la creación de preguntas y respuestas de recuperación de contraseña. De lo contrario no será capaz de acceder a su cuenta si su contraseña se olvida.</string>
+
     <string name="transaction_details_advanced_txid">"Transacción ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
     <string name="transaction_details_advanced_source">"Fuente"</string>

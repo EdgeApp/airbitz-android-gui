@@ -16,7 +16,6 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;

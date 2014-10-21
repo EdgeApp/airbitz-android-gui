@@ -1,4 +1,4 @@
-package com.airbitz.objects;
+package com.airbitz.models;
 
 /**
  * Created by tom on 9/25/14.

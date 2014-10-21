@@ -30,7 +30,6 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -309,26 +308,6 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     }
 
     private void signIn() {
-        Bundle bundle = getArguments();
-        String username = bundle.getString(USERNAME);
-        char[] password = bundle.getCharArray(PASSWORD);
-        String pin = bundle.getString(PIN);
-
-        AirbitzApplication.Login(username, password);
-        mCoreAPI.SetUserPIN(pin);
-        CreateDefaultCategories();
-    }
-
-    private void CreateDefaultCategories() {
-        String[] defaults = getResources().getStringArray(R.array.category_defaults);
-
-        for (String cat : defaults)
-            mCoreAPI.addCategory(cat);
-
-        List<String> cats = mCoreAPI.loadCategories();
-        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
-            Log.d(TAG, "Category creation failed");
-        }
     }
 
     public void ShowSkipQuestionsAlert() {

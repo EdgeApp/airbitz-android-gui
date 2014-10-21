@@ -30,6 +30,7 @@ public class HelpFragment extends Fragment {
     public static final int REQUEST_QR = R.raw.info_request_qr;
     public static final int SEND = R.raw.info_send;
     public static final int SEND_CONFIRMATION = R.raw.info_send_confirmation;
+    public static final int SEND_CONFIRMATION_INSUFFICIENT_FUNDS = R.raw.info_insufficient_funds;
     public static final int SETTINGS = R.raw.info_settings;
     public static final int TRANSACTION_DETAILS = R.raw.info_transaction_details;
     public static final int TRANSACTIONS = R.raw.info_transactions;
