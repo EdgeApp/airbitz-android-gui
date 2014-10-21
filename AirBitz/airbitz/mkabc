@@ -7,12 +7,12 @@ LIB_PATH="build/abc/android-arm/libabc.so"
 
 cd $CORE_PATH
 
-if [[ -n $(which ndk-build) ]]; then
+if [[ ! -n $(which ndk-build) ]]; then
     echo "ndk-build must be installed";
     exit 1
 fi
 
-if [[ -n $(which swig) ]]; then
+if [[ ! -n $(which swig) ]]; then
     echo "swig must be installed";
     exit 1
 fi
