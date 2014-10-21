@@ -24,7 +24,7 @@ repositories {
 }
 
 task buildAirbitzCore(type:Exec) {
-    workingDir '.'
+    workingDir '../../'
     commandLine './mkabc'
 }
 
