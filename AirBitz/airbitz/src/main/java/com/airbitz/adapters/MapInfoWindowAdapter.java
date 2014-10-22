@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.fragments.MapBusinessDirectoryFragment;
 import com.airbitz.utils.ImageHelper;
+import com.airbitz.fragments.maps.GoogleMapLayer;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -27,12 +28,12 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private static final String TAG = MapInfoWindowAdapter.class.getSimpleName();
     private LayoutInflater mInflater;
     private Context mContext;
-    private MapBusinessDirectoryFragment mFragment;
+    private GoogleMapLayer mLayer;
 
-    public MapInfoWindowAdapter(Context context, MapBusinessDirectoryFragment frag) {
+    public MapInfoWindowAdapter(Context context, GoogleMapLayer layer) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mContext = context;
-        this.mFragment = frag;
+        this.mLayer = layer;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             Bitmap image = null;
             try {
-                String imageUrl = mFragment.getMarkerImageLink().get(marker);
+                String imageUrl = mLayer.getMarkerImageLink().get(marker);
                 InputStream in = new URL(imageUrl).openStream();
                 image = BitmapFactory.decodeStream(in);
             } catch (IOException e) {

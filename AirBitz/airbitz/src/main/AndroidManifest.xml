@@ -23,7 +23,6 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <uses-library android:name="com.google.android.maps" android:required="false" />
     <uses-feature 
         android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" 
         android:required="false" />
@@ -106,6 +105,8 @@
             </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
+
+        <uses-library android:name="com.google.android.maps" android:required="false" />
 
     </application>
 

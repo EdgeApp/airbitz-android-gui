@@ -2,6 +2,7 @@ package com.airbitz.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -37,27 +38,18 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
-import com.airbitz.adapters.MapInfoWindowAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.fragments.maps.MapBuilder;
+import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
+import com.airbitz.fragments.maps.MapBuilder.MapMarker;
+import com.airbitz.fragments.maps.GoogleMapLayer;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
-import com.airbitz.models.BusinessVenue;
 import com.airbitz.utils.CacheUtil;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,20 +63,20 @@ import java.util.List;
  */
 public class MapBusinessDirectoryFragment extends Fragment implements
         CurrentLocationManager.OnLocationChange {
+
     private static final int INVALID_POINTER_ID = -1;
-    private int mActivePointerId = INVALID_POINTER_ID;
     private static String mLocationWords = "";
     private final String TAG = getClass().getSimpleName();
-    int mapHeight;
-    int aPosBottom = -10000;
-    int dragBarHeight = 0;
-    boolean alreadyLoaded = false;
-    View view;
-    private GoogleMap mGoogleMap;
+
+    private int mActivePointerId = INVALID_POINTER_ID;
+    private int mapHeight;
+    private int aPosBottom = -10000;
+    private int dragBarHeight = 0;
+    private View view;
     private ImageButton mLocateMeButton;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private Marker mUserLocationMarker;
+    private MapMarker mUserLocationMarker;
     private EditText mSearchEdittext;
     private EditText mLocationEdittext;
     private RelativeLayout llListContainer;
@@ -95,7 +87,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private ListView mSearchListView;
     private LinearLayout mMapLayout;
     private ArrayAdapter<Business> mBusinessSearchAdapter;
-    private ArrayList<BusinessVenue> mBusinessVenueList;
     private ListView mVenueListView;
     private VenueAdapter mVenueAdapter;
     private float aPosY;
@@ -104,37 +95,40 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private Location mCurrentLocation;
     private LocationAdapter mLocationAdapter;
     private LinearLayout mapView;
-    private MapView mMapView;
     private String mLocationName;
     private String mBusinessName;
     private String mBusinessType;
     private Bundle mVenueBundle;
-    private HashMap<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
-    private HashMap<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
-    private HashMap<Marker, String> mMarkerImageLink = new HashMap<Marker, String>();
     private List<BusinessSearchResult> mVenues = new ArrayList<BusinessSearchResult>();
-    private boolean mCameraChangeListenerEnabled = false;
-    private List<LatLng> mMarkersLatLngList;
+    private List<MapLatLng> mMarkersLatLngList;
     private CurrentLocationManager mLocationManager;
     private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
     private BusinessAutoCompleteAsynctask mBusinessAutoCompleteAsyncTask;
+    private MapBuilder.MapShim mMapShim;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mVenueBundle = this.getArguments();
-        mBusinessName = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESS);
-        mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
-        mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
+        if (mBusinessName == null) {
+            mBusinessName = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESS);
+        }
+        if (mLocationName == null) {
+            mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
+        }
+        if (mBusinessType == null) {
+            mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
+        }
 
         if (mLocationManager == null) {
-            alreadyLoaded = false;
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-        } else {
-            alreadyLoaded = true;
+        }
+
+        if (mMapShim == null) {
+            mMapShim = MapBuilder.createShim(getActivity());
         }
     }
 
@@ -152,18 +146,47 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
         mVenueListView.setAdapter(mVenueAdapter);
 
-        mapView = (LinearLayout) view.findViewById(R.id.map_view);
-        mMapView = (MapView) view.findViewById(R.id.custom_map_fragment);
-        mMapView.onCreate(savedInstanceState);
+        mCurrentLocation = mLocationManager.getLocation();
+        checkLocationManager();
+        mMapShim.setCurrentLocation(mCurrentLocation);
 
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Setup the map
+        mMapShim.setOnInfoWindowClickListener(new MapBuilder.OnInfoWindowClickListener() {
+            public void click(MapMarker marker) {
+                final String cl = getString(R.string.your_location);
+                if (!marker.getTitle().equalsIgnoreCase(cl)) {
+                    showDirectoryDetailFragment(marker.getId(),
+                                                marker.getTitle(),
+                                                marker.getDistance());
+                }
+            }
+        });
+        mMapShim.setCameraChangeListener(new MapBuilder.OnCameraChangeListener() {
+            public void onCameraChange(MapLatLng sw, MapLatLng ne, MapLatLng ll) {
+                String southWest = "" + sw.getLatitude() + "%2C" + sw.getLongitude();
+                String northEast = "" + ne.getLatitude() + "%2C" + ne.getLongitude();
+                String bound = southWest + "%7C" + northEast;
+                String userLatLong = "";
+                if (ll != null) {
+                    userLatLong = "" + ll.getLatitude() + "," + ll.getLongitude();
+                }
+
+                if (mGetVenuesByBoundAsyncTask != null
+                        && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    mGetVenuesByBoundAsyncTask.cancel(true);
+                }
+                mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
+                mGetVenuesByBoundAsyncTask.execute(bound, mBusinessName, userLatLong);
+            }
+        });
+
+        // Show the map fragment, if the shim has one
+        if (!mMapShim.isEmpty()) {
+            FrameLayout c = (FrameLayout) view.findViewById(R.id.map_placeholder);
+            mMapShim.onCreateView(inflater, c, savedInstanceState);
         }
 
-        mGoogleMap = mMapView.getMap();
-
+        mapView = (LinearLayout) view.findViewById(R.id.map_view);
         mMapLayout = (LinearLayout) view.findViewById(R.id.map_view_layout);
 
         mDragLayout = (LinearLayout) view.findViewById(R.id.dragLayout);
@@ -174,25 +197,22 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocation = new ArrayList<LocationSearchResult>();
 
         mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
-        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
         mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
 
+        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
         mBackButton.setVisibility(View.VISIBLE);
 
         mSearchEdittext = (EditText) view.findViewById(R.id.edittext_search);
-        mLocationEdittext = (EditText) view.findViewById(R.id.edittext_location);
-
-        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
-
-        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mSearchEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-
         mSearchEdittext.setText(mBusinessName);
+
+        mLocationEdittext = (EditText) view.findViewById(R.id.edittext_location);
+        mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         mLocationEdittext.setText(mLocationName);
 
-        mBusinessVenueList = new ArrayList<BusinessVenue>();
+        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        mSearchListView = (ListView) view.findViewById(R.id.listview_search);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,9 +228,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Common.showHelpInfoDialog(this,
-//                        "Info",
-//                        "Business directory info");
             }
         });
 
@@ -220,34 +237,33 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mSearchEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    return;
+                }
+                mSearchListView.setAdapter(mBusinessSearchAdapter);
+                mLocationEdittext.setVisibility(View.VISIBLE);
+                showViewAnimatorChild(1);
 
-                if (hasFocus) {
-                    mSearchListView.setAdapter(mBusinessSearchAdapter);
-                    mLocationEdittext.setVisibility(View.VISIBLE);
-                    showViewAnimatorChild(1);
-
-                    // Start search
-                    try {
-                        final String text = mSearchEdittext.getText().toString();
-                        final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
-                                ? null
-                                : CacheUtil.getCachedBusinessSearchData(getActivity()));
-                        String latLong = "";
-                        if (locationEnabled) {
-                            latLong = String.valueOf(mCurrentLocation.getLatitude());
-                            latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
-                        }
-                        if (mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                            mBusinessAutoCompleteAsyncTask.cancel(true);
-                        }
-                        mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
-                        mBusinessAutoCompleteAsyncTask.execute(text,
-                                mLocationWords,
-                                latLong);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                // Start search
+                try {
+                    final String text = mSearchEdittext.getText().toString();
+                    final List<Business> cachedBusiness = (!TextUtils.isEmpty(text)
+                            ? null
+                            : CacheUtil.getCachedBusinessSearchData(getActivity()));
+                    String latLong = "";
+                    if (locationEnabled) {
+                        latLong = String.valueOf(mCurrentLocation.getLatitude());
+                        latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                     }
-                } else {
+                    if (mBusinessAutoCompleteAsyncTask != null && mBusinessAutoCompleteAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                        mBusinessAutoCompleteAsyncTask.cancel(true);
+                    }
+                    mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
+                    mBusinessAutoCompleteAsyncTask.execute(text,
+                            mLocationWords,
+                            latLong);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -255,7 +271,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mSearchEdittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
             }
 
             @Override
@@ -264,7 +279,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                if (mBusinessName.equals(mSearchEdittext.getText().toString())) {
+                    return;
+                }
                 mSearchListView.setAdapter(mBusinessSearchAdapter);
                 mLocationEdittext.setVisibility(View.VISIBLE);
                 mSearchListView.setVisibility(View.VISIBLE);
@@ -360,17 +377,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocationEdittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
                 mSearchListView.setAdapter(mLocationAdapter);
                 mSearchListView.setVisibility(View.VISIBLE);
                 mLocationWords = editable.toString();
@@ -407,7 +421,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     final BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
 
                     final Business business = businessSearchAdapter.getItem(position);
-
                     mSearchEdittext.setText(business.getName());
                     mBusinessType = business.getType();
 
@@ -442,8 +455,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 int action = event.getActionMasked();
                 switch (action) {
                     case (MotionEvent.ACTION_DOWN):
-                        //Log.d(TAG, "action down");
-                        // Save the ID of this pointer
                         mActivePointerId = event.getPointerId(0);
 
                         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -455,7 +466,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                         return true;
 
                     case (MotionEvent.ACTION_MOVE):
-                        //Log.d(TAG, "action move");
                         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) flMapContainer.getLayoutParams();
                         int currentHeight = param.height;
 
@@ -472,25 +482,12 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                         int barY = (int) mDragLayout.getY();
 
                         if (param.height <= 0 || (barY + dragBarHeight >= aPosY && yMove > 0)) {
-//                            Log.d(TAG, "height is out of bounds.");
-//                            Log.d(TAG, "Height: " + (barY + dragBarHeight) + " aPosY: " + aPosY + " param height: " + param.height + " yMove: " + yMove);
                             param.height = currentHeight;
                         } else if (param.height > (aPosBottom - dragBarHeight - 10)) {
                             param.height = currentHeight;
-//                            Log.d(TAG, "Height: "+(barY+dragBarHeight)+" aPosY: "+aPosY+" param height: "+param.height+" bottom: "+aPosBottom);
                         }
 
                         flMapContainer.setLayoutParams(param);
-
-                        int padding = (mapHeight - param.height) / 2;
-
-                        if (mGoogleMap == null) {
-                            initializeMap();
-                        }
-                        if (mGoogleMap != null) {
-                            mGoogleMap.setPadding(0, padding, 0, padding);
-                        }
-
                         return true;
                     default:
                         return true;
@@ -499,8 +496,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         });
 
         // Hide map if "On the Web" search or no play services support
-        if (!CurrentLocationManager.supportsPlayServices(getActivity())
-                || getString(R.string.on_the_web).equalsIgnoreCase(mLocationName)) {
+        final String otw = getString(R.string.on_the_web);
+        if (mMapShim.isEmpty() || otw.equalsIgnoreCase(mLocationName)) {
             mDragLayout.setVisibility(View.GONE);
             flMapContainer.setVisibility(View.GONE);
         }
@@ -600,22 +597,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 if (locationEnabled) {
-                    Log.d("TAG_LOC",
-                            "CUR LOC: " + mCurrentLocation.getLatitude()
-                                    + "; "
-                                    + mCurrentLocation.getLongitude()
-                    );
-
-                    LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude());
-
-                    drawCurrentLocationMarker(currentLatLng);
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-
-                    mUserLocationMarker.showInfoWindow();
+                    MapLatLng currentLatLng =
+                        new MapLatLng(mCurrentLocation.getLatitude(),
+                                       mCurrentLocation.getLongitude());
+                    drawCurrentLocationMarker(mCurrentLocation);
+                    mMapShim.animateCamera(currentLatLng);
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.no_location_found), Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                          getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -624,10 +613,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
-        if (mLocationManager != null) {
-            mLocationManager.removeLocationChangeListener(this);
-        }
+        mMapShim.onPause();
+
         if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             mGetVenuesAsyncTask.cancel(true);
         }
@@ -645,31 +632,28 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mCurrentLocation = mLocationManager.getLocation();
-        mMapView.onResume();
-        checkLocationManager();
+        mMapShim.onResume();
 
         if (!mVenues.isEmpty()) {
             List<BusinessSearchResult> venues =
                     new ArrayList<BusinessSearchResult>(mVenues);
             mVenues.clear();
-            updateVenueResults(venues);
+            updateVenueResults(venues, true);
         } else {
             search();
         }
-        initializeMap();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        mMapShim.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+        mMapShim.onLowMemory();
     }
 
     private void checkLocationManager() {
@@ -680,283 +664,77 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         } else {
             locationEnabled = true;
         }
+        mMapShim.setLocationEnabled(locationEnabled);
     }
 
     private void onLayoutFinished() {
-        if (alreadyLoaded && mMarkersLatLngList != null) {
-            zoomToContainAllMarkers(mMarkersLatLngList);
-        }
+        zoomToContainAllMarkers(mMarkersLatLngList);
     }
 
-    private void initializeMap() {
-        if (mGoogleMap == null) {
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_map_directory_unable_create_map), Toast.LENGTH_SHORT)
-                    .show();
-            return;
-        }
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mGoogleMap.setMyLocationEnabled(true);
-
-        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
-        try {
-            MapsInitializer.initialize(this.getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-        mGoogleMap.animateCamera(cameraUpdate);
-
-        if (mGoogleMap == null) {
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_map_directory_unable_create_map), Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                mCurrentLocation = location;
-                drawCurrentLocationMarker(location);
-            }
-        });
-
+    private void drawCurrentLocationMarker(Location location) {
         if (locationEnabled) {
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        } else {
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
-
-        mapHeight = (int) getResources().getDimension(R.dimen.map_height); //hardcoded in layout
-
-        int padding = (int) getResources().getDimension(R.dimen.map_padding);
-
-        mGoogleMap.setPadding(0, padding, 0, padding);
-
-        LatLng currentLatLng = null;
-
-        if (mCurrentLocation != null) {
-            currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        } else {
-            mCurrentLocation = new Location("dummyProvider");
-            if (locationEnabled) {
-                mCurrentLocation.setLatitude(mCurrentLocation.getLatitude());
-                mCurrentLocation.setLongitude(mCurrentLocation.getLongitude());
-                currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            }
-        }
-        try {
-            if (locationEnabled) {
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 10);
-                mGoogleMap.animateCamera(cameraUpdate);
-                Log.d("TAG LOC",
-                        "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
-            }
-
-        } catch (Exception e) {
-
-        }
-
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
-        mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
-        if (locationEnabled) {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-        }
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-        MapInfoWindowAdapter customInfoWindowAdapter = new MapInfoWindowAdapter(getActivity(), this);
-        mGoogleMap.setInfoWindowAdapter(customInfoWindowAdapter);
-
-        mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                if (marker.getTitle().equalsIgnoreCase(getString(R.string.your_location))) {
-
-                } else {
-                    showDirectoryDetailFragment("" + mMarkerId.get(marker), marker.getTitle(), mMarkerDistances.get(marker));
-                }
-            }
-        });
-
-        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if (mCameraChangeListenerEnabled) {
-                    LatLngBounds latLngBounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
-                    LatLng southWestLatLng = latLngBounds.southwest;
-                    LatLng northEastLatLng = latLngBounds.northeast;
-                    String southWest = "" + southWestLatLng.latitude + "%2C" + southWestLatLng.longitude;
-                    String northEast = "" + northEastLatLng.latitude + "%2C" + northEastLatLng.longitude;
-                    String bound = southWest + "%7C" + northEast;
-                    String userLatLong = "";
-                    if (locationEnabled) {
-                        userLatLong = "" + mCurrentLocation.getLatitude()
-                                + ","
-                                + mCurrentLocation.getLongitude();
-                    }
-                    if (mGetVenuesByBoundAsyncTask != null && mGetVenuesByBoundAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                        mGetVenuesByBoundAsyncTask.cancel(true);
-                    }
-                    mGetVenuesByBoundAsyncTask = new GetVenuesByBoundTask(getActivity());
-                    mGetVenuesByBoundAsyncTask.execute(bound, mBusinessName, userLatLong);
-                } else {
-                    mCameraChangeListenerEnabled = true;
-                }
-
-            }
-        });
-
-        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                mCameraChangeListenerEnabled = false;
-                marker.showInfoWindow();
-                return true;
-            }
-        });
-        mGoogleMap.setMyLocationEnabled(false);
-        showViewAnimatorChild(0);
-        //}
-    }
-
-    private void drawCurrentLocationMarker(Location location) {//todo
-        if (mUserLocationMarker != null) {
-            mUserLocationMarker.remove();
-        }
-        if (locationEnabled) {
-            LatLng currentPosition;
-            // added default location to prevent breaking
+            MapLatLng currentPosition = null;
             if (location != null) {
-                currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+                currentPosition = new MapLatLng(location.getLatitude(),
+                                                 location.getLongitude());
             } else {
-                currentPosition = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                currentPosition = new MapLatLng(mCurrentLocation.getLatitude(),
+                                                 mCurrentLocation.getLongitude());
             }
-            if (mGoogleMap == null) {
-                initializeMap();
-            }
-            if (mGoogleMap != null) {
-                mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                .position(currentPosition)
-                                .title(getString(R.string.your_location))
-                                .snippet("")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-                );
-            }
+            drawCurrentLocationMarker(currentPosition);
         }
     }
 
-    private void drawCurrentLocationMarker(LatLng location) {//todo
-        if (mUserLocationMarker != null) {
-            mUserLocationMarker.remove();
-        }
+    private void drawCurrentLocationMarker(MapLatLng location) {
         if (location == null) {
-            location = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            location = new MapLatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
-        if (mGoogleMap == null) {
-            initializeMap();
-        }
-        if (mGoogleMap != null) {
-            mUserLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                            .position(location)
-                            .title(getString(R.string.your_location))
-                            .snippet("")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_your_loc))
-            );
+        mUserLocationMarker = new MapMarker(location);
+        mMapShim.drawCurrentLocation(mUserLocationMarker);
+        mMapShim.showCurrentLocationInfo();
+    }
+
+    private void zoomToContainAllMarkers(List<MapLatLng> markers) {
+        if (markers != null && !markers.isEmpty()) {
+            mMapShim.zoomToContainAllMarkers(markers);
         }
     }
 
-    private void zoomToContainAllMarkers(List<LatLng> markers) {
-
-        if (markers.size() > 0) {
-
-            LatLngBounds.Builder bc = new LatLngBounds.Builder();
-
-            for (LatLng item : markers) {
-                bc.include(item);
-            }
-            if (mGoogleMap == null) {
-                initializeMap();
-            }
-            if (mGoogleMap != null) {
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 50));
-            }
-        }
-    }
-
-    protected void initializeMarkerWithBusinessSearchResult() {
+    protected void initializeMarkerWithBusinessSearchResult(boolean zoom) {
         if (flMapContainer == null || flMapContainer.getVisibility() != View.VISIBLE) {
             return;
         }
 
-        Log.d(TAG, "initializeMarkerWithBusinessSearchResult");
-
-        mMarkersLatLngList = new ArrayList<LatLng>();
-        mMarkerId.put(null, 0);
-        mMarkerDistances.put(null, "");
-        getMarkerImageLink().put(null, "");
-        if (!mMarkerId.isEmpty()) {
-            mMarkerId.clear();
-            mMarkerImageLink.clear();
-            mMarkerDistances.clear();
-        }
+        mMarkersLatLngList = new ArrayList<MapLatLng>();
+        mMapShim.clearMarkers();
         if (mVenues.size() > 0) {
-
-            boolean first = true;
-            for (BusinessSearchResult businessSearchResult : mVenues) {
-
-                LatLng locationLatLng = new LatLng(businessSearchResult.getLocationObject().getLatitude(),
-                        businessSearchResult.getLocationObject().getLongitude());
-                mMarkersLatLngList.add(locationLatLng);
-                if (mGoogleMap == null) {
-                    initializeMap();
-                }
-                if (mGoogleMap != null) {
-                    Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                                    .position(locationLatLng)
-                                    .title(businessSearchResult.getName())
-                                    .snippet(businessSearchResult.getAddress())
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ico_bitcoin_loc))
-                    );
-
-                    if (first) {
-                        first = false;
-                    }
-                    mMarkerId.put(marker, Integer.parseInt(businessSearchResult.getId()));
-                    mMarkerDistances.put(marker, businessSearchResult.getDistance());
-                    mMarkerImageLink.put(marker, businessSearchResult.getProfileImage().getImageThumbnail());
-                }
+            for (BusinessSearchResult biz : mVenues) {
+                MapLatLng ll =
+                    new MapLatLng(biz.getLocationObject().getLatitude(),
+                                   biz.getLocationObject().getLongitude());
+                mMarkersLatLngList.add(ll);
+                MapMarker marker =
+                    new MapMarker(ll).id(biz.getId())
+                                        .distance(biz.getDistance())
+                                        .profileImage(biz.getProfileImage().getImageThumbnail())
+                                        .title(biz.getName())
+                                        .snippet(biz.getAddress())
+                                        .icon(R.drawable.ico_bitcoin_loc);
+                mMapShim.addMarker(marker);
             }
-
-            zoomToContainAllMarkers(mMarkersLatLngList);
-
-//            if (firstMarker != null) {
-//                firstMarker.showInfoWindow();
-//            } else {
-//                drawCurrentLocationMarker(mCurrentLocation);
-//                mUserLocationMarker.showInfoWindow();
-//            }
+            if (zoom) {
+                zoomToContainAllMarkers(mMarkersLatLngList);
+            }
         } else {
-            drawCurrentLocationMarker(mCurrentLocation);//TODO
-            mUserLocationMarker.showInfoWindow();
+            drawCurrentLocationMarker(mCurrentLocation);
         }
-
     }
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        mLocationManager.removeLocationChangeListener(this);
-        if (!alreadyLoaded) {
-            mCurrentLocation = mLocationManager.getLocation();
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 7));
-        }
-    }
-
-    public HashMap<Marker, String> getMarkerImageLink() {
-        return mMarkerImageLink;
-    }
-
-    public HashMap<Marker, Integer> getMarkerId() {
-        return mMarkerId;
+        mCurrentLocation = mLocationManager.getLocation();
+        mMapShim.setCurrentLocation(location);
+        mMapShim.animateCamera(new MapLatLng(mCurrentLocation));
     }
 
     private boolean isNewVenuesAdded(List<BusinessSearchResult> newVenues) {
@@ -965,7 +743,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 return true;
             }
         }
-
         return false;
     }
 
@@ -975,10 +752,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    private void updateVenueResults(String searchResult) {
+    private void updateVenueResults(String searchResult, boolean zoom) {
         try {
             SearchResult result = new SearchResult(new JSONObject(searchResult));
-            updateVenueResults(result.getBusinessSearchObjectArray());
+            updateVenueResults(result.getBusinessSearchObjectArray(), zoom);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -986,20 +763,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         }
     }
 
-    private void updateVenueResults(List<BusinessSearchResult> venues) {
+    private void updateVenueResults(List<BusinessSearchResult> venues, boolean zoom) {
         if (venues == null) {
             return;
         }
         try {
             mVenues.addAll(venues);
             mVenueAdapter.notifyDataSetChanged();
-            if (mGoogleMap == null) {
-                initializeMap();
-            }
-            if (mGoogleMap != null) {
-                mGoogleMap.clear();
-                initializeMarkerWithBusinessSearchResult();
-            }
+            initializeMarkerWithBusinessSearchResult(zoom);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1020,8 +791,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected void onPostExecute(List<LocationSearchResult> result) {
-            if (getActivity() == null)
+            if (getActivity() == null) {
                 return;
+            }
 
             mLocation.clear();
 
@@ -1078,8 +850,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected void onPostExecute(List<Business> businesses) {
-            if (getActivity() == null)
+            if (getActivity() == null) {
                 return;
+            }
 
             mBusinessList.clear();
             if (businesses == null) {
@@ -1130,27 +903,24 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected String doInBackground(String... params) {
-
-            Log.d(TAG, "GetVenuesByBoundTask params: " + params);
+            final String PAGE_SIZE = "500";
             if (mBusinessType.equalsIgnoreCase("category")) {
-
-                return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], "", "", "");
+                return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], PAGE_SIZE, "", "");
             } else {
 
-                return mApi.getSearchByBoundsAndBusiness(params[0], params[1], "", params[2], "", "", "");
+                return mApi.getSearchByBoundsAndBusiness(params[0], params[1], "", params[2], PAGE_SIZE, "", "");
             }
         }
 
         @Override
         protected void onPostExecute(String searchResult) {
-            if (getActivity() == null)
+            if (getActivity() == null) {
                 return;
-
+            }
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
-                Log.d(TAG, "New Venues have been added: " + isNewVenuesAdded(results.getBusinessSearchObjectArray()));
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
-                    updateVenueResults(searchResult);
+                    updateVenueResults(searchResult, false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1187,10 +957,11 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected void onPostExecute(String searchResult) {
-            if (getActivity() == null)
+            if (getActivity() == null) {
                 return;
+            }
 
-            updateVenueResults(searchResult);
+            updateVenueResults(searchResult, true);
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
@@ -1234,7 +1005,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             if (getActivity() == null)
                 return;
 
-            updateVenueResults(searchResult);
+            updateVenueResults(searchResult, true);
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
