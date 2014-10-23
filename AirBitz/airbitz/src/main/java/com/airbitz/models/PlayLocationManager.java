@@ -23,8 +23,10 @@ public class PlayLocationManager implements
         GooglePlayServicesClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
+    static String TAG = PlayLocationManager.class.getSimpleName();
+
     private static PlayLocationManager mInstance = null;
-    LocationRequest mLocationRequest;
+    private LocationRequest mLocationRequest;
     private LocationClient locationClient;
     private Location mCurrentLocation;
     private Context mContext;
@@ -48,7 +50,7 @@ public class PlayLocationManager implements
         }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            Log.d("PlayLocationManager", "Listener added: " + listener);
+            Log.d(TAG, "Listener added: " + listener);
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -56,9 +58,8 @@ public class PlayLocationManager implements
     }
 
     public void removeLocationChangeListener(OnLocationChange listener) {
-//        mRemovers.add(listener);
         mObservers.remove(listener);
-        Log.d("PlayLocationManager", "Listener removed: " + listener);
+        Log.d(TAG, "Listener removed: " + listener);
         if (mObservers.size() <= 0) {
             locationClient.disconnect();
         }
@@ -73,7 +74,7 @@ public class PlayLocationManager implements
 
     public void attemptConnection() {
         if (locationClient == null || !locationClient.isConnected()) {
-            Log.d("PlayLocationManager", "Attempting connection");
+            Log.d(TAG, "Attempting connection");
             locationClient = new LocationClient(mContext, this, this);
             locationClient.connect();
         }
@@ -81,10 +82,10 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("PlayLocationManager", "Connected.");
+        Log.d(TAG, "Connected.");
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(60000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(1000 * 60 * 60);
         mLocationRequest.setFastestInterval(30000);
         locationClient.requestLocationUpdates(mLocationRequest, this);
         mCurrentLocation = locationClient.getLastLocation();
@@ -95,7 +96,7 @@ public class PlayLocationManager implements
 
     @Override
     public void onDisconnected() {
-        Log.d("PlayLocationManager", "Disconnected. Please re-connect.");
+        Log.d(TAG, "Disconnected. Please re-connect.");
         if (mObservers.size() != 0) {
             attemptConnection();
         }
@@ -103,12 +104,13 @@ public class PlayLocationManager implements
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged");
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
-            Log.d("TAG_LOC",
-                    "CUR LOC: " + mCurrentLocation.getLatitude() + "; " + mCurrentLocation.getLongitude());
+            Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
+                                   + mCurrentLocation.getLongitude());
 
-            Iterator<OnLocationChange> i = mObservers.iterator(); // Must be in synchronized block
+            Iterator<OnLocationChange> i = mObservers.iterator();
             while (i.hasNext()) {
                 i.next().OnCurrentLocationChange(mCurrentLocation);
             }
@@ -117,6 +119,6 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("TAG_LOC", "Connection to LocationClient failed");
+        Log.d(TAG, "Connection to LocationClient failed");
     }
 }

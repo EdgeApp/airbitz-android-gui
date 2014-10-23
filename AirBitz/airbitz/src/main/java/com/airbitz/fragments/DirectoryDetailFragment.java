@@ -225,8 +225,8 @@ public class DirectoryDetailFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             String latLong = "";
-            if (locationEnabled) {
-                android.location.Location currentLoc = mLocationManager.getLocation();
+            android.location.Location currentLoc = mLocationManager.getLocation();
+            if (locationEnabled && null != currentLoc) {
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
