@@ -148,7 +148,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         mCurrentLocation = mLocationManager.getLocation();
         checkLocationManager();
-        mMapShim.setCurrentLocation(mCurrentLocation);
+        if (mCurrentLocation != null) {
+            mMapShim.setCurrentLocation(mCurrentLocation);
+        }
 
         // Setup the map
         mMapShim.setOnInfoWindowClickListener(new MapBuilder.OnInfoWindowClickListener() {
@@ -251,7 +253,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                             ? null
                             : CacheUtil.getCachedBusinessSearchData(getActivity()));
                     String latLong = "";
-                    if (locationEnabled) {
+                    if (locationEnabled && null != mCurrentLocation) {
                         latLong = String.valueOf(mCurrentLocation.getLatitude());
                         latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                     }
@@ -287,7 +289,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 mSearchListView.setVisibility(View.VISIBLE);
 
                 String latLong = "";
-                if (locationEnabled) {
+                if (locationEnabled && null != mCurrentLocation) {
                     latLong = String.valueOf(mCurrentLocation.getLatitude());
                     latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
@@ -324,7 +326,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
                     // Search
                     String latLong = "";
-                    if (locationEnabled) {
+                    if (locationEnabled && null != mCurrentLocation) {
                         latLong = String.valueOf(mCurrentLocation.getLatitude());
                         latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                     }
@@ -390,7 +392,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 mLocationWords = editable.toString();
 
                 String latLong = "";
-                if (locationEnabled) {
+                if (locationEnabled && null != mCurrentLocation) {
                     latLong = String.valueOf(mCurrentLocation.getLatitude());
                     latLong += "," + String.valueOf(mCurrentLocation.getLongitude());
                 }
@@ -555,8 +557,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }
             mGetVenuesAsyncTask = new GetVenuesByLatLongTask(getActivity());
             String latlong = "";
-            if (locationEnabled) {
-                latlong += mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+            if (locationEnabled && null != mCurrentLocation) {
+                latlong += mCurrentLocation.getLatitude() + ","
+                         + mCurrentLocation.getLongitude();
             }
             if (mBusinessType.equalsIgnoreCase("business")) {
                 mGetVenuesAsyncTask.execute(latlong, mBusinessName, "");
@@ -596,7 +599,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocateMeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (locationEnabled) {
+                if (locationEnabled && null != mCurrentLocation) {
                     MapLatLng currentLatLng =
                         new MapLatLng(mCurrentLocation.getLatitude(),
                                        mCurrentLocation.getLongitude());
@@ -677,21 +680,26 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             if (location != null) {
                 currentPosition = new MapLatLng(location.getLatitude(),
                                                  location.getLongitude());
-            } else {
+            } else if (null != mCurrentLocation) {
                 currentPosition = new MapLatLng(mCurrentLocation.getLatitude(),
                                                  mCurrentLocation.getLongitude());
             }
-            drawCurrentLocationMarker(currentPosition);
+            if (currentPosition != null) {
+                drawCurrentLocationMarker(currentPosition);
+            }
         }
     }
 
     private void drawCurrentLocationMarker(MapLatLng location) {
-        if (location == null) {
-            location = new MapLatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        if (location == null && null != mCurrentLocation) {
+            location = new MapLatLng(mCurrentLocation.getLatitude(),
+                                     mCurrentLocation.getLongitude());
         }
-        mUserLocationMarker = new MapMarker(location);
-        mMapShim.drawCurrentLocation(mUserLocationMarker);
-        mMapShim.showCurrentLocationInfo();
+        if (location != null) {
+            mUserLocationMarker = new MapMarker(location);
+            mMapShim.drawCurrentLocation(mUserLocationMarker);
+            mMapShim.showCurrentLocationInfo();
+        }
     }
 
     private void zoomToContainAllMarkers(List<MapLatLng> markers) {
@@ -732,7 +740,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        mCurrentLocation = mLocationManager.getLocation();
+        mCurrentLocation = location;
         mMapShim.setCurrentLocation(location);
         mMapShim.animateCamera(new MapLatLng(mCurrentLocation));
     }
@@ -985,7 +993,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         @Override
         protected String doInBackground(String... params) {
             String latLong = "";
-            if (locationEnabled) {
+            if (locationEnabled && null != mCurrentLocation) {
                 latLong = String.valueOf(mCurrentLocation.getLatitude())
                         + "," + String.valueOf(mCurrentLocation.getLongitude());
             }

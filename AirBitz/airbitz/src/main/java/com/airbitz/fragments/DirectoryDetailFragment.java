@@ -252,7 +252,6 @@ public class DirectoryDetailFragment extends Fragment {
                     mAddressButton.setClickable(false);
                 }
 
-
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
                     if (mLat != 0 && mLon != 0) {
                         mAddressButton.setText(getString(R.string.fragment_directory_detail_directions));

@@ -90,12 +90,14 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
 
     @Override
     public void showCurrentLocationInfo() {
-        CameraUpdate cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(
-                new LatLng(mCurrentLocation.getLatitude(),
-                           mCurrentLocation.getLongitude()), 10);
-        mGoogleMap.animateCamera(cameraUpdate);
-        mCameraNotificationEnabled = true;
+        if (mCurrentLocation != null) {
+            CameraUpdate cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()), 10);
+            mGoogleMap.animateCamera(cameraUpdate);
+            mCameraNotificationEnabled = true;
+        }
     }
 
     @Override
@@ -228,17 +230,9 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
         if (mCurrentLocation != null) {
             currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
                                        mCurrentLocation.getLongitude());
-        } else {
-            mCurrentLocation = new Location("dummyProvider");
-            if (mLocationEnabled) {
-                mCurrentLocation.setLatitude(mCurrentLocation.getLatitude());
-                mCurrentLocation.setLongitude(mCurrentLocation.getLongitude());
-                currentLatLng = new LatLng(mCurrentLocation.getLatitude(),
-                                           mCurrentLocation.getLongitude());
-            }
         }
         try {
-            if (mLocationEnabled) {
+            if (mLocationEnabled && mCurrentLocation != null) {
                 CameraUpdate cameraUpdate =
                     CameraUpdateFactory.newLatLngZoom(
                         new LatLng(mCurrentLocation.getLatitude(),
@@ -251,7 +245,7 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
 
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
-        if (mLocationEnabled) {
+        if (mLocationEnabled && currentLatLng != null) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng));
         }
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -301,14 +295,14 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
                                 MapLatLng ll = null;
-                                if (mLocationEnabled) {
+                                if (mLocationEnabled && null != mCurrentLocation) {
                                     ll = new MapLatLng(mCurrentLocation);
                                 }
                                 mOnCameraChangeListener.onCameraChange(
                                     new MapLatLng(sw.latitude, sw.longitude),
                                     new MapLatLng(ne.latitude, sw.longitude), ll);
                             }
-                        }, 1000);
+                        }, 500);
                     }
                 }
                 mCameraNotificationEnabled = false;
