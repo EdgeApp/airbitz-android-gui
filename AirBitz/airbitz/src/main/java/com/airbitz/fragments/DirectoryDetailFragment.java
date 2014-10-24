@@ -225,8 +225,8 @@ public class DirectoryDetailFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             String latLong = "";
-            if (locationEnabled) {
-                android.location.Location currentLoc = mLocationManager.getLocation();
+            android.location.Location currentLoc = mLocationManager.getLocation();
+            if (locationEnabled && null != currentLoc) {
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
@@ -251,7 +251,6 @@ public class DirectoryDetailFragment extends Fragment {
                 if (mLat == 0 && mLon == 0) {
                     mAddressButton.setClickable(false);
                 }
-
 
                 if ((mDetail.getAddress().length() == 0) || mDetail == null) {
                     if (mLat != 0 && mLon != 0) {

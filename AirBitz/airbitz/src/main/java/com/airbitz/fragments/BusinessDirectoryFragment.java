@@ -60,6 +60,10 @@ public class BusinessDirectoryFragment extends Fragment implements
         NavigationActivity.OnBackPress,
         CurrentLocationManager.OnLocationChange {
 
+    static int CATEGORY_TIMEOUT = 15000;
+    static int LOCATION_TIMEOUT = 10000;
+    static String TAG = AirbitzAPI.class.getSimpleName();
+
     public static final String LAT_KEY = "LAT_KEY";
     public static final String LON_KEY = "LON_KEY";
     public static final String PREF_NAME = "PREF_NAME";
@@ -76,8 +80,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
     public static Typeface helveticaNeueTypeFace;
-    protected static int CATEGORY_TIMEOUT = 15000;
-    static String TAG = AirbitzAPI.class.getSimpleName();
     private static String mLocationWords = "";
     private static String mBusinessType = "business";
     Handler mHandler = new Handler();
@@ -101,7 +103,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     private VenueAdapter mVenueAdapter;
     private Spinner mMoreSpinner;
     private CurrentLocationManager mLocationManager;
-    private Location mLastLocation;
     private ViewGroup mViewGroupLoading;
     private TextView mNoResultView;
     private ArrayAdapter<Business> mBusinessSearchAdapter;
@@ -118,6 +119,9 @@ public class BusinessDirectoryFragment extends Fragment implements
     private boolean mLoadFlag = false;
     private boolean isFirstLoad = true;
     private ProgressDialog mMoreCategoriesProgressDialog;
+    private Handler mVenueHandler = new Handler();
+    private Location mCurrentLocation = null;
+
     Runnable mProgressTimeout = new Runnable() {
         @Override
         public void run() {
@@ -568,20 +572,35 @@ public class BusinessDirectoryFragment extends Fragment implements
         return view;
     }
 
+
+    public void queryWithoutLocation() {
+        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mVenuesTask.cancel(true);
+        }
+        mVenuesTask = new VenuesTask(getActivity(), ""); // pass in empty lat/lng
+        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
     @Override
     public void OnCurrentLocationChange(Location location) {
         String latLon = "";
-        if (location != null)
+        if (location != null) {
             latLon = "" + location.getLatitude() + "," + location.getLongitude();
+        }
+        if (mCurrentLocation != null && mCurrentLocation.distanceTo(location) < 100.0f) {
+            mCurrentLocation = location;
+            return;
+        }
 
+        mVenueHandler.removeCallbacks(null);
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }
         mVenuesTask = new VenuesTask(getActivity(), latLon);
+        mVenuesTask.setWipe(true);
         mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        mLastLocation = new Location(location);
-        mLocationManager.removeLocationChangeListener(this);
+        mCurrentLocation = location;
     }
 
     @Override
@@ -629,15 +648,18 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.GONE);
         }
         checkLocationManager();
-        if (mLastLocation != null &&
-                (System.currentTimeMillis() - mLastLocation.getTime()) > 30 * 60 * 1000) {
-            mVenuesLoaded = new ArrayList<BusinessSearchResult>();
-            mLastLocation = null;
-        }
-        Log.d(TAG, "mVenuesLoaded: " + mVenuesLoaded.size());
+        mLocationManager.addLocationChangeListener(this);
         if (mVenuesLoaded.isEmpty()) {
             // if no venues, then request location
-            mLocationManager.addLocationChangeListener(this);
+            if (locationEnabled) {
+                mVenueHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        queryWithoutLocation();
+                    }
+                }, LOCATION_TIMEOUT);
+            } else {
+                queryWithoutLocation();
+            }
         } else {
             // copy the list
             List<BusinessSearchResult> venues =
@@ -733,8 +755,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             // If we are displaying a dialog, open up the spinner
             if (mMoreCategoriesProgressDialog != null && mMoreCategoriesProgressDialog.isShowing()) {
                 if (categories == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Can not retrieve data",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                        "Can not retrieve data", Toast.LENGTH_LONG).show();
                 }
                 mMoreCategoriesProgressDialog.dismiss();
                 mMoreCategoriesProgressDialog = null;
@@ -755,8 +777,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(), "No categories retrieved from server",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                        "No categories retrieved from server", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -976,10 +998,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
         String mLatLng;
+        boolean mWipe;
 
         public VenuesTask(Context context, String latlng) {
             mContext = context;
             mLatLng = latlng;
+            mWipe = false;
+        }
+
+        public void setWipe(boolean b) {
+            this.mWipe = b;
         }
 
         @Override
@@ -1004,6 +1032,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         @Override
         protected void onPostExecute(String searchResult) {
             if (!searchResult.isEmpty()) {
+                if (mWipe) {
+                    mVenuesLoaded.clear();
+                }
                 try {
                     SearchResult results = new SearchResult(new JSONObject(searchResult));
                     mNextUrl = results.getNextLink();
