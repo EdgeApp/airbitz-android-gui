@@ -112,7 +112,7 @@ public class DirectoryDetailFragment extends Fragment {
         }
 
         mTask = new GetBusinessDetailTask(getActivity());
-        mTask.execute(mBusinessId);
+        mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mBusinessId);
 
         int timeout = 5000;
         Handler handler = new Handler();
