@@ -381,6 +381,10 @@ public class NavigationActivity extends Activity
         switchFragmentThread(id);
     }
 
+    public void pushFragment(Fragment fragment) {
+        pushFragment(fragment, mNavThreadId);
+    }
+
     public void pushFragment(Fragment fragment, int threadID) {
         mNavStacks[threadID].push(fragment);
 
