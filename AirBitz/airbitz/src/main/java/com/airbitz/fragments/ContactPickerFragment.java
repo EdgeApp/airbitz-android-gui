@@ -42,7 +42,7 @@ public class ContactPickerFragment extends Fragment {
     private EditText mContactName;
     private TextView mFragmentTitle;
     private ListView mSearchListView;
-    private HighlightOnPressImageButton mCancelButton;
+    private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
     private Bundle mBundle;
     private List<Contact> mContacts = new ArrayList<Contact>();
@@ -70,7 +70,7 @@ public class ContactPickerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
-        mFragmentTitle = (TextView) mView.findViewById(R.id.fragment_contact_picker_title);
+        mFragmentTitle = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         if (mBundle.getString(TYPE).equals(EMAIL)) {
             mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_email));
         } else {
@@ -78,7 +78,8 @@ public class ContactPickerFragment extends Fragment {
             mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_sms));
         }
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_contact_picker_button_help);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,8 +92,9 @@ public class ContactPickerFragment extends Fragment {
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
         mSearchAdapter = new ContactSearchAdapter(getActivity(), mFilteredContacts);
         mSearchListView.setAdapter(mSearchAdapter);
-        mCancelButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_contact_picker_button_back);
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();

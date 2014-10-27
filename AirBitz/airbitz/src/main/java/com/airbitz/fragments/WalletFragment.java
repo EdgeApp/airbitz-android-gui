@@ -172,7 +172,8 @@ public class WalletFragment extends Fragment
         mWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
         mExportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_back_button);
+
+
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
 
@@ -184,8 +185,33 @@ public class WalletFragment extends Fragment
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_help_button);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_wallet_title_textview);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchPage) {
+                    SetSearchVisibility(false);
+                    mTransactionAdapter.setSearch(false);
+                    startTransactionTask();
+                } else {
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS), NavigationActivity.Tabs.WALLET.ordinal());
+            }
+        });
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.fragment_wallet_title);
 
         mButtonBitcoinBalance = (Button) mView.findViewById(R.id.back_button_top);
         mButtonFiatBalance = (Button) mView.findViewById(R.id.back_button_bottom);
@@ -202,7 +228,6 @@ public class WalletFragment extends Fragment
         mProgressView = (View) mView.findViewById(android.R.id.empty);
         mProgressView.setVisibility(View.GONE);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace);
         mSearchField.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mButtonBitcoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -387,25 +412,6 @@ public class WalletFragment extends Fragment
             }
         });
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (searchPage) {
-                    SetSearchVisibility(false);
-                    mTransactionAdapter.setSearch(false);
-                    startTransactionTask();
-                } else {
-                    getActivity().onBackPressed();
-                }
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS), NavigationActivity.Tabs.WALLET.ordinal());
-            }
-        });
 
         ((NavigationActivity) getActivity()).hideSoftKeyboard(mSendButton);
         return mView;

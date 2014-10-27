@@ -238,7 +238,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mAdvanceDetailsButtonLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_button_advanced_layout);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mTitleTextView.setText(R.string.transaction_details_title);
+
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
         mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
@@ -260,8 +268,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryPopupLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_category_popup_layout);
 
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_back);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.transaction_detail_button_help);
 
         mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
         mNoteDetailLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_note);
@@ -312,7 +318,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPayeeEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);

@@ -55,8 +55,8 @@ public class WalletPasswordFragment extends Fragment {
         mPasswordEdittext = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
         mValidPasswordImageView = (ImageView) mView.findViewById(R.id.imageview_valid_password);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_help);
 
 
         TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);

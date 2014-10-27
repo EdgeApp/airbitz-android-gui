@@ -140,14 +140,19 @@ public class SendConfirmationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mTitleTextView.setText(R.string.send_confirmation_title);
 
         mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
 
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_back_button);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_sendconfirmation_help_button);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mCalculator = mActivity.getCalculatorView();
@@ -172,7 +177,6 @@ public class SendConfirmationFragment extends Fragment {
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 

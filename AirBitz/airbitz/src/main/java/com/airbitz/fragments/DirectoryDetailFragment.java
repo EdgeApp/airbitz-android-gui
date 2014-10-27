@@ -31,7 +31,6 @@ import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Location;
-import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -135,14 +134,26 @@ public class DirectoryDetailFragment extends Fragment {
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
 
         // Header
-        mLogo = (ImageView) mView.findViewById(R.id.logo);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
-
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-        mLogo.setVisibility(View.GONE);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
         mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
 
         if (!TextUtils.isEmpty(mBusinessName)) {
             mTitleTextView.setText(mBusinessName);
@@ -157,18 +168,6 @@ public class DirectoryDetailFragment extends Fragment {
         mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
         mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
         mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
 
         return mView;
     }

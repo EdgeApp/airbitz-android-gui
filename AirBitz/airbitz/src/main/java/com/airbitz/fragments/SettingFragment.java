@@ -59,7 +59,6 @@ public class SettingFragment extends Fragment {
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
-    private ImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
     private RadioGroup mDenominationGroup;
@@ -115,10 +114,12 @@ public class SettingFragment extends Fragment {
         mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
         mDistanceItems = getResources().getStringArray(R.array.distance_list);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.settings_button_back);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.settings_button_help);
-        mTitleTextView = (TextView) mView.findViewById(R.id.settings_textview_title);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.settings_title);
 
         mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
 

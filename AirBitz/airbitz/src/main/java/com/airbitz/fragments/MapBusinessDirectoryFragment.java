@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -14,7 +13,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,7 +41,6 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
-import com.airbitz.fragments.maps.GoogleMapLayer;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.CurrentLocationManager;
@@ -55,7 +52,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -83,7 +79,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private FrameLayout flMapContainer;
     private boolean locationEnabled;
     private LinearLayout mDragLayout;
-    private TextView mTitleTextView;
     private ListView mSearchListView;
     private LinearLayout mMapLayout;
     private ArrayAdapter<Business> mBusinessSearchAdapter;
@@ -199,9 +194,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocation = new ArrayList<LocationSearchResult>();
 
         mLocateMeButton = (ImageButton) view.findViewById(R.id.locateMeButton);
-        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
+        mHelpButton = (ImageButton) view.findViewById(R.id.layout_airbitz_header_button_help);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
+        mBackButton = (ImageButton) view.findViewById(R.id.layout_airbitz_header_button_back);
         mBackButton.setVisibility(View.VISIBLE);
 
         mSearchEdittext = (EditText) view.findViewById(R.id.edittext_search);
@@ -212,8 +207,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         mLocationEdittext.setText(mLocationName);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {

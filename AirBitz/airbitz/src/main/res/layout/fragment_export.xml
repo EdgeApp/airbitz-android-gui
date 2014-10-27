@@ -6,52 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/fragment_category_layout_header"
+    <include
+        layout="@layout/layout_title_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#40000000">
-
-        <com.airbitz.objects.HighlightOnPressImageButton
-            android:id="@+id/fragment_export_back_button"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/string_back_button"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_back" />
-
-        <TextView
-            android:id="@+id/fragment_category_textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:text="@string/export_title"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-
-        <com.airbitz.objects.HighlightOnPressImageButton
-            android:id="@+id/fragment_export_help_button"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/string_help_button"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_help" />
-
-    </RelativeLayout>
-
+        android:layout_height="44.1dp" />
 
     <RelativeLayout
         android:id="@+id/fragment_export_wallet_layout"

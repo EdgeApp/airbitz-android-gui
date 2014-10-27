@@ -73,9 +73,11 @@ public class ExportFragment extends Fragment {
         mPdfbutton = (HighlightOnPressButton) mView.findViewById(R.id.button_pdf);
         mWalletPrivateSeed = (HighlightOnPressButton) mView.findViewById(R.id.button_wallet);
 
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_back_button);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_export_help_button);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_export_account_spinner);
