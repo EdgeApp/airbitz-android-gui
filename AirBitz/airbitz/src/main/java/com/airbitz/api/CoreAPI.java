@@ -399,12 +399,12 @@ public class CoreAPI {
     //************ Account Recovery
 
     // Blocking call, wrap in AsyncTask
-    public boolean SignIn(String username, char[] password) {
+    public tABC_CC SignIn(String username, char[] password) {
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
         tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), null, pVoid, pError);
-        return result == tABC_CC.ABC_CC_Ok;
+        return result;
     }
 
     //************ Settings handling

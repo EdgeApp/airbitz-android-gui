@@ -227,7 +227,9 @@ public class Common {
             return context.getString(R.string.server_error_wallet_exists);
         } else if (code == tABC_CC.ABC_CC_InvalidWalletID) {
             return context.getString(R.string.server_error_invalid_wallet);
-        } else if (code == tABC_CC.ABC_CC_URLError || code == tABC_CC.ABC_CC_ServerError) {
+        } else if (code == tABC_CC.ABC_CC_URLError) {
+            return context.getString(R.string.string_connection_error_server);
+        } else if (code == tABC_CC.ABC_CC_ServerError) {
             return context.getString(R.string.server_error_no_connection);
         } else if (code == tABC_CC.ABC_CC_NoRecoveryQuestions) {
             return context.getString(R.string.server_error_no_recovery_questions);
