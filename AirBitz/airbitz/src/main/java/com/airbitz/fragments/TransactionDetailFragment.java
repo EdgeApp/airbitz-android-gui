@@ -138,6 +138,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private HashMap<String, Uri> mCombinedPhotos;
     private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();
     private long mBizId;
+    private String mBizDistance;
     private List<String> mCategories;
     private List<String> mOriginalCategories;
     private boolean mFromSend = false;
@@ -344,6 +345,21 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void onClick(View view) {
                 ShowAdvancedDetails(true);
+            }
+        });
+
+        mPayeeImageViewFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mBizId != 0) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DirectoryDetailFragment.BIZID, String.valueOf(mBizId));
+                    bundle.putString("", mPayeeEditText.getText().toString());
+                    bundle.putString("", mBizDistance);
+                    Fragment fragment = new DirectoryDetailFragment();
+                    fragment.setArguments(bundle);
+                    ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+                }
             }
         });
 
@@ -1413,6 +1429,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 updatePhoto();
                 updateBizId();
                 mSearchAdapter.notifyDataSetChanged();
+                mBizDistance = business.getDistance();
             }
         }
 
