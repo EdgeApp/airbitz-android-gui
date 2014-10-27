@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_title_header"
+    android:layout_width="match_parent"
+    android:layout_height="44.1dp"
+    android:background="@drawable/bg_dark_header">
+
+    <com.airbitz.objects.HighlightOnPressImageButton
+        android:id="@+id/layout_title_header_button_back"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/string_back_button"
+        android:padding="12.6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_back"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/layout_title_header_textview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <com.airbitz.objects.HighlightOnPressImageButton
+        android:id="@+id/layout_title_header_button_help"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/string_help_button"
+        android:padding="12.6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_help"
+        android:visibility="gone"/>
+
+</RelativeLayout>

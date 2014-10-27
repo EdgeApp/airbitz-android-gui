@@ -6,12 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <!-- Header -->
-
     <include
-        android:id="@+id/fragment_category_layout_header"
-        layout="@layout/layout_header"
+        android:id="@+id/fragment_business_detail_header"
+        layout="@layout/layout_title_header"
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
 
@@ -19,24 +16,17 @@
         android:id="@+id/layout_banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@id/fragment_category_layout_header"
+        android:layout_below="@id/fragment_business_detail_header"
         android:background="#80000000">
 
-        <ImageView
+        <android.support.v4.view.ViewPager
             android:id="@+id/imageview_business"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="70dp"-->
-        <!--android:orientation="vertical"-->
-        <!--android:background="#804f606c"-->
-        <!--android:layout_alignParentBottom="true"/>-->
-
         <RelativeLayout
-            android:id="@+id/layout_business_detil"
+            android:id="@+id/layout_business_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
@@ -86,26 +76,6 @@
                     tools:text="BTC Discount %" />
             </LinearLayout>
 
-
-            <!--    <LinearLayout
-                    android:layout_width="200dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true">
-                </LinearLayout> -->
-            <!--<RelativeLayout-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_alignParentRight="true">-->
-            <!--<ImageView-->
-            <!--android:layout_width="100dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@drawable/bg_ribbon"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_alignParentRight="true" />-->
-
-            <!--</RelativeLayout>-->
 
             <TextView
                 android:id="@+id/textview_distance"
@@ -206,6 +176,39 @@
                 android:padding="@dimen/content_padding_1_5"
                 android:textColor="@android:color/black"
                 tools:text="About" />
+
+            <Button
+                android:id="@+id/button_share"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_share" />
+
+            <Button
+                android:id="@+id/button_facebook"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_facebook" />
+
+            <Button
+                android:id="@+id/button_twitter"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_twitter" />
 
 
         </LinearLayout>

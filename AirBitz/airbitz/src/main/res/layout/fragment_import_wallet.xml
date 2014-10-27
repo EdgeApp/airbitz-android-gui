@@ -31,7 +31,7 @@
         android:padding="4dp">
 
         <ImageButton
-            android:id="@+id/fragment_category_button_back"
+            android:id="@+id/layout_airbitz_header_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:layout_alignParentLeft="true"
@@ -56,7 +56,7 @@
 
 
         <ImageButton
-            android:id="@+id/fragment_category_button_help"
+            android:id="@+id/layout_airbitz_header_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:layout_alignParentRight="true"
@@ -80,7 +80,7 @@
         <!--android:id="@+id/layout_scroll"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/layout_header"-->
+        <!--android:layout_below="@+id/layout_airbitz_header"-->
         <!--android:layout_above="@id/bottom_padding">-->
 
         <LinearLayout

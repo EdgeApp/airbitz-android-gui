@@ -90,7 +90,13 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
             mCalculator.hideDoneButton();
         }
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_request_help_button);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.request_title);
+
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 
         mExpandButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
@@ -98,11 +104,9 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
         pickWalletSpinner.setAdapter(dataAdapter);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mFiatField.setTypeface(NavigationActivity.montserratRegularTypeFace);

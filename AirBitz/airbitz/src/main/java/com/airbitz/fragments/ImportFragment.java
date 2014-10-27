@@ -88,8 +88,8 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_help);
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);

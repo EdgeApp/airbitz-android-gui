@@ -53,7 +53,7 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_help_info, container, false);
+        View v = inflater.inflate(R.layout.fragment_help, container, false);
 
         if (mHtml != null) {
             TextView tv = (TextView) v.findViewById(R.id.dialog_help_textview);

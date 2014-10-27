@@ -14,7 +14,6 @@ import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +87,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     private EditText mSearchField;
     private EditText mLocationField;
     private ListView mSearchListView;
-    private TextView mTitleTextView;
     private TextView mNearYouTextView;
     private ViewGroup mBusinessLayout;
     private ImageButton mBackButton;
@@ -217,17 +215,14 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         mNoResultView = (TextView) view.findViewById(R.id.business_fragment_no_result_view);
 
-        mBackButton = (ImageButton) view.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) view.findViewById(R.id.fragment_category_button_help);
+        mBackButton = (ImageButton) view.findViewById(R.id.layout_airbitz_header_button_back);
+        mHelpButton = (ImageButton) view.findViewById(R.id.layout_airbitz_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
         mSearchField = (EditText) view.findViewById(R.id.edittext_search);
         mLocationField = (EditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
-        mTitleTextView = (TextView) view.findViewById(R.id.fragment_category_textview_title);
-
         mNearYouTextView = (TextView) mBusinessLayout.findViewById(R.id.textview_nearyou);
 
-        mTitleTextView.setTypeface(montserratBoldTypeFace);
         mSearchField.setTypeface(montserratRegularTypeFace);
         mLocationField.setTypeface(montserratRegularTypeFace);
 

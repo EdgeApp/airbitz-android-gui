@@ -15,7 +15,7 @@
         android:padding="5dp">
 
         <ImageButton
-            android:id="@+id/fragment_category_button_back"
+            android:id="@+id/layout_airbitz_header_button_back"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:layout_alignParentLeft="true"
@@ -39,7 +39,7 @@
 
 
         <ImageButton
-            android:id="@+id/fragment_category_button_help"
+            android:id="@+id/layout_airbitz_header_button_help"
             android:layout_width="44.1dp"
             android:layout_height="44.1dp"
             android:layout_alignParentRight="true"

@@ -105,8 +105,8 @@ public class OfflineWalletFragment extends Fragment implements GestureDetector.O
         mPrintButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
 
         mQRCodeImage = (ImageView) mView.findViewById(R.id.imageview_qrcode);
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
+        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_help);
 
         TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 

@@ -42,8 +42,6 @@ import java.util.List;
 
 
 public class RequestQRCodeFragment extends Fragment implements ContactPickerFragment.ContactSelection {
-    static final int PICK_CONTACT_SMS = 1;
-    static final int PICK_CONTACT_EMAIL = 2;
     private final String TAG = getClass().getSimpleName();
     private final double BORDER_THICKNESS = 0.03;
     private ImageView mQRView;
@@ -110,16 +108,20 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.request_qr_title);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
         mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_qrcode_button_back);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_qrcode_button_help);
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
         mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
         mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
         mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);

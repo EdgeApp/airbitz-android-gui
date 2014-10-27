@@ -115,7 +115,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_signup_password_edittext);
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.activity_signup_repassword_edittext);
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
-        mTitleTextView = (TextView) mView.findViewById(R.id.activity_signup_title_textview);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
         mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
 
@@ -127,7 +127,14 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.activity_signup_back_button);
+        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         mSwitchImage1 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_1);
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
@@ -142,13 +149,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
 
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override

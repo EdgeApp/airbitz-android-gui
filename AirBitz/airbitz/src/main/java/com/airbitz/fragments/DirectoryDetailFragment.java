@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,18 +27,20 @@ import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
 import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
+import com.airbitz.models.Image;
 import com.airbitz.models.Location;
-import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,11 +58,11 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mAboutField;
     private CurrentLocationManager mLocationManager;
     private TextView mTitleTextView;
-    private ImageView mLogo;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private BusinessDetail mDetail;
-    private ImageView mBackImage;
+    private BusinessDetail mBusinessDetail;
+    private ViewPager mImagePager;
+    private List<ImageView> mImageViewList = new ArrayList<ImageView>();
     private double mLat;
     private double mLon;
     private LinearLayout mHourContainer;
@@ -73,6 +78,10 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
+
+    private Button mShareButton;
+    private Button mFacebookButton;
+    private Button mTwitterButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,9 +112,14 @@ public class DirectoryDetailFragment extends Fragment {
         Log.d(TAG, "Business ID: " + mBusinessId);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
+        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mDiscountTextView = (TextView) mView.findViewById(R.id.textview_discount);
+        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
         mDistanceTextView.setVisibility(View.GONE);
+
 
         if (mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
@@ -125,56 +139,81 @@ public class DirectoryDetailFragment extends Fragment {
         }, timeout);
 
         mAddressButton = (Button) mView.findViewById(R.id.button_address);
+        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mPhoneButton = (Button) mView.findViewById(R.id.button_phone);
+        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mWebButton = (Button) mView.findViewById(R.id.button_web);
+        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mFacebookButton = (Button) mView.findViewById(R.id.button_web);
+        mFacebookButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mTwitterButton = (Button) mView.findViewById(R.id.button_web);
+        mTwitterButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
+        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
         mHoursTextView = (TextView) mView.findViewById(R.id.TextView_hours);
-        mBackImage = (ImageView) mView.findViewById(R.id.imageview_business);
+        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mImagePager = (ViewPager) mView.findViewById(R.id.imageview_business);
+        final GestureDetector tapGestureDetector = new GestureDetector(getActivity(), new TapGestureListener());
+        mImagePager.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                tapGestureDetector.onTouchEvent(event);
+                return false;
+            }
+        });
 
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
+        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         // Header
-        mLogo = (ImageView) mView.findViewById(R.id.logo);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_help);
-
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-        mLogo.setVisibility(View.GONE);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
         mBackButton.setVisibility(View.VISIBLE);
-
-        if (!TextUtils.isEmpty(mBusinessName)) {
-            mTitleTextView.setText(mBusinessName);
-            mTitleTextView.setVisibility(View.VISIBLE);
-        }
-
-        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
             }
         });
+
+        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }
         });
 
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+
+        if (!TextUtils.isEmpty(mBusinessName)) {
+            mTitleTextView.setText(mBusinessName);
+            mTitleTextView.setVisibility(View.VISIBLE);
+        }
+
         return mView;
     }
 
+    class TapGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.d(TAG, "image clicked");
+            ViewPagerFragment fragment = new ViewPagerFragment();
+            fragment.setImages(getImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
+            ((NavigationActivity) getActivity()).pushFragment(fragment);
+            return true;
+        }
+    }
+
     private void getMapLink() {
-        String address = mDetail.getAddress();
+        String address = mBusinessDetail.getAddress();
         String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
 
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -242,58 +281,70 @@ public class DirectoryDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(String results) {
             try {
-                mDetail = new BusinessDetail(new JSONObject(results));
-                Location location = mDetail.getLocationObjectArray();
+                mBusinessDetail = new BusinessDetail(new JSONObject(results));
+                Location location = mBusinessDetail.getLocationObjectArray();
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                setDistance(mDetail.getDistance());
+                setDistance(mBusinessDetail.getDistance());
                 if (mLat == 0 && mLon == 0) {
                     mAddressButton.setClickable(false);
                 }
 
-                if ((mDetail.getAddress().length() == 0) || mDetail == null) {
+                if ((mBusinessDetail.getAddress().length() == 0) || mBusinessDetail == null) {
                     if (mLat != 0 && mLon != 0) {
                         mAddressButton.setText(getString(R.string.fragment_directory_detail_directions));
                     } else {
                         mAddressButton.setVisibility(View.GONE);
                     }
                 } else {
-                    mAddressButton.setText(mDetail.getPrettyAddressString());
+                    mAddressButton.setText(mBusinessDetail.getPrettyAddressString());
                 }
 
-                if (TextUtils.isEmpty(mDetail.getPhone())) {
+                if (TextUtils.isEmpty(mBusinessDetail.getPhone())) {
                     mPhoneButton.setVisibility(View.GONE);
                 } else {
-                    mPhoneButton.setText(mDetail.getPhone());
+                    mPhoneButton.setText(mBusinessDetail.getPhone());
                     mPhoneButton.setVisibility(View.VISIBLE);
                 }
 
-                if (TextUtils.isEmpty(mDetail.getWebsite())) {
+                if (TextUtils.isEmpty(mBusinessDetail.getWebsite())) {
                     mWebButton.setVisibility(View.GONE);
                 } else {
-                    mWebButton.setText(mDetail.getWebsite());
+                    mWebButton.setText(mBusinessDetail.getWebsite());
                     mWebButton.setVisibility(View.VISIBLE);
                 }
 
-                if (mDetail.getHourObjectArray() == null || mDetail.getHourObjectArray().size() == 0) {
+//                if (TextUtils.isEmpty(mBusinessDetail.getFacebook())) {
+//                    mFacebookButton.setVisibility(View.GONE);
+//                } else {
+//                    mFacebookButton.setVisibility(View.VISIBLE);
+//                }
+//
+//                if (TextUtils.isEmpty(mBusinessDetail.getTwitter())) {
+//                    mTwitterButton.setVisibility(View.GONE);
+//                } else {
+//                    mTwitterButton.setVisibility(View.VISIBLE);
+//                }
+
+                if (mBusinessDetail.getHourObjectArray() == null || mBusinessDetail.getHourObjectArray().size() == 0) {
                     mHourContainer.setVisibility(View.GONE);
                 } else {
-                    setSchedule(mDetail.getHourObjectArray());
+                    setSchedule(mBusinessDetail.getHourObjectArray());
                     mHourContainer.setVisibility(View.VISIBLE);
                 }
 
-                if ((mDetail.getName().length() == 0) || mDetail.getName() == null) {
+                if ((mBusinessDetail.getName().length() == 0) || mBusinessDetail.getName() == null) {
                     mTitleTextView.setVisibility(View.GONE);
                 } else {
-                    mTitleTextView.setText(mDetail.getName());
+                    mTitleTextView.setText(mBusinessDetail.getName());
                     mTitleTextView.setVisibility(View.VISIBLE);
                 }
 
-                if (TextUtils.isEmpty(mDetail.getDescription())) {
+                if (TextUtils.isEmpty(mBusinessDetail.getDescription())) {
                     mAboutField.setVisibility(View.GONE);
                 } else {
-                    mAboutField.setText(mDetail.getDescription());
+                    mAboutField.setText(mBusinessDetail.getDescription());
                     mAboutField.setVisibility(View.VISIBLE);
                 }
 
@@ -304,6 +355,7 @@ public class DirectoryDetailFragment extends Fragment {
                         mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
                     }
                 }
+
                 //Phone Number
                 if (mPhoneButton.getVisibility() == View.VISIBLE) {
                     if (mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
@@ -316,6 +368,19 @@ public class DirectoryDetailFragment extends Fragment {
                         mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
+                mPhoneButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if ((mBusinessDetail.getPhone().length() != 0) && mBusinessDetail.getPhone() != null) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + mBusinessDetail.getPhone()));
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+
                 //Web Button
                 if (mWebButton.getVisibility() == View.VISIBLE) {
                     if (mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
@@ -328,9 +393,51 @@ public class DirectoryDetailFragment extends Fragment {
                         mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
+                mWebButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if ((mBusinessDetail.getWebsite().length() != 0) && mBusinessDetail.getWebsite() != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+//                mShareButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mBusinessDetail.getWebsite().length() != 0) && mBusinessDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//
+//                mFacebookButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mBusinessDetail.getFacebook().length() != 0) && mBusinessDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//                mTwitterButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mBusinessDetail.getTwitter().length() != 0) && mBusinessDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
 
                 // Set categories text
-                final List<Category> categories = mDetail.getCategoryObject();
+                final List<Category> categories = mBusinessDetail.getCategoryObject();
                 if (categories == null || categories.size() == 0) {
                     mCategoriesTextView.setVisibility(View.GONE);
                 } else {
@@ -348,7 +455,7 @@ public class DirectoryDetailFragment extends Fragment {
                 }
 
                 // Set discount text
-                String discount = mDetail.getFlagBitcoinDiscount();
+                String discount = mBusinessDetail.getFlagBitcoinDiscount();
                 double discountDouble = 0;
                 try {
                     discountDouble = Double.parseDouble(discount);
@@ -362,9 +469,9 @@ public class DirectoryDetailFragment extends Fragment {
                     mDiscountTextView.setVisibility(View.GONE);
                 }
 
-                // Set photo
-                String imgUrl = mDetail.getPrimaryImage().getPhotoThumbnailLink();
-                Picasso.with(getActivity()).load(imgUrl).into(mBackImage);
+                // Set photos
+                mImageViewList = getImageViewList(mBusinessDetail);
+                mImagePager.setAdapter(new ImageViewPagerAdapter(mImageViewList));
 
                 if (mLat != 0 && mLon != 0) {
                     mAddressButton.setOnClickListener(new View.OnClickListener() {
@@ -374,28 +481,6 @@ public class DirectoryDetailFragment extends Fragment {
                         }
                     });
                 }
-                mPhoneButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + mDetail.getPhone()));
-                            startActivity(intent);
-                        }
-
-                    }
-                });
-                mWebButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mDetail.getWebsite()));
-                            startActivity(intent);
-                        }
-                    }
-                });
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -408,6 +493,7 @@ public class DirectoryDetailFragment extends Fragment {
             }
             ((NavigationActivity) mActivity).showModalProgress(false);
         }
+
 
         private void setSchedule(List<Hour> hours) {
             final Iterator<Hour> iter = hours.iterator();
@@ -431,5 +517,18 @@ public class DirectoryDetailFragment extends Fragment {
             mDaysTextView.setText(daysSb.toString());
             mHoursTextView.setText(hoursSb.toString());
         }
+    }
+
+    private List<ImageView> getImageViewList(BusinessDetail bd) {
+        List<ImageView> imageViews = new ArrayList<ImageView>();
+        List<Image> images = bd.getImages();
+        if(images != null) {
+            for(Image i : images) {
+                ImageView imageView = new ImageView(getActivity());
+                Picasso.with(getActivity()).load(i.getPhotoThumbnailLink()).into(imageView);
+                imageViews.add(imageView);
+            }
+        }
+        return imageViews;
     }
 }

@@ -110,12 +110,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send, container, false);
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_send_help_button);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.send_title);
+
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
@@ -131,7 +135,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
         dummyFocus = mView.findViewById(R.id.dummy_focus);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+
         mFromTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);

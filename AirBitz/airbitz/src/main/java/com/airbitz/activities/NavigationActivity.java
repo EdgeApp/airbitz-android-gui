@@ -35,6 +35,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -54,6 +55,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
+import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -377,6 +379,10 @@ public class NavigationActivity extends Activity
         if (bundle != null)
             mNavStacks[id].peek().setArguments(bundle);
         switchFragmentThread(id);
+    }
+
+    public void pushFragment(Fragment fragment) {
+        pushFragment(fragment, mNavThreadId);
     }
 
     public void pushFragment(Fragment fragment, int threadID) {
@@ -982,7 +988,7 @@ public class NavigationActivity extends Activity
         }
 
         @Override
-        protected Boolean doInBackground(Object... params) {
+        protected tABC_CC doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPassword = (char[]) params[1];
             return mCoreAPI.SignIn(mUsername, mPassword);
@@ -992,13 +998,14 @@ public class NavigationActivity extends Activity
         protected void onPostExecute(final Object success) {
             showModalProgress(false);
             mUserLoginTask = null;
+            tABC_CC result = (tABC_CC) success;
 
-            if ((Boolean) success) {
+            if (result == tABC_CC.ABC_CC_Ok) {
                 AirbitzApplication.Login(mUsername, mPassword);
                 UserJustLoggedIn();
                 setViewPager();
             } else {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.error_invalid_credentials));
+                ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), Common.errorMap(NavigationActivity.this , result));
             }
         }
 

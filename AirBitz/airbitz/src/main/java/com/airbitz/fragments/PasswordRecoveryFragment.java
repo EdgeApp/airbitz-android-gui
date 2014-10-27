@@ -98,7 +98,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
         mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
-        mBackButton = (ImageButton) mView.findViewById(R.id.activity_password_recovery_back_button);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
@@ -120,22 +127,15 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mStringQuestions = new ArrayList<String>();
         mNumericQuestions = new ArrayList<String>();
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.activity_recovery_title_textview);
-
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mTitleTextView.setText(R.string.activity_recovery_title);
 
+        mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AttemptSignupOrChange();
-            }
-        });
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
             }
         });
 

@@ -22,6 +22,7 @@
     <string name="string_no_connection_title">No connection</string>
     <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
     <string name="string_no_connection_response">There is a problem reaching the server. Please try again.</string>
+    <string name="string_connection_error_server">Connection Error: Cannot reach server</string>
 
     <!-- Strings for Business Directory fragment -->
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
@@ -44,6 +45,11 @@
     <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>
     <string name="fragment_directory_detail_directions">Directions</string>
     <string name="fragment_directory_detail_discount">"Discount "</string>
+
+    <!-- Strings for DirectoryDetail -->
+    <string name="fragment_directory_detail_share">"Share"</string>
+    <string name="fragment_directory_detail_facebook">"Facebook"</string>
+    <string name="fragment_directory_detail_twitter">"Twitter"</string>
 
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>

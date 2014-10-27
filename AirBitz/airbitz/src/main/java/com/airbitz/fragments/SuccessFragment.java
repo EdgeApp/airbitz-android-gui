@@ -95,7 +95,7 @@ public class SuccessFragment extends Fragment {
 
         mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.fragment_category_button_back);
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
 
         mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);

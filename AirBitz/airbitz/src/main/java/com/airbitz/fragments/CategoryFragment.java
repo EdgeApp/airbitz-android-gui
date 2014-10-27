@@ -93,7 +93,7 @@ public class CategoryFragment extends Fragment {
 
         mParentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.textview_title);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
         mAddField = (EditText) mView.findViewById(R.id.add_field);
