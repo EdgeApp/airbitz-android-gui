@@ -95,6 +95,8 @@
     <string name="fragment_directory_detail_directions">Direcciones</string>
     <string name="fragment_directory_detail_discount">"Descuento "</string>
 
+    <string name="fragment_directory_detail_share">"Cuota"</string>
+
   <string name="server_error_account_already_exists">
     Esta cuenta ya existe.
   </string>

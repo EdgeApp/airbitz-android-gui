@@ -46,6 +46,11 @@
     <string name="fragment_directory_detail_directions">Directions</string>
     <string name="fragment_directory_detail_discount">"Discount "</string>
 
+    <!-- Strings for DirectoryDetail -->
+    <string name="fragment_directory_detail_share">"Share"</string>
+    <string name="fragment_directory_detail_facebook">"Facebook"</string>
+    <string name="fragment_directory_detail_twitter">"Twitter"</string>
+
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>
     <string name="server_error_account_does_not_exists">We were unable to find your account. Be sure your username is correct.</string>

@@ -177,6 +177,39 @@
                 android:textColor="@android:color/black"
                 tools:text="About" />
 
+            <Button
+                android:id="@+id/button_share"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_share" />
+
+            <Button
+                android:id="@+id/button_facebook"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_facebook" />
+
+            <Button
+                android:id="@+id/button_twitter"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ico_website"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                tools:text="@string/fragment_directory_detail_twitter" />
+
 
         </LinearLayout>
 

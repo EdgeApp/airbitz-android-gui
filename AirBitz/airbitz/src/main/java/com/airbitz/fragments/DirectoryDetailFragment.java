@@ -73,6 +73,10 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
 
+    private Button mShareButton;
+    private Button mFacebookButton;
+    private Button mTwitterButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +106,14 @@ public class DirectoryDetailFragment extends Fragment {
         Log.d(TAG, "Business ID: " + mBusinessId);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
+        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mDiscountTextView = (TextView) mView.findViewById(R.id.textview_discount);
+        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
         mDistanceTextView.setVisibility(View.GONE);
+
 
         if (mBusinessDistance != null && mBusinessDistance != "null") {
             setDistance(mBusinessDistance);
@@ -124,14 +133,29 @@ public class DirectoryDetailFragment extends Fragment {
         }, timeout);
 
         mAddressButton = (Button) mView.findViewById(R.id.button_address);
+        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mPhoneButton = (Button) mView.findViewById(R.id.button_phone);
+        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mWebButton = (Button) mView.findViewById(R.id.button_web);
+        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mFacebookButton = (Button) mView.findViewById(R.id.button_web);
+        mFacebookButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mTwitterButton = (Button) mView.findViewById(R.id.button_web);
+        mTwitterButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
+        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
         mHoursTextView = (TextView) mView.findViewById(R.id.TextView_hours);
+        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
         mBackImage = (ImageView) mView.findViewById(R.id.imageview_business);
 
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
+        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         // Header
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
@@ -159,15 +183,6 @@ public class DirectoryDetailFragment extends Fragment {
             mTitleTextView.setText(mBusinessName);
             mTitleTextView.setVisibility(View.VISIBLE);
         }
-
-        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         return mView;
     }
@@ -275,6 +290,18 @@ public class DirectoryDetailFragment extends Fragment {
                     mWebButton.setVisibility(View.VISIBLE);
                 }
 
+//                if (TextUtils.isEmpty(mDetail.getFacebook())) {
+//                    mFacebookButton.setVisibility(View.GONE);
+//                } else {
+//                    mFacebookButton.setVisibility(View.VISIBLE);
+//                }
+//
+//                if (TextUtils.isEmpty(mDetail.getTwitter())) {
+//                    mTwitterButton.setVisibility(View.GONE);
+//                } else {
+//                    mTwitterButton.setVisibility(View.VISIBLE);
+//                }
+
                 if (mDetail.getHourObjectArray() == null || mDetail.getHourObjectArray().size() == 0) {
                     mHourContainer.setVisibility(View.GONE);
                 } else {
@@ -303,6 +330,7 @@ public class DirectoryDetailFragment extends Fragment {
                         mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
                     }
                 }
+
                 //Phone Number
                 if (mPhoneButton.getVisibility() == View.VISIBLE) {
                     if (mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
@@ -315,6 +343,19 @@ public class DirectoryDetailFragment extends Fragment {
                         mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
+                mPhoneButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + mDetail.getPhone()));
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+
                 //Web Button
                 if (mWebButton.getVisibility() == View.VISIBLE) {
                     if (mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
@@ -327,6 +368,48 @@ public class DirectoryDetailFragment extends Fragment {
                         mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
                     }
                 }
+                mWebButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mDetail.getWebsite()));
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+//                mShareButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//
+//                mFacebookButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mDetail.getFacebook().length() != 0) && mDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//                mTwitterButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if ((mDetail.getTwitter().length() != 0) && mDetail.getWebsite() != null) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(mDetail.getWebsite()));
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
 
                 // Set categories text
                 final List<Category> categories = mDetail.getCategoryObject();
@@ -373,28 +456,6 @@ public class DirectoryDetailFragment extends Fragment {
                         }
                     });
                 }
-                mPhoneButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if ((mDetail.getPhone().length() != 0) && mDetail.getPhone() != null) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + mDetail.getPhone()));
-                            startActivity(intent);
-                        }
-
-                    }
-                });
-                mWebButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if ((mDetail.getWebsite().length() != 0) && mDetail.getWebsite() != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mDetail.getWebsite()));
-                            startActivity(intent);
-                        }
-                    }
-                });
 
             } catch (Exception e) {
                 e.printStackTrace();
