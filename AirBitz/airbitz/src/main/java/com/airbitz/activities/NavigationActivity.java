@@ -998,7 +998,11 @@ public class NavigationActivity extends Activity
                 UserJustLoggedIn();
                 setViewPager();
             } else {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.error_invalid_credentials));
+                if(networkIsAvailable()) {
+                    ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.error_invalid_credentials));
+                } else {
+                    ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.string_connection_error_server));
+                }
             }
         }
 
