@@ -133,7 +133,6 @@ public class NavigationActivity extends Activity
     String mUUID, mTxId;
     Handler mHandler = new Handler();
     private CoreAPI mCoreAPI;
-    private boolean bdonly = false;//TODO SWITCH BETWEEN BD-ONLY and WALLET
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
@@ -224,13 +223,6 @@ public class NavigationActivity extends Activity
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
-        if (bdonly) {
-            Log.d(TAG, "BD ONLY");
-            mNavBarFragmentLayout.setVisibility(View.GONE);
-            mNavBarFragmentLayout.invalidate();
-            RelativeLayout.LayoutParams lLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            mFragmentLayout.setLayoutParams(lLP);
-        }
     }
 
     public void initiateCore() {
@@ -452,10 +444,8 @@ public class NavigationActivity extends Activity
     }
 
     public void showNavBar() {
-        if (!bdonly) {
-            if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
-                mHandler.postDelayed(delayedShowNavBar, 50);
-            }
+        if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
+            mHandler.postDelayed(delayedShowNavBar, 50);
         }
     }
 
