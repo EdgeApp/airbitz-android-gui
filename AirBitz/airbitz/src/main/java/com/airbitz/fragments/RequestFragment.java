@@ -369,10 +369,12 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mAutoUpdatingTextFields = true;
         if (mSavedSatoshi != null) {
             mFromIndex = mSavedIndex;
-            mSelectedWallet = mWallets.get(mFromIndex);
-            mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
-            mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
-            pickWalletSpinner.setSelection(mFromIndex);
+            if(mFromIndex < mWallets.size()) {
+                mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+                mSelectedWallet = mWallets.get(mFromIndex);
+                mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
+                pickWalletSpinner.setSelection(mFromIndex);
+            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
