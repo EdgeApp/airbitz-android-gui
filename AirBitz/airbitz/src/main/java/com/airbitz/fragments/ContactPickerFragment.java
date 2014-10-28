@@ -118,10 +118,9 @@ public class ContactPickerFragment extends Fragment {
         mContactName.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mContactName);
-
-                    ((NavigationActivity) getActivity()).popFragment();
+                if (actionId == EditorInfo.IME_ACTION_DONE && mActivity != null) {
+                    mActivity.hideSoftKeyboard(mContactName);
+                    mActivity.popFragment();
                     mActivity.getFragmentManager().executePendingTransactions();
                     String name = mContactName.getText().toString();
                     if (mBundle.getString(TYPE).equals(EMAIL)) {

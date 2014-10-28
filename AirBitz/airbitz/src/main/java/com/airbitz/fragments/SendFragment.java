@@ -316,6 +316,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
         if (mCamera != null) {
+            mFlashButton.setClickable(false);
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
             mPreviewFrame.removeView(mPreview);
@@ -356,18 +357,19 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
         mPreviewFrame.removeView(mPreview);
         mPreviewFrame.addView(mPreview);
-        if (mCamera != null)
+        if (mCamera != null) {
             mCamera.setPreviewCallback(SendFragment.this);
-        Camera.Parameters params = mCamera.getParameters();
-        if (params != null) {
-            List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-            if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-            mCamera.setParameters(params);
+            Camera.Parameters params = mCamera.getParameters();
+            if (params != null) {
+                List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
+                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                mCamera.setParameters(params);
+            }
         }
-
+        mFlashButton.setClickable(false);
     }
 
     @Override

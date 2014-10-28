@@ -407,10 +407,12 @@ public class SendConfirmationFragment extends Fragment {
                 final int DRAWABLE_BOTTOM = 3;
 
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(event.getRawX() >= (mConversionTextView.getRight() - mConversionTextView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-                        mActivity.pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION_INSUFFICIENT_FUNDS), NavigationActivity.Tabs.SEND.ordinal());
-                        return true;
+                    if(mConversionTextView.getCompoundDrawables()[DRAWABLE_RIGHT] != null) {
+                        if (event.getRawX() >= (mConversionTextView.getRight() - mConversionTextView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            // your action here
+                            mActivity.pushFragment(new HelpFragment(HelpFragment.SEND_CONFIRMATION_INSUFFICIENT_FUNDS), NavigationActivity.Tabs.SEND.ordinal());
+                            return true;
+                        }
                     }
                 }
                 return false;

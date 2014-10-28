@@ -59,7 +59,6 @@ public class DirectoryDetailFragment extends Fragment {
     private CurrentLocationManager mLocationManager;
     private TextView mTitleTextView;
     private ImageButton mBackButton;
-    private ImageButton mHelpButton;
     private BusinessDetail mBusinessDetail;
     private ViewPager mImagePager;
     private List<ImageView> mImageViewList = new ArrayList<ImageView>();
@@ -178,14 +177,6 @@ public class DirectoryDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-            }
-        });
-
-        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
             }
         });
 
@@ -470,7 +461,7 @@ public class DirectoryDetailFragment extends Fragment {
                 }
 
                 // Set photos
-                mImageViewList = getImageViewList(mBusinessDetail);
+                mImageViewList = getImageViewThumbnailList(mBusinessDetail);
                 mImagePager.setAdapter(new ImageViewPagerAdapter(mImageViewList));
 
                 if (mLat != 0 && mLon != 0) {
@@ -519,13 +510,30 @@ public class DirectoryDetailFragment extends Fragment {
         }
     }
 
+    private List<ImageView> getImageViewThumbnailList(BusinessDetail bd) {
+        List<ImageView> imageViews = new ArrayList<ImageView>();
+        List<Image> images = bd.getImages();
+        if(images != null) {
+            for(Image i : images) {
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setMinimumHeight((int) i.getPhotoHeight());
+                imageView.setMinimumWidth((int) i.getPhotoWidth());
+                Picasso.with(getActivity()).load(i.getPhotoThumbnailLink()).into(imageView);
+                imageViews.add(imageView);
+            }
+        }
+        return imageViews;
+    }
+
     private List<ImageView> getImageViewList(BusinessDetail bd) {
         List<ImageView> imageViews = new ArrayList<ImageView>();
         List<Image> images = bd.getImages();
         if(images != null) {
             for(Image i : images) {
                 ImageView imageView = new ImageView(getActivity());
-                Picasso.with(getActivity()).load(i.getPhotoThumbnailLink()).into(imageView);
+                imageView.setMinimumHeight((int) i.getPhotoHeight());
+                imageView.setMinimumWidth((int) i.getPhotoWidth());
+                Picasso.with(getActivity()).load(i.getPhotoLink()).into(imageView);
                 imageViews.add(imageView);
             }
         }

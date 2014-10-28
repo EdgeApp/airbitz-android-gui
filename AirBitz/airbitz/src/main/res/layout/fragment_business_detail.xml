@@ -186,7 +186,7 @@
                 android:ellipsize="end"
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
-                tools:text="@string/fragment_directory_detail_share" />
+                android:text="@string/fragment_directory_detail_share" />
 
             <Button
                 android:id="@+id/button_facebook"
@@ -197,7 +197,7 @@
                 android:ellipsize="end"
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
-                tools:text="@string/fragment_directory_detail_facebook" />
+                android:text="@string/fragment_directory_detail_facebook" />
 
             <Button
                 android:id="@+id/button_twitter"
@@ -208,7 +208,7 @@
                 android:ellipsize="end"
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
-                tools:text="@string/fragment_directory_detail_twitter" />
+                android:text="@string/fragment_directory_detail_twitter" />
 
 
         </LinearLayout>
