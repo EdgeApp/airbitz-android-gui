@@ -59,7 +59,6 @@ public class DirectoryDetailFragment extends Fragment {
     private CurrentLocationManager mLocationManager;
     private TextView mTitleTextView;
     private ImageButton mBackButton;
-    private ImageButton mHelpButton;
     private BusinessDetail mBusinessDetail;
     private ViewPager mImagePager;
     private List<ImageView> mImageViewList = new ArrayList<ImageView>();
@@ -178,14 +177,6 @@ public class DirectoryDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-            }
-        });
-
-        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
             }
         });
 
