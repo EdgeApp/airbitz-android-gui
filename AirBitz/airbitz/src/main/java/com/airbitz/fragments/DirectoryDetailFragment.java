@@ -72,6 +72,13 @@ public class DirectoryDetailFragment extends Fragment {
     private Button mAddressButton;
     private Button mPhoneButton;
     private Button mWebButton;
+    private Button mShareButton;
+    private Button mFacebookButton;
+    private String mFacebookURL;
+    private Button mTwitterButton;
+    private String mTwitterURL;
+    private Button mYelpButton;
+    private String mYelpURL;
     private String mBusinessId;
     private String mBusinessName;
     private String mBusinessDistance;
@@ -80,13 +87,6 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
 
-    private Button mShareButton;
-    private Button mFacebookButton;
-    private String mFacebookURL;
-    private Button mTwitterButton;
-    private String mTwitterURL;
-    private Button mYelpButton;
-    private String mYelpURL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -504,6 +504,10 @@ public class DirectoryDetailFragment extends Fragment {
                 mPhoneButton.setVisibility(View.GONE);
                 mWebButton.setVisibility(View.GONE);
                 mHourContainer.setVisibility(View.GONE);
+                mShareButton.setVisibility(View.GONE);
+                mFacebookButton.setVisibility(View.GONE);
+                mTwitterButton.setVisibility(View.GONE);
+                mYelpButton.setVisibility(View.GONE);
                 Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
                         Toast.LENGTH_LONG).show();
             }
@@ -543,6 +547,7 @@ public class DirectoryDetailFragment extends Fragment {
                 ImageView imageView = new ImageView(getActivity());
                 imageView.setMinimumHeight((int) i.getPhotoHeight());
                 imageView.setMinimumWidth((int) i.getPhotoWidth());
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Picasso.with(getActivity()).load(i.getPhotoThumbnailLink()).into(imageView);
                 imageViews.add(imageView);
             }
