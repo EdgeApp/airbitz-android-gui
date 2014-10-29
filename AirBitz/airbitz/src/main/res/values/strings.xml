@@ -50,6 +50,7 @@
     <string name="fragment_directory_detail_share">"Share"</string>
     <string name="fragment_directory_detail_facebook">"Facebook"</string>
     <string name="fragment_directory_detail_twitter">"Twitter"</string>
+    <string name="fragment_directory_detail_yelp">"Yelp"</string>
 
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>

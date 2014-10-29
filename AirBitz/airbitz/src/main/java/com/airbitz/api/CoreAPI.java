@@ -516,9 +516,6 @@ public class CoreAPI {
 
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings coreSettings() {
-        if(mCoreSettings!=null)
-            return mCoreSettings;
-
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 

@@ -256,7 +256,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             return;
         //Hide some elements if this is not a fresh signup
         mMode = bundle.getInt(MODE);
-        if (mMode == CHANGE_PASSWORD) {
+        if (mMode == SIGNUP) {
+            mTitleTextView.setText(R.string.activity_signup_title);
+        } else if (mMode == CHANGE_PASSWORD) {
             // Reuse mUserNameEditText for old mPassword too
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
