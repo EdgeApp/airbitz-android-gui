@@ -420,7 +420,9 @@ public class CoreAPI {
     }
 
     public void SetUserPIN(String pin) {
-        coreSettings().setSzPIN(pin);
+        tABC_AccountSettings settings = coreSettings();
+        settings.setSzPIN(pin);
+        saveAccountSettings(settings);
     }
 
     public String getDefaultBTCDenomination() {
