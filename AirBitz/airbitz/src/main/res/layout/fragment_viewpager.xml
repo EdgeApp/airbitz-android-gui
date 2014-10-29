@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_viewpager"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/advanced_details_bg">
+    android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/fragment_viewpager_viewpager"
@@ -21,4 +20,36 @@
         android:layout_margin="10dp"
         android:background="@drawable/btn_x_rnd" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/viewpager_seekbar_end"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/viewpager_seekbar_end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/viewpager_seekBar"
+        android:progressDrawable="@android:color/transparent"
+        android:thumb="@drawable/viewpager_seekbar_thumb"
+        android:thumbOffset="0dp"
+        android:max="99"
+        android:progress="99"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true" />
+    
 </RelativeLayout>

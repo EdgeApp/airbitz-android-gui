@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -37,9 +38,11 @@ public class ViewPagerFragment extends Fragment {
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
     private ViewPager mViewPager;
     private View mViewpagerView;
+    private SeekBar mSeekBar;
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
     private int mPosition;
+    private boolean mSeekbarReposition = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,32 @@ public class ViewPagerFragment extends Fragment {
         for(ImageView iv : mImageViews) {
             iv.setOnTouchListener(new ImageTouchListener());
         }
+
+        mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
+        mSeekBar.setMax(100);
+        mSeekBar.setProgress(mPosition);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(!mSeekbarReposition) {
+                    float nearestValue = (i * (mImageViews.size())) / 100;
+                    mViewPager.setCurrentItem((int) nearestValue, true);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                float nearestValue = (progress * (mImageViews.size()))/100;
+                Log.d(TAG, "progress:"+progress+" nearest:"+nearestValue);
+                mSeekbarReposition = true;
+                mSeekBar.setProgress((int) nearestValue * 100/(mImageViews.size()-1));
+                mSeekbarReposition = false;
+            }
+        });
 
         return mView;
     }
