@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.FloatMath;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
@@ -34,19 +36,21 @@ public class ViewPagerFragment extends Fragment {
     private HighlightOnPressImageButton mQuitButton;
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
     private ViewPager mViewPager;
+    private View mViewpagerView;
+    private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
     private int mPosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getRs();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View mView = inflater.inflate(R.layout.fragment_viewpager, container, false);
 
-        final View rl = mView.findViewById(R.id.fragment_viewpager);
+        mViewpagerView = mView.findViewById(R.id.fragment_viewpager);
 
         mQuitButton = (HighlightOnPressImageButton) mView.findViewById(R.id.viewpager_close_button);
         mQuitButton.setVisibility(View.VISIBLE);
@@ -57,29 +61,48 @@ public class ViewPagerFragment extends Fragment {
             }
         });
 
+        mActivity = (NavigationActivity) getActivity();
+        mActivity.showModalProgress(true);
+        mHandler.postDelayed(loadBackground, 100);
+
         mViewPager = (ViewPager) mView.findViewById(R.id.fragment_viewpager_viewpager);
         mViewPager.setAdapter(new ImageViewPagerAdapter(mImageViews));
         mViewPager.setCurrentItem(mPosition);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) { }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (positionOffsetPixels == 0) {
+                    mPosition = position;
+                    mActivity.showModalProgress(true);
+                    mHandler.post(loadBackground);
+                }
+            }
+
+            public void onPageSelected(int position) {
+            }
+        });
+
         for(ImageView iv : mImageViews) {
             iv.setOnTouchListener(new ImageTouchListener());
         }
 
-
-        mImageViews.get(mPosition).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Drawable drawable = mImageViews.get(mPosition).getDrawable();
-                Log.d(TAG, "updating background");
-                if (drawable != null) {
-                    Log.d(TAG, "updating drawable");
-                    Bitmap bm = drawableToBitmap(drawable);
-                    rl.setBackground(new BitmapDrawable(getResources(), blur(4, bm)));
-                }
-            }
-        }, 300);
-
         return mView;
     }
+
+    Runnable loadBackground = new Runnable() {
+        @Override
+        public void run() {
+            Drawable drawable = mImageViews.get(mPosition).getDrawable();
+            if (drawable != null) {
+                mActivity.showModalProgress(false);
+                Bitmap bm = drawableToBitmap(drawable);
+                mViewpagerView.setBackground(new BitmapDrawable(getResources(), blur(4, bm)));
+            } else {
+                mHandler.postDelayed(loadBackground, 100);
+            }
+        }
+    };
 
     public void setImages(List<ImageView> imageViews, int position) {
         mImageViews = imageViews;
@@ -114,7 +137,7 @@ public class ViewPagerFragment extends Fragment {
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
                 case MotionEvent.ACTION_DOWN: //first finger down only
-                    if(firstTouch) { // setup initial matrix
+                    if(firstTouch && view.getDrawable() != null) { // setup initial matrix
                         RectF drawableRectF = new RectF(0, 0, view.getDrawable().getBounds().width(), view.getDrawable().getBounds().height());
                         RectF viewRectF = new RectF(0, 0, view.getWidth(), view.getHeight());
                         matrix.setRectToRect(drawableRectF, viewRectF, Matrix.ScaleToFit.CENTER);
