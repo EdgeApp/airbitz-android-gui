@@ -1608,7 +1608,7 @@ public class CoreAPI {
             SWIGTYPE_p_long txid = core.new_longp();
             SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
 
-            if (destinationWallet.getUUID() != null) {
+            if (null != destinationWallet && destinationWallet.getUUID() != null) {
                 tABC_TransferDetails Transfer = new tABC_TransferDetails();
                 Transfer.setSzSrcWalletUUID(sourceWallet.getUUID());
                 Transfer.setSzSrcName(destinationWallet.getName());
