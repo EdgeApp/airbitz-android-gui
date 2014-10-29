@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -36,6 +37,7 @@ import com.airbitz.models.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;
+import com.airbitz.models.Social;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -80,7 +82,11 @@ public class DirectoryDetailFragment extends Fragment {
 
     private Button mShareButton;
     private Button mFacebookButton;
+    private String mFacebookURL;
     private Button mTwitterButton;
+    private String mTwitterURL;
+    private Button mYelpButton;
+    private String mYelpURL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -146,11 +152,17 @@ public class DirectoryDetailFragment extends Fragment {
         mWebButton = (Button) mView.findViewById(R.id.button_web);
         mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
-        mFacebookButton = (Button) mView.findViewById(R.id.button_web);
+        mShareButton = (Button) mView.findViewById(R.id.button_share);
+        mShareButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mFacebookButton = (Button) mView.findViewById(R.id.button_facebook);
         mFacebookButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
-        mTwitterButton = (Button) mView.findViewById(R.id.button_web);
+        mTwitterButton = (Button) mView.findViewById(R.id.button_twitter);
         mTwitterButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mYelpButton = (Button) mView.findViewById(R.id.button_yelp);
+        mYelpButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
@@ -306,17 +318,22 @@ public class DirectoryDetailFragment extends Fragment {
                     mWebButton.setVisibility(View.VISIBLE);
                 }
 
-//                if (TextUtils.isEmpty(mBusinessDetail.getFacebook())) {
-//                    mFacebookButton.setVisibility(View.GONE);
-//                } else {
-//                    mFacebookButton.setVisibility(View.VISIBLE);
-//                }
-//
-//                if (TextUtils.isEmpty(mBusinessDetail.getTwitter())) {
-//                    mTwitterButton.setVisibility(View.GONE);
-//                } else {
-//                    mTwitterButton.setVisibility(View.VISIBLE);
-//                }
+                List<Social> socials = mBusinessDetail.getSocialObjectArray();
+                for(Social social : socials) {
+                    String url = social.getSocialUrl();
+                    if(url.toLowerCase().contains("facebook")) {
+                        mFacebookButton.setVisibility(View.VISIBLE);
+                        mFacebookURL = url;
+                    }
+                    else if(url.toLowerCase().contains("twitter")) {
+                        mTwitterButton.setVisibility(View.VISIBLE);
+                        mTwitterURL = url;
+                    }
+                    else if(url.toLowerCase().contains("yelp")) {
+                        mYelpButton.setVisibility(View.VISIBLE);
+                        mYelpURL = url;
+                    }
+                }
 
                 if (mBusinessDetail.getHourObjectArray() == null || mBusinessDetail.getHourObjectArray().size() == 0) {
                     mHourContainer.setVisibility(View.GONE);
@@ -395,37 +412,45 @@ public class DirectoryDetailFragment extends Fragment {
                     }
                 });
 
-//                mShareButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if ((mBusinessDetail.getWebsite().length() != 0) && mBusinessDetail.getWebsite() != null) {
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
-//                            startActivity(intent);
-//                        }
-//                    }
-//                });
-//
-//                mFacebookButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if ((mBusinessDetail.getFacebook().length() != 0) && mBusinessDetail.getWebsite() != null) {
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
-//                            startActivity(intent);
-//                        }
-//                    }
-//                });
-//                mTwitterButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if ((mBusinessDetail.getTwitter().length() != 0) && mBusinessDetail.getWebsite() != null) {
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//                            intent.setData(Uri.parse(mBusinessDetail.getWebsite()));
-//                            startActivity(intent);
-//                        }
-//                    }
-//                });
+                mShareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                            share(mBusinessDetail);
+                    }
+                });
+
+                mFacebookButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mFacebookURL != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mFacebookURL));
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+                mTwitterButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mTwitterURL != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mTwitterURL));
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+                mYelpButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mYelpURL != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mYelpURL));
+                            startActivity(intent);
+                        }
+                    }
+                });
 
                 // Set categories text
                 final List<Category> categories = mBusinessDetail.getCategoryObject();
@@ -538,5 +563,30 @@ public class DirectoryDetailFragment extends Fragment {
             }
         }
         return imageViews;
+    }
+
+    private void share(BusinessDetail detail) {
+//        ArrayList<Uri> uris = new ArrayList<Uri>();
+//
+//        if (uri != null) {
+//            uris.add(Uri.parse(mContentURL));
+//        }
+//
+//        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+//        intent.setType("message/rfc822");
+//        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
+//        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
+//
+//        String name = getString(R.string.request_qr_unknown);
+//        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+//            name = mCoreAPI.coreSettings().getSzFullName();
+//        }
+//
+//        String html = fillTemplate(R.raw.email_template, name);
+//
+//        intent.putExtra(Intent.EXTRA_STREAM, uris);
+//        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
+//        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
+//        startActivity(Intent.createChooser(intent, "email"));
     }
 }
