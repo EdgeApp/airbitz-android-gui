@@ -504,6 +504,10 @@ public class DirectoryDetailFragment extends Fragment {
                 mPhoneButton.setVisibility(View.GONE);
                 mWebButton.setVisibility(View.GONE);
                 mHourContainer.setVisibility(View.GONE);
+                mShareButton.setVisibility(View.GONE);
+                mFacebookButton.setVisibility(View.GONE);
+                mTwitterButton.setVisibility(View.GONE);
+                mYelpButton.setVisibility(View.GONE);
                 Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
                         Toast.LENGTH_LONG).show();
             }
