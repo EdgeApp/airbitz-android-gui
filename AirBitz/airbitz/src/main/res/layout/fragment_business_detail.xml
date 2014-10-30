@@ -166,17 +166,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/edittext_about"
-                style="@style/CategoryItemDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edge_light_gray"
-                android:drawableRight="@null"
-                android:padding="@dimen/content_padding_1_5"
-                android:textColor="@android:color/black"
-                tools:text="About" />
-
             <Button
                 android:id="@+id/button_share"
                 style="@style/CategoryItemDetail"
@@ -187,6 +176,17 @@
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
                 android:text="@string/fragment_directory_detail_share" />
+
+            <TextView
+                android:id="@+id/edittext_about"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edge_light_gray"
+                android:drawableRight="@null"
+                android:padding="@dimen/content_padding_1_5"
+                android:textColor="@android:color/black"
+                tools:text="About" />
 
             <Button
                 android:id="@+id/button_facebook"
