@@ -224,6 +224,18 @@
                 android:text="@string/fragment_directory_detail_yelp"
                 android:visibility="gone" />
 
+            <Button
+                android:id="@+id/button_foursquare"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/bd_icon_foursquare"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                android:text="@string/fragment_directory_detail_foursquare"
+                android:visibility="gone" />
+
 
         </LinearLayout>
 

@@ -79,6 +79,8 @@ public class DirectoryDetailFragment extends Fragment {
     private String mTwitterURL;
     private Button mYelpButton;
     private String mYelpURL;
+    private Button mFoursquareButton;
+    private String mFoursquareURL;
     private String mBusinessId;
     private String mBusinessName;
     private String mBusinessDistance;
@@ -163,6 +165,9 @@ public class DirectoryDetailFragment extends Fragment {
 
         mYelpButton = (Button) mView.findViewById(R.id.button_yelp);
         mYelpButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
+        mFoursquareButton = (Button) mView.findViewById(R.id.button_foursquare);
+        mFoursquareButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
@@ -333,6 +338,11 @@ public class DirectoryDetailFragment extends Fragment {
                         mYelpButton.setVisibility(View.VISIBLE);
                         mYelpURL = url;
                     }
+
+                    else if(url.toLowerCase().contains("foursquare")) {
+                        mFoursquareButton.setVisibility(View.VISIBLE);
+                        mFoursquareURL = url;
+                    }
                 }
 
                 if (mBusinessDetail.getHourObjectArray() == null || mBusinessDetail.getHourObjectArray().size() == 0) {
@@ -422,33 +432,28 @@ public class DirectoryDetailFragment extends Fragment {
                 mFacebookButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mFacebookURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mFacebookURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mFacebookURL);
                     }
                 });
 
                 mTwitterButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mTwitterURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mTwitterURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mTwitterURL);
                     }
                 });
 
                 mYelpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mYelpURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mYelpURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mYelpURL);
+                    }
+                });
+
+                mFoursquareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchBrowser(mFoursquareURL);
                     }
                 });
 
@@ -514,6 +519,13 @@ public class DirectoryDetailFragment extends Fragment {
             ((NavigationActivity) mActivity).showModalProgress(false);
         }
 
+        private void launchBrowser(String url) {
+            if (url != null) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            }
+        }
 
         private void setSchedule(List<Hour> hours) {
             final Iterator<Hour> iter = hours.iterator();
