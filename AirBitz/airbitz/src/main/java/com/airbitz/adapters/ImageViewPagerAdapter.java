@@ -34,6 +34,7 @@ public class ImageViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imageView = mImageViews.get(position);
+        container.removeView(imageView);
         container.addView(imageView);
         return imageView;
     }
