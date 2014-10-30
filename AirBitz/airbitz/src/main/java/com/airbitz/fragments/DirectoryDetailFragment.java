@@ -568,27 +568,15 @@ public class DirectoryDetailFragment extends Fragment {
     }
 
     private void share(BusinessDetail detail) {
-//        ArrayList<Uri> uris = new ArrayList<Uri>();
-//
-//        if (uri != null) {
-//            uris.add(Uri.parse(mContentURL));
-//        }
-//
-//        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-//        intent.setType("message/rfc822");
-//        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
-//        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
-//
-//        String name = getString(R.string.request_qr_unknown);
-//        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-//            name = mCoreAPI.coreSettings().getSzFullName();
-//        }
-//
-//        String html = fillTemplate(R.raw.email_template, name);
-//
-//        intent.putExtra(Intent.EXTRA_STREAM, uris);
-//        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
-//        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
-//        startActivity(Intent.createChooser(intent, "email"));
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        String text = detail.getName() + " - " + detail.getCity() + " Bitcoin | Airbitz";
+        share.putExtra(Intent.EXTRA_TEXT, text + " - " + detail.getWebsite());
+
+        startActivity(Intent.createChooser(share, "share link"));
     }
 }
