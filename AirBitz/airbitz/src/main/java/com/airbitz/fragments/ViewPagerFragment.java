@@ -43,6 +43,8 @@ public class ViewPagerFragment extends Fragment {
     private Handler mHandler = new Handler();
     private int mPosition;
     private boolean mSeekbarReposition = false;
+    private final int SEEKBAR_MAX = 100;
+    private float mScale;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,9 @@ public class ViewPagerFragment extends Fragment {
         mActivity.showModalProgress(true);
         mHandler.postDelayed(loadBackground, 100);
 
+
+        mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
+
         mViewPager = (ViewPager) mView.findViewById(R.id.fragment_viewpager_viewpager);
         mViewPager.setAdapter(new ImageViewPagerAdapter(mImageViews));
         mViewPager.setCurrentItem(mPosition);
@@ -78,6 +83,7 @@ public class ViewPagerFragment extends Fragment {
                 if (positionOffsetPixels == 0) {
                     mPosition = position;
                     mActivity.showModalProgress(true);
+                    mSeekBar.setProgress((int) (position * mScale));
                     mHandler.post(loadBackground);
                 }
             }
@@ -91,30 +97,34 @@ public class ViewPagerFragment extends Fragment {
         }
 
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
-        mSeekBar.setMax(100);
-        mSeekBar.setProgress(mPosition);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(!mSeekbarReposition) {
-                    float nearestValue = (i * (mImageViews.size())) / 100;
-                    mViewPager.setCurrentItem((int) nearestValue, true);
+        if(mImageViews.size()>1) {
+            mSeekBar.setMax(SEEKBAR_MAX);
+            mSeekBar.setProgress(mPosition);
+            mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    if (!mSeekbarReposition) {
+                        float nearestValue = Math.round(i / mScale);
+                        mViewPager.setCurrentItem((int) nearestValue, true);
+                    }
                 }
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int progress = seekBar.getProgress();
-                float nearestValue = (progress * (mImageViews.size()))/100;
-                Log.d(TAG, "progress:"+progress+" nearest:"+nearestValue);
-                mSeekbarReposition = true;
-                mSeekBar.setProgress((int) nearestValue * 100/(mImageViews.size()-1));
-                mSeekbarReposition = false;
-            }
-        });
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    int progress = seekBar.getProgress();
+                    float nearestValue = Math.round(progress / mScale);
+                    mSeekbarReposition = true;
+                    mSeekBar.setProgress((int) (nearestValue * mScale));
+                    mSeekbarReposition = false;
+                }
+            });
+        } else {
+            mSeekBar.setVisibility(View.INVISIBLE);
+        }
 
         return mView;
     }
@@ -176,14 +186,12 @@ public class ViewPagerFragment extends Fragment {
                     savedMatrix.set(matrix);
                     startPoint.set(event.getX(), event.getY());
                     mode = DRAG;
-                    Log.d(TAG, "action down");
                     break;
 
                 case MotionEvent.ACTION_UP: //first finger lifted
 
                 case MotionEvent.ACTION_POINTER_UP: //second finger lifted
                     mode = NONE;
-                    Log.d(TAG, "action up");
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN: //second finger down
@@ -193,7 +201,6 @@ public class ViewPagerFragment extends Fragment {
                         midPoint(midPoint, event);
                         mode = ZOOM;
                     }
-                    Log.d(TAG, "action pointer up");
                     break;
 
                 case MotionEvent.ACTION_MOVE:
@@ -209,7 +216,6 @@ public class ViewPagerFragment extends Fragment {
                             matrix.postScale(scale, scale, midPoint.x, midPoint.y);
                         }
                     }
-                    Log.d(TAG, "action move");
                     break;
 
             }
