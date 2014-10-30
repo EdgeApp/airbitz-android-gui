@@ -221,18 +221,12 @@ public class DirectoryDetailFragment extends Fragment {
     }
 
     private void getMapLink() {
-        String address = mBusinessDetail.getAddress();
-        String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
-
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?"
-                        + "daddr="
-                        + daddr
-                        + "&dirflg=d")
-        );
-        intent.setComponent(new ComponentName("com.google.android.apps.maps",
-                "com.google.android.maps.MapsActivity"));
-        startActivity(intent);
+        Uri geoLocation = Uri.parse("geo:" + mLat + "," + mLon);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void setDistance(String strDistance) {
@@ -245,15 +239,6 @@ public class DirectoryDetailFragment extends Fragment {
         } catch (Exception e) {
             mDistanceTextView.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private String buildLatLonToStr(String lat, String lon) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(lat);
-        builder.append(",");
-        builder.append(lon);
-
-        return builder.toString();
     }
 
     private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
