@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -17,21 +19,31 @@ import com.airbitz.activities.NavigationActivity;
  */
 public class NavigationBarFragment extends Fragment {
 
-    private static ImageView mCurrentActivityButton;
-    private ImageView mDirectoryButton;
-    private ImageView mSendButton;
-    private ImageView mRequestButton;
-    private ImageView mWalletButton;
-    private ImageView mSettingButton;
-    private ImageView mPopupDirectoryButton;
-    private ImageView mPopupSendButton;
-    private ImageView mPopupRequestButton;
-    private ImageView mPopupWalletButton;
-    private ImageView mPopupSettingButton;
+    private RelativeLayout mDirectoryButton;
+    private ImageView mDirectoryImage;
+    private TextView mDirectoryText;
+    private RelativeLayout mSendButton;
+    private ImageView mSendImage;
+    private TextView mSendText;
+    private RelativeLayout mRequestButton;
+    private ImageView mRequestImage;
+    private TextView mRequestText;
+    private RelativeLayout mWalletButton;
+    private ImageView mWalletImage;
+    private TextView mWalletText;
+    private RelativeLayout mSettingButton;
+    private ImageView mSettingImage;
+    private TextView mSettingText;
+
+
+    private RelativeLayout mPopupDirectoryButton;
+    private RelativeLayout mPopupSendButton;
+    private RelativeLayout mPopupRequestButton;
+    private RelativeLayout mPopupWalletButton;
+    private RelativeLayout mPopupSettingButton;
     private View mView, mButtons;
     private int selectedTab = 0;
 
-    private LinearLayout mContainerLayout;
 
     private NavigationActivity mActivity;
     private int mLastTab = 0;
@@ -52,18 +64,31 @@ public class NavigationBarFragment extends Fragment {
 
         mButtons = mView.findViewById(R.id.normal_navigation_bar);
 
-        mContainerLayout = (LinearLayout) mView.findViewById(R.id.nav_bar_container);
+        mDirectoryButton = (RelativeLayout) mView.findViewById(R.id.directory_button);
+        mDirectoryImage = (ImageView) mView.findViewById(R.id.nav_bar_directory_image);
+        mDirectoryText = (TextView) mView.findViewById(R.id.nav_bar_directory_text);
 
-        mDirectoryButton = (ImageView) mView.findViewById(R.id.directory_button);
-        mSendButton = (ImageView) mView.findViewById(R.id.send_button);
-        mRequestButton = (ImageView) mView.findViewById(R.id.request_button);
-        mWalletButton = (ImageView) mView.findViewById(R.id.wallet_button);
-        mSettingButton = (ImageView) mView.findViewById(R.id.setting_button);
-        mPopupDirectoryButton = (ImageView) mView.findViewById(R.id.popup_directory_button);
-        mPopupSendButton = (ImageView) mView.findViewById(R.id.popup_send_button);
-        mPopupRequestButton = (ImageView) mView.findViewById(R.id.popup_request_button);
-        mPopupWalletButton = (ImageView) mView.findViewById(R.id.popup_wallet_button);
-        mPopupSettingButton = (ImageView) mView.findViewById(R.id.popup_setting_button);
+        mRequestButton = (RelativeLayout) mView.findViewById(R.id.request_button);
+        mRequestImage = (ImageView) mView.findViewById(R.id.nav_bar_request_image);
+        mRequestText = (TextView) mView.findViewById(R.id.nav_bar_request_text);
+
+        mSendButton = (RelativeLayout) mView.findViewById(R.id.send_button);
+        mSendImage = (ImageView) mView.findViewById(R.id.nav_bar_send_image);
+        mSendText = (TextView) mView.findViewById(R.id.nav_bar_send_text);
+
+        mWalletButton = (RelativeLayout) mView.findViewById(R.id.wallet_button);
+        mWalletImage = (ImageView) mView.findViewById(R.id.nav_bar_wallets_image);
+        mWalletText = (TextView) mView.findViewById(R.id.nav_bar_wallets_text);
+
+        mSettingButton = (RelativeLayout) mView.findViewById(R.id.setting_button);
+        mSettingImage = (ImageView) mView.findViewById(R.id.nav_bar_settings_image);
+        mSettingText = (TextView) mView.findViewById(R.id.nav_bar_settings_text);
+
+        mPopupDirectoryButton = (RelativeLayout) mView.findViewById(R.id.popup_directory_button);
+        mPopupSendButton = (RelativeLayout) mView.findViewById(R.id.popup_send_button);
+        mPopupRequestButton = (RelativeLayout) mView.findViewById(R.id.popup_request_button);
+        mPopupWalletButton = (RelativeLayout) mView.findViewById(R.id.popup_wallet_button);
+        mPopupSettingButton = (RelativeLayout) mView.findViewById(R.id.popup_setting_button);
 
         mButtons.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -118,24 +143,34 @@ public class NavigationBarFragment extends Fragment {
         selectedTab = position;
         switch (position) {
             case 0:
-                mDirectoryButton.setImageResource(R.drawable.tab_popup_directory_btm);
-                mDirectoryButton.setBackgroundResource(R.drawable.bg_selected_tab);
+                mDirectoryImage.setBackgroundResource(R.drawable.ico_directory_selected);
+                mDirectoryText.setTextColor(getResources().getColor(android.R.color.white));
+                mDirectoryText.setTextAppearance(getActivity(), R.style.BlackDropShadow);
+                mDirectoryButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             case 1:
-                mRequestButton.setImageResource(R.drawable.tab_popup_request_btm);
-                mRequestButton.setBackgroundResource(R.drawable.bg_selected_tab);
+                mRequestImage.setBackgroundResource(R.drawable.ico_request_selected);
+                mRequestText.setTextColor(getResources().getColor(android.R.color.white));
+                mRequestText.setTextAppearance(getActivity(), R.style.BlackDropShadow);
+                mRequestButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             case 2:
-                mSendButton.setImageResource(R.drawable.tab_popup_send_btm);
-                mSendButton.setBackgroundResource(R.drawable.bg_selected_tab);
+                mSendImage.setBackgroundResource(R.drawable.ico_send_selected);
+                mSendText.setTextColor(getResources().getColor(android.R.color.white));
+                mSendText.setTextAppearance(getActivity(), R.style.BlackDropShadow);
+                mSendButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             case 3:
-                mWalletButton.setImageResource(R.drawable.tab_popup_wallet_btm);
-                mWalletButton.setBackgroundResource(R.drawable.bg_selected_tab);
+                mWalletImage.setBackgroundResource(R.drawable.ico_wallets_selected);
+                mWalletText.setTextColor(getResources().getColor(android.R.color.white));
+                mWalletText.setTextAppearance(getActivity(), R.style.BlackDropShadow);
+                mWalletButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             case 4:
-                mSettingButton.setImageResource(R.drawable.tab_popup_settings_btm);
-                mSettingButton.setBackgroundResource(R.drawable.bg_selected_tab);
+                mSettingImage.setBackgroundResource(R.drawable.ico_settings_selected);
+                mSettingText.setTextColor(getResources().getColor(android.R.color.white));
+                mSettingText.setTextAppearance(getActivity(), R.style.BlackDropShadow);
+                mSettingButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             default:
                 break;
@@ -146,24 +181,34 @@ public class NavigationBarFragment extends Fragment {
         mLastTab = position;
         switch (position) {
             case 0:
-                mDirectoryButton.setImageResource(R.drawable.ico_tab_directory);
-                mDirectoryButton.setBackgroundResource(R.drawable.bg_tab_bar);
+                mDirectoryImage.setBackgroundResource(R.drawable.ico_directory);
+                mDirectoryText.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                mDirectoryText.setTextAppearance(getActivity(), R.style.WhiteDropShadow);
+                mDirectoryButton.setBackgroundResource(android.R.color.transparent);
                 break;
             case 1:
-                mRequestButton.setImageResource(R.drawable.ico_tab_request);
-                mRequestButton.setBackgroundResource(R.drawable.bg_tab_bar);
+                mRequestImage.setBackgroundResource(R.drawable.ico_request);
+                mRequestText.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                mRequestText.setTextAppearance(getActivity(), R.style.WhiteDropShadow);
+                mRequestButton.setBackgroundResource(android.R.color.transparent);
                 break;
             case 2:
-                mSendButton.setImageResource(R.drawable.ico_tab_send);
-                mSendButton.setBackgroundResource(R.drawable.bg_tab_bar);
+                mSendImage.setBackgroundResource(R.drawable.ico_send);
+                mSendText.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                mSendText.setTextAppearance(getActivity(), R.style.WhiteDropShadow);
+                mSendButton.setBackgroundResource(android.R.color.transparent);
                 break;
             case 3:
-                mWalletButton.setImageResource(R.drawable.ico_tab_wallet);
-                mWalletButton.setBackgroundResource(R.drawable.bg_tab_bar);
+                mWalletImage.setBackgroundResource(R.drawable.ico_wallets);
+                mWalletText.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                mWalletText.setTextAppearance(getActivity(), R.style.WhiteDropShadow);
+                mWalletButton.setBackgroundResource(android.R.color.transparent);
                 break;
             case 4:
-                mSettingButton.setImageResource(R.drawable.ico_tab_settings);
-                mSettingButton.setBackgroundResource(R.drawable.bg_tab_bar);
+                mSettingImage.setBackgroundResource(R.drawable.ico_settings);
+                mSettingText.setTextColor(getResources().getColor(R.color.dark_gray_text));
+                mSettingText.setTextAppearance(getActivity(), R.style.WhiteDropShadow);
+                mSettingButton.setBackgroundResource(android.R.color.transparent);
                 break;
             default:
                 break;
@@ -221,23 +266,11 @@ public class NavigationBarFragment extends Fragment {
     }
 
     public void initializeElements() {
-
-        mDirectoryButton.setImageResource(R.drawable.ico_tab_directory);
-        mDirectoryButton.setBackgroundResource(R.drawable.bg_tab_bar);
-        mDirectoryButton.invalidate();
-        mSendButton.setImageResource(R.drawable.ico_tab_send);
-        mSendButton.setBackgroundResource(R.drawable.bg_tab_bar);
-        mSendButton.invalidate();
-        mRequestButton.setImageResource(R.drawable.ico_tab_request);
-        mRequestButton.setBackgroundResource(R.drawable.bg_tab_bar);
-        mRequestButton.invalidate();
-        mWalletButton.setImageResource(R.drawable.ico_tab_wallet);
-        mWalletButton.setBackgroundResource(R.drawable.bg_tab_bar);
-        mWalletButton.invalidate();
-        mSettingButton.setImageResource(R.drawable.ico_tab_settings);
-        mSettingButton.setBackgroundResource(R.drawable.bg_tab_bar);
-        mSettingButton.invalidate();
-
+        mDirectoryText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mRequestText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mSendText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mWalletText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mSettingText.setTypeface(NavigationActivity.montserratRegularTypeFace);
         clearPopups();
     }
 
