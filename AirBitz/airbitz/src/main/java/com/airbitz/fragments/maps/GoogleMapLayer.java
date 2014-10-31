@@ -300,7 +300,7 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
                                 }
                                 mOnCameraChangeListener.onCameraChange(
                                     new MapLatLng(sw.latitude, sw.longitude),
-                                    new MapLatLng(ne.latitude, sw.longitude), ll);
+                                    new MapLatLng(ne.latitude, ne.longitude), ll);
                             }
                         }, 500);
                     }
