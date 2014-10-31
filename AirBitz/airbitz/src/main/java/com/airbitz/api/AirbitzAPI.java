@@ -27,6 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 /**
  * Created on 2/13/14.
@@ -84,8 +86,16 @@ public class AirbitzAPI {
             return (String) api.mApiCache.get(url + params);
         }
         try {
+            TrustManager tm[] = {
+                new PinManager()
+            };
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tm, null);
+
             URL sendUrl = new URL(url + params);
             urlConnection = (HttpsURLConnection) sendUrl.openConnection();
+            urlConnection.setSSLSocketFactory(context.getSocketFactory());
+
             String token = AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key);
 
             urlConnection.setRequestProperty("Authorization", "Token " + token + "");
