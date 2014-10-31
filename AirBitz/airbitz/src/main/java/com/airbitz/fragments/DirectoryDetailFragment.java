@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -11,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -38,6 +36,7 @@ import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;
 import com.airbitz.models.Social;
+import com.airbitz.widgets.TouchImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -214,7 +213,7 @@ public class DirectoryDetailFragment extends Fragment {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             Log.d(TAG, "image clicked");
             ViewPagerFragment fragment = new ViewPagerFragment();
-            fragment.setImages(getImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
+            fragment.setImages(getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
             ((NavigationActivity) getActivity()).pushFragment(fragment);
             return true;
         }
@@ -552,12 +551,12 @@ public class DirectoryDetailFragment extends Fragment {
         return imageViews;
     }
 
-    private List<ImageView> getImageViewList(BusinessDetail bd) {
-        List<ImageView> imageViews = new ArrayList<ImageView>();
+    private List<TouchImageView> getTouchImageViewList(BusinessDetail bd) {
+        List<TouchImageView> imageViews = new ArrayList<TouchImageView>();
         List<Image> images = bd.getImages();
         if(images != null) {
             for(Image i : images) {
-                ImageView imageView = new ImageView(getActivity());
+                TouchImageView imageView = new TouchImageView(getActivity());
                 imageView.setMinimumHeight((int) i.getPhotoHeight());
                 imageView.setMinimumWidth((int) i.getPhotoWidth());
                 Picasso.with(getActivity()).load(i.getPhotoLink()).into(imageView);
