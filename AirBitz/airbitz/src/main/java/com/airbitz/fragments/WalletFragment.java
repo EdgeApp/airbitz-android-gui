@@ -55,8 +55,8 @@ public class WalletFragment extends Fragment
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mSearchButton;
     private boolean searchPage = false;
-    private ResizableImageView mRequestButton;
-    private ResizableImageView mSendButton;
+    private LinearLayout mRequestButton;
+    private LinearLayout mSendButton;
     private TextView mTitleTextView;
     private int SEARCH_ANIMATION_DURATION = 350;
     private float mSearchBarHeight;
@@ -221,8 +221,8 @@ public class WalletFragment extends Fragment
             mHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
             mListTransaction.addHeaderView(mHeaderView);
         }
-        mSendButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (ResizableImageView) mHeaderView.findViewById(R.id.fragment_wallet_request_button);
+        mSendButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_request_button);
         mListTransaction.setAdapter(mTransactionAdapter);
 
         mProgressView = (View) mView.findViewById(android.R.id.empty);

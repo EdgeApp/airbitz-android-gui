@@ -45,6 +45,8 @@
     <string name="nav_bar_wallets_text">Monederos</string>
     <string name="nav_bar_settings_text">Ajustes</string>
 
+    <string name="calculator_back">Atrás</string>
+    <string name="calculator_done">Hecho</string>
 
   <string name="string_connection_problem_title">
     Problema de conexión
@@ -58,6 +60,7 @@
   <string name="string_no_connection_response">
     Hay un problema de alcanzar el servidor. Por favor, inténtelo de nuevo.
   </string>
+    <string name="string_connection_error_server">Error de conexión: no se puede llegar a servidor.</string>
   <string name="restaurant_and_food_trucks">
     Restaurantes y comida camiones
   </string>
@@ -79,7 +82,7 @@
   <string name="category_or_business_name">
     Nombre del Negocio o Categoría
   </string>
-
+    <string name="city_state_county">Ciudad, Estado / Provincia o País</string>
   <string name="your_location">
     Su ubicación
   </string>
@@ -588,6 +591,8 @@
   <string name="fragment_wallet_confirmations">
     " confirmaciones"
   </string>
+    <string name="fragment_wallet_request_button">Solicitud</string>
+    <string name="fragment_wallet_send_button">Enviar</string>
   <string name="request_title">
     Solicitar Bitcoin
   </string>

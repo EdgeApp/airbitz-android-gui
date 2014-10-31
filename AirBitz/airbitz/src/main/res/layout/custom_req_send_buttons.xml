@@ -7,21 +7,65 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <com.airbitz.objects.ResizableImageView
+    <LinearLayout
         android:id="@+id/fragment_wallet_request_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
         android:layout_marginBottom="4dp"
         android:layout_marginRight="10dp"
-        android:src="@drawable/btn_request_green" />
+        android:background="@drawable/bg_button_green" >
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/arrow_request"/>
 
-    <com.airbitz.objects.ResizableImageView
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/tab_divider"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/fragment_wallet_request_button"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            style="@style/BlackDropShadow" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/fragment_wallet_send_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="10dp"
-        android:src="@drawable/btn_send_orange" />
+        android:background="@drawable/bg_button_orange" >
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/send_arrow"/>
+
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/tab_divider"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/fragment_wallet_send_button"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            style="@style/BlackDropShadow" />
+    </LinearLayout>
 
 </LinearLayout>
 
