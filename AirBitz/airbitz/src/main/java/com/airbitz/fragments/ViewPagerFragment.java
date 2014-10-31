@@ -48,7 +48,6 @@ public class ViewPagerFragment extends Fragment {
     private boolean mSeekbarReposition = false;
     private final int SEEKBAR_MAX = 100;
     private float mScale;
-    private Rect mImageViewBounds;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,10 +96,6 @@ public class ViewPagerFragment extends Fragment {
             }
         });
 
-//        for(ImageView iv : mImageViews) {
-//            iv.setOnTouchListener(new ImageTouchListener());
-//        }
-
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
         if(mImageViews.size()>1) {
             mSeekBar.setMax(SEEKBAR_MAX);
@@ -130,8 +125,6 @@ public class ViewPagerFragment extends Fragment {
         } else {
             mSeekBar.setVisibility(View.INVISIBLE);
         }
-
-        mImageViewBounds = new Rect(mViewpagerView.getLeft(), mViewpagerView.getTop(), mViewpagerView.getRight(), mViewpagerView.getBottom());
 
         return mView;
     }
