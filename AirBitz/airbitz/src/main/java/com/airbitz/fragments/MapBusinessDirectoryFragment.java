@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -905,8 +906,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         @Override
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
-            if (mBusinessType.equalsIgnoreCase("category")) {
-                return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], PAGE_SIZE, "", "");
+            Log.d(TAG, "params: " + params[0] + " " + params[1] + " " + params[2]);
+            if (params[1].equalsIgnoreCase("category")) {
+                return mApi.getSearchByBoundsAndBusiness(params[0], "", "category", params[2], PAGE_SIZE, "", "");
             } else {
 
                 return mApi.getSearchByBoundsAndBusiness(params[0], params[1], "", params[2], PAGE_SIZE, "", "");
@@ -920,6 +922,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
+                List<BusinessSearchResult> list = results.getBusinessSearchObjectArray();
+                for(BusinessSearchResult res : list) {
+                    Log.d(TAG, res.getName());
+                }
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
                     updateVenueResults(searchResult, false);
                 }
