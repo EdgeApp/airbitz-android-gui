@@ -258,6 +258,8 @@
     <string name="fragment_wallet_unconfirmed">Unconfirmed</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
+    <string name="fragment_wallet_request_button">Request</string>
+    <string name="fragment_wallet_send_button">Send</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
