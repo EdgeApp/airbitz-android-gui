@@ -183,6 +183,7 @@
             android:text="@string/calculator_back"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            style="@style/BlackDropShadow"
             android:background="@drawable/calc_btn_orange_bg"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
@@ -247,6 +248,7 @@
             android:text="@string/calculator_done"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            style="@style/BlackDropShadow"
             android:background="@drawable/calc_btn_blue_bg"
             android:onClick="onCalculatorButtonClick"
             android:tag="done" />

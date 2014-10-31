@@ -251,6 +251,7 @@
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            style="@style/BlackDropShadow"
             android:background="@drawable/calc_btn_orange_bg"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
@@ -338,6 +339,7 @@
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            style="@style/BlackDropShadow"
             android:background="@drawable/calc_btn_blue_bg"
             android:onClick="onCalculatorButtonClick"
             android:tag="done" />
