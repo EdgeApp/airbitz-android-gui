@@ -573,8 +573,9 @@ public class DirectoryDetailFragment extends Fragment {
 
         // Add data to the intent, the receiving app will decide
         // what to do with it.
-        String text = detail.getName() + " - " + detail.getCity() + " Bitcoin | Airbitz";
-        share.putExtra(Intent.EXTRA_TEXT, text + " - " + detail.getWebsite());
+        String text = detail.getName() + " - " + detail.getCity() + " Bitcoin | Airbitz -";
+        text = text + "https://airbitz.co/biz/"+detail.getId();
+        share.putExtra(Intent.EXTRA_TEXT, text);
 
         startActivity(Intent.createChooser(share, "share link"));
     }
