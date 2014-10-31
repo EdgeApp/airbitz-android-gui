@@ -410,7 +410,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
                 );
         mPartialDialog = builder.create();
         mPartialDialog.show();
-        mHandler.postDelayed(dialogKiller, 5000);
+        mHandler.postDelayed(dialogKiller, NavigationActivity.ALERT_PAYMENT_TIMEOUT);
     }
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
