@@ -79,6 +79,7 @@ public class ExportFragment extends Fragment {
         mHelpButton.setVisibility(View.VISIBLE);
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(getString(R.string.export_title));
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_export_account_spinner);
 
