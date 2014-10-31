@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +24,9 @@ import android.widget.SeekBar;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
+import com.airbitz.adapters.TouchImageViewPagerAdapter;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.widgets.TouchImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class ViewPagerFragment extends Fragment {
     final String TAG = getClass().getSimpleName();
 
     private HighlightOnPressImageButton mQuitButton;
-    private List<ImageView> mImageViews = new ArrayList<ImageView>();
+    private List<TouchImageView> mImageViews = new ArrayList<TouchImageView>();
     private ViewPager mViewPager;
     private View mViewpagerView;
     private SeekBar mSeekBar;
@@ -43,6 +46,8 @@ public class ViewPagerFragment extends Fragment {
     private Handler mHandler = new Handler();
     private int mPosition;
     private boolean mSeekbarReposition = false;
+    private final int SEEKBAR_MAX = 100;
+    private float mScale;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,8 +73,11 @@ public class ViewPagerFragment extends Fragment {
         mActivity.showModalProgress(true);
         mHandler.postDelayed(loadBackground, 100);
 
+
+        mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
+
         mViewPager = (ViewPager) mView.findViewById(R.id.fragment_viewpager_viewpager);
-        mViewPager.setAdapter(new ImageViewPagerAdapter(mImageViews));
+        mViewPager.setAdapter(new TouchImageViewPagerAdapter(mImageViews));
         mViewPager.setCurrentItem(mPosition);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) { }
@@ -78,43 +86,45 @@ public class ViewPagerFragment extends Fragment {
                 if (positionOffsetPixels == 0) {
                     mPosition = position;
                     mActivity.showModalProgress(true);
+                    mSeekBar.setProgress((int) (position * mScale));
                     mHandler.post(loadBackground);
                 }
             }
 
             public void onPageSelected(int position) {
+
             }
         });
-
-        for(ImageView iv : mImageViews) {
-            iv.setOnTouchListener(new ImageTouchListener());
-        }
 
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
-        mSeekBar.setMax(100);
-        mSeekBar.setProgress(mPosition);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(!mSeekbarReposition) {
-                    float nearestValue = (i * (mImageViews.size())) / 100;
-                    mViewPager.setCurrentItem((int) nearestValue, true);
+        if(mImageViews.size()>1) {
+            mSeekBar.setMax(SEEKBAR_MAX);
+            mSeekBar.setProgress(mPosition);
+            mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    if (!mSeekbarReposition) {
+                        float nearestValue = Math.round(i / mScale);
+                        mViewPager.setCurrentItem((int) nearestValue, true);
+                    }
                 }
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int progress = seekBar.getProgress();
-                float nearestValue = (progress * (mImageViews.size()))/100;
-                Log.d(TAG, "progress:"+progress+" nearest:"+nearestValue);
-                mSeekbarReposition = true;
-                mSeekBar.setProgress((int) nearestValue * 100/(mImageViews.size()-1));
-                mSeekbarReposition = false;
-            }
-        });
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    int progress = seekBar.getProgress();
+                    float nearestValue = Math.round(progress / mScale);
+                    mSeekbarReposition = true;
+                    mSeekBar.setProgress((int) (nearestValue * mScale));
+                    mSeekbarReposition = false;
+                }
+            });
+        } else {
+            mSeekBar.setVisibility(View.INVISIBLE);
+        }
 
         return mView;
     }
@@ -133,104 +143,9 @@ public class ViewPagerFragment extends Fragment {
         }
     };
 
-    public void setImages(List<ImageView> imageViews, int position) {
+    public void setImages(List<TouchImageView> imageViews, int position) {
         mImageViews = imageViews;
         mPosition = position;
-    }
-
-    private class ImageTouchListener implements View.OnTouchListener {
-        // These matrices will be used to move and zoom image
-        Matrix matrix = new Matrix();
-        Matrix savedMatrix = new Matrix();
-
-        // Touches can be in one of these 3 states
-        final int NONE = 0;
-        final int DRAG = 1;
-        final int ZOOM = 2;
-        int mode = NONE;
-
-        // Remember some things for zooming
-        PointF startPoint = new PointF();
-        PointF midPoint = new PointF();
-        float oldDist = 1f;
-        boolean firstTouch = true;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event)
-        {
-            ImageView view = (ImageView) v;
-            view.setScaleType(ImageView.ScaleType.MATRIX);
-            float scale;
-
-            // Handle touch events here...
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-                case MotionEvent.ACTION_DOWN: //first finger down only
-                    if(firstTouch && view.getDrawable() != null) { // setup initial matrix
-                        RectF drawableRectF = new RectF(0, 0, view.getDrawable().getBounds().width(), view.getDrawable().getBounds().height());
-                        RectF viewRectF = new RectF(0, 0, view.getWidth(), view.getHeight());
-                        matrix.setRectToRect(drawableRectF, viewRectF, Matrix.ScaleToFit.CENTER);
-                        Log.d(TAG, "first touch");
-                        firstTouch = false;
-                    }
-                    savedMatrix.set(matrix);
-                    startPoint.set(event.getX(), event.getY());
-                    mode = DRAG;
-                    Log.d(TAG, "action down");
-                    break;
-
-                case MotionEvent.ACTION_UP: //first finger lifted
-
-                case MotionEvent.ACTION_POINTER_UP: //second finger lifted
-                    mode = NONE;
-                    Log.d(TAG, "action up");
-                    break;
-
-                case MotionEvent.ACTION_POINTER_DOWN: //second finger down
-                    oldDist = spacing(event);
-                    if (oldDist > 5f) {
-                        savedMatrix.set(matrix);
-                        midPoint(midPoint, event);
-                        mode = ZOOM;
-                    }
-                    Log.d(TAG, "action pointer up");
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    if (mode == DRAG) { //movement of first finger
-                        matrix.set(savedMatrix);
-                        matrix.postTranslate(event.getX() - startPoint.x, event.getY() - startPoint.y);
-                    }
-                    else if (mode == ZOOM) { //pinch zooming
-                        float newDist = spacing(event);
-                        if (newDist > 5f) {
-                            matrix.set(savedMatrix);
-                            scale = newDist / oldDist;
-                            matrix.postScale(scale, scale, midPoint.x, midPoint.y);
-                        }
-                    }
-                    Log.d(TAG, "action move");
-                    break;
-
-            }
-
-            // Perform the transformation
-            view.setImageMatrix(matrix);
-
-            return true; // indicate event was handled
-        }
-    };
-
-    private float spacing(MotionEvent event) {
-        float x = event.getX(0) - event.getX(1);
-        float y = event.getY(0) - event.getY(1);
-        return FloatMath.sqrt(x * x + y * y);
-    }
-
-    private void midPoint(PointF point, MotionEvent event) {
-        float x = event.getX(0) + event.getX(1);
-        float y = event.getY(0) + event.getY(1);
-        point.set(x / 2, y / 2);
     }
 
     public static Bitmap drawableToBitmap (Drawable drawable) {

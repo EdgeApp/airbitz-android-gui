@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * Created by tom on 10/27/14.
  */
-public class ImageViewPagerAdapter extends PagerAdapter {
+public class TouchImageViewPagerAdapter extends PagerAdapter {
 
-    private List<ImageView> mImageViews;
+    private List<TouchImageView> mImageViews;
 
-    public ImageViewPagerAdapter(List<ImageView> images) {
+    public TouchImageViewPagerAdapter(List<TouchImageView> images) {
         mImageViews = images;
     }
 

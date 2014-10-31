@@ -428,7 +428,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         int w = camera.getParameters().getPreviewSize().width;
         int h = camera.getParameters().getPreviewSize().height;
         PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
-        if (source != null) {
+        if (source.getMatrix() != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
                 rawResult = reader.decode(bitmap);
@@ -459,7 +459,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             int[] pixels = new int[w * h];
             thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
             RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
-            if (source != null) {
+            if (source.getMatrix() != null) {
                 BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
                 try {
                     rawResult = reader.decode(bitmap);

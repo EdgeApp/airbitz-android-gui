@@ -17,6 +17,13 @@
     <string name="string_add_button">Add button adds a new wallet</string>
     <string name="string_payment_received">** Payment Received **</string>
 
+    <!-- Generic strings -->
+    <string name="nav_bar_directory_text">Directory</string>
+    <string name="nav_bar_request_text">Request</string>
+    <string name="nav_bar_send_text">Send</string>
+    <string name="nav_bar_wallets_text">Wallets</string>
+    <string name="nav_bar_settings_text">Settings</string>
+
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
     <string name="string_no_connection_title">No connection</string>
@@ -51,6 +58,7 @@
     <string name="fragment_directory_detail_facebook">"Facebook"</string>
     <string name="fragment_directory_detail_twitter">"Twitter"</string>
     <string name="fragment_directory_detail_yelp">"Yelp"</string>
+    <string name="fragment_directory_detail_foursquare">"Foursquare"</string>
 
     <!-- Strings for errors from server -->
     <string name="server_error_account_already_exists">This account already exists.</string>

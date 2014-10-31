@@ -2,7 +2,6 @@ package com.airbitz.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -11,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -38,6 +36,7 @@ import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;
 import com.airbitz.models.Social;
+import com.airbitz.widgets.TouchImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -79,6 +78,8 @@ public class DirectoryDetailFragment extends Fragment {
     private String mTwitterURL;
     private Button mYelpButton;
     private String mYelpURL;
+    private Button mFoursquareButton;
+    private String mFoursquareURL;
     private String mBusinessId;
     private String mBusinessName;
     private String mBusinessDistance;
@@ -164,6 +165,9 @@ public class DirectoryDetailFragment extends Fragment {
         mYelpButton = (Button) mView.findViewById(R.id.button_yelp);
         mYelpButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
 
+        mFoursquareButton = (Button) mView.findViewById(R.id.button_foursquare);
+        mFoursquareButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
         mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
@@ -209,25 +213,19 @@ public class DirectoryDetailFragment extends Fragment {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             Log.d(TAG, "image clicked");
             ViewPagerFragment fragment = new ViewPagerFragment();
-            fragment.setImages(getImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
+            fragment.setImages(getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
             ((NavigationActivity) getActivity()).pushFragment(fragment);
             return true;
         }
     }
 
     private void getMapLink() {
-        String address = mBusinessDetail.getAddress();
-        String daddr = buildLatLonToStr(String.valueOf(mLat), String.valueOf(mLon));
-
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?"
-                        + "daddr="
-                        + daddr
-                        + "&dirflg=d")
-        );
-        intent.setComponent(new ComponentName("com.google.android.apps.maps",
-                "com.google.android.maps.MapsActivity"));
-        startActivity(intent);
+        Uri geoLocation = Uri.parse("geo:" + mLat + "," + mLon);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void setDistance(String strDistance) {
@@ -240,15 +238,6 @@ public class DirectoryDetailFragment extends Fragment {
         } catch (Exception e) {
             mDistanceTextView.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private String buildLatLonToStr(String lat, String lon) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(lat);
-        builder.append(",");
-        builder.append(lon);
-
-        return builder.toString();
     }
 
     private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
@@ -332,6 +321,11 @@ public class DirectoryDetailFragment extends Fragment {
                     else if(url.toLowerCase().contains("yelp")) {
                         mYelpButton.setVisibility(View.VISIBLE);
                         mYelpURL = url;
+                    }
+
+                    else if(url.toLowerCase().contains("foursquare")) {
+                        mFoursquareButton.setVisibility(View.VISIBLE);
+                        mFoursquareURL = url;
                     }
                 }
 
@@ -422,33 +416,28 @@ public class DirectoryDetailFragment extends Fragment {
                 mFacebookButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mFacebookURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mFacebookURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mFacebookURL);
                     }
                 });
 
                 mTwitterButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mTwitterURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mTwitterURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mTwitterURL);
                     }
                 });
 
                 mYelpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (mYelpURL != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(mYelpURL));
-                            startActivity(intent);
-                        }
+                        launchBrowser(mYelpURL);
+                    }
+                });
+
+                mFoursquareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchBrowser(mFoursquareURL);
                     }
                 });
 
@@ -514,6 +503,13 @@ public class DirectoryDetailFragment extends Fragment {
             ((NavigationActivity) mActivity).showModalProgress(false);
         }
 
+        private void launchBrowser(String url) {
+            if (url != null) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            }
+        }
 
         private void setSchedule(List<Hour> hours) {
             final Iterator<Hour> iter = hours.iterator();
@@ -555,12 +551,12 @@ public class DirectoryDetailFragment extends Fragment {
         return imageViews;
     }
 
-    private List<ImageView> getImageViewList(BusinessDetail bd) {
-        List<ImageView> imageViews = new ArrayList<ImageView>();
+    private List<TouchImageView> getTouchImageViewList(BusinessDetail bd) {
+        List<TouchImageView> imageViews = new ArrayList<TouchImageView>();
         List<Image> images = bd.getImages();
         if(images != null) {
             for(Image i : images) {
-                ImageView imageView = new ImageView(getActivity());
+                TouchImageView imageView = new TouchImageView(getActivity());
                 imageView.setMinimumHeight((int) i.getPhotoHeight());
                 imageView.setMinimumWidth((int) i.getPhotoWidth());
                 Picasso.with(getActivity()).load(i.getPhotoLink()).into(imageView);
@@ -571,27 +567,15 @@ public class DirectoryDetailFragment extends Fragment {
     }
 
     private void share(BusinessDetail detail) {
-//        ArrayList<Uri> uris = new ArrayList<Uri>();
-//
-//        if (uri != null) {
-//            uris.add(Uri.parse(mContentURL));
-//        }
-//
-//        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-//        intent.setType("message/rfc822");
-//        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
-//        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
-//
-//        String name = getString(R.string.request_qr_unknown);
-//        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-//            name = mCoreAPI.coreSettings().getSzFullName();
-//        }
-//
-//        String html = fillTemplate(R.raw.email_template, name);
-//
-//        intent.putExtra(Intent.EXTRA_STREAM, uris);
-//        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
-//        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
-//        startActivity(Intent.createChooser(intent, "email"));
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        String text = detail.getName() + " - " + detail.getCity() + " Bitcoin | Airbitz";
+        share.putExtra(Intent.EXTRA_TEXT, text + " - " + detail.getWebsite());
+
+        startActivity(Intent.createChooser(share, "share link"));
     }
 }
