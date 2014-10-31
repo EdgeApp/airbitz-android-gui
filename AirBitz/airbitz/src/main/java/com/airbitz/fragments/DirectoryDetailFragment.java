@@ -575,6 +575,7 @@ public class DirectoryDetailFragment extends Fragment {
         // what to do with it.
         String text = detail.getName() + " - " + detail.getCity() + " Bitcoin | Airbitz -";
         text = text + "https://airbitz.co/biz/"+detail.getId();
+        share.putExtra(Intent.EXTRA_SUBJECT, detail.getName());
         share.putExtra(Intent.EXTRA_TEXT, text);
 
         startActivity(Intent.createChooser(share, "share link"));

@@ -168,6 +168,7 @@ public class ExportSavingOptionFragment extends Fragment {
         mTimeButtons.add(mThisMonthButton);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(getString(R.string.export_title));
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNameList);
         dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);

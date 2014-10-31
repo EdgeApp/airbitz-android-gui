@@ -77,6 +77,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
+    public static final int ALERT_PAYMENT_TIMEOUT = 10000;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -701,7 +702,7 @@ public class NavigationActivity extends Activity
             bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
             resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
             switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-            ShowOkMessageDialog("", getString(R.string.string_payment_received), 10000);
+            ShowOkMessageDialog("", getString(R.string.string_payment_received), ALERT_PAYMENT_TIMEOUT);
         }
     }
 
