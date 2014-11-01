@@ -72,5 +72,7 @@ airbitz-android-gui
 
 ### Build and install with gradle
 
-    cd airbitz-android-gui/Airbitz
-    ./gradlew installProdDebug
+```bash
+cd airbitz-android-gui/Airbitz
+./gradlew installProdDebug
+```
