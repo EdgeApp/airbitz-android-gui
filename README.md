@@ -1,22 +1,26 @@
 airbitz-android-gui
 =========================
 
-## Setup dependencies repositories
+### Setup dependencies repositories
 
 1. Clone the core and the android repository.
 
+    ```bash
     git clone https://github.com/Airbitz/airbitz-core.git
-
     git clone https://github.com/Airbitz/airbitz-android-gui.git
+    ```
 
 1. Build the core. This requires swig and ndk-build to be in your path.
 
+    ```bash
     cd airbitz-android-gui
     ./mkabc
+    ```
 
 1.  In order to work with google maps and the Airbitz Business Directory, you
     need to create a resource with your API keys in it.
 
+    ```bash
     cd airbitz-android-gui
     cat <<EOF > ./airbitz/src/prod/res/values/all_keys.xml
     <?xml version="1.0" encoding="utf-8"?>
@@ -26,8 +30,9 @@ airbitz-android-gui
         <string name="hockey_key">HOCKEY_APP_KEY_HERE</string>
     </resources>
     EOF
+    ```
 
-## Build with Android studio
+### Build with Android studio
 
 1. Download Android Studio: http://developer.android.com/sdk/installing/studio.html
 1. Open Image and drag to application folder.
@@ -65,7 +70,7 @@ airbitz-android-gui
    slow and difficult to interact with. Running on a physical Android device is
    much better.
 
-## Build and install with gradle
+### Build and install with gradle
 
     cd airbitz-android-gui/Airbitz
     ./gradlew installProdDebug
