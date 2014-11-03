@@ -958,6 +958,7 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     Log.d(TAG, res.getName());
                 }
                 if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
+                    mVenues.clear();
                     updateVenueResults(searchResult, false);
                 }
             } catch (JSONException e) {
