@@ -75,9 +75,6 @@ import java.util.regex.Pattern;
 public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
     public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
-    private static final String specialChar = "~`!@#$%^&*()-_+=,.?/<>:;'][{}|\\\"";
-    private static final String passwordPattern = ".*[" + Pattern.quote(specialChar) + "].*";
-    public static String KEY_USERNAME = "KEY_USERNAME";
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;
     private int mMode = SIGNUP;
@@ -101,12 +98,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private ImageView mSwitchImage2;
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
-    private ImageView mSwitchImage5;
-    private TextView mQuestion1;
-    private TextView mQuestion2;
-    private TextView mQuestion3;
-    private TextView mQuestion4;
-    private TextView mQuestion5;
     private TextView mTimeTextView;
     private View mUserNameRedRingCover;
     private CreateAccountTask mCreateAccountTask;
@@ -171,10 +162,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
         mSwitchImage3 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_3);
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
-        mQuestion1 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_1);
-        mQuestion2 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_2);
-        mQuestion3 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_3);
-        mQuestion4 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
