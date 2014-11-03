@@ -937,8 +937,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
             Log.d(TAG, "params: " + params[0] + " " + params[1] + " " + params[2]);
-            if (params[1].equalsIgnoreCase("category")) {
-                return mApi.getSearchByBoundsAndBusiness(params[0], "", "category", params[2], PAGE_SIZE, "", "");
+            if (mBusinessType.equalsIgnoreCase("category")) {
+                return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], PAGE_SIZE, "", "");
             } else {
 
                 return mApi.getSearchByBoundsAndBusiness(params[0], params[1], "", params[2], PAGE_SIZE, "", "");
