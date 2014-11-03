@@ -137,11 +137,13 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_signup_password_edittext);
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.activity_signup_repassword_edittext);
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
         mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
 
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.activity_signup_title);
+
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -274,9 +276,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             return;
         //Hide some elements if this is not a fresh signup
         mMode = bundle.getInt(MODE);
-        if (mMode == SIGNUP) {
-            mTitleTextView.setText(R.string.activity_signup_title);
-        } else if (mMode == CHANGE_PASSWORD) {
+        if (mMode == CHANGE_PASSWORD) {
             // Reuse mUserNameEditText for old mPassword too
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
