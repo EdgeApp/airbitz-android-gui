@@ -97,7 +97,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
     private final String TAG = getClass().getSimpleName();
 
     private int mActivePointerId = INVALID_POINTER_ID;
-    private int mapHeight;
     private int aPosBottom = -10000;
     private int dragBarHeight = 0;
     private View view;
@@ -954,11 +953,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             try {
                 SearchResult results = new SearchResult(new JSONObject(searchResult));
                 List<BusinessSearchResult> list = results.getBusinessSearchObjectArray();
-                for(BusinessSearchResult res : list) {
-                    Log.d(TAG, res.getName());
-                }
-                if (isNewVenuesAdded(results.getBusinessSearchObjectArray())) {
-                    updateVenueResults(searchResult, false);
+                if(list != null && list.size() > 0) {
+                    mVenues.clear();
+                    updateVenueResults(list, false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
