@@ -139,11 +139,32 @@
                 android:singleLine="true"
                 tools:text="Web" />
 
+            <Button
+                android:id="@+id/button_share"
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/bd_icon_share"
+                android:ellipsize="end"
+                android:paddingLeft="@dimen/content_padding"
+                android:singleLine="true"
+                android:text="@string/fragment_directory_detail_share" />
+
             <LinearLayout
                 android:id="@+id/LinearLayout_hourContainer"
                 style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:background="@color/light_gray"
+                android:textColor="@color/blue_text"
+                android:textSize="@dimen/text_size_h4"
+                android:drawablePadding="@dimen/content_padding_2"
+                android:focusable="false"
+                android:paddingLeft="@dimen/content_padding"
+                android:paddingRight="@dimen/content_padding"
+                android:paddingTop="@dimen/content_padding"
+                android:paddingBottom="@dimen/content_padding"
                 android:orientation="horizontal">
 
                 <TextView
@@ -166,23 +187,12 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button_share"
-                style="@style/CategoryItemDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/bd_icon_share"
-                android:ellipsize="end"
-                android:paddingLeft="@dimen/content_padding"
-                android:singleLine="true"
-                android:text="@string/fragment_directory_detail_share" />
-
             <TextView
                 android:id="@+id/edittext_about"
                 style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edge_light_gray"
+                android:background="@color/light_gray"
                 android:drawableRight="@null"
                 android:padding="@dimen/content_padding_1_5"
                 android:textColor="@android:color/black"
