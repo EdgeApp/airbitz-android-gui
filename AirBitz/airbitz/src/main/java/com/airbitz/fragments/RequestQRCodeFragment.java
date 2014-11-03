@@ -75,6 +75,7 @@ import java.util.List;
 public class RequestQRCodeFragment extends Fragment implements ContactPickerFragment.ContactSelection {
     private final String TAG = getClass().getSimpleName();
     private final double BORDER_THICKNESS = 0.03;
+    public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -441,7 +442,7 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
                 );
         mPartialDialog = builder.create();
         mPartialDialog.show();
-        mHandler.postDelayed(dialogKiller, NavigationActivity.ALERT_PAYMENT_TIMEOUT);
+        mHandler.postDelayed(dialogKiller, PARTIAL_PAYMENT_TIMEOUT);
     }
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {

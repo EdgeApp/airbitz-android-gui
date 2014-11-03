@@ -108,7 +108,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
-    public static final int ALERT_PAYMENT_TIMEOUT = 10000;
+    public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
