@@ -180,9 +180,11 @@ public class SpendingLimitsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mDailySwitch.setChecked(mCoreAPI.GetDailySpendLimitSetting());
-        mDailyEditText.setText(String.valueOf(mCoreAPI.GetDailySpendLimit()));
+        mDailyEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetDailySpendLimit(), false));
+        mDailyDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
         mPINSwitch.setChecked(mCoreAPI.GetPINSpendLimitSetting());
-        mPINEditText.setText(String.valueOf(mCoreAPI.GetPINSpendLimit()));
+        mPINEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetPINSpendLimit(), false));
+        mPINDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
         adjustTextColors();
     }
 
@@ -191,13 +193,13 @@ public class SpendingLimitsFragment extends Fragment {
         if(mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
             if(mDailySwitch.isChecked()) {
                 mCoreAPI.SetDailySpendLimitSetting(true);
-                mCoreAPI.SetDailySpendLimit(mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString()));
+                mCoreAPI.SetDailySpendSatoshis(mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString()));
             } else {
                 mCoreAPI.SetDailySpendLimitSetting(false);
             }
             if(mPINSwitch.isChecked()) {
                 mCoreAPI.SetPINSpendLimitSetting(true);
-                mCoreAPI.SetPINSpendLimit(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
+                mCoreAPI.SetPINSpendSatoshis(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
             } else {
                 mCoreAPI.SetPINSpendLimitSetting(false);
             }

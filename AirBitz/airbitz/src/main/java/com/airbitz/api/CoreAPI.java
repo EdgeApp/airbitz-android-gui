@@ -456,49 +456,61 @@ public class CoreAPI {
         saveAccountSettings(settings);
     }
 
+
+    //****** Spend Limiting
     public boolean GetDailySpendLimitSetting() {
-        return false;
+        return coreSettings().getBDailySpendLimit();
     }
 
     public void SetDailySpendLimitSetting(boolean set) {
-//        tABC_AccountSettings settings = coreSettings();
-//        settings.setSzPIN(set);
-//        saveAccountSettings(settings);
-    }
-
-    public boolean GetPINSpendLimitSetting() {
-        return false;
-    }
-
-    public void SetPINSpendLimitSetting(boolean set) {
-//        tABC_AccountSettings settings = coreSettings();
-//        settings.setSzPIN(set);
-//        saveAccountSettings(settings);
+        tABC_AccountSettings settings = coreSettings();
+        settings.setBDailySpendLimit(set);
+        saveAccountSettings(settings);
     }
 
     public long GetDailySpendLimit() {
-        return 0;
+        SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
+        return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
     }
 
-    public void SetDailySpendLimit(long limit) {
-//        tABC_AccountSettings settings = coreSettings();
-//        settings.setSzPIN(set);
-//        saveAccountSettings(settings);
+    public void SetDailySpendSatoshis(long spendLimit) {
+        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit); //0 means all transactions
+        tABC_AccountSettings settings = coreSettings();
+        settings.setDailySpendLimitSatoshis(limit);
+        saveAccountSettings(settings);
+    }
+
+    public boolean GetPINSpendLimitSetting() {
+        return coreSettings().getBSpendRequirePin();
+    }
+
+    public void SetPINSpendLimitSetting(boolean set) {
+        tABC_AccountSettings settings = coreSettings();
+        settings.setBSpendRequirePin(set);
+        saveAccountSettings(settings);
     }
 
     public long GetPINSpendLimit() {
-        return 0;
+        SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
+        return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
     }
 
-    public void SetPINSpendLimit(long limit) {
-//        tABC_AccountSettings settings = coreSettings();
-//        settings.setSzPIN(set);
-//        saveAccountSettings(settings);
+    public void SetPINSpendSatoshis(long spendLimit) {
+        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit); //0 means all transactions
+        tABC_AccountSettings settings = coreSettings();
+        settings.setSpendRequirePinSatoshis(limit);
+        saveAccountSettings(settings);
     }
+
+
 
     public long GetTotalSentToday(Wallet wallet) {
         return 0;
     }
+
+
 
     public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = coreSettings();

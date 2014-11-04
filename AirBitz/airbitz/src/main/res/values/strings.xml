@@ -252,6 +252,12 @@
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
 
+
+    <string name="fragment_send_confirmation_no_pin">No PIN</string>
+    <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
+    <string name="fragment_send_confirmation_pin_remaining">Incorrect PIN. Please wait %1$.0f seconds and try again…</string>
+    <string name="fragment_send_confirmation_password_remaining">Incorrect Password. Please wait %1$.0f seconds and try again…</string>
+
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
