@@ -39,6 +39,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -56,6 +57,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
@@ -71,19 +73,20 @@ public class SendConfirmationFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
-    private final int INVALID_ENTRY_WAIT = 30;
+    private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
 
     private final String SATOSHIS = "satoshisToSave";
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
-    private EditText mPinEdittext;
+    private EditText mAuthorizationEdittext;
 
     private TextView mTitleTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mSlideTextView;
-    private TextView mPinTextView;
+    private TextView mAuthorizationTextView;
+    private View mAuthorizationLayout;
     private TextView mBTCSignTextview;
     private TextView mBTCDenominationTextView;
     private TextView mFiatDenominationTextView;
@@ -127,6 +130,7 @@ public class SendConfirmationFragment extends Fragment {
     private long mAmountToSendSatoshi = -1;
     private long mFees;
     private int mInvalidEntryCount = 0;
+    private long mInvalidEntryStartMillis = 0;
 
     private boolean mPasswordRequired = false;
     private boolean mPinRequired = false;
@@ -148,6 +152,8 @@ public class SendConfirmationFragment extends Fragment {
      * Represents an asynchronous send or transfer
      */
     private SendOrTransferTask mSendOrTransferTask;
+
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,7 +205,6 @@ public class SendConfirmationFragment extends Fragment {
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mSlideTextView = (TextView) mView.findViewById(R.id.textview_slide);
-        mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
         mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
         mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
@@ -209,7 +214,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
-        mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
+        mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
@@ -222,8 +227,12 @@ public class SendConfirmationFragment extends Fragment {
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mConversionTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mPinTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+
+        mAuthorizationTextView = (TextView) mView.findViewById(R.id.textview_pin);
+        mAuthorizationTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
+
+        mAuthorizationLayout = mView.findViewById(R.id.fragment_send_confirmation_layout_authorization);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
@@ -252,18 +261,17 @@ public class SendConfirmationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() >= 4) {
+                if (mPinRequired && editable.length() >= 4) {
                     InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(
                             Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(mPinEdittext.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(mAuthorizationEdittext.getWindowToken(), 0);
                     mParentLayout.requestFocus();
                 }
             }
         };
-        mPinEdittext.addTextChangedListener(mPINTextWatcher);
+        mAuthorizationEdittext.addTextChangedListener(mPINTextWatcher);
 
-        mPinEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        mPinEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mAuthorizationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d(TAG, "PIN field focus changed");
@@ -345,8 +353,10 @@ public class SendConfirmationFragment extends Fragment {
         TextView.OnEditorActionListener tvListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    mPinEdittext.requestFocus();
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
+                        mAuthorizationLayout.getVisibility()==View.VISIBLE) {
+                    mAuthorizationEdittext.requestFocus();
                     return true;
                 }
                 return false;
@@ -468,6 +478,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private void resetFiatAndBitcoinFields() {
         mAutoUpdatingTextFields = true;
+        mAmountToSendSatoshi = 0;
         mFiatField.setText("");
         mBitcoinField.setText("");
         mConversionTextView.setTextColor(Color.WHITE);
@@ -475,10 +486,12 @@ public class SendConfirmationFragment extends Fragment {
         mBitcoinField.setTextColor(Color.WHITE);
         mFiatField.setTextColor(Color.WHITE);
         mAutoUpdatingTextFields = false;
+        checkAuthorization();
+        calculateFees();
     }
 
     private void showPINkeyboard() {
-        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mPinEdittext, 0);
+        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mAuthorizationEdittext, 0);
     }
 
     public void touchEventsEnded() {
@@ -488,10 +501,6 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             resetSlider();
         }
-    }
-
-    private void updateConfirmationUI() {
-
     }
 
     private void updateTextFieldContents(boolean btc) {
@@ -513,6 +522,7 @@ public class SendConfirmationFragment extends Fragment {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
         }
         mAutoUpdatingTextFields = false;
+        checkAuthorization();
         calculateFees();
     }
 
@@ -563,12 +573,25 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void attemptInitiateSend() {
-        //make sure PIN is good
-        String enteredPIN = mPinEdittext.getText().toString();
 
+        float remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
+        // check if invalid entry timeout still active
+        if(mInvalidEntryStartMillis > 0) {
+            if(mPinRequired) {
+                String message = String.format(getString(R.string.fragment_send_confirmation_pin_remaining), remaining);
+                mActivity.ShowOkMessageDialog("", message, 2000);
+            } else {
+                String message = String.format(getString(R.string.fragment_send_confirmation_password_remaining), remaining);
+                mActivity.ShowOkMessageDialog("", message, 2000);
+            }
+            resetSlider();
+            return;
+        }
+
+        String enteredPIN = mAuthorizationEdittext.getText().toString();
         if(mPinRequired && enteredPIN.isEmpty()) {
-            mActivity.ShowOkMessageDialog("No PIN", "Please enter your PIN", 2000);
-            mPinEdittext.requestFocus();
+            mActivity.ShowOkMessageDialog(getString(R.string.fragment_send_confirmation_no_pin), getString(R.string.fragment_send_confirmation_please_enter_pin), 2000);
+            mAuthorizationEdittext.requestFocus();
             resetSlider();
             return;
         }
@@ -577,16 +600,34 @@ public class SendConfirmationFragment extends Fragment {
          if (mPinRequired && enteredPIN != null && userPIN != null && !userPIN.equals(enteredPIN)) {
              mInvalidEntryCount += 1;
              if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
-
+                 if(mInvalidEntryStartMillis == 0) {
+                     mInvalidEntryStartMillis = System.currentTimeMillis();
+                     mHandler.postDelayed(invalidEntryTimer, INVALID_ENTRY_WAIT_MILLIS);
+                 }
+                 remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
+                 String message = String.format(getString(R.string.fragment_send_confirmation_pin_remaining), remaining);
+                 mActivity.ShowOkMessageDialog("", message, 2000);
              } else {
                  mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
-             mPinEdittext.requestFocus();
+             mAuthorizationEdittext.requestFocus();
              resetSlider();
-        } else if ((mFees + mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
-            resetSlider();
-        } else if (mAmountToSendSatoshi == 0) {
+        } else if (mPasswordRequired && !mAuthorizationEdittext.equals(AirbitzApplication.getPassword())) {
+             mInvalidEntryCount += 1;
+             if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
+                 if(mInvalidEntryStartMillis == 0) {
+                     mInvalidEntryStartMillis = System.currentTimeMillis();
+                     mHandler.postDelayed(invalidEntryTimer, INVALID_ENTRY_WAIT_MILLIS);
+                 }
+                 remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
+                 String message = String.format(getString(R.string.fragment_send_confirmation_password_remaining), remaining);
+                 mActivity.ShowOkMessageDialog("", message, 2000);
+             } else {
+                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_password_title), getResources().getString(R.string.fragment_send_incorrect_password_message));
+             }
+             mAuthorizationEdittext.requestFocus();
+             resetSlider();
+         } else if (mAmountToSendSatoshi == 0) {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else {
@@ -600,8 +641,15 @@ public class SendConfirmationFragment extends Fragment {
              mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
              mSendOrTransferTask.execute();
              finishSlider();
-         }
+        }
     }
+
+    final Runnable invalidEntryTimer = new Runnable() {
+        @Override
+        public void run() {
+            mInvalidEntryStartMillis = 0;
+        }
+    };
 
     private void resetSlider() {
         Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), 0);
@@ -624,29 +672,21 @@ public class SendConfirmationFragment extends Fragment {
 
         if (mCoreAPI.GetDailySpendLimitSetting()
             && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= mCoreAPI.GetDailySpendLimit())) {
-        // Show password
-        mPasswordRequired = true;
-//        _labelPINTitle.hidden = NO;
-//        _labelPINTitle.text = NSLocalizedString(@"Password", nil);
-//        _withdrawlPIN.hidden = NO;
-//        _withdrawlPIN.keyboardType = UIKeyboardTypeDefault;
-//        _imagePINEmboss.hidden = NO;
-        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetDailySpendLimit()) {
-        // Show PIN pad
-        mPinRequired = true;
-//        _labelPINTitle.hidden = NO;
-//        _labelPINTitle.text = NSLocalizedString(@"4 Digit PIN", nil);
-//        _withdrawlPIN.hidden = NO;
-//        _withdrawlPIN.keyboardType = UIKeyboardTypeNumberPad;
-//        _imagePINEmboss.hidden = NO;
+            // Show password
+            mPasswordRequired = true;
+            mAuthorizationLayout.setVisibility(View.VISIBLE);
+            mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_password));
+            mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit()) {
+            // Show PIN pad
+            mPinRequired = true;
+            mAuthorizationLayout.setVisibility(View.VISIBLE);
+            mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_pin));
+            mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         } else {
-//        _labelPINTitle.hidden = YES;
-//        _withdrawlPIN.hidden = YES;
-//        _imagePINEmboss.hidden = YES;
+            mAuthorizationLayout.setVisibility(View.INVISIBLE);
         }
     }
-
-
 
     @Override
     public void onResume() {
@@ -673,7 +713,7 @@ public class SendConfirmationFragment extends Fragment {
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
-        mPinEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
+        mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mAutoUpdatingTextFields = true;
 
@@ -685,7 +725,8 @@ public class SendConfirmationFragment extends Fragment {
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             }
-            mPinEdittext.requestFocus();
+            calculateFees();
+            mAuthorizationEdittext.requestFocus();
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
@@ -694,7 +735,7 @@ public class SendConfirmationFragment extends Fragment {
             }
         }
 
-        mPinTextView = (TextView) mView.findViewById(R.id.textview_pin);
+        mAuthorizationTextView = (TextView) mView.findViewById(R.id.textview_pin);
         mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
         mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
@@ -761,10 +802,8 @@ public class SendConfirmationFragment extends Fragment {
                 mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
                 mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
 
+                checkAuthorization();
                 calculateFees();
-                if(mPinRequired || mPasswordRequired) {
-                    mPinEdittext.requestFocus();
-                }
             }
             mAutoUpdatingTextFields = false;
         }

@@ -239,7 +239,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/layout_pin"
+            android:id="@+id/fragment_send_confirmation_layout_authorization"
             android:layout_width="match_parent"
             android:layout_height="31.5dp"
             android:layout_below="@id/layout_send_confirmation"
@@ -247,7 +247,8 @@
             android:layout_marginBottom="31.5dp"
             android:layout_marginTop="12.6dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="invisible">
 
             <TextView
                 android:id="@+id/textview_pin"
@@ -257,7 +258,6 @@
                 android:gravity="center_vertical|end"
                 android:paddingRight="20dp"
                 android:singleLine="true"
-                android:text="@string/send_confirmation_enter_send_pin"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
@@ -271,7 +271,6 @@
                 android:gravity="center"
                 android:hint=""
                 android:inputType="numberPassword"
-                android:maxLength="4"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
@@ -286,7 +285,7 @@
             android:layout_alignParentBottom="false"
             android:layout_alignParentTop="false"
             android:layout_alignWithParentIfMissing="false"
-            android:layout_below="@+id/layout_pin"
+            android:layout_below="@+id/fragment_send_confirmation_layout_authorization"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:background="@drawable/bg_textfield"
