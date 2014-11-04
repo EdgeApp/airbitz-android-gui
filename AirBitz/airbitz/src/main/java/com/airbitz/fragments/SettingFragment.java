@@ -90,6 +90,7 @@ public class SettingFragment extends Fragment {
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
+    private RelativeLayout mSpendingLimitContainer;
     private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
     private RadioGroup mDenominationGroup;
@@ -152,8 +153,6 @@ public class SettingFragment extends Fragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setText(R.string.settings_title);
 
-        mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
-
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
         mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
@@ -183,10 +182,20 @@ public class SettingFragment extends Fragment {
 
         mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
 
+        mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CategoryFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+            }
+        });
+
+        mSpendingLimitContainer = (RelativeLayout) mView.findViewById(R.id.settings_spending_limits_container);
+        mSpendingLimitContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new SpendingLimitsFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });

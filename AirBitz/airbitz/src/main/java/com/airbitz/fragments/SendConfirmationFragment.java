@@ -70,6 +70,9 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 public class SendConfirmationFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
+    private final int INVALID_ENTRY_COUNT_MAX = 3;
+    private final int INVALID_ENTRY_WAIT = 30;
+
     private final String SATOSHIS = "satoshisToSave";
 
     private TextView mFromEdittext;
@@ -123,6 +126,11 @@ public class SendConfirmationFragment extends Fragment {
     private long mAmountMax;
     private long mAmountToSendSatoshi = -1;
     private long mFees;
+    private int mInvalidEntryCount = 0;
+
+    private boolean mPasswordRequired = false;
+    private boolean mPinRequired = false;
+    private boolean mMaxLocked = false;
 
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -408,10 +416,13 @@ public class SendConfirmationFragment extends Fragment {
         mMaxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMaxAmountTask != null)
-                    mMaxAmountTask.cancel(true);
-                mMaxAmountTask = new MaxAmountTask();
-                mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                if(mSourceWallet != null && !mMaxLocked) {
+                    mMaxLocked = true;
+                    if (mMaxAmountTask != null)
+                        mMaxAmountTask.cancel(true);
+                    mMaxAmountTask = new MaxAmountTask();
+                    mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
             }
         });
 
@@ -477,6 +488,10 @@ public class SendConfirmationFragment extends Fragment {
         } else {
             resetSlider();
         }
+    }
+
+    private void updateConfirmationUI() {
+
     }
 
     private void updateTextFieldContents(boolean btc) {
@@ -550,29 +565,42 @@ public class SendConfirmationFragment extends Fragment {
     private void attemptInitiateSend() {
         //make sure PIN is good
         String enteredPIN = mPinEdittext.getText().toString();
+
+        if(mPinRequired && enteredPIN.isEmpty()) {
+            mActivity.ShowOkMessageDialog("No PIN", "Please enter your PIN", 2000);
+            mPinEdittext.requestFocus();
+            resetSlider();
+            return;
+        }
+
         String userPIN = mCoreAPI.GetUserPIN();
-        if ((mFees + mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
+         if (mPinRequired && enteredPIN != null && userPIN != null && !userPIN.equals(enteredPIN)) {
+             mInvalidEntryCount += 1;
+             if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
+
+             } else {
+                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+             }
+             mPinEdittext.requestFocus();
+             resetSlider();
+        } else if ((mFees + mAmountToSendSatoshi) > mSourceWallet.getBalanceSatoshi()) {
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), getResources().getString(R.string.fragment_send_confirmation_insufficient_funds_message));
             resetSlider();
         } else if (mAmountToSendSatoshi == 0) {
             resetSlider();
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (enteredPIN != null && userPIN != null && userPIN.equals(enteredPIN)) {
-            // show the sending screen
-            SuccessFragment mSuccessFragment = new SuccessFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-            mSuccessFragment.setArguments(bundle);
-            mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
-
-            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
-            mSendOrTransferTask.execute();
-            finishSlider();
         } else {
-            resetSlider();
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
-            mPinEdittext.requestFocus();
-        }
+             // show the sending screen
+             SuccessFragment mSuccessFragment = new SuccessFragment();
+             Bundle bundle = new Bundle();
+             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+             mSuccessFragment.setArguments(bundle);
+             mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
+
+             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
+             mSendOrTransferTask.execute();
+             finishSlider();
+         }
     }
 
     private void resetSlider() {
@@ -588,6 +616,37 @@ public class SendConfirmationFragment extends Fragment {
         animator.setStartDelay(0);
         animator.start();
     }
+
+    private void checkAuthorization()
+    {
+        mPasswordRequired = false;
+        mPinRequired = false;
+
+        if (mCoreAPI.GetDailySpendLimitSetting()
+            && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= mCoreAPI.GetDailySpendLimit())) {
+        // Show password
+        mPasswordRequired = true;
+//        _labelPINTitle.hidden = NO;
+//        _labelPINTitle.text = NSLocalizedString(@"Password", nil);
+//        _withdrawlPIN.hidden = NO;
+//        _withdrawlPIN.keyboardType = UIKeyboardTypeDefault;
+//        _imagePINEmboss.hidden = NO;
+        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetDailySpendLimit()) {
+        // Show PIN pad
+        mPinRequired = true;
+//        _labelPINTitle.hidden = NO;
+//        _labelPINTitle.text = NSLocalizedString(@"4 Digit PIN", nil);
+//        _withdrawlPIN.hidden = NO;
+//        _withdrawlPIN.keyboardType = UIKeyboardTypeNumberPad;
+//        _imagePINEmboss.hidden = NO;
+        } else {
+//        _labelPINTitle.hidden = YES;
+//        _withdrawlPIN.hidden = YES;
+//        _imagePINEmboss.hidden = YES;
+        }
+    }
+
+
 
     @Override
     public void onResume() {
@@ -650,6 +709,11 @@ public class SendConfirmationFragment extends Fragment {
 
         mAutoUpdatingTextFields = false;
 
+        mMaxLocked = false;
+        checkAuthorization();
+
+        mInvalidEntryCount = 0;
+
         super.onResume();
     }
 
@@ -688,6 +752,7 @@ public class SendConfirmationFragment extends Fragment {
                 if (max < 0) {
                     Log.d(TAG, "Max calculation error");
                 }
+                mMaxLocked = false;
                 mAmountMax = max;
                 mAmountToSendSatoshi = max;
                 mAutoUpdatingTextFields = true;
@@ -697,7 +762,9 @@ public class SendConfirmationFragment extends Fragment {
                 mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
 
                 calculateFees();
-                mPinEdittext.requestFocus();
+                if(mPinRequired || mPasswordRequired) {
+                    mPinEdittext.requestFocus();
+                }
             }
             mAutoUpdatingTextFields = false;
         }

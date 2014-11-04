@@ -1,0 +1,188 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_spending_limits_container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <include
+        android:id="@+id/layout_title_header"
+        layout="@layout/layout_title_header"
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title_header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="25.2dp"
+            android:background="@drawable/rounded_edge_blue_bg"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/fragment_spending_limits_password_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="37.8dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
+                    android:hint="@string/fragment_landing_password_hint"
+                    android:inputType="textPassword"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/text_hint"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="14sp" />
+
+                <View
+                    android:id="@+id/fragment_spending_limits_password__redring"
+                    android:layout_width="match_parent"
+                    android:layout_height="37.8dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edit_text_red_ring"
+                    android:focusable="false"
+                    android:visibility="invisible" />
+
+
+            </RelativeLayout>
+
+            <Switch
+                    android:id="@+id/fragment_spending_limits_toggle_daily_limit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="2dp"
+                    android:background="@android:color/transparent"
+                    android:checked="false"
+                    android:switchMinWidth="0dp"
+                    android:text="@string/fragment_spending_limits_daily_title"
+                    android:textColor="@android:color/white"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textSize="20sp"
+                    android:singleLine="true"
+                    android:thumb="@drawable/btn_toggle_thumb"
+                    android:track="@drawable/toggle_selector" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+                <EditText
+                    android:id="@+id/fragment_spending_limits_daily_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="37.8dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
+                    android:hint="@string/fragment_spending_limits_hint_text"
+                    android:inputType="number"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/text_hint"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/fragment_spending_limits_daily_denomination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_hint"
+                    android:text="@string/fragment_spending_limits_denomination"/>
+                </RelativeLayout>
+
+            <Switch
+                android:id="@+id/fragment_spending_limits_toggle_pin_limit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="2dp"
+                android:background="@android:color/transparent"
+                android:checked="false"
+                android:switchMinWidth="0dp"
+                android:text="@string/fragment_spending_limits_pin_title"
+                android:textColor="@android:color/white"
+                android:textOff=""
+                android:textOn=""
+                android:textSize="20sp"
+                android:singleLine="true"
+                android:thumb="@drawable/btn_toggle_thumb"
+                android:track="@drawable/toggle_selector" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+                <EditText
+                    android:id="@+id/fragment_spending_limits_pin_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="37.8dp"
+                    android:layout_marginBottom="6.3dp"
+                    android:layout_marginTop="6.3dp"
+                    android:background="@drawable/bg_edittext"
+                    android:ems="10"
+                    android:hint="@string/fragment_spending_limits_hint_text"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:paddingLeft="12.6dp"
+                    android:paddingRight="12.6dp"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/text_hint"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/fragment_spending_limits_pin_denomination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_hint"
+                    android:text="@string/fragment_spending_limits_denomination"/>
+            </RelativeLayout>
+
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/fragment_spending_limits_button_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_blue"
+                android:padding="10dp"
+                android:text="@string/fragment_spending_limits_save"
+                android:textColor="@android:color/white"
+                android:textSize="26sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

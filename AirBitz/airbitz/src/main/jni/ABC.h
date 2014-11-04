@@ -300,7 +300,7 @@ extern "C" {
         /** wallet name */
         char            *szName;
         /** account associated with this wallet */
-        char            *szUserName;
+        char            *szUserName; /* DEPRECATED! Do not use! */
         /** wallet ISO 4217 currency code */
         int             currencyNum;
         /** true if the wallet is archived */
@@ -581,6 +581,14 @@ extern "C" {
         bool                        bAdvancedFeatures;
         /** fullname (readonly. Set by core based on first, last, nick names) */
         char                        *szFullName;
+        /** should a daily spend limit be enforced */
+        bool                        bDailySpendLimit;
+        /** daily spend limit */
+        int64_t                     dailySpendLimitSatoshis;
+        /** should a daily spend limit be enforced */
+        bool                        bSpendRequirePin;
+        /** daily spend limit */
+        int64_t                     spendRequirePinSatoshis;
     } tABC_AccountSettings;
 
     /**
