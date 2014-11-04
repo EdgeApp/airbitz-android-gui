@@ -78,6 +78,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.Callback {
+    final String TAG = getClass().getSimpleName();
 
     Context mContext;
     private SurfaceHolder mHolder;
@@ -127,7 +128,10 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
 
         if (mSupportedPreviewSizes != null) {
-            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+            mPreviewSize = getMaximumPreviewSize(mSupportedPreviewSizes);
+            if(mPreviewSize.height >= 1080) {
+                mPreviewSize = getClosestPreviewSize(mSupportedPreviewSizes, width, height);
+            }
         }
 
         float ratio;
@@ -140,7 +144,7 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         setMeasuredDimension(width, (int) (width * ratio));
     }
 
-    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+    private Camera.Size getClosestPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) h / w;
 
@@ -153,6 +157,7 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         int targetHeight = h;
 
         for (Camera.Size size : sizes) {
+//            Log.d(TAG, "available size w:" + size.width + ", h:" + size.height);
             double ratio = (double) size.height / size.width;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
                 continue;
@@ -164,14 +169,34 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
         }
 
         if (optimalSize == null) {
-            minDiff = Double.MAX_VALUE;
+            minDiff = Double.MIN_VALUE;
             for (Camera.Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
+                if (Math.abs(size.height - targetHeight) > minDiff) {
                     optimalSize = size;
                     minDiff = Math.abs(size.height - targetHeight);
                 }
             }
         }
+        Log.d(TAG, "optimal size w:" + optimalSize.width + ", h:" + optimalSize.height);
+
+        return optimalSize;
+    }
+
+    private Camera.Size getMaximumPreviewSize(List<Camera.Size> sizes) {
+        if (sizes == null)
+            return null;
+
+        Camera.Size optimalSize = null;
+
+            double maxDiff = Double.MIN_VALUE;
+            for (Camera.Size size : sizes) {
+                float measure = size.width * size.height;
+                if (Math.abs(measure) > maxDiff) {
+                    optimalSize = size;
+                    maxDiff = Math.abs(measure);
+                }
+            }
+        Log.d(TAG, "max size w:" + optimalSize.width + ", h:" + optimalSize.height);
 
         return optimalSize;
     }
