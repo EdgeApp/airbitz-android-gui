@@ -75,10 +75,18 @@
                     android:textColor="@android:color/white"
                     android:textOff=""
                     android:textOn=""
-                    android:textSize="20sp"
+                    android:textSize="14sp"
                     android:singleLine="true"
                     android:thumb="@drawable/btn_toggle_thumb"
                     android:track="@drawable/toggle_selector" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:text="@string/fragment_spending_limits_daily_subtext"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="-6dp"
+                android:textSize="11sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -89,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
                     android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="6.3dp"
+                    android:layout_marginTop="0dp"
                     android:background="@drawable/bg_edittext"
                     android:ems="10"
                     android:hint="@string/fragment_spending_limits_hint_text"
@@ -100,7 +108,7 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
                 <TextView
                     android:id="@+id/fragment_spending_limits_daily_denomination"
                     android:layout_width="wrap_content"
@@ -110,7 +118,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textColor="@color/text_hint"
                     android:text="@string/fragment_spending_limits_denomination"/>
                 </RelativeLayout>
@@ -128,7 +136,7 @@
                 android:textColor="@android:color/white"
                 android:textOff=""
                 android:textOn=""
-                android:textSize="20sp"
+                android:textSize="14sp"
                 android:singleLine="true"
                 android:thumb="@drawable/btn_toggle_thumb"
                 android:track="@drawable/toggle_selector" />
@@ -136,13 +144,13 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="0dp">
                 <EditText
                     android:id="@+id/fragment_spending_limits_pin_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
                     android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="6.3dp"
+                    android:layout_marginTop="0dp"
                     android:background="@drawable/bg_edittext"
                     android:ems="10"
                     android:hint="@string/fragment_spending_limits_hint_text"
@@ -154,7 +162,7 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
                 <TextView
                     android:id="@+id/fragment_spending_limits_pin_denomination"
                     android:layout_width="wrap_content"
@@ -164,7 +172,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textColor="@color/text_hint"
                     android:text="@string/fragment_spending_limits_denomination"/>
             </RelativeLayout>
@@ -176,10 +184,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_blue"
-                android:padding="10dp"
+                style="@style/BlackDropShadow"
+                android:padding="6dp"
                 android:text="@string/fragment_spending_limits_save"
                 android:textColor="@android:color/white"
-                android:textSize="26sp"
+                android:textSize="18sp"
                 android:textStyle="normal" />
 
         </LinearLayout>

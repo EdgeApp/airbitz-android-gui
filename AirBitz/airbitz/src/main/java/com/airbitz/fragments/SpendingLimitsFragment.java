@@ -32,6 +32,7 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,6 +49,8 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 
 /**
  * Created on 2/10/14.
@@ -57,6 +60,7 @@ public class SpendingLimitsFragment extends Fragment {
     private EditText mPasswordEditText;
     private View mPasswordRedRing;
     private Button mSaveButton;
+    private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
     private Switch mDailySwitch;
     private EditText mDailyEditText;
@@ -93,8 +97,11 @@ public class SpendingLimitsFragment extends Fragment {
         });
 
         mDailySwitch = (Switch) mView.findViewById(R.id.fragment_spending_limits_toggle_daily_limit);
+        mDailySwitch.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mDailyEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_daily_edittext);
+        mDailyEditText.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mDailyDenominationTextView = (TextView) mView.findViewById(R.id.fragment_spending_limits_daily_denomination);
+        mDailyDenominationTextView.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mDailySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,8 +111,11 @@ public class SpendingLimitsFragment extends Fragment {
 
 
         mPINSwitch = (Switch) mView.findViewById(R.id.fragment_spending_limits_toggle_pin_limit);
+        mPINSwitch.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mPINEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_pin_edittext);
+        mPINEditText.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mPINDenominationTextView = (TextView) mView.findViewById(R.id.fragment_spending_limits_pin_denomination);
+        mPINDenominationTextView.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mPINSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,12 +124,23 @@ public class SpendingLimitsFragment extends Fragment {
         });
 
         mSaveButton = (Button) mView.findViewById(R.id.fragment_spending_limits_button_logout);
+        mSaveButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goSave();
             }
         });
+
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mActivity.pushFragment(new HelpFragment(HelpFragment.SPEND_LIMITS), NavigationActivity.Tabs.SETTING.ordinal());
+            }
+        });
+
 
         mPasswordRedRing = mView.findViewById(R.id.fragment_spending_limits_password__redring);
 

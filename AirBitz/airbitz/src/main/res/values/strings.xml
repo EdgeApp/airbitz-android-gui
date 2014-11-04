@@ -209,10 +209,11 @@
     <string name="fragment_spending_limits_title">Spending Limits</string>
     <string name="fragment_spending_limits_save">Save</string>
     <string name="fragment_spending_limits_daily_title">Daily Spending Limit</string>
-    <string name="fragment_spending_limits_pin_title">PIN Spending Limit</string>
+    <string name="fragment_spending_limits_pin_title">Require PIN above amount</string>
     <string name="fragment_spending_limits_denomination">m฿</string>
     <string name="fragment_spending_limits_hint_text">0</string>
     <string name="fragment_spending_limits_incorrect_password">Incorrect Password</string>
+    <string name="fragment_spending_limits_daily_subtext">(Requires password above daily limit)</string>
 
     <!-- Strings for Category Fragment -->
     <string name="fragment_category_cancel_title">Cancel Changes</string>
