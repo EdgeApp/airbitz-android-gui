@@ -76,6 +76,7 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
+import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
@@ -86,18 +87,27 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends Fragment implements Camera.PreviewCallback {
+public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.AutoFocusCallback {
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
     private static int RESULT_LOAD_IMAGE = 678;
+    private final int FOCUS_MILLIS = 2000;
     private final String TAG = getClass().getSimpleName();
     Runnable cameraDelayRunner = new Runnable() {
         @Override
         public void run() {
             startCamera();
+        }
+    };
+    Runnable cameraFocusRunner = new Runnable() {
+        @Override
+        public void run() {
+            mCamera.autoFocus(SendFragment.this);
+            mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
+            mFocused = false;
         }
     };
     private Handler mHandler;
@@ -123,6 +133,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     private WalletPickerAdapter listingAdapter;
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
+    private boolean mFocused = true;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
@@ -347,7 +358,9 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
         if (mCamera != null) {
+            mHandler.removeCallbacks(cameraFocusRunner);
             mFlashButton.setClickable(false);
+            mCamera.cancelAutoFocus();
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
             mPreviewFrame.removeView(mPreview);
@@ -393,10 +406,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
             Camera.Parameters params = mCamera.getParameters();
             if (params != null) {
                 List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO))
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    mHandler.post(cameraFocusRunner);
+                }
                 mCamera.setParameters(params);
             }
         }
@@ -405,7 +420,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        if (mListviewContainer.getVisibility() == View.GONE) {
+        if (mListviewContainer.getVisibility() == View.GONE && mFocused) {
             CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
             if (info != null && info.address != null) {
                 Log.d(TAG, "Bitcoin found");
@@ -460,7 +475,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         int h = camera.getParameters().getPreviewSize().height;
         PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
         if (source.getMatrix() != null) {
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
             try {
                 rawResult = reader.decode(bitmap);
             } catch (ReaderException re) {
@@ -624,4 +639,8 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback {
         alert.show();
     }
 
+    @Override
+    public void onAutoFocus(boolean b, Camera camera) {
+        mFocused = true;
+    }
 }
