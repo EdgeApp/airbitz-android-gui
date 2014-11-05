@@ -504,13 +504,23 @@ public class CoreAPI {
         saveAccountSettings(settings);
     }
 
-
-
     public long GetTotalSentToday(Wallet wallet) {
-        return 0;
+        Calendar beginning = Calendar.getInstance();
+        long end = beginning.getTimeInMillis() / 1000;
+        beginning.set(Calendar.HOUR_OF_DAY, 0);
+        beginning.set(Calendar.MINUTE, 0);
+        long start = beginning.getTimeInMillis() / 1000;
+
+        List<Transaction> list = loadTransactionsRange(wallet, start, end);
+        long sum=0;
+        for(Transaction tx : list) {
+            if(tx.getAmountSatoshi() < 0) {
+                sum -= tx.getAmountSatoshi();
+            }
+        }
+
+        return sum;
     }
-
-
 
     public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = coreSettings();
