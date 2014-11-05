@@ -88,6 +88,10 @@
     <string name="fragment_landing_signin_button">Log In</string>
     <string name="fragment_landing_signup_button">Create Account</string>
     <string name="fragment_landing_forgot_text">Forgot Password</string>
+    <string name="fragment_landing_please_enter_pin">Please Input Your 4 Digit Pin</string>
+    <string name="fragment_landing_current_user">Current User (%1$s)</string>
+    <string name="fragment_landing_switch_user">Switch User</string>
+    <string name="fragment_landing_forgot_pin">Forgot Pin</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
@@ -255,8 +259,6 @@
     <string name="fragment_send_confirmation_insufficient_funds_message">You do not have enough funds to send this transaction.</string>
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
-
-
     <string name="fragment_send_confirmation_no_pin">No PIN</string>
     <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
     <string name="fragment_send_confirmation_pin_remaining">Incorrect PIN. Please wait %1$.0f seconds and try again…</string>

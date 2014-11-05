@@ -36,10 +36,15 @@ import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,8 +66,20 @@ public class LandingFragment extends Fragment {
     private TextView mDetailTextView;
     private ImageView mRightArrow;
     private EditText mUserNameEditText;
+    private View mPasswordLayout;
     private EditText mPasswordEditText;
+    private EditText mPinEditText;
+    private View mPinLayout;
+    
+    private HighlightOnPressButton mCreateAccountButton;
+    private TextView mCurrentUserTextView;
+    private TextView mForgotTextView;
+
+    private String mUsername;
+    private String mPinScratchpad;
+    
     private CoreAPI mCoreAPI;
+    private NavigationActivity mActivity;
     /**
      * Represents an asynchronous question fetch task
      */
@@ -72,32 +89,78 @@ public class LandingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
+        mActivity = (NavigationActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
 
+        activityRootView = view.findViewById(R.id.fragment_landing_container);
+
         mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
+        mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+
         TextView mSwipeTextView = (TextView) view.findViewById(R.id.fragment_landing_swipe_textview);
 
         mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
-        HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
-        HighlightOnPressButton mSignUpButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signup_button);
-        LinearLayout mForgotPasswordButton = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_button);
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
 
-        mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        activityRootView = view.findViewById(R.id.fragment_landing_container);
+        mCreateAccountButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_create_account);
+        mCreateAccountButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (((NavigationActivity) getActivity()).networkIsAvailable()) {
+//                    ((NavigationActivity) getActivity()).startSignUp();
+                } else {
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
+                }
+            }
+        });
 
+        mCurrentUserTextView = (TextView) view.findViewById(R.id.fragment_landing_current_user);
+        mPinLayout = view.findViewById(R.id.fragment_landing_pin_entry_layout);
+
+        mPinEditText = (EditText) view.findViewById(R.id.fragment_landing_pin_edittext);
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() >= 4) {
+                    mActivity.hideSoftKeyboard(mPinEditText);
+                    mPinEditText.clearFocus();
+                }
+            }
+        };
+        mPinEditText.addTextChangedListener(mPINTextWatcher);
+        mPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mActivity.showSoftKeyboard(mPinEditText);
+                }
+            }
+        });
+
+
+        mForgotTextView = (TextView) view.findViewById(R.id.fragment_landing_forgot_text);
+
+        LinearLayout mForgotPasswordButton = (LinearLayout) view.findViewById(R.id.fragment_landing_forgot_password_button);
         mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,33 +168,25 @@ public class LandingFragment extends Fragment {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("",
                             getResources().getString(R.string.fragment_forgot_no_username_title));
                 } else {
-                    attemptForgotPassword();
+                    attemptForgotPasswordOrPin();
                 }
             }
         });
 
+        HighlightOnPressButton mSignInButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_signin_button);
+        mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mPasswordEditText);
                 ((NavigationActivity) getActivity()).hideSoftKeyboard(mUserNameEditText);
-                attemptLogin();
-            }
-        });
-
-        mSignUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (((NavigationActivity) getActivity()).networkIsAvailable()) {
-                    ((NavigationActivity) getActivity()).startSignUp();
-                } else {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
-                }
+                attemptPasswordLogin();
             }
         });
 
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        mUserNameEditText.setText(prefs.getString(AirbitzApplication.LOGIN_NAME, ""));
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        mUserNameEditText.setText(mUsername);
 
         ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
         rightBounce.setRepeatCount(3);
@@ -142,9 +197,32 @@ public class LandingFragment extends Fragment {
         return view;
     }
 
-    private void attemptForgotPassword() {
-        mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
-        mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mCoreAPI.PinLoginExists(mUsername)) {
+            mPasswordLayout.setVisibility(View.GONE);
+            mPinLayout.setVisibility(View.VISIBLE);
+
+            String out = String.format(getString(R.string.fragment_landing_current_user), mUsername);
+            int start = out.indexOf(mUsername);
+
+            SpannableStringBuilder s = new SpannableStringBuilder();
+            s.append(out).setSpan(new ForegroundColorSpan(Color.BLUE), start, mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mCurrentUserTextView.setText(s);
+            mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
+            mForgotTextView.setText(getString(R.string.fragment_landing_forgot_pin));
+        }
+    }
+
+    private void attemptForgotPasswordOrPin() {
+        if(mCoreAPI.PinLoginExists(mUsername)) {
+            //TODO Pin forgot attempt
+        } else {
+            mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
+            mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
+        }
     }
 
     /**
@@ -152,7 +230,7 @@ public class LandingFragment extends Fragment {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    public void attemptPasswordLogin() {
 
         // Reset errors.
         mPasswordEditText.setError(null);

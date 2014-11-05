@@ -37,9 +37,11 @@
             android:textSize="15sp" />
 
             <LinearLayout
+                android:id="@+id/fragment_landing_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <EditText
                     android:id="@+id/fragment_landing_username_edittext"
@@ -93,6 +95,77 @@
             </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/fragment_landing_pin_entry_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6.3dp"
+                style="@style/BlackDropShadow"
+                android:text="@string/fragment_landing_please_enter_pin"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="visible"/>
+
+            <EditText
+                android:id="@+id/fragment_landing_pin_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:hint="@string/fragment_landing_password_hint"
+                android:imeOptions="actionDone"
+                android:inputType="numberPassword"
+                android:selectAllOnFocus="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginBottom="20dp">
+
+                <ImageView
+                    android:id="@+id/fragment_landing_pin_one"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bg_pin_entry"/>
+                <ImageView
+                    android:id="@+id/fragment_landing_pin_two"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bg_pin_entry"/>
+                <ImageView
+                    android:id="@+id/fragment_landing_pin_three"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bg_pin_entry"/>
+                <ImageView
+                    android:id="@+id/fragment_landing_pin_four"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/bg_pin_entry"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/fragment_landing_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,9 +192,22 @@
                 android:src="@drawable/ico_arrow_right" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/fragment_landing_current_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6.3dp"
+            style="@style/BlackDropShadow"
+            android:text="Current User (user)"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+
 
         <com.airbitz.objects.HighlightOnPressButton
-            android:id="@+id/fragment_landing_signup_button"
+            android:id="@+id/fragment_landing_create_account"
             android:layout_width="245.7dp"
             android:layout_height="44.1dp"
             android:layout_gravity="center_horizontal"
@@ -144,6 +230,7 @@
             android:layout_gravity="center_horizontal">
 
             <TextView
+                android:id="@+id/fragment_landing_forgot_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_landing_forgot_text"

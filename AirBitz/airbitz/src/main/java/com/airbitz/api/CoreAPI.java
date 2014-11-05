@@ -2523,6 +2523,39 @@ public class CoreAPI {
         }
     }
 
+    //************** PIN relogin
+
+    public boolean PinLoginExists(String username) {
+//        tABC_CC result;
+//        tABC_Error error = new tABC_Error();
+//
+//        SWIGTYPE_p_long lp = core.new_longp();
+//        SWIGTYPE_p_bool exists = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+//
+//        result = core.ABC_PinLoginExists(username, exists, error);
+//
+//        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+//            return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+//        } else {
+//            Log.d(TAG, "PinLoginExists error:"+error.getSzDescription());
+//            return false;
+//        }
+//
+        return false;
+    }
+
+//    public tABC_CC PinLogin(String username, String pin) {
+//        tABC_Error pError = new tABC_Error();
+//        tABC_RequestResults pResults = new tABC_RequestResults();
+//        tABC_CC result = core.ABC_PinLogin(username, pin);
+//        return result;
+//    }
+//
+//    public void PinSetup(String username, String password) {
+//
+//    }
+
+
     public String getPrivateSeed(Wallet wallet) {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
