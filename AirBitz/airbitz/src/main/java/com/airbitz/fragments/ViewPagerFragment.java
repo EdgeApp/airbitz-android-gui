@@ -31,6 +31,9 @@
 
 package com.airbitz.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -57,6 +60,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.TouchImageViewPagerAdapter;
+import com.airbitz.models.Image;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.widgets.TouchImageView;
 
@@ -72,15 +76,16 @@ public class ViewPagerFragment extends Fragment {
     private HighlightOnPressImageButton mQuitButton;
     private List<TouchImageView> mImageViews = new ArrayList<TouchImageView>();
     private ViewPager mViewPager;
-    private View mViewpagerView;
+    private ImageView mBackground;
     private SeekBar mSeekBar;
     private TextView mCounterView;
     private NavigationActivity mActivity;
-    private Handler mHandler = new Handler();
     private int mPosition;
     private boolean mSeekbarReposition = false;
     private final int SEEKBAR_MAX = 100;
     private float mScale;
+    private int mShortAnimationDuration = 0;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,8 +95,6 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View mView = inflater.inflate(R.layout.fragment_viewpager, container, false);
-
-        mViewpagerView = mView.findViewById(R.id.fragment_viewpager);
 
         mQuitButton = (HighlightOnPressImageButton) mView.findViewById(R.id.viewpager_close_button);
         mQuitButton.setVisibility(View.VISIBLE);
@@ -103,10 +106,7 @@ public class ViewPagerFragment extends Fragment {
         });
 
         mActivity = (NavigationActivity) getActivity();
-        mActivity.showModalProgress(true);
-        mHandler.postDelayed(loadBackground, 100);
 
-        mCounterView = (TextView) mView.findViewById(R.id.viewpager_counter_view);
 
         mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
 
@@ -119,9 +119,8 @@ public class ViewPagerFragment extends Fragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (positionOffsetPixels == 0) {
                     mPosition = position;
-                    mActivity.showModalProgress(true);
                     mSeekBar.setProgress((int) (position * mScale));
-                    mHandler.post(loadBackground);
+                    crossfade(mImageViews.get(mPosition));
                 }
             }
 
@@ -129,6 +128,10 @@ public class ViewPagerFragment extends Fragment {
 
             }
         });
+
+        mBackground = (ImageView) mView.findViewById(R.id.fragment_viewpager_background);
+
+        mCounterView = (TextView) mView.findViewById(R.id.viewpager_counter_view);
 
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
 
@@ -140,7 +143,7 @@ public class ViewPagerFragment extends Fragment {
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                     int nearestValue = Math.round(progress / mScale);
                     if (!mSeekbarReposition) {
-                        mViewPager.setCurrentItem((int) nearestValue, true);
+                        mViewPager.setCurrentItem(nearestValue, true);
                     }
                     int val = (progress * (seekBar.getWidth() - 2 * seekBar.getThumbOffset())) / seekBar.getMax();
                     mCounterView.setText(String.valueOf(nearestValue+1)+"/"+mImageViews.size());
@@ -170,24 +173,54 @@ public class ViewPagerFragment extends Fragment {
         return mView;
     }
 
-    Runnable loadBackground = new Runnable() {
-        @Override
-        public void run() {
-            Drawable drawable = mImageViews.get(mPosition).getDrawable();
-            if (drawable != null) {
-                mActivity.showModalProgress(false);
-                Bitmap bm = drawableToBitmap(drawable);
-                mViewpagerView.setBackground(new BitmapDrawable(getResources(), blur(4, bm)));
-            } else {
-                mHandler.postDelayed(loadBackground, 100);
-            }
+    private void crossfade(final TouchImageView image) {
+        final BitmapDrawable bitmapDrawable;
+
+        Drawable drawable = image.getDrawable();
+        if (drawable == null) {
+            Log.d(TAG, "drawable null");
+            return;
         }
-    };
+
+        Bitmap bm = drawableToBitmap(drawable);
+        bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
+
+            // Animate to 0% opacity first, load new, then animate to 100% opacity
+            mBackground.animate()
+                    .alpha(0f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            fadeIn(bitmapDrawable);
+                        }
+                    });
+    }
+
+    private void fadeIn(BitmapDrawable bitmapDrawable) {
+        mBackground.setBackground(bitmapDrawable);
+        mBackground.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+    }
+
+    public void onAttach(Activity activity) {
+        mHandler.postDelayed(loadBackground, 500);
+        super.onAttach(activity);
+    }
 
     public void setImages(List<TouchImageView> imageViews, int position) {
         mImageViews = imageViews;
         mPosition = position;
     }
+
+    Runnable loadBackground = new Runnable() {
+        @Override
+        public void run() {
+            crossfade(mImageViews.get(mPosition));
+        }
+    };
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
