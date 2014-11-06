@@ -189,6 +189,22 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CheckRecoveryAnswers(szUserName, szRecoveryAnswers, SWIGTYPE_p_bool.getCPtr(pbValid), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_PinLoginExists(String szUserName, SWIGTYPE_p_bool pbExists, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PinLoginExists(szUserName, SWIGTYPE_p_bool.getCPtr(pbExists), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PinLoginDelete(String szUserName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PinLoginDelete(szUserName, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PinLogin(String szUserName, String szPIN, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PinLogin(szUserName, szPIN, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PinSetup(String szUserName, String szPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PinSetup(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_ChangePassword(String szUserName, String szPassword, String szNewPassword, String szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_ChangePassword(szUserName, szPassword, szNewPassword, szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
   }
@@ -199,6 +215,10 @@ public class core implements coreConstants {
 
   public static tABC_CC ABC_SetAccountRecoveryQuestions(String szUserName, String szPassword, String szRecoveryQuestions, String szRecoveryAnswers, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_SetAccountRecoveryQuestions(szUserName, szPassword, szRecoveryQuestions, szRecoveryAnswers, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PasswordOk(String szUserName, String szPassword, SWIGTYPE_p_bool pOk, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PasswordOk(szUserName, szPassword, SWIGTYPE_p_bool.getCPtr(pOk), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_LoadAccountSettings(String szUserName, String szPassword, SWIGTYPE_p_p_sABC_AccountSettings ppSettings, tABC_Error pError) {

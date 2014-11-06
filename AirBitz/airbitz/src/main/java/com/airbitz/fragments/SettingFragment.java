@@ -102,6 +102,7 @@ public class SettingFragment extends Fragment {
     private HighlightOnPressButton mChangeRecoveryButton;
     private Switch mSendNameSwitch;
     private Switch mMerchantModeSwitch;
+    private Switch mPinReloginSwitch;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
@@ -128,7 +129,6 @@ public class SettingFragment extends Fragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
-    private boolean argumentsRead = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -164,8 +164,6 @@ public class SettingFragment extends Fragment {
         mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
         mChangeRecoveryButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_recovery);
 
-        mSendNameSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
-        mMerchantModeSwitch = (Switch) mView.findViewById(R.id.settings_toggle_merchant_mode);
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
@@ -240,6 +238,7 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        mSendNameSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
         mSendNameSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -248,11 +247,20 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        mMerchantModeSwitch = (Switch) mView.findViewById(R.id.settings_toggle_merchant_mode);
         mMerchantModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 saveMerchantModePref(isChecked);
+            }
+        });
+
+        mPinReloginSwitch = (Switch) mView.findViewById(R.id.settings_toggle_pin_login);
+        mPinReloginSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save the state here
             }
         });
 
@@ -364,6 +372,7 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mAutoLogoffManager.setMinutes(settings.getMinutesAutoLogout());
+        mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
 
         // Default Currency
         mCurrencyNum = mCoreSettings.getCurrencyNum();
@@ -435,6 +444,12 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
+        mCoreSettings.setBDisablePINLogin(!mPinReloginSwitch.isChecked());
+        if(mPinReloginSwitch.isChecked()) {
+            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
+        } else {
+            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+        }
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);

@@ -874,14 +874,12 @@ public class NavigationActivity extends Activity
 
     public void UserJustLoggedIn() {
         showNavBar();
+        mCoreAPI.setupAccountSettings();
+        mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            mCoreAPI.setupAccountSettings();
-            mCoreAPI.startAllAsyncUpdates();
             onBitcoinUri(mDataUri);
             mDataUri = null;
         } else {
-            mCoreAPI.setupAccountSettings();
-            mCoreAPI.startAllAsyncUpdates();
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
@@ -919,6 +917,9 @@ public class NavigationActivity extends Activity
     }
 
     public void Logout() {
+        if(AirbitzApplication.getUsername() != null) {
+            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+        }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         DisplayLoginOverlay(false);
@@ -978,6 +979,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
+            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
             AirbitzApplication.Logout();
             mCoreAPI.ClearCacheKeys();
             DisplayLoginOverlay(false);
@@ -1023,9 +1025,7 @@ public class NavigationActivity extends Activity
             tABC_CC result = (tABC_CC) success;
 
             if (result == tABC_CC.ABC_CC_Ok) {
-                AirbitzApplication.Login(mUsername, mPassword);
-                UserJustLoggedIn();
-                setViewPager();
+                LoginNow(mUsername, mPassword);
             } else {
                 ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), Common.errorMap(NavigationActivity.this , result));
             }
@@ -1036,6 +1036,12 @@ public class NavigationActivity extends Activity
             mUserLoginTask = null;
             ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
+    }
+
+    public void LoginNow(String username, char[] password) {
+        AirbitzApplication.Login(username, password);
+        UserJustLoggedIn();
+        setViewPager();
     }
 
     Runnable mProgressDialogKiller = new Runnable() {

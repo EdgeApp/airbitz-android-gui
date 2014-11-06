@@ -66,7 +66,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Login(String uname, char[] password) {
-        if (uname != null && password != null) {
+        if (uname != null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();

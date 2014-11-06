@@ -58,11 +58,19 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.objects.HighlightOnPressButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LandingFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
-    View activityRootView;
+
+    private final int INVALID_ENTRY_COUNT_MAX = 3;
+    private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
+    private static final String INVALID_ENTRY_PREF = "fragment_landing_invalid_entries";
+
     private TextView mDetailTextView;
     private ImageView mRightArrow;
     private EditText mUserNameEditText;
@@ -70,13 +78,17 @@ public class LandingFragment extends Fragment {
     private EditText mPasswordEditText;
     private EditText mPinEditText;
     private View mPinLayout;
+    private List<ImageView> mPinViews = new ArrayList<ImageView>();
     
     private HighlightOnPressButton mCreateAccountButton;
     private TextView mCurrentUserTextView;
     private TextView mForgotTextView;
+    private TextView mLandingSubtextView;
+    private LinearLayout mSwipeLayout;
 
     private String mUsername;
-    private String mPinScratchpad;
+    private boolean mKeyboardUp;
+    private int mInvalidEntryCount;
     
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -90,25 +102,24 @@ public class LandingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
+        mInvalidEntryCount = 0;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
 
-        activityRootView = view.findViewById(R.id.fragment_landing_container);
-
         mDetailTextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
         mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        TextView mSwipeTextView = (TextView) view.findViewById(R.id.fragment_landing_swipe_textview);
+        mSwipeLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
 
         mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
+        mLandingSubtextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
 
-        mSwipeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -119,7 +130,11 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (((NavigationActivity) getActivity()).networkIsAvailable()) {
-//                    ((NavigationActivity) getActivity()).startSignUp();
+                    if(mPinLayout.getVisibility() == View.VISIBLE) {
+                        refreshView(false);
+                    } else {
+                        ((NavigationActivity) getActivity()).startSignUp();
+                    }
                 } else {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
                 }
@@ -128,6 +143,13 @@ public class LandingFragment extends Fragment {
 
         mCurrentUserTextView = (TextView) view.findViewById(R.id.fragment_landing_current_user);
         mPinLayout = view.findViewById(R.id.fragment_landing_pin_entry_layout);
+        mPinLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPinEditText.setText("");
+                mPinEditText.requestFocus();
+            }
+        });
 
         mPinEditText = (EditText) view.findViewById(R.id.fragment_landing_pin_edittext);
         final TextWatcher mPINTextWatcher = new TextWatcher() {
@@ -141,9 +163,13 @@ public class LandingFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // set views based on length
+                setPinViews(mPinEditText.length());
                 if (editable.length() >= 4) {
                     mActivity.hideSoftKeyboard(mPinEditText);
-                    mPinEditText.clearFocus();
+                    mKeyboardUp = false;
+                    refreshView(true);
+                    attemptPinLogin();
                 }
             }
         };
@@ -153,7 +179,12 @@ public class LandingFragment extends Fragment {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mActivity.showSoftKeyboard(mPinEditText);
+                    mKeyboardUp = true;
+                } else {
+                    mActivity.hideSoftKeyboard(mPinEditText);
+                    mKeyboardUp = false;
                 }
+                refreshView(mPinLayout.getVisibility() == View.VISIBLE);
             }
         });
 
@@ -194,36 +225,123 @@ public class LandingFragment extends Fragment {
         rightBounce.setRepeatMode(ValueAnimator.REVERSE);
         rightBounce.start();
 
+        mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_one));
+        mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_two));
+        mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_three));
+        mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_four));
+        setPinViews(0);
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mCoreAPI.PinLoginExists(mUsername)) {
+        Log.d(TAG, "Pin login exists: "+ mCoreAPI.PinLoginExists(mUsername) + ", username: "+mUsername);
+        refreshView(mCoreAPI.PinLoginExists(mUsername));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    private void refreshView(boolean isPinLogin) {
+        if(isPinLogin) {
             mPasswordLayout.setVisibility(View.GONE);
             mPinLayout.setVisibility(View.VISIBLE);
+            mCurrentUserTextView.setVisibility(View.VISIBLE);
 
             String out = String.format(getString(R.string.fragment_landing_current_user), mUsername);
             int start = out.indexOf(mUsername);
 
             SpannableStringBuilder s = new SpannableStringBuilder();
-            s.append(out).setSpan(new ForegroundColorSpan(Color.BLUE), start, mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(out).setSpan(new ForegroundColorSpan(Color.BLUE), start, start+mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+            Log.d(TAG, "username: " + mUsername);
             mCurrentUserTextView.setText(s);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
             mForgotTextView.setText(getString(R.string.fragment_landing_forgot_pin));
+
+            if(mKeyboardUp) {
+                mLandingSubtextView.setVisibility(View.GONE);
+                mSwipeLayout.setVisibility(View.GONE);
+                mCurrentUserTextView.setVisibility(View.GONE);
+            } else {
+                mLandingSubtextView.setVisibility(View.VISIBLE);
+                mSwipeLayout.setVisibility(View.VISIBLE);
+                mCurrentUserTextView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            mPasswordLayout.setVisibility(View.VISIBLE);
+            mPinLayout.setVisibility(View.GONE);
+            mCurrentUserTextView.setVisibility(View.GONE);
+            mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));
+            mForgotTextView.setText(getString(R.string.fragment_landing_forgot_password));
+            mLandingSubtextView.setVisibility(View.VISIBLE);
+            mSwipeLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setPinViews(int length) {
+        for(int i=0; i<mPinViews.size(); i++) {
+            if(i >= length) {
+                mPinViews.get(i).setBackground(getResources().getDrawable(R.drawable.bg_pin_entry));
+            } else {
+                mPinViews.get(i).setBackground(getResources().getDrawable(R.drawable.bg_pin_entry_with_dot));
+            }
         }
     }
 
     private void attemptForgotPasswordOrPin() {
-        if(mCoreAPI.PinLoginExists(mUsername)) {
+        if(mPinLayout.getVisibility() == View.VISIBLE) {
             //TODO Pin forgot attempt
         } else {
             mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
             mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
         }
     }
+
+    /**
+     * Attempts PIN based login
+     */
+    public void attemptPinLogin() {
+        mInvalidEntryCount += 1;
+        saveInvalidEntryCount(mInvalidEntryCount);
+        tABC_CC result = mCoreAPI.PinLogin(mUsername, mPinEditText.getText().toString());
+        if(result == tABC_CC.ABC_CC_Ok) {
+            mActivity.LoginNow(mUsername, null);
+        }
+        else if(result == tABC_CC.ABC_CC_BadPassword) {
+            if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX)
+            {
+                saveInvalidEntryCount(0);
+                abortPermanently();
+            }
+        }
+        else if(result == tABC_CC.ABC_CC_PinExpired) {
+            abortPermanently();
+        }
+
+        mPinEditText.setText("");
+    }
+
+    private void abortPermanently() {
+        mCoreAPI.PINLoginDelete(mUsername);
+        refreshView(false); // reset to password view
+    }
+
+    private void saveInvalidEntryCount(int entries) {
+        SharedPreferences.Editor editor = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(INVALID_ENTRY_PREF, entries);
+        editor.apply();
+    }
+
+    static public int getInvalidEntryCount() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(INVALID_ENTRY_PREF, 0); // default to Automatic
+    }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.

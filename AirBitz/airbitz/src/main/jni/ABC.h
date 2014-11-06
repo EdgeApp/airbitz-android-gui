@@ -153,7 +153,9 @@ extern "C" {
         /** Problem with the PIN */
         ABC_CC_NonNumericPin = 34,
         /** Unable to find an address */
-        ABC_CC_NoAvailableAddress = 35
+        ABC_CC_NoAvailableAddress = 35,
+        /** Login PIN has expired */
+        ABC_CC_PinExpired = 36
     } tABC_CC;
 
     /**
@@ -589,6 +591,8 @@ extern "C" {
         bool                        bSpendRequirePin;
         /** daily spend limit */
         int64_t                     spendRequirePinSatoshis;
+        /** should PIN re-login be disabled */
+        bool                        bDisablePINLogin;
     } tABC_AccountSettings;
 
     /**
@@ -694,6 +698,21 @@ extern "C" {
                                      bool *pbValid,
                                      tABC_Error *pError);
 
+    tABC_CC ABC_PinLoginExists(const char *szUserName,
+                               bool *pbExists,
+                               tABC_Error *pError);
+
+    tABC_CC ABC_PinLoginDelete(const char *szUserName,
+                               tABC_Error *pError);
+
+    tABC_CC ABC_PinLogin(const char *szUserName,
+                         const char *szPIN,
+                         tABC_Error *pError);
+
+    tABC_CC ABC_PinSetup(const char *szUserName,
+                         const char *szPassword,
+                         tABC_Error *pError);
+
     /* === Login data: === */
     tABC_CC ABC_ChangePassword(const char *szUserName,
                                const char *szPassword,
@@ -718,6 +737,11 @@ extern "C" {
                                             tABC_Request_Callback fRequestCallback,
                                             void *pData,
                                             tABC_Error *pError);
+
+    tABC_CC ABC_PasswordOk(const char *szUserName,
+                           const char *szPassword,
+                           bool *pOk,
+                           tABC_Error *pError);
 
     tABC_CC ABC_LoadAccountSettings(const char *szUserName,
                                     const char *szPassword,

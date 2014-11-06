@@ -87,7 +87,7 @@
     <string name="fragment_landing_password_hint">Password</string>
     <string name="fragment_landing_signin_button">Log In</string>
     <string name="fragment_landing_signup_button">Create Account</string>
-    <string name="fragment_landing_forgot_text">Forgot Password</string>
+    <string name="fragment_landing_forgot_password">Forgot Password</string>
     <string name="fragment_landing_please_enter_pin">Please Input Your 4 Digit Pin</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Switch User</string>
@@ -189,6 +189,7 @@
     <string name="settings_edit_nick_name">Nickname (optional)</string>
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
+    <string name="settings_title_pin_login">Pin Re-login</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>

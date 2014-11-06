@@ -173,6 +173,14 @@ public class tABC_AccountSettings {
     return new SWIGTYPE_p_int64_t(coreJNI.tABC_AccountSettings_spendRequirePinSatoshis_get(swigCPtr, this), true);
   }
 
+  public void setBDisablePINLogin(boolean value) {
+    coreJNI.tABC_AccountSettings_bDisablePINLogin_set(swigCPtr, this, value);
+  }
+
+  public boolean getBDisablePINLogin() {
+    return coreJNI.tABC_AccountSettings_bDisablePINLogin_get(swigCPtr, this);
+  }
+
   public tABC_AccountSettings() {
     this(coreJNI.new_tABC_AccountSettings(), true);
   }

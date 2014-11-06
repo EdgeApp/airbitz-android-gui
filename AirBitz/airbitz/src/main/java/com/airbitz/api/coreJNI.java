@@ -78,6 +78,7 @@ public class coreJNI {
   public final static native int ABC_CC_Synchronizing_get();
   public final static native int ABC_CC_NonNumericPin_get();
   public final static native int ABC_CC_NoAvailableAddress_get();
+  public final static native int ABC_CC_PinExpired_get();
   public final static native int ABC_RequestType_AccountSignIn_get();
   public final static native int ABC_RequestType_CreateAccount_get();
   public final static native int ABC_RequestType_SetAccountRecoveryQuestions_get();
@@ -318,6 +319,8 @@ public class coreJNI {
   public final static native boolean tABC_AccountSettings_bSpendRequirePin_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_spendRequirePinSatoshis_set(long jarg1, tABC_AccountSettings jarg1_, long jarg2);
   public final static native long tABC_AccountSettings_spendRequirePinSatoshis_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_bDisablePINLogin_set(long jarg1, tABC_AccountSettings jarg1_, boolean jarg2);
+  public final static native boolean tABC_AccountSettings_bDisablePINLogin_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long new_tABC_AccountSettings();
   public final static native void delete_tABC_AccountSettings(long jarg1);
   public final static native int ABC_Initialize(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
@@ -341,9 +344,14 @@ public class coreJNI {
   public final static native int ABC_CreateAccount(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetRecoveryQuestions(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_CheckRecoveryAnswers(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_PinLoginExists(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_PinLoginDelete(String jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_PinLogin(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_PinSetup(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_PasswordOk(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);

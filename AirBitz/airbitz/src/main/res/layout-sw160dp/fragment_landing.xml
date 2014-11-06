@@ -98,6 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:clickable="true"
             android:visibility="visible">
 
             <TextView
@@ -231,7 +232,7 @@
                 android:id="@+id/fragment_landing_forgot_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fragment_landing_forgot_text"
+                android:text="@string/fragment_landing_forgot_password"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="16dp"
                 android:textColor="@android:color/white"

@@ -170,7 +170,7 @@
   <string name="fragment_landing_signup_button">
     Nueva Cuenta
   </string>
-  <string name="fragment_landing_forgot_text">
+  <string name="fragment_landing_forgot_password">
     Olvidé mi contraseña
   </string>
   <string name="fragment_forgot_no_username_title">
