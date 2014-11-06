@@ -35,6 +35,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -74,6 +75,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
+    private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
     private final String SATOSHIS = "satoshisToSave";
 
@@ -573,7 +575,6 @@ public class SendConfirmationFragment extends Fragment {
     }
 
     private void attemptInitiateSend() {
-
         float remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
         // check if invalid entry timeout still active
         if(mInvalidEntryStartMillis > 0) {
@@ -599,6 +600,7 @@ public class SendConfirmationFragment extends Fragment {
         String userPIN = mCoreAPI.GetUserPIN();
          if (mPinRequired && enteredPIN != null && userPIN != null && !userPIN.equals(enteredPIN)) {
              mInvalidEntryCount += 1;
+             saveInvalidEntryCount(mInvalidEntryCount);
              if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
                  if(mInvalidEntryStartMillis == 0) {
                      mInvalidEntryStartMillis = System.currentTimeMillis();
@@ -614,6 +616,7 @@ public class SendConfirmationFragment extends Fragment {
              resetSlider();
         } else if (mPasswordRequired && !mAuthorizationEdittext.equals(AirbitzApplication.getPassword())) {
              mInvalidEntryCount += 1;
+             saveInvalidEntryCount(mInvalidEntryCount);
              if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
                  if(mInvalidEntryStartMillis == 0) {
                      mInvalidEntryStartMillis = System.currentTimeMillis();
@@ -753,7 +756,7 @@ public class SendConfirmationFragment extends Fragment {
         mMaxLocked = false;
         checkAuthorization();
 
-        mInvalidEntryCount = 0;
+        mInvalidEntryCount = getInvalidEntryCount();
 
         super.onResume();
     }
@@ -767,6 +770,19 @@ public class SendConfirmationFragment extends Fragment {
         if (mMaxAmountTask != null)
             mMaxAmountTask.cancel(true);
     }
+
+    private void saveInvalidEntryCount(int entries) {
+        SharedPreferences.Editor editor = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(INVALID_ENTRY_PREF, entries);
+        editor.apply();
+    }
+
+    static public int getInvalidEntryCount() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(INVALID_ENTRY_PREF, 0); // default to Automatic
+    }
+
+
 
     public class MaxAmountTask extends AsyncTask<Void, Void, Long> {
 
@@ -881,8 +897,10 @@ public class SendConfirmationFragment extends Fragment {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
                 }
             } else {
-                if (mActivity != null)
+                if (mActivity != null) {
+                    saveInvalidEntryCount(0);
                     mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
+                }
             }
         }
 
