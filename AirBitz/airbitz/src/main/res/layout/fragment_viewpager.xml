@@ -20,36 +20,37 @@
         android:layout_margin="10dp"
         android:background="@drawable/btn_x_rnd" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/viewpager_seekbar_end"
-        android:layout_marginLeft="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/viewpager_seekbar_end"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp"/>
-
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:id="@+id/viewpager_seekBar"
-        android:progressDrawable="@android:color/transparent"
-        android:thumb="@drawable/viewpager_seekbar_thumb"
-        android:thumbOffset="0dp"
+        android:progressDrawable="@drawable/rounded_edge_off_white_bg"
+        android:thumb="@drawable/scrubber_circle"
+        android:minHeight="1000dp"
+        android:maxHeight="10dp"
+        android:thumbOffset="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:max="99"
-        android:progress="99"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
+        android:progress="0"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:background="@android:color/transparent"
         android:layout_centerHorizontal="true" />
-    
+
+    <TextView
+        android:id="@+id/viewpager_counter_view"
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:paddingTop="13dp"
+        android:textColor="@android:color/white"
+        android:layout_above="@id/viewpager_seekBar"
+        android:layout_marginBottom="-6dp"
+        android:text="00/00"
+        android:background="@drawable/scrubber_count"/>
+
 </RelativeLayout>

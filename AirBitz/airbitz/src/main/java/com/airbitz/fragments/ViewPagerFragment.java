@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -73,6 +74,7 @@ public class ViewPagerFragment extends Fragment {
     private ViewPager mViewPager;
     private View mViewpagerView;
     private SeekBar mSeekBar;
+    private TextView mCounterView;
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
     private int mPosition;
@@ -104,6 +106,7 @@ public class ViewPagerFragment extends Fragment {
         mActivity.showModalProgress(true);
         mHandler.postDelayed(loadBackground, 100);
 
+        mCounterView = (TextView) mView.findViewById(R.id.viewpager_counter_view);
 
         mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
 
@@ -128,16 +131,20 @@ public class ViewPagerFragment extends Fragment {
         });
 
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
+
         if(mImageViews.size()>1) {
             mSeekBar.setMax(SEEKBAR_MAX);
             mSeekBar.setProgress(mPosition);
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                    int nearestValue = Math.round(progress / mScale);
                     if (!mSeekbarReposition) {
-                        float nearestValue = Math.round(i / mScale);
                         mViewPager.setCurrentItem((int) nearestValue, true);
                     }
+                    int val = (progress * (seekBar.getWidth() - 2 * seekBar.getThumbOffset())) / seekBar.getMax();
+                    mCounterView.setText(String.valueOf(nearestValue+1)+"/"+mImageViews.size());
+                    mCounterView.setX(seekBar.getX() + val + (seekBar.getThumbOffset()) - (mCounterView.getWidth() / 2));
                 }
 
                 @Override
@@ -156,6 +163,9 @@ public class ViewPagerFragment extends Fragment {
         } else {
             mSeekBar.setVisibility(View.INVISIBLE);
         }
+
+        mCounterView.setX(mSeekBar.getX() - (mCounterView.getWidth() / 2));
+        mCounterView.setText("1/"+mImageViews.size());
 
         return mView;
     }
