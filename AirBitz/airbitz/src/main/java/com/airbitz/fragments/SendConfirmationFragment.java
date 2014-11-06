@@ -614,7 +614,7 @@ public class SendConfirmationFragment extends Fragment {
              }
              mAuthorizationEdittext.requestFocus();
              resetSlider();
-        } else if (mPasswordRequired && !mAuthorizationEdittext.equals(AirbitzApplication.getPassword())) {
+        } else if (mPasswordRequired && !mAuthorizationEdittext.getText().toString().equals(AirbitzApplication.getPassword())) {
              mInvalidEntryCount += 1;
              saveInvalidEntryCount(mInvalidEntryCount);
              if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
