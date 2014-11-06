@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="-20dp"
-            android:layout_marginRight="-20dp"
+            android:layout_marginRight="-21dp"
             android:background="@drawable/tab_popup_middle"
             android:layout_weight="1"
             android:visibility="invisible">
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="-20dp"
-            android:layout_marginRight="-20dp"
+            android:layout_marginRight="-21dp"
             android:background="@drawable/tab_popup_middle"
             android:layout_weight="1"
             android:visibility="invisible">
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="-20dp"
-            android:layout_marginRight="-20dp"
+            android:layout_marginRight="-21dp"
             android:background="@drawable/tab_popup_middle"
             android:layout_weight="1"
             android:visibility="invisible">
@@ -201,9 +201,9 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@drawable/tab_divider"/>
+            android:background="@android:color/darker_gray" />
 
         <RelativeLayout
             android:id="@+id/request_button"
@@ -236,9 +236,9 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@drawable/tab_divider"/>
+            android:background="@android:color/darker_gray" />
 
         <RelativeLayout
             android:id="@+id/send_button"
@@ -270,9 +270,9 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@drawable/tab_divider"/>
+            android:background="@android:color/darker_gray" />
 
         <RelativeLayout
             android:id="@+id/wallet_button"
@@ -304,9 +304,9 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@drawable/tab_divider"/>
+            android:background="@android:color/darker_gray" />
 
         <RelativeLayout
             android:id="@+id/setting_button"
