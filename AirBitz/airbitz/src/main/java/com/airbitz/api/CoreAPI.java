@@ -2438,7 +2438,7 @@ public class CoreAPI {
         Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         tABC_CC cc = core.ABC_ChangePassword(
                         AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(),
+                        password,
                         password, oldPIN, null, null, Error);
         return cc;
     }
@@ -2568,7 +2568,7 @@ public class CoreAPI {
         if(result.equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
-            Log.d(TAG, "PinLoginExists error:"+pError.getSzDescription());
+            Log.d(TAG, "Password OK error:"+pError.getSzDescription());
             return false;
         }
     }

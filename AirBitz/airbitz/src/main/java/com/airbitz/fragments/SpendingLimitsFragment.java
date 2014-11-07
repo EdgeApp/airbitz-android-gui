@@ -211,7 +211,7 @@ public class SpendingLimitsFragment extends Fragment {
 
 
     private void goSave() {
-        if(mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
             if(mDailySwitch.isChecked()) {
                 mCoreAPI.SetDailySpendLimitSetting(true);
                 mCoreAPI.SetDailySpendSatoshis(mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString()));

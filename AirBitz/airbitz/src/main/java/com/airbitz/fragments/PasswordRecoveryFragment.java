@@ -219,7 +219,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         String questions = "";
         mAnswers = "";
 
-        if (mMode == CHANGE_QUESTIONS && !mPasswordEditText.getText().toString().equals(AirbitzApplication.getPassword())) {
+        if (mMode == CHANGE_QUESTIONS && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
             ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }

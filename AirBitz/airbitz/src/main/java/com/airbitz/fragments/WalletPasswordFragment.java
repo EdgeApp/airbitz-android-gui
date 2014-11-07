@@ -46,20 +46,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
 
 /**
  * Created on 2/24/14.
  */
 public class WalletPasswordFragment extends Fragment {
 
-    private EditText mPasswordEdittext;
+    private EditText mPasswordEditText;
     private ImageView mValidPasswordImageView;
 
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private View mView;
+    private CoreAPI mCoreAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class WalletPasswordFragment extends Fragment {
         if (null != parentViewGroup) {
             parentViewGroup.removeView(mView);
         }
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -83,7 +87,7 @@ public class WalletPasswordFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mPasswordEdittext = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
+        mPasswordEditText = (EditText) mView.findViewById(R.id.wallet_password_edittext_password);
         mValidPasswordImageView = (ImageView) mView.findViewById(R.id.imageview_valid_password);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
@@ -93,7 +97,7 @@ public class WalletPasswordFragment extends Fragment {
         TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
         titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
 
-        mPasswordEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
 
@@ -107,7 +111,7 @@ public class WalletPasswordFragment extends Fragment {
             }
         });
 
-        mPasswordEdittext.setOnKeyListener(new View.OnKeyListener() {
+        mPasswordEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 int keyAction = keyEvent.getAction();
@@ -119,20 +123,20 @@ public class WalletPasswordFragment extends Fragment {
                 if (keyAction == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.FLAG_EDITOR_ACTION:
-                            imm.hideSoftInputFromWindow(mPasswordEdittext.getWindowToken(), 0);
+                            imm.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
                             mValidPasswordImageView.setVisibility(View.VISIBLE);
 
-                            if (mPasswordEdittext.getText().toString().equals("Password")) {
+                            if (mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_approved);
                             } else {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_not_approved);
                             }
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
-                            imm.hideSoftInputFromWindow(mPasswordEdittext.getWindowToken(), 0);
+                            imm.hideSoftInputFromWindow(mPasswordEditText.getWindowToken(), 0);
                             mValidPasswordImageView.setVisibility(View.VISIBLE);
 
-                            if (mPasswordEdittext.getText().toString().equals("Password")) {
+                            if (mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
                                 mValidPasswordImageView.setImageResource(R.drawable.ico_approved);
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {

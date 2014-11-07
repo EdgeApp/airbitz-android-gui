@@ -392,7 +392,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         } else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
             // if the mPassword is wrong
-            if (!AirbitzApplication.getPassword().equals(mUserNameEditText.getText().toString())) {
+            if (!mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mUserNameEditText.getText().toString())) {
                 bUserNameFieldIsValid = false;
                 if (mMode == CHANGE_PIN) {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_change_pin_failed), getResources().getString(R.string.activity_signup_incorrect_password));

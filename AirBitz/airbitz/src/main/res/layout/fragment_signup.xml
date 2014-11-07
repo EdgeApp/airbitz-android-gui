@@ -58,6 +58,7 @@
                     android:layout_height="37.8dp"
                     android:layout_marginBottom="12.6dp"
                     android:layout_marginTop="25.2dp"
+                    android:imeOptions="actionNext"
                     android:background="@drawable/edit_text_red_ring"
                     android:focusable="false"
                     android:visibility="invisible" />
