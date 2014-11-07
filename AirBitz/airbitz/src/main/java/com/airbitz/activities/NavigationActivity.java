@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms are permitted provided that 
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer. 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -12,7 +12,7 @@
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Airbitz Project.
@@ -295,31 +295,30 @@ public class NavigationActivity extends Activity
             mViewPager.setVisibility(View.GONE);
         }
 
-        if (mOverlayFragments.size() == 0) {
-            mOverlayFragments.add(new TransparentFragment());
-            mOverlayFragments.add(new LandingFragment());
+        mOverlayFragments.add(new TransparentFragment());
+        mOverlayFragments.add(new LandingFragment());
 
-            NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
-            mViewPager.setAdapter(pageAdapter);
-            mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                public void onPageScrollStateChanged(int state) { }
+        NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
+        mViewPager.setAdapter(pageAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
 
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    // Disappear if transparent page shows
-                    if ((position == 0) && positionOffsetPixels == 0) {
-                        hideSoftKeyboard(mNavBarFragmentLayout);
-                        mViewPager.setVisibility(View.GONE);
-                    }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Disappear if transparent page shows
+                if ((position == 0) && positionOffsetPixels == 0) {
+                    hideSoftKeyboard(mNavBarFragmentLayout);
+                    mViewPager.setVisibility(View.GONE);
                 }
+            }
 
-                public void onPageSelected(int position) {
-                    // Disappear if transparent page shows
-                    if (position == 0) {
-                        hideSoftKeyboard(mNavBarFragmentLayout);
-                    }
+            public void onPageSelected(int position) {
+                // Disappear if transparent page shows
+                if (position == 0) {
+                    hideSoftKeyboard(mNavBarFragmentLayout);
                 }
-            });
-        }
+            }
+        });
     }
 
     private void setTypeFaces() {
@@ -342,6 +341,7 @@ public class NavigationActivity extends Activity
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
+                setViewPager();
                 AirbitzApplication.setLastNavTab(position);
                 mNavBarFragment.unselectTab(position);
                 mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
@@ -554,7 +554,7 @@ public class NavigationActivity extends Activity
     public void onBackPressed() {
         if (mViewPager.getVisibility() == View.VISIBLE) {
             View v = findViewById(R.id.modal_indefinite_progress);
-            if(v.getVisibility() != View.VISIBLE) {
+            if (v.getVisibility() != View.VISIBLE) {
                 DisplayLoginOverlay(false, true);
             }
             return;
@@ -912,7 +912,7 @@ public class NavigationActivity extends Activity
     }
 
     public void Logout() {
-        if(AirbitzApplication.getUsername() != null) {
+        if (AirbitzApplication.getUsername() != null) {
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
         AirbitzApplication.Logout();
