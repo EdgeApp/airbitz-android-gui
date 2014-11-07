@@ -246,6 +246,8 @@ public class NavigationActivity extends Activity
         });
 
         // Setup top screen - the Landing - that swipes away if no login
+        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
+        mViewPager.setVisibility(View.GONE);
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
@@ -290,11 +292,7 @@ public class NavigationActivity extends Activity
     }
 
     private void setViewPager() {
-        if (mViewPager == null) {
-            mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
-            mViewPager.setVisibility(View.GONE);
-        }
-
+        mOverlayFragments.clear();
         mOverlayFragments.add(new TransparentFragment());
         mOverlayFragments.add(new LandingFragment());
 
@@ -341,7 +339,6 @@ public class NavigationActivity extends Activity
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
-                setViewPager();
                 AirbitzApplication.setLastNavTab(position);
                 mNavBarFragment.unselectTab(position);
                 mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab

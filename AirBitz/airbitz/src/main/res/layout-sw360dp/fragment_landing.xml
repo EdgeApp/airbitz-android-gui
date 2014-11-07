@@ -206,7 +206,6 @@
                 android:layout_gravity="center_horizontal"
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"
-                android:selectAllOnFocus="true"
                 android:background="@android:color/transparent"
                 android:textColor="@android:color/transparent"
                 android:visibility="visible"/>

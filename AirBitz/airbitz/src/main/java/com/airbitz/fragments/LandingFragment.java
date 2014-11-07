@@ -79,7 +79,7 @@ public class LandingFragment extends Fragment {
     private EditText mPasswordEditText;
     private EditText mPinEditText;
     private View mPinLayout;
-    private List<ImageView> mPinViews = new ArrayList<ImageView>();
+    private List<ImageView> mPinViews;
     
     private HighlightOnPressButton mCreateAccountButton;
     private TextView mCurrentUserTextView;
@@ -89,8 +89,6 @@ public class LandingFragment extends Fragment {
     private LinearLayout mForgotPasswordButton;
 
     private String mUsername;
-    private boolean mKeyboardUp;
-    private int mInvalidEntryCount;
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
     
@@ -106,8 +104,7 @@ public class LandingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
-        mInvalidEntryCount = 0;
-        saveInvalidEntryCount(mInvalidEntryCount);
+        saveInvalidEntryCount(0);
     }
 
     @Override
@@ -136,7 +133,7 @@ public class LandingFragment extends Fragment {
             public void onClick(View view) {
                 if (((NavigationActivity) getActivity()).networkIsAvailable()) {
                     if(mPinLayout.getVisibility() == View.VISIBLE) {
-                        refreshView(false);
+                        refreshView(false, false);
                     } else {
                         ((NavigationActivity) getActivity()).startSignUp();
                     }
@@ -163,35 +160,21 @@ public class LandingFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 // set views based on length
                 setPinViews(mPinEditText.length());
-                if (editable.length() >= 4) {
+                if (mPinEditText.length() >= 4) {
                     mActivity.hideSoftKeyboard(mPinEditText);
-                    mKeyboardUp = false;
-                    refreshView(true);
+                    refreshView(true, false);
                     attemptPinLogin();
                 }
             }
         };
         mPinEditText.addTextChangedListener(mPINTextWatcher);
-        mPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "textview focus: "+hasFocus);
-                if (hasFocus) {
-                    mActivity.showSoftKeyboard(mPinEditText);
-                    mKeyboardUp = true;
-                } else {
-                    mActivity.hideSoftKeyboard(mPinEditText);
-                    mKeyboardUp = false;
-                }
-                refreshView(mPinLayout.getVisibility() == View.VISIBLE);
-            }
-        });
         mPinEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "pin edit clicked");
                 mPinEditText.setText("");
                 mPinEditText.requestFocus();
+                mActivity.showSoftKeyboard(mPinEditText);
+                refreshView(mPinLayout.getVisibility() == View.VISIBLE, true);
             }
         });
 
@@ -215,8 +198,8 @@ public class LandingFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).hideSoftKeyboard(mPasswordEditText);
-                ((NavigationActivity) getActivity()).hideSoftKeyboard(mUserNameEditText);
+                mActivity.hideSoftKeyboard(mPasswordEditText);
+                mActivity.hideSoftKeyboard(mUserNameEditText);
                 attemptPasswordLogin();
             }
         });
@@ -231,6 +214,7 @@ public class LandingFragment extends Fragment {
         rightBounce.setRepeatMode(ValueAnimator.REVERSE);
         rightBounce.start();
 
+        mPinViews = new ArrayList<ImageView>();
         mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_one));
         mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_two));
         mPinViews.add((ImageView) view.findViewById(R.id.fragment_landing_pin_three));
@@ -243,16 +227,22 @@ public class LandingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        refreshView(mCoreAPI.PinLoginExists(mUsername));
+        mPinEditText.setText("");
+        refreshView(mCoreAPI.PinLoginExists(mUsername), true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        mActivity.hideSoftKeyboard(mPinEditText);
+        mActivity.hideSoftKeyboard(mPasswordEditText);
+        mActivity.hideSoftKeyboard(mUserNameEditText);
     }
 
-    private void refreshView(boolean isPinLogin) {
+    private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
         if(isPinLogin) {
+            Log.d(TAG, "resetView to Pin login");
             mPasswordLayout.setVisibility(View.GONE);
             mPinLayout.setVisibility(View.VISIBLE);
             mForgotPasswordButton.setVisibility(View.GONE);
@@ -261,12 +251,12 @@ public class LandingFragment extends Fragment {
             int start = out.indexOf(mUsername);
 
             SpannableStringBuilder s = new SpannableStringBuilder();
-            s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue_highlight)), start, start+mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue_highlight)), start, start + mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             mCurrentUserTextView.setText(s);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
 
-            if(mKeyboardUp) {
+            if(isKeyboardUp) {
                 mLandingSubtextView.setVisibility(View.GONE);
                 mSwipeLayout.setVisibility(View.GONE);
             } else {
@@ -276,6 +266,7 @@ public class LandingFragment extends Fragment {
             mPinEditText.requestFocus();
             mActivity.showSoftKeyboard(mPinEditText);
         } else {
+            Log.d(TAG, "resetView to Password login");
             mPasswordLayout.setVisibility(View.VISIBLE);
             mPinLayout.setVisibility(View.GONE);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));
@@ -297,21 +288,14 @@ public class LandingFragment extends Fragment {
     }
 
     private void attemptForgotPassword() {
-        if(mPinLayout.getVisibility() == View.VISIBLE) {
-            //TODO Pin forgot attempt
-        } else {
-            mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
-            mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
-        }
+        mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
+        mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
     }
 
     /**
      * Attempts PIN based login
      */
     public void attemptPinLogin() {
-        mInvalidEntryCount += 1;
-        saveInvalidEntryCount(mInvalidEntryCount);
-
         mPINLoginTask = new PINLoginTask();
         mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
     }
@@ -322,6 +306,7 @@ public class LandingFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            saveInvalidEntryCount(getInvalidEntryCount()+1);
             mActivity.hideSoftKeyboard(mPinEditText);
             mActivity.showModalProgress(true);
         }
@@ -346,21 +331,23 @@ public class LandingFragment extends Fragment {
                 return;
             }
             else if(result == tABC_CC.ABC_CC_BadPassword) {
-                Log.d(TAG, "bad pin: ");
-                if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX)
-                {
+                Log.d(TAG, "bad pin. Invalid count: "+getInvalidEntryCount());
+                if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
                     saveInvalidEntryCount(0);
                     abortPermanently();
+                    return;
+                }
+                else {
+                    mPinEditText.setText("");
+                    mActivity.showSoftKeyboard(mPinEditText);
+                    refreshView(true, true);
                 }
             }
             else if(result == tABC_CC.ABC_CC_PinExpired) {
                 Log.d(TAG, "pin expired");
                 abortPermanently();
+                return;
             }
-            mPinEditText.setText("");
-            mActivity.showSoftKeyboard(mPinEditText);
-            mKeyboardUp = true;
-            refreshView(true);
         }
 
         @Override
@@ -408,7 +395,7 @@ public class LandingFragment extends Fragment {
 
     private void abortPermanently() {
         mCoreAPI.PINLoginDelete(mUsername);
-        refreshView(false); // reset to password view
+        refreshView(false, false); // reset to password view
     }
 
     private void saveInvalidEntryCount(int entries) {
