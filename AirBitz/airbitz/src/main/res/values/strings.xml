@@ -88,7 +88,7 @@
     <string name="fragment_landing_signin_button">Log In</string>
     <string name="fragment_landing_signup_button">Create Account</string>
     <string name="fragment_landing_forgot_password">Forgot Password</string>
-    <string name="fragment_landing_please_enter_pin">Please Input Your 4 Digit Pin</string>
+    <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Switch User</string>
     <string name="fragment_landing_forgot_pin">Forgot Pin</string>

@@ -56,7 +56,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -196,11 +195,6 @@ public class NavigationActivity extends Activity
             }
         }
     };
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    private UserLoginTask mUserLoginTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -559,7 +553,8 @@ public class NavigationActivity extends Activity
     @Override
     public void onBackPressed() {
         if (mViewPager.getVisibility() == View.VISIBLE) {
-            if (mUserLoginTask == null) {
+            View v = findViewById(R.id.modal_indefinite_progress);
+            if(v.getVisibility() != View.VISIBLE) {
                 DisplayLoginOverlay(false, true);
             }
             return;
@@ -926,11 +921,6 @@ public class NavigationActivity extends Activity
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
-    public void attemptLogin(String username, char[] password) {
-        mUserLoginTask = new UserLoginTask();
-        mUserLoginTask.execute(username, password);
-    }
-
     private Fragment getNewBaseFragement(int id) {
         switch (id) {
             case 0:
@@ -1000,42 +990,6 @@ public class NavigationActivity extends Activity
 
     public interface OnWalletUpdated {
         public void onWalletUpdated();
-    }
-
-    public class UserLoginTask extends AsyncTask {
-        String mUsername;
-        char[] mPassword;
-
-        @Override
-        protected void onPreExecute() {
-            showModalProgress(true);
-        }
-
-        @Override
-        protected tABC_CC doInBackground(Object... params) {
-            mUsername = (String) params[0];
-            mPassword = (char[]) params[1];
-            return mCoreAPI.SignIn(mUsername, mPassword);
-        }
-
-        @Override
-        protected void onPostExecute(final Object success) {
-            showModalProgress(false);
-            mUserLoginTask = null;
-            tABC_CC result = (tABC_CC) success;
-
-            if (result == tABC_CC.ABC_CC_Ok) {
-                LoginNow(mUsername, mPassword);
-            } else {
-                ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), Common.errorMap(NavigationActivity.this , result));
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mUserLoginTask = null;
-            ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
-        }
     }
 
     public void LoginNow(String username, char[] password) {
