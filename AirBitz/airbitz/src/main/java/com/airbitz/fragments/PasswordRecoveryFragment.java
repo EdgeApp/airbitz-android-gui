@@ -203,12 +203,45 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
     @Override
     public boolean onBackPress() {
-        ((NavigationActivity) getActivity()).hideSoftKeyboard(getView());
-        if (mMode == CHANGE_QUESTIONS) {
-            ((NavigationActivity) getActivity()).popFragment();
-        } else if (mMode == FORGOT_PASSWORD) {
-            ((NavigationActivity) getActivity()).Logout();
+        boolean dirty = false;
+        for (View view : mQuestionViews) {
+            QuestionView qaView = (QuestionView) view;
+            if (!qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default)) ||
+                    !qaView.getText().isEmpty()) {
+                dirty = true;
+                break;
+            }
         }
+
+        if (dirty) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            builder.setMessage(getString(R.string.activity_recovery_warning_dirty_message))
+                    .setTitle(getString(R.string.activity_recovery_warning_dirty_title))
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.string_yes),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    ((NavigationActivity) getActivity()).hideSoftKeyboard(getView());
+                                    if (mMode == CHANGE_QUESTIONS) {
+                                        ((NavigationActivity) getActivity()).popFragment();
+                                    } else if (mMode == FORGOT_PASSWORD) {
+                                        ((NavigationActivity) getActivity()).Logout();
+                                    }
+                                }
+                            }
+                    )
+                    .setNegativeButton(getString(R.string.string_no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            }
+                    );
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
         return true;
     }
 

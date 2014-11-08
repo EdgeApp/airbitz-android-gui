@@ -165,6 +165,8 @@
 
     <string name="activity_recovery_error_wrong_answers_title">Wrong Answers</string>
     <string name="activity_recovery_error_wrong_answers_message">The given answers were incorrect. Please try again</string>
+    <string name="activity_recovery_warning_dirty_title">Wrong Answers</string>
+    <string name="activity_recovery_warning_dirty_message">Warning: You are about to exit password recovery and questions &amp; answers have not yet been set.</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
