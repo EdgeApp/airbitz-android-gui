@@ -439,9 +439,15 @@ public class CoreAPI {
     }
 
     //************ Settings handling
-    private String[] mFauxCurrencyAcronyms = {"CAD", "CNY", "CUP", "EUR", "GBP", "MXN", "USD"};
-    private String[] mFauxCurrencyDenomination = {"$", "¥", "₱", "€", "£", "$", "$"};
-    private int[] mFauxCurrencyNumbers = {124, 156, 192, 978, 826, 484, 840};
+    private String[] mFauxCurrencyAcronyms = {
+        "AUD", "CAD", "CNY", "CUP", "EUR", "GBP", "HKD", "MXN", "NZD", "PHP", "USD"
+    };
+    private String[] mFauxCurrencyDenomination = {
+        "$", "$", "¥", "₱", "€", "£", "$", "$", "$", "₱", "$"
+    };
+    private int[] mFauxCurrencyNumbers = {
+        36, 124, 156, 192, 978, 826, 344, 484, 554, 608, 840
+    };
 
     private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
     private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
