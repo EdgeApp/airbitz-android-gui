@@ -559,6 +559,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                         mWithdrawalPinEditText.getText().toString());
             } else {
                 mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+                if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
+                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mWithdrawalPinEditText.getText().toString());
+                }
                 success = tABC_CC.ABC_CC_Ok;
             }
 
