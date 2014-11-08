@@ -2548,10 +2548,33 @@ public class CoreAPI {
         return result;
     }
 
-    public tABC_CC PinSetup(String username, String pin) {
-        tABC_Error pError = new tABC_Error();
-        tABC_CC result = core.ABC_PinSetup(username, pin, pError);
-        return result;
+    public void PinSetup(String username, String pin) {
+        if(mPinSetup == null) {
+            mPinSetup = new PinSetupTask();
+            mPinSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, username, pin);
+        }
+    }
+
+    private PinSetupTask mPinSetup;
+    public class PinSetupTask extends AsyncTask {
+        @Override
+        protected tABC_CC doInBackground(Object... params) {
+            String username = (String) params[0];
+            String pin = (String) params[1];
+            tABC_Error pError = new tABC_Error();
+            tABC_CC result = core.ABC_PinSetup(username, pin, pError);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            mPinSetup = null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mPinSetup = null;
+        }
     }
 
     public void PINLoginDelete(String username) {
