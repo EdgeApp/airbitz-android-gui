@@ -444,10 +444,11 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
-        mCoreSettings.setBDisablePINLogin(!mPinReloginSwitch.isChecked());
-        if(mPinReloginSwitch.isChecked()) {
+        if(mPinReloginSwitch.isChecked() && mCoreSettings.getBDisablePINLogin()) {
+            mCoreSettings.setBDisablePINLogin(false);
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
-        } else {
+        } else if(!mPinReloginSwitch.isChecked()) {
+            mCoreSettings.setBDisablePINLogin(true);
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
 
