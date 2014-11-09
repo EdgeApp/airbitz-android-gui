@@ -131,14 +131,14 @@ public class LandingFragment extends Fragment {
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((NavigationActivity) getActivity()).networkIsAvailable()) {
+                if (mActivity.networkIsAvailable()) {
                     if(mPinLayout.getVisibility() == View.VISIBLE) {
                         refreshView(false, false);
                     } else {
-                        ((NavigationActivity) getActivity()).startSignUp();
+                        mActivity.startSignUp();
                     }
                 } else {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getActivity().getString(R.string.string_no_connection_message));
+                    mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
                 }
             }
         });
@@ -185,8 +185,7 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mUserNameEditText.getText().toString().isEmpty()) {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog("",
-                            getResources().getString(R.string.fragment_forgot_no_username_title));
+                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_forgot_no_username_title));
                 } else {
                     attemptForgotPassword();
                 }
@@ -242,7 +241,6 @@ public class LandingFragment extends Fragment {
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
         if(isPinLogin) {
-            Log.d(TAG, "resetView to Pin login");
             mPasswordLayout.setVisibility(View.GONE);
             mPinLayout.setVisibility(View.VISIBLE);
             mForgotPasswordButton.setVisibility(View.GONE);
@@ -266,7 +264,6 @@ public class LandingFragment extends Fragment {
             mPinEditText.requestFocus();
             mActivity.showSoftKeyboard(mPinEditText);
         } else {
-            Log.d(TAG, "resetView to Password login");
             mPasswordLayout.setVisibility(View.VISIBLE);
             mPinLayout.setVisibility(View.GONE);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));
@@ -325,26 +322,26 @@ public class LandingFragment extends Fragment {
             tABC_CC result = (tABC_CC) success;
 
             if(result == tABC_CC.ABC_CC_Ok) {
-                Log.d(TAG, "good pin login");
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mUsername, null);
                 return;
             }
             else if(result == tABC_CC.ABC_CC_BadPassword) {
-                Log.d(TAG, "bad pin. Invalid count: "+getInvalidEntryCount());
                 if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
+                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     saveInvalidEntryCount(0);
                     abortPermanently();
                     return;
                 }
                 else {
+                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     mPinEditText.setText("");
                     mActivity.showSoftKeyboard(mPinEditText);
                     refreshView(true, true);
                 }
             }
             else if(result == tABC_CC.ABC_CC_PinExpired) {
-                Log.d(TAG, "pin expired");
+                mActivity.ShowFadingDialog(getString(R.string.server_error_pin_expired));
                 abortPermanently();
                 return;
             }
@@ -353,7 +350,7 @@ public class LandingFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mPINLoginTask = null;
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
 
@@ -382,14 +379,14 @@ public class LandingFragment extends Fragment {
             if (result == tABC_CC.ABC_CC_Ok) {
                 mActivity.LoginNow(mUsername, mPassword);
             } else {
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), Common.errorMap(mActivity, result));
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, result));
             }
         }
 
         @Override
         protected void onCancelled() {
             mPasswordLoginTask = null;
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_navigation_signin_failed), getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
 
@@ -460,7 +457,7 @@ public class LandingFragment extends Fragment {
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -470,20 +467,20 @@ public class LandingFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String questionString) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
 
             mRecoveryQuestionsTask = null;
 
             if (questionString == null) {
-                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
+                mActivity.ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
                         getString(R.string.fragment_forgot_no_recovery_questions_text));
             } else { // Some message or questions
                 String[] questions = questionString.split("\n");
                 if (questions.length > 1) { // questions came back
-                    ((NavigationActivity) getActivity()).startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
+                    mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if (questions.length == 1) { // Error string
                     Log.d(TAG, questionString);
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.fragment_forgot_no_account_title), questions[0]);
+                    mActivity.ShowFadingDialog(questions[0]);
                 }
             }
         }
@@ -491,7 +488,7 @@ public class LandingFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mRecoveryQuestionsTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
 
     }

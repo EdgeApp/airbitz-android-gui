@@ -76,6 +76,8 @@
     <string name="server_error_insufficient_funds">Insufficient funds</string>
     <string name="server_error_synchronizing">Synchronizing with the network.</string>
     <string name="server_error_non_numeric_pin">Pin must be a numeric value.</string>
+    <string name="server_error_bad_pin">Incorrect PIN.</string>
+    <string name="server_error_pin_expired">PIN has expired.</string>
     <string name="server_error_other">An error has occurred.</string>
 
     <!-- Strings related to Landing -->
@@ -104,6 +106,8 @@
     <string name="activity_signup_failed">Sign Up Failed</string>
     <string name="activity_change_password_failed">Change Password Failed</string>
     <string name="activity_change_pin_failed">Change PIN Failed</string>
+    <string name="fragment_signup_creating_account">Creating and securing account…</string>
+    <string name="fragment_signup_creating_wallet">Creating and securing wallet…</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>

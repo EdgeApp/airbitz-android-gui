@@ -580,10 +580,10 @@ public class SendConfirmationFragment extends Fragment {
         if(mInvalidEntryStartMillis > 0) {
             if(mPinRequired) {
                 String message = String.format(getString(R.string.fragment_send_confirmation_pin_remaining), remaining);
-                mActivity.ShowOkMessageDialog("", message, 2000);
+                mActivity.ShowFadingDialog(message);
             } else {
                 String message = String.format(getString(R.string.fragment_send_confirmation_password_remaining), remaining);
-                mActivity.ShowOkMessageDialog("", message, 2000);
+                mActivity.ShowFadingDialog(message);
             }
             resetSlider();
             return;
@@ -591,7 +591,7 @@ public class SendConfirmationFragment extends Fragment {
 
         String enteredPIN = mAuthorizationEdittext.getText().toString();
         if(mPinRequired && enteredPIN.isEmpty()) {
-            mActivity.ShowOkMessageDialog(getString(R.string.fragment_send_confirmation_no_pin), getString(R.string.fragment_send_confirmation_please_enter_pin), 2000);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_confirmation_please_enter_pin), 2000);
             mAuthorizationEdittext.requestFocus();
             resetSlider();
             return;
@@ -608,9 +608,9 @@ public class SendConfirmationFragment extends Fragment {
                  }
                  remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
                  String message = String.format(getString(R.string.fragment_send_confirmation_pin_remaining), remaining);
-                 mActivity.ShowOkMessageDialog("", message, 2000);
+                 mActivity.ShowFadingDialog(message);
              } else {
-                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_pin_title), getResources().getString(R.string.fragment_send_incorrect_pin_message));
+                 mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
              mAuthorizationEdittext.requestFocus();
              resetSlider();
@@ -624,15 +624,15 @@ public class SendConfirmationFragment extends Fragment {
                  }
                  remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
                  String message = String.format(getString(R.string.fragment_send_confirmation_password_remaining), remaining);
-                 mActivity.ShowOkMessageDialog("", message, 2000);
+                 mActivity.ShowFadingDialog(message);
              } else {
-                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_incorrect_password_title), getResources().getString(R.string.fragment_send_incorrect_password_message));
+                 mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_message));
              }
              mAuthorizationEdittext.requestFocus();
              resetSlider();
          } else if (mAmountToSendSatoshi == 0) {
             resetSlider();
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_no_satoshi_title), getResources().getString(R.string.fragment_send_no_satoshi_message));
+            mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
         } else {
              // show the sending screen
              SuccessFragment mSuccessFragment = new SuccessFragment();

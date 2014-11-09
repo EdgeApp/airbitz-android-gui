@@ -619,7 +619,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            mActivity.showModalProgress(true);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), 2000000, false);
         }
 
         @Override
@@ -632,20 +632,19 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateAccountTask = null;
-            mActivity.showModalProgress(false);
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
                 mCreateFirstWalletTask = new CreateFirstWalletTask();
                 mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), mFailureReason);
+                mActivity.ShowFadingDialog(mFailureReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             mCreateAccountTask = null;
-            mActivity.showModalProgress(false);
+            mActivity.ShowFadingDialog("", 10);
         }
     }
 
@@ -667,7 +666,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPreExecute() {
-            mActivity.showModalProgress(true);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_wallet), 200000, false);
         }
 
         @Override
@@ -679,9 +678,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onPostExecute(final Boolean success) {
             mCreateFirstWalletTask = null;
-            mActivity.showModalProgress(false);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_wallet), 0, false); // dismiss dialog
             if (!success) {
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_create_wallet_fail));
+                mActivity.ShowFadingDialog(getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
                 CreateDefaultCategories();
 
@@ -694,16 +693,16 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 mCoreAPI.coreSettings().setRecoveryReminderCount(0); // set reminder count
                 mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
 
-                ((NavigationActivity)getActivity()).popFragment();
-                ((NavigationActivity)getActivity()).DisplayLoginOverlay(false);
-                ((NavigationActivity)getActivity()).switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
+                mActivity.popFragment();
+                mActivity.DisplayLoginOverlay(false);
+                mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
             }
         }
 
         @Override
         protected void onCancelled() {
             mCreateFirstWalletTask = null;
-            mActivity.showModalProgress(false);
+            mActivity.ShowFadingDialog("", 10);
         }
     }
 

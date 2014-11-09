@@ -33,6 +33,7 @@ package com.airbitz.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -60,6 +61,7 @@ import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -725,7 +727,7 @@ public class NavigationActivity extends Activity
             bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
             resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
             switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-            ShowOkMessageDialog("", getString(R.string.string_payment_received), ALERT_PAYMENT_TIMEOUT);
+            ShowFadingDialog(getString(R.string.string_payment_received), ALERT_PAYMENT_TIMEOUT);
         }
     }
 
@@ -1056,20 +1058,45 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
-    public void ShowMessageDialogBackPress(String title, String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                NavigationActivity.this.onBackPressed();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
+    public void ShowFadingDialog(String message) {
+        ShowFadingDialog(message, 1000);
+    }
+
+    public void ShowFadingDialog(String message, int timeout) {
+        ShowFadingDialog(message, timeout, true);
+    }
+
+    private Dialog mFadingDialog = null;
+    public void ShowFadingDialog(String message, int timeout, boolean cancelable) {
+        if(timeout == 0) {
+            mFadingDialog.dismiss();
+            return;
+        }
+        if(mFadingDialog != null) {
+            mFadingDialog.dismiss();
+        }
+        mFadingDialog = new Dialog(this);
+        mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mFadingDialog.setCancelable(cancelable);
+        View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
+        ((TextView)view.findViewById(R.id.fading_alert_text)).setText(message);
+        mFadingDialog.setContentView(view);
+        AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setStartOffset(timeout);
+        fadeOut.setDuration(1000);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mFadingDialog.dismiss();
+            }
+
+            @Override public void onAnimationStart(Animation animation) { }
+            @Override public void onAnimationRepeat(Animation animation) { }
+        });
+
+        view.setAnimation(fadeOut);
+        mFadingDialog.show();
+        view.startAnimation(fadeOut);
     }
 
     public void hideSoftKeyboard(View v) {

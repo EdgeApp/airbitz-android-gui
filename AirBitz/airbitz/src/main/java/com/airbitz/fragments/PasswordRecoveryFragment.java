@@ -253,7 +253,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mAnswers = "";
 
         if (mMode == CHANGE_QUESTIONS && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_incorrect_password));
+            ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
 
@@ -291,10 +291,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 }
             } else {
-                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -445,8 +445,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 frag.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.activity_recovery_error_wrong_answers_title),
-                        getString(R.string.activity_recovery_error_wrong_answers_message));
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
             }
         }
 
@@ -541,7 +540,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             mSaveQuestionsTask = null;
             ((NavigationActivity) getActivity()).showModalProgress(false);
             if (!success) {
-                ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_error_title), getResources().getString(R.string.activity_recovery_error_save_failed));
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
                 if (mMode == SIGN_UP) {
                     ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
