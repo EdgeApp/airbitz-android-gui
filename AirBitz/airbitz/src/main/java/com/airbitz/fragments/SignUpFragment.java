@@ -73,7 +73,6 @@ import java.util.regex.Pattern;
  * Created on 2/10/14.
  */
 public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
-    public static final int DOLLAR_CURRENCY_NUMBER = 840;
     public static final int MIN_PIN_LENGTH = 4;
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;
@@ -101,7 +100,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private TextView mTimeTextView;
     private View mUserNameRedRingCover;
     private CreateAccountTask mCreateAccountTask;
-    private CreateFirstWalletTask mCreateFirstWalletTask;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
@@ -634,8 +632,19 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mCreateAccountTask = null;
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
-                mCreateFirstWalletTask = new CreateFirstWalletTask();
-                mCreateFirstWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                mCoreAPI.SetUserPIN(mPin);
+
+                mCoreAPI.setupAccountSettings();
+                mCoreAPI.startAllAsyncUpdates();
+
+                mCoreAPI.coreSettings().setRecoveryReminderCount(0);
+                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+
+                mActivity.popFragment();
+                mActivity.DisplayLoginOverlay(false);
+                mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
+
+                mActivity.UserJustLoggedIn();
             } else {
                 mActivity.ShowFadingDialog(mFailureReason);
             }
@@ -644,78 +653,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         @Override
         protected void onCancelled() {
             mCreateAccountTask = null;
-            mActivity.ShowFadingDialog("", 10);
+            mActivity.DismissFadingDialog();
         }
     }
-
-    /**
-     * Represents an asynchronous creation of the first wallet
-     */
-    public class CreateFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername, mPin;
-        private final char[] mPassword;
-
-        CreateFirstWalletTask() {
-            mUsername = mUserNameEditText.getText().toString();
-            Editable pass = mPasswordEditText.getText();
-            mPassword = new char[pass.length()];
-            pass.getChars(0, pass.length(), mPassword, 0);
-            mPin = mWithdrawalPinEditText.getText().toString();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_wallet), 200000, false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            String walletName = getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mCoreAPI.createWallet(mUsername, String.valueOf(mPassword), walletName, DOLLAR_CURRENCY_NUMBER);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mCreateFirstWalletTask = null;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_wallet), 0, false); // dismiss dialog
-            if (!success) {
-                mActivity.ShowFadingDialog(getResources().getString(R.string.activity_signup_create_wallet_fail));
-            } else {
-                CreateDefaultCategories();
-
-                AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.SetUserPIN(mPin);
-
-                mCoreAPI.setupAccountSettings();
-                mCoreAPI.startAllAsyncUpdates();
-
-                mCoreAPI.coreSettings().setRecoveryReminderCount(0); // set reminder count
-                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
-
-                mActivity.popFragment();
-                mActivity.DisplayLoginOverlay(false);
-                mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCreateFirstWalletTask = null;
-            mActivity.ShowFadingDialog("", 10);
-        }
-    }
-
-    private void CreateDefaultCategories() {
-        String[] defaults = getResources().getStringArray(R.array.category_defaults);
-
-        for (String cat : defaults)
-            mCoreAPI.addCategory(cat);
-
-        List<String> cats = mCoreAPI.loadCategories();
-        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
-            Log.d(TAG, "Category creation failed");
-        }
-    }
-
 }

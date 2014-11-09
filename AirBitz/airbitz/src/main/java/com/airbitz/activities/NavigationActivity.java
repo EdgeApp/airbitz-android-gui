@@ -110,6 +110,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
+    public static final int DOLLAR_CURRENCY_NUMBER = 840;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -877,6 +878,8 @@ public class NavigationActivity extends Activity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
+
+        checkAccountSetup();
     }
 
     public void startRecoveryQuestions(String questions, String username) {
@@ -1058,6 +1061,10 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    public void DismissFadingDialog() {
+        ShowFadingDialog("", 10);
+    }
+
     public void ShowFadingDialog(String message) {
         ShowFadingDialog(message, 1000);
     }
@@ -1109,4 +1116,74 @@ public class NavigationActivity extends Activity
         imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    private void checkAccountSetup() {
+        List<String> wallets = mCoreAPI.loadWalletUUIDs();
+        if (wallets.size() <= 0) {
+            mAccountSetup = new SetupAccountTask();
+            mAccountSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        }
+    }
+
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    private SetupAccountTask mAccountSetup;
+    public class SetupAccountTask extends AsyncTask<Void, Void, Boolean> {
+
+        SetupAccountTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            NavigationActivity.this.ShowFadingDialog(
+                    getString(R.string.fragment_signup_creating_wallet),
+                    200000, false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String walletName =
+                getResources().getString(R.string.activity_recovery_first_wallet_name);
+            return mCoreAPI.createWallet(
+                    AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(),
+                    walletName, DOLLAR_CURRENCY_NUMBER);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAccountSetup = null;
+            if (!success) {
+                NavigationActivity.this.ShowFadingDialog(
+                    getResources().getString(R.string.activity_signup_create_wallet_fail));
+            } else {
+                // Update UI
+                updateWalletListener();
+                // Add categories
+                createDefaultCategories();
+                // Dismiss dialog
+                NavigationActivity.this.DismissFadingDialog();
+            }
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAccountSetup = null;
+            NavigationActivity.this.DismissFadingDialog();
+        }
+    }
+
+    private void createDefaultCategories() {
+        String[] defaults =
+            getResources().getStringArray(R.array.category_defaults);
+
+        for (String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+            Log.d(TAG, "Category creation failed");
+        }
+    }
 }
