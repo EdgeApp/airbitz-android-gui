@@ -172,6 +172,7 @@ public class WalletsFragment extends Fragment
     private List<Wallet> mLatestWalletList;
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
+    private NavigationActivity mActivity;
     private View mView;
     private int mCurrencyIndex;
     private AddWalletTask mAddWalletTask;
@@ -181,7 +182,7 @@ public class WalletsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
-
+        mActivity = (NavigationActivity) getActivity();
         mLatestWalletList = getWallets(true);
     }
 
@@ -250,7 +251,7 @@ public class WalletsFragment extends Fragment
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.WALLETS), NavigationActivity.Tabs.WALLET.ordinal());
+                mActivity.pushFragment(new HelpFragment(HelpFragment.WALLETS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
@@ -375,7 +376,7 @@ public class WalletsFragment extends Fragment
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    ((NavigationActivity) getActivity()).showSoftKeyboard(mAddWalletNameEditText);
+                    mActivity.showSoftKeyboard(mAddWalletNameEditText);
                 }
             }
         });
@@ -384,7 +385,7 @@ public class WalletsFragment extends Fragment
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mAddWalletNameEditText);
+                    mActivity.hideSoftKeyboard(mAddWalletNameEditText);
                 }
             }
         });
@@ -445,7 +446,7 @@ public class WalletsFragment extends Fragment
         bundle.putString(Wallet.WALLET_UUID, w.getUUID());
         Fragment fragment = new WalletFragment();
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+        mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
     }
 
     public void addNewWallet(String name, int currencyNum) {
@@ -498,7 +499,7 @@ public class WalletsFragment extends Fragment
                 int[] nums = mCoreAPI.getCurrencyNumbers();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
             } else {
-                ((NavigationActivity) getActivity()).pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());
+                mActivity.pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());
             }
             goCancel();
         } else {
@@ -509,7 +510,7 @@ public class WalletsFragment extends Fragment
     private void goCancel() { //CANCEL
         mAddWalletCancelButton.setClickable(false);
         mAddWalletDoneButton.setClickable(false);
-        ((NavigationActivity) getActivity()).hideSoftKeyboard(mParentLayout);
+        mActivity.hideSoftKeyboard(mParentLayout);
         mHandler.postDelayed(mDelayedAnimation, 100);
     }
 
@@ -525,7 +526,7 @@ public class WalletsFragment extends Fragment
         UpdateBalances();
 
         mCoreAPI.addExchangeRateChangeListener(this);
-        ((NavigationActivity) getActivity()).setOnWalletUpdated(this);
+        mActivity.setOnWalletUpdated(this);
     }
 
     @Override
@@ -534,18 +535,18 @@ public class WalletsFragment extends Fragment
         SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         prefs.edit().putBoolean("archiveClosed", mArchiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
-        ((NavigationActivity) getActivity()).setOnWalletUpdated(null);
+        mActivity.setOnWalletUpdated(null);
     }
 
     public void buildFragments() {
         if (bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST) || bundle.getString(FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
             Fragment frag = new WalletFragment();
             frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
+            mActivity.pushFragment(frag, NavigationActivity.Tabs.WALLET.ordinal());
 
             Fragment frag2 = new TransactionDetailFragment();
             frag2.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
+            mActivity.pushFragment(frag2, NavigationActivity.Tabs.WALLET.ordinal());
         }
     }
 
@@ -604,7 +605,7 @@ public class WalletsFragment extends Fragment
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -616,7 +617,7 @@ public class WalletsFragment extends Fragment
         @Override
         protected void onPostExecute(final Boolean success) {
             mAddWalletTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             if (!success) {
                 Log.d(TAG, "AddWalletTask failed");
             } else {
