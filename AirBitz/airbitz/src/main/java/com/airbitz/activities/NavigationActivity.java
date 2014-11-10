@@ -67,7 +67,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -87,13 +86,13 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
-import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 
 
@@ -1178,6 +1177,8 @@ public class NavigationActivity extends Activity
                 updateWalletListener();
                 // Add categories
                 createDefaultCategories();
+                // Set default currency
+                mCoreAPI.SetupDefaultCurrency();
                 // Dismiss dialog
                 NavigationActivity.this.DismissFadingDialog();
             }

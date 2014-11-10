@@ -103,6 +103,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
 
     private CoreAPI mCoreAPI;
+    private NavigationActivity mActivity;
     private View mView;
 
     @Override
@@ -110,6 +111,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
+        mActivity = (NavigationActivity) getActivity();
     }
 
     @Override
@@ -222,11 +224,11 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
-                                    ((NavigationActivity) getActivity()).hideSoftKeyboard(getView());
+                                    mActivity.hideSoftKeyboard(getView());
                                     if (mMode == CHANGE_QUESTIONS) {
-                                        ((NavigationActivity) getActivity()).popFragment();
+                                        mActivity.popFragment();
                                     } else if (mMode == FORGOT_PASSWORD) {
-                                        ((NavigationActivity) getActivity()).Logout();
+                                        mActivity.Logout();
                                     }
                                 }
                             }
@@ -253,7 +255,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mAnswers = "";
 
         if (mMode == CHANGE_QUESTIONS && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-            ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_incorrect_password));
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
 
@@ -291,10 +293,10 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 }
             } else {
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
+                mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_answer_questions_alert));
             }
         } else {
-            ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_pick_questions_alert));
         }
     }
 
@@ -382,8 +384,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 .setPositiveButton(getResources().getString(R.string.string_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         signIn();
-                        ((NavigationActivity) getActivity()).popFragment();
-                        ((NavigationActivity) getActivity()).finishSignup();
+                        mActivity.popFragment();
+                        mActivity.finishSignup();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.string_no), new DialogInterface.OnClickListener() {
@@ -421,7 +423,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -434,7 +436,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
 
             if (success) {
                 Bundle bundle = new Bundle();
@@ -443,15 +445,15 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 bundle.putString(PasswordRecoveryFragment.USERNAME, getArguments().getString(USERNAME));
                 Fragment frag = new SignUpFragment();
                 frag.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
+                mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
+                mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
             }
         }
 
         @Override
         protected void onCancelled() {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
@@ -463,7 +465,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -492,7 +494,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
 
             if (success) {
                 InitializeQuestionViews();
@@ -507,7 +509,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onCancelled() {
             mFetchAllQuestionsTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
 
     }
@@ -526,7 +528,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         public void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -538,15 +540,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onPostExecute(final Boolean success) {
             mSaveQuestionsTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
             if (!success) {
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
+                mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
                 if (mMode == SIGN_UP) {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                    ((NavigationActivity) getActivity()).UserJustLoggedIn();
+                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
                 } else if (mMode == CHANGE_QUESTIONS) {
-                    ((NavigationActivity) getActivity()).popFragment();
+                    mActivity.popFragment();
                 }
             }
         }
@@ -554,7 +555,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         @Override
         protected void onCancelled() {
             mSaveQuestionsTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
@@ -639,7 +640,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if (hasFocus) {
-                        ((NavigationActivity) getActivity()).showSoftKeyboard(mText);
+                        mActivity.showSoftKeyboard(mText);
                     }
                 }
             });
@@ -677,7 +678,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                                 mQuestionViews.get(mPosition + 1).getSpinner().requestFocus();
                                 return true;
                             } else if (mPosition == mQuestionViews.size() - 1) {
-                                ((NavigationActivity) getActivity()).hideSoftKeyboard(mText);
+                                mActivity.hideSoftKeyboard(mText);
                                 mDoneSignUpButton.requestFocus();
                                 return true;
                             }
@@ -686,7 +687,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                                 mQuestionViews.get(mPosition + 1).getEditText().requestFocus();
                                 return true;
                             } else if (mPosition == mQuestionViews.size() - 1) {
-                                ((NavigationActivity) getActivity()).hideSoftKeyboard(mText);
+                                mActivity.hideSoftKeyboard(mText);
                                 mDoneSignUpButton.requestFocus();
                                 return true;
                             }
