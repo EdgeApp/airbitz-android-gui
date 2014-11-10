@@ -242,6 +242,8 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
                     );
             AlertDialog alert = builder.create();
             alert.show();
+        } else {
+            mActivity.popFragment();
         }
 
         return true;
