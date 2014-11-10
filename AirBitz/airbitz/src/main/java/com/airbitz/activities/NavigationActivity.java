@@ -1063,6 +1063,21 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    //**************** Fading Dialog
+
+    public interface OnFadingDialogFinished { public void onFadingDialogFinished();
+    }
+
+    private OnFadingDialogFinished mOnFadingDialogFinished;
+    public void setFadingDialogListener(OnFadingDialogFinished listener) {
+        mOnFadingDialogFinished = listener;
+    }
+
+    private void updateFadingDialogFinished() {
+        if (mOnFadingDialogFinished != null)
+            mOnFadingDialogFinished.onFadingDialogFinished();
+    }
+
     public void DismissFadingDialog() {
         ShowFadingDialog("", 10);
     }
@@ -1097,6 +1112,7 @@ public class NavigationActivity extends Activity
             @Override
             public void onAnimationEnd(Animation animation) {
                 mFadingDialog.dismiss();
+                updateFadingDialogFinished();
             }
 
             @Override public void onAnimationStart(Animation animation) { }

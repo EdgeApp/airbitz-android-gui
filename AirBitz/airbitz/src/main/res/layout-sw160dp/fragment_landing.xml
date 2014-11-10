@@ -107,6 +107,8 @@
                 android:layout_height="wrap_content"
                 style="@style/BlackDropShadow"
                 android:text="@string/fragment_landing_please_enter_pin"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
