@@ -65,6 +65,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.api.tABC_RequestResults;
+import com.airbitz.utils.Common;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -329,7 +330,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         for (int i = 0; i < rules.size(); i++) {
             tABC_PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
-            String description = pRule.getSzDescription();
             if (!passed) {
                 bNewPasswordFieldsAreValid = false;
             }
@@ -622,8 +622,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC code = core.ABC_CreateAccount(mUsername, String.valueOf(mPassword), mPin, null, pVoid, pError);
-            mFailureReason = pError.getSzDescription();
+            tABC_CC code =
+                core.ABC_CreateAccount(mUsername, String.valueOf(mPassword),
+                                       mPin, null, pVoid, pError);
+            mFailureReason = Common.errorMap(mActivity, code);
             return code == tABC_CC.ABC_CC_Ok;
         }
 
