@@ -878,8 +878,10 @@ public class NavigationActivity extends Activity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
-
         checkAccountSetup();
+        if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
+            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+        }
     }
 
     public void startRecoveryQuestions(String questions, String username) {
