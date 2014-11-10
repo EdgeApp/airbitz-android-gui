@@ -56,6 +56,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
@@ -92,7 +93,6 @@ import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 
 
@@ -877,7 +877,7 @@ public class NavigationActivity extends Activity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
-        checkAccountSetup();
+        checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
         }
@@ -1101,6 +1101,7 @@ public class NavigationActivity extends Activity
         mFadingDialog = new Dialog(this);
         mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         mFadingDialog.setCancelable(cancelable);
+        mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
         ((TextView)view.findViewById(R.id.fading_alert_text)).setText(message);
         mFadingDialog.setContentView(view);
@@ -1133,21 +1134,21 @@ public class NavigationActivity extends Activity
         imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private void checkAccountSetup() {
+    private void checkFirstWalletSetup() {
         List<String> wallets = mCoreAPI.loadWalletUUIDs();
         if (wallets.size() <= 0) {
-            mAccountSetup = new SetupAccountTask();
-            mAccountSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            mWalletSetup = new SetupFirstWalletTask();
+            mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
 
     /**
      * Represents an asynchronous creation of the first wallet
      */
-    private SetupAccountTask mAccountSetup;
-    public class SetupAccountTask extends AsyncTask<Void, Void, Boolean> {
+    private SetupFirstWalletTask mWalletSetup;
+    public class SetupFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
 
-        SetupAccountTask() { }
+        SetupFirstWalletTask() { }
 
         @Override
         protected void onPreExecute() {
@@ -1158,17 +1159,21 @@ public class NavigationActivity extends Activity
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            // Set default currency
+            mCoreAPI.SetupDefaultCurrency();
+
+            // Create the Wallet
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
             return mCoreAPI.createWallet(
                     AirbitzApplication.getUsername(),
                     AirbitzApplication.getPassword(),
-                    walletName, DOLLAR_CURRENCY_NUMBER);
+                    walletName, mCoreAPI.coreSettings().getCurrencyNum());
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAccountSetup = null;
+            mWalletSetup = null;
             if (!success) {
                 NavigationActivity.this.ShowFadingDialog(
                     getResources().getString(R.string.activity_signup_create_wallet_fail));
@@ -1177,8 +1182,6 @@ public class NavigationActivity extends Activity
                 updateWalletListener();
                 // Add categories
                 createDefaultCategories();
-                // Set default currency
-                mCoreAPI.SetupDefaultCurrency();
                 // Dismiss dialog
                 NavigationActivity.this.DismissFadingDialog();
             }
@@ -1188,7 +1191,7 @@ public class NavigationActivity extends Activity
 
         @Override
         protected void onCancelled() {
-            mAccountSetup = null;
+            mWalletSetup = null;
             NavigationActivity.this.DismissFadingDialog();
         }
     }
