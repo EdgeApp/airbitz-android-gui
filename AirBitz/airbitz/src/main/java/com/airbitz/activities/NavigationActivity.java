@@ -1078,7 +1078,7 @@ public class NavigationActivity extends Activity
     }
 
     public void DismissFadingDialog() {
-        ShowFadingDialog("", 10);
+        ShowFadingDialog("", 0);
     }
 
     public void ShowFadingDialog(String message) {
