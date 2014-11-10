@@ -627,7 +627,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
 
-        Log.d(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
+//        Log.d(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 pAccountSettings, Error);
 
@@ -649,7 +649,7 @@ public class CoreAPI {
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
-        Log.d(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
+//        Log.d(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 settings, Error);
         if(result==tABC_CC.ABC_CC_Ok) {
@@ -2441,7 +2441,7 @@ public class CoreAPI {
 
         String oldPIN = GetUserPIN();
 
-        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
+//        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         tABC_CC cc = core.ABC_ChangePassword(
                         AirbitzApplication.getUsername(),
                         password,
