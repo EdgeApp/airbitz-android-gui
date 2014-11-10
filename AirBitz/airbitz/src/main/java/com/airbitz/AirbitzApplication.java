@@ -47,6 +47,7 @@ public class AirbitzApplication extends Application {
 
     private static Login airbitzLogin = new Login();
     private static long mBackgroundedTime = 0;
+    private static long mLoginTime = 0;
     private static Context mContext;
     private static int mLastNavTab = 0;
 
@@ -69,6 +70,7 @@ public class AirbitzApplication extends Application {
         if (uname != null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
+            mLoginTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
             editor.putString(LOGIN_NAME, uname);
             editor.apply();
@@ -112,6 +114,10 @@ public class AirbitzApplication extends Application {
 
     public static long getmBackgroundedTime() {
         return mBackgroundedTime;
+    }
+
+    public static boolean recentlyLoggedIn() {
+        return System.currentTimeMillis() - mLoginTime <= 120000;
     }
 
     private static class Login {
