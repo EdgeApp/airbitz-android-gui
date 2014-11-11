@@ -136,7 +136,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                mActivity.onBackPressed();
             }
         });
 
@@ -243,7 +243,12 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             AlertDialog alert = builder.create();
             alert.show();
         } else {
-            mActivity.popFragment();
+            mActivity.hideSoftKeyboard(getView());
+            if (mMode == CHANGE_QUESTIONS) {
+                mActivity.popFragment();
+            } else if (mMode == FORGOT_PASSWORD) {
+                mActivity.Logout();
+            }
         }
 
         return true;
