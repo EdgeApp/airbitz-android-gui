@@ -75,9 +75,9 @@ public class SendConfirmationFragment extends Fragment {
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
+    private final int CALC_SEND_FEES_DELAY_MILLIS = 400;
     private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
-    private final String SATOSHIS = "satoshisToSave";
 
     private TextView mFromEdittext;
     private TextView mToEdittext;
@@ -537,7 +537,7 @@ public class SendConfirmationFragment extends Fragment {
 
     private void calculateFees() {
         mHandler.removeCallbacks(delayCalcFees);
-        mHandler.postDelayed(delayCalcFees, 400);
+        mHandler.postDelayed(delayCalcFees, CALC_SEND_FEES_DELAY_MILLIS);
     }
 
     private void UpdateFeeFields(Long fees) {
