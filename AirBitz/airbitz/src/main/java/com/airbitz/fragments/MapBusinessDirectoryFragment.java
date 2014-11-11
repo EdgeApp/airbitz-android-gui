@@ -548,6 +548,24 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             });
         }
 
+        mLocateMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (locationEnabled && null != mCurrentLocation) {
+                    Log.d(TAG, "LocateMe button good");
+                    MapLatLng currentLatLng =
+                            new MapLatLng(mCurrentLocation.getLatitude(),
+                                    mCurrentLocation.getLongitude());
+                    drawCurrentLocationMarker(mCurrentLocation);
+                    mMapShim.animateCamera(currentLatLng);
+                } else {
+                    Log.d(TAG, getString(R.string.no_location_found));
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -620,21 +638,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
         }
 
-        mLocateMeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (locationEnabled && null != mCurrentLocation) {
-                    MapLatLng currentLatLng =
-                        new MapLatLng(mCurrentLocation.getLatitude(),
-                                       mCurrentLocation.getLongitude());
-                    drawCurrentLocationMarker(mCurrentLocation);
-                    mMapShim.animateCamera(currentLatLng);
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                          getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     @Override
