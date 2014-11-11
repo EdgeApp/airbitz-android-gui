@@ -524,12 +524,20 @@ public class SendConfirmationFragment extends Fragment {
         calculateFees();
     }
 
-    private void calculateFees() {
-        if (mCalculateFeesTask != null) {
-            mCalculateFeesTask.cancel(true);
+    final Runnable delayCalcFees = new Runnable() {
+        @Override
+        public void run() {
+            if (mCalculateFeesTask != null) {
+                mCalculateFeesTask.cancel(true);
+            }
+            mCalculateFeesTask = new CalculateFeesTask();
+            mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-        mCalculateFeesTask = new CalculateFeesTask();
-        mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    };
+
+    private void calculateFees() {
+        mHandler.removeCallbacks(delayCalcFees);
+        mHandler.postDelayed(delayCalcFees, 400);
     }
 
     private void UpdateFeeFields(Long fees) {
