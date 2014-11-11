@@ -280,6 +280,8 @@
     <string name="fragment_wallets_addwallet_currency_textview">Currency:</string>
     <string name="fragment_wallets_addwallet_online_textview">ONLINE</string>
     <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
+    <string name="fragment_wallets_created_wallet">%1$s created</string>
+    <string name="fragment_wallets_created_wallet_failed">Failed to create wallet</string>
 
     <!-- Strings for Wallet fragment -->
     <string name="fragment_wallet_title">Transactions</string>
