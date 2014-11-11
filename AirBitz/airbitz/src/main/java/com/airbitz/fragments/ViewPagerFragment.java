@@ -107,9 +107,6 @@ public class ViewPagerFragment extends Fragment {
 
         mActivity = (NavigationActivity) getActivity();
 
-
-        mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
-
         mViewPager = (ViewPager) mView.findViewById(R.id.fragment_viewpager_viewpager);
         mViewPager.setAdapter(new TouchImageViewPagerAdapter(mImageViews));
         mViewPager.setCurrentItem(mPosition);
@@ -135,7 +132,8 @@ public class ViewPagerFragment extends Fragment {
 
         mSeekBar = (SeekBar) mView.findViewById(R.id.viewpager_seekBar);
 
-        if(mImageViews.size()>1) {
+        if(mImageViews.size() > 1) {
+            mScale = SEEKBAR_MAX / (mImageViews.size() - 1);
             mSeekBar.setMax(SEEKBAR_MAX);
             mSeekBar.setProgress(mPosition);
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

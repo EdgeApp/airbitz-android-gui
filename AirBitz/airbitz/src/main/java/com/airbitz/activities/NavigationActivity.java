@@ -56,6 +56,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
@@ -67,7 +68,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -87,7 +87,6 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
-import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -110,6 +109,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
+    public static final int DOLLAR_CURRENCY_NUMBER = 840;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -877,6 +877,10 @@ public class NavigationActivity extends Activity
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
+        checkFirstWalletSetup();
+        if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
+            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+        }
     }
 
     public void startRecoveryQuestions(String questions, String username) {
@@ -1058,6 +1062,25 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    //**************** Fading Dialog
+
+    public interface OnFadingDialogFinished { public void onFadingDialogFinished();
+    }
+
+    private OnFadingDialogFinished mOnFadingDialogFinished;
+    public void setFadingDialogListener(OnFadingDialogFinished listener) {
+        mOnFadingDialogFinished = listener;
+    }
+
+    private void updateFadingDialogFinished() {
+        if (mOnFadingDialogFinished != null)
+            mOnFadingDialogFinished.onFadingDialogFinished();
+    }
+
+    public void DismissFadingDialog() {
+        ShowFadingDialog("", 0);
+    }
+
     public void ShowFadingDialog(String message) {
         ShowFadingDialog(message, 1000);
     }
@@ -1078,6 +1101,7 @@ public class NavigationActivity extends Activity
         mFadingDialog = new Dialog(this);
         mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         mFadingDialog.setCancelable(cancelable);
+        mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
         ((TextView)view.findViewById(R.id.fading_alert_text)).setText(message);
         mFadingDialog.setContentView(view);
@@ -1088,6 +1112,7 @@ public class NavigationActivity extends Activity
             @Override
             public void onAnimationEnd(Animation animation) {
                 mFadingDialog.dismiss();
+                updateFadingDialogFinished();
             }
 
             @Override public void onAnimationStart(Animation animation) { }
@@ -1109,4 +1134,78 @@ public class NavigationActivity extends Activity
         imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    private void checkFirstWalletSetup() {
+        List<String> wallets = mCoreAPI.loadWalletUUIDs();
+        if (wallets.size() <= 0) {
+            mWalletSetup = new SetupFirstWalletTask();
+            mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        }
+    }
+
+    /**
+     * Represents an asynchronous creation of the first wallet
+     */
+    private SetupFirstWalletTask mWalletSetup;
+    public class SetupFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        SetupFirstWalletTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            NavigationActivity.this.ShowFadingDialog(
+                    getString(R.string.fragment_signup_creating_wallet),
+                    200000, false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // Set default currency
+            mCoreAPI.SetupDefaultCurrency();
+
+            // Create the Wallet
+            String walletName =
+                getResources().getString(R.string.activity_recovery_first_wallet_name);
+            return mCoreAPI.createWallet(
+                    AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(),
+                    walletName, mCoreAPI.coreSettings().getCurrencyNum());
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mWalletSetup = null;
+            if (!success) {
+                NavigationActivity.this.ShowFadingDialog(
+                    getResources().getString(R.string.activity_signup_create_wallet_fail));
+            } else {
+                // Update UI
+                updateWalletListener();
+                // Add categories
+                createDefaultCategories();
+                // Dismiss dialog
+                NavigationActivity.this.DismissFadingDialog();
+            }
+            mCoreAPI.setupAccountSettings();
+            mCoreAPI.startAllAsyncUpdates();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mWalletSetup = null;
+            NavigationActivity.this.DismissFadingDialog();
+        }
+    }
+
+    private void createDefaultCategories() {
+        String[] defaults =
+            getResources().getStringArray(R.array.category_defaults);
+
+        for (String cat : defaults)
+            mCoreAPI.addCategory(cat);
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+            Log.d(TAG, "Category creation failed");
+        }
+    }
 }

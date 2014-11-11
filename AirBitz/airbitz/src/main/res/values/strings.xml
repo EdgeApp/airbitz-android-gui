@@ -75,7 +75,7 @@
     <string name="server_error_not_supported">This operation is not supported.</string>
     <string name="server_error_insufficient_funds">Insufficient funds</string>
     <string name="server_error_synchronizing">Synchronizing with the network.</string>
-    <string name="server_error_non_numeric_pin">Pin must be a numeric value.</string>
+    <string name="server_error_non_numeric_pin">PIN must be a numeric value.</string>
     <string name="server_error_bad_pin">Incorrect PIN.</string>
     <string name="server_error_pin_expired">PIN has expired.</string>
     <string name="server_error_other">An error has occurred.</string>
@@ -93,7 +93,7 @@
     <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Switch User</string>
-    <string name="fragment_landing_forgot_pin">Forgot Pin</string>
+    <string name="fragment_landing_forgot_pin">Forgot PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
@@ -118,8 +118,8 @@
     <string name="activity_signup_old_password">Old Password</string>
     <string name="activity_signup_new_password">New Password</string>
     <string name="activity_signup_new_password_confirm">Re-enter New Password</string>
-    <string name="activity_signup_pin_label">4 Digit Pin</string>
-    <string name="activity_signup_pin_hint">Create Pin</string>
+    <string name="activity_signup_pin_label">4 Digit PIN</string>
+    <string name="activity_signup_pin_hint">Create PIN</string>
     <string name="activity_signup_new_pin">New PIN</string>
     <string name="activity_signup_password_requirements">Password Requirements</string>
     <string name="activity_signup_password_help">Password must have an upper and lower case letter, a number and a minimum 10 characters</string>
@@ -195,7 +195,7 @@
     <string name="settings_edit_nick_name">Nickname (optional)</string>
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
-    <string name="settings_title_pin_login">Pin Re-login</string>
+    <string name="settings_title_pin_login">PIN Re-login</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
@@ -259,7 +259,7 @@
     <string name="send_confirmation_from_title">Send From:</string>
     <string name="send_confirmation_to_title">Send To:</string>
     <string name="send_confirmation_max_button_title">Max</string>
-    <string name="send_confirmation_enter_send_pin">Enter 4 Digit Pin</string>
+    <string name="send_confirmation_enter_send_pin">Enter 4 Digit PIN</string>
     <string name="send_confirmation_enter_send_password">Password</string>
     <string name="send_confirmation_slide_to_confirm">Slide to Confirm</string>
     <string name="fragment_send_confirmation_send_error_title">Error during send</string>

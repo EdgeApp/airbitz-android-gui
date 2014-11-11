@@ -39,6 +39,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -66,7 +67,8 @@ import com.airbitz.utils.Common;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandingFragment extends Fragment {
+public class LandingFragment extends Fragment implements
+    NavigationActivity.OnFadingDialogFinished {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
@@ -94,6 +96,8 @@ public class LandingFragment extends Fragment {
     
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
+
     /**
      * Represents an asynchronous question fetch task
      */
@@ -174,7 +178,6 @@ public class LandingFragment extends Fragment {
                 mPinEditText.setText("");
                 mPinEditText.requestFocus();
                 mActivity.showSoftKeyboard(mPinEditText);
-                refreshView(mPinLayout.getVisibility() == View.VISIBLE, true);
             }
         });
 
@@ -227,7 +230,13 @@ public class LandingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mPinEditText.setText("");
-        refreshView(mCoreAPI.PinLoginExists(mUsername), true);
+        if(mCoreAPI.PinLoginExists(mUsername)) {
+            mPinEditText.performClick();
+            refreshView(true, true);
+        }
+        else {
+            refreshView(false, false);
+        }
     }
 
     @Override
@@ -261,8 +270,6 @@ public class LandingFragment extends Fragment {
                 mLandingSubtextView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
-            mPinEditText.requestFocus();
-            mActivity.showSoftKeyboard(mPinEditText);
         } else {
             mPasswordLayout.setVisibility(View.VISIBLE);
             mPinLayout.setVisibility(View.GONE);
@@ -303,7 +310,6 @@ public class LandingFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            saveInvalidEntryCount(getInvalidEntryCount()+1);
             mActivity.hideSoftKeyboard(mPinEditText);
             mActivity.showModalProgress(true);
         }
@@ -327,6 +333,7 @@ public class LandingFragment extends Fragment {
                 return;
             }
             else if(result == tABC_CC.ABC_CC_BadPassword) {
+                saveInvalidEntryCount(getInvalidEntryCount()+1);
                 if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     saveInvalidEntryCount(0);
@@ -334,10 +341,8 @@ public class LandingFragment extends Fragment {
                     return;
                 }
                 else {
+                    mActivity.setFadingDialogListener(LandingFragment.this);
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
-                    mPinEditText.setText("");
-                    mActivity.showSoftKeyboard(mPinEditText);
-                    refreshView(true, true);
                 }
             }
             else if(result == tABC_CC.ABC_CC_PinExpired) {
@@ -353,6 +358,22 @@ public class LandingFragment extends Fragment {
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
+
+    @Override
+    public void onFadingDialogFinished() {
+        mActivity.setFadingDialogListener(null);
+        mHandler.post(delayedShowPinKeyboard);
+    }
+
+    final Runnable delayedShowPinKeyboard = new Runnable() {
+        @Override
+        public void run() {
+            mPinEditText.setText("");
+            refreshView(true, true);
+            mPinEditText.performClick();
+        }
+    };
+
 
     public class PasswordLoginTask extends AsyncTask {
         String mUsername;

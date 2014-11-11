@@ -61,9 +61,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -216,6 +220,7 @@ public class CoreAPI {
     private String mIncomingUUID, mIncomingTxID;
     // Callback interface when an incoming bitcoin is received
     private OnIncomingBitcoin mOnIncomingBitcoin;
+
     public interface OnIncomingBitcoin {
         public void onIncomingBitcoin(String walletUUID, String txId);
     }
@@ -627,14 +632,14 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
 
-        Log.d(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
+//        Log.d(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 pAccountSettings, Error);
 
         if(result==tABC_CC.ABC_CC_Ok) {
             mCoreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
             if(mCoreSettings.getCurrencyNum() == 0) {
-                mCoreSettings.setCurrencyNum(840); // US DOLLAR DEFAULT
+                mCoreSettings.setCurrencyNum(getLocaleDefaultCurrencyNum()); // US DOLLAR DEFAULT
                 saveAccountSettings(mCoreSettings);
             }
             return mCoreSettings;
@@ -649,7 +654,7 @@ public class CoreAPI {
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
-        Log.d(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
+//        Log.d(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
         result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 settings, Error);
         if(result==tABC_CC.ABC_CC_Ok) {
@@ -1336,7 +1341,7 @@ public class CoreAPI {
                 return i;
         }
         Log.d(TAG, "CurrencyIndex not found, using default");
-        return 6; // default US
+        return 10; // default US
     }
 
     public int currencyDecimalPlaces(String label) {
@@ -2441,7 +2446,7 @@ public class CoreAPI {
 
         String oldPIN = GetUserPIN();
 
-        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
+//        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         tABC_CC cc = core.ABC_ChangePassword(
                         AirbitzApplication.getUsername(),
                         password,
@@ -2602,6 +2607,40 @@ public class CoreAPI {
         }
     }
 
+    public void SetupDefaultCurrency() {
+        tABC_AccountSettings settings = coreSettings();
+        settings.setCurrencyNum(getLocaleDefaultCurrencyNum());
+        saveAccountSettings(settings);
+    }
+
+    public int getLocaleDefaultCurrencyNum() {
+        Locale locale = Locale.getDefault();
+
+        java.util.Currency currency = java.util.Currency.getInstance(locale);
+
+        List<String> supported = Arrays.asList(mFauxCurrencyAcronyms);
+        if(supported.contains(currency.getCurrencyCode())) {
+            int number = getNumericCode(currency.getCurrencyCode());
+            Log.d(TAG, "number country code: "+number);
+            return number;
+        } else {
+            return 840;
+        }
+    }
+
+    private int getNumericCode(String currencyCode) {
+        int index = -1;
+        for(int i=0; i<mFauxCurrencyAcronyms.length; i++) {
+            if(mFauxCurrencyAcronyms[i].contains(currencyCode)) {
+                index = i;
+                break;
+            }
+        }
+        if(index != -1) {
+            return mFauxCurrencyNumbers[index];
+        }
+        return 840;
+    }
 
     public String getPrivateSeed(Wallet wallet) {
         tABC_Error Error = new tABC_Error();

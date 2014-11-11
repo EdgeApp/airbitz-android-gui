@@ -279,7 +279,7 @@ public class SendConfirmationFragment extends Fragment {
                 Log.d(TAG, "PIN field focus changed");
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
-                    showPINkeyboard();
+                    mActivity.showSoftKeyboard(mAuthorizationEdittext);
                 } else {
                     mAutoUpdatingTextFields = false;
                 }
@@ -492,10 +492,6 @@ public class SendConfirmationFragment extends Fragment {
         calculateFees();
     }
 
-    private void showPINkeyboard() {
-        ((InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mAuthorizationEdittext, 0);
-    }
-
     public void touchEventsEnded() {
         int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);
         if (mConfirmSwipeButton.getX() <= successThreshold) {
@@ -680,7 +676,7 @@ public class SendConfirmationFragment extends Fragment {
             mAuthorizationLayout.setVisibility(View.VISIBLE);
             mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_password));
             mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit()) {
+        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
             // Show PIN pad
             mPinRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
