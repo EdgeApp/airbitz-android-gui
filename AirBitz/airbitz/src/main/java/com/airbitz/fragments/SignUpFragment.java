@@ -537,11 +537,13 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         String mUsername;
         char[] mPassword;
+        String mPin;
 
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
             mCoreAPI.stopAllAsyncUpdates();
+            mPin = mWithdrawalPinEditText.getText().toString();
         }
 
         @Override
@@ -556,11 +558,11 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 success = mCoreAPI.ChangePassword(String.valueOf(mPassword));
             } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                 success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, String.valueOf(mPassword),
-                        mWithdrawalPinEditText.getText().toString());
+                        mPin);
             } else {
-                mCoreAPI.SetUserPIN(mWithdrawalPinEditText.getText().toString());
+                mCoreAPI.SetUserPIN(mPin);
                 if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
-                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mWithdrawalPinEditText.getText().toString());
+                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
                 }
                 success = tABC_CC.ABC_CC_Ok;
             }
@@ -570,21 +572,26 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mActivity.showModalProgress(false);
             mChangeTask = null;
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
+                    mActivity.showModalProgress(false);
                     AirbitzApplication.Login(mUsername, mPassword);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
+                    mCoreAPI.coreSettings().setSzPIN(mPin);
+                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
                     mActivity.UserJustLoggedIn();
                     mActivity.clearBD();
+                    mActivity.showModalProgress(false);
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
                 } else {
+                    mActivity.showModalProgress(false);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
+                mActivity.showModalProgress(false);
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
                 } else {
