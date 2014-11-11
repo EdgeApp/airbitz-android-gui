@@ -305,6 +305,28 @@ public class SendConfirmationFragment extends Fragment {
         };
         mBitcoinField.addTextChangedListener(mBTCTextWatcher);
 
+        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d(TAG, "Bitcoin field focus changed");
+                if (hasFocus) {
+                    resetFiatAndBitcoinFields();
+                    mCalculator.setEditText(mBitcoinField);
+                    mActivity.showCalculator();
+                } else {
+                    mActivity.hideCalculator();
+                }
+            }
+        });
+
+        mBitcoinField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCalculator.setEditText(mBitcoinField);
+                mActivity.showCalculator();
+            }
+        });
+
         mFiatTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -324,20 +346,6 @@ public class SendConfirmationFragment extends Fragment {
         };
         mFiatField.addTextChangedListener(mFiatTextWatcher);
 
-        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "Bitcoin field focus changed");
-                if (hasFocus) {
-                    resetFiatAndBitcoinFields();
-                    mCalculator.setEditText(mBitcoinField);
-                    mActivity.showCalculator();
-                } else {
-                    mActivity.hideCalculator();
-                }
-            }
-        });
-
         mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -349,6 +357,14 @@ public class SendConfirmationFragment extends Fragment {
                 } else {
                     mActivity.hideCalculator();
                 }
+            }
+        });
+
+        mFiatField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCalculator.setEditText(mFiatField);
+                mActivity.showCalculator();
             }
         });
 
