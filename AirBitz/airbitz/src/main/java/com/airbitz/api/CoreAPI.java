@@ -800,14 +800,14 @@ public class CoreAPI {
         }
     }
 
-    public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers) {
+    public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers, String password) {
 
         tABC_Error pError = new tABC_Error();
         tABC_RequestResults pResults = new tABC_RequestResults();
         SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         tABC_CC result = core.ABC_SetAccountRecoveryQuestions(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(),
+                password,
                 mQuestions, mAnswers, null, pVoid, pError);
         return result;
     }

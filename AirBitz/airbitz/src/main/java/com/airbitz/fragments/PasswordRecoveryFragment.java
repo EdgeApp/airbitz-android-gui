@@ -540,7 +540,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC result = mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers);
+            tABC_CC result = mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
             return result == tABC_CC.ABC_CC_Ok;
         }
 
@@ -551,11 +551,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             if (!success) {
                 mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                if (mMode == SIGN_UP) {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                } else if (mMode == CHANGE_QUESTIONS) {
-                    mActivity.popFragment();
-                }
+                mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
             }
         }
 

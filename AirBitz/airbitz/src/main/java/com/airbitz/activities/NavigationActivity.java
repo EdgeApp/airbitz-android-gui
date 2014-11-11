@@ -1062,6 +1062,22 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    public void ShowMessageDialogBackPress(String title, String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setNeutralButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                NavigationActivity.this.onBackPressed();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     //**************** Fading Dialog
 
     public interface OnFadingDialogFinished { public void onFadingDialogFinished();
