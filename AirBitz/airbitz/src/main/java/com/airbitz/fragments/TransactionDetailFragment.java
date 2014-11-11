@@ -140,7 +140,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private boolean doEdit = false;
     private boolean catSelected = false;
     private boolean mHasReminded = false;
-    private defaultCategoryEnum defaultCat = defaultCategoryEnum.Income;//TODO set this based on type of transaction
     private Bundle bundle;
     private int baseIncomePosition = 0;//TODO set these three from categories retrieved
     private int baseExpensePosition = 1;
@@ -183,6 +182,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+    private String mEntryText;
 
     private Picasso mPicasso;
 
@@ -215,7 +215,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
                 if (mTransaction != null) {
                     if (mTransaction.getCategory().isEmpty()) {
-                        currentType = defaultCat.toString() + ":";
+                        currentType = getString(R.string.fragment_category_income);
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_income))) {
                         currentType = getString(R.string.fragment_category_income);
                         catSelected = true;
@@ -510,38 +510,44 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
+            String store = "";
+
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+//                Log.d(TAG, "editable before text changed. start="+start+" count="+count+" after="+after);
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
+                if(!doEdit) {
+                    store = charSequence.subSequence(start, start + after).toString();
+//                    Log.d(TAG, "store=" + store + " editable text changed. start=" + start + " before=" + before + " after=" + after);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit) {
-                    if (!catSelected) {
-                        String temp = editable.toString();
                         doEdit = true;
                         editable.clear();
-                        editable.append(defaultCat.toString()).append(":").append(temp);
+                        editable.append(currentType).append(store);
                         doEdit = false;
                         catSelected = true;
-                    }
-                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
-                            (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
-                            (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
-                            (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(mCategoryOld);
-                        doEdit = false;
-                    }
-                    updateBlanks(editable.toString().substring(editable.toString().indexOf(':') + 1));
-                    goCreateCategoryList(editable.toString().substring(editable.toString().indexOf(':') + 1));
-                    mCategoryAdapter.notifyDataSetChanged();
-                    mCategoryOld = mCategoryEdittext.getText().toString();
+
+                        if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
+                                (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
+                                (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
+                                (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
+                            doEdit = true;
+                            editable.clear();
+                            editable.append(mCategoryOld);
+                            doEdit = false;
+                        }
+                        String sub = store;
+                        updateBlanks(sub);
+                        goCreateCategoryList(sub);
+                        mCategoryAdapter.notifyDataSetChanged();
+                        mCategoryOld = editable.toString();
                 }
             }
         });
