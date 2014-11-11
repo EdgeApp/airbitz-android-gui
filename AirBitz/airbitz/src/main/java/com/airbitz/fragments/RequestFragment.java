@@ -93,7 +93,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     private View mView;
 
     private Long mSavedSatoshi;
-    private String mSavedFiat;
     private int mSavedIndex;
     private boolean mBtc = false;
 
@@ -163,14 +162,14 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                     AlertDialog alert = builder.create();
                     alert.show();
                 } else {
-                    String btc = mBitcoinField.getText().toString();
-                    long satoshi = mCoreAPI.denominationToSatoshi(btc);
+                    mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+                    mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
 
                     Fragment frag = new RequestQRCodeFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
                     bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
-                    bundle.putLong(SATOSHI_VALUE, satoshi);
+                    bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
                     bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
                     frag.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
@@ -405,6 +404,7 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 mSelectedWallet = mWallets.get(mFromIndex);
                 mFiatField.setText(mCoreAPI.FormatCurrency(mSavedSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
                 pickWalletSpinner.setSelection(mFromIndex);
+                mSavedSatoshi = null;
             }
         } else {
             mFiatField.setText("");
@@ -418,8 +418,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
     public void onPause() {
         super.onPause();
 
-        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-        mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
 
