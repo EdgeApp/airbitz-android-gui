@@ -62,6 +62,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -82,7 +83,8 @@ public class LandingFragment extends Fragment implements
     private EditText mPinEditText;
     private View mPinLayout;
     private List<ImageView> mPinViews;
-    
+
+    private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressButton mCreateAccountButton;
     private TextView mCurrentUserTextView;
     private TextView mForgotTextView;
@@ -129,6 +131,15 @@ public class LandingFragment extends Fragment implements
         mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+
+        mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.fragment_landing_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         mCreateAccountButton = (HighlightOnPressButton) view.findViewById(R.id.fragment_landing_create_account);
         mCreateAccountButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -333,7 +344,7 @@ public class LandingFragment extends Fragment implements
                 return;
             }
             else if(result == tABC_CC.ABC_CC_BadPassword) {
-                saveInvalidEntryCount(getInvalidEntryCount()+1);
+                saveInvalidEntryCount(getInvalidEntryCount() + 1);
                 if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     saveInvalidEntryCount(0);

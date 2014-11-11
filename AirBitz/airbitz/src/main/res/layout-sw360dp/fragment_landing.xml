@@ -293,4 +293,17 @@
 
     </LinearLayout>
 
+    <com.airbitz.objects.HighlightOnPressImageButton
+        android:id="@+id/fragment_landing_button_back"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/string_back_button"
+        android:padding="12.6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_back"
+        android:visibility="visible" />
+
 </RelativeLayout>
