@@ -315,6 +315,9 @@ public class SendConfirmationFragment extends Fragment {
                     mActivity.showCalculator();
                 } else {
                     mActivity.hideCalculator();
+                    if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
+                        mAuthorizationEdittext.requestFocus();
+                    }
                 }
             }
         });
@@ -356,6 +359,9 @@ public class SendConfirmationFragment extends Fragment {
                     mActivity.showCalculator();
                 } else {
                     mActivity.hideCalculator();
+                    if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
+                        mAuthorizationEdittext.requestFocus();
+                    }
                 }
             }
         });
