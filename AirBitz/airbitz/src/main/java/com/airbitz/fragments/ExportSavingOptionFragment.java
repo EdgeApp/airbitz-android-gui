@@ -46,12 +46,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
@@ -107,6 +109,8 @@ public class ExportSavingOptionFragment extends Fragment {
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
+
+    private EditText mPasswordEditText;
 
     private Bundle mBundle;
 
@@ -169,6 +173,9 @@ public class ExportSavingOptionFragment extends Fragment {
         mAccountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mToTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+
+        mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_export_saving_password_edittext);
+        mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         mPrintButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_print);
         mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);
@@ -242,11 +249,19 @@ public class ExportSavingOptionFragment extends Fragment {
             public void onClick(View view) {
                 Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
                 String dataOrFile;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal())
-                    dataOrFile = mCoreApi.getPrivateSeed(mWallet);
-                else
+                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        dataOrFile = mCoreApi.getPrivateSeed(mWallet);
+                    } else {
+                        dataOrFile = null;
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
+                } else {
                     dataOrFile = getExportData(w, mExportType);
-                exportWithEmail(w, dataOrFile);
+                }
+                if(dataOrFile != null) {
+                    exportWithEmail(w, dataOrFile);
+                }
             }
         });
 
@@ -268,7 +283,11 @@ public class ExportSavingOptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()) {
-                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
+                    } else {
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
                 }
             }
         });
@@ -566,9 +585,12 @@ public class ExportSavingOptionFragment extends Fragment {
             mPrintImage.setVisibility(View.GONE);
             mDropBoxButton.setVisibility(View.GONE);
             mDropBoxImage.setVisibility(View.GONE);
-            mViewButton.setVisibility(View.VISIBLE);
             mSDCardButton.setVisibility(View.GONE);
             mSDCardImage.setVisibility(View.GONE);
+            mViewButton.setVisibility(View.VISIBLE);
+            mEmailButton.setVisibility(View.VISIBLE);
+
+            mPasswordEditText.setVisibility(View.VISIBLE);
         }
     }
 

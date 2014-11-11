@@ -157,11 +157,32 @@
 
             </RelativeLayout>
 
+            <EditText
+                android:id="@+id/fragment_export_saving_password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="37.8dp"
+                android:layout_below="@id/layout_export_data"
+                android:layout_marginBottom="6.3dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_edittext"
+                android:ems="10"
+                android:hint="@string/activity_signup_password_hint"
+                android:inputType="textPassword"
+                android:paddingLeft="12.6dp"
+                android:paddingRight="12.6dp"
+                android:selectAllOnFocus="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/text_hint"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
             <LinearLayout
                 android:id="@+id/layout_export_last_period"
                 android:layout_width="match_parent"
                 android:layout_height="44.1dp"
-                android:layout_below="@id/layout_export_data"
+                android:layout_below="@id/fragment_export_saving_password_edittext"
                 android:layout_marginBottom="2.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
