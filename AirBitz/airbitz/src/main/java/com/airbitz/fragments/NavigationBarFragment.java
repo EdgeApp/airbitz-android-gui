@@ -302,6 +302,9 @@ public class NavigationBarFragment extends Fragment {
         mSendText.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mWalletText.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mSettingText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        for(int i=0; i<5; i++) {
+            unselectTab(i);
+        }
         clearPopups();
     }
 
@@ -309,6 +312,7 @@ public class NavigationBarFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initializeElements();
+        mLastTab = 0;
         selectTab(selectedTab);
     }
 
