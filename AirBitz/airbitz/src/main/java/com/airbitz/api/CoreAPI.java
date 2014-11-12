@@ -461,10 +461,11 @@ public class CoreAPI {
         return coreSettings().getSzPIN();
     }
 
-    public void SetUserPIN(String pin) {
-        tABC_AccountSettings settings = coreSettings();
-        settings.setSzPIN(pin);
-        saveAccountSettings(settings);
+    public tABC_CC SetPin(String pin) {
+        tABC_Error Error = new tABC_Error();
+
+        tABC_CC cc = core.ABC_SetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pin, Error);
+        return cc;
     }
 
 

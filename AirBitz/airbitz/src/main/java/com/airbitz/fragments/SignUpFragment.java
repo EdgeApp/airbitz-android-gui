@@ -558,11 +558,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, String.valueOf(mPassword),
                         mPin);
             } else {
-                mCoreAPI.SetUserPIN(mPin);
+                success = mCoreAPI.SetPin(mPin);
                 if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
                     mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
                 }
-                success = tABC_CC.ABC_CC_Ok;
             }
 
             return success == tABC_CC.ABC_CC_Ok;
@@ -579,7 +578,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
-                    mCoreAPI.coreSettings().setSzPIN(mPin);
+                    mCoreAPI.SetPin(mPin);
                     mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
                     mActivity.UserJustLoggedIn();
                     mActivity.clearBD();
@@ -642,7 +641,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mCreateAccountTask = null;
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.SetUserPIN(mPin);
+                mCoreAPI.SetPin(mPin);
 
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();
