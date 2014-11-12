@@ -251,7 +251,9 @@ public class DirectoryDetailFragment extends Fragment {
     }
 
     private void getMapLink() {
-        Uri geoLocation = Uri.parse("geo:" + mLat + "," + mLon);
+        String label = mBusinessDetail.getName();
+        Uri geoLocation = Uri.parse("geo:" + mLat + "," + mLon
+                + "?q=" + mLat + "," + mLon + "(" + label + ")");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
