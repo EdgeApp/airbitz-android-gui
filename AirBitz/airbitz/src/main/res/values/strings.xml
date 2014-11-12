@@ -76,8 +76,9 @@
     <string name="server_error_insufficient_funds">Insufficient funds</string>
     <string name="server_error_synchronizing">Synchronizing with the network.</string>
     <string name="server_error_non_numeric_pin">PIN must be a numeric value.</string>
-    <string name="server_error_bad_pin">Incorrect PIN.</string>
-    <string name="server_error_pin_expired">PIN has expired.</string>
+    <string name="server_error_bad_pin">Invalid PIN</string>
+    <string name="server_error_bad_pin_login">Invalid PIN. Please log in.</string>
+    <string name="server_error_pin_expired">PIN has expired. Please log in.</string>
     <string name="server_error_other">An error has occurred.</string>
 
     <!-- Strings related to Landing -->
@@ -244,7 +245,7 @@
     <string name="send_to_title">To:</string>
     <string name="send_scan_text">Scan QR Code or use photo</string>
     <string name="fragment_send_incorrect_pin_message">You must enter the correct PIN in order to proceed</string>
-    <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
+    <string name="fragment_send_incorrect_pin_title">Invalid PIN</string>
     <string name="fragment_send_incorrect_password_message">You must enter the correct Password in order to proceed</string>
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
@@ -268,7 +269,7 @@
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_confirmation_no_pin">No PIN</string>
     <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
-    <string name="fragment_send_confirmation_pin_remaining">Incorrect PIN. Please wait %1$.0f seconds and try again…</string>
+    <string name="fragment_send_confirmation_pin_remaining">Invalid PIN. Please wait %1$.0f seconds and try again…</string>
     <string name="fragment_send_confirmation_password_remaining">Incorrect Password. Please wait %1$.0f seconds and try again…</string>
 
     <!-- Strings for Wallets fragment -->

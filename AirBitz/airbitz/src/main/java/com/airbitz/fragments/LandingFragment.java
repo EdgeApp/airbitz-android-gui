@@ -346,7 +346,7 @@ public class LandingFragment extends Fragment implements
             else if(result == tABC_CC.ABC_CC_BadPassword) {
                 saveInvalidEntryCount(getInvalidEntryCount() + 1);
                 if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
-                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
+                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin_login));
                     saveInvalidEntryCount(0);
                     abortPermanently();
                     return;
@@ -373,15 +373,15 @@ public class LandingFragment extends Fragment implements
     @Override
     public void onFadingDialogFinished() {
         mActivity.setFadingDialogListener(null);
-        mHandler.post(delayedShowPinKeyboard);
+        mHandler.postDelayed(delayedShowPinKeyboard, 100);
     }
 
     final Runnable delayedShowPinKeyboard = new Runnable() {
         @Override
         public void run() {
             mPinEditText.setText("");
-            refreshView(true, true);
             mPinEditText.performClick();
+            refreshView(true, true);
         }
     };
 
