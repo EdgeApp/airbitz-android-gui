@@ -129,13 +129,13 @@
     <LinearLayout
         android:id="@+id/add_popup_triangle_container"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_search_container"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="invisible" >
 
         <View
             android:id="@+id/add_popup_triangle"
@@ -145,71 +145,70 @@
             android:layout_marginTop="-25dp"
             android:background="@drawable/blue_triangle" />
 
-    <LinearLayout
-        android:id="@+id/add_popup_container"
-        android:layout_width="match_parent"
-        android:layout_height="189dp"
-        android:background="@drawable/category_popup"
-        android:orientation="vertical"
-        android:padding="6.3dp"
-        android:visibility="visible">
-
-        <TextView
-            android:id="@+id/add_popup_expense"
+        <LinearLayout
+            android:id="@+id/add_popup_container"
             android:layout_width="match_parent"
-            android:layout_height="44.1dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"
-            android:text="@string/settings_categories_expense"
-            android:textColor="@android:color/black" />
+            android:layout_height="189dp"
+            android:background="@drawable/category_popup"
+            android:orientation="vertical"
+            android:padding="6.3dp" >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/mostly_opaque_black" />
+            <TextView
+                android:id="@+id/add_popup_expense"
+                android:layout_width="match_parent"
+                android:layout_height="44.1dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:paddingLeft="12.6dp"
+                android:text="@string/settings_categories_expense"
+                android:textColor="@android:color/black" />
 
-        <TextView
-            android:id="@+id/add_popup_income"
-            android:layout_width="match_parent"
-            android:layout_height="44.1dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"
-            android:text="@string/settings_categories_income"
-            android:textColor="@android:color/black" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/mostly_opaque_black" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/mostly_opaque_black" />
+            <TextView
+                android:id="@+id/add_popup_income"
+                android:layout_width="match_parent"
+                android:layout_height="44.1dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:paddingLeft="12.6dp"
+                android:text="@string/settings_categories_income"
+                android:textColor="@android:color/black" />
 
-        <TextView
-            android:id="@+id/add_popup_transfer"
-            android:layout_width="match_parent"
-            android:layout_height="44.1dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"
-            android:text="@string/settings_categories_transfer"
-            android:textColor="@android:color/black" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/mostly_opaque_black" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/mostly_opaque_black" />
+            <TextView
+                android:id="@+id/add_popup_transfer"
+                android:layout_width="match_parent"
+                android:layout_height="44.1dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:paddingLeft="12.6dp"
+                android:text="@string/settings_categories_transfer"
+                android:textColor="@android:color/black" />
 
-        <TextView
-            android:id="@+id/add_popup_exchange"
-            android:layout_width="match_parent"
-            android:layout_height="44.1dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingLeft="12.6dp"
-            android:text="@string/settings_categories_exchange"
-            android:textColor="@android:color/black" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/mostly_opaque_black" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/add_popup_exchange"
+                android:layout_width="match_parent"
+                android:layout_height="44.1dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:paddingLeft="12.6dp"
+                android:text="@string/settings_categories_exchange"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -37,6 +37,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -105,6 +106,7 @@ public class CategoryFragment extends Fragment {
     private List<String> mCurrentCategories;
     private List<Integer> currentPosPopUp;
     private boolean mKeyboardUp = false;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,7 +135,7 @@ public class CategoryFragment extends Fragment {
         mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.button_cancel);
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.button_done);
 
-        mAddPopUpContainer = (LinearLayout) mView.findViewById(R.id.add_popup_container);
+        mAddPopUpContainer = (LinearLayout) mView.findViewById(R.id.add_popup_triangle_container);
         mAddExpensePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_expense);
         mAddIncomePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_income);
         mAddTransferPopUpTextView = (TextView) mView.findViewById(R.id.add_popup_transfer);
@@ -535,12 +537,22 @@ public class CategoryFragment extends Fragment {
     }
 
     public void showDoneCancel() {
-        mDoneCancelContainer.setVisibility(View.VISIBLE);
+        mShowDoneVisibility = View.VISIBLE;
+        mHandler.postDelayed(delayedShowDoneCancel, 100);
     }
 
     public void hideDoneCancel() {
-        mDoneCancelContainer.setVisibility(View.GONE);
+        mShowDoneVisibility = View.GONE;
+        mHandler.postDelayed(delayedShowDoneCancel, 100);
     }
+
+    private int mShowDoneVisibility = View.INVISIBLE;
+    Runnable delayedShowDoneCancel = new Runnable() {
+        @Override
+        public void run() {
+            mDoneCancelContainer.setVisibility(mShowDoneVisibility);
+        }
+    };
 
     private void SaveAllChanges() {
         List<String> coreCategories = mCoreAPI.loadCategories();
