@@ -166,7 +166,7 @@
     <LinearLayout
         android:id="@+id/normal_navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tabbar_height"
+        android:layout_height="102.5dp"
         android:orientation="horizontal"
         android:background="@drawable/tab_base"
         android:weightSum="5">
