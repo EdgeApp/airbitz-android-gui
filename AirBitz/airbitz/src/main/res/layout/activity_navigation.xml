@@ -15,6 +15,22 @@
         android:layout_marginBottom="56.7dp"
         android:orientation="vertical" />
 
+    <com.airbitz.objects.Calculator
+        android:id="@+id/navigation_calculator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/tabbar_height"
+        android:visibility="gone" />
+
+    <com.airbitz.objects.Numberpad
+        android:id="@+id/navigation_numberpad_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/tabbar_height"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/navigationLayout"
         android:layout_width="match_parent"
@@ -29,20 +45,6 @@
             tools:layout="@layout/fragment_navigation_bar" />
 
     </RelativeLayout>
-
-    <com.airbitz.objects.Calculator
-        android:id="@+id/navigation_calculator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
-
-    <com.airbitz.objects.Numberpad
-        android:id="@+id/navigation_numberpad_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/navigation_view_pager"
