@@ -110,7 +110,7 @@
     <string name="fragment_signup_creating_wallet">Creating and securing wallet…</string>
     <string name="activity_signup_title_change_password">Change Password</string>
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
-    <string name="activity_signup_title_change_pin">Change Withdrawal PIN</string>
+    <string name="activity_signup_title_change_pin">Change PIN</string>
     <string name="activity_signup_username_hint">User Name</string>
     <string name="activity_signup_password_hint">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
@@ -129,7 +129,7 @@
     <string name="activity_signup_popup_length">Must have at least 10 characters</string>
     <string name="activity_signup_pin_change_good">PIN successfully changed.</string>
     <string name="activity_signup_pin_change_bad">PIN could not be changed.</string>
-    <string name="activity_signup_pin_change_title">Change Withdrawal PIN</string>
+    <string name="activity_signup_pin_change_title">Change PIN</string>
     <string name="activity_signup_password_change_title">Change Password</string>
     <string name="activity_signup_password_change_good">Password successfully changed.</string>
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
@@ -137,7 +137,7 @@
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
-    <string name="activity_signup_insufficient_pin">Withdrawal PIN must be 4 digits</string>
+    <string name="activity_signup_insufficient_pin">PIN must be 4 digits</string>
     <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
     <string name="activity_signup_time_to_crack">Time to crack: </string>
     <string name="activity_signup_seconds">seconds</string>
@@ -186,7 +186,7 @@
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_spending_limits">Spending Limits</string>
     <string name="settings_button_change_password">Change password</string>
-    <string name="settings_button_pin">Change withdrawal PIN</string>
+    <string name="settings_button_pin">Change PIN</string>
     <string name="settings_button_recovery">Recovery Questions</string>
     <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
@@ -243,7 +243,7 @@
     <string name="send_from_title">From:</string>
     <string name="send_to_title">To:</string>
     <string name="send_scan_text">Scan QR Code or use photo</string>
-    <string name="fragment_send_incorrect_pin_message">You must enter the correct withdrawal PIN in order to proceed</string>
+    <string name="fragment_send_incorrect_pin_message">You must enter the correct PIN in order to proceed</string>
     <string name="fragment_send_incorrect_pin_title">Incorrect PIN</string>
     <string name="fragment_send_incorrect_password_message">You must enter the correct Password in order to proceed</string>
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
