@@ -80,7 +80,6 @@ public class CategoryFragment extends Fragment {
     private TextView mAddIncomePopUpTextView;
     private TextView mAddTransferPopUpTextView;
     private TextView mAddExchangePopUpTextView;
-    private RelativeLayout mAddTriangleContainer;
     private LinearLayout mDoneCancelContainer;
     private RelativeLayout mItemPopUpContainer;
     private EditText mItemPopUpEdittext;
@@ -139,7 +138,6 @@ public class CategoryFragment extends Fragment {
         mAddIncomePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_income);
         mAddTransferPopUpTextView = (TextView) mView.findViewById(R.id.add_popup_transfer);
         mAddExchangePopUpTextView = (TextView) mView.findViewById(R.id.add_popup_exchange);
-        mAddTriangleContainer = (RelativeLayout) mView.findViewById(R.id.add_popup_triangle_container);
 
         mItemPopUpContainer = (RelativeLayout) mView.findViewById(R.id.popup_container);
         mItemPopUpEdittext = (EditText) mView.findViewById(R.id.item_popup_edittext);            //0
@@ -210,7 +208,6 @@ public class CategoryFragment extends Fragment {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mAddPopUpContainer.setVisibility(View.VISIBLE);
-                    mAddTriangleContainer.setVisibility(View.VISIBLE);
                     if (mAddField.getText().toString().isEmpty()) {
                         mAddField.append(getString(R.string.fragment_category_expense));
                         currentType = getString(R.string.fragment_category_expense);
@@ -220,7 +217,6 @@ public class CategoryFragment extends Fragment {
                     }
                 } else {
                     mAddPopUpContainer.setVisibility(View.GONE);
-                    mAddTriangleContainer.setVisibility(View.GONE);
                 }
             }
         });
@@ -536,7 +532,6 @@ public class CategoryFragment extends Fragment {
     private void hideItemEditContainters() {
         mItemPopUpContainer.setVisibility(View.GONE);
         mAddPopUpContainer.setVisibility(View.GONE);
-        mAddTriangleContainer.setVisibility(View.GONE);
     }
 
     public void showDoneCancel() {
