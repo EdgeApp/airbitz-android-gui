@@ -100,7 +100,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     private List<String> mStringQuestions;
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mNumericQuestions;
-
+    private boolean mSaved = false;
 
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -215,7 +215,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             }
         }
 
-        if (dirty) {
+        if (dirty && !mSaved) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
             builder.setMessage(getString(R.string.activity_recovery_warning_dirty_message))
                     .setTitle(getString(R.string.activity_recovery_warning_dirty_title))
@@ -551,6 +551,7 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
             if (!success) {
                 mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
+                mSaved = true;
                 mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
             }
         }
