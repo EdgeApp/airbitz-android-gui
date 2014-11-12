@@ -462,6 +462,7 @@ public class WalletsFragment extends Fragment
     @Override
     public void onListReordered() {
         mCoreAPI.setWalletOrder(mLatestWalletList);
+        updateWalletList(mArchiveClosed);
         UpdateBalances();
     }
 
