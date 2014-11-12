@@ -243,7 +243,7 @@ public class Calculator extends LinearLayout {
                 mEditText.setText(s.substring(0, s.length() - 1));
             }
         } else if (buttonTag.equals("done")) {
-            mEditText.clearFocus();
+            mEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
         } else if (DIGITS.contains(buttonTag)) {
 
             // digit was pressed

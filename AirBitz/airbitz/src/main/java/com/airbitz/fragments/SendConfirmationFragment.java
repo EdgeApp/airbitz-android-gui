@@ -45,8 +45,11 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -315,10 +318,25 @@ public class SendConfirmationFragment extends Fragment {
                     mActivity.showCalculator();
                 } else {
                     mActivity.hideCalculator();
-                    if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
-                        mAuthorizationEdittext.requestFocus();
-                    }
                 }
+            }
+        });
+
+        mBitcoinField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
             }
         });
 
@@ -359,10 +377,25 @@ public class SendConfirmationFragment extends Fragment {
                     mActivity.showCalculator();
                 } else {
                     mActivity.hideCalculator();
-                    if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
-                        mAuthorizationEdittext.requestFocus();
-                    }
                 }
+            }
+        });
+
+        mFiatField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
             }
         });
 
