@@ -494,7 +494,7 @@ public class CategoryFragment extends Fragment {
     }
 
     private void goAddCategories() {
-        mCategories = mCoreAPI.loadCategories();
+        mCategories = removeBlankSubcategories(mCoreAPI.loadCategories());
         mCurrentCategories.addAll(mCategories);
     }
 
@@ -567,5 +567,17 @@ public class CategoryFragment extends Fragment {
         for (String category : mCategories) {
             mCoreAPI.addCategory(category);
         }
+    }
+
+    private List<String> removeBlankSubcategories(List<String> allcategories) {
+        for (String category : allcategories) {
+            if (category.equals(getString(R.string.fragment_category_expense)) ||
+                    category.equals(getString(R.string.fragment_category_income)) ||
+                    category.equals(getString(R.string.fragment_category_transfer)) ||
+                    category.equals(getString(R.string.fragment_category_exchange))) {
+                allcategories.remove(category);
+            }
+        }
+        return allcategories;
     }
 }
