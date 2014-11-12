@@ -140,8 +140,8 @@
             android:layout_weight="1"
             android:visibility="invisible">
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="28"
+                android:layout_height="28"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_settings_selected"
