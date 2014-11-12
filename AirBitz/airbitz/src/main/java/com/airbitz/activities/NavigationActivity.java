@@ -922,6 +922,7 @@ public class NavigationActivity extends Activity
         mCoreAPI.logout();
         DisplayLoginOverlay(false);
         startActivity(new Intent(this, NavigationActivity.class));
+        finish();
     }
 
     private Fragment getNewBaseFragement(int id) {
@@ -972,12 +973,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
-            AirbitzApplication.Logout();
-            mCoreAPI.ClearCacheKeys();
-            DisplayLoginOverlay(false);
-            startActivity(new Intent(this, NavigationActivity.class));
-            finish();
+            Logout();
         }
     }
 
