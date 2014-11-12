@@ -27,7 +27,8 @@
         android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" 
         android:required="false" />
     <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.autofocus"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="false" />
