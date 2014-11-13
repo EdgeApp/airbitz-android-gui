@@ -65,8 +65,10 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.BleDevice;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.BluetoothListView;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
@@ -87,7 +89,10 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends Fragment implements Camera.PreviewCallback, Camera.AutoFocusCallback {
+public class SendFragment extends Fragment implements
+        Camera.PreviewCallback,
+        Camera.AutoFocusCallback,
+        BluetoothListView.OnPeripheralSelected {
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -119,8 +124,12 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     private HighlightOnPressImageButton mHelpButton;
     private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
+    private ImageButton mBluetoothButton;
     private ListView mListingListView;
     private RelativeLayout mListviewContainer;
+    private RelativeLayout mCameraLayout;
+    private RelativeLayout mBluetoothLayout;
+    private BluetoothListView mBluetoothListView;
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
     private FrameLayout mPreviewFrame;
@@ -152,11 +161,16 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send, container, false);
 
+        mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
+        mBluetoothListView = (BluetoothListView) mView.findViewById(R.id.fragment_send_bluetooth_listview);
+        mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
+
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
+        mBluetoothButton = (ImageButton) mView.findViewById(R.id.button_bluetooth);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -204,6 +218,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
             @Override
             public void onClick(View view) {
                 PickAPicture();
+            }
+        });
+
+        mBluetoothButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ViewBluetoothPeripherals(true);
             }
         });
 
@@ -348,6 +369,13 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
                     }
                 }
             }
+        }
+
+        // if BLE is NOT supported on the device, disable
+        if (!mBluetoothListView.isAvailable()) {
+            mBluetoothButton.setEnabled(false);
+            mBluetoothButton.setVisibility(View.GONE);
+            mBluetoothLayout.setVisibility(View.GONE);
         }
 
         updateWalletOtherList();
@@ -614,6 +642,7 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
         if (mHandler != null)
             mHandler.removeCallbacks(cameraDelayRunner);
         stopCamera();
+        mBluetoothListView.close();
     }
 
     @Override
@@ -642,5 +671,47 @@ public class SendFragment extends Fragment implements Camera.PreviewCallback, Ca
     @Override
     public void onAutoFocus(boolean b, Camera camera) {
         mFocused = true;
+    }
+
+
+    //************** Bluetooth support
+    // Show Bluetooth peripherals
+    private void ViewBluetoothPeripherals(boolean bluetooth) {
+        if(bluetooth) {
+            mCameraLayout.setVisibility(View.GONE);
+            mBluetoothLayout.setVisibility(View.VISIBLE);
+            startBluetoothSearch();
+        }
+        else {
+            mCameraLayout.setVisibility(View.VISIBLE);
+            mBluetoothLayout.setVisibility(View.GONE);
+            startCamera();
+        }
+    }
+
+    // Start the Bluetooth search
+    private void startBluetoothSearch() {
+        if(mBluetoothListView.isAvailable()) {
+            mBluetoothListView.setOnPeripheralFound(this);
+            mBluetoothListView.scanForBleDevices(true);
+            stopCamera();
+        }
+    }
+
+    // Stop the Bluetooth search
+    private void stopBluetoothSearch() {
+        if(mBluetoothListView.isAvailable()) {
+            mBluetoothListView.scanForBleDevices(false);
+        }
+    }
+
+    @Override
+    public void onPeripheralFound(BleDevice device) {
+        stopBluetoothSearch();
+        connectDevice(device);
+    }
+
+    private void connectDevice(BleDevice result) {
+        mBluetoothListView.connectGatt(result);
     }
 }

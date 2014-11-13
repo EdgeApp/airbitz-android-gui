@@ -116,10 +116,11 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_camera"
+        android:id="@+id/fragment_send_layout_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_data">
+        android:layout_below="@id/layout_data"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/layout_camera_preview"
@@ -156,17 +157,33 @@
             android:scaleType="centerInside"
             android:src="@drawable/btn_flash_off" />
 
-        <ImageButton
-            android:id="@+id/button_gallery"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/gallery_button" />
+            android:layout_centerVertical="true" >
 
+            <ImageButton
+                android:id="@+id/button_bluetooth"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/btn_ble_icon" />
+
+            <ImageButton
+                android:id="@+id/button_gallery"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/button_bluetooth"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/gallery_button" />
+
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -176,6 +193,20 @@
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_send_bluetooth_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_data"
+        android:visibility="gone" >
+
+        <com.airbitz.objects.BluetoothListView
+            android:id="@+id/fragment_send_bluetooth_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
