@@ -34,6 +34,7 @@ package com.airbitz.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,6 +42,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -61,6 +63,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -70,6 +73,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.BluetoothListView;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.google.zxing.BinaryBitmap;
@@ -92,7 +96,9 @@ import java.util.List;
 public class SendFragment extends Fragment implements
         Camera.PreviewCallback,
         Camera.AutoFocusCallback,
-        BluetoothListView.OnPeripheralSelected {
+        BluetoothListView.OnPeripheralSelected,
+        BluetoothListView.OnBitcoinURIReceived,
+        BluetoothListView.OnOneScanEnded {
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -129,12 +135,14 @@ public class SendFragment extends Fragment implements
     private RelativeLayout mListviewContainer;
     private RelativeLayout mCameraLayout;
     private RelativeLayout mBluetoothLayout;
+    private RelativeLayout mBluetoothScanningLayout;
     private BluetoothListView mBluetoothListView;
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
     private FrameLayout mPreviewFrame;
     private View dummyFocus;
     private HighlightOnPressSpinner walletSpinner;
+    private HighlightOnPressButton mScanQRButton;
     private List<Wallet> mWalletOtherList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
@@ -143,6 +151,7 @@ public class SendFragment extends Fragment implements
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
     private boolean mFocused = true;
+    private boolean mForcedBluetoothScanning = false;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
@@ -162,7 +171,7 @@ public class SendFragment extends Fragment implements
         mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
-        mBluetoothListView = (BluetoothListView) mView.findViewById(R.id.fragment_send_bluetooth_listview);
+        mBluetoothScanningLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_scanning_layout);
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
@@ -171,6 +180,7 @@ public class SendFragment extends Fragment implements
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
         mBluetoothButton = (ImageButton) mView.findViewById(R.id.button_bluetooth);
+        mScanQRButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_send_scanning_button);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -224,7 +234,16 @@ public class SendFragment extends Fragment implements
         mBluetoothButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mForcedBluetoothScanning = true;
                 ViewBluetoothPeripherals(true);
+            }
+        });
+
+        mScanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mForcedBluetoothScanning = false;
+                ViewBluetoothPeripherals(false);
             }
         });
 
@@ -251,23 +270,7 @@ public class SendFragment extends Fragment implements
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    dummyFocus.requestFocus();
-
-                    String strTo = mToEdittext.getText().toString();
-                    if (strTo == null || strTo.isEmpty()) {
-                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-                        mListviewContainer.setVisibility(View.GONE);
-                        return true;
-                    }
-
-                    boolean bIsUUID = false;
-                    CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
-                    if (results.address != null) {
-                        GotoSendConfirmation(results.address, results.amountSatoshi, results.label, bIsUUID);
-                    } else {
-                        ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
-                    }
+                    checkAndSendAddress(mToEdittext.getText().toString());
                     return true;
                 }
                 return false;
@@ -371,16 +374,40 @@ public class SendFragment extends Fragment implements
             }
         }
 
-        // if BLE is NOT supported on the device, disable
-        if (!mBluetoothListView.isAvailable()) {
-            mBluetoothButton.setEnabled(false);
-            mBluetoothButton.setVisibility(View.GONE);
-            mBluetoothLayout.setVisibility(View.GONE);
+        // if BLE is supported on the device, enable
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (mBluetoothAdapter.isEnabled()) {
+                mBluetoothListView = new BluetoothListView(mActivity);
+                mBluetoothLayout.addView(mBluetoothListView, 0);
+                mBluetoothButton.setVisibility(View.VISIBLE);
+            }
+            else {
+                // Bluetooth is not enabled - ask for enabling?
+            }
         }
 
         updateWalletOtherList();
 
         return mView;
+    }
+
+    private void checkAndSendAddress(String strTo) {
+        dummyFocus.requestFocus();
+
+        if (strTo == null || strTo.isEmpty()) {
+            ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
+            mListviewContainer.setVisibility(View.GONE);
+            return;
+        }
+
+        CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
+        if (results.address != null) {
+            GotoSendConfirmation(results.address, results.amountSatoshi, results.label, false);
+        } else {
+            ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+        }
     }
 
     public void stopCamera() {
@@ -581,10 +608,17 @@ public class SendFragment extends Fragment implements
         mWallets = mCoreAPI.getCoreActiveWallets();
 
         dummyFocus.requestFocus();
-        if (mHandler == null)
+        if (mHandler == null) {
             mHandler = new Handler();
-        mHandler.postDelayed(cameraDelayRunner, 500);
+        }
 
+        if(mBluetoothButton.getVisibility() == View.VISIBLE) {
+            ViewBluetoothPeripherals(true);
+            mBluetoothListView.setOnOneScanEndedListener(this);
+        }
+        else {
+            ViewBluetoothPeripherals(false);
+        }
 
         if (walletSpinner != null && walletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
@@ -642,7 +676,10 @@ public class SendFragment extends Fragment implements
         if (mHandler != null)
             mHandler.removeCallbacks(cameraDelayRunner);
         stopCamera();
-        mBluetoothListView.close();
+        if(mBluetoothListView != null) {
+            mBluetoothListView.close();
+            mBluetoothListView.setOnOneScanEndedListener(null);
+        }
     }
 
     @Override
@@ -673,7 +710,6 @@ public class SendFragment extends Fragment implements
         mFocused = true;
     }
 
-
     //************** Bluetooth support
     // Show Bluetooth peripherals
     private void ViewBluetoothPeripherals(boolean bluetooth) {
@@ -683,16 +719,18 @@ public class SendFragment extends Fragment implements
             startBluetoothSearch();
         }
         else {
+            stopBluetoothSearch();
             mCameraLayout.setVisibility(View.VISIBLE);
             mBluetoothLayout.setVisibility(View.GONE);
-            startCamera();
+            mHandler.postDelayed(cameraDelayRunner, 500);
         }
     }
 
     // Start the Bluetooth search
     private void startBluetoothSearch() {
-        if(mBluetoothListView.isAvailable()) {
-            mBluetoothListView.setOnPeripheralFound(this);
+        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
+            mBluetoothScanningLayout.setVisibility(View.VISIBLE);
+            mBluetoothListView.setOnPeripheralSelectedListener(this);
             mBluetoothListView.scanForBleDevices(true);
             stopCamera();
         }
@@ -700,18 +738,50 @@ public class SendFragment extends Fragment implements
 
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
-        if(mBluetoothListView.isAvailable()) {
+        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
             mBluetoothListView.scanForBleDevices(false);
+            mBluetoothListView.close();
         }
     }
 
     @Override
-    public void onPeripheralFound(BleDevice device) {
+    public void onPeripheralSelected(BleDevice device) {
         stopBluetoothSearch();
-        connectDevice(device);
+        mBluetoothListView.setOnPeripheralSelectedListener(null);
+        mBluetoothListView.setOnBitcoinURIReceivedListener(this);
+        mBluetoothListView.connectGatt(device);
     }
 
-    private void connectDevice(BleDevice result) {
-        mBluetoothListView.connectGatt(result);
+    @Override
+    public void onBitcoinURIReceived(final String bitcoinAddress) {
+        mBluetoothListView.setOnBitcoinURIReceivedListener(null);
+        mToEdittext.post(new Runnable() {
+            @Override
+            public void run() {
+                mToEdittext.setText(bitcoinAddress);
+                checkAndSendAddress(bitcoinAddress);
+            }
+        });
+    }
+
+    @Override
+    public void onOneScanEnded(boolean hasDevices) {
+        if(!hasDevices) {
+            if(mForcedBluetoothScanning) {
+                mBluetoothScanningLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                Log.d(TAG, "No bluetooth devices, switching to guns...");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewBluetoothPeripherals(false);
+                    }
+                });
+            }
+        }
+        else {
+            mBluetoothScanningLayout.setVisibility(View.GONE);
+        }
     }
 }

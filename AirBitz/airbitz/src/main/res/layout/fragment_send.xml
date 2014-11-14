@@ -171,7 +171,8 @@
                 android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/btn_ble_icon" />
+                android:src="@drawable/btn_ble_icon"
+                android:visibility="gone"/>
 
             <ImageButton
                 android:id="@+id/button_gallery"
@@ -201,12 +202,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_data"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
-        <com.airbitz.objects.BluetoothListView
-            android:id="@+id/fragment_send_bluetooth_listview"
+        <RelativeLayout
+            android:id="@+id/fragment_send_bluetooth_scanning_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/fragment_send_scanning_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="60dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="Scanning for Bluetooth devices..."
+                android:textColor="@android:color/white"
+                style="@style/BlackDropShadow"/>
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:drawablePadding="30dp"
+                android:text="Scan QR code"
+                android:textColor="@android:color/white"
+                android:drawableLeft="@drawable/img_qr_code"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/fragment_send_scanning_button"
+                android:background="@drawable/bg_button_orange" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -231,7 +264,7 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:layout_below="@+id/fragment_send_listview_triangle"
-            android:layout_marginTop="-1dp"
+            android:layout_marginTop="0dp"
             android:background="@drawable/category_popup"
             android:padding="12.6dp" />
 

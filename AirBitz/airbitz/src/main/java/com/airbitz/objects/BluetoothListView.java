@@ -38,10 +38,10 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -57,7 +57,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 @TargetApi(18)
@@ -68,9 +70,16 @@ public class BluetoothListView extends ListView {
 
     private final String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
     private final String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
+    private final String CLIENT_CHARACTERISTIC_CONFIG ="00002900-0000-1000-8000-00805f9b34fb";
+
+    private static final Queue<Object> sWriteQueue = new ConcurrentLinkedQueue<Object>();
+    private static boolean sIsWriting = false;
+
 
     Context mContext;
-    OnPeripheralSelected mOnPeripheralSelected = null;
+    OnPeripheralSelected mOnPeripheralSelectedListener = null;
+    OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
+    OnOneScanEnded mOnOneScanEndedListener = null;
     BluetoothAdapter mBluetoothAdapter;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
@@ -98,8 +107,8 @@ public class BluetoothListView extends ListView {
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mOnPeripheralSelected != null) {
-                    mOnPeripheralSelected.onPeripheralFound(mPeripherals.get(i));
+                if (mOnPeripheralSelectedListener != null) {
+                    mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
                 }
             }
         });
@@ -109,9 +118,8 @@ public class BluetoothListView extends ListView {
     }
 
     public boolean isAvailable() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return (mBluetoothAdapter != null) &&
-                    mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            return true;
         }
         else {
             return false;
@@ -120,17 +128,35 @@ public class BluetoothListView extends ListView {
 
     public void close() {
         if(mBluetoothGatt != null) {
+            mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
         }
+        mHandler.removeCallbacks(mContinuousScanRunnable);
         mBluetoothGatt = null;
     }
 
     //************** Callback for notification of peripheral selected
     public interface OnPeripheralSelected {
-        public void onPeripheralFound(BleDevice device);
+        public void onPeripheralSelected(BleDevice device);
     }
-    public void setOnPeripheralFound(OnPeripheralSelected listener) {
-        mOnPeripheralSelected = listener;
+    public void setOnPeripheralSelectedListener(OnPeripheralSelected listener) {
+        mOnPeripheralSelectedListener = listener;
+    }
+
+    //************** Callback for notification of bitcoin received
+    public interface OnBitcoinURIReceived {
+        public void onBitcoinURIReceived(String bitcoinAddress);
+    }
+    public void setOnBitcoinURIReceivedListener(OnBitcoinURIReceived listener) {
+        mOnBitcoinURIReceivedListener = listener;
+    }
+
+    //************** Callback for notification of each scan
+    public interface OnOneScanEnded {
+        public void onOneScanEnded(boolean hasDevices);
+    }
+    public void setOnOneScanEndedListener(OnOneScanEnded listener) {
+        mOnOneScanEndedListener = listener;
     }
 
 
@@ -176,6 +202,9 @@ public class BluetoothListView extends ListView {
         @Override
         public void run() {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            if(mOnOneScanEndedListener != null) {
+                mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
+            }
         }
     };
 
@@ -234,18 +263,8 @@ public class BluetoothListView extends ListView {
                 // New services discovered
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        // Find our Airbitz service and characteristic
-                        List<BluetoothGattService> services = gatt.getServices();
-                        for(BluetoothGattService service : services) {
-                            BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(TRANSFER_CHARACTERISTIC_UUID));
-                            if(characteristic != null) {
-                                // Write username to this characteristic - TODO
-                                boolean success = characteristic.setValue("This is Sparta!");
-                                mBluetoothGatt.setCharacteristicNotification(characteristic, true);
-                                mBluetoothGatt.writeCharacteristic(characteristic);
-                            }
-                        }
-                    } else {
+                        subscribe(gatt);
+                     } else {
                         Log.w(TAG, "onServicesDiscovered received: " + status);
                     }
                 }
@@ -255,19 +274,25 @@ public class BluetoothListView extends ListView {
                 public void onCharacteristicRead(BluetoothGatt gatt,
                                                  BluetoothGattCharacteristic characteristic,
                                                  int status) {
-                    Log.d(TAG, "onCharacteristicRead");
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                        Log.d(TAG, "Received: " + characteristic.getStringValue(0));
-                    }
+                    Log.d(TAG, "onCharacteristicRead:" + status);
                 }
 
                 @Override
-                // Result of a characteristic write operation
-                public void onCharacteristicWrite(BluetoothGatt gatt,
-                                                 BluetoothGattCharacteristic characteristic,
-                                                 int status) {
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                        Log.d(TAG, "Written: " + characteristic.getStringValue(0));
+                public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                    Log.v(TAG, "onCharacteristicWrite: " + status);
+                    sIsWriting = false;
+                    nextWrite();
+                }
+
+                @Override
+                public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                    Log.v(TAG, "onDescriptorWrite: " + status);
+                    sIsWriting = false;
+                    nextWrite();
+                    if(status == 3) {
+                        if(mOnBitcoinURIReceivedListener != null) {
+                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("fake address");
+                        }
                     }
                 }
 
@@ -275,9 +300,63 @@ public class BluetoothListView extends ListView {
                 // Result of a characteristic change operation
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                   BluetoothGattCharacteristic characteristic) {
-                    Log.d(TAG, "Characteristic changed: "+characteristic.getStringValue(0));
+                    Log.d(TAG, "Characteristic changed: ");
+                    if(mOnBitcoinURIReceivedListener != null) {
+                        mOnBitcoinURIReceivedListener.onBitcoinURIReceived(characteristic.getStringValue(0));
+                    }
                 }
             };
+
+    private void subscribe(BluetoothGatt gatt) {
+        // Find our Airbitz service and characteristic
+        List<BluetoothGattService> services = gatt.getServices();
+        for(BluetoothGattService service : services) {
+            BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(TRANSFER_CHARACTERISTIC_UUID));
+            if(characteristic != null) {
+                final int charaProp = characteristic.getProperties();
+                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                    // Write username to this characteristic - TODO
+                    gatt.setCharacteristicNotification(characteristic, true);
+                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                    boolean success = characteristic.setValue("This is Sparta");
+                    write(characteristic);
+                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
+                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
+                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+                        write(descriptor);
+                    }
+                }
+
+            }
+        }
+    }
+
+
+    private synchronized void write(Object o) {
+        if (sWriteQueue.isEmpty() && !sIsWriting) {
+            doWrite(o);
+        } else {
+            sWriteQueue.add(o);
+        }
+    }
+
+    private synchronized void nextWrite() {
+        if (!sWriteQueue.isEmpty() && !sIsWriting) {
+            doWrite(sWriteQueue.poll());
+        }
+    }
+
+    private synchronized void doWrite(Object o) {
+        if (o instanceof BluetoothGattCharacteristic) {
+            sIsWriting = true;
+            mBluetoothGatt.writeCharacteristic((BluetoothGattCharacteristic) o);
+        } else if (o instanceof BluetoothGattDescriptor) {
+            sIsWriting = true;
+            mBluetoothGatt.writeDescriptor((BluetoothGattDescriptor) o);
+        } else {
+            nextWrite();
+        }
+    }
 
 
 
