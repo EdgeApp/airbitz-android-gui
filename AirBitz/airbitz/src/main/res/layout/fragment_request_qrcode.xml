@@ -23,104 +23,119 @@
             android:layout_height="252dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_request_qrcode_qr_container"
         android:layout_marginBottom="15.75dp"
         android:layout_marginLeft="12.6dp"
         android:layout_marginRight="12.6dp"
         android:layout_marginTop="9.45dp"
-        android:background="@drawable/emboss_down"
-        android:orientation="vertical"
-        android:paddingBottom="6dp">
+        android:layout_below="@id/fragment_request_qrcode_qr_container" >
 
-        <TextView
-            android:id="@+id/textview_waiting"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="6dp"
-            android:gravity="center_horizontal"
-            android:text="@string/request_qr_waiting_for_payment"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/textview_bitcoin_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginTop="1dp"
-            android:gravity="center_horizontal"
-            android:textColor="@android:color/white"
-            android:textSize="19sp" />
-
-        <TextView
-            android:id="@+id/textview_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="18.9dp"
-            android:layout_marginRight="18.9dp"
-            android:layout_marginTop="2dp"
-            android:ellipsize="middle"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
+        <ImageView
+            android:id="@+id/fragment_request_qrcode_ble_image"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/logo_ble"
+            android:visibility="gone"/>
 
         <LinearLayout
+            android:id="@+id/layout_container"
             android:layout_width="match_parent"
-            android:layout_height="37.8dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="12.6dp"
-            android:layout_marginRight="12.6dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:background="@drawable/emboss_down"
+            android:orientation="vertical"
+            android:paddingBottom="6dp">
+
+            <TextView
+                android:id="@+id/textview_waiting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center_horizontal"
+                android:text="@string/request_qr_waiting_for_payment"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textview_bitcoin_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="1dp"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/textview_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="18.9dp"
+                android:layout_marginRight="18.9dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="middle"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="37.8dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="12.6dp"
+                android:layout_marginRight="12.6dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_qrcode_copy_button"
+                    android:layout_width="75.6dp"
+                    android:layout_height="37.8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="3.15dp"
+                    android:background="@drawable/btn_copy"
+                    android:textColor="@android:color/white" />
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/button_email_address"
+                    android:layout_width="75.6dp"
+                    android:layout_height="37.8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="3.15dp"
+                    android:layout_marginRight="3.15dp"
+                    android:background="@drawable/btn_email"
+                    android:textColor="@android:color/white" />
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/button_sms_address"
+                    android:layout_width="75.6dp"
+                    android:layout_height="37.8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="3.15dp"
+                    android:background="@drawable/btn_sms"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
 
             <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/fragment_qrcode_copy_button"
-                android:layout_width="75.6dp"
+                android:id="@+id/fragment_qrcode_cancel_button"
+                android:layout_width="245.7dp"
                 android:layout_height="37.8dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginRight="3.15dp"
-                android:background="@drawable/btn_copy"
-                android:textColor="@android:color/white" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/button_email_address"
-                android:layout_width="75.6dp"
-                android:layout_height="37.8dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="3.15dp"
-                android:layout_marginRight="3.15dp"
-                android:background="@drawable/btn_email"
-                android:textColor="@android:color/white" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/button_sms_address"
-                android:layout_width="75.6dp"
-                android:layout_height="37.8dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="3.15dp"
-                android:background="@drawable/btn_sms"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/btn_blue"
+                android:text="@string/string_cancel"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
+    </RelativeLayout>
 
-        <com.airbitz.objects.HighlightOnPressButton
-            android:id="@+id/fragment_qrcode_cancel_button"
-            android:layout_width="245.7dp"
-            android:layout_height="37.8dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/btn_blue"
-            android:text="@string/string_cancel"
-            android:textColor="@android:color/white" />
 
-    </LinearLayout>
 
 </RelativeLayout>
