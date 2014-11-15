@@ -216,9 +216,23 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
         }
 
         if (dirty && !mSaved) {
+            String message;
+            String title;
+            if(mMode == CHANGE_QUESTIONS) {
+                message = getString(R.string.activity_recovery_warning_dirty_change_message);
+                title = getString(R.string.activity_recovery_warning_dirty_change_title);
+            }
+            else if (mMode == FORGOT_PASSWORD) {
+                message = getString(R.string.activity_recovery_warning_dirty_forgot_message);
+                title = getString(R.string.activity_recovery_warning_dirty_forgot_title);
+            }
+            else {
+                return true;
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-            builder.setMessage(getString(R.string.activity_recovery_warning_dirty_message))
-                    .setTitle(getString(R.string.activity_recovery_warning_dirty_title))
+            builder.setMessage(message)
+                    .setTitle(title)
                     .setCancelable(true)
                     .setPositiveButton(getString(R.string.string_yes),
                             new DialogInterface.OnClickListener() {
