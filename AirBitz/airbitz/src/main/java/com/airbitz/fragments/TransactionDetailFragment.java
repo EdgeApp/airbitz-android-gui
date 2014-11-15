@@ -528,26 +528,28 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit) {
+                    if (!catSelected) {
                         doEdit = true;
                         editable.clear();
                         editable.append(currentType).append(store);
                         doEdit = false;
                         catSelected = true;
+                    }
 
-                        if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
-                                (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
-                                (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
-                                (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
-                            doEdit = true;
-                            editable.clear();
-                            editable.append(mCategoryOld);
-                            doEdit = false;
-                        }
-                        String sub = store;
-                        updateBlanks(sub);
-                        goCreateCategoryList(sub);
-                        mCategoryAdapter.notifyDataSetChanged();
-                        mCategoryOld = editable.toString();
+                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
+                            (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
+                            (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
+                            (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
+                        doEdit = true;
+                        editable.clear();
+                        editable.append(mCategoryOld);
+                        doEdit = false;
+                    }
+                    String sub = store;
+                    updateBlanks(sub);
+                    goCreateCategoryList(sub);
+                    mCategoryAdapter.notifyDataSetChanged();
+                    mCategoryOld = editable.toString();
                 }
             }
         });
