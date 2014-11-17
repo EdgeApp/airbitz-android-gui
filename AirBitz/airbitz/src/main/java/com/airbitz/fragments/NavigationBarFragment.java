@@ -74,10 +74,9 @@ public class NavigationBarFragment extends Fragment {
     private RelativeLayout mPopupSettingButton;
     private View mView, mButtons;
     private int selectedTab = 0;
-
+    private int mLastTab = 0;
 
     private NavigationActivity mActivity;
-    private int mLastTab = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -312,7 +311,7 @@ public class NavigationBarFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initializeElements();
-        mLastTab = 0;
+        mLastTab = selectedTab;
         selectTab(selectedTab);
     }
 
