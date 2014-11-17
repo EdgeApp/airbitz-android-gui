@@ -43,6 +43,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -477,10 +478,10 @@ public class RequestQRCodeFragment extends Fragment implements
      */
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
-        final byte[] paymentRequest = mAddress.getBytes();
-        Log.d(TAG, "Creating NFC request: " + mAddress);
+        final byte[] paymentRequest = mRequestURI.getBytes();
+        Log.d(TAG, "Creating NFC request: " + mRequestURI);
         if (paymentRequest != null)
-            return new NdefMessage(new NdefRecord[] { Nfc.createMime(Nfc.MIMETYPE_PAYMENTREQUEST, paymentRequest) });
+                return new NdefMessage(NdefRecord.createUri(mRequestURI)); //new NdefRecord[] { Nfc.createMime(null, paymentRequest) });
         else
             return null;
     }

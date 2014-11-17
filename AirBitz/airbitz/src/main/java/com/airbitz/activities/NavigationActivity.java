@@ -45,7 +45,6 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,7 +87,6 @@ import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
-import com.airbitz.objects.Nfc;
 import com.airbitz.objects.Numberpad;
 
 import net.hockeyapp.android.CrashManager;
@@ -664,6 +662,21 @@ public class NavigationActivity extends Activity
         }
     }
 
+    //********************** NFC support
+    @Override
+    protected void onNewIntent(final Intent intent)
+    {
+        final String action = intent.getAction();
+        final Uri intentUri = intent.getData();
+        final String scheme = intentUri != null ? intentUri.getScheme() : null;
+
+        if (intentUri != null && (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action))) {
+            if ("bitcoin".equals(scheme)) {
+                onBitcoinUri(intent.getData());
+            }
+        }
+    }
+
     /*
      * Handle bitcoin:<address> Uri's coming from OS
      */
@@ -1224,48 +1237,5 @@ public class NavigationActivity extends Activity
             Log.d(TAG, "Category creation failed");
         }
     }
-
-    //********************** NFC support
-    @Override
-    protected void onNewIntent(final Intent intent)
-    {
-        handleIntent(intent);
-    }
-
-    private void handleIntent(final Intent intent)
-    {
-        final String action = intent.getAction();
-
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action))
-        {
-            final NdefMessage ndefMessage = (NdefMessage) intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)[0];
-            final byte[] input = Nfc.extractMimePayload(Nfc.MIMETYPE_PAYMENTREQUEST, ndefMessage);
-
-            // TODO send to SendFragment if currently viewing it
-            Log.d(TAG, "NFC received this message: " + input.toString());
-            if (! (mNavStacks[mNavThreadId].peek() instanceof SendFragment)) {
-                //FIXME what to do here?
-            } else {
-                CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(input.toString());
-                if (info != null && info.address != null) {
-                    switchFragmentThread(Tabs.SEND.ordinal());
-                    Fragment fragment = new SendConfirmationFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(SendFragment.IS_UUID, false);
-                    bundle.putString(SendFragment.UUID, info.address);
-                    bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
-                    bundle.putString(SendFragment.LABEL, info.label);
-                    bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
-                    fragment.setArguments(bundle);
-                    pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
-                }
-                else {
-                    ShowOkMessageDialog("NFC Error", "Bitcoin Request invalid");
-                }
-            }
-
-        }
-    }
-
 
 }
