@@ -96,12 +96,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
-/**
- * The main Navigation activity holding fragments for anything controlled with
- * the custom Navigation Bar for Airbitz
- * Created by Thomas Baker on 4/22/14.
- */
 public class NavigationActivity extends Activity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
@@ -110,7 +104,6 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
-    public static final int DOLLAR_CURRENCY_NUMBER = 840;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
