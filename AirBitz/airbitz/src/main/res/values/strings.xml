@@ -200,8 +200,8 @@
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_pin_login">PIN Re-login</string>
-    <string name="settings_title_nfc">NFC Payments</string>
-    <string name="settings_title_ble">Bluetooth Payments</string>
+    <string name="settings_title_nfc">NFC</string>
+    <string name="settings_title_ble">Bluetooth</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
