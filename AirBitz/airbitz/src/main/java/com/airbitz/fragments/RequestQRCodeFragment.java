@@ -43,6 +43,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
+import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +63,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
@@ -66,14 +72,20 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.Nfc;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
-public class RequestQRCodeFragment extends Fragment implements ContactPickerFragment.ContactSelection {
+public class RequestQRCodeFragment extends Fragment implements
+        ContactPickerFragment.ContactSelection,
+        NfcAdapter.CreateNdefMessageCallback
+{
     private final String TAG = getClass().getSimpleName();
+
     private final double BORDER_THICKNESS = 0.03;
     public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
     private ImageView mQRView;
@@ -101,6 +113,11 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
     private CoreAPI.TxDetails mTxDetails;
     private CreateBitmapTask mCreateBitmapTask;
     private AlertDialog mPartialDialog;
+    private ImageView mBluetoothImageView;
+    private ImageView mNFCImageView;
+    private NfcAdapter mNfcAdapter;
+    private AtomicReference<byte[]> mPaymentRequestRef = new AtomicReference<byte[]>();
+
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -139,6 +156,8 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         ((NavigationActivity) getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
+        mBluetoothImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
+        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -212,6 +231,14 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         if (mQRBitmap == null) {
             mCreateBitmapTask = new CreateBitmapTask();
             mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        mNfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled()) {
+            mNFCImageView.setVisibility(View.VISIBLE);
+            mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
         }
     }
 
@@ -443,6 +470,19 @@ public class RequestQRCodeFragment extends Fragment implements ContactPickerFrag
         mPartialDialog = builder.create();
         mPartialDialog.show();
         mHandler.postDelayed(dialogKiller, PARTIAL_PAYMENT_TIMEOUT);
+    }
+
+    /*
+     * Send an Ndef message when a device with NFC is detected
+     */
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
+        final byte[] paymentRequest = mAddress.getBytes();
+        Log.d(TAG, "Creating NFC request: " + mAddress);
+        if (paymentRequest != null)
+            return new NdefMessage(new NdefRecord[] { Nfc.createMime(Nfc.MIMETYPE_PAYMENTREQUEST, paymentRequest) });
+        else
+            return null;
     }
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {

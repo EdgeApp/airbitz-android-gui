@@ -24,18 +24,39 @@
             android:layout_margin="8dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_request_qrcode_qr_container"
         android:layout_marginBottom="15.75dp"
         android:layout_marginLeft="12.6dp"
         android:layout_marginRight="12.6dp"
         android:layout_marginTop="9.45dp"
         android:background="@drawable/emboss_down"
-        android:orientation="vertical"
-        android:paddingBottom="6dp">
+        android:paddingBottom="6dp"
+        android:layout_below="@id/fragment_request_qrcode_qr_container" >
+
+        <ImageView
+            android:id="@+id/fragment_request_qrcode_ble_image"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/logo_ble"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/fragment_request_qrcode_nfc_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/fragment_request_qrcode_ble_image"
+            android:background="@drawable/n_mark"
+            android:visibility="gone"/>
+
+        <LinearLayout
+        android:id="@+id/layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textview_waiting"
@@ -46,7 +67,7 @@
             android:gravity="center_horizontal"
             android:text="@string/request_qr_waiting_for_payment"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textview_bitcoin_amount"
@@ -123,5 +144,6 @@
             android:textColor="@android:color/white" />
 
     </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
