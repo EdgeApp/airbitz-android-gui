@@ -571,11 +571,7 @@ public class NavigationActivity extends Activity
 
         if (mNavStacks[mNavThreadId].size() == 1) {
             if (!calcVisible || mCalcLocked) {
-                // This emulates user pressing Home button, rather than finish this activity
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(homeIntent);
+                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
             }
         } else {
             if (fragment instanceof RequestQRCodeFragment) {
@@ -1066,6 +1062,31 @@ public class NavigationActivity extends Activity
     public void ShowOkMessageDialog(String title, String message, int timeoutMillis) {
         mHandler.postDelayed(mMessageDialogKiller, timeoutMillis);
         ShowOkMessageDialog(title, message);
+    }
+
+    public void ShowExitMessageDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                // This emulates user pressing Home button, rather than finish this activity
+                                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(homeIntent);
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 
     public void ShowMessageDialogBackPress(String title, String reason) {
