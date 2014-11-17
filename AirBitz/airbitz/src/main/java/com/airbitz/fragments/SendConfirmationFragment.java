@@ -732,14 +732,14 @@ public class SendConfirmationFragment extends Fragment {
         mPasswordRequired = false;
         mPinRequired = false;
 
-        if (mCoreAPI.GetDailySpendLimitSetting()
+        if (!mIsUUID && mCoreAPI.GetDailySpendLimitSetting()
             && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= mCoreAPI.GetDailySpendLimit())) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
             mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_password));
             mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else if (mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
+        } else if (!mIsUUID && mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
             // Show PIN pad
             mPinRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
