@@ -237,7 +237,7 @@ public class RequestQRCodeFragment extends Fragment implements
         final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
-        if (mNfcAdapter != null && mNfcAdapter.isEnabled()) {
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
             mNFCImageView.setVisibility(View.VISIBLE);
             mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
         }

@@ -34,11 +34,16 @@ package com.airbitz.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -84,6 +89,8 @@ public class SettingFragment extends Fragment {
     static final String[] OTHER_EXCHANGES = new String[]{"Coinbase"};
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
+    private static final String NFC_PREF = "NFCPref";
+    private static final String BLE_PREF = "BLEPref";
     public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
     private final String TAG = getClass().getSimpleName();
     AlertDialog mCurrencyDialog;
@@ -91,6 +98,8 @@ public class SettingFragment extends Fragment {
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
     private RelativeLayout mSpendingLimitContainer;
+    private View mNFCSwitchLayout;
+    private View mBLESwitchLayout;
     private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
     private RadioGroup mDenominationGroup;
@@ -103,6 +112,8 @@ public class SettingFragment extends Fragment {
     private Switch mSendNameSwitch;
     private Switch mMerchantModeSwitch;
     private Switch mPinReloginSwitch;
+    private Switch mNFCSwitch;
+    private Switch mBLESwitch;
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
@@ -264,6 +275,18 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        mNFCSwitchLayout = mView.findViewById(R.id.settings_nfc_layout);
+        if(isNFCcapable()) {
+            mNFCSwitchLayout.setVisibility(View.VISIBLE);
+        }
+        mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
+
+        mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
+        if(isBLEcapable()) {
+            mBLESwitchLayout.setVisibility(View.VISIBLE);
+        }
+        mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
+
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -372,7 +395,16 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mAutoLogoffManager.setMinutes(settings.getMinutesAutoLogout());
+        // Pin Relogin
         mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
+        // NFC
+        if(mNFCSwitchLayout.getVisibility() == View.VISIBLE) {
+            mNFCSwitch.setChecked(getNFCPref());
+        }
+        // BLE
+        if(mBLESwitchLayout.getVisibility() == View.VISIBLE) {
+            mBLESwitch.setChecked(getBLEPref());
+        }
 
         // Default Currency
         mCurrencyNum = mCoreSettings.getCurrencyNum();
@@ -444,6 +476,7 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
+        //PinRelogin
         if(mPinReloginSwitch.isChecked() && mCoreSettings.getBDisablePINLogin()) {
             mCoreSettings.setBDisablePINLogin(false);
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
@@ -451,6 +484,10 @@ public class SettingFragment extends Fragment {
             mCoreSettings.setBDisablePINLogin(true);
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
+        //NFC
+        saveNFCPref(mNFCSwitch.isChecked());
+        //BLE
+        saveBLEPref(mBLESwitch.isChecked());
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
@@ -775,4 +812,40 @@ public class SettingFragment extends Fragment {
             mDialog.show();
         }
     }
+
+    private boolean isNFCcapable() {
+        final NfcManager nfcManager = (NfcManager) getActivity().getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        return nfcManager.getDefaultAdapter() != null;
+    }
+
+    private void saveNFCPref(boolean state) {
+        int selection = state ? 1 : 0;
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(NFC_PREF, selection);
+        editor.apply();
+    }
+
+    static public boolean getNFCPref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(NFC_PREF, 0) != 0;
+    }
+
+
+    private boolean isBLEcapable() {
+        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(AirbitzApplication.getContext().BLUETOOTH_SERVICE);
+        return false; // (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+    }
+
+    private void saveBLEPref(boolean state) {
+        int selection = state ? 1 : 0;
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(BLE_PREF, selection);
+        editor.apply();
+    }
+
+    static public boolean getBLEPref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(BLE_PREF, 0) != 0;
+    }
+
 }

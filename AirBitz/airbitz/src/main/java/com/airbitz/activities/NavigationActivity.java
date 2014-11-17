@@ -659,7 +659,8 @@ public class NavigationActivity extends Activity
         final Uri intentUri = intent.getData();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        if (intentUri != null && (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action))) {
+        if (intentUri != null && (Intent.ACTION_VIEW.equals(action) ||
+                (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             if ("bitcoin".equals(scheme)) {
                 onBitcoinUri(intent.getData());
             }
