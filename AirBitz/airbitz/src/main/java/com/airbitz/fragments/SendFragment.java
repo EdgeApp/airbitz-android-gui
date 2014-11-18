@@ -376,8 +376,8 @@ public class SendFragment extends Fragment implements
 
         // if BLE is supported on the device, enable
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            if (mBluetoothAdapter.isEnabled() && SettingFragment.getBLEPref()) {
                 mBluetoothListView = new BluetoothListView(mActivity);
                 mBluetoothLayout.addView(mBluetoothListView, 0);
                 mBluetoothButton.setVisibility(View.VISIBLE);

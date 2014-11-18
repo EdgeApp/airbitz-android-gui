@@ -41,6 +41,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
@@ -51,6 +54,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.airbitz.adapters.BluetoothSearchAdapter;
+import com.airbitz.fragments.SettingFragment;
 import com.airbitz.models.BleDevice;
 
 import java.nio.ByteBuffer;
@@ -68,23 +72,25 @@ public class BluetoothListView extends ListView {
     private final int SCAN_PERIOD_MILLIS = 2000;
     private final int SCAN_REPEAT_PERIOD = 5000;
 
-    private final String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
-    private final String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
+    public final static String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
+    public final static String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
     private final String CLIENT_CHARACTERISTIC_CONFIG ="00002900-0000-1000-8000-00805f9b34fb";
 
     private static final Queue<Object> sWriteQueue = new ConcurrentLinkedQueue<Object>();
     private static boolean sIsWriting = false;
 
 
-    Context mContext;
-    OnPeripheralSelected mOnPeripheralSelectedListener = null;
-    OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
-    OnOneScanEnded mOnOneScanEndedListener = null;
-    BluetoothAdapter mBluetoothAdapter;
+    private Context mContext;
+    private OnPeripheralSelected mOnPeripheralSelectedListener = null;
+    private OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
+    private OnOneScanEnded mOnOneScanEndedListener = null;
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothLeScanner mBluetoothScanner;
+    private ScanCallback mScanCallback;
 
-    List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
-    BluetoothSearchAdapter mAdapter;
-    Handler mHandler = new Handler();
+    private List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
+    private BluetoothSearchAdapter mAdapter;
+    private Handler mHandler = new Handler();
 
     public BluetoothListView(Context context) {
         super(context);
@@ -104,21 +110,24 @@ public class BluetoothListView extends ListView {
     public void init(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mOnPeripheralSelectedListener != null) {
-                    mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
+        if(mBluetoothAdapter != null) {
+            mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (mOnPeripheralSelectedListener != null) {
+                        mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         mAdapter = new BluetoothSearchAdapter(mContext, mPeripherals);
         setAdapter(mAdapter);
     }
 
     public boolean isAvailable() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             return true;
         }
         else {
@@ -170,7 +179,7 @@ public class BluetoothListView extends ListView {
         }
         else {
             mHandler.removeCallbacks(mContinuousScanRunnable);
-            scanLeDevice(false);
+            scanDevices(false);
         }
     }
 
@@ -179,29 +188,17 @@ public class BluetoothListView extends ListView {
         public void run() {
             mPeripherals.clear();
             mAdapter.notifyDataSetChanged();
-            scanLeDevice(true);
+            scanDevices(true);
             mHandler.postDelayed(this, SCAN_REPEAT_PERIOD);
         }
     };
 
-    /*
-     * Scans for BLE devices with a timeout
-     * @param enable if set, enables BLE, otherwise disables
-     */
-    public void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
-        } else {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-        }
-    }
-
     Runnable mScanStopperRunnable = new Runnable() {
         @Override
         public void run() {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            if(mBluetoothScanner != null && mScanCallback != null) {
+                mBluetoothScanner.stopScan(mScanCallback);
+            }
             if(mOnOneScanEndedListener != null) {
                 mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
             }
@@ -226,6 +223,58 @@ public class BluetoothListView extends ListView {
                     });
                 }
             };
+
+    @TargetApi(21)
+    private void scanDevices(boolean enable) {
+        mScanCallback =
+                new ScanCallback() {
+                    @Override
+                    public void onScanResult(int callbackType, final ScanResult result) {
+                        super.onScanResult(callbackType, result);
+                        ((Activity)mContext).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<UUID> uuids = parseUuids(result.getScanRecord().getBytes());
+                                if (uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
+//                                    mPeripherals.add(new BleDevice(device, rssi));
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onBatchScanResults(final List<ScanResult> results) {
+                        super.onBatchScanResults(results);
+                        ((Activity)mContext).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (ScanResult result : results) {
+                                    List<UUID> uuids = parseUuids(result.getScanRecord().getBytes());
+                                    if (uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
+//                                    mPeripherals.add(new BleDevice(device, rssi));
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onScanFailed(int errorCode) {
+                        super.onScanFailed(errorCode);
+                    }
+                };
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
+            mBluetoothScanner.startScan(mScanCallback);
+        } else {
+            mBluetoothScanner.stopScan(mScanCallback);
+        }
+
+    }
+
 
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
