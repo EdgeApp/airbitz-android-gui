@@ -478,10 +478,10 @@ public class RequestQRCodeFragment extends Fragment implements
      */
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
-        final byte[] paymentRequest = mRequestURI.getBytes();
-        Log.d(TAG, "Creating NFC request: " + mRequestURI);
-        if (paymentRequest != null)
-                return new NdefMessage(NdefRecord.createUri(mRequestURI)); //new NdefRecord[] { Nfc.createMime(null, paymentRequest) });
+        if(mRequestURI != null) {
+            Log.d(TAG, "Creating NFC request: " + mRequestURI);
+            return new NdefMessage(NdefRecord.createUri(mRequestURI));
+        }
         else
             return null;
     }
