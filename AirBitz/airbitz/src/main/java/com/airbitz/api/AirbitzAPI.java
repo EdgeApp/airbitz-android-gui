@@ -75,6 +75,7 @@ public class AirbitzAPI {
     private static final String API_PATH = SERVER_ROOT + "api/v1/";
     private static final String API_SEARCH = API_PATH + "search/";
     private static final String API_BUSINESS = API_PATH + "business/";
+    private static final String API_MESSAGES = API_PATH + "notifications/";
     private static final String API_LOCATION_SUGGEST = API_PATH + "location-suggest/";
     private static final String API_CATEGORIES = API_PATH + "categories/";
     private static final String API_AUTO_COMPLETE_LOCATION = API_PATH + "autocomplete-location/";
@@ -180,6 +181,16 @@ public class AirbitzAPI {
         }
 
         return result;
+    }
+
+    public String getMessages(String since_id, String android_build) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("since_id", since_id));
+
+        if(android_build.length() != 0){
+            params.add(new BasicNameValuePair("android_build", android_build));
+        }
+        return getRequest(API_MESSAGES, createURLParams(params));
     }
 
 
