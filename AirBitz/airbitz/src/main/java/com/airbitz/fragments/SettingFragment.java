@@ -31,6 +31,7 @@
 
 package com.airbitz.fragments;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -282,7 +283,7 @@ public class SettingFragment extends Fragment {
         mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
 
         mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
-        if(isBLEcapable()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isBLEcapable()) {
             mBLESwitchLayout.setVisibility(View.VISIBLE);
         }
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
@@ -830,10 +831,10 @@ public class SettingFragment extends Fragment {
         return prefs.getInt(NFC_PREF, 0) != 0;
     }
 
-
+    @TargetApi(21)
     private boolean isBLEcapable() {
         final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(AirbitzApplication.getContext().BLUETOOTH_SERVICE);
-        return false; // (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        return (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
     private void saveBLEPref(boolean state) {
