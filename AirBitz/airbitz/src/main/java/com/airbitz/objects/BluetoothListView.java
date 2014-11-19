@@ -43,10 +43,13 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.ParcelUuid;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -140,7 +143,7 @@ public class BluetoothListView extends ListView {
             mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
         }
-        mHandler.removeCallbacks(mContinuousScanRunnable);
+        scanForBleDevices(false);
         mBluetoothGatt = null;
     }
 
@@ -234,26 +237,20 @@ public class BluetoothListView extends ListView {
                         ((Activity)mContext).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<UUID> uuids = parseUuids(result.getScanRecord().getBytes());
-                                if (uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
-//                                    mPeripherals.add(new BleDevice(device, rssi));
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onBatchScanResults(final List<ScanResult> results) {
-                        super.onBatchScanResults(results);
-                        ((Activity)mContext).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for (ScanResult result : results) {
-                                    List<UUID> uuids = parseUuids(result.getScanRecord().getBytes());
-                                    if (uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
-//                                    mPeripherals.add(new BleDevice(device, rssi));
+                                Log.d(TAG, "Scan result = " + result.toString());
+                                List<ParcelUuid> list = result.getScanRecord().getServiceUuids();
+                                if (list!=null && list.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
+                                    BluetoothDevice device = result.getDevice();
+                                    Log.d(TAG, "Airbitz device found, name = " + device.getName());
+                                    if(mPeripherals.size() == 0) {
+                                        mPeripherals.add(new BleDevice(result.getDevice(), result.getRssi()));
                                         mAdapter.notifyDataSetChanged();
+                                    }
+                                    for(BleDevice bleDevice : mPeripherals) {
+                                        if(!bleDevice.getDevice().getName().contains(device.getName())) {
+                                            mPeripherals.add(new BleDevice(result.getDevice(), result.getRssi()));
+                                            mAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }
                             }
@@ -266,10 +263,21 @@ public class BluetoothListView extends ListView {
                     }
                 };
         if (enable) {
+            Log.d(TAG, "scanDevices(true)");
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
-            mBluetoothScanner.startScan(mScanCallback);
+
+            ScanFilter.Builder builder = new ScanFilter.Builder();
+            builder.setServiceUuid(ParcelUuid.fromString(TRANSFER_SERVICE_UUID));
+            List<ScanFilter> list = new ArrayList<ScanFilter>();
+            list.add(builder.build());
+
+            ScanSettings.Builder ssBuilder = new ScanSettings.Builder();
+            ssBuilder.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+
+            mBluetoothScanner.startScan(list, ssBuilder.build(), mScanCallback);
         } else {
+            Log.d(TAG, "scanDevices(false)");
             mBluetoothScanner.stopScan(mScanCallback);
         }
 
