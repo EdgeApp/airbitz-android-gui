@@ -105,7 +105,7 @@ public class WalletsFragment extends Fragment
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
     private Button mButtonMover;
-    private TextView walletsHeader;
+    private RelativeLayout walletsHeader;
     private RelativeLayout archiveHeader;
     private LinearLayout mAddWalletLayout;
     private EditText mAddWalletNameEditText;
@@ -238,7 +238,7 @@ public class WalletsFragment extends Fragment
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        walletsHeader = (TextView) mView.findViewById(R.id.fragment_wallets_wallets_header);
+        walletsHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_wallets_header);
         archiveHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_archive_header);
 
         mAddButton.setOnClickListener(new View.OnClickListener() {

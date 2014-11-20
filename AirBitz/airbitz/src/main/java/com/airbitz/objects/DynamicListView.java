@@ -136,10 +136,10 @@ public class DynamicListView extends ListView {
     private boolean mCellIsMobile = false;
     private boolean mIsMobileScrolling = false;
     private int mSmoothScrollAmountAtEdge = 0;
-    private TextView walletsHeader;
+    private RelativeLayout walletsHeader;
     private RelativeLayout archiveHeader;
     private TextView listWalletsHeader;
-    private TextView listArchiveHeader;
+    private RelativeLayout listArchiveHeader;
     private BitmapDrawable mHoverCell;
     /**
      * Listens for long clicks on any items in the listview. When a cell has
@@ -297,7 +297,7 @@ public class DynamicListView extends ListView {
         mSmoothScrollAmountAtEdge = (int) (SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
     }
 
-    public void setHeaders(TextView wallets, RelativeLayout archive) {
+    public void setHeaders(RelativeLayout wallets, RelativeLayout archive) {
         walletsHeader = wallets;
         archiveHeader = archive;
     }
@@ -688,7 +688,7 @@ public class DynamicListView extends ListView {
                 walletsHeader.setVisibility(GONE);
                 walletsHeader.setVisibility(VISIBLE);
             }
-            listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
+            listArchiveHeader = (RelativeLayout) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
             int firstPosition = getFirstVisiblePosition();
             if (listArchiveHeader == null && firstPosition > ((WalletAdapter) getAdapter()).getArchivePos()) {
                 archiveHeader.setVisibility(GONE);
@@ -711,7 +711,7 @@ public class DynamicListView extends ListView {
             walletsHeader.setY(0);
             archiveHeader.setVisibility(GONE);
         } else if (archiveIndex == firstVisibleIndex + 1) { // mixed first view
-            listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(archiveIndex));
+            listArchiveHeader = (RelativeLayout) getViewForID(getAdapter().getItemId(archiveIndex));
             if (listArchiveHeader != null) {
                 archiveHeader.setY(listArchiveHeader.getY());
                 walletsHeader.setY(archiveHeader.getY() - walletsHeader.getHeight());
