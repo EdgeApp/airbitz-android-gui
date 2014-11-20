@@ -504,13 +504,6 @@ public class NavigationActivity extends Activity
         if (!isLargeDpi()) {
             return;
         }
-        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-
-        // Move calculator above the tab bar
-        params.setMargins(0, 0, 0, tbHeight);
-        mCalculatorView.setLayoutParams(params);
         mCalcLocked = true;
         showCalculator();
     }
@@ -538,6 +531,14 @@ public class NavigationActivity extends Activity
 
     public void showCalculator() {
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
+
+        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
+        RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
+
+        // Move calculator above the tab bar
+        params.setMargins(0, 0, 0, tbHeight);
+        mCalculatorView.setLayoutParams(params);
 
         if (mCalculatorView.getVisibility() != View.VISIBLE) {
             mHandler.postDelayed(delayedShowCalculator, 100);
