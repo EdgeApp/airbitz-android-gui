@@ -956,8 +956,8 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         DisplayLoginOverlay(false);
-        startActivity(new Intent(this, NavigationActivity.class));
         finish();
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     private Fragment getNewBaseFragement(int id) {
