@@ -63,7 +63,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -731,7 +730,7 @@ public class SendFragment extends Fragment implements
         if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
             mBluetoothScanningLayout.setVisibility(View.VISIBLE);
             mBluetoothListView.setOnPeripheralSelectedListener(this);
-            mBluetoothListView.scanForBleDevices(true);
+            mBluetoothListView.continuousScanForDevices(true);
             stopCamera();
         }
     }
@@ -739,7 +738,7 @@ public class SendFragment extends Fragment implements
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
         if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
-            mBluetoothListView.scanForBleDevices(false);
+            mBluetoothListView.continuousScanForDevices(false);
             mBluetoothListView.close();
         }
     }
