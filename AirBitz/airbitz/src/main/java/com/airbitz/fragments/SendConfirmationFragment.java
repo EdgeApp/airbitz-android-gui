@@ -749,13 +749,19 @@ public class SendConfirmationFragment extends Fragment {
         if (mSavedBitcoin > 0) {
             mAmountToSendSatoshi = mSavedBitcoin;
         }
+
+        checkAuthorization();
+
         if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             }
             calculateFees();
-            mAuthorizationEdittext.requestFocus();
+
+            if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
+                mAuthorizationEdittext.requestFocus();
+            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
@@ -780,7 +786,6 @@ public class SendConfirmationFragment extends Fragment {
         mAutoUpdatingTextFields = false;
 
         mMaxLocked = false;
-        checkAuthorization();
 
         mInvalidEntryCount = getInvalidEntryCount();
 
