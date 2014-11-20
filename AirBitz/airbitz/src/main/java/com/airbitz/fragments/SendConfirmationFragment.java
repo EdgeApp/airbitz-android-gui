@@ -322,24 +322,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mBitcoinField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
-
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,24 +363,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mFiatField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
-
         mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -416,7 +380,10 @@ public class SendConfirmationFragment extends Fragment {
                     mAuthorizationEdittext.requestFocus();
                     return true;
                 }
-                return false;
+                else {
+                    mDummyFocus.requestFocus();
+                    return true;
+                }
             }
         };
 
