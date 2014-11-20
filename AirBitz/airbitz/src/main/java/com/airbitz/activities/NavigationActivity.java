@@ -950,12 +950,15 @@ public class NavigationActivity extends Activity
     }
 
     public void Logout() {
-        if (AirbitzApplication.getUsername() != null) {
+        Logout(true);
+    }
+
+    public void Logout(boolean pinDelete) {
+        if ((AirbitzApplication.getUsername() != null) && pinDelete) {
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
-        DisplayLoginOverlay(false);
         finish();
         startActivity(new Intent(this, NavigationActivity.class));
     }
@@ -1007,8 +1010,10 @@ public class NavigationActivity extends Activity
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
         Log.d(TAG, "delta logout time = " + milliDelta);
-        if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            Logout();
+        if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 100) {   //************************* TESTING refactor to 60 * 1000
+            AirbitzApplication.Logout();
+            finish();
+            startActivity(new Intent(this, NavigationActivity.class));
         }
     }
 
