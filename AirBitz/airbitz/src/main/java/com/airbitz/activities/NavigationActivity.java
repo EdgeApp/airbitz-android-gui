@@ -36,11 +36,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -49,10 +55,17 @@ import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +74,7 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,6 +82,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
@@ -86,14 +101,21 @@ import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.AirbitzNotification;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class NavigationActivity extends Activity
@@ -104,6 +126,11 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
+
+    private static final int MESSAGE_NOTIFICATION_CODE = 45631;
+    private static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
+    private static final String MESSAGE_NOTIFICATION_TYPE = "com.airbitz.navigation.NotificationType";
+    private Map<Integer, AirbitzNotification> mNotificationMap;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -619,6 +646,8 @@ public class NavigationActivity extends Activity
         }
         switchFragmentThread(mNavThreadId);
 
+        checkNotifications();
+
         super.onResume();
     }
 
@@ -657,13 +686,19 @@ public class NavigationActivity extends Activity
     {
         final String action = intent.getAction();
         final Uri intentUri = intent.getData();
+        final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        if (intentUri != null && (Intent.ACTION_VIEW.equals(action) ||
+        if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             if ("bitcoin".equals(scheme)) {
                 onBitcoinUri(intent.getData());
             }
+        } else if(type != null && type.equals(MESSAGE_NOTIFICATION_TYPE)) {
+            Log.d(TAG, "Notification type found");
+                mCheckingNotifications = false;
+                mNotificationTask = new NotificationTask();
+                mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -1253,4 +1288,197 @@ public class NavigationActivity extends Activity
         }
     }
 
+    //************** Notification support
+    private boolean mCheckingNotifications = false;
+
+    private void checkNotifications() {
+        if(mNotificationTask == null) {
+            mCheckingNotifications = true;
+            mNotificationTask = new NotificationTask();
+            mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private NotificationTask mNotificationTask;
+    public class NotificationTask extends AsyncTask<Void, Void, String> {
+        String mMessageId;
+        String mBuildNumber;
+
+        NotificationTask() { }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            AirbitzAPI api = AirbitzAPI.getApi();
+            PackageInfo pInfo;
+            try {
+                pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+//            saveMessageIDPref(0); // TESTING, just to get messages always
+
+            mMessageId = String.valueOf(getMessageIDPref());
+
+//            mBuildNumber = "2014111801"; // TESTING
+            mBuildNumber = String.valueOf(pInfo.versionCode);
+
+            return api.getMessages(mMessageId, mBuildNumber);
+//            return "{\n" +
+//                    "   \"previous\" : null,\n" +
+//                    "   \"count\" : 2,\n" +
+//                    "   \"next\" : null,\n" +
+//                    "   \"results\" : [\n" +
+//                    "      {\n" +
+//                    "         \"ios_build\" : 2014010101,\n" +
+//                    "         \"id\" : 1,\n" +
+//                    "         \"title\" : \"New Notification\",\n" +
+//                    "         \"message\" : \"Here is a new notification. It is awesome.\",\n" +
+//                    "         \"android_build\" : 2014010101\n" +
+//                    "      },\n" +
+//                    "      {\n" +
+//                    "         \"ios_build\" : 2014010110,\n" +
+//                    "         \"id\" : 3,\n" +
+//                    "         \"message\" : \"This notification is only for iOS!\",\n" +
+//                    "         \"title\" : \"iOS Only!\",\n" +
+//                    "         \"android_build\" : null\n" +
+//                    "      }\n" +
+//                    "   ]\n" +
+//                    "}";
+        }
+
+        @Override
+        protected void onPostExecute(final String response) {
+            Log.d(TAG, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
+            if(response != null && response.length() != 0) {
+                mNotificationMap = getAndroidMessages(response);
+                if(mCheckingNotifications) {
+                    mCheckingNotifications = false;
+                    if(mNotificationMap.size() > 0) {
+                        issueOSNotification();
+                    }
+                }
+                else if (!mCheckingNotifications) {
+                    showNotificationAlert();
+                }
+            }
+            else {
+                Log.d(TAG, "No Notification response");
+            }
+            mNotificationTask = null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mNotificationTask = null;
+        }
+    }
+
+    private int getMessageIDPref() {
+        SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(LAST_MESSAGE_ID, 0); // default to Automatic
+    }
+
+    private void saveMessageIDPref(int id) {
+        SharedPreferences.Editor editor = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(LAST_MESSAGE_ID, id);
+        editor.apply();
+    }
+
+    Map<Integer, AirbitzNotification> getAndroidMessages(String input) {
+        Map<Integer, AirbitzNotification> map = new HashMap<Integer, AirbitzNotification>();
+        try {
+            JSONObject json = new JSONObject(input);
+            int count = json.getInt("count");
+            if(count > 0) {
+                JSONArray notifications = json.getJSONArray("results");
+                for(int i=0; i<count; i++) {
+                    JSONObject notification = notifications.getJSONObject(i);
+                    String build = notification.getString("android_build");
+
+                    int id = Integer.valueOf(notification.getString("id"));
+                    String title = notification.getString("title");
+                    String message = notification.getString("message");
+
+                    if(!build.equals("null")) {
+                        map.put(id, new AirbitzNotification(title, message));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    private void issueOSNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle("Airbitz notification")
+            .setContentText("Please touch to read critical messages")
+            .setSmallIcon(R.drawable.logo);
+
+        Intent resultIntent = new Intent(this, NavigationActivity.class);
+        resultIntent.setType(MESSAGE_NOTIFICATION_TYPE);
+        PendingIntent resultPendingIntent =
+            PendingIntent.getActivity( this, MESSAGE_NOTIFICATION_CODE, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.setContentIntent(resultPendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(987, builder.build());
+    }
+
+    private void showNotificationAlert() {
+        if(mNotificationMap == null || mNotificationMap.size()==0)
+            return;
+
+        SpannableStringBuilder s = new SpannableStringBuilder();
+        int start = 0;
+        int end = 0;
+        int max = -1;
+        for(Integer i : mNotificationMap.keySet() ) {
+            if(max < i) {
+                max = i;
+            }
+            start = s.length();
+            end = s.length();
+            String title = mNotificationMap.get(i).mTitle;
+            String message = mNotificationMap.get(i).mMessage;
+
+            s.append(title).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n");
+
+            s.append(message).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n\n");
+        }
+
+        final int saveInt = max;
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialoglayout = inflater.inflate(R.layout.dialog_notification, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialoglayout)
+                .setCancelable(false);
+        final AlertDialog dialog = builder.create();
+        TextView tv = (TextView) dialoglayout.findViewById(R.id.dialog_notification_textview);
+        tv.setVisibility(View.VISIBLE);
+        tv.setText(s);
+        Button ok = (Button) dialoglayout.findViewById(R.id.dialog_notification_ok_button);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+                saveMessageIDPref(saveInt);
+            }
+        });
+        dialog.show();
+    }
 }
