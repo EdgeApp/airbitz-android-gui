@@ -282,16 +282,6 @@ public class NavigationActivity extends Activity
         mCoreAPI.Initialize(this, seed, seed.length());
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Uri dataUri = getIntent().getData();
-        if (dataUri != null && dataUri.getScheme().equals("bitcoin")) {
-            onBitcoinUri(dataUri);
-        }
-    }
-
-
     public void DisplayLoginOverlay(boolean overlay) {
         DisplayLoginOverlay(overlay, false);
     }
@@ -689,10 +679,12 @@ public class NavigationActivity extends Activity
         final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
+        Log.d(TAG, "New Intent action="+action+", data="+intentUri+", type="+type+", scheme="+scheme);
+
         if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             if ("bitcoin".equals(scheme)) {
-                onBitcoinUri(intent.getData());
+                onBitcoinUri(intentUri);
             }
         } else if(type != null && type.equals(MESSAGE_NOTIFICATION_TYPE)) {
             Log.d(TAG, "Notification type found");
