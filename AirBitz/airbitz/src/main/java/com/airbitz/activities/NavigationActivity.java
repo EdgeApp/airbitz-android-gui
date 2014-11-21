@@ -1333,18 +1333,14 @@ public class NavigationActivity extends Activity
 //                    "   \"next\" : null,\n" +
 //                    "   \"results\" : [\n" +
 //                    "      {\n" +
-//                    "         \"ios_build\" : 2014010101,\n" +
 //                    "         \"id\" : 1,\n" +
 //                    "         \"title\" : \"New Notification\",\n" +
 //                    "         \"message\" : \"Here is a new notification. It is awesome.\",\n" +
-//                    "         \"android_build\" : 2014010101\n" +
 //                    "      },\n" +
 //                    "      {\n" +
-//                    "         \"ios_build\" : 2014010110,\n" +
 //                    "         \"id\" : 3,\n" +
 //                    "         \"message\" : \"This notification is only for iOS!\",\n" +
 //                    "         \"title\" : \"iOS Only!\",\n" +
-//                    "         \"android_build\" : null\n" +
 //                    "      }\n" +
 //                    "   ]\n" +
 //                    "}";
@@ -1397,15 +1393,11 @@ public class NavigationActivity extends Activity
                 JSONArray notifications = json.getJSONArray("results");
                 for(int i=0; i<count; i++) {
                     JSONObject notification = notifications.getJSONObject(i);
-                    String build = notification.getString("android_build");
-
                     int id = Integer.valueOf(notification.getString("id"));
                     String title = notification.getString("title");
                     String message = notification.getString("message");
 
-                    if(!build.equals("null")) {
-                        map.put(id, new AirbitzNotification(title, message));
-                    }
+                    map.put(id, new AirbitzNotification(title, message));
                 }
             }
         } catch (JSONException e) {
