@@ -82,7 +82,8 @@ import java.util.List;
 public class WalletsFragment extends Fragment
         implements DynamicListView.OnListReordered,
         CoreAPI.OnExchangeRatesChange,
-        NavigationActivity.OnWalletUpdated {
+        NavigationActivity.OnWalletUpdated,
+        NavigationActivity.OnBackPress {
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
@@ -591,6 +592,15 @@ public class WalletsFragment extends Fragment
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean onBackPress() {
+        if(mAddWalletLayout.getVisibility() == View.VISIBLE) {
+            goCancel();
+            return true;
+        }
+        return false;
     }
 
     /**
