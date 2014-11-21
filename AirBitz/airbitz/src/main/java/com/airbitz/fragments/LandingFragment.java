@@ -361,6 +361,10 @@ public class LandingFragment extends Fragment implements
                 abortPermanently();
                 return;
             }
+            else {
+                mActivity.setFadingDialogListener(LandingFragment.this);
+                mActivity.ShowFadingDialog(result.toString());
+            }
         }
 
         @Override
