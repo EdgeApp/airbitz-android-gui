@@ -237,6 +237,13 @@ public class WalletsFragment extends Fragment
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
         walletsHeader = (TextView) mView.findViewById(R.id.fragment_wallets_wallets_header);
+        walletsHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddWalletLayout();
+            }
+        });
+
         archiveHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_archive_header);
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
