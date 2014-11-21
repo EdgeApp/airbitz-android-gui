@@ -59,6 +59,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
@@ -100,7 +101,6 @@ import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AirbitzNotification;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
@@ -127,9 +127,9 @@ public class NavigationActivity extends Activity
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
-    public static final int MESSAGE_NOTIFICATION_CODE = 45631;
-    public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
-    public static final String MESSAGE_NOTIFICATION_TYPE = "com.airbitz.navigation.NotificationType";
+    private static final int MESSAGE_NOTIFICATION_CODE = 45631;
+    private static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
+    private static final String MESSAGE_NOTIFICATION_TYPE = "com.airbitz.navigation.NotificationType";
     private Map<Integer, AirbitzNotification> mNotificationMap;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
@@ -637,7 +637,6 @@ public class NavigationActivity extends Activity
         }
         switchFragmentThread(mNavThreadId);
 
-        AirbitzAlertReceiver.CancelNextAlertAlarm(this);
         checkNotifications();
 
         super.onResume();
@@ -649,7 +648,6 @@ public class NavigationActivity extends Activity
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this);
     }
 
     /*
@@ -1322,6 +1320,7 @@ public class NavigationActivity extends Activity
             }
 
 //            saveMessageIDPref(0); // TESTING, just to get messages always
+
             mMessageId = String.valueOf(getMessageIDPref());
 
 //            mBuildNumber = "2014111801"; // TESTING
