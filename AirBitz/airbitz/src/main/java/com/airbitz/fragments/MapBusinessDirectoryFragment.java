@@ -183,9 +183,14 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             public void click(MapMarker marker) {
                 final String cl = getString(R.string.your_location);
                 if (!marker.getTitle().equalsIgnoreCase(cl)) {
-                    showDirectoryDetailFragment(marker.getId(),
-                                                marker.getTitle(),
-                                                marker.getDistance());
+                    for(BusinessSearchResult result : mVenues) {
+                        if(marker.getTitle().equalsIgnoreCase(result.getName())) {
+                            showDirectoryDetailFragment(result.getId(),
+                                    result.getName(),
+                                    result.getDistance());
+                            break;
+                        }
+                    }
                 }
             }
         });
