@@ -105,7 +105,7 @@ public class WalletsFragment extends Fragment
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
     private Button mButtonMover;
-    private RelativeLayout walletsHeader;
+    private TextView walletsHeader;
     private RelativeLayout archiveHeader;
     private LinearLayout mAddWalletLayout;
     private EditText mAddWalletNameEditText;
@@ -122,7 +122,6 @@ public class WalletsFragment extends Fragment
     private RelativeLayout mBalanceSwitchLayout;
     private DynamicListView mLatestWalletListView;
     private HighlightOnPressImageButton mHelpButton;
-    private HighlightOnPressImageButton mAddButton;
     private ImageView mMoverCoin;
     private TextView mMoverType;
     private TextView mBottomType;
@@ -231,22 +230,14 @@ public class WalletsFragment extends Fragment
         mBalanceSwitchLayout = (RelativeLayout) mView.findViewById(R.id.switchable);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_help_button);
-        mAddButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallets_add_button);
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        walletsHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_wallets_header);
+        walletsHeader = (TextView) mView.findViewById(R.id.fragment_wallets_wallets_header);
         archiveHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_archive_header);
-
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddWalletLayout();
-            }
-        });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,14 +351,18 @@ public class WalletsFragment extends Fragment
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
-                if (!wallet.isArchiveHeader() && !wallet.isHeader()) {
-                    mParentLayout.requestFocus();
-                    a.selectItem(view, i);
-                    showWalletFragment(a.getList().get(i).getUUID());
-                } else if (wallet.isArchiveHeader()) {
+                if (wallet.isArchiveHeader()) {
                     mArchiveClosed = !mArchiveClosed;
                     updateWalletList(mArchiveClosed);
                     mLatestWalletAdapter.notifyDataSetChanged();
+                }
+                else if (wallet.isHeader()) {
+                    showAddWalletLayout();
+                }
+                else {
+                    mParentLayout.requestFocus();
+                    a.selectItem(view, i);
+                    showWalletFragment(a.getList().get(i).getUUID());
                 }
             }
         });

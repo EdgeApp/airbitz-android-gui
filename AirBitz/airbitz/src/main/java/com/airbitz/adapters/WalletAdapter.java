@@ -38,7 +38,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -153,16 +152,19 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
             if (mWalletList.get(position).isArchiveHeader()) {
-                ((TextView) convertView.findViewById(R.id.fragment_wallets_wallets_header_text)).setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
+                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
                 archivePos = position;
-                ((ImageView) convertView.findViewById(R.id.fragment_wallets_add_button)).setImageResource(R.drawable.collapse_up);
+                Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
+                img.setBounds(0, 0, (int) mContext.getResources().getDimension(R.dimen.three_mm), (int) mContext.getResources().getDimension(R.dimen.three_mm));
+                ((TextView) convertView).setCompoundDrawables(null, null, img, null);
+                convertView.setPadding((int) (mContext.getResources().getDimension(R.dimen.two_mm) + mContext.getResources().getDimension(R.dimen.three_mm)), 0, (int) mContext.getResources().getDimension(R.dimen.two_mm), 0);
                 if (hoverSecondHeader) {
                     convertView.setVisibility(View.INVISIBLE);
                 } else {
                     convertView.setVisibility(View.VISIBLE);
                 }
             } else {
-                ((TextView) convertView.findViewById(R.id.fragment_wallets_wallets_header_text)).setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
+                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
                 if (hoverFirstHeader) {
                     convertView.setVisibility(View.INVISIBLE);
                 } else {
