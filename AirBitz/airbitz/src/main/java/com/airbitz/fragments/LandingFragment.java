@@ -364,6 +364,8 @@ public class LandingFragment extends Fragment implements
             else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(result.toString());
+                abortPermanently();
+                return;
             }
         }
 
