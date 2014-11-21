@@ -414,7 +414,6 @@ public class SendFragment extends Fragment implements
         Log.d(TAG, "stopCamera");
         if (mCamera != null) {
             mHandler.removeCallbacks(cameraFocusRunner);
-            mFlashButton.setClickable(false);
             mCamera.cancelAutoFocus();
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -470,7 +469,6 @@ public class SendFragment extends Fragment implements
                 mCamera.setParameters(params);
             }
         }
-        mFlashButton.setClickable(false);
     }
 
     @Override
@@ -768,7 +766,7 @@ public class SendFragment extends Fragment implements
     public void onOneScanEnded(boolean hasDevices) {
         if(!hasDevices) {
             if(mForcedBluetoothScanning) {
-                mBluetoothScanningLayout.setVisibility(View.VISIBLE);
+                mBluetoothLayout.setVisibility(View.VISIBLE);
             }
             else {
                 Log.d(TAG, "No bluetooth devices, switching to guns...");
@@ -781,6 +779,7 @@ public class SendFragment extends Fragment implements
             }
         }
         else {
+            mBluetoothLayout.setVisibility(View.GONE);
             mBluetoothScanningLayout.setVisibility(View.GONE);
         }
     }
