@@ -62,6 +62,9 @@ import org.json.JSONObject;
 public class AirbitzAlertReceiver extends BroadcastReceiver {
     final private String TAG = getClass().getSimpleName();
 
+    public static final int ALERT_NOTIFICATION_CODE = 45631;
+    public static final String ALERT_NOTIFICATION_TYPE = "com.airbitz.navigation.NotificationType";
+
     //FIXME REFACTOR TO ONE DAY INTERVALS BEFORE RELEASE
     final private static int REPEAT_ALERT_MILLIS = 60 * 1000 * 1; //1 minute     60 * 24; // 1 Day intervals
 
@@ -112,13 +115,6 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         alarmManager.cancel(sender);
     }
 
-    public void setOnetimeTimer(Context context){
-        AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AirbitzAlertReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi);
-    }
-
     private void issueOSNotification(Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle("Airbitz notification")
@@ -126,15 +122,15 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_launcher);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.setType(NavigationActivity.MESSAGE_NOTIFICATION_TYPE);
+        resultIntent.setType(ALERT_NOTIFICATION_TYPE);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context,
-                        NavigationActivity.MESSAGE_NOTIFICATION_CODE, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        ALERT_NOTIFICATION_CODE, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(resultPendingIntent)
                 .setAutoCancel(true);
 
         NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(NavigationActivity.MESSAGE_NOTIFICATION_CODE, builder.build());
+        mNotifyMgr.notify(ALERT_NOTIFICATION_CODE, builder.build());
     }
 
     public class NotificationTask extends AsyncTask<Void, Void, String> {
@@ -161,7 +157,6 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                 return null;
             }
 
-//            saveMessageIDPref(0); // TESTING, just to get messages always
             mMessageId = String.valueOf(getMessageIDPref(mContext));
 
 //            mBuildNumber = "2014112001"; // TESTING
