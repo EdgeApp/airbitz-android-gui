@@ -43,7 +43,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -73,7 +72,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.Contact;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.Nfc;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
