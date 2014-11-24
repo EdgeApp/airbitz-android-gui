@@ -35,6 +35,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
+import java.util.UUID;
 
 /**
  * Created by tom on 6/17/14.
@@ -50,6 +54,8 @@ public class AirbitzApplication extends Application {
     private static long mLoginTime = 0;
     private static Context mContext;
     private static int mLastNavTab = 0;
+    private static String mClientId;
+    private static String mUserAgent;
 
     @Override
     public void onCreate() {
@@ -94,6 +100,38 @@ public class AirbitzApplication extends Application {
         } else {
             return String.valueOf(airbitzLogin.getPassword());
         }
+    }
+
+    private static String CLIENT_ID_PREF = "client_id";
+    public static String getClientID() {
+        if (mClientId == null) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            mClientId = prefs.getString(CLIENT_ID_PREF, null);
+            if (mClientId == null) {
+                mClientId = UUID.randomUUID().toString();
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(CLIENT_ID_PREF, mClientId);
+                editor.apply();
+            }
+        }
+        return mClientId;
+    }
+
+    public static String getUserAgent() {
+        if (mUserAgent == null) {
+            Context ctx = AirbitzApplication.getContext();
+            PackageInfo pInfo = null;
+            try {
+                pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            mUserAgent = System.getProperty("http.agent");
+            if (pInfo != null) {
+                mUserAgent = " AirBitz " + pInfo.versionName + "(" + pInfo.versionCode + ") " + mUserAgent;
+            }
+        }
+        return mUserAgent;
     }
 
     public static Context getContext() {

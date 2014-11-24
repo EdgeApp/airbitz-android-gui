@@ -131,6 +131,9 @@ public class AirbitzAPI {
             String token = AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key);
 
             urlConnection.setRequestProperty("Authorization", "Token " + token + "");
+            urlConnection.setRequestProperty("User-Agent", AirbitzApplication.getUserAgent());
+            urlConnection.setRequestProperty("X-Client-ID", AirbitzApplication.getClientID());
+
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(in));
             String readLine = bufferedReader.readLine();
