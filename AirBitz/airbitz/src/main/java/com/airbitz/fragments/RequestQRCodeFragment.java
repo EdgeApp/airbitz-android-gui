@@ -246,9 +246,9 @@ public class RequestQRCodeFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (mQRBitmap == null) {
-            mCreateBitmapTask = new CreateBitmapTask();
-            mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            initBLE();
         }
 
         final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
@@ -259,9 +259,11 @@ public class RequestQRCodeFragment extends Fragment implements
             mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
         }
 
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            initBLE();
+        if (mQRBitmap == null) {
+            mCreateBitmapTask = new CreateBitmapTask();
+            mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+
     }
 
     @Override
@@ -510,25 +512,22 @@ public class RequestQRCodeFragment extends Fragment implements
     //*************** BLE support
     @TargetApi(21)
     private void initBLE() {
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            return;
-        }
-
         // BT check
         BluetoothManager manager = (BluetoothManager) AirbitzApplication.getContext().getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager != null) {
             mBTAdapter = manager.getAdapter();
+            if(mBTAdapter == null) {
+                Log.d(TAG, "BLE not available");
+                return;
+            }
+        }
+
+        if (mBTAdapter.isEnabled() && SettingFragment.getBLEPref()) {
+            mBluetoothImageView.setVisibility(View.VISIBLE);
         }
         else {
-            Log.d(TAG, "Bluetooth LE not avaiable");
-            return;
-        }
-        if ((mBTAdapter == null) || (!mBTAdapter.isEnabled())) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 321);
-        }
-        else {
-            mBluetoothImageView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -539,17 +538,19 @@ public class RequestQRCodeFragment extends Fragment implements
             return;
         }
 
+
         mBTAdapter.setName(mAddress);
 
         if (mBTAdvertiser == null) {
             mBTAdvertiser = mBTAdapter.getBluetoothLeAdvertiser();
         }
         if (mBTAdvertiser != null) {
+            Log.d(TAG, "Starting BLE Advertising");
             AdvertiseSettings.Builder settings = new AdvertiseSettings.Builder();
             settings.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
             settings.setConnectable(true);
             settings.setTimeout(0);
-            settings.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
+            settings.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
 
             AdvertiseData.Builder advertiseData = new AdvertiseData.Builder();
             ParcelUuid parcelUuid = ParcelUuid.fromString(BluetoothListView.TRANSFER_SERVICE_UUID);
@@ -580,6 +581,7 @@ public class RequestQRCodeFragment extends Fragment implements
 
     @TargetApi(21)
     private void stopBLEAdvertise() {
+        Log.d(TAG, "Stopping BLE Advertise");
         if (mBTAdvertiser != null && mAdvCallback != null) {
             mBTAdvertiser.stopAdvertising(mAdvCallback);
             mBTAdvertiser = null;
@@ -626,7 +628,7 @@ public class RequestQRCodeFragment extends Fragment implements
                 mQRView.setImageBitmap(mQRBitmap);
             }
             mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
-            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT && mBluetoothImageView.getVisibility() == View.VISIBLE) {
+            if((Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) && (mBluetoothImageView.getVisibility() == View.VISIBLE)) {
                 startBLEAdvertise(mRequestURI);
             }
         }
