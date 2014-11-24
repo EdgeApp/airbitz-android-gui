@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--
      To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
@@ -96,9 +97,13 @@
             android:required="false" />
 
         <receiver
-            android:name="com.airbitz.objects.AirbitzAlertReceiver"
-            android:enabled="true"
-            android:exported="true" >
+            android:name="com.airbitz.objects.AirbitzAlertReceiver" >
+        </receiver>
+        <receiver
+            android:name="com.airbitz.objects.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
     </application>
 
