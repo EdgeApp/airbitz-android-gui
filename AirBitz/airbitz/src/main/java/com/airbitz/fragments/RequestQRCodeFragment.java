@@ -76,7 +76,6 @@ import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class RequestQRCodeFragment extends Fragment implements
@@ -109,13 +108,10 @@ public class RequestQRCodeFragment extends Fragment implements
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
-    private CoreAPI.TxDetails mTxDetails;
     private CreateBitmapTask mCreateBitmapTask;
     private AlertDialog mPartialDialog;
-    private ImageView mBluetoothImageView;
     private ImageView mNFCImageView;
     private NfcAdapter mNfcAdapter;
-    private AtomicReference<byte[]> mPaymentRequestRef = new AtomicReference<byte[]>();
 
     final Runnable dialogKiller = new Runnable() {
         @Override
@@ -155,7 +151,6 @@ public class RequestQRCodeFragment extends Fragment implements
         ((NavigationActivity) getActivity()).hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
-        mBluetoothImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
         mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
