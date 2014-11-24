@@ -185,7 +185,7 @@ public class ViewPagerFragment extends Fragment {
 
             // Animate to 0% opacity first, load new, then animate to 100% opacity
             mBackground.animate()
-                    .alpha(0f)
+                    .alpha(0.5f)
                     .setDuration(mShortAnimationDuration)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
