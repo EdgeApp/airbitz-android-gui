@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,6 +51,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.nfc.tech.MifareClassic;
+import android.nfc.tech.MifareUltralight;
+import android.nfc.tech.NfcA;
+import android.nfc.tech.NfcB;
+import android.nfc.tech.NfcF;
+import android.nfc.tech.NfcV;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -635,6 +643,10 @@ public class NavigationActivity extends Activity
 
         checkNotifications();
 
+        if (SettingFragment.getNFCPref()) {
+            setupNFCForegrounding();
+        }
+
         super.onResume();
     }
 
@@ -645,6 +657,9 @@ public class NavigationActivity extends Activity
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetRepeatingAlertAlarm(this);
+        if(SettingFragment.getNFCPref()) {
+            disableNFCForegrounding();
+        }
     }
 
     /*
@@ -688,6 +703,34 @@ public class NavigationActivity extends Activity
             Log.d(TAG, "Notification type found");
                 mNotificationTask = new NotificationTask();
                 mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    public void setupNFCForegrounding() {
+        // Create a generic PendingIntent that will be deliver to this activity. The NFC stack
+        // will fill in the intent with the details of the discovered tag before delivering to
+        // this activity.
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        ndef.addDataScheme("bitcoin");
+        IntentFilter[] filters = new IntentFilter[] { ndef };
+
+        final NfcManager nfcManager = (NfcManager) getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (nfcAdapter != null && nfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, filters, null);
+        }
+    }
+
+    public void disableNFCForegrounding() {
+        final NfcManager nfcManager = (NfcManager) getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.disableForegroundDispatch(this);
         }
     }
 
