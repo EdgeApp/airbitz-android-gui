@@ -77,14 +77,17 @@ public class ViewPagerFragment extends Fragment {
     private List<TouchImageView> mImageViews = new ArrayList<TouchImageView>();
     private ViewPager mViewPager;
     private ImageView mBackground;
+    private ImageView mForeground;
     private SeekBar mSeekBar;
     private TextView mCounterView;
     private NavigationActivity mActivity;
     private int mPosition;
     private boolean mSeekbarReposition = false;
+    private BitmapDrawable mBitmapDrawable;
     private final int SEEKBAR_MAX = 100;
     private float mScale;
-    private int mShortAnimationDuration = 0;
+    private int mShortAnimationDuration = 300;
+    private boolean mForegroundShowing = false;
     private Handler mHandler = new Handler();
 
     @Override
@@ -127,6 +130,9 @@ public class ViewPagerFragment extends Fragment {
         });
 
         mBackground = (ImageView) mView.findViewById(R.id.fragment_viewpager_background);
+        mForeground = (ImageView) mView.findViewById(R.id.fragment_viewpager_foreground);
+        mBackground.setAlpha(1f);
+        mForeground.setAlpha(0f);
 
         mCounterView = (TextView) mView.findViewById(R.id.viewpager_counter_view);
 
@@ -166,14 +172,12 @@ public class ViewPagerFragment extends Fragment {
         }
 
         mCounterView.setX(mSeekBar.getX() - (mCounterView.getWidth() / 2));
-        mCounterView.setText("1/"+mImageViews.size());
+        mCounterView.setText("1/" + mImageViews.size());
 
         return mView;
     }
 
     private void crossfade(final TouchImageView image) {
-        final BitmapDrawable bitmapDrawable;
-
         Drawable drawable = image.getDrawable();
         if (drawable == null) {
             Log.d(TAG, "drawable null");
@@ -181,30 +185,24 @@ public class ViewPagerFragment extends Fragment {
         }
 
         Bitmap bm = drawableToBitmap(drawable);
-        bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
 
-            // Animate to 0% opacity first, load new, then animate to 100% opacity
-            mBackground.animate()
-                    .alpha(0.5f)
-                    .setDuration(mShortAnimationDuration)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            fadeIn(bitmapDrawable);
-                        }
-                    });
-    }
+        if(mForegroundShowing){
+            mBackground.setImageDrawable(bitmapDrawable);
+            mBackground.animate().alpha(1.0f).setDuration(mShortAnimationDuration);
+            mForeground.animate().alpha(0.0f).setDuration(mShortAnimationDuration);
+        }else {
+            mForeground.setImageDrawable(bitmapDrawable);
+            mBackground.animate().alpha(0.0f).setDuration(mShortAnimationDuration);
+            mForeground.animate().alpha(1.0f).setDuration(mShortAnimationDuration);
+        }
 
-    private void fadeIn(BitmapDrawable bitmapDrawable) {
-        mBackground.setBackground(bitmapDrawable);
-        mBackground.animate()
-                .alpha(1f)
-                .setDuration(mShortAnimationDuration)
-                .setListener(null);
+        mForegroundShowing = !mForegroundShowing;
+
     }
 
     public void onAttach(Activity activity) {
-        mHandler.postDelayed(loadBackground, 500);
+        mHandler.postDelayed(loadBackground, 1000);
         super.onAttach(activity);
     }
 
@@ -216,7 +214,13 @@ public class ViewPagerFragment extends Fragment {
     Runnable loadBackground = new Runnable() {
         @Override
         public void run() {
-            crossfade(mImageViews.get(mPosition));
+            if(! mImageViews.isEmpty()) {
+                Bitmap bm = drawableToBitmap(mImageViews.get(mPosition).getDrawable());
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
+
+                mForeground.setImageDrawable(bitmapDrawable);
+                mBackground.setImageDrawable(bitmapDrawable);
+            }
         }
     };
 
