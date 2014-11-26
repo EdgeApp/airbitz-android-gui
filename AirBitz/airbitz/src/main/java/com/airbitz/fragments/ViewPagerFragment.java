@@ -202,7 +202,7 @@ public class ViewPagerFragment extends Fragment {
     }
 
     public void onAttach(Activity activity) {
-        mHandler.postDelayed(loadBackground, 1000);
+        mHandler.postDelayed(loadBackground, 100);
         super.onAttach(activity);
     }
 
@@ -214,12 +214,14 @@ public class ViewPagerFragment extends Fragment {
     Runnable loadBackground = new Runnable() {
         @Override
         public void run() {
-            if(! mImageViews.isEmpty()) {
+            if(! mImageViews.isEmpty() && mImageViews.get(mPosition).getDrawable() != null) {
                 Bitmap bm = drawableToBitmap(mImageViews.get(mPosition).getDrawable());
                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
 
                 mForeground.setImageDrawable(bitmapDrawable);
                 mBackground.setImageDrawable(bitmapDrawable);
+            } else {
+                mHandler.postDelayed(this, 100);
             }
         }
     };
