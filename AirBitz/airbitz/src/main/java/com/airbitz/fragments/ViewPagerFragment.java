@@ -31,25 +31,17 @@
 
 package com.airbitz.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -58,9 +50,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.TouchImageViewPagerAdapter;
-import com.airbitz.models.Image;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.widgets.TouchImageView;
 
@@ -83,7 +73,6 @@ public class ViewPagerFragment extends Fragment {
     private NavigationActivity mActivity;
     private int mPosition;
     private boolean mSeekbarReposition = false;
-    private BitmapDrawable mBitmapDrawable;
     private final int SEEKBAR_MAX = 100;
     private float mScale;
     private int mShortAnimationDuration = 300;
@@ -169,12 +158,42 @@ public class ViewPagerFragment extends Fragment {
             });
         } else {
             mSeekBar.setVisibility(View.INVISIBLE);
+            mCounterView.setVisibility(View.INVISIBLE);
         }
 
         mCounterView.setX(mSeekBar.getX() - (mCounterView.getWidth() / 2));
         mCounterView.setText("1/" + mImageViews.size());
 
         return mView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mHandler.postDelayed(updater, 100);
+    }
+
+    Runnable updater = new Runnable() {
+        @Override
+        public void run() {
+            updateScrubber();
+        }
+    };
+
+
+    private void updateScrubber() {
+        if(mImageViews.size() > 1) {
+            int progress = mSeekBar.getProgress();
+            int nearestValue = Math.round(progress / mScale);
+            int val = (progress * (mSeekBar.getWidth() - 2 * mSeekBar.getThumbOffset())) / mSeekBar.getMax();
+            Log.d(TAG, "Seekbar progress = "+progress+", val = "+val);
+            mCounterView.setText(String.valueOf(nearestValue + 1) + "/" + mImageViews.size());
+            mCounterView.setX(mSeekBar.getX() + val + (mSeekBar.getThumbOffset()) - (mCounterView.getWidth() / 2));
+        }
+        else {
+            mSeekBar.setVisibility(View.INVISIBLE);
+            mCounterView.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void crossfade(final TouchImageView image) {

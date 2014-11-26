@@ -31,10 +31,7 @@
 
 package com.airbitz.adapters;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
