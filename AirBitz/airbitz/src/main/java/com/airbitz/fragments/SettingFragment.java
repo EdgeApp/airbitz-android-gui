@@ -819,15 +819,14 @@ public class SettingFragment extends Fragment {
     }
 
     private void saveNFCPref(boolean state) {
-        int selection = state ? 1 : 0;
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
-        editor.putInt(NFC_PREF, selection);
+        editor.putBoolean(NFC_PREF, state);
         editor.apply();
     }
 
     static public boolean getNFCPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getInt(NFC_PREF, 0) != 0;
+        return prefs.getBoolean(NFC_PREF, true);
     }
 
 
@@ -837,15 +836,14 @@ public class SettingFragment extends Fragment {
     }
 
     private void saveBLEPref(boolean state) {
-        int selection = state ? 1 : 0;
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
-        editor.putInt(BLE_PREF, selection);
+        editor.putBoolean(BLE_PREF, state);
         editor.apply();
     }
 
     static public boolean getBLEPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getInt(BLE_PREF, 0) != 0;
+        return prefs.getBoolean(BLE_PREF, false);
     }
 
 }
