@@ -570,7 +570,8 @@ public class CategoryFragment extends Fragment {
     }
 
     private List<String> removeBlankSubcategories(List<String> allcategories) {
-        for (String category : allcategories) {
+        for (int i=allcategories.size()-1; i> -1; i--) {
+            String category = allcategories.get(i);
             if (category.equals(getString(R.string.fragment_category_expense)) ||
                     category.equals(getString(R.string.fragment_category_income)) ||
                     category.equals(getString(R.string.fragment_category_transfer)) ||
