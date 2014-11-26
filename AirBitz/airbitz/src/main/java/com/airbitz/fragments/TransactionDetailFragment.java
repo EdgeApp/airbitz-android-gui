@@ -239,7 +239,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         }
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mActivity = (NavigationActivity) getActivity();
     }
 
@@ -247,10 +246,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
-        } else {
-//            return mView;
         }
-
 
         FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
@@ -710,6 +706,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public void onResume() {
         super.onResume();
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getContactsList();
     }
 
