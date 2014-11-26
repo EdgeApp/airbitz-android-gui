@@ -65,8 +65,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public static final int ALERT_NOTIFICATION_CODE = 45631;
     public static final String ALERT_NOTIFICATION_TYPE = "com.airbitz.navigation.NotificationType";
 
-    //FIXME REFACTOR TO ONE DAY INTERVALS BEFORE RELEASE
-    final private static int REPEAT_ALERT_MILLIS = 60 * 1000 * 1; //1 minute     60 * 24; // 1 Day intervals
+    //ONE DAY interval for notification checks
+    final private static int REPEAT_ALERT_MILLIS = 1000 * 60 * 60 * 24; // 1 Day intervals
 
     NotificationTask mNotificationTask;
     PowerManager.WakeLock mWakeLock;
