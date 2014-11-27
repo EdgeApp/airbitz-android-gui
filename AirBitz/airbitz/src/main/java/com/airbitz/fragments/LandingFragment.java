@@ -248,6 +248,9 @@ public class LandingFragment extends Fragment implements
         else {
             refreshView(false, false);
         }
+        if(!mActivity.networkIsAvailable()) {
+            mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
+        }
     }
 
     @Override
@@ -311,8 +314,13 @@ public class LandingFragment extends Fragment implements
      * Attempts PIN based login
      */
     public void attemptPinLogin() {
-        mPINLoginTask = new PINLoginTask();
-        mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+        if(mActivity.networkIsAvailable()) {
+            mPINLoginTask = new PINLoginTask();
+            mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+        }
+        else {
+            mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
+        }
     }
 
     public class PINLoginTask extends AsyncTask {
