@@ -67,12 +67,13 @@ import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.ResizableImageView;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WalletFragment extends Fragment
         implements CoreAPI.OnExchangeRatesChange,
@@ -156,6 +157,7 @@ public class WalletFragment extends Fragment
     private TransactionTask mTransactionTask;
     private SearchTask mSearchTask;
     private Handler mHandler = new Handler();
+    ExecutorService mExecutor = Executors.newFixedThreadPool(100);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -631,7 +633,7 @@ public class WalletFragment extends Fragment
         for (Transaction transaction : mTransactions) {
             if (!mCombinedPhotos.containsKey(transaction.getName()) && transaction.getmBizId() != 0) {
                 GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(transaction.getName(), transaction.getmBizId());
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                task.executeOnExecutor(mExecutor);
             }
         }
     }
