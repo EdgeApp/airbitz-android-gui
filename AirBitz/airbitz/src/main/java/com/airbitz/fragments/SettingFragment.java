@@ -826,7 +826,17 @@ public class SettingFragment extends Fragment {
 
     static public boolean getNFCPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getBoolean(NFC_PREF, true);
+        boolean nfc;
+        try {
+            nfc = prefs.getBoolean(NFC_PREF, true);
+            return nfc;
+        }
+        catch (ClassCastException e) {
+            SharedPreferences.Editor editor = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+            editor.putBoolean(NFC_PREF, true);
+            editor.apply();
+            return true;
+        }
     }
 
 
