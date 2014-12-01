@@ -198,7 +198,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
         // Add a header
         mBusinessLayout = (ViewGroup) inflater.inflate(R.layout.inc_directory_categories, null, false);
-        mVenueListView.addHeaderView(mBusinessLayout);
+        mVenueListView.addHeaderView(mBusinessLayout, null, false);
 
         // Add a footer
         mViewGroupLoading = (ViewGroup) inflater.inflate(R.layout.loading_indicator, null, false);
