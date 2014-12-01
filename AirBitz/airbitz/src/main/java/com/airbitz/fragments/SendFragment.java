@@ -374,19 +374,6 @@ public class SendFragment extends Fragment implements
             }
         }
 
-        // if BLE is supported on the device, enable
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (mBluetoothAdapter.isEnabled()) {
-                mBluetoothListView = new BluetoothListView(mActivity);
-                mBluetoothLayout.addView(mBluetoothListView, 0);
-                mBluetoothButton.setVisibility(View.VISIBLE);
-            }
-            else {
-                // Bluetooth is not enabled - ask for enabling?
-            }
-        }
-
         updateWalletOtherList();
 
         return mView;
@@ -610,13 +597,7 @@ public class SendFragment extends Fragment implements
             mHandler = new Handler();
         }
 
-        if(mBluetoothButton.getVisibility() == View.VISIBLE) {
-            ViewBluetoothPeripherals(true);
-            mBluetoothListView.setOnOneScanEndedListener(this);
-        }
-        else {
-            ViewBluetoothPeripherals(false);
-        }
+        ViewBluetoothPeripherals(false);
 
         if (walletSpinner != null && walletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
@@ -752,7 +733,9 @@ public class SendFragment extends Fragment implements
 
     @Override
     public void onBitcoinURIReceived(final String bitcoinAddress) {
-        mBluetoothListView.setOnBitcoinURIReceivedListener(null);
+        if(mBluetoothListView != null) {
+            mBluetoothListView.setOnBitcoinURIReceivedListener(null);
+        }
         mToEdittext.post(new Runnable() {
             @Override
             public void run() {
