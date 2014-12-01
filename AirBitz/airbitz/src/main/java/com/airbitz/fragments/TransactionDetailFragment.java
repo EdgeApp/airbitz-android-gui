@@ -1374,8 +1374,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                 mContactNames.add(name);
             }
+            cursor.close();
         }
-        cursor.close();
     }
 
     public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
