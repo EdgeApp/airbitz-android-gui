@@ -52,6 +52,7 @@
     <string name="fragment_business_no_results">No Results Found</string>
     <string name="fragment_business_cannot_retrieve_data">Can not retrieve data</string>
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
+    <string name="fragment_business_no_categories_retreived">No categories retrieved from server</string>
 
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
     <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>

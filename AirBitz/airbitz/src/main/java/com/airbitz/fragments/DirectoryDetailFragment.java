@@ -141,7 +141,9 @@ public class DirectoryDetailFragment extends Fragment {
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            if(getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            }
         } else {
             locationEnabled = true;
         }
@@ -530,8 +532,10 @@ public class DirectoryDetailFragment extends Fragment {
                 mFacebookButton.setVisibility(View.GONE);
                 mTwitterButton.setVisibility(View.GONE);
                 mYelpButton.setVisibility(View.GONE);
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
-                        Toast.LENGTH_LONG).show();
+                if(getActivity() != null) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
+                            Toast.LENGTH_LONG).show();
+                }
             }
             ((NavigationActivity) mActivity).showModalProgress(false);
         }

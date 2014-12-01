@@ -781,8 +781,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             // If we are displaying a dialog, open up the spinner
             if (mMoreCategoriesProgressDialog != null && mMoreCategoriesProgressDialog.isShowing()) {
                 if (categories == null) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                        "Can not retrieve data", Toast.LENGTH_LONG).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.fragment_business_cannot_retrieve_data), Toast.LENGTH_LONG).show();
+                    }
                 }
                 mMoreCategoriesProgressDialog.dismiss();
                 mMoreCategoriesProgressDialog = null;
@@ -803,8 +805,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                        "No categories retrieved from server", Toast.LENGTH_LONG).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.fragment_business_no_categories_retreived), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -851,7 +855,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            if(getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            }
         } else {
             locationEnabled = true;
         }

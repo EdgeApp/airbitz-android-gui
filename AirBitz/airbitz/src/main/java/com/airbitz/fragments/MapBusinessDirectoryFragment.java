@@ -565,8 +565,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     mMapShim.animateCamera(currentLatLng);
                 } else {
                     Log.d(TAG, getString(R.string.no_location_found));
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -618,8 +620,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 @Override
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                Toast.LENGTH_LONG).show();
+                        if(getActivity() != null) {
+                            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
+                                    Toast.LENGTH_LONG).show();
+                        }
                         mGetVenuesAsyncTask.cancel(true);
                     }
                 }
@@ -697,7 +701,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            if(getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            }
         } else {
             locationEnabled = true;
         }
