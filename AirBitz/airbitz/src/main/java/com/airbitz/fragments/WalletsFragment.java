@@ -154,19 +154,23 @@ public class WalletsFragment extends Fragment
     Runnable animateSwitchUp = new Runnable() {
         @Override
         public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(100);
-            animator.addListener(endListener);
-            animator.start();
+            if(mBalanceSwitchLayout != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+                animator.setDuration(100);
+                animator.addListener(endListener);
+                animator.start();
+            }
         }
     };
     Runnable animateSwitchDown = new Runnable() {
         @Override
         public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, (getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(100);
-            animator.addListener(endListener);
-            animator.start();
+            if(mBalanceSwitchLayout != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, (getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+                animator.setDuration(100);
+                animator.addListener(endListener);
+                animator.start();
+            }
         }
     };
     private List<Wallet> mLatestWalletList;
