@@ -636,8 +636,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mGetVenuesAsyncTask.cancel(true);
-                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                Toast.LENGTH_LONG).show();
+                        if(getActivity() != null) {
+                            Toast.makeText(getActivity(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
