@@ -831,7 +831,7 @@ public class SettingFragment extends Fragment {
 
 
     private boolean isBLEcapable() {
-        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(AirbitzApplication.getContext().BLUETOOTH_SERVICE);
+//        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         return false; // (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
