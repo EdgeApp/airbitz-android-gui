@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -143,6 +144,7 @@ public class SettingFragment extends Fragment {
         public void run() {
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
             mCoreSettings.setBDisablePINLogin(false);
+            mCoreAPI.saveAccountSettings(mCoreSettings);
         }
     };
 
@@ -280,9 +282,12 @@ public class SettingFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 if(isChecked && mCoreSettings.getBDisablePINLogin()) {
+                    Log.d(TAG, "Enabling PIN");
                     mHandler.post(mPinSetupRunnable);
                 } else if(!isChecked) {
+                    Log.d(TAG, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
+                    mCoreAPI.saveAccountSettings(mCoreSettings);
                     mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
                 }
             }
