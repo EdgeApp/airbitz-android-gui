@@ -173,7 +173,7 @@ public class WalletsFragment extends Fragment
             }
         }
     };
-    private List<Wallet> mLatestWalletList;
+    private List<Wallet> mLatestWalletList = new ArrayList<Wallet>();
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -187,7 +187,6 @@ public class WalletsFragment extends Fragment
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
-        mLatestWalletList = getWallets(true);
     }
 
     @Override
@@ -560,14 +559,16 @@ public class WalletsFragment extends Fragment
 
     public void updateWalletList(boolean archiveClosed) {
         List<Wallet> walletList = getWallets(archiveClosed);
-        mLatestWalletList.clear();
-        mLatestWalletList.addAll(walletList);
-        mLatestWalletAdapter.swapWallets();
-        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
-        mLatestWalletAdapter.notifyDataSetChanged();
-        mParentLayout.invalidate();
+        if(walletList != null && !walletList.isEmpty()) {
+            mLatestWalletList.clear();
+            mLatestWalletList.addAll(walletList);
+            mLatestWalletAdapter.swapWallets();
+            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+            mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+            mLatestWalletListView.setArchiveClosed(archiveClosed);
+            mLatestWalletAdapter.notifyDataSetChanged();
+            mParentLayout.invalidate();
+        }
     }
 
     public List<Wallet> getWallets(boolean archiveClosed) {
@@ -575,7 +576,8 @@ public class WalletsFragment extends Fragment
         List<Wallet> coreList = mCoreAPI.getCoreWallets(false);
 
         if (coreList == null)
-            coreList = new ArrayList<Wallet>();
+            return null;
+
         Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
         headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
         list.add(headerWallet);//Wallet HEADER
