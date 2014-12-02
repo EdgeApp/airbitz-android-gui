@@ -365,8 +365,6 @@ public class SettingFragment extends Fragment {
 
         setUserNameState(mSendNameSwitch.isChecked());
 
-        mCoreSettings = mCoreAPI.coreSettings();
-        loadSettings(mCoreSettings);
         return mView;
     }
 
@@ -444,6 +442,7 @@ public class SettingFragment extends Fragment {
     }
 
     private void saveCurrentSettings() {
+        mCoreSettings = mCoreAPI.newCoreSettings();
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {
@@ -671,6 +670,9 @@ public class SettingFragment extends Fragment {
             mChangeRecoveryButton.performClick();
             bundle.putBoolean(START_RECOVERY_PASSWORD, false);
         }
+
+        mCoreSettings = mCoreAPI.newCoreSettings();
+        loadSettings(mCoreSettings);
     }
 
     @Override

@@ -81,6 +81,7 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
@@ -712,12 +713,13 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
 
     private void goDone() {
-        int reminderCount = mCoreAPI.coreSettings().getRecoveryReminderCount();
+        tABC_AccountSettings settings = mCoreAPI.coreSettings();
+        int reminderCount = settings.getRecoveryReminderCount();
         if (mFromRequest && mCoreAPI.needsRecoveryReminder(mWallet) && !mHasReminded) {
             mHasReminded = true;
             reminderCount++;
-            mCoreAPI.coreSettings().setRecoveryReminderCount(reminderCount);
-            mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+            settings.setRecoveryReminderCount(reminderCount);
+            mCoreAPI.saveAccountSettings(settings);
             ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                     getString(R.string.transaction_details_recovery_reminder_message));
         } else {

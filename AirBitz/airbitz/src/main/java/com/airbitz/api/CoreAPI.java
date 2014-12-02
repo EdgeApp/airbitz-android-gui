@@ -147,7 +147,7 @@ public class CoreAPI {
     }
 
     public void setupAccountSettings() {
-        coreSettings();
+        newCoreSettings();
     }
 
     /**
@@ -240,7 +240,10 @@ public class CoreAPI {
         mOnBlockHeightChange = listener;
     }
     final Runnable BlockHeightUpdater = new Runnable() {
-        public void run() { mOnBlockHeightChange.onBlockHeightChange(); }
+        public void run() {
+            mCoreSettings = null;
+            mOnBlockHeightChange.onBlockHeightChange();
+        }
     };
 
     // Callback interface when a data sync change is received
@@ -253,6 +256,7 @@ public class CoreAPI {
     }
     final Runnable DataSyncUpdater = new Runnable() {
         public void run() {
+            mCoreSettings = null;
             startWatchers();
             mOnDataSync.OnDataSync();
         }
@@ -272,6 +276,7 @@ public class CoreAPI {
 
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
+            mCoreSettings = null;
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
             updateExchangeRates();
         }
@@ -630,6 +635,10 @@ public class CoreAPI {
 
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings coreSettings() {
+        if(mCoreSettings != null) {
+            return mCoreSettings;
+        }
+
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -652,6 +661,11 @@ public class CoreAPI {
             Log.d(TAG, "Load settings failed - "+message);
         }
         return null;
+    }
+
+    public tABC_AccountSettings newCoreSettings() {
+        mCoreSettings = null;
+        return coreSettings();
     }
 
     public void saveAccountSettings(tABC_AccountSettings settings) {

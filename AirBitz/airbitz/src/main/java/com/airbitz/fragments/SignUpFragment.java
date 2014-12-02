@@ -61,6 +61,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
@@ -646,8 +647,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();
 
-                mCoreAPI.coreSettings().setRecoveryReminderCount(0);
-                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+                tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                settings.setRecoveryReminderCount(0);
+                mCoreAPI.saveAccountSettings(settings);
 
                 mActivity.popFragment();
                 mActivity.DisplayLoginOverlay(false);
