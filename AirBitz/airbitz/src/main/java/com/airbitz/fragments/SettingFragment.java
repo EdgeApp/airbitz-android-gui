@@ -34,16 +34,13 @@ package com.airbitz.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,7 +49,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
@@ -140,6 +136,17 @@ public class SettingFragment extends Fragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
+
+    private Handler mHandler = new Handler();
+    Runnable mPinSetupRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
+            mCoreSettings.setBDisablePINLogin(false);
+        }
+    };
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -272,6 +279,12 @@ public class SettingFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
+                if(isChecked && mCoreSettings.getBDisablePINLogin()) {
+                    mHandler.post(mPinSetupRunnable);
+                } else if(!isChecked) {
+                    mCoreSettings.setBDisablePINLogin(true);
+                    mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                }
             }
         });
 
@@ -475,16 +488,12 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
-        //PinRelogin
-        if(mPinReloginSwitch.isChecked() && mCoreSettings.getBDisablePINLogin()) {
-            mCoreSettings.setBDisablePINLogin(false);
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
-        } else if(!mPinReloginSwitch.isChecked()) {
-            mCoreSettings.setBDisablePINLogin(true);
-            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
-        }
+
+        //PinRelogin is saved during click
+
         //NFC
         saveNFCPref(mNFCSwitch.isChecked());
+
         //BLE
         saveBLEPref(mBLESwitch.isChecked());
 
