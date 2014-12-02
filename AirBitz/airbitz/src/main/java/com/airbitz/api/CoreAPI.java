@@ -252,7 +252,10 @@ public class CoreAPI {
         mOnDataSync = listener;
     }
     final Runnable DataSyncUpdater = new Runnable() {
-        public void run() { mOnDataSync.OnDataSync(); }
+        public void run() {
+            startWatchers();
+            mOnDataSync.OnDataSync();
+        }
     };
 
     // Callback interface when a remote mPassword change is received
