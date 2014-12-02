@@ -173,6 +173,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mNextButton.setClickable(false);
                 goNext();
             }
         });
@@ -570,7 +571,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mChangeTask = null;
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
                     AirbitzApplication.Login(mUsername, mPassword);
@@ -596,13 +596,16 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 } else {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
+                mNextButton.setClickable(true);
             }
             mCoreAPI.startAllAsyncUpdates();
+            mChangeTask = null;
         }
 
         @Override
         protected void onCancelled() {
             mChangeTask = null;
+            mNextButton.setClickable(true);
             mCoreAPI.startAllAsyncUpdates();
             mActivity.showModalProgress(false);
         }
