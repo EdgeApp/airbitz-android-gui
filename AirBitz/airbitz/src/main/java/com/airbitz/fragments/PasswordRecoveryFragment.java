@@ -206,12 +206,14 @@ public class PasswordRecoveryFragment extends Fragment implements NavigationActi
     @Override
     public boolean onBackPress() {
         boolean dirty = false;
-        for (View view : mQuestionViews) {
-            QuestionView qaView = (QuestionView) view;
-            if (!qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default)) ||
-                    !qaView.getText().isEmpty()) {
-                dirty = true;
-                break;
+        if(mQuestionViews != null) {
+            for (View view : mQuestionViews) {
+                QuestionView qaView = (QuestionView) view;
+                if (!qaView.getSelectedQuestion().equals(getString(R.string.activity_recovery_question_default)) ||
+                        !qaView.getText().isEmpty()) {
+                    dirty = true;
+                    break;
+                }
             }
         }
 
