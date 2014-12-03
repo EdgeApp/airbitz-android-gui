@@ -59,8 +59,8 @@ import com.airbitz.objects.HighlightOnPressImageButton;
  */
 public class SpendingLimitsFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
-    private final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
-    private final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
+    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
+    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
 
     private EditText mPasswordEditText;
     private View mPasswordRedRing;
@@ -206,27 +206,10 @@ public class SpendingLimitsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        long limit;
-        boolean state;
-
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
 
-        // On first install/load, copy synchronized to local setting
-        if(!prefs.contains(DAILY_LIMIT_SETTING_PREF)) {
-            limit = mCoreAPI.GetDailySpendLimit();
-            state = mCoreAPI.GetDailySpendLimitSetting();
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(DAILY_LIMIT_PREF, limit);
-            editor.putBoolean(DAILY_LIMIT_SETTING_PREF, state);
-            editor.apply();
-        }
-        else { // use local setting otherwise
-            limit = prefs.getLong(DAILY_LIMIT_PREF, 0);
-            state = prefs.getBoolean(DAILY_LIMIT_SETTING_PREF, true);
-        }
-
-        mDailyEditText.setText(mCoreAPI.formatSatoshi(limit, false));
-        mDailySwitch.setChecked(state);
+        mDailyEditText.setText(mCoreAPI.formatSatoshi(prefs.getLong(DAILY_LIMIT_PREF, 0), false));
+        mDailySwitch.setChecked(prefs.getBoolean(DAILY_LIMIT_SETTING_PREF, true));
         mDailyDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
 
         mPINSwitch.setChecked(mCoreAPI.GetPINSpendLimitSetting());

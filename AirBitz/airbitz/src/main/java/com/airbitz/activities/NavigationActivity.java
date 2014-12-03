@@ -52,12 +52,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
-import android.nfc.tech.MifareClassic;
-import android.nfc.tech.MifareUltralight;
-import android.nfc.tech.NfcA;
-import android.nfc.tech.NfcB;
-import android.nfc.tech.NfcF;
-import android.nfc.tech.NfcV;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,7 +59,6 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,6 +91,7 @@ import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
+import com.airbitz.fragments.SpendingLimitsFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
@@ -692,7 +686,7 @@ public class NavigationActivity extends Activity
         final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        Log.d(TAG, "New Intent action="+action+", data="+intentUri+", type="+type+", scheme="+scheme);
+        Log.d(TAG, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
 
         if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
@@ -942,6 +936,7 @@ public class NavigationActivity extends Activity
 
     public void UserJustLoggedIn() {
         showNavBar();
+        checkDailyLimitPref();
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
@@ -1462,5 +1457,17 @@ public class NavigationActivity extends Activity
             }
         });
         mAlertNotificationDialog.show();
+    }
+
+    private void checkDailyLimitPref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+
+        // On first install/load, copy synchronized to local setting
+        if(!prefs.contains(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, mCoreAPI.GetDailySpendLimit());
+            editor.putBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, mCoreAPI.GetDailySpendLimitSetting());
+            editor.apply();
+        }
     }
 }
