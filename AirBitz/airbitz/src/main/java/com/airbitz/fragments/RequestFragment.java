@@ -60,6 +60,10 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -148,7 +152,17 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
         mExpandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mBitcoinField.getText().toString().isEmpty() && Float.valueOf(mBitcoinField.getText().toString()) < 0) {
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+                symbols.setDecimalSeparator('.');
+                DecimalFormat format = new DecimalFormat("0.#");
+                format.setDecimalFormatSymbols(symbols);
+                float f = 0f;
+                try {
+                    f = format.parse(mBitcoinField.getText().toString()).floatValue();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (!mBitcoinField.getText().toString().isEmpty() && f < 0) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
                     builder.setMessage(getString(R.string.request_invalid_amount))
                             .setCancelable(false)

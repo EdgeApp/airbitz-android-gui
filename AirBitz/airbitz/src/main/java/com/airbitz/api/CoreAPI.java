@@ -57,6 +57,9 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1347,10 +1350,10 @@ public class CoreAPI {
             pre = withSymbol ? denom : "";
         }
         BigDecimal bd = new BigDecimal(in);
-        bd = bd.setScale(3, RoundingMode.HALF_UP);
-        bd = bd.stripTrailingZeros();
 
-        return pre+bd.toPlainString();
+        DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+
+        return pre + df.format(bd.doubleValue());
     }
 
     private int findCurrencyIndex(int currencyNum) {
@@ -1426,9 +1429,12 @@ public class CoreAPI {
             BigDecimal bd = new BigDecimal(amount);
             bd = bd.movePointLeft(decimalPlaces);
 
-            bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
-            bd = bd.stripTrailingZeros();
-            return pretext+bd.toPlainString();
+//            bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
+//            bd = bd.stripTrailingZeros();
+
+            DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+
+            return pretext + df.format(bd.doubleValue());
         }
     }
 
