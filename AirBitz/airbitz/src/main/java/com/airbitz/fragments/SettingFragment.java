@@ -665,6 +665,7 @@ public class SettingFragment extends Fragment {
                                 int num = picker.getValue();
                                 button.setText(items[num]);
                                 saveCurrentSettings();
+                                mCoreAPI.updateExchangeRates();
                             }
                         }
                 )
