@@ -118,6 +118,7 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
+    private NavigationActivity mActivity;
 
 
     @Override
@@ -127,6 +128,8 @@ public class DirectoryDetailFragment extends Fragment {
         mBusinessId = getArguments().getString(BIZID);
         mBusinessName = getArguments().getString(BIZNAME);
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
+
+        mActivity = ((NavigationActivity) getActivity());
     }
 
     @Override
@@ -142,13 +145,13 @@ public class DirectoryDetailFragment extends Fragment {
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
             if(getActivity() != null) {
-                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+                mActivity.ShowFadingDialog(getString(R.string.fragment_business_enable_location_services));
             }
         } else {
             locationEnabled = true;
         }
 
-        Log.d(TAG, "Business ID: " + mBusinessId);
+        Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
         mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
@@ -296,6 +299,7 @@ public class DirectoryDetailFragment extends Fragment {
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
+            Log.d(TAG, "LocationManager Location = "+latLong);
             return mApi.getBusinessByIdAndLatLong(params[0], latLong);
         }
 
@@ -313,7 +317,7 @@ public class DirectoryDetailFragment extends Fragment {
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                setDistance(mBusinessDetail.getDistance());
+                setDistance(mBusinessDistance);
                 if (mLat == 0 && mLon == 0) {
                     mAddressButton.setClickable(false);
                 }
