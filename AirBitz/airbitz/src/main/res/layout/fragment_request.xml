@@ -224,9 +224,11 @@
                     style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_marginRight="12dp"
+                    android:gravity="right"
+                    android:text="1 uBTC = $0.000 USD"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 

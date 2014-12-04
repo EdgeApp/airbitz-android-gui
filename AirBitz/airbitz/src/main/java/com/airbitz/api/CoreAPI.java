@@ -1339,7 +1339,12 @@ public class CoreAPI {
         return pre+out;
     }
 
+
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
+        return formatCurrency(in, currencyNum, withSymbol, 2);
+    }
+
+    public String formatCurrency(double in, int currencyNum, boolean withSymbol, int decimalPlaces) {
         String pre;
         String denom = mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)]+" ";
         if (in < 0)
@@ -1350,8 +1355,15 @@ public class CoreAPI {
             pre = withSymbol ? denom : "";
         }
         BigDecimal bd = new BigDecimal(in);
-
-        DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+        DecimalFormat df;
+        switch(decimalPlaces) {
+            case 3:
+                df = new DecimalFormat("#,##0.000", new DecimalFormatSymbols(Locale.getDefault()));
+                break;
+            default:
+                df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+                break;
+        }
 
         return pre + df.format(bd.doubleValue());
     }
@@ -1483,7 +1495,10 @@ public class CoreAPI {
                 denomIndex = 2;
             }
         }
-        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+        double o = SatoshiToCurrency(satoshi, currencyNum);
+        String currency = formatCurrency(o, currencyNum, true, 3);
+
         String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
         return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
     }
