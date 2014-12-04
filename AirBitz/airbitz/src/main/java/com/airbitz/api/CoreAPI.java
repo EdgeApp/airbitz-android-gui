@@ -1365,15 +1365,6 @@ public class CoreAPI {
         return 10; // default US
     }
 
-    public int currencyDecimalPlaces(String label) {
-        int decimalPlaces = 5;
-        if (label.contains("uBTC"))
-            decimalPlaces = 2;
-        else if (label.contains("mBTC"))
-            decimalPlaces = 3;
-        return decimalPlaces;
-    }
-
     public int userDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
         tABC_AccountSettings settings = coreSettings();
@@ -1386,11 +1377,6 @@ public class CoreAPI {
                 decimalPlaces = 5;
         }
         return decimalPlaces;
-    }
-
-    public long cleanNumberString(String value) {
-        String out = value.replaceAll("[^a-zA-Z0-9]","");
-        return Long.valueOf(out);
     }
 
     public String formatSatoshi(long amount) {
@@ -1429,10 +1415,14 @@ public class CoreAPI {
             BigDecimal bd = new BigDecimal(amount);
             bd = bd.movePointLeft(decimalPlaces);
 
-//            bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
-//            bd = bd.stripTrailingZeros();
-
             DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+
+            if(decimalPlaces == 5) {
+                df = new DecimalFormat("#,##0.00000", new DecimalFormatSymbols(Locale.getDefault()));
+            }
+            else if(decimalPlaces == 8) {
+                df = new DecimalFormat("#,##0.00000000", new DecimalFormatSymbols(Locale.getDefault()));
+            }
 
             return pretext + df.format(bd.doubleValue());
         }
@@ -1457,7 +1447,6 @@ public class CoreAPI {
 
     public int CurrencyIndex(int currencyNum) {
         int index = -1;
-        tABC_AccountSettings settings = coreSettings();
         int[] currencyNumbers = getCurrencyNumbers();
 
         for(int i=0; i<currencyNumbers.length; i++) {
@@ -1469,27 +1458,6 @@ public class CoreAPI {
             index = currencyNumbers.length-1;
         }
         return index;
-    }
-
-    public void SaveCurrencyNumber(int currencyNum) {
-        tABC_AccountSettings settings = coreSettings();
-        settings.setCurrencyNum(currencyNum);
-    }
-
-    public int BitcoinDenominationLabel() {
-        tABC_AccountSettings settings = coreSettings();
-        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        return bitcoinDenomination.getDenominationType();
-    }
-
-    public String FiatCurrencySign() {
-        int index = SettingsCurrencyIndex();
-        return mFauxCurrencyDenomination[index];
-    }
-
-    public String FiatCurrencyAcronym() {
-        int index = SettingsCurrencyIndex();
-        return mFauxCurrencyAcronyms[index];
     }
 
     public long denominationToSatoshi(String amount) {
