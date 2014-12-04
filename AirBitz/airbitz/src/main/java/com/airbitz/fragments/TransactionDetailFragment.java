@@ -506,46 +506,32 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            String store = "";
+            String mInput = "";
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-//                Log.d(TAG, "editable before text changed. start="+start+" count="+count+" after="+after);
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
                 if(!doEdit) {
-                    store = charSequence.subSequence(start, start + after).toString();
-//                    Log.d(TAG, "store=" + store + " editable text changed. start=" + start + " before=" + before + " after=" + after);
+                    mInput = charSequence.subSequence(start, start + after).toString();
+                    Log.d(TAG, "OnTextChanged mInput=" + mInput + " editable text changed. start=" + start + " before=" + before + " after=" + after);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit) {
-                    if (!catSelected) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(currentType).append(store);
-                        doEdit = false;
-                        catSelected = true;
-                    }
+                    doEdit = true;
+                    editable.clear();
+                    editable.append(currentType).append(mInput);
+                    doEdit = false;
 
-                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
-                            (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
-                            (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
-                            (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(mCategoryOld);
-                        doEdit = false;
-                    }
-                    String sub = store;
-                    updateBlanks(sub);
-                    goCreateCategoryList(sub);
+                    Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
+                    updateBlanks(mInput);
+                    goCreateCategoryList(mInput);
                     mCategoryAdapter.notifyDataSetChanged();
-                    mCategoryOld = editable.toString();
                 }
             }
         });
