@@ -317,6 +317,7 @@ public class LandingFragment extends Fragment implements
         if(mActivity.networkIsAvailable()) {
             mPINLoginTask = new PINLoginTask();
             mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+            mPinEditText.setText("");
         }
         else {
             mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));

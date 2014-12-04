@@ -55,22 +55,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -2380,11 +2375,22 @@ public class CoreAPI {
     }
 
     private void watchAddresses(String uuid) {
-        if (mWatcherTasks.get(uuid) != null) {
+        Thread thread = new Thread(new WatchAddressesRunnable(uuid));
+        thread.start();
+    }
+
+    private class WatchAddressesRunnable implements Runnable {
+        private final String uuid;
+
+        WatchAddressesRunnable(final String uuid) {
+            this.uuid = uuid;
+        }
+
+        public void run() {
             tABC_Error error = new tABC_Error();
             core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                                    AirbitzApplication.getPassword(),
-                                    uuid, error);
+                    AirbitzApplication.getPassword(),
+                    uuid, error);
             printABCError(error);
         }
     }
