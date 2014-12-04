@@ -82,6 +82,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -881,6 +883,12 @@ public class BusinessDirectoryFragment extends Fragment implements
             if (venues.size() <= PAGE_SIZE) {
                 mVenueAdapter.warmupCache(venues);
             }
+            Collections.sort(mVenuesLoaded, new Comparator<BusinessSearchResult>() {
+                @Override
+                public int compare(BusinessSearchResult bsr1, BusinessSearchResult bsr2) {
+                    return (Float.valueOf(bsr1.getDistance()) > Float.valueOf(bsr2.getDistance())) ? 1 : -1;
+                }
+            });
             mVenueAdapter.notifyDataSetChanged();
         }
     }
