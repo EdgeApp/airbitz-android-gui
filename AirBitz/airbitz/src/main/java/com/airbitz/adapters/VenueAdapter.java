@@ -33,6 +33,7 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,7 +188,7 @@ public class VenueAdapter extends BaseAdapter {
             if(meters<1000) {
                 distanceString = "" + (int) meters + " m";
             } else {
-                distanceString = "" + BigDecimal.valueOf(meters*0.001).setScale(1, BigDecimal.ROUND_HALF_UP) + " km";
+                distanceString = "" + BigDecimal.valueOf(meters*0.001).setScale(2, BigDecimal.ROUND_HALF_UP) + " km";
             }
         } else {
             double miles = Common.metersToMiles(meters);
