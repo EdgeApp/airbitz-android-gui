@@ -84,7 +84,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by tom on 4/22/14.
@@ -883,6 +885,14 @@ public class BusinessDirectoryFragment extends Fragment implements
             if (venues.size() <= PAGE_SIZE) {
                 mVenueAdapter.warmupCache(venues);
             }
+
+            // remove duplicates
+            HashSet hs = new HashSet();
+            hs.addAll(mVenuesLoaded);
+            mVenuesLoaded.clear();
+            mVenuesLoaded.addAll(hs);
+
+            // sort
             Collections.sort(mVenuesLoaded, new Comparator<BusinessSearchResult>() {
                 @Override
                 public int compare(BusinessSearchResult bsr1, BusinessSearchResult bsr2) {
