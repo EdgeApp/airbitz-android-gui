@@ -373,6 +373,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 }
             }
         }
+        mNextButton.setClickable(true);
     }
 
     // checks the mUsername field (non-blank or matches old mPassword depending on the mode)
