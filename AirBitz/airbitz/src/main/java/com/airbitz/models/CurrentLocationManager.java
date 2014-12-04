@@ -68,7 +68,7 @@ public class CurrentLocationManager {
         return mInstance;
     }
 
-    public void addLocationChangeListener(OnLocationChange listener) {
+    public void addLocationChangeListener(OnCurrentLocationChange listener) {
         if (mPlay != null) {
             mPlay.addLocationChangeListener(listener);
         } else {
@@ -76,7 +76,7 @@ public class CurrentLocationManager {
         }
     }
 
-    public void removeLocationChangeListener(OnLocationChange listener) {
+    public void removeLocationChangeListener(OnCurrentLocationChange listener) {
         if (mPlay != null) {
             mPlay.removeLocationChangeListener(listener);
         } else {
@@ -128,7 +128,7 @@ public class CurrentLocationManager {
         Log.d("TAG_LOC", "Connection to LocationClient failed");
     }
 
-    public interface OnLocationChange {
+    public interface OnCurrentLocationChange {
         public void OnCurrentLocationChange(Location location);
     }
 }

@@ -90,7 +90,6 @@ import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -112,7 +111,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
+public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnCurrentLocationChange {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
 

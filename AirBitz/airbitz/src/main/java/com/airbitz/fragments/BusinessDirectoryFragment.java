@@ -45,6 +45,7 @@ import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,17 +89,13 @@ import java.util.List;
  */
 public class BusinessDirectoryFragment extends Fragment implements
         NavigationActivity.OnBackPress,
-        CurrentLocationManager.OnLocationChange {
+        CurrentLocationManager.OnCurrentLocationChange {
 
     static int CATEGORY_TIMEOUT = 15000;
     static int LOCATION_TIMEOUT = 10000;
+    static float LOCATION_ACCURACY_METERS = 100.0f;
     static String TAG = AirbitzAPI.class.getSimpleName();
 
-    public static final String LAT_KEY = "LAT_KEY";
-    public static final String LON_KEY = "LON_KEY";
-    public static final String PREF_NAME = "PREF_NAME";
-    public static final String LOCATION_CACHE_SHARED_PREF = "LOCATION_CACHE_PREF";
-    public static final String BUSINESS_CACHE_SHARED_PREF = "BUSINESS_CACHE_PREF";
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
     public static final String BUSINESSTYPE = "BUSINESSTYPE";
@@ -609,24 +606,22 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        String latLon = "";
-        if (location != null) {
-            latLon = "" + location.getLatitude() + "," + location.getLongitude();
-        }
-        if (mCurrentLocation != null && mCurrentLocation.distanceTo(location) < 100.0f) {
-            mCurrentLocation = location;
-            return;
-        }
+        if (location != null && location.getAccuracy() < LOCATION_ACCURACY_METERS) {
+            mCurrentLocation = mLocationManager.getLocation();
+            String latLon = "";
+            if (location != null) {
+                latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+            }
+            Log.d(TAG, "LocationManager Location = " + latLon);
 
-        mVenueHandler.removeCallbacks(null);
-        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            mVenuesTask.cancel(true);
+            mVenueHandler.removeCallbacks(null);
+            if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+                mVenuesTask.cancel(true);
+            }
+            mVenuesTask = new VenuesTask(getActivity(), latLon);
+            mVenuesTask.setWipe(true);
+            mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-        mVenuesTask = new VenuesTask(getActivity(), latLon);
-        mVenuesTask.setWipe(true);
-        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        mCurrentLocation = location;
     }
 
     @Override
@@ -867,7 +862,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         Bundle bundle = new Bundle();
         bundle.putString(DirectoryDetailFragment.BIZID, id);
         bundle.putString("", name);
-        bundle.putString("", distance);
+        bundle.putString(DirectoryDetailFragment.BIZDISTANCE, distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());

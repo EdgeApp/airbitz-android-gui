@@ -38,8 +38,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.airbitz.models.CurrentLocationManager.OnLocationChange;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -52,7 +50,7 @@ public class AndroidLocationManager {
     static AndroidLocationManager mInstance = null;
     private Context mContext;
     private LocationManager mLocationManager;
-    private List<OnLocationChange> mObservers;
+    private List<CurrentLocationManager.OnCurrentLocationChange> mObservers;
     private Location mCurrentLocation;
     private LocationListener mManagerListener = new LocationListener() {
 
@@ -74,7 +72,7 @@ public class AndroidLocationManager {
         mContext = context;
         this.mLocationManager =
                 (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        this.mObservers = new CopyOnWriteArrayList<OnLocationChange>();
+        this.mObservers = new CopyOnWriteArrayList<CurrentLocationManager.OnCurrentLocationChange>();
     }
 
     public static AndroidLocationManager getLocationManager(Context context) {
@@ -84,7 +82,7 @@ public class AndroidLocationManager {
         return mInstance;
     }
 
-    public void addLocationChangeListener(OnLocationChange listener) {
+    public void addLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         if (mObservers.isEmpty()) {
             attemptConnection();
         }
@@ -97,7 +95,7 @@ public class AndroidLocationManager {
         }
     }
 
-    public void removeLocationChangeListener(OnLocationChange listener) {
+    public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mLocationManager.removeUpdates(mManagerListener);
     }
 
@@ -141,7 +139,7 @@ public class AndroidLocationManager {
         }
         mCurrentLocation = location;
         if (mObservers != null) {
-            for (OnLocationChange l : mObservers) {
+            for (CurrentLocationManager.OnCurrentLocationChange l : mObservers) {
                 l.OnCurrentLocationChange(location);
             }
         }

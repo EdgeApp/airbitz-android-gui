@@ -90,7 +90,7 @@ import java.util.List;
  * Created by Thomas Baker on 4/22/14.
  */
 public class MapBusinessDirectoryFragment extends Fragment implements
-        CurrentLocationManager.OnLocationChange {
+        CurrentLocationManager.OnCurrentLocationChange {
 
     private static final int INVALID_POINTER_ID = -1;
     private static String mLocationWords = "";
