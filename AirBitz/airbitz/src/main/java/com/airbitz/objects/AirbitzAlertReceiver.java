@@ -128,13 +128,13 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         if(code==ALERT_NOTIFICATION_CODE) {
             intent.putExtra(TYPE, ALERT_NOTIFICATION_TYPE);
             pi = PendingIntent.getBroadcast(context, ALERT_NOTIFICATION_CODE, intent, 0);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_NOTIFICATION_MILLIS,
                     REPEAT_NOTIFICATION_MILLIS, pi);
         }
         else if(code==ALERT_NEW_BUSINESS_CODE) {
             intent.putExtra(TYPE, ALERT_NEW_BUSINESS_TYPE);
             pi = PendingIntent.getBroadcast(context, ALERT_NEW_BUSINESS_CODE, intent, 0);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_NEW_BUSINESS_MILLIS,
                     REPEAT_NEW_BUSINESS_MILLIS, pi);
         }
     }
