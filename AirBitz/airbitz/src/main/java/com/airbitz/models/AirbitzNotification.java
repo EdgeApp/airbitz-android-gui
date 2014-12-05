@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.objects;
+package com.airbitz.models;
 
 public class AirbitzNotification {
     public String mTitle, mMessage;

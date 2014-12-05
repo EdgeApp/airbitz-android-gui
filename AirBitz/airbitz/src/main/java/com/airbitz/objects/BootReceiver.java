@@ -31,28 +31,9 @@
 
 package com.airbitz.objects;
 
-import android.app.AlarmManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
-import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzAPI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /*
  * Start Airbitz specific code on boot
@@ -63,6 +44,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(context);
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
     }
 }

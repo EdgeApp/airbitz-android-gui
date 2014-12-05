@@ -196,6 +196,13 @@ public class AirbitzAPI {
         return getRequest(API_MESSAGES, createURLParams(params));
     }
 
+    public String getNewBusinesses(String since) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("since", since));
+
+        return getRequest(API_SEARCH, createURLParams(params));
+    }
+
 
     public String getSearchByTerm(String term, String page_size, String page, String sort){
         List<NameValuePair> params = new ArrayList<NameValuePair>();

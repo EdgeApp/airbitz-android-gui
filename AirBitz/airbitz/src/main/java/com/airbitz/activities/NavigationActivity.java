@@ -98,7 +98,7 @@ import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
-import com.airbitz.objects.AirbitzNotification;
+import com.airbitz.models.AirbitzNotification;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 
@@ -633,7 +633,8 @@ public class NavigationActivity extends Activity
         }
         switchFragmentThread(mNavThreadId);
 
-        AirbitzAlertReceiver.CancelNextAlertAlarm(this);
+        AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
 
         checkNotifications();
 
@@ -650,7 +651,8 @@ public class NavigationActivity extends Activity
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this);
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
