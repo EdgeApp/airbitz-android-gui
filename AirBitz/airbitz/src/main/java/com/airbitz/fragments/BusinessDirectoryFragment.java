@@ -57,6 +57,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -86,7 +87,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by tom on 4/22/14.
@@ -119,7 +119,7 @@ public class BusinessDirectoryFragment extends Fragment implements
     private EditText mSearchField;
     private EditText mLocationField;
     private ListView mSearchListView;
-    private TextView mNearYouTextView;
+    private LinearLayout mNearYouLayout;
     private ViewGroup mBusinessLayout;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -197,6 +197,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         helveticaNeueTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
 
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
+        mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
+
         // Add a header
         mBusinessLayout = (ViewGroup) inflater.inflate(R.layout.inc_directory_categories, null, false);
         mVenueListView.addHeaderView(mBusinessLayout, null, false);
@@ -219,6 +221,10 @@ public class BusinessDirectoryFragment extends Fragment implements
                 }
             }
         });
+
+        final View fragHeader = view.findViewById(R.id.fragment_business_directory_layout_header);
+        final View fragSearch = view.findViewById(R.id.fragment_business_directory_layout_search);
+
         mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -234,6 +240,14 @@ public class BusinessDirectoryFragment extends Fragment implements
                             mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mNextUrl);
                         }
                     }
+                }
+
+                View first = mVenueListView.getChildAt(1); // first item not the header
+                if(first != null && firstVisibleItem==0) {
+                    mNearYouLayout.setY(first.getY() + fragHeader.getMeasuredHeight() + fragSearch.getMeasuredHeight());
+                }
+                else if(firstVisibleItem > 0) {
+                    mNearYouLayout.setY(mVenueListView.getY() + fragHeader.getMeasuredHeight() + fragSearch.getMeasuredHeight());
                 }
             }
         });
@@ -253,7 +267,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchField = (EditText) view.findViewById(R.id.edittext_search);
         mLocationField = (EditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
-        mNearYouTextView = (TextView) mBusinessLayout.findViewById(R.id.textview_nearyou);
+        mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
 
         mSearchField.setTypeface(montserratRegularTypeFace);
         mLocationField.setTypeface(montserratRegularTypeFace);
@@ -262,7 +276,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mBarButton.setTypeface(montserratRegularTypeFace);
         mCoffeeButton.setTypeface(montserratRegularTypeFace);
         mMoreButton.setTypeface(montserratRegularTypeFace);
-        mNearYouTextView.setTypeface(montserratRegularTypeFace);
+        ((TextView)view.findViewById(R.id.textview_nearyou_sticky)).setTypeface(montserratRegularTypeFace);
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
