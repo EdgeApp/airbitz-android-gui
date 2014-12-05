@@ -713,7 +713,7 @@ public class NavigationActivity extends Activity
         ndef.addDataScheme("bitcoin");
         IntentFilter[] filters = new IntentFilter[] { ndef };
 
-        final NfcManager nfcManager = (NfcManager) getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        final NfcManager nfcManager = (NfcManager) getSystemService(Context.NFC_SERVICE);
         NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
 
         if (nfcAdapter != null && nfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
@@ -722,7 +722,7 @@ public class NavigationActivity extends Activity
     }
 
     public void disableNFCForegrounding() {
-        final NfcManager nfcManager = (NfcManager) getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        final NfcManager nfcManager = (NfcManager) getSystemService(Context.NFC_SERVICE);
         NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
 
         if (nfcAdapter != null && nfcAdapter.isEnabled()) {
