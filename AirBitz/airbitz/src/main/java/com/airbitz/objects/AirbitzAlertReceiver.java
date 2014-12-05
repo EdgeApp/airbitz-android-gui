@@ -87,10 +87,14 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getString(R.string.app_name));
+        String type = intent.getStringExtra(TYPE);
+        if(type == null) {
+            Log.d(TAG, "type is null");
+            return;
+        }
         //Acquire the lock
         mWakeLock.acquire();
 
-        String type = intent.getStringExtra(TYPE);
         mHandler.postDelayed(murderPendingTasks, 2000); // 2 second TTL
 
         if(type.equals(ALERT_NOTIFICATION_TYPE)) {
