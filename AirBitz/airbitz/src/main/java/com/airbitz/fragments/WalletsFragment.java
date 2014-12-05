@@ -88,15 +88,12 @@ public class WalletsFragment extends Fragment
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
     //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
-    public static int[] mCurrencyCoinWhiteDrawables = {R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
-            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white,
-            R.drawable.ico_coin_usd_white, R.drawable.ico_coin_usd_white};
     public final String TAG = getClass().getSimpleName();
     //This animation must run after the keyboard is down else a layout redraw occurs causing a visual glitch
     Runnable mDelayedAnimation = new Runnable() {
         @Override
         public void run() {
-            Animation mSlideOutTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top);
+            Animation mSlideOutTop = AnimationUtils.loadAnimation(mActivity, R.anim.slide_out_top);
             mAddWalletLayout.startAnimation(mSlideOutTop);
             mAddWalletLayout.setVisibility(View.INVISIBLE);
             mInvisibleCover.setVisibility(View.INVISIBLE);
@@ -131,6 +128,7 @@ public class WalletsFragment extends Fragment
     private TextView mTitleTextView;
     private WalletAdapter mLatestWalletAdapter;
     private boolean mOnBitcoinMode = true;
+    private float mSwitchHeight;
     Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
 
         @Override
@@ -155,7 +153,7 @@ public class WalletsFragment extends Fragment
         @Override
         public void run() {
             if(mBalanceSwitchLayout != null) {
-                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", (getActivity().getResources().getDimension(R.dimen.currency_switch_height)), 0);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", mSwitchHeight, 0);
                 animator.setDuration(100);
                 animator.addListener(endListener);
                 animator.start();
@@ -166,7 +164,7 @@ public class WalletsFragment extends Fragment
         @Override
         public void run() {
             if(mBalanceSwitchLayout != null) {
-                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, (getActivity().getResources().getDimension(R.dimen.currency_switch_height)));
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, mSwitchHeight);
                 animator.setDuration(100);
                 animator.addListener(endListener);
                 animator.start();
@@ -187,6 +185,7 @@ public class WalletsFragment extends Fragment
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
+        mSwitchHeight = mActivity.getResources().getDimension(R.dimen.currency_switch_height);
     }
 
     @Override
@@ -212,7 +211,7 @@ public class WalletsFragment extends Fragment
         mCurrencyList = new ArrayList<String>();
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
 
-        mLatestWalletAdapter = new WalletAdapter(getActivity(), mLatestWalletList);
+        mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
 
         mBalanceLabel = (TextView) mView.findViewById(R.id.fragment_wallets_balance_textview);
 
@@ -300,7 +299,7 @@ public class WalletsFragment extends Fragment
             }
         });
 
-        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(getActivity(), mCurrencyList);
+        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
         int settingIndex = mCoreAPI.SettingsCurrencyIndex();
         mAddWalletCurrencySpinner.setSelection(settingIndex);
@@ -493,7 +492,7 @@ public class WalletsFragment extends Fragment
         mAddWalletNameEditText.setHintTextColor(getResources().getColor(R.color.text_hint));
         mAddWalletOnOffSwitch.setChecked(false);
 
-        Animation mSlideInTop = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_top);
+        Animation mSlideInTop = AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_top);
         mAddWalletLayout.startAnimation(mSlideInTop);
         mAddWalletLayout.setVisibility(View.VISIBLE);
         mInvisibleCover.setVisibility(View.VISIBLE);
@@ -510,7 +509,7 @@ public class WalletsFragment extends Fragment
             }
             goCancel();
         } else {
-            Common.alertBadWalletName(this.getActivity());
+            Common.alertBadWalletName(this.mActivity);
         }
     }
 
@@ -524,7 +523,7 @@ public class WalletsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
+        SharedPreferences prefs = mActivity.getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         mArchiveClosed = prefs.getBoolean("archiveClosed", false);
         updateWalletList(mArchiveClosed);
 
@@ -539,7 +538,7 @@ public class WalletsFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences prefs = getActivity().getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
+        SharedPreferences prefs = mActivity.getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
         prefs.edit().putBoolean("archiveClosed", mArchiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(null);
