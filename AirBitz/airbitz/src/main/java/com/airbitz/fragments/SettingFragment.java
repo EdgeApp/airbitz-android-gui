@@ -36,8 +36,10 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -294,10 +296,18 @@ public class SettingFragment extends Fragment {
         });
 
         mNFCSwitchLayout = mView.findViewById(R.id.settings_nfc_layout);
+        mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
         if(isNFCcapable()) {
             mNFCSwitchLayout.setVisibility(View.VISIBLE);
+            mNFCSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked && !NfcAdapter.getDefaultAdapter(getActivity()).isEnabled()) {
+                        ShowNFCMessageDialog();
+                    }
+                }
+            });
         }
-        mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
 
         mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
         if(isBLEcapable()) {
@@ -856,6 +866,27 @@ public class SettingFragment extends Fragment {
         }
     }
 
+    public void ShowNFCMessageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.settings_nfc_turn_on_message))
+                .setTitle(getString(R.string.settings_nfc_turn_on_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            mNFCSwitch.setChecked(false);
+                            dialog.cancel();
+                        }
+                    });
+        builder.create().show();
+    }
 
     private boolean isBLEcapable() {
 //        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);

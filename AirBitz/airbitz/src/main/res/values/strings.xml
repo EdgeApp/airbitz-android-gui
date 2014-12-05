@@ -223,6 +223,9 @@
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
 
+    <string name="settings_nfc_turn_on_title">Activate NFC</string>
+    <string name="settings_nfc_turn_on_message">The Android NFC setting is off. It needs to be on to use NFC. Would you like to turn it on now?</string>
+
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
     <string name="fragment_spending_limits_save">Save</string>
