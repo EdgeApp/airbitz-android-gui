@@ -778,11 +778,14 @@ public class NavigationActivity extends Activity
                 // sender paid too much
                 handleReceiveFromQR();
             } else {
-                // Request the remainer of the funds
+                // Request the remainder of the funds
                 f.updateWithAmount(diff);
             }
         } else {
-            showIncomingBitcoinDialog();
+            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            if (tx.getAmountSatoshi() > 0) {
+                showIncomingBitcoinDialog();
+            }
         }
     }
 
