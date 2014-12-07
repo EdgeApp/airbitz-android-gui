@@ -40,6 +40,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -50,6 +52,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.models.AndroidLocationManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +66,7 @@ import java.util.TimeZone;
 /*
  * Airbitz alerts are notifications of critical bug fixes or new businesses nearby
  * They are intended to be checked daily or weekly with a quick request to a server
- * If server not responsive in 2 seconds, the alarm is skipped
+ * If server not responsive in 3 seconds, the alarm is skipped
  */
 public class AirbitzAlertReceiver extends BroadcastReceiver {
     final private String TAG = getClass().getSimpleName();
@@ -95,7 +98,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         //Acquire the lock
         mWakeLock.acquire();
 
-        mHandler.postDelayed(murderPendingTasks, 2000); // 2 second TTL
+        mHandler.postDelayed(murderPendingTasks, 3000); // 3 second TTL
 
         if(type.equals(ALERT_NOTIFICATION_TYPE)) {
             mNotificationTask = new NotificationTask(context);
@@ -259,6 +262,11 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
         @Override
         protected String doInBackground(Void... params) {
+            AndroidLocationManager lm = AndroidLocationManager.getLocationManager(mContext);
+            Location currentLoc = lm.getLastLocation();
+            String latLong = String.valueOf(currentLoc.getLatitude())
+                + "," + String.valueOf(currentLoc.getLongitude());
+
             AirbitzAPI api = AirbitzAPI.getApi();
             // format is ISO8601, ex: 2014-09-25T01:42:03.000Z
             // get one week ago
@@ -272,7 +280,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             String weekAgo = df.format(date);
             Log.d(TAG, "WeekAgo: " + weekAgo);
 
-            return api.getNewBusinesses(weekAgo);
+            return api.getNewBusinesses(weekAgo, latLong);
         }
 
         @Override
