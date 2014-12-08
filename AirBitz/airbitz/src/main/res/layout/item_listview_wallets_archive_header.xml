@@ -11,6 +11,7 @@
         android:layout_centerInParent="true"
         android:clickable="false"
         android:gravity="center"
+        android:paddingRight="28dp"
         android:text="@string/fragment_wallets_list_archive_title"
         android:textColor="@android:color/white" />
 
