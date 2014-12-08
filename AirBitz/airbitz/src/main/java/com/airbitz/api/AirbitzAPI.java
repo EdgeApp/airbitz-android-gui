@@ -196,10 +196,11 @@ public class AirbitzAPI {
         return getRequest(API_MESSAGES, createURLParams(params));
     }
 
-    public String getNewBusinesses(String since, String latLong) {
+    public String getNewBusinesses(String since, String latLong, String radius) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("since", since));
         params.add(new BasicNameValuePair("ll", latLong));
+        params.add(new BasicNameValuePair("radius", radius));
 
         return getRequest(API_SEARCH, createURLParams(params));
     }

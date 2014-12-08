@@ -280,12 +280,12 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             String weekAgo = df.format(date);
             Log.d(TAG, "WeekAgo: " + weekAgo);
 
-            return api.getNewBusinesses(weekAgo, latLong);
+            return api.getNewBusinesses(weekAgo, latLong, "100000");
         }
 
         @Override
         protected void onPostExecute(final String response) {
-//            Log.d(TAG, "New Business response: "+response);
+            Log.d(TAG, "New Business response: "+response);
             if(response != null && response.length() != 0) {
                 if(hasAlerts(response)) {
                     issueOSNotification(mContext, ALERT_NEW_BUSINESS_TYPE);
