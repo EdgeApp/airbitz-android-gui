@@ -146,14 +146,14 @@ public class LandingFragment extends Fragment implements
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mActivity.networkIsAvailable()) {
-                    if(mPinLayout.getVisibility() == View.VISIBLE) {
-                        refreshView(false, false);
-                    } else {
-                        mActivity.startSignUp();
-                    }
+                if(mPinLayout.getVisibility() == View.VISIBLE) {
+                    refreshView(false, false);
                 } else {
-                    mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+                    if (mActivity.networkIsAvailable()) {
+                        mActivity.startSignUp();
+                    } else {
+                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+                    }
                 }
             }
         });
