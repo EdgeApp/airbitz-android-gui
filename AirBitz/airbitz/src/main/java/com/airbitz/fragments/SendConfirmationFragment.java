@@ -699,8 +699,12 @@ public class SendConfirmationFragment extends Fragment {
         mPasswordRequired = false;
         mPinRequired = false;
 
-        if (!mIsUUID && mCoreAPI.GetDailySpendLimitSetting()
-            && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= mCoreAPI.GetDailySpendLimit())) {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        long dailyLimit = prefs.getLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, 0);
+        boolean dailyLimitSetting = prefs.getBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, true);
+
+        if (!mIsUUID && dailyLimitSetting
+            && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= dailyLimit)) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
