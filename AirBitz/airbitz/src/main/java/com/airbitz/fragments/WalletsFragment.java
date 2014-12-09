@@ -86,6 +86,8 @@ public class WalletsFragment extends Fragment
         NavigationActivity.OnBackPress {
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
+    public static final String ARCHIVE_HEADER_STATE = "archiveClosed";
+
     //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
     //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
     public final String TAG = getClass().getSimpleName();
@@ -133,8 +135,7 @@ public class WalletsFragment extends Fragment
 
         @Override
         public void onAnimationEnd(Animator animator) {
-            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-            mLatestWalletAdapter.notifyDataSetChanged();
+            updateBalanceBar();
         }
 
         @Override
@@ -176,7 +177,6 @@ public class WalletsFragment extends Fragment
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
-    private int mCurrencyIndex;
     private AddWalletTask mAddWalletTask;
     private Handler mHandler = new Handler();
 
@@ -202,8 +202,6 @@ public class WalletsFragment extends Fragment
 
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_wallets, container, false);
-
-            mOnBitcoinMode = true;
         }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_header_layout);
@@ -436,6 +434,7 @@ public class WalletsFragment extends Fragment
     }
 
     private void animateBar() {
+        AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
         if (mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
         } else {
@@ -523,23 +522,38 @@ public class WalletsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences prefs = mActivity.getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
-        mArchiveClosed = prefs.getBoolean("archiveClosed", false);
+        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
         updateWalletList(mArchiveClosed);
 
-        mCurrencyIndex = mCoreAPI.SettingsCurrencyIndex();
         mLatestWalletListView.setHeaderVisibilityOnReturn();
         UpdateBalances();
 
         mCoreAPI.addExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(this);
+
+        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
+        updateBalanceBar();
+    }
+
+    private void updateBalanceBar() {
+        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
+        if(!mOnBitcoinMode) {
+            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + getActivity().getResources().getDimension(R.dimen.currency_switch_height));
+        }
+        else {
+            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
+        }
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletAdapter.notifyDataSetChanged();
+        UpdateBalances();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences prefs = mActivity.getSharedPreferences("com.airbitz.app", Context.MODE_PRIVATE);
-        prefs.edit().putBoolean("archiveClosed", mArchiveClosed).apply();
+        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, mArchiveClosed).apply();
         mCoreAPI.removeExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(null);
     }

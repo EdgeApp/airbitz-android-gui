@@ -37,6 +37,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import java.util.UUID;
 
@@ -48,6 +49,7 @@ public class AirbitzApplication extends Application {
 
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
+    private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
 
     private static Login airbitzLogin = new Login();
     private static long mBackgroundedTime = 0;
@@ -156,6 +158,18 @@ public class AirbitzApplication extends Application {
 
     public static boolean recentlyLoggedIn() {
         return System.currentTimeMillis() - mLoginTime <= 120000;
+    }
+
+    public static boolean getBitcoinSwitchMode() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        boolean state = prefs.getBoolean(BITCOIN_MODE, true);
+        return state;
+    }
+
+    public static void setBitcoinSwitchMode(boolean state) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(BITCOIN_MODE, state);
+        editor.apply();
     }
 
     private static class Login {
