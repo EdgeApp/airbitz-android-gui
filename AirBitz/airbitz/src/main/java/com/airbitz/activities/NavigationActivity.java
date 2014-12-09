@@ -82,6 +82,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.ImportFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.PasswordRecoveryFragment;
@@ -694,6 +695,16 @@ public class NavigationActivity extends Activity
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             if ("bitcoin".equals(scheme)) {
                 onBitcoinUri(intentUri);
+            }
+              // Handle FINALHASH NFC input
+            else if(ImportFragment.CheckFINALHASH(intentUri.toString())) {
+                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+                switchFragmentThread(Tabs.REQUEST.ordinal());
+                Fragment fragment = new ImportFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(ImportFragment.URI, intentUri.toString());
+                fragment.setArguments(bundle);
+                pushFragment(fragment, Tabs.REQUEST.ordinal());
             }
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
             Log.d(TAG, "Notification type found");
