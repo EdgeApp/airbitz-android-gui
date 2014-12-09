@@ -32,8 +32,10 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -44,8 +46,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -54,8 +56,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -65,6 +65,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.google.zxing.BinaryBitmap;
@@ -76,7 +77,6 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,6 +93,8 @@ public class ImportFragment extends Fragment
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private HighlightOnPressSpinner mWalletSpinner;
+    private HighlightOnPressButton mEnterButton;
+    private HighlightOnPressButton mScanQRButton;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
@@ -112,6 +114,7 @@ public class ImportFragment extends Fragment
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private Handler mHandler = new Handler();
+    private NavigationActivity mActivity;
     Runnable cameraFocusRunner = new Runnable() {
         @Override
         public void run() {
@@ -120,11 +123,19 @@ public class ImportFragment extends Fragment
             mFocused = false;
         }
     };
+    Runnable sweepNotFoundRunner = new Runnable() {
+        @Override
+        public void run() {
+            mActivity.ShowFadingDialog(getString(R.string.import_finalhash_timeout_message));
+        }
+    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
+        mActivity = (NavigationActivity) getActivity();
         mWallets = mCoreAPI.getCoreActiveWallets();
     }
 
@@ -152,12 +163,40 @@ public class ImportFragment extends Fragment
 
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
         mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.IMPORT_WALLET), NavigationActivity.Tabs.REQUEST.ordinal());
+            }
+        });
 
+        mEnterButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_enter_button);
+        mEnterButton.setVisibility(View.VISIBLE);
+        mEnterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSubmit();
+            }
+        });
 
-        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
-        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
+        mScanQRButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_scanning_button);
+        mScanQRButton.setVisibility(View.VISIBLE);
+        mScanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scanQRCodes();
+            }
+        });
+
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -179,6 +218,7 @@ public class ImportFragment extends Fragment
             }
         });
 
+        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,6 +226,7 @@ public class ImportFragment extends Fragment
             }
         });
 
+        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,6 +256,12 @@ public class ImportFragment extends Fragment
             }
         });
 
+        return mView;
+    }
+
+    private void scanQRCodes() {
+        mView.findViewById(R.id.fragment_import_layout_buttons).setVisibility(View.INVISIBLE);
+        mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.VISIBLE);
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
 
@@ -232,20 +279,10 @@ public class ImportFragment extends Fragment
 
         mCamera.setPreviewCallback(ImportFragment.this);
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.IMPORT_WALLET), NavigationActivity.Tabs.REQUEST.ordinal());
-            }
-        });
-
-        return mView;
+        if (mCamera != null) {
+            stopCamera();
+        }
+        startCamera();
     }
 
     public void stopCamera() {
@@ -296,7 +333,6 @@ public class ImportFragment extends Fragment
         if (mCamera != null) {
             mCamera.setPreviewCallback(ImportFragment.this);
             Camera.Parameters params = mCamera.getParameters();
-            if (params != null) {
                 List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
                 if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
@@ -305,7 +341,6 @@ public class ImportFragment extends Fragment
                     mHandler.post(cameraFocusRunner);
                 }
                 mCamera.setParameters(params);
-            }
         }
     }
 
@@ -316,13 +351,8 @@ public class ImportFragment extends Fragment
         Bundle args = getArguments();
 
         if(args != null && args.getString(URI) != null && CheckFINALHASH(args.getString(URI))) {
-            // Good FINALHASH Uri
-        }
-        else {
-            if (mCamera != null) {
-                stopCamera();
-            }
-            startCamera();
+            mToEdittext.setText(args.getString(URI));
+            attemptSubmit();
         }
     }
 
@@ -347,7 +377,8 @@ public class ImportFragment extends Fragment
         if (CheckFINALHASH(result)) {
             Log.d(TAG, "FINALHASH found");
             stopCamera();
-            //TODO - handle final hash input
+            mToEdittext.setText(result);
+            attemptSubmit();
         } else if (result != null) {
             ((NavigationActivity)getActivity()).ShowOkMessageDialog("Import", "Not a Bitcoin URI");
         }
@@ -441,6 +472,17 @@ public class ImportFragment extends Fragment
         return null;
     }
 
+    private void attemptSubmit() {
+        String submission = mToEdittext.getText().toString();
+        if(CheckFINALHASH(submission)) {
+
+            mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
+        }
+        else {
+            mActivity.ShowOkMessageDialog(TAG, "Invalid FINALHASH code");
+        }
+    }
+
     public static boolean CheckFINALHASH(String results)
     {
         if(results == null)
@@ -449,12 +491,33 @@ public class ImportFragment extends Fragment
         Uri uri = Uri.parse(results);
         String scheme = uri.getScheme();
 
-        if(scheme.equalsIgnoreCase("airbitz")) {
+        if(scheme != null && scheme.equalsIgnoreCase("airbitz")) { // TODO need more logic
             Log.d("ImportFragment", "Good FINALHASH URI");
             return true;
         }
         else {
             return false;
         }
+    }
+
+    public void ShowFinalHashSuccessDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.import_finalhash_swept_message))
+                .setTitle(getString(R.string.import_finalhash_swept_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                //TODO send a public tweet
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        builder.create().show();
     }
 }

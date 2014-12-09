@@ -319,8 +319,14 @@
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_title">Request Bitcoin</string>
 
-    <!-- Strings for Request QR Code fragment -->
+    <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
+    <string name="import_finalhash_swept_title">Congratulations!</string>
+    <string name="import_finalhash_swept_message">You found 200mB of Hidden Bitcoin brought to you by FinalHash and Airbitz. To receive another 200mB, click OK to send a public tweet.</string>
+    <string name="import_finalhash_timeout_message">Sweep failed. Try Again.</string>
+    <string name="import_finalhash_success_message">Sweep succeeded.</string>
+    <string name="import_finalhash_submit">Submit</string>
+    <string name="import_finalhash_scan">Scan QR Code</string>
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>

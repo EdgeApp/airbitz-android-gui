@@ -117,9 +117,10 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/layout_camera"
+                android:id="@+id/fragment_import_layout_camera"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <FrameLayout
                     android:id="@+id/layout_camera_preview"
@@ -179,6 +180,48 @@
 
             </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/fragment_import_layout_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_import_enter_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:drawablePadding="30dp"
+                    android:text="@string/import_finalhash_submit"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/bg_button_green" />
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_import_scanning_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:drawablePadding="30dp"
+                    android:text="@string/import_finalhash_scan"
+                    android:textColor="@android:color/white"
+                    android:drawableLeft="@drawable/img_qr_code"
+                    android:layout_marginBottom="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/bg_button_orange" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
