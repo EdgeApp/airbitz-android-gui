@@ -319,6 +319,9 @@
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_title">Request Bitcoin</string>
 
+    <!-- Strings for Request QR Code fragment -->
+    <string name="import_title">Import Wallet</string>
+
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
     <string name="transaction_details_advanced_title">Advanced Details</string>

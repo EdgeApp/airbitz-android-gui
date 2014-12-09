@@ -41,6 +41,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,16 +50,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Wallet;
+import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.CameraSurfacePreview;
+import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -68,16 +76,23 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends Fragment implements Camera.PreviewCallback {
+public class ImportFragment extends Fragment
+        implements Camera.PreviewCallback, Camera.AutoFocusCallback {
+    public static String URI = "com.airbitz.importfragment.uri";
+
     private static int RESULT_LOAD_IMAGE = 876;
+    private final int FOCUS_MILLIS = 2000;
     private final String TAG = getClass().getSimpleName();
     private EditText mToEdittext;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private Button mFromButton;
+    private HighlightOnPressSpinner mWalletSpinner;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
@@ -87,17 +102,30 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
     private int cameraIndex;
-    private FrameLayout preview;
+    private FrameLayout mPreviewFrame;
     private Camera.Parameters mCamParam;
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
+    private boolean mFocused = true;
     private CoreAPI mCoreAPI;
     private View mView;
+    private List<Wallet> mWallets;//Actual wallets
+    private Wallet mFromWallet;
+    private Handler mHandler = new Handler();
+    Runnable cameraFocusRunner = new Runnable() {
+        @Override
+        public void run() {
+            mCamera.autoFocus(ImportFragment.this);
+            mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
+            mFocused = false;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
+        mWallets = mCoreAPI.getCoreActiveWallets();
     }
 
     @Override
@@ -111,7 +139,6 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mFromButton = (Button) mView.findViewById(R.id.button_from);
         mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
@@ -119,22 +146,36 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
         mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
-        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
-        mHelpButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_help);
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.import_title);
+
+        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        mHelpButton.setVisibility(View.VISIBLE);
+
 
         mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
         mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mFromButton.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        mFromButton.setOnClickListener(new View.OnClickListener() {
+        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_import_from_wallet_spinner);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        mWalletSpinner.setAdapter(dataAdapter);
+
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mFromWallet = mWallets.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
@@ -174,7 +215,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
             }
         });
 
-        preview = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
+        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
 
         try {
@@ -186,8 +227,8 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        preview.removeView(mPreview);
-        preview.addView(mPreview);
+        mPreviewFrame.removeView(mPreview);
+        mPreviewFrame.addView(mPreview);
 
         mCamera.setPreviewCallback(ImportFragment.this);
 
@@ -207,46 +248,82 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         return mView;
     }
 
-    public void startCamera(int cameraIndex) {
+    public void stopCamera() {
+        Log.d(TAG, "stopCamera");
+        if (mCamera != null) {
+            mHandler.removeCallbacks(cameraFocusRunner);
+            mCamera.cancelAutoFocus();
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mPreviewFrame.removeView(mPreview);
+            mCamera.release();
+        }
+        mCamera = null;
+    }
+
+    public void startCamera() {
+        //Get back camera unless there is none, then try the front camera - fix for Nexus 7
+        int numCameras = Camera.getNumberOfCameras();
+        if (numCameras == 0) {
+            Log.d(TAG, "No cameras!");
+            return;
+        }
+
+        int cameraIndex = 0;
+        while (cameraIndex < numCameras) {
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            Camera.getCameraInfo(cameraIndex, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                break;
+            }
+            cameraIndex++;
+        }
+
+        if (cameraIndex >= numCameras)
+            cameraIndex = 0; //Front facing camera if no other camera index returned
 
         try {
             Log.d(TAG, "Opening Camera");
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
             Log.d(TAG, "Camera Does Not exist");
+            return;
         }
 
         mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        SurfaceView msPreview = new SurfaceView(getActivity().getApplicationContext());
-        Log.d(TAG, "removeView");
-        preview.removeView(mPreview);
-        preview = (FrameLayout) getView().findViewById(R.id.layout_camera_preview);
-        Log.d(TAG, "addView");
-        preview.addView(mPreview);
-        Log.d(TAG, "setPreviewCallback");
-        mCamera.setPreviewCallback(ImportFragment.this);
-        Log.d(TAG, "end setPreviewCallback");
-
-    }
-
-    public void stopCamera() {
-        Log.d(TAG, "stopCamera");
+        mPreviewFrame.removeView(mPreview);
+        mPreviewFrame.addView(mPreview);
         if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            preview.removeView(mPreview);
-            mCamera.release();
+            mCamera.setPreviewCallback(ImportFragment.this);
+            Camera.Parameters params = mCamera.getParameters();
+            if (params != null) {
+                List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
+                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    mHandler.post(cameraFocusRunner);
+                }
+                mCamera.setParameters(params);
+            }
         }
-        mCamera = null;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCamera != null) {
-            stopCamera();
+
+        Bundle args = getArguments();
+
+        if(args != null && args.getString(URI) != null && CheckFINALHASH(args.getString(URI))) {
+            // Good FINALHASH Uri
         }
-        startCamera(BACK_CAMERA_INDEX);
+        else {
+            if (mCamera != null) {
+                stopCamera();
+            }
+            startCamera();
+        }
     }
 
     @Override
@@ -263,12 +340,22 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
-        if (info != null && info.getSzAddress() != null) {
-            Fragment fragment = new WalletPasswordFragment();
-            ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
-        }
+        if(!mFocused)
+            return;
 
+        String result = AttemptDecodeBytes(bytes, camera);
+        if (CheckFINALHASH(result)) {
+            Log.d(TAG, "FINALHASH found");
+            stopCamera();
+            //TODO - handle final hash input
+        } else if (result != null) {
+            ((NavigationActivity)getActivity()).ShowOkMessageDialog("Import", "Not a Bitcoin URI");
+        }
+    }
+
+    @Override
+    public void onAutoFocus(boolean b, Camera camera) {
+        mFocused = true;
     }
 
     @Override
@@ -299,7 +386,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
-    private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {
+    private String AttemptDecodeBytes(byte[] bytes, Camera camera) {
         Result rawResult = null;
         Reader reader = new QRCodeReader();
         int w = camera.getParameters().getPreviewSize().width;
@@ -316,7 +403,7 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
             }
         }
         if (rawResult != null) {
-            return mCoreAPI.CheckURIResults(rawResult.getText());
+            return rawResult.getText();
         } else {
             Log.d(TAG, "No QR code found");
         }
@@ -354,5 +441,20 @@ public class ImportFragment extends Fragment implements Camera.PreviewCallback {
         return null;
     }
 
+    public static boolean CheckFINALHASH(String results)
+    {
+        if(results == null)
+            return false;
 
+        Uri uri = Uri.parse(results);
+        String scheme = uri.getScheme();
+
+        if(scheme.equalsIgnoreCase("airbitz")) {
+            Log.d("ImportFragment", "Good FINALHASH URI");
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
