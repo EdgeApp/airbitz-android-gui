@@ -78,13 +78,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-            <intent-filter android:label="Airbitz" >
+            <intent-filter android:label="NFC Bitcoin Request" >
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <data android:scheme="bitcoin" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-
+            <intent-filter android:label="NFC Promotion" >
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <data android:scheme="airbitz" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 

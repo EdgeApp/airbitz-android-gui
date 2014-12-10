@@ -42,6 +42,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -56,8 +58,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -101,6 +105,8 @@ public class ImportFragment extends Fragment
     private TextView mTitleTextView;
     private ImageButton mFlashButton;
     private ImageButton mGalleryButton;
+    private LinearLayout mNfcLayout;
+    private NfcAdapter mNfcAdapter;
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
     private int cameraIndex;
@@ -169,6 +175,8 @@ public class ImportFragment extends Fragment
                 getActivity().onBackPressed();
             }
         });
+
+        mNfcLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout_nfc);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -353,6 +361,13 @@ public class ImportFragment extends Fragment
         if(args != null && args.getString(URI) != null && CheckFINALHASH(args.getString(URI))) {
             mToEdittext.setText(args.getString(URI));
             attemptSubmit();
+        }
+
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
+        mNfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            mNfcLayout.setVisibility(View.VISIBLE);
         }
     }
 

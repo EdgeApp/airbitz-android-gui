@@ -696,15 +696,18 @@ public class NavigationActivity extends Activity
             if ("bitcoin".equals(scheme)) {
                 onBitcoinUri(intentUri);
             }
-              // Handle FINALHASH NFC input
-            else if(ImportFragment.CheckFINALHASH(intentUri.toString())) {
-                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-                switchFragmentThread(Tabs.REQUEST.ordinal());
-                Fragment fragment = new ImportFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ImportFragment.URI, intentUri.toString());
-                fragment.setArguments(bundle);
-                pushFragment(fragment, Tabs.REQUEST.ordinal());
+            else {
+                // Handle FINALHASH NFC input
+                Log.d(TAG, intentUri.toString());
+                if (ImportFragment.CheckFINALHASH(intentUri.toString())) {
+                    resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+                    switchFragmentThread(Tabs.REQUEST.ordinal());
+                    Fragment fragment = new ImportFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ImportFragment.URI, intentUri.toString());
+                    fragment.setArguments(bundle);
+                    pushFragment(fragment, Tabs.REQUEST.ordinal());
+                }
             }
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
             Log.d(TAG, "Notification type found");
