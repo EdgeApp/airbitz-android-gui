@@ -227,7 +227,7 @@ public class RequestQRCodeFragment extends Fragment implements
             mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
