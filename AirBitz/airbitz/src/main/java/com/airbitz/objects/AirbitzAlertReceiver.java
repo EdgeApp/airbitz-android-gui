@@ -264,10 +264,12 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         protected String doInBackground(Void... params) {
             AndroidLocationManager lm = AndroidLocationManager.getLocationManager(mContext);
             Location currentLoc = lm.getLastLocation();
+            if(currentLoc == null)
+                return null;
+
             String latLong = String.valueOf(currentLoc.getLatitude())
                 + "," + String.valueOf(currentLoc.getLongitude());
 
-            AirbitzAPI api = AirbitzAPI.getApi();
             // format is ISO8601, ex: 2014-09-25T01:42:03.000Z
             // get one week ago
             Calendar cal = Calendar.getInstance();
@@ -280,6 +282,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             String weekAgo = df.format(date);
             Log.d(TAG, "WeekAgo: " + weekAgo);
 
+            AirbitzAPI api = AirbitzAPI.getApi();
             return api.getNewBusinesses(weekAgo, latLong, "100000");
         }
 
