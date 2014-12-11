@@ -150,24 +150,20 @@
                     android:layout_height="80dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_gravity="center"
                     android:layout_marginRight="20dp"
                     android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_flash_off" />
 
-                <ImageButton
-                    android:id="@+id/button_gallery"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
+                <ImageView
+                    android:id="@+id/fragment_import_nfc_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="20dp"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/gallery_button" />
-
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/n_mark"
+                    android:visibility="gone" />
 
                 <View
                     android:layout_width="match_parent"
@@ -178,50 +174,14 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
 
+
             </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/fragment_import_layout_buttons"
-                android:layout_width="240dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <LinearLayout
-                    android:id="@+id/fragment_import_layout_nfc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/fragment_request_qrcode_nfc_image"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="4dp"
-                        android:background="@drawable/n_mark"
-                        android:visibility="visible"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="Scanning for coins..."
-                        android:textColor="@android:color/white"
-                        />
-                </LinearLayout>
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_import_enter_button"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
-                    android:drawablePadding="30dp"
+                    android:layout_margin="20dp"
                     android:text="@string/import_finalhash_submit"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
@@ -229,24 +189,6 @@
                     android:layout_marginBottom="60dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/bg_button_green" />
-
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_import_scanning_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
-                    android:drawablePadding="30dp"
-                    android:text="@string/import_finalhash_scan"
-                    android:textColor="@android:color/white"
-                    android:drawableLeft="@drawable/img_qr_code"
-                    android:layout_marginBottom="20dp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/bg_button_orange" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

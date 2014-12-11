@@ -696,17 +696,15 @@ public class NavigationActivity extends Activity
             if ("bitcoin".equals(scheme)) {
                 onBitcoinUri(intentUri);
             }
+            else if (!AirbitzApplication.isLoggedIn()) {
+                mDataUri = intentUri;
+                return;
+            }
             else {
                 // Handle FINALHASH NFC input
                 Log.d(TAG, intentUri.toString());
                 if (ImportFragment.CheckFINALHASH(intentUri.toString())) {
-                    resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-                    switchFragmentThread(Tabs.REQUEST.ordinal());
-                    Fragment fragment = new ImportFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ImportFragment.URI, intentUri.toString());
-                    fragment.setArguments(bundle);
-                    pushFragment(fragment, Tabs.REQUEST.ordinal());
+                    gotoImportNow(intentUri);
                 }
             }
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
@@ -905,6 +903,16 @@ public class NavigationActivity extends Activity
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
+    private void gotoImportNow(Uri uri) {
+        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+        switchFragmentThread(Tabs.REQUEST.ordinal());
+        Fragment fragment = new ImportFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ImportFragment.URI, uri.toString());
+        fragment.setArguments(bundle);
+        pushFragment(fragment, Tabs.REQUEST.ordinal());
+    }
+
     public void resetFragmentThreadToBaseFragment(int threadId) {
         mNavStacks[threadId].clear();
         mNavStacks[threadId].add(getNewBaseFragement(threadId));
@@ -959,7 +967,12 @@ public class NavigationActivity extends Activity
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            onBitcoinUri(mDataUri);
+            if(ImportFragment.CheckFINALHASH(mDataUri.toString())) {
+                gotoImportNow(mDataUri);
+            }
+            else {
+                onBitcoinUri(mDataUri);
+            }
             mDataUri = null;
         } else {
             switchFragmentThread(AirbitzApplication.getLastNavTab());

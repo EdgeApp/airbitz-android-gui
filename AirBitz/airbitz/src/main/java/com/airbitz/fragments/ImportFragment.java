@@ -58,10 +58,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -97,15 +96,13 @@ public class ImportFragment extends Fragment
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
     private HighlightOnPressSpinner mWalletSpinner;
-    private HighlightOnPressButton mEnterButton;
-    private HighlightOnPressButton mScanQRButton;
+    private HighlightOnPressButton mSubmitButton;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
     private ImageButton mFlashButton;
-    private ImageButton mGalleryButton;
-    private LinearLayout mNfcLayout;
+    private ImageView mNfcImage;
     private NfcAdapter mNfcAdapter;
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -132,7 +129,10 @@ public class ImportFragment extends Fragment
     Runnable sweepNotFoundRunner = new Runnable() {
         @Override
         public void run() {
-            mActivity.ShowFadingDialog(getString(R.string.import_finalhash_timeout_message));
+            mActivity.showModalProgress(false);
+            if(isVisible()) {
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_finalhash_timeout_message));
+            }
         }
     };
 
@@ -150,7 +150,6 @@ public class ImportFragment extends Fragment
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
         } else {
-
             return mView;
         }
 
@@ -176,7 +175,7 @@ public class ImportFragment extends Fragment
             }
         });
 
-        mNfcLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout_nfc);
+        mNfcImage = (ImageView) mView.findViewById(R.id.fragment_import_nfc_image);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -187,24 +186,13 @@ public class ImportFragment extends Fragment
             }
         });
 
-        mEnterButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_enter_button);
-        mEnterButton.setVisibility(View.VISIBLE);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
+        mSubmitButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_enter_button);
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptSubmit();
             }
         });
-
-        mScanQRButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_scanning_button);
-        mScanQRButton.setVisibility(View.VISIBLE);
-        mScanQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scanQRCodes();
-            }
-        });
-
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -223,14 +211,6 @@ public class ImportFragment extends Fragment
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PickAPicture();
             }
         });
 
@@ -268,7 +248,7 @@ public class ImportFragment extends Fragment
     }
 
     private void scanQRCodes() {
-        mView.findViewById(R.id.fragment_import_layout_buttons).setVisibility(View.INVISIBLE);
+        mSubmitButton.setVisibility(View.INVISIBLE);
         mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.VISIBLE);
         mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
@@ -291,6 +271,24 @@ public class ImportFragment extends Fragment
             stopCamera();
         }
         startCamera();
+
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
+        mNfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            mNfcImage.setVisibility(View.VISIBLE);
+        }
+        else {
+            mNfcImage.setVisibility(View.GONE);
+        }
+    }
+
+    private void stopScanningQRCodes() {
+        mSubmitButton.setVisibility(View.VISIBLE);
+        mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.GONE);
+        if (mCamera != null) {
+            stopCamera();
+        }
     }
 
     public void stopCamera() {
@@ -360,14 +358,12 @@ public class ImportFragment extends Fragment
 
         if(args != null && args.getString(URI) != null && CheckFINALHASH(args.getString(URI))) {
             mToEdittext.setText(args.getString(URI));
-            attemptSubmit();
+            mToEdittext.clearFocus();
+            mActivity.hideSoftKeyboard(mToEdittext);
+            stopScanningQRCodes();
         }
-
-        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
-        mNfcAdapter = nfcManager.getDefaultAdapter();
-
-        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-            mNfcLayout.setVisibility(View.VISIBLE);
+        else {
+            scanQRCodes();
         }
     }
 
@@ -375,6 +371,7 @@ public class ImportFragment extends Fragment
     public void onPause() {
         super.onPause();
         stopCamera();
+        mHandler.removeCallbacks(sweepNotFoundRunner);
     }
 
     @Override
@@ -424,12 +421,6 @@ public class ImportFragment extends Fragment
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
             }
         }
-    }
-
-    // Select a picture from the Gallery
-    private void PickAPicture() {
-        Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
     private String AttemptDecodeBytes(byte[] bytes, Camera camera) {
@@ -490,8 +481,8 @@ public class ImportFragment extends Fragment
     private void attemptSubmit() {
         String submission = mToEdittext.getText().toString();
         if(CheckFINALHASH(submission)) {
-
-            mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
+            mActivity.showModalProgress(true);
+            mHandler.postDelayed(sweepNotFoundRunner, 10000); // Stop in 30 seconds if not found
         }
         else {
             mActivity.ShowOkMessageDialog(TAG, "Invalid FINALHASH code");
