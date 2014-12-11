@@ -44,6 +44,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -64,6 +65,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
@@ -526,4 +528,32 @@ public class ImportFragment extends Fragment
                         });
         builder.create().show();
     }
+
+//    public class SweepTask extends AsyncTask<String, Void, String> {
+//        SweepTask(String token) { }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            Log.d(TAG, "Sweeping address");
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String address = mCoreAPI.SweepKey(mToEdittext.getText().toString(), params[0]);
+//
+//            if(address == null) {
+//                return "";
+//            }
+//
+//            String token = address;
+//            AirbitzAPI api = AirbitzAPI.getApi();
+//            return api.getHiddenBitz(token);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(final String result) {
+//            //TODO process result
+//        }
+//    }
+
 }
