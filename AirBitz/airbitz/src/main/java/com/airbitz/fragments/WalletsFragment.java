@@ -650,12 +650,14 @@ public class WalletsFragment extends Fragment
         protected void onPostExecute(final Boolean success) {
             mAddWalletTask = null;
             mActivity.showModalProgress(false);
-            if (!success) {
-                mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_created_wallet_failed));
-                Log.d(TAG, "AddWalletTask failed");
-            } else {
-                mActivity.ShowFadingDialog(String.format(getString(R.string.fragment_wallets_created_wallet), mWalletName));
-                updateWalletList(mArchiveClosed);
+            if(isAdded()) {
+                if (!success) {
+                    mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_created_wallet_failed));
+                    Log.d(TAG, "AddWalletTask failed");
+                } else {
+                    mActivity.ShowFadingDialog(String.format(getString(R.string.fragment_wallets_created_wallet), mWalletName));
+                    updateWalletList(mArchiveClosed);
+                }
             }
         }
 
