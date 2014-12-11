@@ -112,11 +112,7 @@ public class Wallet {
     }
 
     public boolean isLoading() {
-        return mLoading;
-    }
-
-    public void setLoading(boolean loading) {
-        mLoading = loading;
+        return mCurrencyNum == -1;
     }
 
     public long getAttributes() {
