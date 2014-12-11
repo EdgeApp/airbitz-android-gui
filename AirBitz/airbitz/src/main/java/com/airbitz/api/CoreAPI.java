@@ -2079,7 +2079,6 @@ public class CoreAPI {
                     in.setUUID(wi.getUUID());
                     in.setAttributes(wi.getAttributes());
                     in.setCurrencyNum(wi.getCurrencyNum());
-                    in.setLoading(wi.getCurrencyNum() == -1);
                     if (withTransactions) {
                         in.setTransactions(loadAllTransactions(in));
                     }
