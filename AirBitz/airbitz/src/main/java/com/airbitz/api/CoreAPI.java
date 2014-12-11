@@ -1422,13 +1422,13 @@ public class CoreAPI {
             BigDecimal bd = new BigDecimal(amount);
             bd = bd.movePointLeft(decimalPlaces);
 
-            DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+            DecimalFormat df = new DecimalFormat("#,##0.##", new DecimalFormatSymbols(Locale.getDefault()));
 
             if(decimalPlaces == 5) {
-                df = new DecimalFormat("#,##0.00000", new DecimalFormatSymbols(Locale.getDefault()));
+                df = new DecimalFormat("#,##0.#####", new DecimalFormatSymbols(Locale.getDefault()));
             }
             else if(decimalPlaces == 8) {
-                df = new DecimalFormat("#,##0.00000000", new DecimalFormatSymbols(Locale.getDefault()));
+                df = new DecimalFormat("#,##0.########", new DecimalFormatSymbols(Locale.getDefault()));
             }
 
             return pretext + df.format(bd.doubleValue());
