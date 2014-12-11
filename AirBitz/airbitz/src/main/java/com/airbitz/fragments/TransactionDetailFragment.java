@@ -714,7 +714,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void done() {
         mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
-        getActivity().onBackPressed();
+        mActivity.onBackPressed();
     }
 
     public void ShowReminderDialog(String title, String message) {
@@ -731,7 +731,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                                 done();
                                 Bundle bundle = new Bundle();
                                 bundle.putBoolean(SettingFragment.START_RECOVERY_PASSWORD, true);
-                                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
+                                mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
                             }
                         }
                 ).setNegativeButton(getResources().getString(R.string.string_no),
@@ -756,7 +756,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
 
             // go through all the contacts
-            Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), strTerm);
+            Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, strTerm);
             for (String s : list.keySet()) {
                 mArrayAutoComplete.add(s);
                 mCombinedPhotos.put(s, list.get(s));
@@ -785,7 +785,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             if (mFromRequest) {
                 // this is a receive so use the address book
                 // show all the contacts
-                Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), null);
+                Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, null);
                 for (String s : list.keySet()) {
                     mArrayAutoComplete.add(s);
                     mCombinedPhotos.put(s, list.get(s));
@@ -1077,7 +1077,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
+            mActivity.pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mDummyFocus.requestFocus();
         }
@@ -1087,8 +1087,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
         mDateTextView.setText(dateString);
 
-        String pretext = mFromSend ? getActivity().getResources().getString(R.string.transaction_details_from) :
-                getActivity().getResources().getString(R.string.transaction_details_to);
+        String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
+                mActivity.getResources().getString(R.string.transaction_details_to);
         mToFromName.setText(pretext + transaction.getWalletName());
 
         mPayeeEditText.setText(transaction.getName());
@@ -1173,7 +1173,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(String searchResult) {
-            if (getActivity() == null) {
+            if (mActivity == null) {
                 return;
             }
             try {
@@ -1253,7 +1253,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mFiatValueEdittext.getText().toString());
         task.execute();
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     private void startOnlineBusinessSearch(String term) {
@@ -1319,7 +1319,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(List<Business> businesses) {
-            if (getActivity() == null || businesses == null) {
+            if (mActivity == null || businesses == null) {
                 return;
             }
             for (Business business : businesses) {
@@ -1353,7 +1353,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     public void getContactsList() {
         mContactNames.clear();
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = mActivity.getContentResolver();
         String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
         if (cursor!=null && cursor.getCount() > 0) {
@@ -1442,7 +1442,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(BusinessDetail business) {
-            if (getActivity() == null) {
+            if (mActivity == null) {
                 return;
             }
             if (business != null && business.getSquareImageLink() != null) {
