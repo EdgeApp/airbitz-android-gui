@@ -187,7 +187,8 @@ public class CoreAPI {
             if (mOnIncomingBitcoin != null) {
                 mIncomingUUID = info.getSzWalletUUID();
                 mIncomingTxID = info.getSzTxID();
-                mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
+                mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
+                mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
             } else
                 Log.d(TAG, "incoming bitcoin event has no listener");
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
