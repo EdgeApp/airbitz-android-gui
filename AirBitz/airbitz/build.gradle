@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -68,15 +68,15 @@ android {
 
     buildTypes {
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.release
-            applicationVariants.all { variant ->
-                def file = variant.outputFile
-                def versionCode = getVersionCode()
-                println "APK Version: " + versionCode
-                variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
-            }
+//            runProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            signingConfig signingConfigs.release
+//            applicationVariants.all { variant ->
+//                def file = variant.outputFile
+//                def versionCode = getVersionCode()
+//                println "APK Version: " + versionCode
+//                variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+//            }
         }
     }
 
@@ -105,7 +105,7 @@ if (hasProperty('storeFile')) {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:21.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.retrofit:retrofit:1.4.1'

@@ -54,6 +54,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Telephony;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -80,7 +81,8 @@ import java.util.List;
 
 public class RequestQRCodeFragment extends Fragment implements
         ContactPickerFragment.ContactSelection,
-        NfcAdapter.CreateNdefMessageCallback
+        NfcAdapter.CreateNdefMessageCallback,
+        SwipeRefreshLayout.OnRefreshListener
 {
     private final String TAG = getClass().getSimpleName();
 
@@ -93,6 +95,7 @@ public class RequestQRCodeFragment extends Fragment implements
     private HighlightOnPressButton mSMSButton;
     private HighlightOnPressButton mEmailButton;
     private HighlightOnPressButton mCopyButton;
+    private HighlightOnPressButton mRefreshButton;
     private TextView mBitcoinAmount;
     private TextView mBitcoinAddress;
     private TextView mTitleTextView;
@@ -112,6 +115,7 @@ public class RequestQRCodeFragment extends Fragment implements
     private AlertDialog mPartialDialog;
     private ImageView mNFCImageView;
     private NfcAdapter mNfcAdapter;
+    private SwipeRefreshLayout mSwipeLayout;
 
     final Runnable dialogKiller = new Runnable() {
         @Override
@@ -152,6 +156,18 @@ public class RequestQRCodeFragment extends Fragment implements
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
         mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
+
+        mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_request_qrcode_swipe_layout);
+        mSwipeLayout.setOnRefreshListener(this);
+
+        mRefreshButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_request_qr_refresh);
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSwipeLayout.setRefreshing(true);
+                onRefresh();
+            }
+        });
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -477,6 +493,19 @@ public class RequestQRCodeFragment extends Fragment implements
         }
         else
             return null;
+    }
+
+    @Override
+    public void onRefresh() {
+        if(mWallet != null) {
+            mCoreAPI.connectWatcher(mWallet.getUUID());
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
