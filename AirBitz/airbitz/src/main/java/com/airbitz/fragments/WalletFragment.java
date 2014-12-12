@@ -561,13 +561,10 @@ public class WalletFragment extends Fragment
         }
         startTransactionTask();
 
-        UpdateBalances();
+        updateBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
-
-        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        updateBalanceBar();
     }
 
     private void updateBalanceBar() {
