@@ -76,7 +76,7 @@ public class AirbitzAPI {
     private static final String API_SEARCH = API_PATH + "search/";
     private static final String API_BUSINESS = API_PATH + "business/";
     private static final String API_MESSAGES = API_PATH + "notifications/";
-    private static final String API_HIDDENBITZ = API_PATH + "hiddenbitz/";
+    private static final String API_HIDDENBITZ = API_PATH + "hiddenbits/";
     private static final String API_LOCATION_SUGGEST = API_PATH + "location-suggest/";
     private static final String API_CATEGORIES = API_PATH + "categories/";
     private static final String API_AUTO_COMPLETE_LOCATION = API_PATH + "autocomplete-location/";
