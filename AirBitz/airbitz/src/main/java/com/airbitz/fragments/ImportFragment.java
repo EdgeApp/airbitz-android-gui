@@ -444,7 +444,7 @@ public class ImportFragment extends Fragment
         if (rawResult != null) {
             return rawResult.getText();
         } else {
-            Log.d(TAG, "No QR code found");
+//            Log.d(TAG, "No QR code found");
         }
         return null;
     }
@@ -484,7 +484,9 @@ public class ImportFragment extends Fragment
         String submission = mToEdittext.getText().toString();
         if(CheckFINALHASH(submission)) {
             mActivity.showModalProgress(true);
-            mHandler.postDelayed(sweepNotFoundRunner, 10000); // Stop in 30 seconds if not found
+            mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
+            SweepTask task = new SweepTask();
+            task.execute(submission);
         }
         else {
             mActivity.ShowOkMessageDialog(TAG, "Invalid FINALHASH code");
@@ -499,11 +501,12 @@ public class ImportFragment extends Fragment
         Uri uri = Uri.parse(results);
         String scheme = uri.getScheme();
 
-        if(scheme != null && scheme.equalsIgnoreCase("airbitz")) { // TODO need more logic
+        if(scheme != null && scheme.equalsIgnoreCase("hbits")) { // TODO need more logic
             Log.d("ImportFragment", "Good FINALHASH URI");
             return true;
         }
         else {
+            Log.d("ImportFragment", "FINALHASH failed for: "+results+", "+scheme);
             return false;
         }
     }
@@ -529,31 +532,33 @@ public class ImportFragment extends Fragment
         builder.create().show();
     }
 
-//    public class SweepTask extends AsyncTask<String, Void, String> {
-//        SweepTask(String token) { }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            Log.d(TAG, "Sweeping address");
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String address = mCoreAPI.SweepKey(mToEdittext.getText().toString(), params[0]);
-//
-//            if(address == null) {
-//                return "";
-//            }
-//
-//            String token = address;
-//            AirbitzAPI api = AirbitzAPI.getApi();
-//            return api.getHiddenBitz(token);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final String result) {
-//            //TODO process result
-//        }
-//    }
+    public class SweepTask extends AsyncTask<String, Void, String> {
+        SweepTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG, "Sweeping address");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String wif = params[0];
+            String address = mCoreAPI.SweepKey(mToEdittext.getText().toString(), wif);
+
+            if(address == null) {
+                return "";
+            }
+
+            String token = "16b0";
+            AirbitzAPI api = AirbitzAPI.getApi();
+            return api.getHiddenBitz(token);
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            //TODO process result
+            Log.d(TAG, result);
+        }
+    }
 
 }

@@ -8,18 +8,18 @@
 
 package com.airbitz.api;
 
-public class SWIGTYPE_p_p_sABC_Currency {
+public class SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_p_sABC_Currency(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_p_sABC_Currency() {
+  protected SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void() {
     swigCPtr = 0;
   }
 
-  protected static long getCPtr(SWIGTYPE_p_p_sABC_Currency obj) {
+  protected static long getCPtr(SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

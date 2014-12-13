@@ -116,6 +116,7 @@ public class CoreAPI {
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
+    public native int coreSweepKey(String jusername, String jpassword, String juuid, String wif, long ppchar, long jerrorp);
     public native int coreWatcherLoop(String juuid, long jerrorp);
     public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
@@ -2697,18 +2698,18 @@ public class CoreAPI {
         }
     }
 
-//    public String SweepKey(String uuid, String wif) {
-//        tABC_Error Error = new tABC_Error();
-//        SWIGTYPE_p_long lp = core.new_longp();
-//        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-//
-//        tABC_CC result = core.ABC_SweepKey(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-//                uuid, wif, Error);
-//
-//        if (tABC_CC.ABC_CC_Ok == result) {
-//            return getStringAtPtr(core.longp_value(lp));
-//        } else {
-//            return null;
-//        }
-//    }
+    public String SweepKey(String uuid, String wif) {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        int result = coreSweepKey(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, wif, SWIGTYPE_p_p_char.getCPtr(ppChar), tABC_Error.getCPtr(Error));
+        if ( result != 0) {
+            return "";
+        }
+        else {
+            return getStringAtPtr(core.longp_value(lp));
+        }
+    }
 }
