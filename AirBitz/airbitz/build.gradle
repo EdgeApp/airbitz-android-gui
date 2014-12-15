@@ -78,7 +78,6 @@ android {
                         def file =
                         println "APK Version: " + versionCode
                         output.outputFile = new File(output.outputFile.parent, "airbitz-prod-" + variant.buildType.name +"-" + versionCode + ".apk")
-//                        outputs.outputFile = new File(output.outputFile.parent, file.replace(".apk", "-" + versionCode + ".apk"))
                     }
                 }
             }
