@@ -1,7 +1,5 @@
 import java.util.regex.Pattern
 
-apply plugin: 'com.android.application'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -35,7 +33,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 2014121502
+        versionCode 2014121503
         versionName "1.3.4"
     }
 
