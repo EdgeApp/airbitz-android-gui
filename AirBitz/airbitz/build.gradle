@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -29,14 +29,14 @@ task buildAirbitzCore(type:Exec) {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 19
-        versionCode 2100000000
-        versionName '99.99.99'
+        targetSdkVersion 21
+        versionCode 2014121502
+        versionName "1.3.4"
     }
 
     productFlavors {
@@ -68,14 +68,14 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
             applicationVariants.all { variant ->
-                def file = variant.outputFile
+                def file = variant.outputs
                 def versionCode = getVersionCode()
                 println "APK Version: " + versionCode
-                variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+//                variant.outputs = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
             }
         }
     }
@@ -105,7 +105,7 @@ if (hasProperty('storeFile')) {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:21.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
