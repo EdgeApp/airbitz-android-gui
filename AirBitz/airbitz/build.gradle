@@ -69,11 +69,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
+
             applicationVariants.all { variant ->
-                def file = variant.outputs
                 def versionCode = getVersionCode()
-                println "APK Version: " + versionCode
-//                variant.outputs = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+                variant.outputs.each { output ->
+                    println "variant.buildType.name: " + variant.buildType.name
+                    if(variant.buildType.name.equals('release')) {
+                        def file =
+                        println "APK Version: " + versionCode
+                        output.outputFile = new File(output.outputFile.parent, "airbitz-prod-" + variant.buildType.name +"-" + versionCode + ".apk")
+//                        outputs.outputFile = new File(output.outputFile.parent, file.replace(".apk", "-" + versionCode + ".apk"))
+                    }
+                }
             }
         }
     }
@@ -86,6 +93,7 @@ def getVersionCode() {
     def manifestFile = file("src/main/AndroidManifest.xml")
     def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
     def manifestText = manifestFile.getText()
+    println manifestText
     def matcher = pattern.matcher(manifestText)
     matcher.find()
     return matcher.group(1).replace(".", "-")
