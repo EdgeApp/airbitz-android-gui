@@ -160,7 +160,7 @@ Java_com_airbitz_api_CoreAPI_coreSweepKey(JNIEnv *jenv, jclass jcls, jstring jus
   char *uuid = (char *) 0 ;
   char *wif = (char *) 0 ;
   char **ret = (char **) 0 ;
-  tABC_BitCoin_Event_Callback callback = (tABC_BitCoin_Event_Callback) 0 ;
+  tABC_Sweep_Done_Callback callback = (tABC_Sweep_Done_Callback) 0 ;
   void *bcInfo = (void *) 0 ;
   tABC_Error *errorp = (tABC_Error *) 0 ;
   tABC_CC result;
@@ -189,8 +189,6 @@ Java_com_airbitz_api_CoreAPI_coreSweepKey(JNIEnv *jenv, jclass jcls, jstring jus
     if (!wif) return 0;
   }
   ret = *(char ***)&ppchar;
-  callback = tABC_Sweep_Done_Callback;
-  bcInfo = *(void **)&bitcoinInfo;
   errorp = *(tABC_Error **)&jerrorp;
   result = (tABC_CC)ABC_SweepKey((char const *)username, (char const *)password,
                     (char const *)uuid, (char const *)wif, ret, callback, bcInfo, errorp);
