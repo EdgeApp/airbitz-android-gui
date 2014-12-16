@@ -75,7 +75,6 @@ android {
                 variant.outputs.each { output ->
                     println "variant.buildType.name: " + variant.buildType.name
                     if(variant.buildType.name.equals('release')) {
-                        def file =
                         println "APK Version: " + versionCode
                         output.outputFile = new File(output.outputFile.parent, "airbitz-prod-" + variant.buildType.name +"-" + versionCode + ".apk")
                     }
