@@ -189,34 +189,52 @@ public class CoreAPI {
                 mIncomingTxID = info.getSzTxID();
                 mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
                 mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
-            } else
+            }
+            else {
                 Log.d(TAG, "incoming bitcoin event has no listener");
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
+            }
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
             else
                 Log.d(TAG, "block exchange event has no listener");
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
             if (mOnDataSync != null) {
                 mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
                 mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
             } else {
                 Log.d(TAG, "data sync event has no listener");
             }
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
             if(mOnRemotePasswordChange!=null)
                 mPeriodicTaskHandler.post(RemotePasswordChangeUpdater);
             else
                 Log.d(TAG, "remote password event has no listener");
-        }else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
             if(mExchangeRateSources!=null && !mExchangeRateSources.isEmpty())
                 mPeriodicTaskHandler.post(ExchangeRateUpdater);
             else
                 Log.d(TAG, "exchange rate event has no listener");
         }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
+            if (mOnWalletSweep != null) {
+                mIncomingUUID = info.getSzWalletUUID();
+                mSweepSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(info.getSweepSatoshi()));
+                mPeriodicTaskHandler.removeCallbacks(WalletSweepUpdater);
+                mPeriodicTaskHandler.post(WalletSweepUpdater);
+            }
+            else {
+                Log.d(TAG, "incoming bitcoin event has no listener");
+            }
+        }
     }
 
     private String mIncomingUUID, mIncomingTxID;
+    private long mSweepSatoshi;
     // Callback interface when an incoming bitcoin is received
     private OnIncomingBitcoin mOnIncomingBitcoin;
 
@@ -271,6 +289,18 @@ public class CoreAPI {
     }
     final Runnable RemotePasswordChangeUpdater = new Runnable() {
         public void run() { mOnRemotePasswordChange.OnRemotePasswordChange(); }
+    };
+
+    // Callback interface for a wallet sweep
+    private OnWalletSweep mOnWalletSweep;
+    public interface OnWalletSweep {
+        public void OnWalletSweep(String uuid, long satoshis);
+    }
+    public void setOnWalletSweepListener(OnWalletSweep listener) {
+        mOnWalletSweep = listener;
+    }
+    final Runnable WalletSweepUpdater = new Runnable() {
+        public void run() { mOnWalletSweep.OnWalletSweep(mIncomingUUID, mSweepSatoshi); }
     };
 
     final Runnable ExchangeRateUpdater = new Runnable() {

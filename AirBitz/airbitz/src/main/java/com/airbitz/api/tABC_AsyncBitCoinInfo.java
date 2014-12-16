@@ -85,6 +85,14 @@ public class tABC_AsyncBitCoinInfo {
     return coreJNI.tABC_AsyncBitCoinInfo_szDescription_get(swigCPtr, this);
   }
 
+  public void setSweepSatoshi(SWIGTYPE_p_int64_t value) {
+    coreJNI.tABC_AsyncBitCoinInfo_sweepSatoshi_set(swigCPtr, this, SWIGTYPE_p_int64_t.getCPtr(value));
+  }
+
+  public SWIGTYPE_p_int64_t getSweepSatoshi() {
+    return new SWIGTYPE_p_int64_t(coreJNI.tABC_AsyncBitCoinInfo_sweepSatoshi_get(swigCPtr, this), true);
+  }
+
   public tABC_AsyncBitCoinInfo() {
     this(coreJNI.new_tABC_AsyncBitCoinInfo(), true);
   }
