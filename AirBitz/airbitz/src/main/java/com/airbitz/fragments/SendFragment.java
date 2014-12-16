@@ -116,7 +116,9 @@ public class SendFragment extends Fragment implements
     Runnable cameraFocusRunner = new Runnable() {
         @Override
         public void run() {
-            mCamera.autoFocus(SendFragment.this);
+            if(mCamera != null) {
+                mCamera.autoFocus(SendFragment.this);
+            }
             mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
             mFocused = false;
         }
@@ -250,6 +252,9 @@ public class SendFragment extends Fragment implements
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mCamera == null) {
+                    return;
+                }
                 if (!mFlashOn) {
                     mFlashButton.setImageResource(R.drawable.btn_flash_on);
                     mFlashOn = true;
