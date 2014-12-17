@@ -421,4 +421,7 @@
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
 
+    <string name="import_wallet_hidden_bits_promotion_claimed">Promotion has been claimed</string>
+    <string name="import_wallet_hidden_bits_congratulations">Congratulations!</string>
+
 </resources>

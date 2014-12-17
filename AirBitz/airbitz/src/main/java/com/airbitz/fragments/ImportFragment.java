@@ -82,6 +82,10 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -120,6 +124,9 @@ public class ImportFragment extends Fragment
     private Wallet mFromWallet;
     private Handler mHandler = new Handler();
     private NavigationActivity mActivity;
+
+    private String mTweet;
+
     Runnable cameraFocusRunner = new Runnable() {
         @Override
         public void run() {
@@ -358,7 +365,7 @@ public class ImportFragment extends Fragment
 
         Bundle args = getArguments();
 
-        if(args != null && args.getString(URI) != null && CheckFINALHASH(args.getString(URI))) {
+        if(args != null && args.getString(URI) != null && getFinalHashToken(args.getString(URI)) != null) {
             mToEdittext.setText(args.getString(URI));
             mToEdittext.clearFocus();
             mActivity.hideSoftKeyboard(mToEdittext);
@@ -367,6 +374,8 @@ public class ImportFragment extends Fragment
         else {
             scanQRCodes();
         }
+
+        mFromWallet = mWallets.get(0);
     }
 
     @Override
@@ -388,7 +397,7 @@ public class ImportFragment extends Fragment
             return;
 
         String result = AttemptDecodeBytes(bytes, camera);
-        if (CheckFINALHASH(result)) {
+        if (getFinalHashToken(result) != null) {
             Log.d(TAG, "FINALHASH found");
             stopCamera();
             mToEdittext.setText(result);
@@ -481,33 +490,33 @@ public class ImportFragment extends Fragment
     }
 
     private void attemptSubmit() {
-        String submission = mToEdittext.getText().toString();
-        if(CheckFINALHASH(submission)) {
-            mActivity.showModalProgress(true);
+        String uri = mToEdittext.getText().toString();
+        if(getFinalHashToken(uri) != null) {
             mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
             SweepTask task = new SweepTask();
-            task.execute(submission);
+            task.execute(uri);
         }
         else {
             mActivity.ShowOkMessageDialog(TAG, "Invalid FINALHASH code");
         }
     }
 
-    public static boolean CheckFINALHASH(String results)
+    public static String getFinalHashToken(String uriIn)
     {
-        if(results == null)
-            return false;
+        final String HBITS_SCHEME = "hbits";
+        if(uriIn == null)
+            return null;
 
-        Uri uri = Uri.parse(results);
+        Uri uri = Uri.parse(uriIn);
         String scheme = uri.getScheme();
 
-        if(scheme != null && scheme.equalsIgnoreCase("hbits")) { // TODO need more logic
+        if(scheme != null && scheme.equalsIgnoreCase(HBITS_SCHEME)) {
             Log.d("ImportFragment", "Good FINALHASH URI");
-            return true;
+            return uri.toString().substring(scheme.length()+3);
         }
         else {
-            Log.d("ImportFragment", "FINALHASH failed for: "+results+", "+scheme);
-            return false;
+            Log.d("ImportFragment", "FINALHASH failed for: "+uriIn);
+            return null;
         }
     }
 
@@ -533,7 +542,10 @@ public class ImportFragment extends Fragment
     }
 
     public class SweepTask extends AsyncTask<String, Void, String> {
-        SweepTask() { }
+        final int hBitzIDLength = 4;
+        SweepTask() {
+            mActivity.showModalProgress(true);
+        }
 
         @Override
         protected void onPreExecute() {
@@ -542,23 +554,79 @@ public class ImportFragment extends Fragment
 
         @Override
         protected String doInBackground(String... params) {
-            String wif = params[0];
-            String address = mCoreAPI.SweepKey(mToEdittext.getText().toString(), wif);
-
-            if(address == null) {
-                return "";
+            String ewif = getFinalHashToken(params[0]);
+            String address;
+            if(ewif != null) { // this is a hiddenbits key
+                address = mCoreAPI.SweepKey(mFromWallet.getUUID(), ewif);
+                // make a query with the last bytes of the address
+                if(address.length() >= hBitzIDLength) {
+                    String token = address.substring(address.length() - hBitzIDLength, address.length());
+                    AirbitzAPI api = AirbitzAPI.getApi();
+                    return api.getHiddenBitz(token);
+                }
+                else {
+                    Log.d(TAG, "failed token for hiddenbits");
+                    return null;
+                }
             }
-
-            String token = "16b0";
-            AirbitzAPI api = AirbitzAPI.getApi();
-            return api.getHiddenBitz(token);
+            else { // this is a private key. Start the sweep. Navigation Activity deals with callback
+                address = mCoreAPI.SweepKey(mFromWallet.getUUID(), params[0]);
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(final String result) {
-            //TODO process result
             Log.d(TAG, result);
+            mActivity.showModalProgress(false);
+            if(result == null) {
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                if(jsonObject.getBoolean("claimed")) {
+                    mActivity.ShowFadingDialog(getString(R.string.import_wallet_hidden_bits_promotion_claimed));
+                }
+                else {
+                    String token = jsonObject.getString("token");
+                    String message = jsonObject.getString("message");
+                    mTweet = jsonObject.getString("tweet");
+                    ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_congratulations), message);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mActivity.showModalProgress(false);
         }
     }
 
+    public void ShowHiddenBitsTweet(String title, String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // invoke Twitter to send tweet
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(mTweet)));
+                                startActivity(i);
+                                dialog.dismiss();
+                            }
+                        }
+                )
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                }
+        );        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }
