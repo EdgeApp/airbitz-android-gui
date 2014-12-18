@@ -155,9 +155,11 @@ public class WalletsFragment extends Fragment
         public void run() {
             if(mBalanceSwitchLayout != null) {
                 ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", mSwitchHeight, 0);
-                animator.setDuration(100);
-                animator.addListener(endListener);
-                animator.start();
+                if(animator != null) {
+                    animator.setDuration(100);
+                    animator.addListener(endListener);
+                    animator.start();
+                }
             }
         }
     };
@@ -166,9 +168,11 @@ public class WalletsFragment extends Fragment
         public void run() {
             if(mBalanceSwitchLayout != null) {
                 ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0, mSwitchHeight);
-                animator.setDuration(100);
-                animator.addListener(endListener);
-                animator.start();
+                if(animator != null) {
+                    animator.setDuration(100);
+                    animator.addListener(endListener);
+                    animator.start();
+                }
             }
         }
     };
