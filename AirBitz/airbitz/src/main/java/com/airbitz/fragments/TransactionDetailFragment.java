@@ -990,9 +990,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
+                        if(url!=null && isAdded()) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(url));
-                        mActivity.startActivity(i);
+                            i.setData(Uri.parse(url));
+                            mActivity.startActivity(i);
+                        }
                     }
                 };
                 address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
