@@ -394,11 +394,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mSearchEdittext);
                     showViewAnimatorChild(0);
                     mBusinessType = "business";
                     mBusinessName = mSearchEdittext.getText().toString();
                     mLocationName = mLocationEdittext.getText().toString();
                     search();
+                    mSearchEdittext.clearFocus();
                     return true;
                 }
                 return false;

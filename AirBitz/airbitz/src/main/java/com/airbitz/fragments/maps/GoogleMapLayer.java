@@ -141,6 +141,7 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
             mMarkerImageLink.clear();
             mMarkerDistances.clear();
         }
+        mGoogleMap.clear();
     }
 
     @Override
