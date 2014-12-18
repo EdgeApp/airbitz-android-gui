@@ -233,7 +233,7 @@ public class ViewPagerFragment extends Fragment {
     Runnable loadBackground = new Runnable() {
         @Override
         public void run() {
-            if(! mImageViews.isEmpty() && mImageViews.get(mPosition).getDrawable() != null) {
+            if(! mImageViews.isEmpty() && mImageViews.get(mPosition).getDrawable() != null && isAdded()) {
                 Bitmap bm = drawableToBitmap(mImageViews.get(mPosition).getDrawable());
                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), blur(4, bm));
 
