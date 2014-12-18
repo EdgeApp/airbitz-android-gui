@@ -75,6 +75,8 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
     private boolean mCameraNotificationEnabled = false;
     private boolean mLocationEnabled;
     private int mMapHeight;
+    private boolean mGoogleMapLoaded = false;
+    List<MapLatLng> mPendingMarkers;
 
     private Map<Marker, Integer> mMarkerId = new HashMap<Marker, Integer>();
     private Map<Marker, String> mMarkerDistances = new HashMap<Marker, String>();
@@ -176,7 +178,10 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
 
     @Override
     public void zoomToContainAllMarkers(List<MapLatLng> markers) {
-        if (markers.size() > 0) {
+        if(!mGoogleMapLoaded) {
+            mPendingMarkers = markers;
+        }
+        else if (markers != null && markers.size() > 0 && mGoogleMapLoaded) {
             LatLngBounds.Builder bc = new LatLngBounds.Builder();
             for (MapLatLng ll : markers) {
                 bc.include(new LatLng(ll.mLat, ll.mLng));
@@ -229,6 +234,7 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
     @Override
     public void onPause() {
         mMapView.onPause();
+        mGoogleMapLoaded = false;
     }
 
     @Override
@@ -346,6 +352,16 @@ public class GoogleMapLayer implements MapBuilder.MapShim {
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
                 return true;
+            }
+        });
+
+        mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                Log.d("GoogleMapLayer", "Map Loaded");
+                mGoogleMapLoaded = true;
+                zoomToContainAllMarkers(mPendingMarkers);
+                mPendingMarkers = null;
             }
         });
     }

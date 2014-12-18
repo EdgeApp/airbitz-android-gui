@@ -174,9 +174,6 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         mCurrentLocation = mLocationManager.getLocation();
         checkLocationManager();
-        if (mCurrentLocation != null) {
-            mMapShim.setCurrentLocation(mCurrentLocation);
-        }
 
         // Setup the map
         mMapShim.setOnInfoWindowClickListener(new MapBuilder.OnInfoWindowClickListener() {
