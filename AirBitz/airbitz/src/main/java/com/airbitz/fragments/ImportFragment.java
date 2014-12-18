@@ -582,19 +582,37 @@ public class ImportFragment extends Fragment
             if(result == null) {
                 return;
             }
+
+            JSONObject jsonObject = null;
+            String token="", message="", zero_message="";
+            boolean claimed = true;
             try {
-                JSONObject jsonObject = new JSONObject(result);
-                if(jsonObject.getBoolean("claimed")) {
-                    mActivity.ShowFadingDialog(getString(R.string.import_wallet_hidden_bits_promotion_claimed));
-                }
-                else {
-                    String token = jsonObject.getString("token");
-                    String message = jsonObject.getString("message");
-                    mTweet = jsonObject.getString("tweet");
-                    ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_congratulations), message);
-                }
+                jsonObject = new JSONObject(result);
+                mTweet = jsonObject.getString("tweet");
+                token = jsonObject.getString("token");
+                zero_message = jsonObject.getString("zero_message");
+                claimed = jsonObject.getBoolean("claimed");
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+
+
+            if (!token.isEmpty() && !mTweet.isEmpty())
+            {
+                if (claimed)
+                {
+                    if (!zero_message.isEmpty())
+                    {
+                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), message);
+                    }
+                }
+                else
+                {
+                    if (!message.isEmpty())
+                    {
+                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message);
+                    }
+                }
             }
         }
 
@@ -609,7 +627,7 @@ public class ImportFragment extends Fragment
         builder.setMessage(reason)
                 .setTitle(title)
                 .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_yes),
+                .setPositiveButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // invoke Twitter to send tweet
@@ -618,15 +636,14 @@ public class ImportFragment extends Fragment
                                 startActivity(i);
                                 dialog.dismiss();
                             }
-                        }
-                )
+                        })
                 .setNegativeButton(getResources().getString(R.string.string_no),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                }
-        );        AlertDialog alert = builder.create();
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog alert = builder.create();
         alert.show();
     }
 }
