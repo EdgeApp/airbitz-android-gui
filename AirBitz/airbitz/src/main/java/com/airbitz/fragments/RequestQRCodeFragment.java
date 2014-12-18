@@ -306,6 +306,9 @@ public class RequestQRCodeFragment extends Fragment implements
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
             name = mCoreAPI.coreSettings().getSzFullName();
+            if(name==null) {
+                name = getString(R.string.request_qr_unknown);
+            }
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
 
