@@ -704,7 +704,7 @@ public class NavigationActivity extends Activity
             else {
                 // Handle FINALHASH NFC input
                 Log.d(TAG, intentUri.toString());
-                if (ImportFragment.getFinalHashToken(intentUri.toString()) != null) {
+                if (ImportFragment.getHiddenBitsToken(intentUri.toString()) != null) {
                     gotoImportNow(intentUri);
                 }
             }
@@ -971,7 +971,7 @@ public class NavigationActivity extends Activity
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            if(ImportFragment.getFinalHashToken(mDataUri.toString()) != null) {
+            if(ImportFragment.getHiddenBitsToken(mDataUri.toString()) != null) {
                 gotoImportNow(mDataUri);
             }
             else {

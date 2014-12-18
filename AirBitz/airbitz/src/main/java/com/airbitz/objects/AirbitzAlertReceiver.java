@@ -80,6 +80,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public static final int ALERT_NEW_BUSINESS_CODE = 2;
     public static final String ALERT_NEW_BUSINESS_TYPE = "com.airbitz.airbitalert.NewBusinessType";
     final private static int REPEAT_NEW_BUSINESS_MILLIS = 1000 * 60 * 60 * 1; //24 * 7; // 1 week intervals
+    public static final String NEW_BUSINESS_LAST_TIME = "com.airbit.airbitzalert.NewBusinessTime";
 
     NotificationTask mNotificationTask;
     NewBusinessTask mNewBusinessTask;
@@ -235,6 +236,17 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         return prefs.getInt(NavigationActivity.LAST_MESSAGE_ID, 0); // default to Automatic
     }
 
+    private String getNewBusinessLastTimePref(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getString(NEW_BUSINESS_LAST_TIME, "");
+    }
+
+    private void setNewBusinessLastTimePref(Context context, String time) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putString(NEW_BUSINESS_LAST_TIME, time);
+        editor.apply();
+    }
+
     private boolean hasAlerts(String input) {
         try {
             JSONObject json = new JSONObject(input);
@@ -270,20 +282,21 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             String latLong = String.valueOf(currentLoc.getLatitude())
                 + "," + String.valueOf(currentLoc.getLongitude());
 
-            // format is ISO8601, ex: 2014-09-25T01:42:03.000Z
-            // get one week ago
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR) - 1);
-            Date date = new Date(cal.getTimeInMillis());
+            String lastTime = getNewBusinessLastTimePref(mContext);
 
-            TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-            df.setTimeZone(tz);
-            String weekAgo = df.format(date);
-            Log.d(TAG, "WeekAgo: " + weekAgo);
+            if(lastTime.isEmpty()) {
+                // format is ISO8601, ex: 2014-09-25T01:42:03.000Z
+                // get one week ago
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR) - 1);
+                Date date = new Date(cal.getTimeInMillis());
+
+                lastTime = formatUTC(date);
+            }
+            Log.d(TAG, "LastTime: " + lastTime);
 
             AirbitzAPI api = AirbitzAPI.getApi();
-            return api.getNewBusinesses(weekAgo, latLong, "100000");
+            return api.getNewBusinesses(lastTime, latLong, "100000");
         }
 
         @Override
@@ -293,10 +306,19 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                 if(hasAlerts(response)) {
                     issueOSNotification(mContext, ALERT_NEW_BUSINESS_TYPE);
                 }
+                // save last time = now
+                String now = formatUTC(new Date(Calendar.getInstance().getTimeInMillis()));
+                setNewBusinessLastTimePref(mContext, now);
             }
             mHandler.removeCallbacks(murderPendingTasks);
             mHandler.post(murderPendingTasks);
         }
     }
 
+    private String formatUTC(Date date) {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        df.setTimeZone(tz);
+        return df.format(date);
+    }
 }
