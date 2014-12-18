@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -832,7 +833,10 @@ public class NavigationActivity extends Activity
     public void onSentFunds(String walletUUID, String txId) {
         Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
-        getFragmentManager().executePendingTransactions();
+        FragmentManager manager = getFragmentManager();
+        if(manager != null) {
+            manager.executePendingTransactions();
+        }
 
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
