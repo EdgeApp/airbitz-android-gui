@@ -104,7 +104,6 @@ public class VenueAdapter extends BaseAdapter {
             viewHolder.relativeLayoutItem = (RelativeLayout) convertView.findViewById(R.id.mainLayout);
             viewHolder.venueBackgroundItem = (ImageView) convertView.findViewById(R.id.venueBackground);
             viewHolder.blankViewVenueItem = convertView.findViewById(R.id.blank_view_venue);
-            viewHolder.linearLayoutGradientVenueItem = (LinearLayout) convertView.findViewById(R.id.linear_layout_gradient_venue);
             viewHolder.linearLayoutInfoContainerVenueItem = (LinearLayout) convertView.findViewById(R.id.linear_layout_info_container_venue);
             viewHolder.textViewBusinessNameItem = (TextView) convertView.findViewById(R.id.textview_business_name);
             viewHolder.linearLayoutBottomContainerVenueItem = (LinearLayout) convertView.findViewById(R.id.linear_layout_bottom_container_venue);
@@ -224,7 +223,6 @@ public class VenueAdapter extends BaseAdapter {
         RelativeLayout relativeLayoutItem;
         ImageView venueBackgroundItem;
         View blankViewVenueItem;
-        LinearLayout linearLayoutGradientVenueItem;
         LinearLayout linearLayoutInfoContainerVenueItem;
         TextView textViewBusinessNameItem;
         LinearLayout linearLayoutBottomContainerVenueItem;

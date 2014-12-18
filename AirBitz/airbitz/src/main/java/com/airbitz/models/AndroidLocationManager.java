@@ -44,8 +44,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AndroidLocationManager {
 
     public static final String TAG = AndroidLocationManager.class.getSimpleName();
-    static final long MIN_TIME = 30000;
-    static final long MIN_DIST = 100;
+    public static final long MIN_TIME = 1000 * 60 * 5;
+    public static final long MIN_DIST = 200;
     static final int TWO_MINUTES = 1000 * 60 * 2;
     static AndroidLocationManager mInstance = null;
     private Context mContext;

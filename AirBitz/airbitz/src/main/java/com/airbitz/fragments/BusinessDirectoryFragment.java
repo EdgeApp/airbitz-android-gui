@@ -88,9 +88,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by tom on 4/22/14.
- */
 public class BusinessDirectoryFragment extends Fragment implements
         NavigationActivity.OnBackPress,
         CurrentLocationManager.OnCurrentLocationChange {
@@ -349,17 +346,13 @@ public class BusinessDirectoryFragment extends Fragment implements
         });
 
         mBusinessSearchAdapter = new BusinessSearchAdapter(getActivity(), mBusinessList);
-        mSearchListView.setAdapter(mBusinessSearchAdapter);
 
         mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
-                    mLocationField.setVisibility(View.VISIBLE);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                    mBackButton.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.GONE);
+                    showSearch();
 
                     // Start search
                     try {
@@ -383,6 +376,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                         e.printStackTrace();
                     }
                 }
+                else {
+                    hideSearch();
+                }
             }
         });
 
@@ -400,12 +396,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 if (mSearchListView.getVisibility() == View.GONE) {
                     return;
                 }
-
-                mSearchListView.setAdapter(mBusinessSearchAdapter);
-                mLocationField.setVisibility(View.VISIBLE);
-                mSearchListView.setVisibility(View.VISIBLE);
-                mBackButton.setVisibility(View.VISIBLE);
-                mVenueListView.setVisibility(View.GONE);
 
                 try {
                     String latLong = "";
@@ -432,18 +422,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         });
 
         mLocationAdapter = new LocationAdapter(getActivity(), mLocationList);
-        mSearchListView.setAdapter(mLocationAdapter);
+
         mLocationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.GONE);
-                    mBackButton.setVisibility(View.VISIBLE);
-
-                    // Search
-
+                    showSearch();
+                    if(!mLocationField.hasFocus()) { // sometimes cursor doesn't show, so ask again
+                        mLocationField.requestFocus();
+                    }
                     try {
                         String latLong = "";
                         if (locationEnabled) {
@@ -462,8 +450,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     }
 
                 } else {
-                    mViewGroupLoading.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.VISIBLE);
+                    hideSearch();
                 }
             }
         });
@@ -481,9 +468,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     fragment.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
-                    if (mVenueListView.getVisibility() == View.GONE) {
-                        hideSearch();
-                    }
+                    mSearchField.clearFocus();
                     return true;
                 }
                 return false;
@@ -503,9 +488,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     fragment.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
-                    if (mVenueListView.getVisibility() == View.GONE) {
-                        hideSearch();
-                    }
+                    mLocationField.clearFocus();
                     return true;
                 }
                 // Never report that the event was handled so the keyboard is handled by OS
@@ -528,11 +511,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     return;
                 }
 
-                // if (editable.toString().length() > 0) {
-                mSearchListView.setAdapter(mLocationAdapter);
-                mSearchListView.setVisibility(View.VISIBLE);
-                mBackButton.setVisibility(View.VISIBLE);
-                mVenueListView.setVisibility(View.GONE);
+                showSearch();
 
                 try {
                     String latLong = "";
@@ -651,6 +630,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         mLocationWords = "";
         if (mVenueListView.getVisibility() == View.GONE) {
             hideSearch();
+            mSearchField.clearFocus();
+            mLocationField.clearFocus();
+            hideKeyboard(mSearchField);
             return true;
         }
         return false;
@@ -661,17 +643,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchListView.setVisibility(View.GONE);
         mBackButton.setVisibility(View.GONE);
         mVenueListView.setVisibility(View.VISIBLE);
-
-        mSearchField.clearFocus();
-        mLocationField.clearFocus();
-        hideKeyboard(mSearchField);
-    }
-
-    private void hideKeyboard(View view) {
-        // hide virtual keyboard
-        InputMethodManager imm =
-                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        mNearYouLayout.setVisibility(View.VISIBLE);
     }
 
     private void showSearch() {
@@ -679,6 +651,12 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchListView.setVisibility(View.VISIBLE);
         mBackButton.setVisibility(View.VISIBLE);
         mVenueListView.setVisibility(View.GONE);
+        mNearYouLayout.setVisibility(View.GONE);
+    }
+
+    private void hideKeyboard(View view) {
+        // hide virtual keyboard
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(view);
     }
 
     @Override
@@ -887,13 +865,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     }
 
     public void setVenueListView(List<BusinessSearchResult> venues) {
-        if (venues != null) {
-            mVenueListView.setVisibility(View.VISIBLE);
-            mNoResultView.setVisibility(View.GONE);
-        } else {
-            mVenueListView.setVisibility(View.GONE);
-            mNoResultView.setVisibility(View.VISIBLE);
-        }
         if (!venues.isEmpty()) {
             mVenuesLoaded.addAll(venues);
             if (venues.size() <= PAGE_SIZE) {

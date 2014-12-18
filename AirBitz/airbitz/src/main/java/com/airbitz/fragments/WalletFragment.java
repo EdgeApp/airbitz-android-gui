@@ -256,7 +256,7 @@ public class WalletFragment extends Fragment
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mHeaderView == null) {
             mHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
-            mListTransaction.addHeaderView(mHeaderView);
+            mListTransaction.addHeaderView(mHeaderView, null, false);
         }
         mSendButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_request_button);

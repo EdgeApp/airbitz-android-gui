@@ -677,7 +677,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        UpdateView(mTransaction);
         mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -694,6 +693,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getContactsList();
+        UpdateView(mTransaction);
     }
 
 
