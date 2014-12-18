@@ -82,7 +82,6 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -92,7 +91,10 @@ import java.util.List;
  * Created on 3/3/14.
  */
 public class ImportFragment extends Fragment
-        implements Camera.PreviewCallback, Camera.AutoFocusCallback {
+        implements Camera.PreviewCallback,
+        Camera.AutoFocusCallback,
+        CoreAPI.OnWalletSweep
+{
     public static String URI = "com.airbitz.importfragment.uri";
 
     private static int RESULT_LOAD_IMAGE = 876;
@@ -140,7 +142,7 @@ public class ImportFragment extends Fragment
         public void run() {
             mActivity.showModalProgress(false);
             if(isVisible()) {
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_finalhash_timeout_message));
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_hidden_bits_timeout_message));
             }
         }
     };
@@ -376,6 +378,7 @@ public class ImportFragment extends Fragment
         }
 
         mFromWallet = mWallets.get(0);
+        mCoreAPI.setOnWalletSweepListener(this);
     }
 
     @Override
@@ -383,6 +386,7 @@ public class ImportFragment extends Fragment
         super.onPause();
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
+        mCoreAPI.setOnWalletSweepListener(null);
     }
 
     @Override
@@ -520,27 +524,6 @@ public class ImportFragment extends Fragment
         }
     }
 
-    public void ShowFinalHashSuccessDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
-        builder.setMessage(getString(R.string.import_finalhash_swept_message))
-                .setTitle(getString(R.string.import_finalhash_swept_title))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                //TODO send a public tweet
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.string_no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        builder.create().show();
-    }
-
     public class SweepTask extends AsyncTask<String, Void, String> {
         final int hBitzIDLength = 4;
         SweepTask() {
@@ -591,6 +574,7 @@ public class ImportFragment extends Fragment
                 mTweet = jsonObject.getString("tweet");
                 token = jsonObject.getString("token");
                 zero_message = jsonObject.getString("zero_message");
+                message = jsonObject.getString("message");
                 claimed = jsonObject.getBoolean("claimed");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -603,7 +587,7 @@ public class ImportFragment extends Fragment
                 {
                     if (!zero_message.isEmpty())
                     {
-                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), message);
+                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zero_message);
                     }
                 }
                 else
@@ -620,6 +604,45 @@ public class ImportFragment extends Fragment
         protected void onCancelled() {
             mActivity.showModalProgress(false);
         }
+    }
+
+    String mTxID;
+    @Override
+    public void OnWalletSweep(String txID, long amount) {
+        Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
+
+        mHandler.removeCallbacks(sweepNotFoundRunner);
+
+        mTxID = txID;
+        if (amount > 0 && !mTxID.isEmpty()) {
+            ShowReceivedFundsMessage(getString(R.string.import_wallet_hidden_bits_received_title),
+                getString(R.string.import_wallet_hidden_bits_received_message));
+        } else {
+            mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
+                    getString(R.string.import_wallet_hidden_bits_error_message));
+        }
+    }
+
+    public void ShowReceivedFundsMessage(String title, String reason) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mActivity.onSentFunds(mFromWallet.getUUID(), mTxID);
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void ShowHiddenBitsTweet(String title, String reason) {

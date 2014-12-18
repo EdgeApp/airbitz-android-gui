@@ -182,7 +182,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_margin="20dp"
-                    android:text="@string/import_finalhash_submit"
+                    android:text="@string/import_wallet_hidden_bits_submit"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="60dp"

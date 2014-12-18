@@ -119,7 +119,6 @@ import java.util.Stack;
 public class NavigationActivity extends Activity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
-        CoreAPI.OnWalletSweep,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange {
@@ -224,7 +223,6 @@ public class NavigationActivity extends Activity
         initiateCore();
 
         mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnWalletSweepListener(this);
         mCoreAPI.setOnDataSyncListener(this);
         mCoreAPI.setOnBlockHeightChangeListener(this);
         mCoreAPI.setOnOnRemotePasswordChangeListener(this);
@@ -803,14 +801,6 @@ public class NavigationActivity extends Activity
                 showIncomingBitcoinDialog();
             }
         }
-    }
-
-    @Override
-    public void OnWalletSweep(String walletUUID, long satoshis) {
-        //TODO finish sweep
-        Log.d(TAG, "OnWalletSweep called with " + walletUUID);
-        mUUID = walletUUID;
-
     }
 
     private void handleReceiveFromQR() {

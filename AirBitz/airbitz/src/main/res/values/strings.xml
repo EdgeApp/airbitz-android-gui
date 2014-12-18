@@ -321,12 +321,14 @@
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
-    <string name="import_finalhash_swept_title">Congratulations!</string>
-    <string name="import_finalhash_swept_message">You found 200mB of Hidden Bitcoin brought to you by FinalHash and Airbitz. To receive another 200mB, click OK to send a public tweet.</string>
-    <string name="import_finalhash_timeout_message">Sweep failed. Try Again.</string>
-    <string name="import_finalhash_success_message">Sweep succeeded.</string>
-    <string name="import_finalhash_submit">Submit</string>
-    <string name="import_finalhash_scan">Scan QR Code</string>
+    <string name="import_wallet_hidden_bits_timeout_message">Sweep failed. Try Again.</string>
+    <string name="import_wallet_hidden_bits_submit">Submit</string>
+    <string name="import_wallet_hidden_bits_claimed">Sorry</string>
+    <string name="import_wallet_hidden_bits_not_claimed">Congratulations!</string>
+    <string name="import_wallet_hidden_bits_received_title">Received Funds</string>
+    <string name="import_wallet_hidden_bits_received_message">Bitcoin received. Tap for details.</string>
+    <string name="import_wallet_hidden_bits_error_title">Error</string>
+    <string name="import_wallet_hidden_bits_error_message">Failed to import because there is 0 bitcoin remaining at this address</string>
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
@@ -420,8 +422,5 @@
     <string name="bitcoing_remaining">%1$s Remaining…</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
-
-    <string name="import_wallet_hidden_bits_claimed">Sorry</string>
-    <string name="import_wallet_hidden_bits_not_claimed">Congratulations!</string>
 
 </resources>
