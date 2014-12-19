@@ -248,8 +248,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
 
-        FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
-
         mPicasso = Picasso.with(getActivity());
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -693,7 +691,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getContactsList();
-        UpdateView(mTransaction);
+        if(mTransaction != null) {
+            FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
+            UpdateView(mTransaction);
+        }
     }
 
 
