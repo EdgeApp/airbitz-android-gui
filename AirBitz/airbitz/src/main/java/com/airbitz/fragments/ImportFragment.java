@@ -367,7 +367,7 @@ public class ImportFragment extends Fragment
 
         Bundle args = getArguments();
 
-        if(args != null && args.getString(URI) != null && getFinalHashToken(args.getString(URI)) != null) {
+        if(args != null && args.getString(URI) != null && getHiddenBitsToken(args.getString(URI)) != null) {
             mToEdittext.setText(args.getString(URI));
             mToEdittext.clearFocus();
             mActivity.hideSoftKeyboard(mToEdittext);
@@ -401,8 +401,8 @@ public class ImportFragment extends Fragment
             return;
 
         String result = AttemptDecodeBytes(bytes, camera);
-        if (getFinalHashToken(result) != null) {
-            Log.d(TAG, "FINALHASH found");
+        if (getHiddenBitsToken(result) != null) {
+            Log.d(TAG, "HiddenBits found");
             stopCamera();
             mToEdittext.setText(result);
             attemptSubmit();
@@ -495,17 +495,17 @@ public class ImportFragment extends Fragment
 
     private void attemptSubmit() {
         String uri = mToEdittext.getText().toString();
-        if(getFinalHashToken(uri) != null) {
+        if(getHiddenBitsToken(uri) != null) {
             mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
             SweepTask task = new SweepTask();
             task.execute(uri);
         }
         else {
-            mActivity.ShowOkMessageDialog(TAG, "Invalid FINALHASH code");
+            mActivity.ShowOkMessageDialog(TAG, "Invalid HiddenBits code");
         }
     }
 
-    public static String getFinalHashToken(String uriIn)
+    public static String getHiddenBitsToken(String uriIn)
     {
         final String HBITS_SCHEME = "hbits";
         if(uriIn == null)
@@ -515,11 +515,11 @@ public class ImportFragment extends Fragment
         String scheme = uri.getScheme();
 
         if(scheme != null && scheme.equalsIgnoreCase(HBITS_SCHEME)) {
-            Log.d("ImportFragment", "Good FINALHASH URI");
+            Log.d("ImportFragment", "Good HiddenBits URI");
             return uri.toString().substring(scheme.length()+3);
         }
         else {
-            Log.d("ImportFragment", "FINALHASH failed for: "+uriIn);
+            Log.d("ImportFragment", "HiddenBits failed for: "+uriIn);
             return null;
         }
     }
@@ -537,7 +537,7 @@ public class ImportFragment extends Fragment
 
         @Override
         protected String doInBackground(String... params) {
-            String ewif = getFinalHashToken(params[0]);
+            String ewif = getHiddenBitsToken(params[0]);
             String address;
             if(ewif != null) { // this is a hiddenbits key
                 address = mCoreAPI.SweepKey(mFromWallet.getUUID(), ewif);
@@ -568,36 +568,34 @@ public class ImportFragment extends Fragment
 
             JSONObject jsonObject = null;
             String token="", message="", zero_message="";
-            boolean claimed = true;
             try {
                 jsonObject = new JSONObject(result);
                 mTweet = jsonObject.getString("tweet");
                 token = jsonObject.getString("token");
                 zero_message = jsonObject.getString("zero_message");
                 message = jsonObject.getString("message");
-                claimed = jsonObject.getBoolean("claimed");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
-            if (!token.isEmpty() && !mTweet.isEmpty())
-            {
-                if (claimed)
-                {
-                    if (!zero_message.isEmpty())
-                    {
-                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zero_message);
-                    }
-                }
-                else
-                {
-                    if (!message.isEmpty())
-                    {
-                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message);
-                    }
-                }
-            }
+//            if (!token.isEmpty() && !mTweet.isEmpty())
+//            {
+//                if (claimed)
+//                {
+//                    if (!zero_message.isEmpty())
+//                    {
+//                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zero_message);
+//                    }
+//                }
+//                else
+//                {
+//                    if (!message.isEmpty())
+//                    {
+//                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message);
+//                    }
+//                }
+//            }
         }
 
         @Override
