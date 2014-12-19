@@ -541,6 +541,9 @@ public class WalletsFragment extends Fragment
     }
 
     private void updateBalanceBar() {
+        if(!isAdded())
+            return;
+
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         if(!mOnBitcoinMode) {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + getActivity().getResources().getDimension(R.dimen.currency_switch_height));
