@@ -1271,6 +1271,61 @@ public class NavigationActivity extends Activity
         view.startAnimation(fadeOut);
     }
 
+    public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
+        if (amount > 0 && !txid.isEmpty()) {
+            onSentFunds(uuid, txid);
+            ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
+                    getString(R.string.import_wallet_swept_funds_message));
+        }
+        else if (amount == 0) {
+            ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
+                    getString(R.string.import_wallet_hidden_bits_error_message));
+        }
+
+    }
+
+    public void showHiddenBitsTransaction(String txid, String uuid, long amount,
+                String message, String zeroMessage, String tweet) {
+        if(txid != null) {
+            onSentFunds(uuid, txid);
+        }
+
+        if (amount == 0 && !zeroMessage.isEmpty()) {
+            ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zeroMessage, tweet);
+        }
+        else if (!message.isEmpty()) {
+            ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message, tweet);
+        }
+    }
+
+    public void ShowHiddenBitsTweet(String title, String reason, final String tweet) {
+        if (mMessageDialog != null) {
+            mMessageDialog.dismiss();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // invoke Twitter to send tweet
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
+                                startActivity(i);
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        mMessageDialog = builder.create();
+        mMessageDialog.show();
+    }
+
     public void hideSoftKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);

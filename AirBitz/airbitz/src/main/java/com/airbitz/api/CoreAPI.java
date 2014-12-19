@@ -223,7 +223,7 @@ public class CoreAPI {
         }
         else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
             if (mOnWalletSweep != null) {
-                mIncomingUUID = info.getSzWalletUUID();
+                mIncomingUUID = info.getSzTxID();
                 mSweepSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(info.getSweepSatoshi()));
                 mPeriodicTaskHandler.removeCallbacks(WalletSweepUpdater);
                 mPeriodicTaskHandler.post(WalletSweepUpdater);

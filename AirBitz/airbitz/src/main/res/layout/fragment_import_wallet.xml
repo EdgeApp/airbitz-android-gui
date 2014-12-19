@@ -107,6 +107,10 @@
                         android:background="@drawable/rounded_edge_black_transparent_30"
                         android:gravity="center"
                         android:hint="Enter bitcoin address (optional)"
+                        android:imeOptions="actionDone"
+                        android:inputType="textNoSuggestions"
+                        android:paddingLeft="6.3dp"
+                        android:singleLine="true"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:textColor="@android:color/white"
@@ -119,8 +123,8 @@
             <RelativeLayout
                 android:id="@+id/fragment_import_layout_camera"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
                 <FrameLayout
                     android:id="@+id/layout_camera_preview"
@@ -156,14 +160,25 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_flash_off" />
 
+                <ImageButton
+                    android:id="@+id/button_gallery"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/gallery_button" />
+
                 <ImageView
                     android:id="@+id/fragment_import_nfc_image"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="30dp"
+                    android:layout_above="@id/button_gallery"
                     android:src="@drawable/n_mark"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"

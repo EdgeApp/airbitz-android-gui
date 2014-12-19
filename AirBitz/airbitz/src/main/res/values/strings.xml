@@ -325,8 +325,8 @@
     <string name="import_wallet_hidden_bits_submit">Submit</string>
     <string name="import_wallet_hidden_bits_claimed">Sorry</string>
     <string name="import_wallet_hidden_bits_not_claimed">Congratulations!</string>
-    <string name="import_wallet_hidden_bits_received_title">Received Funds</string>
-    <string name="import_wallet_hidden_bits_received_message">Bitcoin received. Tap for details.</string>
+    <string name="import_wallet_swept_funds_title">Private Key</string>
+    <string name="import_wallet_swept_funds_message">Private funds have been swept.</string>
     <string name="import_wallet_hidden_bits_error_title">Error</string>
     <string name="import_wallet_hidden_bits_error_message">Failed to import because there is 0 bitcoin remaining at this address</string>
     <string name="import_wallet_private_key_invalid">Invalid private key</string>

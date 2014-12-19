@@ -50,10 +50,12 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -103,6 +105,7 @@ public class ImportFragment extends Fragment
     private EditText mToEdittext;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
+    private ImageButton mGalleryButton;
     private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mSubmitButton;
     private TextView mFromTextView;
@@ -129,7 +132,7 @@ public class ImportFragment extends Fragment
 
     private String mTweet, mToken, mMessage, mZeroMessage;
     String mSweptID;
-    long mSweptAmount;
+    long mSweptAmount = -1;
     private String mSweptAddress;
 
     Runnable cameraFocusRunner = new Runnable() {
@@ -248,6 +251,14 @@ public class ImportFragment extends Fragment
             }
         });
 
+        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PickAPicture();
+            }
+        });
+
         mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -257,6 +268,20 @@ public class ImportFragment extends Fragment
                 }
             }
         });
+
+        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(!textView.getText().toString().isEmpty()) {
+                        attemptSubmit();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         return mView;
     }
@@ -418,6 +443,13 @@ public class ImportFragment extends Fragment
         mFocused = true;
     }
 
+    // Select a picture from the Gallery
+    private void PickAPicture() {
+        mToEdittext.clearFocus();
+        Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(in, RESULT_LOAD_IMAGE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -432,10 +464,11 @@ public class ImportFragment extends Fragment
             cursor.close();
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
-            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
-            if (info != null && info.getSzAddress() != null) {
-                Fragment fragment = new WalletPasswordFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
+            String result = AttemptDecodePicture(thumbnail);
+            if (result != null ) {
+                stopCamera();
+                mToEdittext.setText(result);
+                attemptSubmit();
             }
         }
     }
@@ -464,7 +497,7 @@ public class ImportFragment extends Fragment
         return null;
     }
 
-    private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
+    private String AttemptDecodePicture(Bitmap thumbnail) {
         if (thumbnail == null) {
             Log.d(TAG, "No picture selected");
         } else {
@@ -487,10 +520,11 @@ public class ImportFragment extends Fragment
                 }
             }
             if (rawResult != null) {
-                return mCoreAPI.CheckURIResults(rawResult.getText());
+                return rawResult.getText();
             } else {
-                Log.d(TAG, "No QR code found");
+//            Log.d(TAG, "No QR code found");
             }
+            return null;
         }
         return null;
     }
@@ -604,60 +638,25 @@ public class ImportFragment extends Fragment
         // if a private address sweep
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
-        if (mSweptAmount > 0 && !mSweptID.isEmpty()) {
-            mActivity.onSentFunds(mFromWallet.getUUID(), mSweptID);
-            mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_received_title),
-                    getString(R.string.import_wallet_hidden_bits_received_message));
-        }
-        else if (mSweptAmount == 0) {
-            mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
-                    getString(R.string.import_wallet_hidden_bits_error_message));
-        }
+        mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
+
+        mSweptAmount = -1;
     }
 
     // This is only called for HiddenBits
     private void checkHiddenBitsAsyncData() {
         // both async paths are finished if both of these are not empty
-        if (mSweptID != null && mTweet != null)
+        if (mSweptAmount != -1 && mTweet != null)
         {
             Log.d(TAG, "Both API and OnWalletSweep are finished");
 
             mHandler.removeCallbacks(sweepNotFoundRunner);
             mActivity.showModalProgress(false);
 
-            mActivity.onSentFunds(mFromWallet.getUUID(), mSweptID);
+            mActivity.showHiddenBitsTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount,
+                    mMessage, mZeroMessage, mTweet);
 
-            if (mSweptAmount == 0 && !mZeroMessage.isEmpty()) {
-                ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), mZeroMessage);
-            }
-            else if (!mMessage.isEmpty()) {
-                ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), mMessage);
-            }
+            mSweptAmount = -1;
         }
-    }
-
-    public void ShowHiddenBitsTweet(String title, String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // invoke Twitter to send tweet
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(mTweet)));
-                                startActivity(i);
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.string_no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 }
