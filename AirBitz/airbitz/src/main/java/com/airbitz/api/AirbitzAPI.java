@@ -206,7 +206,7 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public String getHiddenBitz(String token) {
+    public String getHiddenBits(String token) {
         return getRequest(API_HIDDENBITZ + token);
     }
 

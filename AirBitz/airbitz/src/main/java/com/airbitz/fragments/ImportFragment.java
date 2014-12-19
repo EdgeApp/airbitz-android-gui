@@ -127,7 +127,10 @@ public class ImportFragment extends Fragment
     private Handler mHandler = new Handler();
     private NavigationActivity mActivity;
 
-    private String mTweet;
+    private String mTweet, mToken, mMessage, mZeroMessage;
+    String mSweptID;
+    long mSweptAmount;
+    private String mSweptAddress;
 
     Runnable cameraFocusRunner = new Runnable() {
         @Override
@@ -142,7 +145,7 @@ public class ImportFragment extends Fragment
         public void run() {
             mActivity.showModalProgress(false);
             if(isVisible()) {
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_hidden_bits_timeout_message));
+                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
             }
         }
     };
@@ -386,6 +389,7 @@ public class ImportFragment extends Fragment
         super.onPause();
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
+        mActivity.showModalProgress(false);
         mCoreAPI.setOnWalletSweepListener(null);
     }
 
@@ -401,13 +405,11 @@ public class ImportFragment extends Fragment
             return;
 
         String result = AttemptDecodeBytes(bytes, camera);
-        if (getHiddenBitsToken(result) != null) {
+        if (result != null && getHiddenBitsToken(result) != null) {
             Log.d(TAG, "HiddenBits found");
             stopCamera();
             mToEdittext.setText(result);
             attemptSubmit();
-        } else if (result != null) {
-            ((NavigationActivity)getActivity()).ShowOkMessageDialog("Import", "Not a Bitcoin URI");
         }
     }
 
@@ -494,17 +496,36 @@ public class ImportFragment extends Fragment
     }
 
     private void attemptSubmit() {
-        String uri = mToEdittext.getText().toString();
-        if(getHiddenBitsToken(uri) != null) {
-            mHandler.postDelayed(sweepNotFoundRunner, 30000); // Stop in 30 seconds if not found
-            SweepTask task = new SweepTask();
-            task.execute(uri);
+        String uriString = mToEdittext.getText().toString();
+        String token = getHiddenBitsToken(uriString);
+
+        String entry = token != null ? token : uriString;
+
+        mActivity.showModalProgress(true);
+        mSweptAddress = mCoreAPI.SweepKey(mFromWallet.getUUID(), entry);
+
+        if(mSweptAddress != null && !mSweptAddress.isEmpty()) {
+            mHandler.postDelayed(sweepNotFoundRunner, 30000);
+
+            if(token != null) { // also issue hidden bits
+                int hBitzIDLength = 4;
+                if(mSweptAddress.length() >= hBitzIDLength) {
+                    String lastFourChars = mSweptAddress.substring(mSweptAddress.length() - hBitzIDLength, mSweptAddress.length());
+                    HiddenBitsApiTask task = new HiddenBitsApiTask();
+                    task.execute(lastFourChars);
+                }
+                else {
+                    Log.d(TAG, "HiddenBits token error");
+                }
+            }
         }
         else {
-            mActivity.ShowOkMessageDialog(TAG, "Invalid HiddenBits code");
+            mActivity.showModalProgress(false);
+            mActivity.ShowFadingDialog(getString(R.string.import_wallet_private_key_invalid));
         }
     }
 
+    // Returns null if not a HiddenBits token
     public static String getHiddenBitsToken(String uriIn)
     {
         final String HBITS_SCHEME = "hbits";
@@ -524,78 +545,38 @@ public class ImportFragment extends Fragment
         }
     }
 
-    public class SweepTask extends AsyncTask<String, Void, String> {
-        final int hBitzIDLength = 4;
-        SweepTask() {
-            mActivity.showModalProgress(true);
-        }
-
+    public class HiddenBitsApiTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "Sweeping address");
+            Log.d(TAG, "Getting HiddenBits API response");
         }
 
         @Override
         protected String doInBackground(String... params) {
-            String ewif = getHiddenBitsToken(params[0]);
-            String address;
-            if(ewif != null) { // this is a hiddenbits key
-                address = mCoreAPI.SweepKey(mFromWallet.getUUID(), ewif);
-                // make a query with the last bytes of the address
-                if(address.length() >= hBitzIDLength) {
-                    String token = address.substring(address.length() - hBitzIDLength, address.length());
-                    AirbitzAPI api = AirbitzAPI.getApi();
-                    return api.getHiddenBitz(token);
-                }
-                else {
-                    Log.d(TAG, "failed token for hiddenbits");
-                    return null;
-                }
-            }
-            else { // this is a private key. Start the sweep. Navigation Activity deals with callback
-                address = mCoreAPI.SweepKey(mFromWallet.getUUID(), params[0]);
-                return null;
-            }
+            AirbitzAPI api = AirbitzAPI.getApi();
+            return api.getHiddenBits(params[0]);
         }
 
         @Override
-        protected void onPostExecute(final String result) {
-            Log.d(TAG, result);
-            mActivity.showModalProgress(false);
+        protected void onPostExecute(String result) {
             if(result == null) {
                 return;
             }
+            Log.d(TAG, "Got HiddenBits API response: " + result);
 
-            JSONObject jsonObject = null;
-            String token="", message="", zero_message="";
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(result);
                 mTweet = jsonObject.getString("tweet");
-                token = jsonObject.getString("token");
-                zero_message = jsonObject.getString("zero_message");
-                message = jsonObject.getString("message");
+                mToken = jsonObject.getString("token");
+                mZeroMessage = jsonObject.getString("zero_message");
+                mMessage = jsonObject.getString("message");
+
+                // Check to see if both paths are done
+                checkHiddenBitsAsyncData();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-//            if (!token.isEmpty() && !mTweet.isEmpty())
-//            {
-//                if (claimed)
-//                {
-//                    if (!zero_message.isEmpty())
-//                    {
-//                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zero_message);
-//                    }
-//                }
-//                else
-//                {
-//                    if (!message.isEmpty())
-//                    {
-//                        ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message);
-//                    }
-//                }
-//            }
         }
 
         @Override
@@ -604,43 +585,55 @@ public class ImportFragment extends Fragment
         }
     }
 
-    String mTxID;
     @Override
     public void OnWalletSweep(String txID, long amount) {
         Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
+        mActivity.showModalProgress(false);
+
+        mSweptID = txID;
+        mSweptAmount = amount;
+
+        String token = getHiddenBitsToken(mToEdittext.getText().toString());
+        if(token != null) { // hidden bitz
+            // Check to see if both paths are done
+            checkHiddenBitsAsyncData();
+            return;
+        }
+
+        // if a private address sweep
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
-        mTxID = txID;
-        if (amount > 0 && !mTxID.isEmpty()) {
-            ShowReceivedFundsMessage(getString(R.string.import_wallet_hidden_bits_received_title),
-                getString(R.string.import_wallet_hidden_bits_received_message));
-        } else {
+        if (mSweptAmount > 0 && !mSweptID.isEmpty()) {
+            mActivity.onSentFunds(mFromWallet.getUUID(), mSweptID);
+            mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_received_title),
+                    getString(R.string.import_wallet_hidden_bits_received_message));
+        }
+        else if (mSweptAmount == 0) {
             mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
                     getString(R.string.import_wallet_hidden_bits_error_message));
         }
     }
 
-    public void ShowReceivedFundsMessage(String title, String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                mActivity.onSentFunds(mFromWallet.getUUID(), mTxID);
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.string_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
+    // This is only called for HiddenBits
+    private void checkHiddenBitsAsyncData() {
+        // both async paths are finished if both of these are not empty
+        if (mSweptID != null && mTweet != null)
+        {
+            Log.d(TAG, "Both API and OnWalletSweep are finished");
+
+            mHandler.removeCallbacks(sweepNotFoundRunner);
+            mActivity.showModalProgress(false);
+
+            mActivity.onSentFunds(mFromWallet.getUUID(), mSweptID);
+
+            if (mSweptAmount == 0 && !mZeroMessage.isEmpty()) {
+                ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), mZeroMessage);
+            }
+            else if (!mMessage.isEmpty()) {
+                ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), mMessage);
+            }
+        }
     }
 
     public void ShowHiddenBitsTweet(String title, String reason) {
