@@ -98,8 +98,6 @@ public class ExportSavingOptionFragment extends Fragment {
     private ImageView mPrintImage;
     private HighlightOnPressButton mSDCardButton;
     private ImageView mSDCardImage;
-    private HighlightOnPressButton mEmailButton;
-    private ImageView mEmailImage;
     private HighlightOnPressButton mGoogleDriveButton;
     private ImageView mGoogleDriveImage;
     private HighlightOnPressButton mDropBoxButton;
@@ -181,8 +179,6 @@ public class ExportSavingOptionFragment extends Fragment {
         mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);
         mSDCardButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
         mSDCardImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_sd_card);
-        mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_email);
-        mEmailImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_email);
         mGoogleDriveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
         mGoogleDriveImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_google_drive);
         mDropBoxButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_dropbox);
@@ -241,27 +237,6 @@ public class ExportSavingOptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
 //TODO
-            }
-        });
-
-        mEmailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
-                String dataOrFile;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        dataOrFile = mCoreApi.getPrivateSeed(mWallet);
-                    } else {
-                        dataOrFile = null;
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
-                    }
-                } else {
-                    dataOrFile = getExportData(w, mExportType);
-                }
-                if(dataOrFile != null) {
-                    exportWithEmail(w, dataOrFile);
-                }
             }
         });
 
@@ -588,7 +563,6 @@ public class ExportSavingOptionFragment extends Fragment {
             mSDCardButton.setVisibility(View.GONE);
             mSDCardImage.setVisibility(View.GONE);
             mViewButton.setVisibility(View.VISIBLE);
-            mEmailButton.setVisibility(View.VISIBLE);
 
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
