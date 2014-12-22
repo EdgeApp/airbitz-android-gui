@@ -141,11 +141,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private boolean catSelected = false;
     private boolean mHasReminded = false;
     private Bundle bundle;
-    private int baseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int baseIncomePosition = 0;
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
     private int baseExchangePosition = 3;
-    private int originalBaseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int originalBaseIncomePosition = 0;
     private int originalBaseExpensePosition = 1;
     private int originalBaseTransferPosition = 2;
     private int originalBaseExchangePosition = 3;
@@ -573,7 +573,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_exchange))) {
                     currentType = getString(R.string.fragment_category_exchange);
                 }
-                //TODO move the strings around depending on negative/positive value
+
                 doEdit = true;
                 mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
                 doEdit = false;

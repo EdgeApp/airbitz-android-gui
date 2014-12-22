@@ -315,7 +315,7 @@ public class BluetoothListView extends ListView {
             if(characteristic != null) {
                 final int charaProp = characteristic.getProperties();
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                    // Write username to this characteristic - TODO
+                    // Write username to this characteristic
                     gatt.setCharacteristicNotification(characteristic, true);
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                     boolean success = characteristic.setValue("This is Sparta");

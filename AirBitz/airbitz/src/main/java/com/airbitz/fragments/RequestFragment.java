@@ -345,7 +345,6 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
                 satoshi = mCoreAPI.denominationToSatoshi(bitcoin);
                 mFiatField.setText(mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, false));
             } else {
-                //TODO ???
                 Log.d(TAG, "Too much bitcoin");
             }
         } else {

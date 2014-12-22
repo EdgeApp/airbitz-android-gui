@@ -88,8 +88,6 @@ public class WalletsFragment extends Fragment
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
     public static final String ARCHIVE_HEADER_STATE = "archiveClosed";
 
-    //TODO fill in the correct drawables for the icons. See CoreAPI.mFauxCurrencies for the order. Right now all are filled in USD.
-    //for future ease of compatibility, the drawable name should conform to the acronym name in the FauxCurrencies, ie USD, CAD, etc as the drawable should
     public final String TAG = getClass().getSimpleName();
     //This animation must run after the keyboard is down else a layout redraw occurs causing a visual glitch
     Runnable mDelayedAnimation = new Runnable() {

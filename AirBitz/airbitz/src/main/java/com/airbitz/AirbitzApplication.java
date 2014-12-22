@@ -83,9 +83,6 @@ public class AirbitzApplication extends Application {
             editor.putString(LOGIN_NAME, uname);
             editor.apply();
         }
-
-        //TODO setup auto logout based on Settings. App being killed automatically forgets login,
-        // like on reboot or force close.
     }
 
     public static void Logout() {

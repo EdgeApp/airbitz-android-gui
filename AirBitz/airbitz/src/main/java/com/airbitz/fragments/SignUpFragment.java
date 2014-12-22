@@ -335,7 +335,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!passed) {
                 bNewPasswordFieldsAreValid = false;
             }
-            //TODO variable length list of items instead of fixed # of items
+
             int resource = passed ? R.drawable.green_check : R.drawable.red_x;
             switch (i) {
                 case 0:

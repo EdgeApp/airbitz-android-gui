@@ -631,7 +631,7 @@ public class CoreAPI {
 //            arrayCurrencies = new String[mCount];
 //
 //            long base = core.longp_value(lp);
-//            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
+//            for (int i = 0; i < 1; i++) //mCount; i++) //FIXME error when i > 0
 //            {
 //                long start = core.longp_value(new pLong(base + i * 4));
 //                tABC_Currency txd = new Currency(start);
