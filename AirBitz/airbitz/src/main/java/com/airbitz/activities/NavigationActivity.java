@@ -101,6 +101,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.models.AirbitzNotification;
+import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 
@@ -788,17 +789,21 @@ public class NavigationActivity extends Activity
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff == 0) {
                 // sender paid exact amount
+                AudioPlayer.play(this, R.raw.bitcoin_received);
                 handleReceiveFromQR();
             } else if (diff < 0) {
                 // sender paid too much
+                AudioPlayer.play(this, R.raw.bitcoin_received);
                 handleReceiveFromQR();
             } else {
                 // Request the remainder of the funds
                 f.updateWithAmount(diff);
+                AudioPlayer.play(this, R.raw.bitcoin_received_partial);
             }
         } else {
             Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
             if (tx.getAmountSatoshi() > 0) {
+                AudioPlayer.play(this, R.raw.bitcoin_received);
                 showIncomingBitcoinDialog();
             }
         }

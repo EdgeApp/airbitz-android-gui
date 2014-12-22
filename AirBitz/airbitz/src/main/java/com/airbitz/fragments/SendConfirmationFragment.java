@@ -45,11 +45,8 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +63,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -934,6 +932,7 @@ public class SendConfirmationFragment extends Fragment {
             } else {
                 if (mActivity != null) {
                     saveInvalidEntryCount(0);
+                    AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
                     mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
                 }
             }
