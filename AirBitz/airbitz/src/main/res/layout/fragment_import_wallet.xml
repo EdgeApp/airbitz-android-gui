@@ -155,30 +155,37 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
-                    android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_flash_off" />
 
-                <ImageButton
-                    android:id="@+id/button_gallery"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="20dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/gallery_button" />
-
-                <ImageView
-                    android:id="@+id/fragment_import_nfc_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="30dp"
-                    android:layout_above="@id/button_gallery"
-                    android:src="@drawable/n_mark"
-                    android:visibility="visible" />
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/fragment_import_nfc_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/nfc_button"
+                        android:scaleType="centerInside"
+                        android:layout_marginBottom="20dp"
+                        android:background="@android:color/transparent"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/button_gallery"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/gallery_button" />
+
+                    </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"

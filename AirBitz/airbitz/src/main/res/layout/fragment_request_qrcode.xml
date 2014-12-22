@@ -64,7 +64,7 @@
                     android:layout_height="30dp"
                     android:layout_margin="4dp"
                     android:layout_toRightOf="@id/fragment_request_qrcode_ble_image"
-                    android:background="@drawable/n_mark"
+                    android:background="@drawable/nfc_button"
                     android:visibility="gone" />
 
                 <LinearLayout
