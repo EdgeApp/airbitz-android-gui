@@ -14,7 +14,7 @@
 
 
     <LinearLayout
-        android:id="@+id/layout_data"
+        android:id="@+id/fragment_import_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_title_header"
@@ -210,29 +210,24 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/listview_container"
+        android:id="@+id/fragment_import_busy_layout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/layout_data"
-        android:layout_marginTop="-38.6dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_header"
         android:background="@android:color/transparent"
         android:visibility="gone">
 
-        <ListView
-            android:id="@+id/listing_listview"
+        <TextView
+            android:id="@+id/fragment_import_busy_text"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_below="@+id/fragment_send_listview_triangle"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/category_popup"
-            android:padding="12.6dp" />
-
-        <View
-            android:id="@+id/fragment_send_listview_triangle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-15dp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
             android:background="@drawable/blue_triangle" />
 
     </RelativeLayout>

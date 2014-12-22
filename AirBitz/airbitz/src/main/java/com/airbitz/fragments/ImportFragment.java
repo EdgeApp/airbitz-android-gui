@@ -32,10 +32,8 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -49,7 +47,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +59,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -129,6 +128,9 @@ public class ImportFragment extends Fragment
     private Wallet mFromWallet;
     private Handler mHandler = new Handler();
     private NavigationActivity mActivity;
+    private LinearLayout mImportLayout;
+    private RelativeLayout mBusyLayout;
+    private TextView mBusyText;
 
     private String mTweet, mToken, mMessage, mZeroMessage;
     String mSweptID;
@@ -146,7 +148,7 @@ public class ImportFragment extends Fragment
     Runnable sweepNotFoundRunner = new Runnable() {
         @Override
         public void run() {
-            mActivity.showModalProgress(false);
+            showBusyLayout(false);
             if(isVisible()) {
                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
             }
@@ -171,6 +173,11 @@ public class ImportFragment extends Fragment
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        mImportLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout);
+        mBusyLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_busy_layout);
+        mBusyText = (TextView) mView.findViewById(R.id.fragment_import_busy_text);
+        mBusyText.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
 
@@ -284,6 +291,19 @@ public class ImportFragment extends Fragment
 
 
         return mView;
+    }
+
+    private void showBusyLayout(boolean on) {
+        if(on) {
+            mImportLayout.setVisibility(View.GONE);
+            mBusyLayout.setVisibility(View.VISIBLE);
+            stopCamera();
+        }
+        else {
+            mImportLayout.setVisibility(View.VISIBLE);
+            mBusyLayout.setVisibility(View.GONE);
+            startCamera();
+        }
     }
 
     private void scanQRCodes() {
@@ -412,9 +432,9 @@ public class ImportFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
+        showBusyLayout(false);
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
-        mActivity.showModalProgress(false);
         mCoreAPI.setOnWalletSweepListener(null);
     }
 
@@ -532,10 +552,12 @@ public class ImportFragment extends Fragment
     private void attemptSubmit() {
         String uriString = mToEdittext.getText().toString();
         String token = getHiddenBitsToken(uriString);
+        String key = getKeyFromURI(uriString);
 
         String entry = token != null ? token : uriString;
 
-        mActivity.showModalProgress(true);
+        mBusyText.setText(String.format(getString(R.string.import_wallet_busy_text), key));
+        showBusyLayout(true);
         mSweptAddress = mCoreAPI.SweepKey(mFromWallet.getUUID(), entry);
 
         if(mSweptAddress != null && !mSweptAddress.isEmpty()) {
@@ -554,7 +576,7 @@ public class ImportFragment extends Fragment
             }
         }
         else {
-            mActivity.showModalProgress(false);
+            showBusyLayout(false);
             mActivity.ShowFadingDialog(getString(R.string.import_wallet_private_key_invalid));
         }
     }
@@ -577,6 +599,18 @@ public class ImportFragment extends Fragment
             Log.d("ImportFragment", "HiddenBits failed for: "+uriIn);
             return null;
         }
+    }
+
+    // Returns null if not a HiddenBits token
+    public static String getKeyFromURI(String uriIn)
+    {
+        if(uriIn == null)
+            return null;
+
+        Uri uri = Uri.parse(uriIn);
+        String scheme = uri.getScheme();
+
+        return uri.toString().substring(scheme.length()+3);
     }
 
     public class HiddenBitsApiTask extends AsyncTask<String, Void, String> {
@@ -615,7 +649,7 @@ public class ImportFragment extends Fragment
 
         @Override
         protected void onCancelled() {
-            mActivity.showModalProgress(false);
+            showBusyLayout(false);
         }
     }
 
@@ -623,7 +657,7 @@ public class ImportFragment extends Fragment
     public void OnWalletSweep(String txID, long amount) {
         Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
-        mActivity.showModalProgress(false);
+        showBusyLayout(false);
 
         mSweptID = txID;
         mSweptAmount = amount;
@@ -651,7 +685,7 @@ public class ImportFragment extends Fragment
             Log.d(TAG, "Both API and OnWalletSweep are finished");
 
             mHandler.removeCallbacks(sweepNotFoundRunner);
-            mActivity.showModalProgress(false);
+            showBusyLayout(false);
 
             mActivity.showHiddenBitsTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount,
                     mMessage, mZeroMessage, mTweet);
