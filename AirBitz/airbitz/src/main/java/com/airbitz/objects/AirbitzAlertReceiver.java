@@ -272,8 +272,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
         @Override
         protected String doInBackground(Void... params) {
-            AndroidLocationManager lm = AndroidLocationManager.getLocationManager(mContext);
-            Location currentLoc = lm.getLastLocation();
+            CurrentLocationManager clm = CurrentLocationManager.getLocationManager(mContext);
+            Location currentLoc = clm.getLocation();
             if(currentLoc == null)
                 return null;
 
