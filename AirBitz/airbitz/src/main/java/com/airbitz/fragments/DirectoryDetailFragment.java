@@ -62,7 +62,7 @@ import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;

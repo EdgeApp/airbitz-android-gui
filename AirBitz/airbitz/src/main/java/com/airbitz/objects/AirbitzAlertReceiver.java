@@ -41,7 +41,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -52,7 +51,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
-import com.airbitz.models.AndroidLocationManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -38,7 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 
 import java.util.List;
 

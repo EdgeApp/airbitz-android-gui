@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.models;
+package com.airbitz.objects;
 
 import android.content.Context;
 import android.location.Location;

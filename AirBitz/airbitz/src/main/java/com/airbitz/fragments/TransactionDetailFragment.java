@@ -85,7 +85,7 @@ import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;

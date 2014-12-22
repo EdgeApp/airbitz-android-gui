@@ -75,7 +75,7 @@ import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.CacheUtil;
