@@ -315,7 +315,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
     private String formatUTC(Date date) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(tz);
         return df.format(date);
     }
