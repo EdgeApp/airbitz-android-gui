@@ -77,7 +77,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
     public static final int ALERT_NEW_BUSINESS_CODE = 2;
     public static final String ALERT_NEW_BUSINESS_TYPE = "com.airbitz.airbitalert.NewBusinessType";
-    final private static int REPEAT_NEW_BUSINESS_MILLIS = 1000 * 60 * 60 * 1; //24 * 7; // 1 week intervals
+    final private static int REPEAT_NEW_BUSINESS_MILLIS = 1000 * 60 * 60 * 24 * 7; // 1 week intervals
     public static final String NEW_BUSINESS_LAST_TIME = "com.airbit.airbitzalert.NewBusinessTime";
 
     NotificationTask mNotificationTask;
