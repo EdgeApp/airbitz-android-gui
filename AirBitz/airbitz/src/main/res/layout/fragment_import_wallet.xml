@@ -114,7 +114,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:textColor="@android:color/white"
-                        android:textColorHint="@android:color/white"
+                        android:textColorHint="@color/text_hint"
                         android:textSize="15sp" />
                 </LinearLayout>
 
