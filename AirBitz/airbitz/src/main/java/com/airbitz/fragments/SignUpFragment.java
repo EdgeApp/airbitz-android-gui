@@ -39,6 +39,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -47,6 +48,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -95,6 +97,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private boolean mGoodPassword = false;
     private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
+    private View mWidgetContainer;
     private ImageView mSwitchImage1;
     private ImageView mSwitchImage2;
     private ImageView mSwitchImage3;
@@ -105,6 +108,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
+
     /**
      * Represents an asynchronous account creation task
      */
@@ -127,6 +132,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         }
 
         mActivity = (NavigationActivity) getActivity();
+
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
@@ -169,7 +176,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
-
+        mWidgetContainer = mView.findViewById(R.id.fragment_signup_widget_container);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,21 +248,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    LayoutTransition lt = new LayoutTransition();
-                    Animator animator = ObjectAnimator.ofFloat(null, "translationY", -(getResources().getDimension(R.dimen.activity_signup_popup_height)), 0);
-                    lt.setAnimator(LayoutTransition.APPEARING, animator);
-                    lt.setStartDelay(LayoutTransition.APPEARING, 0);
-                    lt.setDuration(300);
-                    mParentLayout.setLayoutTransition(lt);
-                    mPopupContainer.setVisibility(View.VISIBLE);
+                    mHandler.post(animatePopupDown);
                 } else {
-                    LayoutTransition lt = new LayoutTransition();
-                    Animator animator = ObjectAnimator.ofFloat(null, "translationY", 0, -(getResources().getDimension(R.dimen.activity_signup_popup_height)));
-                    lt.setAnimator(LayoutTransition.DISAPPEARING, animator);
-                    lt.setStartDelay(LayoutTransition.DISAPPEARING, 0);
-                    lt.setDuration(300);
-                    mParentLayout.setLayoutTransition(lt);
-                    mPopupContainer.setVisibility(View.GONE);
+                    mHandler.post(animatePopupUp);
                 }
             }
         });
@@ -271,6 +266,59 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         return mView;
     }
+
+    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            mPopupContainer.setVisibility(View.GONE);
+        }
+
+        @Override public void onAnimationCancel(Animator animator) { }
+        @Override public void onAnimationStart(Animator animator) { }
+        @Override public void onAnimationRepeat(Animator animator) { }
+    };
+
+    Runnable animatePopupDown = new Runnable() {
+        @Override
+        public void run() {
+            if(mPopupContainer != null && mWidgetContainer != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
+                        -getResources().getDimension(R.dimen.activity_signup_popup_height), 0);
+                ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
+                        0, getResources().getDimension(R.dimen.activity_signup_popup_height));
+                if(animator != null) {
+                    animator.setDuration(300);
+                    animator.start();
+                }
+                if(animatorWidget != null) {
+                    animatorWidget.setDuration(300);
+                    animatorWidget.start();
+                }
+                mPopupContainer.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    Runnable animatePopupUp = new Runnable() {
+        @Override
+        public void run() {
+            if(mPopupContainer != null && mWidgetContainer != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
+                        0, -getResources().getDimension(R.dimen.activity_signup_popup_height));
+                ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
+                        getResources().getDimension(R.dimen.activity_signup_popup_height), 0);
+                if(animator != null) {
+                    animator.setDuration(300);
+                    animator.addListener(endListener);
+                    animator.start();
+                }
+                if(animatorWidget != null) {
+                    animatorWidget.setDuration(300);
+                    animatorWidget.start();
+                }
+            }
+        }
+    };
 
     private void setupUI(Bundle bundle) {
         if (bundle == null)
@@ -301,7 +349,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mNextButton.setText(getResources().getString(R.string.string_done));
             // hide mUsername
             mUserNameRedRingCover.setVisibility(View.GONE);
-            mUserNameEditText.setVisibility(View.INVISIBLE);
+            mUserNameEditText.setVisibility(View.GONE);
             mHintTextView.setVisibility(View.INVISIBLE);
         } else if (mMode == CHANGE_PIN) {
             // hide both mPassword fields
