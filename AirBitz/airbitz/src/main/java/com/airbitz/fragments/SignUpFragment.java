@@ -80,10 +80,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public static final int MIN_PIN_LENGTH = 4;
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;
-    private int mMode = SIGNUP;
     public static int CHANGE_PASSWORD = 1;
     public static int CHANGE_PASSWORD_VIA_QUESTIONS = 2;
     public static int CHANGE_PIN = 3;
+    private int mMode = SIGNUP;
     private final String TAG = getClass().getSimpleName();
     private RelativeLayout mParentLayout;
     private EditText mUserNameEditText;
@@ -290,7 +290,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     animator.setDuration(300);
                     animator.start();
                 }
-                if(animatorWidget != null) {
+                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     animatorWidget.setDuration(300);
                     animatorWidget.start();
                 }
@@ -312,7 +312,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                     animator.addListener(endListener);
                     animator.start();
                 }
-                if(animatorWidget != null) {
+                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     animatorWidget.setDuration(300);
                     animatorWidget.start();
                 }
