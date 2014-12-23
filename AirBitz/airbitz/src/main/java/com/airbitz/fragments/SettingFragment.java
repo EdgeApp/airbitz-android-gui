@@ -471,6 +471,9 @@ public class SettingFragment extends Fragment {
 
     private void saveCurrentSettings() {
         mCoreSettings = mCoreAPI.newCoreSettings();
+        if(mCoreSettings == null) {
+            return;
+        }
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {

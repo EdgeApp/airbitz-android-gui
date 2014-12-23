@@ -94,28 +94,27 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:layout_marginRight="8dp"
-                        android:text="Private Key:"
+                        android:text="@string/import_wallet_private_key_title"
                         android:textColor="@android:color/white"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/edittext_to"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_edittext"
+                        android:fontFamily="sans-serif"
                         android:gravity="center"
-                        android:hint="Enter bitcoin address (optional)"
+                        android:hint="@string/import_wallet_private_key_hint"
                         android:imeOptions="actionDone"
-                        android:inputType="textNoSuggestions"
+                        android:inputType="textAutoComplete|textNoSuggestions"
                         android:paddingLeft="6.3dp"
                         android:singleLine="true"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
                         android:textColor="@android:color/white"
-                        android:textColorHint="@android:color/white"
-                        android:textSize="15sp" />
+                        android:textColorHint="@color/text_hint"
+                        android:textCursorDrawable="@drawable/bold_cursor_white"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
             </RelativeLayout>
