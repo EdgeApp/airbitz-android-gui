@@ -332,6 +332,8 @@
     <string name="import_wallet_hidden_bits_error_message">Failed to import because there is 0 bitcoin remaining at this address</string>
     <string name="import_wallet_private_key_invalid">Invalid private key</string>
     <string name="import_wallet_busy_text">Importing funds from %1$s into wallet…</string>
+    <string name="import_wallet_private_key_title">Private Key:</string>
+    <string name="import_wallet_private_key_hint">Enter bitcoin address (optional)</string>
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
