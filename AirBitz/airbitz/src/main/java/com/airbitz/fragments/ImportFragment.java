@@ -549,11 +549,10 @@ public class ImportFragment extends Fragment
     private void attemptSubmit() {
         String uriString = mToEdittext.getText().toString();
         String token = getHiddenBitsToken(uriString);
-        String key = getKeyFromURI(uriString);
 
         String entry = token != null ? token : uriString;
 
-        mBusyText.setText(String.format(getString(R.string.import_wallet_busy_text), key));
+        mBusyText.setText(String.format(getString(R.string.import_wallet_busy_text), entry));
         showBusyLayout(true);
         mSweptAddress = mCoreAPI.SweepKey(mFromWallet.getUUID(), entry);
 
@@ -596,18 +595,6 @@ public class ImportFragment extends Fragment
             Log.d("ImportFragment", "HiddenBits failed for: "+uriIn);
             return null;
         }
-    }
-
-    // Returns null if not a HiddenBits token
-    public static String getKeyFromURI(String uriIn)
-    {
-        if(uriIn == null)
-            return null;
-
-        Uri uri = Uri.parse(uriIn);
-        String scheme = uri.getScheme();
-
-        return uri.toString().substring(scheme.length()+3);
     }
 
     public class HiddenBitsApiTask extends AsyncTask<String, Void, String> {
