@@ -253,6 +253,7 @@
     <string name="send_from_title">From:</string>
     <string name="send_to_title">To:</string>
     <string name="send_scan_text">Scan QR Code or use photo</string>
+    <string name="send_scan_text_nfc">Scan QR Code or tap NFC device</string>
     <string name="fragment_send_incorrect_pin_message">You must enter the correct PIN in order to proceed</string>
     <string name="fragment_send_incorrect_pin_title">Invalid PIN</string>
     <string name="fragment_send_incorrect_password_message">You must enter the correct Password in order to proceed</string>

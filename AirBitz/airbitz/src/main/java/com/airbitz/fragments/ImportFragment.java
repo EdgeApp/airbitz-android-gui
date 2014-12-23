@@ -112,7 +112,6 @@ public class ImportFragment extends Fragment
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
     private ImageButton mFlashButton;
-    private ImageView mNfcImage;
     private NfcAdapter mNfcAdapter;
     private Camera mCamera;
     private CameraSurfacePreview mPreview;
@@ -198,8 +197,6 @@ public class ImportFragment extends Fragment
                 getActivity().onBackPressed();
             }
         });
-
-        mNfcImage = (ImageView) mView.findViewById(R.id.fragment_import_nfc_image);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -335,10 +332,10 @@ public class ImportFragment extends Fragment
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-            mNfcImage.setVisibility(View.VISIBLE);
+            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
         }
         else {
-            mNfcImage.setVisibility(View.GONE);
+            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
     }
 

@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -42,6 +43,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.nfc.tech.NfcA;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -606,6 +610,16 @@ public class SendFragment extends Fragment implements
 
         if (walletSpinner != null && walletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
+        }
+
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
+        NfcAdapter mNfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
+        }
+        else {
+            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
     }
 
