@@ -173,6 +173,8 @@ public class ImportFragment extends Fragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
+
         mImportLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout);
         mBusyLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_busy_layout);
         mBusyText = (TextView) mView.findViewById(R.id.fragment_import_busy_text);
@@ -306,7 +308,6 @@ public class ImportFragment extends Fragment
     private void scanQRCodes() {
         mSubmitButton.setVisibility(View.INVISIBLE);
         mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.VISIBLE);
-        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
         cameraIndex = BACK_CAMERA_INDEX;
 
         try {
