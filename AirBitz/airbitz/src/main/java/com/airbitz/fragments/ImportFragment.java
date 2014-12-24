@@ -448,7 +448,7 @@ public class ImportFragment extends Fragment
             return;
 
         String result = AttemptDecodeBytes(bytes, camera);
-        if (result != null && getHiddenBitsToken(result) != null) {
+        if (result != null) {
             Log.d(TAG, "HiddenBits found");
             stopCamera();
             mToEdittext.setText(result);
