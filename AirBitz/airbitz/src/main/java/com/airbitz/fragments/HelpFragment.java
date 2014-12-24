@@ -65,7 +65,7 @@ public class HelpFragment extends Fragment {
     public static final int SETTINGS = R.raw.info_settings;
     public static final int SPEND_LIMITS = R.raw.info_spend_limits;
     public static final int TRANSACTION_DETAILS = R.raw.info_transaction_details;
-    public static final int TRANSACTIONS = R.raw.info_transactions;
+    public static final int TRANSACTIONS = R.raw.info_wallet;
     public static final int WALLETS = R.raw.info_wallets;
     private final String TAG = getClass().getSimpleName();
     Spanned mHtml = null;
