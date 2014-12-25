@@ -138,6 +138,8 @@ public class AndroidLocationManager {
             return;
         }
         mCurrentLocation = location;
+        Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
+                + mCurrentLocation.getLongitude());
         if (mObservers != null) {
             for (CurrentLocationManager.OnCurrentLocationChange l : mObservers) {
                 l.OnCurrentLocationChange(location);

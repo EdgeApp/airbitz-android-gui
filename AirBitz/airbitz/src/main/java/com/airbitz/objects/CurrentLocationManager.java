@@ -58,7 +58,8 @@ public class CurrentLocationManager {
     }
 
     public static boolean supportsPlayServices(Context context) {
-        return ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+//        return ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+        return false;
     }
 
     public static CurrentLocationManager getLocationManager(Context context) {

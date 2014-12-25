@@ -603,7 +603,7 @@ public class BusinessDirectoryFragment extends Fragment implements
     @Override
     public void OnCurrentLocationChange(Location location) {
         if (location != null && location.getAccuracy() < LOCATION_ACCURACY_METERS) {
-            mCurrentLocation = mLocationManager.getLocation();
+            mCurrentLocation = location;
             String latLon = "";
             if (location != null) {
                 latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
@@ -665,17 +665,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
         checkLocationManager();
         mLocationManager.addLocationChangeListener(this);
-        if (mVenuesLoaded.isEmpty()) {
+        if (!locationEnabled) {
             // if no venues, then request location
-            if (locationEnabled) {
-                mVenueHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        queryWithoutLocation();
-                    }
-                }, LOCATION_TIMEOUT);
-            } else {
-                queryWithoutLocation();
-            }
+            queryWithoutLocation();
         } else {
             // copy the list
             List<BusinessSearchResult> venues =
@@ -1041,7 +1033,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            if (mLatLng != null) {
+            if (!mLatLng.isEmpty()) {
                 return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
             } else if (params.length > 0 && !params[0].equalsIgnoreCase("null")) {
                 return mApi.getRequest(params[0]);
