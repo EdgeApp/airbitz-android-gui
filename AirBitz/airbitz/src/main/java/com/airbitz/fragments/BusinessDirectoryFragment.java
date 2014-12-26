@@ -1033,7 +1033,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            if (!mLatLng.isEmpty()) {
+            if (mLatLng != null && !mLatLng.isEmpty()) {
                 return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
             } else if (params.length > 0 && !params[0].equalsIgnoreCase("null")) {
                 return mApi.getRequest(params[0]);
