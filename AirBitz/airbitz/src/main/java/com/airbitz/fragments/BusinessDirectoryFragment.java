@@ -158,6 +158,14 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     };
 
+    Runnable mLocationTimeout = new Runnable() {
+        @Override
+        public void run() {
+            hideLoadingIndicator();
+            queryWithoutLocation();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -669,11 +677,12 @@ public class BusinessDirectoryFragment extends Fragment implements
             // if no venues, then request location
             queryWithoutLocation();
         } else {
-            // copy the list
+            // copy the list by default
             List<BusinessSearchResult> venues =
                     new ArrayList<BusinessSearchResult>(mVenuesLoaded);
             mVenuesLoaded.clear();
             setVenueListView(venues);
+            mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
         }
         // If we don't have categories, fetch them
         if (mCategories == null || mCategories.getCountValue() == 0) {
