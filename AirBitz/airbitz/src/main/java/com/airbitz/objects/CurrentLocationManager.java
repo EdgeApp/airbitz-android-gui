@@ -32,8 +32,10 @@
 package com.airbitz.objects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,6 +57,11 @@ public class CurrentLocationManager {
         } else {
             mAndroid = new AndroidLocationManager(mContext);
         }
+    }
+
+    public static boolean locationEnabled(Context context) {
+        String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        return !(locationProviders == null || locationProviders.equals(""));
     }
 
     public static boolean supportsPlayServices(Context context) {

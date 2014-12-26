@@ -44,8 +44,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AndroidLocationManager {
 
     public static final String TAG = AndroidLocationManager.class.getSimpleName();
-    public static final long MIN_TIME = 1000 * 60 * 5;
-    public static final long MIN_DIST = 200;
+    public static final long MIN_TIME_MILLIS = 1000 * 60 * 5;
+    public static final long MIN_DIST_METERS = 100;
+    public static final long NETWORK_MIN_DIST_METERS = 5000;
     static final int TWO_MINUTES = 1000 * 60 * 2;
     static AndroidLocationManager mInstance = null;
     private Context mContext;
@@ -108,7 +109,7 @@ public class AndroidLocationManager {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    MIN_TIME, MIN_DIST,
+                    MIN_TIME_MILLIS, MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "", e);
@@ -116,7 +117,7 @@ public class AndroidLocationManager {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    MIN_TIME, MIN_DIST,
+                    MIN_TIME_MILLIS, NETWORK_MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "", e);

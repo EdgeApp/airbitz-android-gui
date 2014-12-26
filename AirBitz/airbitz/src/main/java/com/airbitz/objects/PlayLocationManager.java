@@ -115,9 +115,9 @@ public class PlayLocationManager implements
         Log.d(TAG, "Connected.");
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME * 2);
-        mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME);
-//        mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST);
+        mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME_MILLIS * 2);
+        mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME_MILLIS);
+        mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         locationClient.requestLocationUpdates(mLocationRequest, this);
         mCurrentLocation = locationClient.getLastLocation();
         if (mCurrentLocation != null) {
