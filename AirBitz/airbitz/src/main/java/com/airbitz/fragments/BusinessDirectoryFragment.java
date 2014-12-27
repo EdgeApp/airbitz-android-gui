@@ -610,6 +610,7 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
+        mHandler.removeCallbacks(mLocationTimeout);
         if (location != null && location.getAccuracy() < LOCATION_ACCURACY_METERS) {
             mCurrentLocation = location;
             String latLon = "";
