@@ -32,11 +32,6 @@
         android:layout_below="@id/fragment_business_directory_layout_search"
         android:foreground="@drawable/actionbar_shadow">
 
-        <FrameLayout
-            android:id="@+id/layout_main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <ListView
                 android:id="@+id/listview_search"
                 android:layout_width="fill_parent"
@@ -64,8 +59,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
-
-        </FrameLayout>
 
     </FrameLayout>
 
@@ -95,7 +88,7 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="Near You"
+            android:text="@string/fragment_business_near_you"
             android:textColor="#ff384954"
             android:textSize="@dimen/text_size_small" />
 

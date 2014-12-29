@@ -116,6 +116,8 @@ public class BusinessDirectoryFragment extends Fragment implements
     private EditText mLocationField;
     private ListView mSearchListView;
     private LinearLayout mNearYouLayout;
+    private View mFragHeader;
+    private View mFragSearch;
     private ViewGroup mBusinessLayout;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -226,8 +228,8 @@ public class BusinessDirectoryFragment extends Fragment implements
             }
         });
 
-        final View fragHeader = view.findViewById(R.id.fragment_business_directory_layout_header);
-        final View fragSearch = view.findViewById(R.id.fragment_business_directory_layout_search);
+        mFragHeader = view.findViewById(R.id.fragment_business_directory_layout_header);
+        mFragSearch = view.findViewById(R.id.fragment_business_directory_layout_search);
 
         mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -245,14 +247,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         }
                     }
                 }
-
-                View first = mVenueListView.getChildAt(1); // first item not the header
-                if(first != null && firstVisibleItem==0) {
-                    mNearYouLayout.setY(first.getY() + fragHeader.getMeasuredHeight() + fragSearch.getMeasuredHeight());
-                }
-                else if(firstVisibleItem > 0) {
-                    mNearYouLayout.setY(mVenueListView.getY() + fragHeader.getMeasuredHeight() + fragSearch.getMeasuredHeight());
-                }
+                updateNearYouSticky();
             }
         });
 
@@ -599,6 +594,17 @@ public class BusinessDirectoryFragment extends Fragment implements
         return view;
     }
 
+    private void updateNearYouSticky() {
+        int firstVisibleItem = mVenueListView.getFirstVisiblePosition();
+        View first = mVenueListView.getChildAt(1); // first item not the header
+        if(first != null && firstVisibleItem==0) {
+            mNearYouLayout.setY(first.getY() + mFragHeader.getMeasuredHeight() + mFragSearch.getMeasuredHeight());
+        }
+        else if(firstVisibleItem > 0) {
+            mNearYouLayout.setY(mVenueListView.getY() + mFragHeader.getMeasuredHeight() + mFragSearch.getMeasuredHeight());
+        }
+    }
+
 
     public void queryWithoutLocation() {
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
@@ -695,6 +701,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 e.printStackTrace();
             }
         }
+        updateNearYouSticky();
         super.onResume();
     }
 
