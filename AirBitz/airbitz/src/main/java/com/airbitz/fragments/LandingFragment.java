@@ -338,7 +338,12 @@ public class LandingFragment extends Fragment implements
         protected tABC_CC doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPin = (String) params[1];
-            return mCoreAPI.PinLogin(mUsername, mPin);
+            if(mUsername == null || mPin == null) {
+                return tABC_CC.ABC_CC_Error;
+            }
+            else {
+                return mCoreAPI.PinLogin(mUsername, mPin);
+            }
         }
 
         @Override
