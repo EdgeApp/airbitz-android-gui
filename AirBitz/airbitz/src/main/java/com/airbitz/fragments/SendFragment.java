@@ -207,8 +207,7 @@ public class SendFragment extends Fragment implements
 
         dummyFocus = mView.findViewById(R.id.dummy_focus);
 
-
-        mFromTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
