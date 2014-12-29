@@ -974,28 +974,26 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String baseUrl;
             if (mCoreAPI.isTestNet()) {
-                baseUrl = "https://blockexplorer.com/testnet/";
+                baseUrl = "https://www.biteasy.com/testnet/";
             } else { // LIVE
-                baseUrl = "https://blockchain.info/";
+                baseUrl = "https://www.biteasy.com/blockchain/";
             }
+            final String finalBaseUrl = baseUrl;
 
-            int start = 0;
-            int end = 0;
+            int start;
+            int end;
             for (CoreAPI.TxOutput output : mTransaction.getOutputs()) {
                 start = 0;
-                end = 0;
                 SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
-                final String url = baseUrl + "/address/" + output.getAddress();
+                final String url = finalBaseUrl + "addresses/" + output.getAddress();
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        if(url!=null && isAdded()) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
                             i.setData(Uri.parse(url));
                             mActivity.startActivity(i);
-                        }
                     }
                 };
                 address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1028,12 +1026,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             start = s.length();
             s.append(mTransaction.getmMalleableID());
             end = s.length();
-            final String finalBaseUrl = baseUrl;
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(finalBaseUrl + "tx/" + mTransaction.getmMalleableID()));
+                    i.setData(Uri.parse(finalBaseUrl + "transactions/" + mTransaction.getmMalleableID()));
                     mActivity.startActivity(i);
                 }
             };
