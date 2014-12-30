@@ -18,7 +18,7 @@ if [[ ! -n $(which swig) ]]; then
     exit 1
 fi
 
-make abc.build-android-arm 
+make abc.clean abc.build-android-arm 
 
 mkdir -p $WALLET_MAIN/jniLibs/armeabi/
 mkdir -p $WALLET_MAIN/jni/
