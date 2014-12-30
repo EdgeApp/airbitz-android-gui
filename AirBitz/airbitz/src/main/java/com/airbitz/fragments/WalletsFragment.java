@@ -83,6 +83,7 @@ public class WalletsFragment extends Fragment
         implements DynamicListView.OnListReordered,
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated,
+        WalletAdapter.OnHeaderButtonPress,
         NavigationActivity.OnBackPress {
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
@@ -103,8 +104,10 @@ public class WalletsFragment extends Fragment
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
     private Button mButtonMover;
-    private TextView walletsHeader;
-    private RelativeLayout archiveHeader;
+    private View walletsHeader;
+    private ImageView walletsHeaderImage;
+    private ImageView archiveMovingHeaderImage;
+    private View archiveHeader;
     private LinearLayout mAddWalletLayout;
     private EditText mAddWalletNameEditText;
     private TextView mAddWalletOnlineTextView;
@@ -212,6 +215,7 @@ public class WalletsFragment extends Fragment
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
 
         mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
+        mLatestWalletAdapter.setHeaderButtonListener(this);
 
         mBalanceLabel = (TextView) mView.findViewById(R.id.fragment_wallets_balance_textview);
 
@@ -239,15 +243,34 @@ public class WalletsFragment extends Fragment
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
-        walletsHeader = (TextView) mView.findViewById(R.id.fragment_wallets_wallets_header);
-        walletsHeader.setOnClickListener(new View.OnClickListener() {
+        walletsHeader = mView.findViewById(R.id.fragment_wallets_wallets_header);
+        walletsHeaderImage = (ImageView) mView.findViewById(R.id.item_listview_wallets_header_image);
+        walletsHeaderImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showAddWalletLayout();
             }
         });
 
-        archiveHeader = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_archive_header);
+        archiveHeader = mView.findViewById(R.id.fragment_wallets_archive_header);
+        archiveHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mArchiveClosed = !mArchiveClosed;
+                updateWalletList(mArchiveClosed);
+                mLatestWalletAdapter.notifyDataSetChanged();
+            }
+        });
+
+        archiveMovingHeaderImage = (ImageView) mView.findViewById(R.id.item_listview_wallets_archive_header_image);
+        archiveMovingHeaderImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mArchiveClosed = !mArchiveClosed;
+                updateWalletList(mArchiveClosed);
+                mLatestWalletAdapter.notifyDataSetChanged();
+            }
+        });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,15 +370,6 @@ public class WalletsFragment extends Fragment
         mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
-        archiveHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mArchiveClosed = !mArchiveClosed;
-                updateWalletList(mArchiveClosed);
-                mLatestWalletAdapter.notifyDataSetChanged();
-            }
-        });
-
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -365,9 +379,6 @@ public class WalletsFragment extends Fragment
                     mArchiveClosed = !mArchiveClosed;
                     updateWalletList(mArchiveClosed);
                     mLatestWalletAdapter.notifyDataSetChanged();
-                }
-                else if (wallet.isHeader()) {
-                    showAddWalletLayout();
                 }
                 else {
                     mParentLayout.requestFocus();
@@ -625,6 +636,13 @@ public class WalletsFragment extends Fragment
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void OnHeaderButtonPressed() {
+        mArchiveClosed = !mArchiveClosed;
+        updateWalletList(mArchiveClosed);
+        mLatestWalletAdapter.notifyDataSetChanged();
     }
 
     /**

@@ -64,13 +64,17 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.R;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
@@ -136,10 +140,10 @@ public class DynamicListView extends ListView {
     private boolean mCellIsMobile = false;
     private boolean mIsMobileScrolling = false;
     private int mSmoothScrollAmountAtEdge = 0;
-    private TextView walletsHeader;
-    private RelativeLayout archiveHeader;
-    private TextView listWalletsHeader;
-    private TextView listArchiveHeader;
+    private View walletsHeader;
+    private View archiveHeader;
+    private View listWalletsHeader;
+    private View listArchiveHeader;
     private BitmapDrawable mHoverCell;
     /**
      * Listens for long clicks on any items in the listview. When a cell has
@@ -297,7 +301,7 @@ public class DynamicListView extends ListView {
         mSmoothScrollAmountAtEdge = (int) (SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
     }
 
-    public void setHeaders(TextView wallets, RelativeLayout archive) {
+    public void setHeaders(View wallets, View archive) {
         walletsHeader = wallets;
         archiveHeader = archive;
     }
@@ -683,12 +687,12 @@ public class DynamicListView extends ListView {
 
     public void setHeaderVisibilityOnReturn() {
         if (getAdapter() != null) {
-            listWalletsHeader = (TextView) getViewForID(getAdapter().getItemId(0));
+            listWalletsHeader = getViewForID(getAdapter().getItemId(0));
             if (listWalletsHeader == null) {
                 walletsHeader.setVisibility(GONE);
                 walletsHeader.setVisibility(VISIBLE);
             }
-            listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
+            listArchiveHeader = getViewForID(getAdapter().getItemId(((WalletAdapter) getAdapter()).getArchivePos()));
             int firstPosition = getFirstVisiblePosition();
             if (listArchiveHeader == null && firstPosition > ((WalletAdapter) getAdapter()).getArchivePos()) {
                 archiveHeader.setVisibility(GONE);
@@ -711,7 +715,7 @@ public class DynamicListView extends ListView {
             walletsHeader.setY(0);
             archiveHeader.setVisibility(GONE);
         } else if (archiveIndex == firstVisibleIndex + 1) { // mixed first view
-            listArchiveHeader = (TextView) getViewForID(getAdapter().getItemId(archiveIndex));
+            listArchiveHeader = getViewForID(getAdapter().getItemId(archiveIndex));
             if (listArchiveHeader != null) {
                 archiveHeader.setY(listArchiveHeader.getY());
                 walletsHeader.setY(archiveHeader.getY() - walletsHeader.getHeight());
