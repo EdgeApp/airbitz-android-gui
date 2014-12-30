@@ -98,6 +98,8 @@ public class ExportSavingOptionFragment extends Fragment {
     private ImageView mPrintImage;
     private HighlightOnPressButton mSDCardButton;
     private ImageView mSDCardImage;
+    private HighlightOnPressButton mEmailButton;
+    private ImageView mEmailImage;
     private HighlightOnPressButton mGoogleDriveButton;
     private ImageView mGoogleDriveImage;
     private HighlightOnPressButton mDropBoxButton;
@@ -179,6 +181,8 @@ public class ExportSavingOptionFragment extends Fragment {
         mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);
         mSDCardButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
         mSDCardImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_sd_card);
+        mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_email);
+        mEmailImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_email);
         mGoogleDriveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
         mGoogleDriveImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_google_drive);
         mDropBoxButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_dropbox);
@@ -237,6 +241,27 @@ public class ExportSavingOptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
 //TODO
+            }
+        });
+
+        mEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                String dataOrFile;
+                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        dataOrFile = mCoreApi.getPrivateSeed(mWallet);
+                    } else {
+                        dataOrFile = null;
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
+                } else {
+                    dataOrFile = getExportData(w, mExportType);
+                }
+                if(dataOrFile != null) {
+                    exportWithEmail(w, dataOrFile);
+                }
             }
         });
 
@@ -525,47 +550,51 @@ public class ExportSavingOptionFragment extends Fragment {
     private void showExportButtons() {
         int type = mBundle.getInt(EXPORT_TYPE);
         if (type == ExportTypes.CSV.ordinal()) {
-            mPrintButton.setVisibility(View.GONE);
-            mPrintImage.setVisibility(View.GONE);
-            mViewButton.setVisibility(View.GONE);
-            mViewImage.setVisibility(View.GONE);
-            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+            setAllButtonViews(View.GONE);
+            mEmailButton.setVisibility(View.VISIBLE);
+            mEmailImage.setVisibility(View.VISIBLE);
         } else if (type == ExportTypes.Quicken.ordinal()) {
-            mPrintButton.setVisibility(View.GONE);
-            mPrintImage.setVisibility(View.GONE);
-            mViewButton.setVisibility(View.GONE);
-            mViewImage.setVisibility(View.GONE);
-            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mPrintButton.setVisibility(View.GONE);
+//            mPrintImage.setVisibility(View.GONE);
+//            mViewButton.setVisibility(View.GONE);
+//            mViewImage.setVisibility(View.GONE);
+//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
+//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
-            mPrintButton.setVisibility(View.GONE);
-            mPrintImage.setVisibility(View.GONE);
-            mViewButton.setVisibility(View.GONE);
-            mViewImage.setVisibility(View.GONE);
-            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mPrintButton.setVisibility(View.GONE);
+//            mPrintImage.setVisibility(View.GONE);
+//            mViewButton.setVisibility(View.GONE);
+//            mViewImage.setVisibility(View.GONE);
+//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
+//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
         } else if (type == ExportTypes.PDF.ordinal()) {
-
+            //TODO
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
-            mGoogleDriveButton.setVisibility(View.GONE);
-            mGoogleDriveImage.setVisibility(View.GONE);
-            mPrintButton.setVisibility(View.GONE);
-            mPrintImage.setVisibility(View.GONE);
-            mDropBoxButton.setVisibility(View.GONE);
-            mDropBoxImage.setVisibility(View.GONE);
-            mSDCardButton.setVisibility(View.GONE);
-            mSDCardImage.setVisibility(View.GONE);
+            setAllButtonViews(View.GONE);
             mViewButton.setVisibility(View.VISIBLE);
-
+            mViewImage.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setAllButtonViews(int state) {
+        mPrintButton.setVisibility(state);
+        mPrintImage.setVisibility(state);
+        mSDCardButton.setVisibility(state);
+        mSDCardImage.setVisibility(state);
+        mEmailButton.setVisibility(state);
+        mEmailImage.setVisibility(state);
+        mGoogleDriveButton.setVisibility(state);
+        mGoogleDriveImage.setVisibility(state);
+        mDropBoxButton.setVisibility(state);
+        mDropBoxImage.setVisibility(state);
+        mViewButton.setVisibility(state);
+        mViewImage.setVisibility(state);
+        mPasswordEditText.setVisibility(state);
     }
 
     private void HighlightTimeButton(int pos) {
