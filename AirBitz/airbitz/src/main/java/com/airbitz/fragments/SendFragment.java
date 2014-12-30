@@ -536,7 +536,7 @@ public class SendFragment extends Fragment implements
             Log.d(TAG, "QR code found " + rawResult.getText());
             return mCoreAPI.CheckURIResults(rawResult.getText());
         } else {
-            Log.d(TAG, "No QR code found");
+//            Log.d(TAG, "No QR code found");
             return null;
         }
     }
@@ -550,6 +550,19 @@ public class SendFragment extends Fragment implements
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
             int h = thumbnail.getHeight();
+            int maxOneDimension = 500;
+            if(w * h > maxOneDimension * maxOneDimension) { //too big, reduce
+                float bitmapRatio = (float)w / (float) h;
+                if (bitmapRatio > 0) {
+                    w = maxOneDimension;
+                    h = (int) (w / bitmapRatio);
+                } else {
+                    h = maxOneDimension;
+                    w = (int) (h * bitmapRatio);
+                }
+                thumbnail = Bitmap.createScaledBitmap(thumbnail, w, h, true);
+
+            }
             int[] pixels = new int[w * h];
             thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
             RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
@@ -558,7 +571,7 @@ public class SendFragment extends Fragment implements
                 try {
                     rawResult = reader.decode(bitmap);
                 } catch (ReaderException re) {
-                    // nothing to do here
+                    re.printStackTrace();
                 } finally {
                     reader.reset();
                 }
@@ -567,7 +580,7 @@ public class SendFragment extends Fragment implements
                 Log.d(TAG, "QR code found " + rawResult.getText());
                 return mCoreAPI.CheckURIResults(rawResult.getText());
             } else {
-                Log.d(TAG, "No QR code found");
+                Log.d(TAG, "Picture No QR code found");
             }
         }
         return null;
