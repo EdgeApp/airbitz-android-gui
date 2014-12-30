@@ -946,7 +946,11 @@ public class CoreAPI {
 
         if (result == tABC_CC.ABC_CC_Ok) {
             return getStringAtPtr(core.longp_value(lp)); // will be null for NoRecoveryQuestions
-        } else {
+        }
+        else if(result == tABC_CC.ABC_CC_NoTransaction) {
+            return "";
+        }
+        else {
             Log.d(TAG, pError.getSzDescription() +";"+ pError.getSzSourceFile() +";"+ pError.getSzSourceFunc() +";"+ pError.getNSourceLine());
             return null;
         }

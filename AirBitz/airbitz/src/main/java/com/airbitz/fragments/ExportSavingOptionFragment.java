@@ -259,9 +259,7 @@ public class ExportSavingOptionFragment extends Fragment {
                 } else {
                     dataOrFile = getExportData(w, mExportType);
                 }
-                if(dataOrFile != null) {
-                    exportWithEmail(w, dataOrFile);
-                }
+                exportWithEmail(w, dataOrFile);
             }
         });
 
@@ -553,32 +551,36 @@ public class ExportSavingOptionFragment extends Fragment {
             setAllButtonViews(View.GONE);
             mEmailButton.setVisibility(View.VISIBLE);
             mEmailImage.setVisibility(View.VISIBLE);
-        } else if (type == ExportTypes.Quicken.ordinal()) {
-//            mPrintButton.setVisibility(View.GONE);
-//            mPrintImage.setVisibility(View.GONE);
-//            mViewButton.setVisibility(View.GONE);
-//            mViewImage.setVisibility(View.GONE);
-//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-        } else if (type == ExportTypes.Quickbooks.ordinal()) {
-//            mPrintButton.setVisibility(View.GONE);
-//            mPrintImage.setVisibility(View.GONE);
-//            mViewButton.setVisibility(View.GONE);
-//            mViewImage.setVisibility(View.GONE);
-//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-        } else if (type == ExportTypes.PDF.ordinal()) {
-            //TODO
-        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
+        }
+        else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
             mViewButton.setVisibility(View.VISIBLE);
             mViewImage.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
+//        else if (type == ExportTypes.PDF.ordinal()) {
+//            //TODO
+//        }
+//        else if (type == ExportTypes.Quicken.ordinal()) {
+//            mPrintButton.setVisibility(View.GONE);
+//            mPrintImage.setVisibility(View.GONE);
+//            mViewButton.setVisibility(View.GONE);
+//            mViewImage.setVisibility(View.GONE);
+//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
+//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//        }
+//        else if (type == ExportTypes.Quickbooks.ordinal()) {
+//            mPrintButton.setVisibility(View.GONE);
+//            mPrintImage.setVisibility(View.GONE);
+//            mViewButton.setVisibility(View.GONE);
+//            mViewImage.setVisibility(View.GONE);
+//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
+//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//        }
     }
 
     private void setAllButtonViews(int state) {
@@ -703,16 +705,25 @@ public class ExportSavingOptionFragment extends Fragment {
         if (type == ExportTypes.CSV.ordinal()) {
             String temp = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
             if (temp != null) {
-                filepath = Common.createTempFileFromString("export.csv", temp);
+                if(temp.isEmpty()) {
+                    ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
+                    return null;
+                }
+                else {
+                    filepath = Common.createTempFileFromString("export.csv", temp);
+                }
             }
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             filepath = Common.createTempFileFromString("export.txt", mCoreApi.getPrivateSeed(wallet));
         } else if (type == ExportTypes.Quicken.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
+            return null;
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
+            return null;
         } else if (type == ExportTypes.PDF.ordinal()) {
 //                output = [[NSBundle mainBundle] pathForResource:@"WalletExportPDF" ofType:@"pdf"];
+            return null;
         }
         return filepath;
     }
@@ -736,16 +747,14 @@ public class ExportSavingOptionFragment extends Fragment {
     }
 
     private void exportWithEmail(Wallet wallet, String data) {
-        // Compose
-        String filename = getExportData(wallet, mExportType);
-        if (filename == null) {
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getString(R.string.export_saving_option_no_transactions_title),
+        if (data == null) {
+            ((NavigationActivity) getActivity()).ShowFadingDialog(
                     getString(R.string.export_saving_option_no_transactions_message));
             return;
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri file = Uri.parse("file://" + filename);
+        Uri file = Uri.parse("file://" + data);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
         intent.putExtra(Intent.EXTRA_STREAM, file);
