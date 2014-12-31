@@ -244,7 +244,7 @@ public class LandingFragment extends Fragment implements
             mPinEditText.setText("");
             if (mActivity.networkIsAvailable() && mCoreAPI.PinLoginExists(mUsername)) {
                 refreshView(true, false);
-                mPinEditText.performClick();
+                mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 return;
             }
         }
@@ -390,6 +390,7 @@ public class LandingFragment extends Fragment implements
     @Override
     public void onFadingDialogFinished() {
         mActivity.setFadingDialogListener(null);
+        refreshView(true, true);
         mHandler.postDelayed(delayedShowPinKeyboard, 100);
     }
 
@@ -398,7 +399,6 @@ public class LandingFragment extends Fragment implements
         public void run() {
             mPinEditText.setText("");
             mPinEditText.performClick();
-            refreshView(true, true);
         }
     };
 
