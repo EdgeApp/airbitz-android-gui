@@ -240,17 +240,15 @@ public class LandingFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mPinEditText.setText("");
-        if(mCoreAPI.PinLoginExists(mUsername)) {
-            mPinEditText.performClick();
-            refreshView(true, true);
+        if(!AirbitzApplication.isLoggedIn()) {
+            mPinEditText.setText("");
+            if (mActivity.networkIsAvailable() && mCoreAPI.PinLoginExists(mUsername)) {
+                refreshView(true, false);
+                mPinEditText.performClick();
+                return;
+            }
         }
-        else {
-            refreshView(false, false);
-        }
-        if(!mActivity.networkIsAvailable()) {
-            mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
-        }
+        refreshView(false, false);
     }
 
     @Override
@@ -259,7 +257,6 @@ public class LandingFragment extends Fragment implements
 
         mActivity.hideSoftKeyboard(mPinEditText);
         mActivity.hideSoftKeyboard(mPasswordEditText);
-        mActivity.hideSoftKeyboard(mUserNameEditText);
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {

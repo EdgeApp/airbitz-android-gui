@@ -286,7 +286,6 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
-        setViewPager();
         if (overlay) {
             // We are already showing so don't bother
             if (mViewPager.getCurrentItem() == 1) {
@@ -305,9 +304,10 @@ public class NavigationActivity extends Activity
     }
 
     private void setViewPager() {
-        mOverlayFragments.clear();
-        mOverlayFragments.add(new TransparentFragment());
-        mOverlayFragments.add(new LandingFragment());
+        if(mOverlayFragments.size() == 0) {
+            mOverlayFragments.add(new TransparentFragment());
+            mOverlayFragments.add(new LandingFragment());
+        }
 
         NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
         mViewPager.setAdapter(pageAdapter);
