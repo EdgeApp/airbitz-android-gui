@@ -63,9 +63,14 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import google.com.android.cloudprint.PrintDialogActivity;
 
 /**
  * Created on 2/22/14.
@@ -233,7 +238,32 @@ public class ExportSavingOptionFragment extends Fragment {
         mPrintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                String data;
+                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        data = mCoreApi.getPrivateSeed(wallet);
+                    } else {
+                        data = null;
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
+                } else {
+                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                }
+                if(data != null) {
+                    File file = createPDFFile(data);
+                    if(file != null) {
+                        Intent printIntent = new Intent(getActivity(), PrintDialogActivity.class);
+                        printIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+                        printIntent.putExtra("title", "Airbitz Print");
+                        startActivity(printIntent);
+                    }
+                }
+                else {
+                    ((NavigationActivity) getActivity()).ShowFadingDialog(
+                            getString(R.string.export_saving_option_no_transactions_message));
+                    return;
+                }
             }
         });
 
@@ -247,19 +277,19 @@ public class ExportSavingOptionFragment extends Fragment {
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet w = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
                 String dataOrFile;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        dataOrFile = mCoreApi.getPrivateSeed(mWallet);
+                        dataOrFile = mCoreApi.getPrivateSeed(wallet);
                     } else {
                         dataOrFile = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
                 } else {
-                    dataOrFile = getExportData(w, mExportType);
+                    dataOrFile = getExportFilePath(wallet, mExportType);
                 }
-                exportWithEmail(w, dataOrFile);
+                exportWithEmail(wallet, dataOrFile);
             }
         });
 
@@ -545,12 +575,29 @@ public class ExportSavingOptionFragment extends Fragment {
         return mView;
     }
 
+    private void writeToFile(File file, String data) {
+        try {
+            FileWriter out = new FileWriter(file);
+            out.write(data);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File createPDFFile(String data) {
+
+        return null;
+    }
+
     private void showExportButtons() {
         int type = mBundle.getInt(EXPORT_TYPE);
         if (type == ExportTypes.CSV.ordinal()) {
             setAllButtonViews(View.GONE);
             mEmailButton.setVisibility(View.VISIBLE);
             mEmailImage.setVisibility(View.VISIBLE);
+//            mPrintButton.setVisibility(View.VISIBLE);
+//            mPrintImage.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
@@ -698,7 +745,7 @@ public class ExportSavingOptionFragment extends Fragment {
         }
     }
 
-    private String getExportData(Wallet wallet, int type) {
+    private String getExportFilePath(Wallet wallet, int type) {
         String filepath = null;
 
         // for now just hard code
@@ -746,15 +793,15 @@ public class ExportSavingOptionFragment extends Fragment {
         return strMimeType;
     }
 
-    private void exportWithEmail(Wallet wallet, String data) {
-        if (data == null) {
+    private void exportWithEmail(Wallet wallet, String filepath) {
+        if (filepath == null) {
             ((NavigationActivity) getActivity()).ShowFadingDialog(
                     getString(R.string.export_saving_option_no_transactions_message));
             return;
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri file = Uri.parse("file://" + data);
+        Uri file = Uri.parse("file://" + filepath);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
         intent.putExtra(Intent.EXTRA_STREAM, file);

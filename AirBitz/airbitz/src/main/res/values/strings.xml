@@ -54,7 +54,6 @@
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
     <string name="fragment_business_no_categories_retreived">No categories retrieved from server</string>
     <string name="fragment_business_near_you">Near You</string>
-
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
     <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>
     <string name="fragment_directory_detail_directions">Directions</string>
@@ -71,7 +70,7 @@
     <string name="server_error_account_already_exists">This account already exists.</string>
     <string name="server_error_account_does_not_exists">We were unable to find your account. Be sure your username is correct.</string>
     <string name="server_error_bad_password">Incorrect password.</string>
-    <string name="server_error_wallet_exists"> </string>
+    <string name="server_error_wallet_exists"></string>
     <string name="server_error_invalid_wallet">Wallet does not exist.</string>
     <string name="server_error_no_connection">Unable to connect to Airbitz server. Please try again later.</string>
     <string name="server_error_no_recovery_questions">No recovery questions are available for this user</string>
@@ -170,7 +169,6 @@
     <string name="activity_recovery_error_title">Password Recovery failure</string>
     <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
     <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
-
     <string name="activity_recovery_error_wrong_answers_title">Wrong Answers</string>
     <string name="activity_recovery_error_wrong_answers_message">The given answers were incorrect. Please try again</string>
     <string name="activity_recovery_warning_dirty_change_title">Wrong Answers</string>
@@ -214,16 +212,13 @@
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Log Out</string>
     <string name="settings_categories_add_new">Add New</string>
-
     <string name="settings_categories_expense">Expense:</string>
     <string name="settings_categories_income">Income:</string>
     <string name="settings_categories_transfer">Transfer:</string>
     <string name="settings_categories_exchange">Exchange:</string>
-
     <string name="settings_days">Day(s)</string>
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
-
     <string name="settings_nfc_turn_on_title">Activate NFC</string>
     <string name="settings_nfc_turn_on_message">The Android NFC setting is off. It needs to be on to use NFC. Would you like to turn it on now?</string>
 
@@ -263,7 +258,6 @@
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
-
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
 
     <!-- Strings for Send Confirmation fragment -->
@@ -310,7 +304,6 @@
     <string name="request_button_import">Import</string>
     <string name="request_amount_hint">Amt (Optional)</string>
     <string name="request_next">Next</string>
-
     <string name="request_invalid_amount">Invalid Amount</string>
 
     <!-- Strings for Request QR Code fragment -->
@@ -344,16 +337,13 @@
     <string name="transaction_details_to">"To: "</string>
     <string name="transaction_details_from">"From: "</string>
     <string name="transaction_details_payee_hint">Enter Payee</string>
-
     <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
     <string name="transaction_details_recovery_reminder_message">"You've received Bitcoin! We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
-
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>
     <string name="transaction_details_advanced_source">"Source"</string>
     <string name="transaction_details_advanced_destination">"Destination"</string>
     <string name="transaction_details_advanced_miner_fee">"Miner Fee"</string>
-
     <string name="transaction_details_advanced_fee">" fee"</string>
 
     <!-- Strings for Export fragment -->
@@ -428,5 +418,8 @@
     <string name="bitcoing_remaining">%1$s Remaining…</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
+    <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
