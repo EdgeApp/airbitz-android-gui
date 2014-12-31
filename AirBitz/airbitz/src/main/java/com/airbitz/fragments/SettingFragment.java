@@ -31,9 +31,11 @@
 
 package com.airbitz.fragments;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +43,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -844,7 +847,7 @@ public class SettingFragment extends Fragment {
     }
 
     private boolean isNFCcapable() {
-        final NfcManager nfcManager = (NfcManager) getActivity().getSystemService(AirbitzApplication.getContext().NFC_SERVICE);
+        final NfcManager nfcManager = (NfcManager) getActivity().getSystemService(Context.NFC_SERVICE);
         return nfcManager.getDefaultAdapter() != null;
     }
 
@@ -891,9 +894,10 @@ public class SettingFragment extends Fragment {
         builder.create().show();
     }
 
+    @TargetApi(18)
     private boolean isBLEcapable() {
-//        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        return false; // (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        return (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
     private void saveBLEPref(boolean state) {
