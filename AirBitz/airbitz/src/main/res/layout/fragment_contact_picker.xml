@@ -27,7 +27,7 @@
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginTop="2dp"
-            android:background="@drawable/bg_edittext"
+            android:background="@drawable/emboss_down"
             android:ems="10"
             android:gravity="center"
             android:imeOptions="actionDone"

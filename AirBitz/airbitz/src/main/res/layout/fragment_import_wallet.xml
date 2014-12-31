@@ -111,7 +111,7 @@
                             android:id="@+id/edittext_to"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/bg_edittext"
+                            android:background="@drawable/emboss_down"
                             android:fontFamily="sans-serif"
                             android:gravity="center"
                             android:hint="@string/import_wallet_private_key_hint"

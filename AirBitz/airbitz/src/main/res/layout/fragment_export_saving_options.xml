@@ -165,7 +165,7 @@
                 android:layout_marginBottom="6.3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/bg_edittext"
+                android:background="@drawable/emboss_down"
                 android:ems="10"
                 android:hint="@string/activity_signup_password_hint"
                 android:inputType="textPassword"

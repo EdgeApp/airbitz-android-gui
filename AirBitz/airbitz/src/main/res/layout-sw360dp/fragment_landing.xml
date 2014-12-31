@@ -135,7 +135,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/bg_edittext"/>
+                        android:background="@drawable/emboss_down"/>
                     <ImageView
                         android:id="@+id/fragment_landing_pin_one"
                         android:layout_width="10dp"
@@ -154,7 +154,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/bg_edittext"/>
+                        android:background="@drawable/emboss_down"/>
                     <ImageView
                         android:id="@+id/fragment_landing_pin_two"
                         android:layout_width="10dp"
@@ -173,7 +173,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/bg_edittext"/>
+                        android:background="@drawable/emboss_down"/>
                     <ImageView
                         android:id="@+id/fragment_landing_pin_three"
                         android:layout_width="10dp"
@@ -191,7 +191,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/bg_edittext"/>
+                        android:background="@drawable/emboss_down"/>
                     <ImageView
                         android:id="@+id/fragment_landing_pin_four"
                         android:layout_width="10dp"
