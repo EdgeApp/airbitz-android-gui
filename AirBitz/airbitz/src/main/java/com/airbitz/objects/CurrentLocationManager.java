@@ -29,11 +29,13 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.models;
+package com.airbitz.objects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -57,6 +59,11 @@ public class CurrentLocationManager {
         }
     }
 
+    public static boolean locationEnabled(Context context) {
+        String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        return !(locationProviders == null || locationProviders.equals(""));
+    }
+
     public static boolean supportsPlayServices(Context context) {
         return ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
     }
@@ -68,7 +75,7 @@ public class CurrentLocationManager {
         return mInstance;
     }
 
-    public void addLocationChangeListener(OnLocationChange listener) {
+    public void addLocationChangeListener(OnCurrentLocationChange listener) {
         if (mPlay != null) {
             mPlay.addLocationChangeListener(listener);
         } else {
@@ -76,7 +83,7 @@ public class CurrentLocationManager {
         }
     }
 
-    public void removeLocationChangeListener(OnLocationChange listener) {
+    public void removeLocationChangeListener(OnCurrentLocationChange listener) {
         if (mPlay != null) {
             mPlay.removeLocationChangeListener(listener);
         } else {
@@ -128,7 +135,7 @@ public class CurrentLocationManager {
         Log.d("TAG_LOC", "Connection to LocationClient failed");
     }
 
-    public interface OnLocationChange {
+    public interface OnCurrentLocationChange {
         public void OnCurrentLocationChange(Location location);
     }
 }

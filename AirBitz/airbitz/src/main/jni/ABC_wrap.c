@@ -1724,6 +1724,44 @@ SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1sweepSatoshi_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  struct sABC_AsyncBitCoinInfo *arg1 = (struct sABC_AsyncBitCoinInfo *) 0 ;
+  int64_t arg2 ;
+  int64_t *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AsyncBitCoinInfo **)&jarg1; 
+  argp2 = *(int64_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null int64_t");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->sweepSatoshi = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1AsyncBitCoinInfo_1sweepSatoshi_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  struct sABC_AsyncBitCoinInfo *arg1 = (struct sABC_AsyncBitCoinInfo *) 0 ;
+  int64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AsyncBitCoinInfo **)&jarg1; 
+  result =  ((arg1)->sweepSatoshi);
+  {
+    int64_t * resultptr = (int64_t *) malloc(sizeof(int64_t));
+    memmove(resultptr, &result, sizeof(int64_t));
+    *(int64_t **)&jresult = resultptr;
+  }
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1AsyncBitCoinInfo(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   struct sABC_AsyncBitCoinInfo *result = 0 ;
@@ -1964,9 +2002,8 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1Currency_1szCode_1set
     if (!arg2) return ;
   }
   {
-    free(arg1->szCode);
     if (arg2) {
-      arg1->szCode = (char *) malloc(strlen((const char *)arg2)+1);
+      arg1->szCode = (char const *) malloc(strlen((const char *)arg2)+1);
       strcpy((char *)arg1->szCode, (const char *)arg2);
     } else {
       arg1->szCode = 0;
@@ -2033,9 +2070,8 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1Currency_1szDescripti
     if (!arg2) return ;
   }
   {
-    free(arg1->szDescription);
     if (arg2) {
-      arg1->szDescription = (char *) malloc(strlen((const char *)arg2)+1);
+      arg1->szDescription = (char const *) malloc(strlen((const char *)arg2)+1);
       strcpy((char *)arg1->szDescription, (const char *)arg2);
     } else {
       arg1->szDescription = 0;
@@ -2074,9 +2110,8 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1Currency_1szCountries
     if (!arg2) return ;
   }
   {
-    free(arg1->szCountries);
     if (arg2) {
-      arg1->szCountries = (char *) malloc(strlen((const char *)arg2)+1);
+      arg1->szCountries = (char const *) malloc(strlen((const char *)arg2)+1);
       strcpy((char *)arg1->szCountries, (const char *)arg2);
     } else {
       arg1->szCountries = 0;
@@ -7319,6 +7354,55 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1MaxSpendable(JNIEnv *j
   arg6 = *(uint64_t **)&jarg6; 
   arg7 = *(tABC_Error **)&jarg7; 
   result = (tABC_CC)ABC_MaxSpendable((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7);
+  jresult = (jint)result; 
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg3) (*jenv)->ReleaseStringUTFChars(jenv, jarg3, (const char *)arg3);
+  if (arg4) (*jenv)->ReleaseStringUTFChars(jenv, jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SweepKey(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jstring jarg3, jstring jarg4, jlong jarg5, jlong jarg6, jlong jarg7, jlong jarg8, jobject jarg8_) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char **arg5 = (char **) 0 ;
+  tABC_Sweep_Done_Callback arg6 = (tABC_Sweep_Done_Callback) 0 ;
+  void *arg7 = (void *) 0 ;
+  tABC_Error *arg8 = (tABC_Error *) 0 ;
+  tABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg8_;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = 0;
+  if (jarg4) {
+    arg4 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg4, 0);
+    if (!arg4) return 0;
+  }
+  arg5 = *(char ***)&jarg5; 
+  arg6 = *(tABC_Sweep_Done_Callback *)&jarg6; 
+  arg7 = *(void **)&jarg7; 
+  arg8 = *(tABC_Error **)&jarg8; 
+  result = (tABC_CC)ABC_SweepKey((char const *)arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4,arg5,arg6,arg7,arg8);
   jresult = (jint)result; 
   if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);

@@ -45,11 +45,8 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +63,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -322,24 +320,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mBitcoinField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
-
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,24 +361,6 @@ public class SendConfirmationFragment extends Fragment {
             }
         });
 
-        mFiatField.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
-
         mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -416,7 +378,10 @@ public class SendConfirmationFragment extends Fragment {
                     mAuthorizationEdittext.requestFocus();
                     return true;
                 }
-                return false;
+                else {
+                    mDummyFocus.requestFocus();
+                    return true;
+                }
             }
         };
 
@@ -732,8 +697,12 @@ public class SendConfirmationFragment extends Fragment {
         mPasswordRequired = false;
         mPinRequired = false;
 
-        if (!mIsUUID && mCoreAPI.GetDailySpendLimitSetting()
-            && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= mCoreAPI.GetDailySpendLimit())) {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        long dailyLimit = prefs.getLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, 0);
+        boolean dailyLimitSetting = prefs.getBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, true);
+
+        if (!mIsUUID && dailyLimitSetting
+            && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= dailyLimit)) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
@@ -782,13 +751,19 @@ public class SendConfirmationFragment extends Fragment {
         if (mSavedBitcoin > 0) {
             mAmountToSendSatoshi = mSavedBitcoin;
         }
+
+        checkAuthorization();
+
         if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreAPI.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWalletForConversions != null) {
                 mFiatField.setText(mCoreAPI.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
             }
             calculateFees();
-            mAuthorizationEdittext.requestFocus();
+
+            if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
+                mAuthorizationEdittext.requestFocus();
+            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
@@ -813,7 +788,6 @@ public class SendConfirmationFragment extends Fragment {
         mAutoUpdatingTextFields = false;
 
         mMaxLocked = false;
-        checkAuthorization();
 
         mInvalidEntryCount = getInvalidEntryCount();
 
@@ -958,6 +932,7 @@ public class SendConfirmationFragment extends Fragment {
             } else {
                 if (mActivity != null) {
                     saveInvalidEntryCount(0);
+                    AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
                     mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
                 }
             }

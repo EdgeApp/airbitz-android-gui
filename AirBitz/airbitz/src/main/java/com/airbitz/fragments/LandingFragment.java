@@ -146,14 +146,14 @@ public class LandingFragment extends Fragment implements
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mActivity.networkIsAvailable()) {
-                    if(mPinLayout.getVisibility() == View.VISIBLE) {
-                        refreshView(false, false);
-                    } else {
-                        mActivity.startSignUp();
-                    }
+                if(mPinLayout.getVisibility() == View.VISIBLE) {
+                    refreshView(false, false);
                 } else {
-                    mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+                    if (mActivity.networkIsAvailable()) {
+                        mActivity.startSignUp();
+                    } else {
+                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+                    }
                 }
             }
         });
@@ -248,6 +248,9 @@ public class LandingFragment extends Fragment implements
         else {
             refreshView(false, false);
         }
+        if(!mActivity.networkIsAvailable()) {
+            mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
+        }
     }
 
     @Override
@@ -311,8 +314,14 @@ public class LandingFragment extends Fragment implements
      * Attempts PIN based login
      */
     public void attemptPinLogin() {
-        mPINLoginTask = new PINLoginTask();
-        mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+        if(mActivity.networkIsAvailable()) {
+            mPINLoginTask = new PINLoginTask();
+            mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+            mPinEditText.setText("");
+        }
+        else {
+            mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
+        }
     }
 
     public class PINLoginTask extends AsyncTask {
@@ -329,7 +338,12 @@ public class LandingFragment extends Fragment implements
         protected tABC_CC doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPin = (String) params[1];
-            return mCoreAPI.PinLogin(mUsername, mPin);
+            if(mUsername == null || mPin == null) {
+                return tABC_CC.ABC_CC_Error;
+            }
+            else {
+                return mCoreAPI.PinLogin(mUsername, mPin);
+            }
         }
 
         @Override
@@ -358,6 +372,12 @@ public class LandingFragment extends Fragment implements
             }
             else if(result == tABC_CC.ABC_CC_PinExpired) {
                 mActivity.ShowFadingDialog(getString(R.string.server_error_pin_expired));
+                abortPermanently();
+                return;
+            }
+            else {
+                mActivity.setFadingDialogListener(LandingFragment.this);
+                mActivity.ShowFadingDialog(result.toString());
                 abortPermanently();
                 return;
             }

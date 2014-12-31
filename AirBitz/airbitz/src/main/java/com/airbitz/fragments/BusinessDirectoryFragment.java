@@ -45,17 +45,18 @@ import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -72,7 +73,7 @@ import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Categories;
 import com.airbitz.models.Category;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.CacheUtil;
@@ -81,24 +82,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by tom on 4/22/14.
- */
 public class BusinessDirectoryFragment extends Fragment implements
         NavigationActivity.OnBackPress,
-        CurrentLocationManager.OnLocationChange {
+        CurrentLocationManager.OnCurrentLocationChange {
 
     static int CATEGORY_TIMEOUT = 15000;
     static int LOCATION_TIMEOUT = 10000;
+    static float LOCATION_ACCURACY_METERS = 100.0f;
     static String TAG = AirbitzAPI.class.getSimpleName();
 
-    public static final String LAT_KEY = "LAT_KEY";
-    public static final String LON_KEY = "LON_KEY";
-    public static final String PREF_NAME = "PREF_NAME";
-    public static final String LOCATION_CACHE_SHARED_PREF = "LOCATION_CACHE_PREF";
-    public static final String BUSINESS_CACHE_SHARED_PREF = "BUSINESS_CACHE_PREF";
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
     public static final String BUSINESSTYPE = "BUSINESSTYPE";
@@ -118,7 +115,9 @@ public class BusinessDirectoryFragment extends Fragment implements
     private EditText mSearchField;
     private EditText mLocationField;
     private ListView mSearchListView;
-    private TextView mNearYouTextView;
+    private LinearLayout mNearYouLayout;
+    private View mFragHeader;
+    private View mFragSearch;
     private ViewGroup mBusinessLayout;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
@@ -161,6 +160,14 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     };
 
+    Runnable mLocationTimeout = new Runnable() {
+        @Override
+        public void run() {
+            hideLoadingIndicator();
+            queryWithoutLocation();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,9 +203,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         helveticaNeueTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
 
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
+        mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
+
         // Add a header
         mBusinessLayout = (ViewGroup) inflater.inflate(R.layout.inc_directory_categories, null, false);
-        mVenueListView.addHeaderView(mBusinessLayout);
+        mVenueListView.addHeaderView(mBusinessLayout, null, false);
 
         // Add a footer
         mViewGroupLoading = (ViewGroup) inflater.inflate(R.layout.loading_indicator, null, false);
@@ -218,6 +227,10 @@ public class BusinessDirectoryFragment extends Fragment implements
                 }
             }
         });
+
+        mFragHeader = view.findViewById(R.id.fragment_business_directory_layout_header);
+        mFragSearch = view.findViewById(R.id.fragment_business_directory_layout_search);
+
         mVenueListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -234,6 +247,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                         }
                     }
                 }
+                updateNearYouSticky();
             }
         });
 
@@ -252,7 +266,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchField = (EditText) view.findViewById(R.id.edittext_search);
         mLocationField = (EditText) view.findViewById(R.id.edittext_location);
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
-        mNearYouTextView = (TextView) mBusinessLayout.findViewById(R.id.textview_nearyou);
+        mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
 
         mSearchField.setTypeface(montserratRegularTypeFace);
         mLocationField.setTypeface(montserratRegularTypeFace);
@@ -261,7 +275,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mBarButton.setTypeface(montserratRegularTypeFace);
         mCoffeeButton.setTypeface(montserratRegularTypeFace);
         mMoreButton.setTypeface(montserratRegularTypeFace);
-        mNearYouTextView.setTypeface(montserratRegularTypeFace);
+        ((TextView)view.findViewById(R.id.textview_nearyou_sticky)).setTypeface(montserratRegularTypeFace);
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,17 +348,13 @@ public class BusinessDirectoryFragment extends Fragment implements
         });
 
         mBusinessSearchAdapter = new BusinessSearchAdapter(getActivity(), mBusinessList);
-        mSearchListView.setAdapter(mBusinessSearchAdapter);
 
         mSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mSearchListView.setAdapter(mBusinessSearchAdapter);
-                    mLocationField.setVisibility(View.VISIBLE);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                    mBackButton.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.GONE);
+                    showSearch();
 
                     // Start search
                     try {
@@ -368,6 +378,9 @@ public class BusinessDirectoryFragment extends Fragment implements
                         e.printStackTrace();
                     }
                 }
+                else {
+                    hideSearch();
+                }
             }
         });
 
@@ -385,12 +398,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 if (mSearchListView.getVisibility() == View.GONE) {
                     return;
                 }
-
-                mSearchListView.setAdapter(mBusinessSearchAdapter);
-                mLocationField.setVisibility(View.VISIBLE);
-                mSearchListView.setVisibility(View.VISIBLE);
-                mBackButton.setVisibility(View.VISIBLE);
-                mVenueListView.setVisibility(View.GONE);
 
                 try {
                     String latLong = "";
@@ -417,18 +424,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         });
 
         mLocationAdapter = new LocationAdapter(getActivity(), mLocationList);
-        mSearchListView.setAdapter(mLocationAdapter);
+
         mLocationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mSearchListView.setAdapter(mLocationAdapter);
-                    mSearchListView.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.GONE);
-                    mBackButton.setVisibility(View.VISIBLE);
-
-                    // Search
-
+                    showSearch();
+                    if(!mLocationField.hasFocus()) { // sometimes cursor doesn't show, so ask again
+                        mLocationField.requestFocus();
+                    }
                     try {
                         String latLong = "";
                         if (locationEnabled) {
@@ -447,8 +452,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     }
 
                 } else {
-                    mViewGroupLoading.setVisibility(View.VISIBLE);
-                    mVenueListView.setVisibility(View.VISIBLE);
+                    hideSearch();
                 }
             }
         });
@@ -466,9 +470,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     fragment.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
-                    if (mVenueListView.getVisibility() == View.GONE) {
-                        hideSearch();
-                    }
+                    mSearchField.clearFocus();
                     return true;
                 }
                 return false;
@@ -488,9 +490,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     fragment.setArguments(bundle);
                     ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
 
-                    if (mVenueListView.getVisibility() == View.GONE) {
-                        hideSearch();
-                    }
+                    mLocationField.clearFocus();
                     return true;
                 }
                 // Never report that the event was handled so the keyboard is handled by OS
@@ -513,11 +513,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                     return;
                 }
 
-                // if (editable.toString().length() > 0) {
-                mSearchListView.setAdapter(mLocationAdapter);
-                mSearchListView.setVisibility(View.VISIBLE);
-                mBackButton.setVisibility(View.VISIBLE);
-                mVenueListView.setVisibility(View.GONE);
+                showSearch();
 
                 try {
                     String latLong = "";
@@ -598,6 +594,17 @@ public class BusinessDirectoryFragment extends Fragment implements
         return view;
     }
 
+    private void updateNearYouSticky() {
+        int firstVisibleItem = mVenueListView.getFirstVisiblePosition();
+        View first = mVenueListView.getChildAt(1); // first item not the header
+        if(first != null && firstVisibleItem==0) {
+            mNearYouLayout.setY(first.getY() + mFragHeader.getMeasuredHeight() + mFragSearch.getMeasuredHeight());
+        }
+        else if(firstVisibleItem > 0) {
+            mNearYouLayout.setY(mVenueListView.getY() + mFragHeader.getMeasuredHeight() + mFragSearch.getMeasuredHeight());
+        }
+    }
+
 
     public void queryWithoutLocation() {
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
@@ -609,24 +616,23 @@ public class BusinessDirectoryFragment extends Fragment implements
 
     @Override
     public void OnCurrentLocationChange(Location location) {
-        String latLon = "";
-        if (location != null) {
-            latLon = "" + location.getLatitude() + "," + location.getLongitude();
-        }
-        if (mCurrentLocation != null && mCurrentLocation.distanceTo(location) < 100.0f) {
+        mHandler.removeCallbacks(mLocationTimeout);
+        if (location != null && location.getAccuracy() < LOCATION_ACCURACY_METERS) {
             mCurrentLocation = location;
-            return;
-        }
+            String latLon = "";
+            if (location != null) {
+                latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+            }
+            Log.d(TAG, "LocationManager Location = " + latLon);
 
-        mVenueHandler.removeCallbacks(null);
-        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            mVenuesTask.cancel(true);
+            mVenueHandler.removeCallbacks(null);
+            if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+                mVenuesTask.cancel(true);
+            }
+            mVenuesTask = new VenuesTask(getActivity(), latLon);
+            mVenuesTask.setWipe(true);
+            mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-        mVenuesTask = new VenuesTask(getActivity(), latLon);
-        mVenuesTask.setWipe(true);
-        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        mCurrentLocation = location;
     }
 
     @Override
@@ -638,6 +644,9 @@ public class BusinessDirectoryFragment extends Fragment implements
         mLocationWords = "";
         if (mVenueListView.getVisibility() == View.GONE) {
             hideSearch();
+            mSearchField.clearFocus();
+            mLocationField.clearFocus();
+            hideKeyboard(mSearchField);
             return true;
         }
         return false;
@@ -648,17 +657,7 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchListView.setVisibility(View.GONE);
         mBackButton.setVisibility(View.GONE);
         mVenueListView.setVisibility(View.VISIBLE);
-
-        mSearchField.clearFocus();
-        mLocationField.clearFocus();
-        hideKeyboard(mSearchField);
-    }
-
-    private void hideKeyboard(View view) {
-        // hide virtual keyboard
-        InputMethodManager imm =
-                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        mNearYouLayout.setVisibility(View.VISIBLE);
     }
 
     private void showSearch() {
@@ -666,6 +665,12 @@ public class BusinessDirectoryFragment extends Fragment implements
         mSearchListView.setVisibility(View.VISIBLE);
         mBackButton.setVisibility(View.VISIBLE);
         mVenueListView.setVisibility(View.GONE);
+        mNearYouLayout.setVisibility(View.GONE);
+    }
+
+    private void hideKeyboard(View view) {
+        // hide virtual keyboard
+        ((NavigationActivity)getActivity()).hideSoftKeyboard(view);
     }
 
     @Override
@@ -675,23 +680,16 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
         checkLocationManager();
         mLocationManager.addLocationChangeListener(this);
-        if (mVenuesLoaded.isEmpty()) {
+        if (!locationEnabled) {
             // if no venues, then request location
-            if (locationEnabled) {
-                mVenueHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        queryWithoutLocation();
-                    }
-                }, LOCATION_TIMEOUT);
-            } else {
-                queryWithoutLocation();
-            }
+            queryWithoutLocation();
         } else {
-            // copy the list
+            // copy the list by default
             List<BusinessSearchResult> venues =
                     new ArrayList<BusinessSearchResult>(mVenuesLoaded);
             mVenuesLoaded.clear();
             setVenueListView(venues);
+            mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
         }
         // If we don't have categories, fetch them
         if (mCategories == null || mCategories.getCountValue() == 0) {
@@ -703,6 +701,7 @@ public class BusinessDirectoryFragment extends Fragment implements
                 e.printStackTrace();
             }
         }
+        updateNearYouSticky();
         super.onResume();
     }
 
@@ -781,8 +780,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             // If we are displaying a dialog, open up the spinner
             if (mMoreCategoriesProgressDialog != null && mMoreCategoriesProgressDialog.isShowing()) {
                 if (categories == null) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                        "Can not retrieve data", Toast.LENGTH_LONG).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.fragment_business_cannot_retrieve_data), Toast.LENGTH_LONG).show();
+                    }
                 }
                 mMoreCategoriesProgressDialog.dismiss();
                 mMoreCategoriesProgressDialog = null;
@@ -803,8 +804,10 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                        "No categories retrieved from server", Toast.LENGTH_LONG).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.fragment_business_no_categories_retreived), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -848,12 +851,9 @@ public class BusinessDirectoryFragment extends Fragment implements
     }
 
     private void checkLocationManager() {
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationEnabled = false;
+        locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
+        if(!locationEnabled && getActivity() != null) {
             Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-        } else {
-            locationEnabled = true;
         }
     }
 
@@ -861,25 +861,32 @@ public class BusinessDirectoryFragment extends Fragment implements
         Bundle bundle = new Bundle();
         bundle.putString(DirectoryDetailFragment.BIZID, id);
         bundle.putString("", name);
-        bundle.putString("", distance);
+        bundle.putString(DirectoryDetailFragment.BIZDISTANCE, distance);
         Fragment fragment = new DirectoryDetailFragment();
         fragment.setArguments(bundle);
         ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
     }
 
     public void setVenueListView(List<BusinessSearchResult> venues) {
-        if (venues != null) {
-            mVenueListView.setVisibility(View.VISIBLE);
-            mNoResultView.setVisibility(View.GONE);
-        } else {
-            mVenueListView.setVisibility(View.GONE);
-            mNoResultView.setVisibility(View.VISIBLE);
-        }
         if (!venues.isEmpty()) {
             mVenuesLoaded.addAll(venues);
             if (venues.size() <= PAGE_SIZE) {
                 mVenueAdapter.warmupCache(venues);
             }
+
+            // remove duplicates
+            HashSet hs = new HashSet();
+            hs.addAll(mVenuesLoaded);
+            mVenuesLoaded.clear();
+            mVenuesLoaded.addAll(hs);
+
+            // sort
+            Collections.sort(mVenuesLoaded, new Comparator<BusinessSearchResult>() {
+                @Override
+                public int compare(BusinessSearchResult bsr1, BusinessSearchResult bsr2) {
+                    return (Float.valueOf(bsr1.getDistance()) > Float.valueOf(bsr2.getDistance())) ? 1 : -1;
+                }
+            });
             mVenueAdapter.notifyDataSetChanged();
         }
     }
@@ -1038,12 +1045,12 @@ public class BusinessDirectoryFragment extends Fragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            if (mLatLng != null) {
+            if (mLatLng != null && !mLatLng.isEmpty()) {
                 return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
             } else if (params.length > 0 && !params[0].equalsIgnoreCase("null")) {
                 return mApi.getRequest(params[0]);
             } else {
-                return "";
+                return mApi.getSearchByTerm("", String.valueOf(PAGE_SIZE), "", "1");
             }
         }
 

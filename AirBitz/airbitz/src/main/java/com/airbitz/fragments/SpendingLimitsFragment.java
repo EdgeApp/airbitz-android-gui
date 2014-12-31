@@ -32,6 +32,8 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,7 +51,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
 /**
@@ -57,6 +59,9 @@ import com.airbitz.objects.HighlightOnPressImageButton;
  */
 public class SpendingLimitsFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
+    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
+    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
+
     private EditText mPasswordEditText;
     private View mPasswordRedRing;
     private Button mSaveButton;
@@ -200,9 +205,13 @@ public class SpendingLimitsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mDailySwitch.setChecked(mCoreAPI.GetDailySpendLimitSetting());
-        mDailyEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetDailySpendLimit(), false));
+
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+
+        mDailyEditText.setText(mCoreAPI.formatSatoshi(prefs.getLong(DAILY_LIMIT_PREF, 0), false));
+        mDailySwitch.setChecked(prefs.getBoolean(DAILY_LIMIT_SETTING_PREF, true));
         mDailyDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
+
         mPINSwitch.setChecked(mCoreAPI.GetPINSpendLimitSetting());
         mPINEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetPINSpendLimit(), false));
         mPINDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
@@ -211,19 +220,21 @@ public class SpendingLimitsFragment extends Fragment {
 
 
     private void goSave() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
         if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-            if(mDailySwitch.isChecked()) {
-                mCoreAPI.SetDailySpendLimitSetting(true);
-                mCoreAPI.SetDailySpendSatoshis(mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString()));
-            } else {
-                mCoreAPI.SetDailySpendLimitSetting(false);
-            }
-            if(mPINSwitch.isChecked()) {
-                mCoreAPI.SetPINSpendLimitSetting(true);
-                mCoreAPI.SetPINSpendSatoshis(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
-            } else {
-                mCoreAPI.SetPINSpendLimitSetting(false);
-            }
+            long satoshis = mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString());
+            mCoreAPI.SetDailySpendSatoshis(satoshis);
+            mCoreAPI.SetDailySpendLimitSetting(mDailySwitch.isChecked());
+            editor.putLong(DAILY_LIMIT_PREF, satoshis);
+            editor.putBoolean(DAILY_LIMIT_SETTING_PREF, mDailySwitch.isChecked());
+
+            mCoreAPI.SetPINSpendSatoshis(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
+            mCoreAPI.SetPINSpendLimitSetting(mPINSwitch.isChecked());
+
+            editor.apply();
+
             mActivity.popFragment();
         } else {
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_spending_limits_incorrect_password),

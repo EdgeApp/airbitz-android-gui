@@ -34,16 +34,21 @@ package com.airbitz.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +71,15 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private CoreAPI mCoreAPI;
     private boolean closeAfterArchive = false;
     private int archivePos;
+
+    private OnHeaderButtonPress mHeaderButtonListener;
+    public interface OnHeaderButtonPress {
+        public void OnHeaderButtonPressed();
+    }
+
+    public void setHeaderButtonListener(OnHeaderButtonPress listener) {
+        mHeaderButtonListener = listener;
+    }
 
     public WalletAdapter(Context context, List<Wallet> walletList) {
         super(context, R.layout.item_listview_wallets, walletList);
@@ -151,20 +165,30 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         if (mWalletList.get(position).isHeader() || mWalletList.get(position).isArchiveHeader()) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
+            TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_header_text);
+            final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_header_image);
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mHeaderButtonListener != null) {
+                        mHeaderButtonListener.OnHeaderButtonPressed();
+                    }
+                }
+            });
             if (mWalletList.get(position).isArchiveHeader()) {
-                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
+                textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
+                imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
                 archivePos = position;
-                Drawable img = mContext.getResources().getDrawable(R.drawable.collapse_up);
-                img.setBounds(0, 0, (int) mContext.getResources().getDimension(R.dimen.three_mm), (int) mContext.getResources().getDimension(R.dimen.three_mm));
-                ((TextView) convertView).setCompoundDrawables(null, null, img, null);
-                convertView.setPadding((int) (mContext.getResources().getDimension(R.dimen.two_mm) + mContext.getResources().getDimension(R.dimen.three_mm)), 0, (int) mContext.getResources().getDimension(R.dimen.two_mm), 0);
+
                 if (hoverSecondHeader) {
                     convertView.setVisibility(View.INVISIBLE);
                 } else {
                     convertView.setVisibility(View.VISIBLE);
                 }
             } else {
-                ((TextView) convertView).setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
+                textView.setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
+                imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.btn_add));
+
                 if (hoverFirstHeader) {
                     convertView.setVisibility(View.INVISIBLE);
                 } else {

@@ -9,12 +9,21 @@
         android:id="@+id/fragment_viewpager_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/fragment_viewpager_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:visibility="visible"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/fragment_viewpager_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
 
     <com.airbitz.objects.HighlightOnPressImageButton
         android:id="@+id/viewpager_close_button"

@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.models;
+package com.airbitz.objects;
 
 import android.content.Context;
 import android.location.Location;
@@ -38,21 +38,20 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.airbitz.models.CurrentLocationManager.OnLocationChange;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AndroidLocationManager {
 
     public static final String TAG = AndroidLocationManager.class.getSimpleName();
-    static final long MIN_TIME = 30000;
-    static final long MIN_DIST = 100;
+    public static final long MIN_TIME_MILLIS = 1000 * 60 * 5;
+    public static final long MIN_DIST_METERS = 100;
+    public static final long NETWORK_MIN_DIST_METERS = 5000;
     static final int TWO_MINUTES = 1000 * 60 * 2;
     static AndroidLocationManager mInstance = null;
     private Context mContext;
     private LocationManager mLocationManager;
-    private List<OnLocationChange> mObservers;
+    private List<CurrentLocationManager.OnCurrentLocationChange> mObservers;
     private Location mCurrentLocation;
     private LocationListener mManagerListener = new LocationListener() {
 
@@ -74,7 +73,7 @@ public class AndroidLocationManager {
         mContext = context;
         this.mLocationManager =
                 (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        this.mObservers = new CopyOnWriteArrayList<OnLocationChange>();
+        this.mObservers = new CopyOnWriteArrayList<CurrentLocationManager.OnCurrentLocationChange>();
     }
 
     public static AndroidLocationManager getLocationManager(Context context) {
@@ -84,7 +83,7 @@ public class AndroidLocationManager {
         return mInstance;
     }
 
-    public void addLocationChangeListener(OnLocationChange listener) {
+    public void addLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         if (mObservers.isEmpty()) {
             attemptConnection();
         }
@@ -97,7 +96,7 @@ public class AndroidLocationManager {
         }
     }
 
-    public void removeLocationChangeListener(OnLocationChange listener) {
+    public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mLocationManager.removeUpdates(mManagerListener);
     }
 
@@ -110,7 +109,7 @@ public class AndroidLocationManager {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    MIN_TIME, MIN_DIST,
+                    MIN_TIME_MILLIS, MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "", e);
@@ -118,7 +117,7 @@ public class AndroidLocationManager {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    MIN_TIME, MIN_DIST,
+                    MIN_TIME_MILLIS, NETWORK_MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "", e);
@@ -140,8 +139,10 @@ public class AndroidLocationManager {
             return;
         }
         mCurrentLocation = location;
+        Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
+                + mCurrentLocation.getLongitude());
         if (mObservers != null) {
-            for (OnLocationChange l : mObservers) {
+            for (CurrentLocationManager.OnCurrentLocationChange l : mObservers) {
                 l.OnCurrentLocationChange(location);
             }
         }

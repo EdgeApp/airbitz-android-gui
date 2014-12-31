@@ -6,198 +6,136 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/bottom_padding"
+    <include
+        layout="@layout/layout_title_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_height="44.1dp" />
 
-        <ImageButton
-            android:id="@+id/directory_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bg_tab_bar"
-            android:padding="15dp"
-            android:src="@drawable/ico_tab_directory"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/fragment_category_layout_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#40000000"
-        android:padding="4dp">
-
-        <ImageButton
-            android:id="@+id/layout_airbitz_header_button_back"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/string_add_button"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_back" />
-
-        <TextView
-            android:id="@+id/fragment_category_textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:text="Import Wallet"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-
-        <ImageButton
-            android:id="@+id/layout_airbitz_header_button_help"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/string_help_button"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_help" />
-    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/layout_data"
+        android:id="@+id/fragment_import_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_category_layout_header"
+        android:layout_below="@id/layout_title_header"
         android:orientation="vertical">
 
-        <!--<ScrollView-->
-        <!--android:id="@+id/layout_scroll"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/layout_airbitz_header"-->
-        <!--android:layout_above="@id/bottom_padding">-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/layout_send"
+            <LinearLayout
+                android:id="@+id/layout_data"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_edge_black_transparent_30"
-                android:gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp">
+                android:layout_height="126dp"
+                android:layout_below="@id/layout_title_header"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/layout_from"
+                <RelativeLayout
+                    android:id="@+id/layout_send"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <TextView
-                        android:id="@+id/textview_from"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="right"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="40dp"
-                        android:layout_weight="1"
-                        android:gravity="right|center_vertical"
-                        android:text="Import Wallet:"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/button_from"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/btn_trans_rounded"
-                        android:gravity="center"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="10dp"
-                        android:text="Checking"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/layout_to"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/layout_from"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:layout_marginLeft="15.75dp"
+                    android:layout_marginRight="15.75dp"
+                    android:layout_marginTop="15.75dp"
+                    android:background="@drawable/emboss_down"
+                    android:gravity="center_horizontal"
+                    android:paddingLeft="6.3dp"
+                    android:paddingRight="6.3dp"
+                    android:paddingTop="9.45dp">
 
-                    <TextView
-                        android:id="@+id/textview_to"
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text="Private Key:"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/edittext_to"
+                    <LinearLayout
+                        android:id="@+id/layout_from"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_edge_black_transparent_30"
-                        android:drawableRight="@drawable/ico_login"
-                        android:gravity="center"
-                        android:hint="Enter bitcoin address (optional)"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="10dp"
-                        android:textColor="@android:color/white"
-                        android:textColorHint="@android:color/white"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                        android:layout_marginBottom="9.45dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:orientation="horizontal">
 
-            </RelativeLayout>
+                        <TextView
+                            android:id="@+id/textview_from"
+                            android:layout_width="64dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="4dp"
+                            android:gravity="center_vertical|right"
+                            android:paddingRight="6.3dp"
+                            android:text="@string/send_from_title"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <com.airbitz.objects.HighlightOnPressSpinner
+                            android:id="@+id/fragment_import_from_wallet_spinner"
+                            style="@style/BlackDropShadow"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_btn_blue_stretch"
+                            android:dropDownHorizontalOffset="-50dp"
+                            android:dropDownVerticalOffset="0dp"
+                            android:dropDownWidth="300dp"
+                            android:gravity="center"
+                            android:popupBackground="@drawable/rounded_edge_white_bg"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_to"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/layout_from"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="9.45dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_to"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:gravity="right"
+                            android:paddingRight="6.3dp"
+                            android:text="@string/import_wallet_private_key_title"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/edittext_to"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_edittext"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center"
+                            android:hint="@string/import_wallet_private_key_hint"
+                            android:imeOptions="actionDone"
+                            android:inputType="textAutoComplete|textNoSuggestions"
+                            android:paddingLeft="6.3dp"
+                            android:singleLine="true"
+                            android:textColor="@android:color/white"
+                            android:textColorHint="@color/text_hint"
+                            android:textCursorDrawable="@drawable/bold_cursor_white"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
 
             <RelativeLayout
-                android:id="@+id/layout_camera"
+                android:id="@+id/fragment_import_layout_camera"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
                 <FrameLayout
                     android:id="@+id/layout_camera_preview"
@@ -227,23 +165,20 @@
                     android:layout_height="80dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_gravity="center"
                     android:layout_marginRight="20dp"
-                    android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_flash_off" />
 
-                <ImageButton
-                    android:id="@+id/button_gallery"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/gallery_button" />
+                    <ImageButton
+                        android:id="@+id/button_gallery"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/gallery_button" />
 
 
                 <View
@@ -255,11 +190,47 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
 
+
             </RelativeLayout>
 
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_import_enter_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_margin="20dp"
+                    android:text="@string/import_wallet_hidden_bits_submit"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/bg_button_green" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_import_busy_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_header"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/fragment_import_busy_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:background="@drawable/blue_triangle" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

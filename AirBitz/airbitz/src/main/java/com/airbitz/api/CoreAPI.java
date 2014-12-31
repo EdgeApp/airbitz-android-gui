@@ -55,19 +55,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -118,6 +116,7 @@ public class CoreAPI {
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
+    public native int coreSweepKey(String jusername, String jpassword, String juuid, String wif, long ppchar, long jerrorp);
     public native int coreWatcherLoop(String juuid, long jerrorp);
     public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
@@ -147,7 +146,7 @@ public class CoreAPI {
     }
 
     public void setupAccountSettings() {
-        coreSettings();
+        newCoreSettings();
     }
 
     /**
@@ -189,35 +188,54 @@ public class CoreAPI {
             if (mOnIncomingBitcoin != null) {
                 mIncomingUUID = info.getSzWalletUUID();
                 mIncomingTxID = info.getSzTxID();
-                mPeriodicTaskHandler.post(IncomingBitcoinUpdater);
-            } else
+                mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
+                mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
+            }
+            else {
                 Log.d(TAG, "incoming bitcoin event has no listener");
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
+            }
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
             if(mOnBlockHeightChange!=null)
                 mPeriodicTaskHandler.post(BlockHeightUpdater);
             else
                 Log.d(TAG, "block exchange event has no listener");
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
             if (mOnDataSync != null) {
                 mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
                 mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
             } else {
                 Log.d(TAG, "data sync event has no listener");
             }
-        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
             if(mOnRemotePasswordChange!=null)
                 mPeriodicTaskHandler.post(RemotePasswordChangeUpdater);
             else
                 Log.d(TAG, "remote password event has no listener");
-        }else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
+        }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
             if(mExchangeRateSources!=null && !mExchangeRateSources.isEmpty())
                 mPeriodicTaskHandler.post(ExchangeRateUpdater);
             else
                 Log.d(TAG, "exchange rate event has no listener");
         }
+        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
+            if (mOnWalletSweep != null) {
+                mIncomingUUID = info.getSzTxID();
+                mSweepSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(info.getSweepSatoshi()));
+                mPeriodicTaskHandler.removeCallbacks(WalletSweepUpdater);
+                mPeriodicTaskHandler.post(WalletSweepUpdater);
+            }
+            else {
+                Log.d(TAG, "incoming bitcoin event has no listener");
+            }
+        }
     }
 
     private String mIncomingUUID, mIncomingTxID;
+    private long mSweepSatoshi;
     // Callback interface when an incoming bitcoin is received
     private OnIncomingBitcoin mOnIncomingBitcoin;
 
@@ -240,7 +258,10 @@ public class CoreAPI {
         mOnBlockHeightChange = listener;
     }
     final Runnable BlockHeightUpdater = new Runnable() {
-        public void run() { mOnBlockHeightChange.onBlockHeightChange(); }
+        public void run() {
+            mCoreSettings = null;
+            mOnBlockHeightChange.onBlockHeightChange();
+        }
     };
 
     // Callback interface when a data sync change is received
@@ -252,7 +273,11 @@ public class CoreAPI {
         mOnDataSync = listener;
     }
     final Runnable DataSyncUpdater = new Runnable() {
-        public void run() { mOnDataSync.OnDataSync(); }
+        public void run() {
+            mCoreSettings = null;
+            startWatchers();
+            mOnDataSync.OnDataSync();
+        }
     };
 
     // Callback interface when a remote mPassword change is received
@@ -267,8 +292,21 @@ public class CoreAPI {
         public void run() { mOnRemotePasswordChange.OnRemotePasswordChange(); }
     };
 
+    // Callback interface for a wallet sweep
+    private OnWalletSweep mOnWalletSweep;
+    public interface OnWalletSweep {
+        public void OnWalletSweep(String uuid, long satoshis);
+    }
+    public void setOnWalletSweepListener(OnWalletSweep listener) {
+        mOnWalletSweep = listener;
+    }
+    final Runnable WalletSweepUpdater = new Runnable() {
+        public void run() { mOnWalletSweep.OnWalletSweep(mIncomingUUID, mSweepSatoshi); }
+    };
+
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
+            mCoreSettings = null;
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
             updateExchangeRates();
         }
@@ -593,7 +631,7 @@ public class CoreAPI {
 //            arrayCurrencies = new String[mCount];
 //
 //            long base = core.longp_value(lp);
-//            for (int i = 0; i < 1; i++) //mCount; i++) //TODO error when i > 0
+//            for (int i = 0; i < 1; i++) //mCount; i++) //FIXME error when i > 0
 //            {
 //                long start = core.longp_value(new pLong(base + i * 4));
 //                tABC_Currency txd = new Currency(start);
@@ -627,6 +665,10 @@ public class CoreAPI {
 
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings coreSettings() {
+        if(mCoreSettings != null) {
+            return mCoreSettings;
+        }
+
         tABC_CC result;
         tABC_Error Error = new tABC_Error();
 
@@ -649,6 +691,11 @@ public class CoreAPI {
             Log.d(TAG, "Load settings failed - "+message);
         }
         return null;
+    }
+
+    public tABC_AccountSettings newCoreSettings() {
+        mCoreSettings = null;
+        return coreSettings();
     }
 
     public void saveAccountSettings(tABC_AccountSettings settings) {
@@ -899,7 +946,11 @@ public class CoreAPI {
 
         if (result == tABC_CC.ABC_CC_Ok) {
             return getStringAtPtr(core.longp_value(lp)); // will be null for NoRecoveryQuestions
-        } else {
+        }
+        else if(result == tABC_CC.ABC_CC_NoTransaction) {
+            return "";
+        }
+        else {
             Log.d(TAG, pError.getSzDescription() +";"+ pError.getSzSourceFile() +";"+ pError.getSzSourceFunc() +";"+ pError.getNSourceLine());
             return null;
         }
@@ -1319,7 +1370,12 @@ public class CoreAPI {
         return pre+out;
     }
 
+
     public String formatCurrency(double in, int currencyNum, boolean withSymbol) {
+        return formatCurrency(in, currencyNum, withSymbol, 2);
+    }
+
+    public String formatCurrency(double in, int currencyNum, boolean withSymbol, int decimalPlaces) {
         String pre;
         String denom = mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)]+" ";
         if (in < 0)
@@ -1330,10 +1386,17 @@ public class CoreAPI {
             pre = withSymbol ? denom : "";
         }
         BigDecimal bd = new BigDecimal(in);
-        bd = bd.setScale(3, RoundingMode.HALF_UP);
-        bd = bd.stripTrailingZeros();
+        DecimalFormat df;
+        switch(decimalPlaces) {
+            case 3:
+                df = new DecimalFormat("#,##0.000", new DecimalFormatSymbols(Locale.getDefault()));
+                break;
+            default:
+                df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.getDefault()));
+                break;
+        }
 
-        return pre+bd.toPlainString();
+        return pre + df.format(bd.doubleValue());
     }
 
     private int findCurrencyIndex(int currencyNum) {
@@ -1343,15 +1406,6 @@ public class CoreAPI {
         }
         Log.d(TAG, "CurrencyIndex not found, using default");
         return 10; // default US
-    }
-
-    public int currencyDecimalPlaces(String label) {
-        int decimalPlaces = 5;
-        if (label.contains("uBTC"))
-            decimalPlaces = 2;
-        else if (label.contains("mBTC"))
-            decimalPlaces = 3;
-        return decimalPlaces;
     }
 
     public int userDecimalPlaces() {
@@ -1366,11 +1420,6 @@ public class CoreAPI {
                 decimalPlaces = 5;
         }
         return decimalPlaces;
-    }
-
-    public long cleanNumberString(String value) {
-        String out = value.replaceAll("[^a-zA-Z0-9]","");
-        return Long.valueOf(out);
     }
 
     public String formatSatoshi(long amount) {
@@ -1409,9 +1458,16 @@ public class CoreAPI {
             BigDecimal bd = new BigDecimal(amount);
             bd = bd.movePointLeft(decimalPlaces);
 
-            bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
-            bd = bd.stripTrailingZeros();
-            return pretext+bd.toPlainString();
+            DecimalFormat df = new DecimalFormat("#,##0.##", new DecimalFormatSymbols(Locale.getDefault()));
+
+            if(decimalPlaces == 5) {
+                df = new DecimalFormat("#,##0.#####", new DecimalFormatSymbols(Locale.getDefault()));
+            }
+            else if(decimalPlaces == 8) {
+                df = new DecimalFormat("#,##0.########", new DecimalFormatSymbols(Locale.getDefault()));
+            }
+
+            return pretext + df.format(bd.doubleValue());
         }
     }
 
@@ -1434,7 +1490,6 @@ public class CoreAPI {
 
     public int CurrencyIndex(int currencyNum) {
         int index = -1;
-        tABC_AccountSettings settings = coreSettings();
         int[] currencyNumbers = getCurrencyNumbers();
 
         for(int i=0; i<currencyNumbers.length; i++) {
@@ -1446,27 +1501,6 @@ public class CoreAPI {
             index = currencyNumbers.length-1;
         }
         return index;
-    }
-
-    public void SaveCurrencyNumber(int currencyNum) {
-        tABC_AccountSettings settings = coreSettings();
-        settings.setCurrencyNum(currencyNum);
-    }
-
-    public int BitcoinDenominationLabel() {
-        tABC_AccountSettings settings = coreSettings();
-        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        return bitcoinDenomination.getDenominationType();
-    }
-
-    public String FiatCurrencySign() {
-        int index = SettingsCurrencyIndex();
-        return mFauxCurrencyDenomination[index];
-    }
-
-    public String FiatCurrencyAcronym() {
-        int index = SettingsCurrencyIndex();
-        return mFauxCurrencyAcronyms[index];
     }
 
     public long denominationToSatoshi(String amount) {
@@ -1492,7 +1526,10 @@ public class CoreAPI {
                 denomIndex = 2;
             }
         }
-        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+        double o = SatoshiToCurrency(satoshi, currencyNum);
+        String currency = formatCurrency(o, currencyNum, true, 3);
+
         String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
         return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
     }
@@ -2077,7 +2114,6 @@ public class CoreAPI {
                     in.setUUID(wi.getUUID());
                     in.setAttributes(wi.getAttributes());
                     in.setCurrencyNum(wi.getCurrencyNum());
-                    in.setLoading(wi.getCurrencyNum() == -1);
                     if (withTransactions) {
                         in.setTransactions(loadAllTransactions(in));
                     }
@@ -2374,11 +2410,22 @@ public class CoreAPI {
     }
 
     private void watchAddresses(String uuid) {
-        if (mWatcherTasks.get(uuid) != null) {
+        Thread thread = new Thread(new WatchAddressesRunnable(uuid));
+        thread.start();
+    }
+
+    private class WatchAddressesRunnable implements Runnable {
+        private final String uuid;
+
+        WatchAddressesRunnable(final String uuid) {
+            this.uuid = uuid;
+        }
+
+        public void run() {
             tABC_Error error = new tABC_Error();
             core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                                    AirbitzApplication.getPassword(),
-                                    uuid, error);
+                    AirbitzApplication.getPassword(),
+                    uuid, error);
             printABCError(error);
         }
     }
@@ -2682,6 +2729,21 @@ public class CoreAPI {
         tABC_CC result = core.ABC_ClearKeyCache(error);
         if(result != tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, error.toString());
+        }
+    }
+
+    public String SweepKey(String uuid, String wif) {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        int result = coreSweepKey(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                uuid, wif, SWIGTYPE_p_p_char.getCPtr(ppChar), tABC_Error.getCPtr(Error));
+        if ( result != 0) {
+            return "";
+        }
+        else {
+            return getStringAtPtr(core.longp_value(lp));
         }
     }
 }

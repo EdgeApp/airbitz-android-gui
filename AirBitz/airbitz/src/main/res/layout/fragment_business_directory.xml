@@ -11,7 +11,7 @@
     <!-- Header -->
 
     <include
-        android:id="@+id/fragment_category_layout_header"
+        android:id="@+id/fragment_business_directory_layout_header"
         layout="@layout/layout_airbitz_header"
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
@@ -19,23 +19,18 @@
     <!-- Search Bar -->
 
     <include
-        android:id="@+id/layout_search"
+        android:id="@+id/fragment_business_directory_layout_search"
         layout="@layout/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_category_layout_header" />
+        android:layout_below="@id/fragment_business_directory_layout_header" />
 
     <FrameLayout
         android:id="@+id/scroll_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_search"
+        android:layout_below="@id/fragment_business_directory_layout_search"
         android:foreground="@drawable/actionbar_shadow">
-
-        <FrameLayout
-            android:id="@+id/layout_main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <ListView
                 android:id="@+id/listview_search"
@@ -65,8 +60,48 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
-        </FrameLayout>
-
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_near_you_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/fragment_business_directory_layout_search"
+        android:visibility="visible">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#b9d1dd" />
+
+        <TextView
+            android:id="@+id/textview_nearyou_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_background_grey"
+            android:paddingBottom="@dimen/content_padding_quarter"
+            android:paddingLeft="@dimen/content_padding_1_quarter"
+            android:paddingRight="@dimen/content_padding_1_quarter"
+            android:paddingTop="@dimen/content_padding_quarter"
+            android:shadowColor="#FFFFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/fragment_business_near_you"
+            android:textColor="#ff384954"
+            android:textSize="@dimen/text_size_small" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/black" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#88FFFFFF" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

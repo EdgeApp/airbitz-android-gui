@@ -1,44 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="venue_list_small_height_175">112dp</dimen>
     <dimen name="wallet_list_view_height">70dp</dimen>
     <dimen name="tabbar_height">56.7dp</dimen>
-
     <dimen name="offset_height">20dp</dimen>
     <dimen name="new_height">135dp</dimen>
     <dimen name="padding_map_info">5dp</dimen>
-
     <dimen name="border_radius_size">6dp</dimen>
-
     <dimen name="content_padding_2">24dp</dimen>
     <dimen name="content_padding_1_5">18dp</dimen>
     <dimen name="content_padding_1_quarter">15dp</dimen>
     <dimen name="content_padding">12dp</dimen>
     <dimen name="content_padding_half">6dp</dimen>
     <dimen name="content_padding_quarter">3dp</dimen>
-
     <dimen name="text_size_small">10sp</dimen>
     <dimen name="text_size_normal">12sp</dimen>
     <dimen name="text_size_h1">20sp</dimen>
     <dimen name="text_size_h4">14sp</dimen>
-
     <dimen name="drop_down_height">38.7dp</dimen>
-
     <dimen name="one_point_five_mm">9.45dp</dimen>
     <dimen name="two_mm">12.6dp</dimen>
     <dimen name="three_mm">18.9dp</dimen>
     <dimen name="nine_mm">56.7dp</dimen>
-
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
     <dimen name="activity_signup_popup_height">119.7dp</dimen>
     <dimen name="fragment_wallet_addwallet_height">135.45dp</dimen>
-
     <dimen name="currency_switch_height">37.8dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_height">138.6dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>
-
     <dimen name="map_height">480dp</dimen>
     <dimen name="map_padding">120dp</dimen>
-
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

@@ -62,7 +62,7 @@ import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;
@@ -118,6 +118,7 @@ public class DirectoryDetailFragment extends Fragment {
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
+    private NavigationActivity mActivity;
 
 
     @Override
@@ -127,6 +128,8 @@ public class DirectoryDetailFragment extends Fragment {
         mBusinessId = getArguments().getString(BIZID);
         mBusinessName = getArguments().getString(BIZNAME);
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
+
+        mActivity = ((NavigationActivity) getActivity());
     }
 
     @Override
@@ -141,12 +144,14 @@ public class DirectoryDetailFragment extends Fragment {
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            if(getActivity() != null) {
+                mActivity.ShowFadingDialog(getString(R.string.fragment_business_enable_location_services));
+            }
         } else {
             locationEnabled = true;
         }
 
-        Log.d(TAG, "Business ID: " + mBusinessId);
+        Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
         mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
@@ -294,6 +299,7 @@ public class DirectoryDetailFragment extends Fragment {
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
+            Log.d(TAG, "LocationManager Location = "+latLong);
             return mApi.getBusinessByIdAndLatLong(params[0], latLong);
         }
 
@@ -311,7 +317,7 @@ public class DirectoryDetailFragment extends Fragment {
                 mLat = location.getLatitude();
                 mLon = location.getLongitude();
 
-                setDistance(mBusinessDetail.getDistance());
+                setDistance(mBusinessDistance);
                 if (mLat == 0 && mLon == 0) {
                     mAddressButton.setClickable(false);
                 }
@@ -530,8 +536,10 @@ public class DirectoryDetailFragment extends Fragment {
                 mFacebookButton.setVisibility(View.GONE);
                 mTwitterButton.setVisibility(View.GONE);
                 mYelpButton.setVisibility(View.GONE);
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
-                        Toast.LENGTH_LONG).show();
+                if(getActivity() != null) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_business_cannot_retrieve_data),
+                            Toast.LENGTH_LONG).show();
+                }
             }
             ((NavigationActivity) mActivity).showModalProgress(false);
         }

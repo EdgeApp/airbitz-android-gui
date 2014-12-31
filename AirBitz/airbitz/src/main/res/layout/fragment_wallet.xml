@@ -97,7 +97,8 @@
             android:layout_marginRight="15dp"
             android:visibility="visible" />
 
-        <FrameLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/fragment_wallet_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -110,22 +111,7 @@
                 android:divider="@drawable/wallet_list_divider"
                 android:dividerHeight="0dp" />
 
-            <FrameLayout
-                android:id="@android:id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center" />
-
-            </FrameLayout>
-
-        </FrameLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

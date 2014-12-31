@@ -35,6 +35,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
+
+import java.util.UUID;
 
 /**
  * Created by tom on 6/17/14.
@@ -44,12 +49,15 @@ public class AirbitzApplication extends Application {
 
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
+    private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
 
     private static Login airbitzLogin = new Login();
     private static long mBackgroundedTime = 0;
     private static long mLoginTime = 0;
     private static Context mContext;
     private static int mLastNavTab = 0;
+    private static String mClientId;
+    private static String mUserAgent;
 
     @Override
     public void onCreate() {
@@ -75,9 +83,6 @@ public class AirbitzApplication extends Application {
             editor.putString(LOGIN_NAME, uname);
             editor.apply();
         }
-
-        //TODO setup auto logout based on Settings. App being killed automatically forgets login,
-        // like on reboot or force close.
     }
 
     public static void Logout() {
@@ -94,6 +99,38 @@ public class AirbitzApplication extends Application {
         } else {
             return String.valueOf(airbitzLogin.getPassword());
         }
+    }
+
+    private static String CLIENT_ID_PREF = "client_id";
+    public static String getClientID() {
+        if (mClientId == null) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            mClientId = prefs.getString(CLIENT_ID_PREF, null);
+            if (mClientId == null) {
+                mClientId = UUID.randomUUID().toString();
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(CLIENT_ID_PREF, mClientId);
+                editor.apply();
+            }
+        }
+        return mClientId;
+    }
+
+    public static String getUserAgent() {
+        if (mUserAgent == null) {
+            Context ctx = AirbitzApplication.getContext();
+            PackageInfo pInfo = null;
+            try {
+                pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            mUserAgent = System.getProperty("http.agent");
+            if (pInfo != null) {
+                mUserAgent = " AirBitz " + pInfo.versionName + "(" + pInfo.versionCode + ") " + mUserAgent;
+            }
+        }
+        return mUserAgent;
     }
 
     public static Context getContext() {
@@ -118,6 +155,18 @@ public class AirbitzApplication extends Application {
 
     public static boolean recentlyLoggedIn() {
         return System.currentTimeMillis() - mLoginTime <= 120000;
+    }
+
+    public static boolean getBitcoinSwitchMode() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        boolean state = prefs.getBoolean(BITCOIN_MODE, true);
+        return state;
+    }
+
+    public static void setBitcoinSwitchMode(boolean state) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(BITCOIN_MODE, state);
+        editor.apply();
     }
 
     private static class Login {

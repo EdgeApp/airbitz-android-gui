@@ -31,19 +31,18 @@
 
 package com.airbitz.fragments;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -53,7 +52,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
@@ -141,6 +139,18 @@ public class SettingFragment extends Fragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
+
+    private Handler mHandler = new Handler();
+    Runnable mPinSetupRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
+            mCoreSettings.setBDisablePINLogin(false);
+            mCoreAPI.saveAccountSettings(mCoreSettings);
+        }
+    };
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -273,17 +283,34 @@ public class SettingFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
+                if(isChecked && mCoreSettings.getBDisablePINLogin()) {
+                    Log.d(TAG, "Enabling PIN");
+                    mHandler.post(mPinSetupRunnable);
+                } else if(!isChecked) {
+                    Log.d(TAG, "Disabling PIN");
+                    mCoreSettings.setBDisablePINLogin(true);
+                    mCoreAPI.saveAccountSettings(mCoreSettings);
+                    mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                }
             }
         });
 
         mNFCSwitchLayout = mView.findViewById(R.id.settings_nfc_layout);
+        mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
         if(isNFCcapable()) {
             mNFCSwitchLayout.setVisibility(View.VISIBLE);
+            mNFCSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked && !NfcAdapter.getDefaultAdapter(getActivity()).isEnabled()) {
+                        ShowNFCMessageDialog();
+                    }
+                }
+            });
         }
-        mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
 
         mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isBLEcapable()) {
+        if(isBLEcapable()) {
             mBLESwitchLayout.setVisibility(View.VISIBLE);
         }
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
@@ -366,8 +393,6 @@ public class SettingFragment extends Fragment {
 
         setUserNameState(mSendNameSwitch.isChecked());
 
-        mCoreSettings = mCoreAPI.coreSettings();
-        loadSettings(mCoreSettings);
         return mView;
     }
 
@@ -445,6 +470,10 @@ public class SettingFragment extends Fragment {
     }
 
     private void saveCurrentSettings() {
+        mCoreSettings = mCoreAPI.newCoreSettings();
+        if(mCoreSettings == null) {
+            return;
+        }
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {
@@ -477,16 +506,12 @@ public class SettingFragment extends Fragment {
         //Options
         //Autologoff
         mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
-        //PinRelogin
-        if(mPinReloginSwitch.isChecked() && mCoreSettings.getBDisablePINLogin()) {
-            mCoreSettings.setBDisablePINLogin(false);
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
-        } else if(!mPinReloginSwitch.isChecked()) {
-            mCoreSettings.setBDisablePINLogin(true);
-            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
-        }
+
+        //PinRelogin is saved during click
+
         //NFC
         saveNFCPref(mNFCSwitch.isChecked());
+
         //BLE
         saveBLEPref(mBLESwitch.isChecked());
 
@@ -653,6 +678,7 @@ public class SettingFragment extends Fragment {
                                 int num = picker.getValue();
                                 button.setText(items[num]);
                                 saveCurrentSettings();
+                                mCoreAPI.updateExchangeRates();
                             }
                         }
                 )
@@ -672,6 +698,9 @@ public class SettingFragment extends Fragment {
             mChangeRecoveryButton.performClick();
             bundle.putBoolean(START_RECOVERY_PASSWORD, false);
         }
+
+        mCoreSettings = mCoreAPI.newCoreSettings();
+        loadSettings(mCoreSettings);
     }
 
     @Override
@@ -820,33 +849,62 @@ public class SettingFragment extends Fragment {
     }
 
     private void saveNFCPref(boolean state) {
-        int selection = state ? 1 : 0;
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
-        editor.putInt(NFC_PREF, selection);
+        editor.putBoolean(NFC_PREF, state);
         editor.apply();
     }
 
     static public boolean getNFCPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getInt(NFC_PREF, 0) != 0;
+        boolean nfc;
+        try {
+            nfc = prefs.getBoolean(NFC_PREF, true);
+            return nfc;
+        }
+        catch (ClassCastException e) {
+            SharedPreferences.Editor editor = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+            editor.putBoolean(NFC_PREF, true);
+            editor.apply();
+            return true;
+        }
     }
 
-    @TargetApi(21)
+    public void ShowNFCMessageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.settings_nfc_turn_on_message))
+                .setTitle(getString(R.string.settings_nfc_turn_on_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            mNFCSwitch.setChecked(false);
+                            dialog.cancel();
+                        }
+                    });
+        builder.create().show();
+    }
+
     private boolean isBLEcapable() {
-        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(AirbitzApplication.getContext().BLUETOOTH_SERVICE);
-        return (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+//        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        return false; // (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
     private void saveBLEPref(boolean state) {
-        int selection = state ? 1 : 0;
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
-        editor.putInt(BLE_PREF, selection);
+        editor.putBoolean(BLE_PREF, state);
         editor.apply();
     }
 
     static public boolean getBLEPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getInt(BLE_PREF, 0) != 0;
+        return prefs.getBoolean(BLE_PREF, false);
     }
 
 }

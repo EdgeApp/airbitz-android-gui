@@ -1,7 +1,5 @@
 import java.util.regex.Pattern
 
-apply plugin: 'com.android.application'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -11,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -36,7 +34,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 2100000000
-        versionName '99.99.99'
+        versionName "99.99.99"
     }
 
     productFlavors {
@@ -68,14 +66,19 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
+
             applicationVariants.all { variant ->
-                def file = variant.outputFile
                 def versionCode = getVersionCode()
-                println "APK Version: " + versionCode
-                variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+                variant.outputs.each { output ->
+                    println "variant.buildType.name: " + variant.buildType.name
+                    if(variant.buildType.name.equals('release')) {
+                        println "APK Version: " + versionCode
+                        output.outputFile = new File(output.outputFile.parent, "airbitz-prod-" + variant.buildType.name +"-" + versionCode + ".apk")
+                    }
+                }
             }
         }
     }
@@ -88,6 +91,7 @@ def getVersionCode() {
     def manifestFile = file("src/main/AndroidManifest.xml")
     def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
     def manifestText = manifestFile.getText()
+    println manifestText
     def matcher = pattern.matcher(manifestText)
     matcher.find()
     return matcher.group(1).replace(".", "-")
@@ -105,7 +109,7 @@ if (hasProperty('storeFile')) {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:21.0.+'
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.retrofit:retrofit:1.4.1'

@@ -322,7 +322,7 @@ public class BusinessDetail {
         ssb.append(mBizAddress)
                 .append("\n")
                 .append(mBizCity)
-                .append(" ")
+                .append(", ")
                 .append(mBizState)
                 .append(" ")
                 .append(mBizPostalCode);

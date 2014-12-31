@@ -12,19 +12,6 @@
         android:layout_height="44.1dp"
         android:background="@drawable/bg_dark_header">
 
-        <com.airbitz.objects.HighlightOnPressImageButton
-            android:id="@+id/fragment_wallets_add_button"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/string_add_button"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_add" />
-
         <TextView
             android:id="@+id/fragment_wallets_title_textview"
             android:layout_width="wrap_content"

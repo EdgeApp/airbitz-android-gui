@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -42,6 +43,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.nfc.tech.NfcA;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +67,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -115,7 +120,9 @@ public class SendFragment extends Fragment implements
     Runnable cameraFocusRunner = new Runnable() {
         @Override
         public void run() {
-            mCamera.autoFocus(SendFragment.this);
+            if(mCamera != null) {
+                mCamera.autoFocus(SendFragment.this);
+            }
             mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
             mFocused = false;
         }
@@ -200,8 +207,7 @@ public class SendFragment extends Fragment implements
 
         dummyFocus = mView.findViewById(R.id.dummy_focus);
 
-
-        mFromTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -249,6 +255,9 @@ public class SendFragment extends Fragment implements
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mCamera == null) {
+                    return;
+                }
                 if (!mFlashOn) {
                     mFlashButton.setImageResource(R.drawable.btn_flash_on);
                     mFlashOn = true;
@@ -373,19 +382,6 @@ public class SendFragment extends Fragment implements
             }
         }
 
-        // if BLE is supported on the device, enable
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            if (mBluetoothAdapter.isEnabled() && SettingFragment.getBLEPref()) {
-                mBluetoothListView = new BluetoothListView(mActivity);
-                mBluetoothLayout.addView(mBluetoothListView, 0);
-                mBluetoothButton.setVisibility(View.VISIBLE);
-            }
-            else {
-                // Bluetooth is not enabled - ask for enabling?
-            }
-        }
-
         updateWalletOtherList();
 
         return mView;
@@ -413,7 +409,6 @@ public class SendFragment extends Fragment implements
         Log.d(TAG, "stopCamera");
         if (mCamera != null) {
             mHandler.removeCallbacks(cameraFocusRunner);
-            mFlashButton.setClickable(false);
             mCamera.cancelAutoFocus();
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -469,7 +464,6 @@ public class SendFragment extends Fragment implements
                 mCamera.setParameters(params);
             }
         }
-        mFlashButton.setClickable(false);
     }
 
     @Override
@@ -542,7 +536,7 @@ public class SendFragment extends Fragment implements
             Log.d(TAG, "QR code found " + rawResult.getText());
             return mCoreAPI.CheckURIResults(rawResult.getText());
         } else {
-            Log.d(TAG, "No QR code found");
+//            Log.d(TAG, "No QR code found");
             return null;
         }
     }
@@ -556,6 +550,19 @@ public class SendFragment extends Fragment implements
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
             int h = thumbnail.getHeight();
+            int maxOneDimension = 500;
+            if(w * h > maxOneDimension * maxOneDimension) { //too big, reduce
+                float bitmapRatio = (float)w / (float) h;
+                if (bitmapRatio > 0) {
+                    w = maxOneDimension;
+                    h = (int) (w / bitmapRatio);
+                } else {
+                    h = maxOneDimension;
+                    w = (int) (h * bitmapRatio);
+                }
+                thumbnail = Bitmap.createScaledBitmap(thumbnail, w, h, true);
+
+            }
             int[] pixels = new int[w * h];
             thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
             RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
@@ -564,7 +571,7 @@ public class SendFragment extends Fragment implements
                 try {
                     rawResult = reader.decode(bitmap);
                 } catch (ReaderException re) {
-                    // nothing to do here
+                    re.printStackTrace();
                 } finally {
                     reader.reset();
                 }
@@ -573,7 +580,7 @@ public class SendFragment extends Fragment implements
                 Log.d(TAG, "QR code found " + rawResult.getText());
                 return mCoreAPI.CheckURIResults(rawResult.getText());
             } else {
-                Log.d(TAG, "No QR code found");
+                Log.d(TAG, "Picture No QR code found");
             }
         }
         return null;
@@ -611,16 +618,20 @@ public class SendFragment extends Fragment implements
             mHandler = new Handler();
         }
 
-        if(mBluetoothButton.getVisibility() == View.VISIBLE) {
-            ViewBluetoothPeripherals(true);
-            mBluetoothListView.setOnOneScanEndedListener(this);
-        }
-        else {
-            ViewBluetoothPeripherals(false);
-        }
+        ViewBluetoothPeripherals(false);
 
         if (walletSpinner != null && walletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
+        }
+
+        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
+        NfcAdapter mNfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
+        }
+        else {
+            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
     }
 
@@ -730,7 +741,7 @@ public class SendFragment extends Fragment implements
         if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
             mBluetoothScanningLayout.setVisibility(View.VISIBLE);
             mBluetoothListView.setOnPeripheralSelectedListener(this);
-            mBluetoothListView.continuousScanForDevices(true);
+            mBluetoothListView.scanForBleDevices(true);
             stopCamera();
         }
     }
@@ -738,7 +749,7 @@ public class SendFragment extends Fragment implements
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
         if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
-            mBluetoothListView.continuousScanForDevices(false);
+            mBluetoothListView.scanForBleDevices(false);
             mBluetoothListView.close();
         }
     }
@@ -753,7 +764,9 @@ public class SendFragment extends Fragment implements
 
     @Override
     public void onBitcoinURIReceived(final String bitcoinAddress) {
-        mBluetoothListView.setOnBitcoinURIReceivedListener(null);
+        if(mBluetoothListView != null) {
+            mBluetoothListView.setOnBitcoinURIReceivedListener(null);
+        }
         mToEdittext.post(new Runnable() {
             @Override
             public void run() {
@@ -767,7 +780,7 @@ public class SendFragment extends Fragment implements
     public void onOneScanEnded(boolean hasDevices) {
         if(!hasDevices) {
             if(mForcedBluetoothScanning) {
-                mBluetoothScanningLayout.setVisibility(View.VISIBLE);
+                mBluetoothLayout.setVisibility(View.VISIBLE);
             }
             else {
                 Log.d(TAG, "No bluetooth devices, switching to guns...");
@@ -780,6 +793,7 @@ public class SendFragment extends Fragment implements
             }
         }
         else {
+            mBluetoothLayout.setVisibility(View.GONE);
             mBluetoothScanningLayout.setVisibility(View.GONE);
         }
     }

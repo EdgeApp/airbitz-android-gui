@@ -29,14 +29,13 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.models;
+package com.airbitz.objects;
 
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.airbitz.models.CurrentLocationManager.OnLocationChange;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -62,7 +61,7 @@ public class PlayLocationManager implements
     private Location mCurrentLocation;
     private Context mContext;
     // Callback interface for adding and removing location change listeners
-    private List<OnLocationChange> mObservers = new CopyOnWriteArrayList<OnLocationChange>();
+    private List<CurrentLocationManager.OnCurrentLocationChange> mObservers = new CopyOnWriteArrayList<CurrentLocationManager.OnCurrentLocationChange>();
 
     public PlayLocationManager(Context context) {
         mContext = context;
@@ -75,7 +74,7 @@ public class PlayLocationManager implements
         return mInstance;
     }
 
-    public void addLocationChangeListener(OnLocationChange listener) {
+    public void addLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         if (mObservers.isEmpty()) {
             attemptConnection();
         }
@@ -88,7 +87,7 @@ public class PlayLocationManager implements
         }
     }
 
-    public void removeLocationChangeListener(OnLocationChange listener) {
+    public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mObservers.remove(listener);
         Log.d(TAG, "Listener removed: " + listener);
         if (mObservers.size() <= 0) {
@@ -116,8 +115,9 @@ public class PlayLocationManager implements
         Log.d(TAG, "Connected.");
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mLocationRequest.setInterval(1000 * 60 * 60);
-        mLocationRequest.setFastestInterval(30000);
+        mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME_MILLIS * 2);
+        mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME_MILLIS);
+        mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         locationClient.requestLocationUpdates(mLocationRequest, this);
         mCurrentLocation = locationClient.getLastLocation();
         if (mCurrentLocation != null) {
@@ -141,7 +141,7 @@ public class PlayLocationManager implements
             Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
                                    + mCurrentLocation.getLongitude());
 
-            Iterator<OnLocationChange> i = mObservers.iterator();
+            Iterator<CurrentLocationManager.OnCurrentLocationChange> i = mObservers.iterator();
             while (i.hasNext()) {
                 i.next().OnCurrentLocationChange(mCurrentLocation);
             }

@@ -369,6 +369,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_MaxSpendable(szUsername, szPassword, szWalletUUID, szDestAddress, bTransfer, SWIGTYPE_p_uint64_t.getCPtr(pMaxSatoshi), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_SweepKey(String szUsername, String szPassword, String szWalletUUID, String szKey, SWIGTYPE_p_p_char pszAddress, SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void fCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SweepKey(szUsername, szPassword, szWalletUUID, szKey, SWIGTYPE_p_p_char.getCPtr(pszAddress), SWIGTYPE_p_f_enum_eABC_CC_p_q_const__char_uint64_t__void.getCPtr(fCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_GetTransaction(String szUserName, String szPassword, String szWalletUUID, String szID, SWIGTYPE_p_p_sABC_TxInfo ppTransaction, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetTransaction(szUserName, szPassword, szWalletUUID, szID, SWIGTYPE_p_p_sABC_TxInfo.getCPtr(ppTransaction), tABC_Error.getCPtr(pError), pError));
   }

@@ -3,7 +3,7 @@
     android:id="@+id/layout_item_business"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_selected_tab"
+    android:background="@android:color/transparent"
     android:minHeight="112dp">
 
     <RelativeLayout
@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_selected_tab" />
+            android:src="@android:color/transparent" />
 
         <View
             android:id="@+id/blank_view_venue"
@@ -26,7 +26,7 @@
             android:layout_alignParentTop="true"
             android:background="#88FFFFFF" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/linear_layout_gradient_venue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -35,17 +35,24 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,10 +64,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,10 +78,12 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.ImportFragment;
 import com.airbitz.fragments.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.PasswordRecoveryFragment;
@@ -81,19 +93,29 @@ import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
+import com.airbitz.fragments.SpendingLimitsFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.AirbitzAlertReceiver;
+import com.airbitz.models.AirbitzNotification;
+import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class NavigationActivity extends Activity
@@ -104,6 +126,10 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
+
+    public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
+
+    private Map<Integer, AirbitzNotification> mNotificationMap;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -254,16 +280,6 @@ public class NavigationActivity extends Activity
         String seed = CoreAPI.getSeedData();
         mCoreAPI.Initialize(this, seed, seed.length());
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Uri dataUri = getIntent().getData();
-        if (dataUri != null && dataUri.getScheme().equals("bitcoin")) {
-            onBitcoinUri(dataUri);
-        }
-    }
-
 
     public void DisplayLoginOverlay(boolean overlay) {
         DisplayLoginOverlay(overlay, false);
@@ -487,13 +503,6 @@ public class NavigationActivity extends Activity
         if (!isLargeDpi()) {
             return;
         }
-        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-
-        // Move calculator above the tab bar
-        params.setMargins(0, 0, 0, tbHeight);
-        mCalculatorView.setLayoutParams(params);
         mCalcLocked = true;
         showCalculator();
     }
@@ -521,6 +530,14 @@ public class NavigationActivity extends Activity
 
     public void showCalculator() {
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
+
+        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
+        RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
+
+        // Move calculator above the tab bar
+        params.setMargins(0, 0, 0, tbHeight);
+        mCalculatorView.setLayoutParams(params);
 
         if (mCalculatorView.getVisibility() != View.VISIBLE) {
             mHandler.postDelayed(delayedShowCalculator, 100);
@@ -619,6 +636,15 @@ public class NavigationActivity extends Activity
         }
         switchFragmentThread(mNavThreadId);
 
+        AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+
+        checkNotifications();
+
+        if (SettingFragment.getNFCPref()) {
+            setupNFCForegrounding();
+        }
+
         super.onResume();
     }
 
@@ -628,6 +654,11 @@ public class NavigationActivity extends Activity
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+        if(SettingFragment.getNFCPref()) {
+            disableNFCForegrounding();
+        }
     }
 
     /*
@@ -657,13 +688,59 @@ public class NavigationActivity extends Activity
     {
         final String action = intent.getAction();
         final Uri intentUri = intent.getData();
+        final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        if (intentUri != null && (Intent.ACTION_VIEW.equals(action) ||
+        Log.d(TAG, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
+
+        if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             if ("bitcoin".equals(scheme)) {
-                onBitcoinUri(intent.getData());
+                onBitcoinUri(intentUri);
             }
+            else if (!AirbitzApplication.isLoggedIn()) {
+                mDataUri = intentUri;
+                return;
+            }
+            else {
+                // Handle FINALHASH NFC input
+                Log.d(TAG, intentUri.toString());
+                if (ImportFragment.getHiddenBitsToken(intentUri.toString()) != null) {
+                    gotoImportNow(intentUri);
+                }
+            }
+        } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
+            Log.d(TAG, "Notification type found");
+                mNotificationTask = new NotificationTask();
+                mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    public void setupNFCForegrounding() {
+        // Create a generic PendingIntent that will be deliver to this activity. The NFC stack
+        // will fill in the intent with the details of the discovered tag before delivering to
+        // this activity.
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        ndef.addDataScheme("bitcoin");
+        IntentFilter[] filters = new IntentFilter[] { ndef };
+
+        final NfcManager nfcManager = (NfcManager) getSystemService(Context.NFC_SERVICE);
+        NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (nfcAdapter != null && nfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, filters, null);
+        }
+    }
+
+    public void disableNFCForegrounding() {
+        final NfcManager nfcManager = (NfcManager) getSystemService(Context.NFC_SERVICE);
+        NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
+
+        if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.disableForegroundDispatch(this);
         }
     }
 
@@ -712,16 +789,23 @@ public class NavigationActivity extends Activity
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff == 0) {
                 // sender paid exact amount
+                AudioPlayer.play(this, R.raw.bitcoin_received);
                 handleReceiveFromQR();
             } else if (diff < 0) {
                 // sender paid too much
+                AudioPlayer.play(this, R.raw.bitcoin_received);
                 handleReceiveFromQR();
             } else {
-                // Request the remainer of the funds
+                // Request the remainder of the funds
                 f.updateWithAmount(diff);
+                AudioPlayer.play(this, R.raw.bitcoin_received_partial);
             }
         } else {
-            showIncomingBitcoinDialog();
+            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            if (tx.getAmountSatoshi() > 0) {
+                AudioPlayer.play(this, R.raw.bitcoin_received);
+                showIncomingBitcoinDialog();
+            }
         }
     }
 
@@ -754,7 +838,10 @@ public class NavigationActivity extends Activity
     public void onSentFunds(String walletUUID, String txId) {
         Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
-        getFragmentManager().executePendingTransactions();
+        FragmentManager manager = getFragmentManager();
+        if(manager != null) {
+            manager.executePendingTransactions();
+        }
 
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
@@ -825,6 +912,16 @@ public class NavigationActivity extends Activity
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
+    private void gotoImportNow(Uri uri) {
+        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+        switchFragmentThread(Tabs.REQUEST.ordinal());
+        Fragment fragment = new ImportFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ImportFragment.URI, uri.toString());
+        fragment.setArguments(bundle);
+        pushFragment(fragment, Tabs.REQUEST.ordinal());
+    }
+
     public void resetFragmentThreadToBaseFragment(int threadId) {
         mNavStacks[threadId].clear();
         mNavStacks[threadId].add(getNewBaseFragement(threadId));
@@ -875,10 +972,16 @@ public class NavigationActivity extends Activity
 
     public void UserJustLoggedIn() {
         showNavBar();
+        checkDailyLimitPref();
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            onBitcoinUri(mDataUri);
+            if(ImportFragment.getHiddenBitsToken(mDataUri.toString()) != null) {
+                gotoImportNow(mDataUri);
+            }
+            else {
+                onBitcoinUri(mDataUri);
+            }
             mDataUri = null;
         } else {
             switchFragmentThread(AirbitzApplication.getLastNavTab());
@@ -922,14 +1025,17 @@ public class NavigationActivity extends Activity
     }
 
     public void Logout() {
-        if (AirbitzApplication.getUsername() != null) {
+        Logout(true);
+    }
+
+    public void Logout(boolean pinDelete) {
+        if ((AirbitzApplication.getUsername() != null) && pinDelete) {
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
-        DisplayLoginOverlay(false);
-        startActivity(new Intent(this, NavigationActivity.class));
         finish();
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     private Fragment getNewBaseFragement(int id) {
@@ -980,7 +1086,9 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            Logout();
+            AirbitzApplication.Logout();
+            finish();
+            startActivity(new Intent(this, NavigationActivity.class));
         }
     }
 
@@ -1168,6 +1276,61 @@ public class NavigationActivity extends Activity
         view.startAnimation(fadeOut);
     }
 
+    public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
+        if (amount > 0 && !txid.isEmpty()) {
+            onSentFunds(uuid, txid);
+            ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
+                    getString(R.string.import_wallet_swept_funds_message));
+        }
+        else if (amount == 0) {
+            ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
+                    getString(R.string.import_wallet_hidden_bits_error_message));
+        }
+
+    }
+
+    public void showHiddenBitsTransaction(String txid, String uuid, long amount,
+                String message, String zeroMessage, String tweet) {
+        if(txid != null) {
+            onSentFunds(uuid, txid);
+        }
+
+        if (amount == 0 && !zeroMessage.isEmpty()) {
+            ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_claimed), zeroMessage, tweet);
+        }
+        else if (!message.isEmpty()) {
+            ShowHiddenBitsTweet(getString(R.string.import_wallet_hidden_bits_not_claimed), message, tweet);
+        }
+    }
+
+    public void ShowHiddenBitsTweet(String title, String reason, final String tweet) {
+        if (mMessageDialog != null) {
+            mMessageDialog.dismiss();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(reason)
+                .setTitle(title)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // invoke Twitter to send tweet
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
+                                startActivity(i);
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        mMessageDialog = builder.create();
+        mMessageDialog.show();
+    }
+
     public void hideSoftKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -1253,4 +1416,154 @@ public class NavigationActivity extends Activity
         }
     }
 
+    //************** Notification support
+
+    private void checkNotifications() {
+        if(mNotificationTask == null) {
+            mNotificationTask = new NotificationTask();
+            mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private NotificationTask mNotificationTask;
+    public class NotificationTask extends AsyncTask<Void, Void, String> {
+        String mMessageId;
+        String mBuildNumber;
+
+        NotificationTask() { }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            AirbitzAPI api = AirbitzAPI.getApi();
+            PackageInfo pInfo;
+            try {
+                pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            mMessageId = String.valueOf(getMessageIDPref());
+
+//            mBuildNumber = "2014111801"; // TESTING
+            mBuildNumber = String.valueOf(pInfo.versionCode);
+
+            return api.getMessages(mMessageId, mBuildNumber);
+        }
+
+        @Override
+        protected void onPostExecute(final String response) {
+            Log.d(TAG, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
+            if(response != null && response.length() != 0) {
+                mNotificationMap = getAndroidMessages(response);
+                if(mNotificationMap.size() > 0) {
+                    showNotificationAlert();
+                }
+            }
+            else {
+                Log.d(TAG, "No Notification response");
+            }
+            mNotificationTask = null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mNotificationTask = null;
+        }
+    }
+
+    public int getMessageIDPref() {
+        SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        return prefs.getInt(LAST_MESSAGE_ID, 0); // default to Automatic
+    }
+
+    private void saveMessageIDPref(int id) {
+        SharedPreferences.Editor editor = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putInt(LAST_MESSAGE_ID, id);
+        editor.apply();
+    }
+
+    Map<Integer, AirbitzNotification> getAndroidMessages(String input) {
+        Map<Integer, AirbitzNotification> map = new HashMap<Integer, AirbitzNotification>();
+        try {
+            JSONObject json = new JSONObject(input);
+            int count = json.getInt("count");
+            if(count > 0) {
+                JSONArray notifications = json.getJSONArray("results");
+                for(int i=0; i<count; i++) {
+                    JSONObject notification = notifications.getJSONObject(i);
+//                    String build = notification.getString("android_build");
+
+                    int id = Integer.valueOf(notification.getString("id"));
+                    String title = notification.getString("title");
+                    String message = notification.getString("message");
+
+//                    if(!build.equals("null")) {
+                        map.put(id, new AirbitzNotification(title, message));
+//                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    private Dialog mAlertNotificationDialog;
+    private void showNotificationAlert() {
+        if(mNotificationMap == null || mNotificationMap.size()==0)
+            return;
+
+        if(mAlertNotificationDialog != null)
+            mAlertNotificationDialog.dismiss();
+
+        StringBuilder s = new StringBuilder();
+        int max = -1;
+        for(Integer i : mNotificationMap.keySet() ) {
+            if(max < i) {
+                max = i;
+            }
+            String title = mNotificationMap.get(i).mTitle;
+            String message = mNotificationMap.get(i).mMessage;
+
+            s.append(title) .append("\n");
+            s.append(message) .append("\n\n");
+        }
+
+        final int saveInt = max;
+
+        mAlertNotificationDialog = new Dialog(this);
+        mAlertNotificationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
+        mAlertNotificationDialog.setCancelable(false);
+        WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
+        wv.setVisibility(View.VISIBLE);
+        wv.loadData(s.toString(), "text/html; charset=UTF-8", null);
+        Button ok = (Button) mAlertNotificationDialog.findViewById(R.id.dialog_notification_ok_button);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAlertNotificationDialog.cancel();
+                saveMessageIDPref(saveInt);
+            }
+        });
+        mAlertNotificationDialog.show();
+    }
+
+    private void checkDailyLimitPref() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+
+        // On first install/load, copy synchronized to local setting
+        if(!prefs.contains(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, mCoreAPI.GetDailySpendLimit());
+            editor.putBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, mCoreAPI.GetDailySpendLimitSetting());
+            editor.apply();
+        }
+    }
 }

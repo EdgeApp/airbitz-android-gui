@@ -41,15 +41,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.os.ParcelUuid;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -62,7 +56,6 @@ import com.airbitz.models.BleDevice;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
@@ -75,25 +68,23 @@ public class BluetoothListView extends ListView {
     private final int SCAN_PERIOD_MILLIS = 2000;
     private final int SCAN_REPEAT_PERIOD = 5000;
 
-    public final static String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
-    public final static String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
+    private final String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
+    private final String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
     private final String CLIENT_CHARACTERISTIC_CONFIG ="00002900-0000-1000-8000-00805f9b34fb";
 
     private static final Queue<Object> sWriteQueue = new ConcurrentLinkedQueue<Object>();
     private static boolean sIsWriting = false;
 
 
-    private Context mContext;
-    private OnPeripheralSelected mOnPeripheralSelectedListener = null;
-    private OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
-    private OnOneScanEnded mOnOneScanEndedListener = null;
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothLeScanner mBluetoothScanner;
-    private ScanCallback mScanCallback;
+    Context mContext;
+    OnPeripheralSelected mOnPeripheralSelectedListener = null;
+    OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
+    OnOneScanEnded mOnOneScanEndedListener = null;
+    BluetoothAdapter mBluetoothAdapter;
 
-    private List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
-    private BluetoothSearchAdapter mAdapter;
-    private Handler mHandler = new Handler();
+    List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
+    BluetoothSearchAdapter mAdapter;
+    Handler mHandler = new Handler();
 
     public BluetoothListView(Context context) {
         super(context);
@@ -113,24 +104,21 @@ public class BluetoothListView extends ListView {
     public void init(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(mBluetoothAdapter != null) {
-            mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (mOnPeripheralSelectedListener != null) {
-                        mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
-                    }
+        setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mOnPeripheralSelectedListener != null) {
+                    mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
                 }
-            });
-        }
+            }
+        });
 
         mAdapter = new BluetoothSearchAdapter(mContext, mPeripherals);
         setAdapter(mAdapter);
     }
 
     public boolean isAvailable() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             return true;
         }
         else {
@@ -143,7 +131,7 @@ public class BluetoothListView extends ListView {
             mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
         }
-        continuousScanForDevices(false);
+        mHandler.removeCallbacks(mContinuousScanRunnable);
         mBluetoothGatt = null;
     }
 
@@ -176,13 +164,13 @@ public class BluetoothListView extends ListView {
     /*
      * Continuously fires Scans for BLE devices
      */
-    public void continuousScanForDevices(boolean enable) {
+    public void scanForBleDevices(boolean enable) {
         if(enable) {
             mHandler.post(mContinuousScanRunnable);
         }
         else {
             mHandler.removeCallbacks(mContinuousScanRunnable);
-            scanDevices(false);
+            scanLeDevice(false);
         }
     }
 
@@ -191,86 +179,53 @@ public class BluetoothListView extends ListView {
         public void run() {
             mPeripherals.clear();
             mAdapter.notifyDataSetChanged();
-            scanDevices(true);
+            scanLeDevice(true);
             mHandler.postDelayed(this, SCAN_REPEAT_PERIOD);
         }
     };
 
+    /*
+     * Scans for BLE devices with a timeout
+     * @param enable if set, enables BLE, otherwise disables
+     */
+    public void scanLeDevice(final boolean enable) {
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
+        } else {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        }
+    }
+
     Runnable mScanStopperRunnable = new Runnable() {
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
-            if(mBluetoothScanner != null && mScanCallback != null) {
-                mBluetoothScanner.stopScan(mScanCallback);
-            }
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
             if(mOnOneScanEndedListener != null) {
                 mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
             }
         }
     };
 
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void scanDevices(boolean enable) {
-        mScanCallback =
-                new ScanCallback() {
-                    @Override
-                    public void onBatchScanResults(List<ScanResult> results) {
-                        Log.d(TAG, "Batch scan results returned");
-                    }
-
-                    @Override
-                    public void onScanResult(int callbackType, final ScanResult result) {
-                        super.onScanResult(callbackType, result);
-                        ((Activity)mContext).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                Log.d(TAG, "Scan result = " + result.toString());
-                                List<ParcelUuid> list = result.getScanRecord().getServiceUuids();
-                                if (list!=null && list.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
-                                    BluetoothDevice device = result.getDevice();
-//                                    Log.d(TAG, "Airbitz device found, name = " + device.getName());
-                                    if(mPeripherals.size() == 0) {
-                                        mPeripherals.add(new BleDevice(result.getDevice(), result.getRssi()));
-                                        mAdapter.notifyDataSetChanged();
-                                    }
-                                    for(BleDevice bleDevice : mPeripherals) {
-                                        if(!bleDevice.getDevice().getName().contains(device.getName())) {
-                                            mPeripherals.add(new BleDevice(result.getDevice(), result.getRssi()));
-                                            mAdapter.notifyDataSetChanged();
-                                        }
-                                    }
-                                }
+    // Device scan callback.
+    private BluetoothAdapter.LeScanCallback mLeScanCallback =
+            new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(final BluetoothDevice device, final int rssi,
+                                     final byte[] scanRecord) {
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<UUID> uuids = parseUuids(scanRecord);
+                            if(device.getName() != null && uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
+                                mPeripherals.add(new BleDevice(device, rssi));
+                                mAdapter.notifyDataSetChanged();
                             }
-                        });
-                    }
-
-                    @Override
-                    public void onScanFailed(int errorCode) {
-                        super.onScanFailed(errorCode);
-                    }
-                };
-        if (enable) {
-            Log.d(TAG, "scanDevices(true)");
-            // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
-
-            ScanFilter.Builder builder = new ScanFilter.Builder();
-            builder.setServiceUuid(ParcelUuid.fromString(TRANSFER_SERVICE_UUID));
-            List<ScanFilter> list = new ArrayList<ScanFilter>();
-            list.add(builder.build());
-
-            ScanSettings.Builder ssBuilder = new ScanSettings.Builder();
-            ssBuilder.setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
-
-            mBluetoothScanner.startScan(list, ssBuilder.build(), mScanCallback);
-        } else {
-            Log.d(TAG, "scanDevices(false)");
-            mBluetoothScanner.stopScan(mScanCallback);
-        }
-
-    }
-
+                        }
+                    });
+                }
+            };
 
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
@@ -320,15 +275,6 @@ public class BluetoothListView extends ListView {
                                                  BluetoothGattCharacteristic characteristic,
                                                  int status) {
                     Log.d(TAG, "onCharacteristicRead:" + status);
-
-                    Log.d(TAG, characteristic.getUuid() +", "+ characteristic.getStringValue(0));
-
-                    if(status == BluetoothGatt.GATT_WRITE_NOT_PERMITTED) { // Testing code
-                        if(mOnBitcoinURIReceivedListener != null) {
-                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("fake address");
-                        }
-                    }
-
                 }
 
                 @Override
@@ -336,11 +282,6 @@ public class BluetoothListView extends ListView {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
                     sIsWriting = false;
                     nextWrite();
-                    gatt.readCharacteristic(characteristic);
-//                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
-//                        Log.d(TAG, "asking read descriptor");
-//                        byte[] duh = descriptor.getValue();
-//                    }
                 }
 
                 @Override
@@ -348,7 +289,11 @@ public class BluetoothListView extends ListView {
                     Log.v(TAG, "onDescriptorWrite: " + status);
                     sIsWriting = false;
                     nextWrite();
-                    Log.d(TAG, descriptor.getUuid() +", "+ descriptor.getValue().toString());
+                    if(status == 3) {
+                        if(mOnBitcoinURIReceivedListener != null) {
+                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("fake address");
+                        }
+                    }
                 }
 
                 @Override
@@ -369,54 +314,22 @@ public class BluetoothListView extends ListView {
             BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(TRANSFER_CHARACTERISTIC_UUID));
             if(characteristic != null) {
                 final int charaProp = characteristic.getProperties();
-                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-//                    Log.d(TAG, "clear notification on characteristic");
-//                    setCharacteristicNotification(gatt, characteristic, false);
-//                    gatt.readCharacteristic(characteristic);
-                }
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                    // Write username to this characteristic - TODO
-                    setCharacteristicNotification(gatt, characteristic, true);
+                    // Write username to this characteristic
+                    gatt.setCharacteristicNotification(characteristic, true);
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                     boolean success = characteristic.setValue("This is Sparta");
                     write(characteristic);
+                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
+                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
+                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+                        write(descriptor);
+                    }
                 }
+
             }
         }
     }
-
-    /**
-     * Enables or disables notification on a give characteristic.
-     *
-     * @param gatt BluetoothGatt to act on.
-     * @param characteristic Characteristic to act on.
-     * @param enabled If true, enable notification.  False otherwise.
-     */
-    public void setCharacteristicNotification(BluetoothGatt gatt,
-                                              BluetoothGattCharacteristic characteristic, boolean enabled) {
-        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized");
-            return;
-        }
-        gatt.setCharacteristicNotification(characteristic, enabled);
-
-
-        for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
-            Log.d(TAG, "enabling notify on characteristic");
-            if(enabled) {
-                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-            }
-            else {
-                descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-            }
-
-            if((descriptor.getPermissions() | BluetoothGattDescriptor.PERMISSION_WRITE) > 0) {
-                Log.d(TAG, "Descriptor has write permission");
-                write(descriptor);
-            }
-        }
-    }
-
 
 
     private synchronized void write(Object o) {
@@ -445,4 +358,50 @@ public class BluetoothListView extends ListView {
         }
     }
 
+
+
+    //************ Helper functions
+
+    /*
+     * Android BLE does not filter on 128 bit UUIDs, so this filter is needed instead
+     * Don't use startLeScan(uuids, callback), use no uuids method
+     * See - http://stackoverflow.com/questions/18019161/startlescan-with-128-bit-uuids-doesnt-work-on-native-android-ble-implementation/21986475#21986475
+     */
+    private List<UUID> parseUuids(byte[] advertisedData) {
+        List<UUID> uuids = new ArrayList<UUID>();
+
+        ByteBuffer buffer = ByteBuffer.wrap(advertisedData).order(ByteOrder.LITTLE_ENDIAN);
+        while (buffer.remaining() > 2) {
+            byte length = buffer.get();
+            if (length == 0) break;
+
+            byte type = buffer.get();
+            switch (type) {
+                case 0x02: // Partial list of 16-bit UUIDs
+                case 0x03: // Complete list of 16-bit UUIDs
+                    while (length >= 2) {
+                        uuids.add(UUID.fromString(String.format(
+                                "%08x-0000-1000-8000-00805f9b34fb", buffer.getShort())));
+                        length -= 2;
+                    }
+                    break;
+
+                case 0x06: // Partial list of 128-bit UUIDs
+                case 0x07: // Complete list of 128-bit UUIDs
+                    while (length >= 16) {
+                        long lsb = buffer.getLong();
+                        long msb = buffer.getLong();
+                        uuids.add(new UUID(msb, lsb));
+                        length -= 16;
+                    }
+                    break;
+
+                default:
+                    buffer.position(buffer.position() + length - 1);
+                    break;
+            }
+        }
+
+        return uuids;
+    }
 }

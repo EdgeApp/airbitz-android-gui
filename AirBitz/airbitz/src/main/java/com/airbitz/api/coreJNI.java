@@ -109,6 +109,8 @@ public class coreJNI {
   public final static native String tABC_AsyncBitCoinInfo_szTxID_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
   public final static native void tABC_AsyncBitCoinInfo_szDescription_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, String jarg2);
   public final static native String tABC_AsyncBitCoinInfo_szDescription_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
+  public final static native void tABC_AsyncBitCoinInfo_sweepSatoshi_set(long jarg1, tABC_AsyncBitCoinInfo jarg1_, long jarg2);
+  public final static native long tABC_AsyncBitCoinInfo_sweepSatoshi_get(long jarg1, tABC_AsyncBitCoinInfo jarg1_);
   public final static native long new_tABC_AsyncBitCoinInfo();
   public final static native void delete_tABC_AsyncBitCoinInfo(long jarg1);
   public final static native void tABC_RequestResults_requestType_set(long jarg1, tABC_RequestResults jarg1_, int jarg2);
@@ -389,6 +391,7 @@ public class coreJNI {
   public final static native void ABC_FreeRequests(long jarg1, long jarg2);
   public final static native int ABC_CalcSendFees(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, tABC_TxDetails jarg6_, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_MaxSpendable(String jarg1, String jarg2, String jarg3, String jarg4, boolean jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_SweepKey(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,31 +23,43 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.shared.utils;
+package com.airbitz.objects;
 
-import android.util.Log;
+import android.content.Context;
+import android.media.MediaPlayer;
 
-/**
- * Created by chris on 1/25/14.
+/*
+ * Simple raw resource audio player
  */
-public class LogUtil {
+public class AudioPlayer {
 
-    public static void logDebug(Class<?> theClass, String message) {
-        Log.d(theClass.getName(), message);
+    private static MediaPlayer mMediaPlayer;
+
+    public static void stop() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
     }
 
-    public static void logWarning(Class<?> theClass, String message) {
-        Log.w(theClass.getName(), message);
-    }
+    public static void play(Context c, int rid) {
+        stop();
 
-    public static void logError(Class<?> theClass, String message) {
-        Log.e(theClass.getName(), message);
+        mMediaPlayer = MediaPlayer.create(c, rid);
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                stop();
+            }
+        });
+
+        mMediaPlayer.start();
     }
 
 }

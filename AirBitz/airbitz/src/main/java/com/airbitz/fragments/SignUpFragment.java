@@ -39,6 +39,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -47,6 +48,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -61,6 +63,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
@@ -77,10 +80,10 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     public static final int MIN_PIN_LENGTH = 4;
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;
-    private int mMode = SIGNUP;
     public static int CHANGE_PASSWORD = 1;
     public static int CHANGE_PASSWORD_VIA_QUESTIONS = 2;
     public static int CHANGE_PIN = 3;
+    private int mMode = SIGNUP;
     private final String TAG = getClass().getSimpleName();
     private RelativeLayout mParentLayout;
     private EditText mUserNameEditText;
@@ -94,6 +97,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private boolean mGoodPassword = false;
     private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
+    private View mWidgetContainer;
     private ImageView mSwitchImage1;
     private ImageView mSwitchImage2;
     private ImageView mSwitchImage3;
@@ -104,6 +108,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
+
     /**
      * Represents an asynchronous account creation task
      */
@@ -126,6 +132,8 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         }
 
         mActivity = (NavigationActivity) getActivity();
+
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
@@ -168,10 +176,11 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
         mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
-
+        mWidgetContainer = mView.findViewById(R.id.fragment_signup_widget_container);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mNextButton.setClickable(false);
                 goNext();
             }
         });
@@ -239,21 +248,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    LayoutTransition lt = new LayoutTransition();
-                    Animator animator = ObjectAnimator.ofFloat(null, "translationY", -(getResources().getDimension(R.dimen.activity_signup_popup_height)), 0);
-                    lt.setAnimator(LayoutTransition.APPEARING, animator);
-                    lt.setStartDelay(LayoutTransition.APPEARING, 0);
-                    lt.setDuration(300);
-                    mParentLayout.setLayoutTransition(lt);
-                    mPopupContainer.setVisibility(View.VISIBLE);
+                    mHandler.post(animatePopupDown);
                 } else {
-                    LayoutTransition lt = new LayoutTransition();
-                    Animator animator = ObjectAnimator.ofFloat(null, "translationY", 0, -(getResources().getDimension(R.dimen.activity_signup_popup_height)));
-                    lt.setAnimator(LayoutTransition.DISAPPEARING, animator);
-                    lt.setStartDelay(LayoutTransition.DISAPPEARING, 0);
-                    lt.setDuration(300);
-                    mParentLayout.setLayoutTransition(lt);
-                    mPopupContainer.setVisibility(View.GONE);
+                    mHandler.post(animatePopupUp);
                 }
             }
         });
@@ -269,6 +266,59 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         return mView;
     }
+
+    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            mPopupContainer.setVisibility(View.GONE);
+        }
+
+        @Override public void onAnimationCancel(Animator animator) { }
+        @Override public void onAnimationStart(Animator animator) { }
+        @Override public void onAnimationRepeat(Animator animator) { }
+    };
+
+    Runnable animatePopupDown = new Runnable() {
+        @Override
+        public void run() {
+            if(mPopupContainer != null && mWidgetContainer != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
+                        -getResources().getDimension(R.dimen.activity_signup_popup_height), 0);
+                ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
+                        0, getResources().getDimension(R.dimen.activity_signup_popup_height));
+                if(animator != null) {
+                    animator.setDuration(300);
+                    animator.start();
+                }
+                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    animatorWidget.setDuration(300);
+                    animatorWidget.start();
+                }
+                mPopupContainer.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    Runnable animatePopupUp = new Runnable() {
+        @Override
+        public void run() {
+            if(mPopupContainer != null && mWidgetContainer != null) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
+                        0, -getResources().getDimension(R.dimen.activity_signup_popup_height));
+                ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
+                        getResources().getDimension(R.dimen.activity_signup_popup_height), 0);
+                if(animator != null) {
+                    animator.setDuration(300);
+                    animator.addListener(endListener);
+                    animator.start();
+                }
+                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    animatorWidget.setDuration(300);
+                    animatorWidget.start();
+                }
+            }
+        }
+    };
 
     private void setupUI(Bundle bundle) {
         if (bundle == null)
@@ -299,7 +349,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             mNextButton.setText(getResources().getString(R.string.string_done));
             // hide mUsername
             mUserNameRedRingCover.setVisibility(View.GONE);
-            mUserNameEditText.setVisibility(View.INVISIBLE);
+            mUserNameEditText.setVisibility(View.GONE);
             mHintTextView.setVisibility(View.INVISIBLE);
         } else if (mMode == CHANGE_PIN) {
             // hide both mPassword fields
@@ -333,7 +383,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
             if (!passed) {
                 bNewPasswordFieldsAreValid = false;
             }
-            //TODO variable length list of items instead of fixed # of items
+
             int resource = passed ? R.drawable.green_check : R.drawable.red_x;
             switch (i) {
                 case 0:
@@ -371,6 +421,7 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 }
             }
         }
+        mNextButton.setClickable(true);
     }
 
     // checks the mUsername field (non-blank or matches old mPassword depending on the mode)
@@ -569,7 +620,6 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mChangeTask = null;
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
                     AirbitzApplication.Login(mUsername, mPassword);
@@ -595,13 +645,16 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 } else {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
                 }
+                mNextButton.setClickable(true);
             }
             mCoreAPI.startAllAsyncUpdates();
+            mChangeTask = null;
         }
 
         @Override
         protected void onCancelled() {
             mChangeTask = null;
+            mNextButton.setClickable(true);
             mCoreAPI.startAllAsyncUpdates();
             mActivity.showModalProgress(false);
         }
@@ -646,8 +699,9 @@ public class SignUpFragment extends Fragment implements NavigationActivity.OnBac
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();
 
-                mCoreAPI.coreSettings().setRecoveryReminderCount(0);
-                mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+                tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                settings.setRecoveryReminderCount(0);
+                mCoreAPI.saveAccountSettings(settings);
 
                 mActivity.popFragment();
                 mActivity.DisplayLoginOverlay(false);

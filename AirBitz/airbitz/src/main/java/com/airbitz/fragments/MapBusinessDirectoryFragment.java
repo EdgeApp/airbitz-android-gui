@@ -75,7 +75,7 @@ import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.utils.CacheUtil;
@@ -90,7 +90,7 @@ import java.util.List;
  * Created by Thomas Baker on 4/22/14.
  */
 public class MapBusinessDirectoryFragment extends Fragment implements
-        CurrentLocationManager.OnLocationChange {
+        CurrentLocationManager.OnCurrentLocationChange {
 
     private static final int INVALID_POINTER_ID = -1;
     private static String mLocationWords = "";
@@ -174,18 +174,20 @@ public class MapBusinessDirectoryFragment extends Fragment implements
 
         mCurrentLocation = mLocationManager.getLocation();
         checkLocationManager();
-        if (mCurrentLocation != null) {
-            mMapShim.setCurrentLocation(mCurrentLocation);
-        }
 
         // Setup the map
         mMapShim.setOnInfoWindowClickListener(new MapBuilder.OnInfoWindowClickListener() {
             public void click(MapMarker marker) {
                 final String cl = getString(R.string.your_location);
                 if (!marker.getTitle().equalsIgnoreCase(cl)) {
-                    showDirectoryDetailFragment(marker.getId(),
-                                                marker.getTitle(),
-                                                marker.getDistance());
+                    for(BusinessSearchResult result : mVenues) {
+                        if(marker.getTitle().equalsIgnoreCase(result.getName())) {
+                            showDirectoryDetailFragment(result.getId(),
+                                    result.getName(),
+                                    result.getDistance());
+                            break;
+                        }
+                    }
                 }
             }
         });
@@ -389,11 +391,13 @@ public class MapBusinessDirectoryFragment extends Fragment implements
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    ((NavigationActivity)getActivity()).hideSoftKeyboard(mSearchEdittext);
                     showViewAnimatorChild(0);
                     mBusinessType = "business";
                     mBusinessName = mSearchEdittext.getText().toString();
                     mLocationName = mLocationEdittext.getText().toString();
                     search();
+                    mSearchEdittext.clearFocus();
                     return true;
                 }
                 return false;
@@ -560,8 +564,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                     mMapShim.animateCamera(currentLatLng);
                 } else {
                     Log.d(TAG, getString(R.string.no_location_found));
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -613,8 +619,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 @Override
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                Toast.LENGTH_LONG).show();
+                        if(getActivity() != null) {
+                            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
+                                    Toast.LENGTH_LONG).show();
+                        }
                         mGetVenuesAsyncTask.cancel(true);
                     }
                 }
@@ -631,8 +639,10 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mGetVenuesAsyncTask.cancel(true);
-                        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                Toast.LENGTH_LONG).show();
+                        if(getActivity() != null) {
+                            Toast.makeText(getActivity(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
@@ -690,7 +700,9 @@ public class MapBusinessDirectoryFragment extends Fragment implements
         LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            if(getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+            }
         } else {
             locationEnabled = true;
         }

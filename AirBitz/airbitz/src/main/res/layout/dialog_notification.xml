@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_notification"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/advanced_details_bg"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="3dp"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="63dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo" />
+
+    <FrameLayout
+        android:id="@+id/dialog_notification_info_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/dialog_notification_textview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:bufferType="spannable"
+            android:paddingBottom="6.3dp"
+            android:paddingLeft="9.45dp"
+            android:paddingRight="9.45dp"
+            android:paddingTop="9.45dp"
+            android:visibility="visible" />
+
+        <WebView
+            android:id="@+id/dialog_notification_webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="6.3dp"
+            android:paddingLeft="9.45dp"
+            android:paddingRight="9.45dp"
+            android:paddingTop="9.45dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <com.airbitz.objects.HighlightOnPressButton
+        android:id="@+id/dialog_notification_ok_button"
+        style="@style/BlackDropShadow"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="245.7dp"
+        android:layout_height="37.8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_blue"
+        android:text="@string/string_ok"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

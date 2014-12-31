@@ -81,15 +81,15 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.CurrentLocationManager;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.models.defaultCategoryEnum;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -111,7 +111,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnLocationChange {
+public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnCurrentLocationChange {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
 
@@ -141,11 +141,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private boolean catSelected = false;
     private boolean mHasReminded = false;
     private Bundle bundle;
-    private int baseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int baseIncomePosition = 0;
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
     private int baseExchangePosition = 3;
-    private int originalBaseIncomePosition = 0;//TODO set these three from categories retrieved
+    private int originalBaseIncomePosition = 0;
     private int originalBaseExpensePosition = 1;
     private int originalBaseTransferPosition = 2;
     private int originalBaseExchangePosition = 3;
@@ -239,7 +239,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         }
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mActivity = (NavigationActivity) getActivity();
     }
 
@@ -247,12 +246,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
-        } else {
-//            return mView;
         }
-
-
-        FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
 
         mPicasso = Picasso.with(getActivity());
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
@@ -510,46 +504,32 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            String store = "";
+            String mInput = "";
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-//                Log.d(TAG, "editable before text changed. start="+start+" count="+count+" after="+after);
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
                 if(!doEdit) {
-                    store = charSequence.subSequence(start, start + after).toString();
-//                    Log.d(TAG, "store=" + store + " editable text changed. start=" + start + " before=" + before + " after=" + after);
+                    mInput = charSequence.subSequence(start, start + after).toString();
+                    Log.d(TAG, "OnTextChanged mInput=" + mInput + " editable text changed. start=" + start + " before=" + before + " after=" + after);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit) {
-                    if (!catSelected) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(currentType).append(store);
-                        doEdit = false;
-                        catSelected = true;
-                    }
+                    doEdit = true;
+                    editable.clear();
+                    editable.append(currentType).append(mInput);
+                    doEdit = false;
 
-                    if ((currentType.equals(getString(R.string.fragment_category_income)) && !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
-                            (currentType.equals(getString(R.string.fragment_category_expense)) && !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
-                            (currentType.equals(getString(R.string.fragment_category_transfer)) && !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
-                            (currentType.equals(getString(R.string.fragment_category_exchange)) && !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(mCategoryOld);
-                        doEdit = false;
-                    }
-                    String sub = store;
-                    updateBlanks(sub);
-                    goCreateCategoryList(sub);
+                    Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
+                    updateBlanks(mInput);
+                    goCreateCategoryList(mInput);
                     mCategoryAdapter.notifyDataSetChanged();
-                    mCategoryOld = editable.toString();
                 }
             }
         });
@@ -593,7 +573,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_exchange))) {
                     currentType = getString(R.string.fragment_category_exchange);
                 }
-                //TODO move the strings around depending on negative/positive value
+
                 doEdit = true;
                 mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
                 doEdit = false;
@@ -677,7 +657,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                goDone();
             }
         });
 
@@ -695,7 +675,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        UpdateView(mTransaction);
         mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -710,17 +689,23 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     public void onResume() {
         super.onResume();
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getContactsList();
+        if(mTransaction != null) {
+            FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
+            UpdateView(mTransaction);
+        }
     }
 
 
     private void goDone() {
-        int reminderCount = mCoreAPI.coreSettings().getRecoveryReminderCount();
+        tABC_AccountSettings settings = mCoreAPI.coreSettings();
+        int reminderCount = settings.getRecoveryReminderCount();
         if (mFromRequest && mCoreAPI.needsRecoveryReminder(mWallet) && !mHasReminded) {
             mHasReminded = true;
             reminderCount++;
-            mCoreAPI.coreSettings().setRecoveryReminderCount(reminderCount);
-            mCoreAPI.saveAccountSettings(mCoreAPI.coreSettings());
+            settings.setRecoveryReminderCount(reminderCount);
+            mCoreAPI.saveAccountSettings(settings);
             ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                     getString(R.string.transaction_details_recovery_reminder_message));
         } else {
@@ -730,7 +715,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     private void done() {
         mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
-        getActivity().onBackPressed();
+        mActivity.onBackPressed();
     }
 
     public void ShowReminderDialog(String title, String message) {
@@ -747,7 +732,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                                 done();
                                 Bundle bundle = new Bundle();
                                 bundle.putBoolean(SettingFragment.START_RECOVERY_PASSWORD, true);
-                                ((NavigationActivity) getActivity()).switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
+                                mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
                             }
                         }
                 ).setNegativeButton(getResources().getString(R.string.string_no),
@@ -772,7 +757,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
 
             // go through all the contacts
-            Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), strTerm);
+            Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, strTerm);
             for (String s : list.keySet()) {
                 mArrayAutoComplete.add(s);
                 mCombinedPhotos.put(s, list.get(s));
@@ -801,7 +786,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             if (mFromRequest) {
                 // this is a receive so use the address book
                 // show all the contacts
-                Map<String, Uri> list = Common.GetMatchedContactsList(getActivity(), null);
+                Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, null);
                 for (String s : list.keySet()) {
                     mArrayAutoComplete.add(s);
                     mCombinedPhotos.put(s, list.get(s));
@@ -989,26 +974,26 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String baseUrl;
             if (mCoreAPI.isTestNet()) {
-                baseUrl = "https://blockexplorer.com/testnet/";
+                baseUrl = "https://www.biteasy.com/testnet/";
             } else { // LIVE
-                baseUrl = "https://blockchain.info/";
+                baseUrl = "https://www.biteasy.com/blockchain/";
             }
+            final String finalBaseUrl = baseUrl;
 
-            int start = 0;
-            int end = 0;
+            int start;
+            int end;
             for (CoreAPI.TxOutput output : mTransaction.getOutputs()) {
                 start = 0;
-                end = 0;
                 SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
-                final String url = baseUrl + "/address/" + output.getAddress();
+                final String url = finalBaseUrl + "addresses/" + output.getAddress();
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(url));
-                        mActivity.startActivity(i);
+                            i.setData(Uri.parse(url));
+                            mActivity.startActivity(i);
                     }
                 };
                 address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1041,12 +1026,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             start = s.length();
             s.append(mTransaction.getmMalleableID());
             end = s.length();
-            final String finalBaseUrl = baseUrl;
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(finalBaseUrl + "tx/" + mTransaction.getmMalleableID()));
+                    i.setData(Uri.parse(finalBaseUrl + "transactions/" + mTransaction.getmMalleableID()));
                     mActivity.startActivity(i);
                 }
             };
@@ -1093,7 +1077,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
+            mActivity.pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mDummyFocus.requestFocus();
         }
@@ -1103,8 +1087,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
         mDateTextView.setText(dateString);
 
-        String pretext = mFromSend ? getActivity().getResources().getString(R.string.transaction_details_from) :
-                getActivity().getResources().getString(R.string.transaction_details_to);
+        String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
+                mActivity.getResources().getString(R.string.transaction_details_to);
         mToFromName.setText(pretext + transaction.getWalletName());
 
         mPayeeEditText.setText(transaction.getName());
@@ -1189,7 +1173,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(String searchResult) {
-            if (getActivity() == null) {
+            if (mActivity == null) {
                 return;
             }
             try {
@@ -1269,7 +1253,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 mFiatValueEdittext.getText().toString());
         task.execute();
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     private void startOnlineBusinessSearch(String term) {
@@ -1335,7 +1319,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(List<Business> businesses) {
-            if (getActivity() == null || businesses == null) {
+            if (mActivity == null || businesses == null) {
                 return;
             }
             for (Business business : businesses) {
@@ -1369,7 +1353,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
     public void getContactsList() {
         mContactNames.clear();
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = mActivity.getContentResolver();
         String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
         if (cursor!=null && cursor.getCount() > 0) {
@@ -1377,8 +1361,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                 mContactNames.add(name);
             }
+            cursor.close();
         }
-        cursor.close();
     }
 
     public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
@@ -1458,7 +1442,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         @Override
         protected void onPostExecute(BusinessDetail business) {
-            if (getActivity() == null) {
+            if (mActivity == null) {
                 return;
             }
             if (business != null && business.getSquareImageLink() != null) {
