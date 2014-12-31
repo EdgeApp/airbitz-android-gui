@@ -91,10 +91,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         NavigationActivity.OnBackPress,
         CurrentLocationManager.OnCurrentLocationChange {
 
+    String TAG = getClass().getSimpleName();
+
     static int CATEGORY_TIMEOUT = 15000;
     static int LOCATION_TIMEOUT = 10000;
     static float LOCATION_ACCURACY_METERS = 100.0f;
-    static String TAG = AirbitzAPI.class.getSimpleName();
 
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
@@ -188,8 +189,6 @@ public class BusinessDirectoryFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_business_directory, container, false);
-
-        checkLocationManager();
 
         if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -588,7 +587,6 @@ public class BusinessDirectoryFragment extends Fragment implements
             mMoreSpinner.setVisibility(View.INVISIBLE);
         }
         mBackButton.setVisibility(View.GONE);
-        showLoadingIndicator();
         mNoResultView.setVisibility(View.GONE);
 
         return view;
@@ -605,8 +603,8 @@ public class BusinessDirectoryFragment extends Fragment implements
         }
     }
 
-
     public void queryWithoutLocation() {
+        Log.d(TAG, "Query without location");
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }
@@ -630,7 +628,6 @@ public class BusinessDirectoryFragment extends Fragment implements
                 mVenuesTask.cancel(true);
             }
             mVenuesTask = new VenuesTask(getActivity(), latLon);
-            mVenuesTask.setWipe(true);
             mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
@@ -684,11 +681,6 @@ public class BusinessDirectoryFragment extends Fragment implements
             // if no venues, then request location
             queryWithoutLocation();
         } else {
-            // copy the list by default
-            List<BusinessSearchResult> venues =
-                    new ArrayList<BusinessSearchResult>(mVenuesLoaded);
-            mVenuesLoaded.clear();
-            setVenueListView(venues);
             mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
         }
         // If we don't have categories, fetch them
@@ -1031,16 +1023,11 @@ public class BusinessDirectoryFragment extends Fragment implements
         AirbitzAPI mApi = AirbitzAPI.getApi();
         Context mContext;
         String mLatLng;
-        boolean mWipe;
 
         public VenuesTask(Context context, String latlng) {
             mContext = context;
             mLatLng = latlng;
-            mWipe = false;
-        }
-
-        public void setWipe(boolean b) {
-            this.mWipe = b;
+            showLoadingIndicator();
         }
 
         @Override
@@ -1065,9 +1052,6 @@ public class BusinessDirectoryFragment extends Fragment implements
         @Override
         protected void onPostExecute(String searchResult) {
             if (!searchResult.isEmpty()) {
-                if (mWipe) {
-                    mVenuesLoaded.clear();
-                }
                 try {
                     SearchResult results = new SearchResult(new JSONObject(searchResult));
                     mNextUrl = results.getNextLink();
