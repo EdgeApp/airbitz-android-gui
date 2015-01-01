@@ -38,6 +38,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -382,9 +383,8 @@ public class SendFragment extends Fragment implements
             }
         }
         // if BLE is supported on the device, enable
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (mBluetoothAdapter.isEnabled()) {
+        if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            if (SettingFragment.getBLEPref()) {
                 mBluetoothListView = new BluetoothListView(mActivity);
                 mBluetoothLayout.addView(mBluetoothListView, 0);
                 mBluetoothButton.setVisibility(View.VISIBLE);
@@ -812,8 +812,8 @@ public class SendFragment extends Fragment implements
             }
         }
         else {
-            mBluetoothLayout.setVisibility(View.GONE);
-            mBluetoothScanningLayout.setVisibility(View.GONE);
+//            mBluetoothLayout.setVisibility(View.GONE);
+//            mBluetoothScanningLayout.setVisibility(View.GONE);
         }
     }
 }

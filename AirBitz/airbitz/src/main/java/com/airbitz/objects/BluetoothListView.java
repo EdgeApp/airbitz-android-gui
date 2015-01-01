@@ -40,10 +40,18 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
+import android.os.ParcelUuid;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -62,7 +70,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-@TargetApi(18)
+@TargetApi(21)
 public class BluetoothListView extends ListView {
     private final String TAG = getClass().getSimpleName();
     private final int SCAN_PERIOD_MILLIS = 2000;
@@ -81,9 +89,10 @@ public class BluetoothListView extends ListView {
     OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
     OnOneScanEnded mOnOneScanEndedListener = null;
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothLeScanner mBluetoothLeScanner;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
-    BluetoothSearchAdapter mAdapter;
+    BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
 
     public BluetoothListView(Context context) {
@@ -103,7 +112,6 @@ public class BluetoothListView extends ListView {
 
     public void init(Context context) {
         mContext = context;
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -113,12 +121,16 @@ public class BluetoothListView extends ListView {
             }
         });
 
-        mAdapter = new BluetoothSearchAdapter(mContext, mPeripherals);
-        setAdapter(mAdapter);
+        mSearchAdapter = new BluetoothSearchAdapter(mContext, mPeripherals);
+        setAdapter(mSearchAdapter);
+
+        BluetoothManager manager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = manager.getAdapter();
+        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
     }
 
     public boolean isAvailable() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             return true;
         }
         else {
@@ -178,7 +190,7 @@ public class BluetoothListView extends ListView {
         @Override
         public void run() {
             mPeripherals.clear();
-            mAdapter.notifyDataSetChanged();
+            mSearchAdapter.notifyDataSetChanged();
             scanLeDevice(true);
             mHandler.postDelayed(this, SCAN_REPEAT_PERIOD);
         }
@@ -188,44 +200,96 @@ public class BluetoothListView extends ListView {
      * Scans for BLE devices with a timeout
      * @param enable if set, enables BLE, otherwise disables
      */
-    public void scanLeDevice(final boolean enable) {
-        if (enable) {
+    public void scanLeDevice(final boolean start) {
+        if (start) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+//            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            startScan();
         } else {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+//            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            stopScan();
         }
     }
+
+    private void startScan() {
+        //Scan for devices advertising the thermometer service
+        ScanFilter airbitzFilter = new ScanFilter.Builder()
+                .setServiceUuid(ParcelUuid.fromString(TRANSFER_SERVICE_UUID))
+                .build();
+        ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
+        filters.add(airbitzFilter);
+
+        ScanSettings settings = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .build();
+
+        mBluetoothLeScanner.startScan(filters, settings, mScanCallback);
+    }
+
+    private void stopScan() {
+        mBluetoothLeScanner.stopScan(mScanCallback);
+    }
+
+
+    private ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+//            Log.d(TAG, "onScanResult");
+            processResult(result);
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
+            for (ScanResult result : results) {
+                processResult(result);
+            }
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.w(TAG, "LE Scan Failed: "+errorCode);
+        }
+
+        private void processResult(ScanResult result) {
+            boolean alreadyFound = false;
+            for(BleDevice ble : mPeripherals) {
+                if(ble.getDevice().getName().equals(result.getDevice().getName())) {
+                    alreadyFound = true;
+                    break;
+                }
+            }
+            if(!alreadyFound) {
+                Log.i(TAG, "New LE Device: " + result.getDevice().getName() + " @ " + result.getRssi());
+                BleDevice device = new BleDevice(result.getDevice(), result.getRssi());
+                mMessageHandler.sendMessage(Message.obtain(null, 0, device));
+            }
+        }
+    };
+
+    /*
+     * We have a Handler to process scan results on the main thread,
+     * add them to our list adapter, and update the view
+     */
+    private Handler mMessageHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            BleDevice device = (BleDevice) msg.obj;
+            mPeripherals.add(device);
+            mSearchAdapter.notifyDataSetChanged();
+        }
+    };
 
     Runnable mScanStopperRunnable = new Runnable() {
         @Override
         public void run() {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            stopScan();
             if(mOnOneScanEndedListener != null) {
                 mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
             }
         }
     };
-
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, final int rssi,
-                                     final byte[] scanRecord) {
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<UUID> uuids = parseUuids(scanRecord);
-                            if(device.getName() != null && uuids.get(0).toString().equalsIgnoreCase(TRANSFER_SERVICE_UUID)) {
-                                mPeripherals.add(new BleDevice(device, rssi));
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            };
 
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
@@ -240,6 +304,8 @@ public class BluetoothListView extends ListView {
         BluetoothDevice device = result.getDevice();
         mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
     }
+
+    BluetoothGattCharacteristic mCharacteristic;
 
     // Various callback methods defined by the BLE API.
     private final BluetoothGattCallback mGattCallback =
@@ -281,7 +347,9 @@ public class BluetoothListView extends ListView {
                 public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
                     sIsWriting = false;
+                    mCharacteristic = characteristic;
                     nextWrite();
+                    gatt.readCharacteristic(mCharacteristic);
                 }
 
                 @Override
@@ -289,11 +357,12 @@ public class BluetoothListView extends ListView {
                     Log.v(TAG, "onDescriptorWrite: " + status);
                     sIsWriting = false;
                     nextWrite();
-                    if(status == 3) {
-                        if(mOnBitcoinURIReceivedListener != null) {
-                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("fake address");
-                        }
-                    }
+                    mBluetoothGatt.readDescriptor(descriptor);
+//                    if(status != 0) {
+//                        if(mOnBitcoinURIReceivedListener != null) {
+//                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("Error onDescriptorWrite");
+//                        }
+//                    }
                 }
 
                 @Override
@@ -320,11 +389,11 @@ public class BluetoothListView extends ListView {
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                     boolean success = characteristic.setValue("This is Sparta");
                     write(characteristic);
-                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
-                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
-                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
-                        write(descriptor);
-                    }
+//                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
+//                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
+//                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+//                        write(descriptor);
+//                    }
                 }
 
             }
