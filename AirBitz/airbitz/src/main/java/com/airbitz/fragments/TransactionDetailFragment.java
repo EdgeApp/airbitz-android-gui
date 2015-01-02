@@ -532,9 +532,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     }
 
                     mInput = editable.toString();
+                    String strippedTerm = mInput.subSequence(currentType.length(), mInput.length()).toString();
+
                     Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
-                    updateBlanks(mInput.toString());
-                    goCreateCategoryList(mInput.toString());
+                    updateBlanks(strippedTerm);
+                    goCreateCategoryList(strippedTerm);
                     mCategoryAdapter.notifyDataSetChanged();
                 }
             }
