@@ -504,7 +504,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            String mInput = "";
+            CharSequence mInput = "";
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -512,23 +512,29 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
-                if(!doEdit) {
-                    mInput = charSequence.subSequence(start, start + after).toString();
-                    Log.d(TAG, "OnTextChanged mInput=" + mInput + " editable text changed. start=" + start + " before=" + before + " after=" + after);
-                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit) {
-                    doEdit = true;
-                    editable.clear();
-                    editable.append(currentType).append(mInput);
-                    doEdit = false;
+                    if ((currentType.equals(getString(R.string.fragment_category_income)) &&
+                            !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
+                            (currentType.equals(getString(R.string.fragment_category_expense)) &&
+                            !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
+                            (currentType.equals(getString(R.string.fragment_category_transfer)) &&
+                                    !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
+                            (currentType.equals(getString(R.string.fragment_category_exchange)) &&
+                                    !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
+                        doEdit = true;
+                        editable.clear();
+                        editable.append(mInput);
+                        doEdit = false;
+                    }
 
+                    mInput = editable.toString();
                     Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
-                    updateBlanks(mInput);
-                    goCreateCategoryList(mInput);
+                    updateBlanks(mInput.toString());
+                    goCreateCategoryList(mInput.toString());
                     mCategoryAdapter.notifyDataSetChanged();
                 }
             }
@@ -1215,7 +1221,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                             if (thumbnail != null) {
                                 Uri uri = Uri.parse(thumbnail);
                                 mCombinedPhotos.put(business.getName(), uri);
-                                Log.d(TAG, "Adding " + business.getName() + " thumbnail");
+//                                Log.d(TAG, "Adding " + business.getName() + " thumbnail");
                             }
                         }
                     }
