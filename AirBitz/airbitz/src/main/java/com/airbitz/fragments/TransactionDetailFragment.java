@@ -405,9 +405,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                         highlightEditableText(mCategoryEdittext);
                         mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
-                    updateBlanks(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':') + 1));
-                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(mCategoryEdittext.getText().toString().indexOf(':') + 1));
-                    mCategoryAdapter.notifyDataSetChanged();
+                    else {
+                        mCategoryEdittext.append(currentType);
+                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
+                    }
+                    updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
+                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
                 }
             }
         });
@@ -504,7 +507,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            CharSequence mInput = "";
+            String mInput = "";
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -532,12 +535,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     }
 
                     mInput = editable.toString();
-                    String strippedTerm = mInput.subSequence(currentType.length(), mInput.length()).toString();
+                    String strippedTerm = mInput.substring(currentType.length());
 
                     Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
                     updateBlanks(strippedTerm);
                     goCreateCategoryList(strippedTerm);
-                    mCategoryAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -1159,6 +1161,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 }
             }
         }
+        mCategoryAdapter.notifyDataSetChanged();
     }
 
     @Override
