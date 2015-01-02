@@ -697,9 +697,8 @@ public class SendConfirmationFragment extends Fragment {
         mPasswordRequired = false;
         mPinRequired = false;
 
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        long dailyLimit = prefs.getLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, 0);
-        boolean dailyLimitSetting = prefs.getBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, true);
+        long dailyLimit = mCoreAPI.GetDailySpendLimit();
+        boolean dailyLimitSetting = mCoreAPI.GetDailySpendLimitSetting();
 
         if (!mIsUUID && dailyLimitSetting
             && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= dailyLimit)) {

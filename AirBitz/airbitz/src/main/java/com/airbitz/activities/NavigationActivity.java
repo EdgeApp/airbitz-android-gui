@@ -1559,10 +1559,10 @@ public class NavigationActivity extends Activity
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
 
         // On first install/load, copy synchronized to local setting
-        if(!prefs.contains(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF)) {
+        if(!prefs.contains(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, mCoreAPI.GetDailySpendLimit());
-            editor.putBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, mCoreAPI.GetDailySpendLimitSetting());
+            editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
+            editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
         }
     }

@@ -59,8 +59,6 @@ import com.airbitz.objects.HighlightOnPressImageButton;
  */
 public class SpendingLimitsFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
-    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
-    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
 
     private EditText mPasswordEditText;
     private View mPasswordRedRing;
@@ -206,10 +204,8 @@ public class SpendingLimitsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-
-        mDailyEditText.setText(mCoreAPI.formatSatoshi(prefs.getLong(DAILY_LIMIT_PREF, 0), false));
-        mDailySwitch.setChecked(prefs.getBoolean(DAILY_LIMIT_SETTING_PREF, true));
+        mDailyEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetDailySpendLimit(), false));
+        mDailySwitch.setChecked(mCoreAPI.GetDailySpendLimitSetting());
         mDailyDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
 
         mPINSwitch.setChecked(mCoreAPI.GetPINSpendLimitSetting());
@@ -220,20 +216,13 @@ public class SpendingLimitsFragment extends Fragment {
 
 
     private void goSave() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-
         if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
             long satoshis = mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString());
             mCoreAPI.SetDailySpendSatoshis(satoshis);
             mCoreAPI.SetDailySpendLimitSetting(mDailySwitch.isChecked());
-            editor.putLong(DAILY_LIMIT_PREF, satoshis);
-            editor.putBoolean(DAILY_LIMIT_SETTING_PREF, mDailySwitch.isChecked());
 
             mCoreAPI.SetPINSpendSatoshis(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
             mCoreAPI.SetPINSpendLimitSetting(mPINSwitch.isChecked());
-
-            editor.apply();
 
             mActivity.popFragment();
         } else {

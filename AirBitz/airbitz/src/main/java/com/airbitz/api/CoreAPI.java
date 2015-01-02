@@ -32,6 +32,7 @@
 package com.airbitz.api;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -44,6 +45,7 @@ import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.fragments.SpendingLimitsFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.Contact;
@@ -509,26 +511,48 @@ public class CoreAPI {
 
     //****** Spend Limiting
     public boolean GetDailySpendLimitSetting() {
-        return coreSettings().getBDailySpendLimit();
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        if(prefs.contains(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
+            return prefs.getBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), true);
+        }
+        else {
+            return coreSettings().getBDailySpendLimit();
+        }
     }
 
     public void SetDailySpendLimitSetting(boolean set) {
         tABC_AccountSettings settings = coreSettings();
         settings.setBDailySpendLimit(set);
         saveAccountSettings(settings);
+
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), set);
+        editor.apply();
     }
 
     public long GetDailySpendLimit() {
-        SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
-        return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        if(prefs.contains(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername())) {
+            return prefs.getLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), 0);
+        }
+        else {
+            SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
+            return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        }
     }
 
     public void SetDailySpendSatoshis(long spendLimit) {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
-        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit); //0 means all transactions
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
         settings.setDailySpendLimitSatoshis(limit);
         saveAccountSettings(settings);
+
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), spendLimit);
+        editor.apply();
     }
 
     public boolean GetPINSpendLimitSetting() {
@@ -548,7 +572,7 @@ public class CoreAPI {
 
     public void SetPINSpendSatoshis(long spendLimit) {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
-        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit); //0 means all transactions
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
         settings.setSpendRequirePinSatoshis(limit);
         saveAccountSettings(settings);
