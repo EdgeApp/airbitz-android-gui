@@ -403,11 +403,11 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         highlightEditableText(mCategoryEdittext);
-                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
+//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
                     else {
                         mCategoryEdittext.append(currentType);
-                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
+//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
                     updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
