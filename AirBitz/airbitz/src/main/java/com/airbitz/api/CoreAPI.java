@@ -1311,13 +1311,6 @@ public class CoreAPI {
         return (blockHeight - txHeight) + 1;
     }
 
-    public tABC_CC SaveTransaction(Transaction transaction, tABC_TxDetails details) {
-        tABC_Error Error = new tABC_Error();
-        tABC_CC results = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                transaction.getWalletUUID(), transaction.getID(), details, Error);
-        return results;
-    }
-
     public List<Transaction> searchTransactionsIn(Wallet wallet, String searchText) {
         List<Transaction> listTransactions = new ArrayList<Transaction>();
         tABC_Error Error = new tABC_Error();
@@ -1353,7 +1346,7 @@ public class CoreAPI {
         return listTransactions;
     }
 
-    public boolean storeTransaction(Transaction transaction) {
+    public tABC_CC storeTransaction(Transaction transaction) {
         tABC_Error Error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -1364,7 +1357,7 @@ public class CoreAPI {
         if (result!=tABC_CC.ABC_CC_Ok)
         {
             Log.d(TAG, "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
-            return false;
+            return result;
         }
 
         tABC_TxDetails details = new TxDetails(core.longp_value(lp));
@@ -1375,15 +1368,15 @@ public class CoreAPI {
         details.setAmountCurrency(transaction.getAmountFiat());
         details.setBizId(transaction.getmBizId());
 
-        result = SaveTransaction(transaction, details);
+        result = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                transaction.getWalletUUID(), transaction.getID(), details, Error);
 
         if (result!=tABC_CC.ABC_CC_Ok)
         {
             Log.d(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
-            return false;
         }
 
-        return true;
+        return result;
     }
 
     //************************* Currency formatting

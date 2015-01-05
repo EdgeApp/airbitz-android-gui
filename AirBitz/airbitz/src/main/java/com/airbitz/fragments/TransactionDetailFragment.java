@@ -82,6 +82,7 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
@@ -1275,7 +1276,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
     }
 
-    class SaveTransactionAsyncTask extends AsyncTask<Void, Void, Void> {
+    class SaveTransactionAsyncTask extends AsyncTask<Void, Void, tABC_CC> {
         Transaction transaction;
         long Bizid;
         String Payee, Category, Note, Fiat;
@@ -1291,7 +1292,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected tABC_CC doInBackground(Void... voids) {
             transaction.setName(Payee);
             transaction.setCategory(Category);
             transaction.setNotes(Note);
@@ -1303,12 +1304,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
             transaction.setAmountFiat(amountFiat);
             transaction.setmBizId(Bizid);
-            mCoreAPI.storeTransaction(mTransaction);
-            return null;
+            return mCoreAPI.storeTransaction(mTransaction);
         }
 
         @Override
-        protected void onPostExecute(Void v) {
+        protected void onPostExecute(tABC_CC result) {
+            if (result!=tABC_CC.ABC_CC_Ok)
+            {
+                mActivity.ShowFadingDialog(getString(R.string.transaction_details_transaction_save_failed));
+            }
         }
 
         @Override
