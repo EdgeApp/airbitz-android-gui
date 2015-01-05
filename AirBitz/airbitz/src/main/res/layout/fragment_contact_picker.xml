@@ -20,7 +20,7 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <EditText
+        <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_contact_picker_edittext_name"
             android:layout_width="match_parent"
             android:layout_height="36dp"

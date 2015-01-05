@@ -157,7 +157,7 @@
 
             </RelativeLayout>
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/fragment_export_saving_password_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="37.8dp"
