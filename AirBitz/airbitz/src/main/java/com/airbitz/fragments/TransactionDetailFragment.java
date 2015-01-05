@@ -47,10 +47,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -108,6 +110,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created on 2/20/14.
@@ -136,10 +140,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private View mDummyFocus;
     private CurrentLocationManager mLocationManager;
     private boolean locationEnabled;
-    private String mCategoryOld = "";
     private String currentType = "";
     private boolean doEdit = false;
-    private boolean catSelected = false;
     private boolean mHasReminded = false;
     private Bundle bundle;
     private int baseIncomePosition = 0;
@@ -183,7 +185,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
-    private String mEntryText;
 
     private Picasso mPicasso;
 
@@ -219,16 +220,12 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                         currentType = getString(R.string.fragment_category_income);
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_income))) {
                         currentType = getString(R.string.fragment_category_income);
-                        catSelected = true;
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_expense))) {
                         currentType = getString(R.string.fragment_category_expense);
-                        catSelected = true;
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_transfer))) {
                         currentType = getString(R.string.fragment_category_transfer);
-                        catSelected = true;
                     } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_exchange))) {
                         currentType = getString(R.string.fragment_category_exchange);
-                        catSelected = true;
                     }
 
                     // if there is a bizId, add it as the first one of the map
@@ -276,7 +273,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
-        mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
         mPayeeImageView = (ImageView) mView.findViewById(R.id.transaction_detail_contact_pic);
         mPayeeImageViewFrame = (FrameLayout) mView.findViewById(R.id.transaction_detail_contact_pic_frame);
         mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
@@ -289,10 +285,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mBitcoinSignTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
         mEdittextNotesLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
-        mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
         mCategoryTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_category);
         mCategoryEdittextLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_edittext_category_layout);
-        mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryPopupLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_category_popup_layout);
 
 
@@ -346,9 +340,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryListView.setAdapter(mCategoryAdapter);
 
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mPayeeEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mNoteEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
@@ -389,6 +380,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
+        mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
+        mPayeeEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         mPayeeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -397,25 +392,47 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPayeeEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                showCategoryPopup(hasFocus);
-                if (hasFocus) {
-                    if (!mCategoryEdittext.getText().toString().isEmpty()) {
-                        highlightEditableText(mCategoryEdittext);
-//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
-                    }
-                    else {
-                        mCategoryEdittext.append(currentType);
-//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
-                    }
-                    updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
-                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    mCategoryEdittext.requestFocus();
+                    return true;
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    showPayeeSearch(false);
+                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mPayeeEditText);
+                    updatePhoto();
+                    updateBizId();
+                    mDummyFocus.requestFocus();
+                    return true;
                 }
+                return false;
             }
         });
 
+        mPayeeEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateAutoCompleteArray(mPayeeEditText.getText().toString());
+                updateBizId();
+                updatePhoto();
+                mSearchAdapter.notifyDataSetChanged();
+            }
+        });
+
+        mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
+        mNoteEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -433,21 +450,36 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mNoteEdittext.setHorizontallyScrolling(false);
         mNoteEdittext.setMaxLines(Integer.MAX_VALUE);
 
-        mPayeeEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    mCategoryEdittext.requestFocus();
-                    return true;
-                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    showPayeeSearch(false);
-                    ((NavigationActivity) getActivity()).hideSoftKeyboard(mPayeeEditText);
-                    updatePhoto();
-                    updateBizId();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mDummyFocus.requestFocus();
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
+        mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                showCategoryPopup(hasFocus);
+                if (hasFocus) {
+                    if (!mCategoryEdittext.getText().toString().isEmpty()) {
+                        highlightEditableText(mCategoryEdittext);
+//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
+                    }
+                    else {
+                        mCategoryEdittext.append(currentType);
+//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
+                    }
+                    updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
+                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
+                }
             }
         });
 
@@ -473,37 +505,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     return true;
                 }
                 return false;
-            }
-        });
-
-        mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mDummyFocus.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        mPayeeEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                updateAutoCompleteArray(mPayeeEditText.getText().toString());
-                updateBizId();
-                updatePhoto();
-                mSearchAdapter.notifyDataSetChanged();
             }
         });
 
@@ -574,7 +575,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                catSelected = true;
                 if (mCategories.get(i).startsWith(getString(R.string.fragment_category_income))) {
                     currentType = getString(R.string.fragment_category_income);
                 } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_expense))) {
@@ -686,9 +686,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             }
         });
 
-        mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if (mFromSend || mFromRequest) {
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         }

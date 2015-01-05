@@ -38,7 +38,7 @@
             android:background="@android:color/transparent"
             android:gravity="center">
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/transaction_detail_edittext_name"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
@@ -275,7 +275,7 @@
                 android:layout_weight="20"
                 android:orientation="vertical">
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/transaction_detail_edittext_category"
                     android:layout_width="fill_parent"
                     android:layout_height="32dp"
@@ -340,7 +340,7 @@
                 android:layout_weight="35"
                 android:orientation="vertical">
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/transaction_detail_edittext_notes"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"

@@ -33,7 +33,7 @@
                 android:paddingRight="14dp">
 
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/activity_signup_username_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
@@ -74,7 +74,7 @@
                     android:textColor="@color/disabled_hint_color"
                     android:textSize="10sp" />
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/activity_signup_password_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
@@ -92,7 +92,7 @@
                     android:textCursorDrawable="@drawable/bold_cursor_white"
                     android:textSize="14sp" />
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/activity_signup_repassword_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="37.8dp"
