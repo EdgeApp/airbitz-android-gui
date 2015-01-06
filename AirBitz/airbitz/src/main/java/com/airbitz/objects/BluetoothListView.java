@@ -342,6 +342,7 @@ public class BluetoothListView extends ListView {
                                                  BluetoothGattCharacteristic characteristic,
                                                  int status) {
                     Log.d(TAG, "onCharacteristicRead: " + status);
+                    mCharacteristic = characteristic;
                 }
 
                 @Override
@@ -350,7 +351,7 @@ public class BluetoothListView extends ListView {
                     sIsWriting = false;
                     mCharacteristic = characteristic;
                     nextWrite();
-//                    gatt.readCharacteristic(mCharacteristic);
+                    gatt.readCharacteristic(mCharacteristic);
                 }
 
                 @Override
