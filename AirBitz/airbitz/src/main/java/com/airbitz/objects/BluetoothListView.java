@@ -343,6 +343,10 @@ public class BluetoothListView extends ListView {
                                                  int status) {
                     Log.d(TAG, "onCharacteristicRead: " + status);
                     mCharacteristic = characteristic;
+                    String response = characteristic.getStringValue(0);
+                    if(response != null) {
+                        Log.i(TAG, "onCharacteristic response = " + response); // This is good!
+                    }
                 }
 
                 @Override
@@ -392,11 +396,11 @@ public class BluetoothListView extends ListView {
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); // WRITE_TYPE_DEFAULT Needed to have iOS recognize
                     boolean success = characteristic.setValue("This is Sparta");
                     write(characteristic);
-                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
-                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
-                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                        write(descriptor);
-                    }
+//                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
+//                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
+//                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+//                        write(descriptor);
+//                    }
                 }
             }
         }
