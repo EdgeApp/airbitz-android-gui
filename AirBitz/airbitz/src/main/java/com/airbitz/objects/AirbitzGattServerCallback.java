@@ -122,7 +122,7 @@ public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
                 Log.d(TAG, "invalid value written");
             }
             mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
-                    "This is a test string".getBytes(Charset.forName("UTF-8")));
+                    mData.getBytes(Charset.forName("UTF-8")));
         }
     }
 
