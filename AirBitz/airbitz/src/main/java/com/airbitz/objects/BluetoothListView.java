@@ -76,13 +76,8 @@ public class BluetoothListView extends ListView {
     private final int SCAN_PERIOD_MILLIS = 2000;
     private final int SCAN_REPEAT_PERIOD = 5000;
 
-    private final String TRANSFER_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
-    private final String TRANSFER_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
-    private final String CLIENT_CHARACTERISTIC_CONFIG ="00002900-0000-1000-8000-00805f9b34fb";
-
     private static final Queue<Object> sWriteQueue = new ConcurrentLinkedQueue<Object>();
     private static boolean sIsWriting = false;
-
 
     Context mContext;
     OnPeripheralSelected mOnPeripheralSelectedListener = null;
@@ -127,15 +122,6 @@ public class BluetoothListView extends ListView {
         BluetoothManager manager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = manager.getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-    }
-
-    public boolean isAvailable() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 
     public void close() {
@@ -213,7 +199,7 @@ public class BluetoothListView extends ListView {
     private void startScan() {
         //Scan for devices advertising the thermometer service
         ScanFilter airbitzFilter = new ScanFilter.Builder()
-                .setServiceUuid(ParcelUuid.fromString(TRANSFER_SERVICE_UUID))
+                .setServiceUuid(ParcelUuid.fromString(BleUtil.AIRBITZ_SERVICE_UUID))
                 .build();
         ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
         filters.add(airbitzFilter);
@@ -387,7 +373,7 @@ public class BluetoothListView extends ListView {
         List<BluetoothGattService> services = gatt.getServices();
         for(BluetoothGattService service : services) {
             Log.d(TAG, "subscribing...");
-            BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(TRANSFER_CHARACTERISTIC_UUID));
+            BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID));
             if(characteristic != null) {
                 final int charaProp = characteristic.getProperties();
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {

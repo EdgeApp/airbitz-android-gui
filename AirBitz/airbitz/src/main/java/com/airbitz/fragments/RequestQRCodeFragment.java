@@ -31,8 +31,15 @@
 
 package com.airbitz.fragments;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGattServer;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -64,20 +71,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.Contact;
+import com.airbitz.objects.AirbitzGattServerCallback;
+import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class RequestQRCodeFragment extends Fragment implements
         ContactPickerFragment.ContactSelection,
@@ -114,6 +121,7 @@ public class RequestQRCodeFragment extends Fragment implements
     private CreateBitmapTask mCreateBitmapTask;
     private AlertDialog mPartialDialog;
     private ImageView mNFCImageView;
+    private ImageView mBLEImageView;
     private NfcAdapter mNfcAdapter;
     private SwipeRefreshLayout mSwipeLayout;
 
@@ -141,6 +149,7 @@ public class RequestQRCodeFragment extends Fragment implements
     @Override
     public void onPause() {
         mCoreAPI.prioritizeAddress(null, mWallet.getUUID());
+        stopAirbitzAdvertise();
         super.onPause();
     }
 
@@ -156,6 +165,7 @@ public class RequestQRCodeFragment extends Fragment implements
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
         mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
+        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
 
         mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_request_qrcode_swipe_layout);
         mSwipeLayout.setOnRefreshListener(this);
@@ -242,13 +252,23 @@ public class RequestQRCodeFragment extends Fragment implements
             mCreateBitmapTask = new CreateBitmapTask();
             mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+    }
 
+    private void checkNFC() {
         final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
             mNFCImageView.setVisibility(View.VISIBLE);
             mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
+        }
+    }
+
+    private void checkBle() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
+                BleUtil.isBleAdvertiseAvailable(mActivity)) {
+            mBLEImageView.setVisibility(View.VISIBLE);
+            startAirbitzAdvertise(mRequestURI);
         }
     }
 
@@ -511,7 +531,7 @@ public class RequestQRCodeFragment extends Fragment implements
         }, 1000);
     }
 
-    public class CreateBitmapTask extends AsyncTask<Void, Void, Void> {
+    public class CreateBitmapTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected void onPreExecute() {
@@ -519,7 +539,7 @@ public class RequestQRCodeFragment extends Fragment implements
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
             if (mID != null) {
@@ -532,28 +552,83 @@ public class RequestQRCodeFragment extends Fragment implements
                     mQRBitmap = addWhiteBorder(mQRBitmap);
                     Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
+                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            return null;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void v) {
+        protected void onPostExecute(Boolean success) {
             ((NavigationActivity) getActivity()).showModalProgress(false);
             mCreateBitmapTask = null;
-            mBitcoinAddress.setText(mAddress);
-            if (mQRBitmap != null) {
-                mQRView.setImageBitmap(mQRBitmap);
+            if(success) {
+                checkNFC();
+                checkBle();
+                mBitcoinAddress.setText(mAddress);
+                if (mQRBitmap != null) {
+                    mQRView.setImageBitmap(mQRBitmap);
+                }
+                mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
             }
-            mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
         }
 
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
             ((NavigationActivity) getActivity()).showModalProgress(false);
+        }
+    }
+
+    //******************************** BLE support
+    private BluetoothLeAdvertiser mBleAdvertiser;
+    private BluetoothGattServer mGattServer;
+    private AdvertiseCallback mAdvCallback;
+
+    // start Advertise
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void startAirbitzAdvertise(String data) {
+        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter adapter = manager.getAdapter();
+        mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
+        AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
+        mGattServer = BleUtil.getManager(mActivity).openGattServer(mActivity, bgsc);
+        bgsc.setupServices(mActivity, mGattServer, data);
+
+        mAdvCallback = new AdvertiseCallback() {
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                if (settingsInEffect != null) {
+                    Log.d(TAG, "onStartSuccess TxPowerLv="
+                            + settingsInEffect.getTxPowerLevel()
+                            + " mode=" + settingsInEffect.getMode()
+                            + " timeout=" + settingsInEffect.getTimeout());
+                } else {
+                    Log.d(TAG, "onStartSuccess, settingInEffect is null");
+                }
+            }
+
+            public void onStartFailure(int errorCode) {
+                Log.d(TAG, "onStartFailure errorCode=" + errorCode);
+            };
+        };
+        mBleAdvertiser.startAdvertising(
+                BleUtil.createAirbitzAdvertiseSettings(true, 0),
+                BleUtil.createAirbitzAdvertiseData(),
+                mAdvCallback);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void stopAirbitzAdvertise() {
+        if (mGattServer != null) {
+            mGattServer.clearServices();
+            mGattServer.close();
+            mGattServer = null;
+        }
+        if (mBleAdvertiser != null) {
+            mBleAdvertiser.stopAdvertising(mAdvCallback);
+            mBleAdvertiser = null;
         }
     }
 }

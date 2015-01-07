@@ -76,6 +76,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BleDevice;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.BluetoothListView;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressButton;
@@ -757,7 +758,7 @@ public class SendFragment extends Fragment implements
 
     // Start the Bluetooth search
     private void startBluetoothSearch() {
-        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
+        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
             mBluetoothScanningLayout.setVisibility(View.VISIBLE);
             mBluetoothListView.setOnPeripheralSelectedListener(this);
             mBluetoothListView.scanForBleDevices(true);
@@ -767,7 +768,7 @@ public class SendFragment extends Fragment implements
 
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
-        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
+        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
             mBluetoothListView.scanForBleDevices(false);
             mBluetoothListView.close();
         }
