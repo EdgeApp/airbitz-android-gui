@@ -330,8 +330,8 @@ public class BluetoothListView extends ListView {
                     Log.d(TAG, "onCharacteristicRead: " + status);
                     mCharacteristic = characteristic;
                     String response = characteristic.getStringValue(0);
-                    if(response != null) {
-                        Log.i(TAG, "onCharacteristic response = " + response); // This is good!
+                    if(response != null && mOnBitcoinURIReceivedListener != null) {
+                        mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
                     }
                 }
 
@@ -362,9 +362,6 @@ public class BluetoothListView extends ListView {
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                   BluetoothGattCharacteristic characteristic) {
                     Log.d(TAG, "Characteristic changed: ");
-                    if(mOnBitcoinURIReceivedListener != null) {
-                        mOnBitcoinURIReceivedListener.onBitcoinURIReceived(characteristic.getStringValue(0));
-                    }
                 }
             };
 
