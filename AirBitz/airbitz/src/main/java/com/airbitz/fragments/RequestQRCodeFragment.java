@@ -599,7 +599,7 @@ public class RequestQRCodeFragment extends Fragment implements
         // The name cannot be more than 8 characters in Lollipop 5.0.2
         String[] separate = data.split(":");
         if(separate[1] != null && separate[1].length() >= 8) {
-            adapter.setName(separate[1].substring(0, 7));
+            adapter.setName(separate[1].substring(0, 8));
         }
         else {
             adapter.setName("Airbitz");
@@ -651,8 +651,7 @@ public class RequestQRCodeFragment extends Fragment implements
         AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
         builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
         builder.setConnectable(connectable);
-        builder.setTimeout(timeoutMillis);
-        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
+        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
         return builder.build();
     }
 
@@ -663,8 +662,8 @@ public class RequestQRCodeFragment extends Fragment implements
 //        byte mServiceData[] = { (byte)0x67, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03, (byte)0x04 };
 //        builder.addManufacturerData(0x0067, mServiceData);
 
-        builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)))
-            .setIncludeDeviceName(true);
+        builder.setIncludeDeviceName(true)
+            .addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
         return builder.build();
     }
 
