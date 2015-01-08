@@ -105,6 +105,8 @@ public class SendFragment extends Fragment implements
         BluetoothListView.OnPeripheralSelected,
         BluetoothListView.OnBitcoinURIReceived,
         BluetoothListView.OnOneScanEnded {
+    private final String TAG = getClass().getSimpleName();
+
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -112,7 +114,6 @@ public class SendFragment extends Fragment implements
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
     private static int RESULT_LOAD_IMAGE = 678;
     private final int FOCUS_MILLIS = 2000;
-    private final String TAG = getClass().getSimpleName();
     Runnable cameraDelayRunner = new Runnable() {
         @Override
         public void run() {
@@ -156,6 +157,7 @@ public class SendFragment extends Fragment implements
     private Wallet mFromWallet;
     private List<Wallet> mCurrentListing;
     private WalletPickerAdapter listingAdapter;
+    private String mSendName;
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
     private boolean mFocused = true;
@@ -415,7 +417,9 @@ public class SendFragment extends Fragment implements
             GotoSendConfirmation(results.address, results.amountSatoshi, results.label, false);
         } else {
             ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(
+                    getResources().getString(R.string.fragment_send_failure_title),
+                    getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
         }
     }
 
@@ -633,6 +637,13 @@ public class SendFragment extends Fragment implements
         }
 
         if(mBluetoothButton.getVisibility() == View.VISIBLE) {
+            if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+                mSendName = mCoreAPI.coreSettings().getSzFullName();
+                if(mSendName==null || mSendName.isEmpty()) {
+                    mSendName = getString(R.string.request_qr_unknown);
+                }
+            }
+
             ViewBluetoothPeripherals(true);
             mBluetoothListView.setOnOneScanEndedListener(this);
         }
@@ -779,7 +790,7 @@ public class SendFragment extends Fragment implements
         stopBluetoothSearch();
         mBluetoothListView.setOnPeripheralSelectedListener(null);
         mBluetoothListView.setOnBitcoinURIReceivedListener(this);
-        mBluetoothListView.connectGatt(device);
+        mBluetoothListView.connectGatt(device, mSendName);
     }
 
     @Override

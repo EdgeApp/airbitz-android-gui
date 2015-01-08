@@ -283,17 +283,19 @@ public class BluetoothListView extends ListView {
 
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
+    BluetoothGattCharacteristic mCharacteristic;
+    private String mSendName;
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
 
     // Attempt GATT connection
-    public void connectGatt(BleDevice result) {
+    public void connectGatt(BleDevice result, String sendName) {
         BluetoothDevice device = result.getDevice();
+        mSendName = sendName == null ? " " : sendName;
         mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
     }
 
-    BluetoothGattCharacteristic mCharacteristic;
 
     // Various callback methods defined by the BLE API.
     private final BluetoothGattCallback mGattCallback =
@@ -316,7 +318,7 @@ public class BluetoothListView extends ListView {
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         Log.d(TAG, "onServicesDiscovered success");
-                        subscribe(gatt);
+                        subscribe(gatt, mSendName);
                      } else {
                         Log.w(TAG, "onServicesDiscovered error: " + status);
                     }
@@ -331,6 +333,7 @@ public class BluetoothListView extends ListView {
                     mCharacteristic = characteristic;
                     String response = characteristic.getStringValue(0);
                     if(response != null && mOnBitcoinURIReceivedListener != null) {
+                        Log.d(TAG, "onCharacteristicRead response = " + response);
                         mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
                     }
                 }
@@ -339,22 +342,13 @@ public class BluetoothListView extends ListView {
                 public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
                     sIsWriting = false;
-                    mCharacteristic = characteristic;
-                    nextWrite();
-                    gatt.readCharacteristic(mCharacteristic);
+                    gatt.readCharacteristic(characteristic);
                 }
 
                 @Override
                 public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                     Log.v(TAG, "onDescriptorWrite: " + status);
                     sIsWriting = false;
-                    nextWrite();
-//                    gatt.readDescriptor(descriptor);
-//                    if(status != 0) {
-//                        if(mOnBitcoinURIReceivedListener != null) {
-//                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived("Error onDescriptorWrite");
-//                        }
-//                    }
                 }
 
                 @Override
@@ -365,7 +359,7 @@ public class BluetoothListView extends ListView {
                 }
             };
 
-    private void subscribe(BluetoothGatt gatt) {
+    private void subscribe(BluetoothGatt gatt, final String sendName) {
         // Find our Airbitz service and characteristic
         List<BluetoothGattService> services = gatt.getServices();
         for(BluetoothGattService service : services) {
@@ -377,13 +371,8 @@ public class BluetoothListView extends ListView {
                     // Write username to this characteristic
                     gatt.setCharacteristicNotification(characteristic, true);
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); // WRITE_TYPE_DEFAULT Needed to have iOS recognize
-                    boolean success = characteristic.setValue("This is Sparta");
-                    write(characteristic);
-//                    for (BluetoothGattDescriptor descriptor : characteristic.getDescriptors()) {
-//                        Log.d(TAG, "Searching descriptor: " + descriptor.getUuid().toString());
-//                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-//                        write(descriptor);
-//                    }
+                    boolean success = characteristic.setValue(sendName);
+                    mBluetoothGatt.writeCharacteristic(characteristic);
                 }
             }
         }

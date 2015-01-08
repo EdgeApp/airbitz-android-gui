@@ -116,13 +116,17 @@ public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
                 + Boolean.toString(responseNeeded) + " offset=" + offset);
         if (characteristic.getUuid().equals( UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
             Log.d(TAG, "Airbitz characteristic received");
+            String name = " ";
             if (value != null && value.length > 0) {
-                mContext.ShowFadingDialog(new String(value));
+                name = new String(value);
+                mContext.ShowFadingDialog(name);
             } else {
                 Log.d(TAG, "invalid value written");
             }
+            final String dataSend = mData + "?label="+ name;
+            Log.d(TAG, "Response = " + dataSend);
             mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
-                    mData.getBytes(Charset.forName("UTF-8")));
+                    dataSend.getBytes(Charset.forName("UTF-8")));
         }
     }
 
