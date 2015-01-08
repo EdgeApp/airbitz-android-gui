@@ -38,6 +38,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.ClipData;
@@ -59,6 +60,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelUuid;
 import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -85,6 +87,7 @@ import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class RequestQRCodeFragment extends Fragment implements
         ContactPickerFragment.ContactSelection,
@@ -623,9 +626,10 @@ public class RequestQRCodeFragment extends Fragment implements
                 Log.d(TAG, "onStartFailure errorCode=" + errorCode);
             };
         };
+
         mBleAdvertiser.startAdvertising(
-                BleUtil.createAirbitzAdvertiseSettings(true, 0),
-                BleUtil.createAirbitzAdvertiseData(),
+                createAirbitzAdvertiseSettings(true, 0),
+                createAirbitzAdvertiseData(),
                 mAdvCallback);
     }
 
@@ -641,4 +645,27 @@ public class RequestQRCodeFragment extends Fragment implements
             mBleAdvertiser = null;
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static AdvertiseSettings createAirbitzAdvertiseSettings(boolean connectable, int timeoutMillis) {
+        AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
+        builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
+        builder.setConnectable(connectable);
+        builder.setTimeout(timeoutMillis);
+        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
+        return builder.build();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static AdvertiseData createAirbitzAdvertiseData() {
+        AdvertiseData.Builder builder = new AdvertiseData.Builder();
+
+//        byte mServiceData[] = { (byte)0x67, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03, (byte)0x04 };
+//        builder.addManufacturerData(0x0067, mServiceData);
+
+        builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)))
+            .setIncludeDeviceName(true);
+        return builder.build();
+    }
+
 }

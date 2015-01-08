@@ -88,24 +88,4 @@ public class BleUtil {
             return false;
         }
     }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static AdvertiseSettings createAirbitzAdvertiseSettings(boolean connectable, int timeoutMillis) {
-        AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
-        builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
-        builder.setConnectable(connectable);
-        builder.setTimeout(timeoutMillis);
-        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
-        return builder.build();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static AdvertiseData createAirbitzAdvertiseData() {
-        AdvertiseData.Builder builder = new AdvertiseData.Builder();
-        builder.addServiceUuid(new ParcelUuid(UUID.fromString(AIRBITZ_SERVICE_UUID)));
-        builder.setIncludeDeviceName(true);
-        AdvertiseData adv = builder.build();
-        return adv;
-    }
-
 }
