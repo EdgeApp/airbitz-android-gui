@@ -65,8 +65,8 @@ public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
         mGattServer = gattServer;
         mData = data;
 
-        // setup services
-        { // immediate alert
+        // setup Airbitz services
+        {
             BluetoothGattService ias = new BluetoothGattService(
                     UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID),
                     BluetoothGattService.SERVICE_TYPE_PRIMARY);
@@ -93,14 +93,14 @@ public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
 
     public void onConnectionStateChange(BluetoothDevice device, int status,
                                         int newState) {
-        Log.d(TAG, "onConnectionStateChange status =" + status + "->" + newState);
+        Log.d(TAG, "onConnectionStateChange status =" + status + "-> state =" + newState);
     }
 
+    // ghost of didReceiveReadRequest
     public void onCharacteristicReadRequest(BluetoothDevice device,
                                             int requestId, int offset, BluetoothGattCharacteristic characteristic) {
         Log.d(TAG, "onCharacteristicReadRequest requestId=" + requestId + " offset=" + offset);
-        if (characteristic.getUuid().equals(
-                UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
+        if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
             Log.d(TAG, "AIRBITZ_CHARACTERISTIC_READ");
             characteristic.setValue(mData.substring(offset));
             mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
@@ -116,37 +116,15 @@ public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
                 + Boolean.toString(responseNeeded) + " offset=" + offset);
         if (characteristic.getUuid().equals( UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
             Log.d(TAG, "Airbitz characteristic received");
-            String name = " ";
             if (value != null && value.length > 0) {
-                name = new String(value);
-                mContext.ShowFadingDialog(name);
+                mContext.ShowFadingDialog(new String(value) + "\nConnected");
             } else {
                 Log.d(TAG, "invalid value written");
             }
-            final String dataSend = mData + "?label="+ name;
-            Log.d(TAG, "Response = " + dataSend);
-            mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
-                    dataSend.getBytes(Charset.forName("UTF-8")));
+            if(responseNeeded) {
+                mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
+                        null);
+            }
         }
     }
-
-//    public void onDescriptorReadRequest(BluetoothDevice device, int requestId,
-//                                        int offset, BluetoothGattDescriptor descriptor) {
-//        Log.d(TAG, "onDescriptorReadRequest requestId=" + requestId + " offset=" + offset);
-//        if(descriptor.getUuid().equals(UUID.fromString(BleUtil.CLIENT_CHARACTERISTIC_CONFIG))) {
-//            Log.d(TAG, "Airbitz descriptor read request received");
-//        }
-//    }
-//
-//    public void onDescriptorWriteRequest(BluetoothDevice device, int requestId,
-//                                         BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded,
-//                                         int offset, byte[] value) {
-//        Log.d(TAG, "onDescriptorWriteRequest requestId=" + requestId + " preparedWrite="
-//                + Boolean.toString(preparedWrite) + " responseNeeded="
-//                + Boolean.toString(responseNeeded) + " offset=" + offset);
-//        if(descriptor.getUuid().equals(UUID.fromString(BleUtil.CLIENT_CHARACTERISTIC_CONFIG))) {
-//            Log.d(TAG, "Airbitz descriptor write request received");
-//        }
-//    }
-
 }

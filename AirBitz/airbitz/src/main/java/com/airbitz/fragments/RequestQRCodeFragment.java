@@ -592,6 +592,16 @@ public class RequestQRCodeFragment extends Fragment implements
     private void startAirbitzAdvertise(String data) {
         BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter adapter = manager.getAdapter();
+
+        // The name cannot be more than 8 characters in Lollipop 5.0.2
+        String[] separate = data.split(":");
+        if(separate[1] != null && separate[1].length() >= 8) {
+            adapter.setName(separate[1].substring(0, 7));
+        }
+        else {
+            adapter.setName("Airbitz");
+        }
+
         mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
         AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
         mGattServer = BleUtil.getManager(mActivity).openGattServer(mActivity, bgsc);

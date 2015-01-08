@@ -46,7 +46,6 @@ import java.util.UUID;
 public class BleUtil {
     public static final String AIRBITZ_SERVICE_UUID = "230F04B4-42FF-4CE9-94CB-ED0DC8238867";
     public static final String AIRBITZ_CHARACTERISTIC_UUID ="D8EF903B-B758-48FC-BBD7-F177F432A9F6";
-    public static final String CLIENT_CHARACTERISTIC_CONFIG ="00002900-0000-1000-8000-00805f9b34fb";
 
     private BleUtil() { } // required
 
@@ -104,7 +103,7 @@ public class BleUtil {
     public static AdvertiseData createAirbitzAdvertiseData() {
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
         builder.addServiceUuid(new ParcelUuid(UUID.fromString(AIRBITZ_SERVICE_UUID)));
-        builder.addServiceUuid(new ParcelUuid(UUID.fromString(CLIENT_CHARACTERISTIC_CONFIG)));
+        builder.setIncludeDeviceName(true);
         AdvertiseData adv = builder.build();
         return adv;
     }

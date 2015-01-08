@@ -69,15 +69,23 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/*
+ * Airbitz protocol
+ *
+ * Peripheral     Central   (Peripheral is the advertiser)
+ *   |------------->|     Advertises partial bitcoin: request + Name
+ *   |              |
+ *   |<-------------|     Send Name by writeCharacteristic, requesting a response
+ *   |              |
+ *   |------------->|     Respond with full bitcoin: request
+ *
+ */
 
 @TargetApi(21)
 public class BluetoothListView extends ListView {
     private final String TAG = getClass().getSimpleName();
     private final int SCAN_PERIOD_MILLIS = 2000;
     private final int SCAN_REPEAT_PERIOD = 5000;
-
-    private static final Queue<Object> sWriteQueue = new ConcurrentLinkedQueue<Object>();
-    private static boolean sIsWriting = false;
 
     Context mContext;
     OnPeripheralSelected mOnPeripheralSelectedListener = null;
@@ -197,7 +205,7 @@ public class BluetoothListView extends ListView {
     }
 
     private void startScan() {
-        //Scan for devices advertising the thermometer service
+        //Scan for devices advertising the Airbitz service
         ScanFilter airbitzFilter = new ScanFilter.Builder()
                 .setServiceUuid(ParcelUuid.fromString(BleUtil.AIRBITZ_SERVICE_UUID))
                 .build();
@@ -338,24 +346,22 @@ public class BluetoothListView extends ListView {
                     }
                 }
 
+                // On a successful write to the characteristic, do a read
                 @Override
                 public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
-                    sIsWriting = false;
-                    gatt.readCharacteristic(characteristic);
-                }
-
-                @Override
-                public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                    Log.v(TAG, "onDescriptorWrite: " + status);
-                    sIsWriting = false;
-                }
-
-                @Override
-                // Result of a characteristic change operation
-                public void onCharacteristicChanged(BluetoothGatt gatt,
-                                                  BluetoothGattCharacteristic characteristic) {
-                    Log.d(TAG, "Characteristic changed: ");
+                    if(status == 0) {
+                        boolean success = gatt.readCharacteristic(characteristic);
+                        if(success) {
+                            Log.d(TAG, "Read characteristic initiated successfully");
+                        }
+                        else {
+                            Log.d(TAG, "Unsuccessful read characteristic attempt");
+                        }
+                    }
+                    else {
+                        Log.d(TAG, "onCharacteristicWrite error = " + status);
+                    }
                 }
             };
 
@@ -363,95 +369,23 @@ public class BluetoothListView extends ListView {
         // Find our Airbitz service and characteristic
         List<BluetoothGattService> services = gatt.getServices();
         for(BluetoothGattService service : services) {
-            Log.d(TAG, "subscribing...");
             BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID));
             if(characteristic != null) {
+                Log.d(TAG, "subscribing to Airbitz...");
                 final int charaProp = characteristic.getProperties();
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                    // Write username to this characteristic
-                    gatt.setCharacteristicNotification(characteristic, true);
-                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT); // WRITE_TYPE_DEFAULT Needed to have iOS recognize
-                    boolean success = characteristic.setValue(sendName);
-                    mBluetoothGatt.writeCharacteristic(characteristic);
+                    // Write sendName to this characteristic requesting a response
+                    characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                    characteristic.setValue(sendName);
+                    boolean success = mBluetoothGatt.writeCharacteristic(characteristic);
+                    if(success) {
+                        Log.d(TAG, "Wrote sendName successfully");
+                    }
+                    else {
+                        Log.d(TAG, "Unsuccessful sendName");
+                    }
                 }
             }
         }
     }
-
-    private synchronized void write(Object o) {
-        if (sWriteQueue.isEmpty() && !sIsWriting) {
-            doWrite(o);
-        } else {
-            sWriteQueue.add(o);
-        }
-    }
-
-    private synchronized void nextWrite() {
-        if (!sWriteQueue.isEmpty() && !sIsWriting) {
-            doWrite(sWriteQueue.poll());
-        }
-    }
-
-    private synchronized void doWrite(Object o) {
-        if (o instanceof BluetoothGattCharacteristic) {
-            BluetoothGattCharacteristic characteristic = (BluetoothGattCharacteristic) o;
-            Log.d(TAG, "writing characteristic: " + characteristic.getUuid());
-            sIsWriting = true;
-            mBluetoothGatt.writeCharacteristic(characteristic);
-        } else if (o instanceof BluetoothGattDescriptor) {
-            BluetoothGattDescriptor descriptor = (BluetoothGattDescriptor) o;
-            Log.d(TAG, "writing descriptor: " + descriptor.getUuid());
-            sIsWriting = true;
-            mBluetoothGatt.writeDescriptor(descriptor);
-        } else {
-            nextWrite();
-        }
-    }
-
-
-
-    //************ Helper functions
-
-//    /*
-//     * Android BLE does not filter on 128 bit UUIDs, so this filter is needed instead
-//     * Don't use startLeScan(uuids, callback), use no uuids method
-//     * See - http://stackoverflow.com/questions/18019161/startlescan-with-128-bit-uuids-doesnt-work-on-native-android-ble-implementation/21986475#21986475
-//     */
-//    private List<UUID> parseUuids(byte[] advertisedData) {
-//        List<UUID> uuids = new ArrayList<UUID>();
-//
-//        ByteBuffer buffer = ByteBuffer.wrap(advertisedData).order(ByteOrder.LITTLE_ENDIAN);
-//        while (buffer.remaining() > 2) {
-//            byte length = buffer.get();
-//            if (length == 0) break;
-//
-//            byte type = buffer.get();
-//            switch (type) {
-//                case 0x02: // Partial list of 16-bit UUIDs
-//                case 0x03: // Complete list of 16-bit UUIDs
-//                    while (length >= 2) {
-//                        uuids.add(UUID.fromString(String.format(
-//                                "%08x-0000-1000-8000-00805f9b34fb", buffer.getShort())));
-//                        length -= 2;
-//                    }
-//                    break;
-//
-//                case 0x06: // Partial list of 128-bit UUIDs
-//                case 0x07: // Complete list of 128-bit UUIDs
-//                    while (length >= 16) {
-//                        long lsb = buffer.getLong();
-//                        long msb = buffer.getLong();
-//                        uuids.add(new UUID(msb, lsb));
-//                        length -= 16;
-//                    }
-//                    break;
-//
-//                default:
-//                    buffer.position(buffer.position() + length - 1);
-//                    break;
-//            }
-//        }
-//
-//        return uuids;
-//    }
 }
