@@ -56,7 +56,8 @@
                         android:id="@+id/fragment_request_qrcode_ble_image"
                         android:layout_width="30dp"
                         android:layout_height="40dp"
-                        android:layout_margin="6dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="6dp"
                         android:background="@drawable/logo_ble"
                         android:visibility="gone"/>
 
@@ -64,7 +65,8 @@
                         android:id="@+id/fragment_request_qrcode_nfc_image"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_margin="6dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="6dp"
                         android:layout_toRightOf="@id/fragment_request_qrcode_ble_image"
                         android:background="@drawable/nfc_button"
                         android:visibility="gone"/>
