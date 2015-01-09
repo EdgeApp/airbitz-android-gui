@@ -253,10 +253,8 @@ public class RequestQRCodeFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (mQRBitmap == null) {
-            mCreateBitmapTask = new CreateBitmapTask();
-            mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+        mCreateBitmapTask = new CreateBitmapTask();
+        mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void checkNFC() {
@@ -266,14 +264,6 @@ public class RequestQRCodeFragment extends Fragment implements
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
             mNFCImageView.setVisibility(View.VISIBLE);
             mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
-        }
-    }
-
-    private void checkBle() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
-                BleUtil.isBleAdvertiseAvailable(mActivity)) {
-            mBLEImageView.setVisibility(View.VISIBLE);
-            startAirbitzAdvertise(mRequestURI);
         }
     }
 
@@ -592,6 +582,14 @@ public class RequestQRCodeFragment extends Fragment implements
     private BluetoothGattServer mGattServer;
     private AdvertiseCallback mAdvCallback;
     private String mData;
+
+    private void checkBle() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
+                BleUtil.isBleAdvertiseAvailable(mActivity)) {
+            mBLEImageView.setVisibility(View.VISIBLE);
+            startAirbitzAdvertise(mRequestURI);
+        }
+    }
 
     // start Advertise
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
