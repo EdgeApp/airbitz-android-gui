@@ -41,11 +41,13 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -589,6 +591,7 @@ public class RequestQRCodeFragment extends Fragment implements
     private BluetoothLeAdvertiser mBleAdvertiser;
     private BluetoothGattServer mGattServer;
     private AdvertiseCallback mAdvCallback;
+    private String mData;
 
     // start Advertise
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -596,19 +599,39 @@ public class RequestQRCodeFragment extends Fragment implements
         BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter adapter = manager.getAdapter();
 
-        // The name cannot be more than 8 characters in Lollipop 5.0.2
+        mData = data;
+        // The name maximum is 26 characters tested
         String[] separate = data.split(":");
-        if(separate[1] != null && separate[1].length() >= 8) {
-            adapter.setName(separate[1].substring(0, 8));
+        String address, name = " ";
+        if(separate[1] != null && separate[1].length() >= 10) {
+            address = separate[1].substring(0, 10);
         }
         else {
-            adapter.setName("Airbitz");
+            address = data;
         }
+        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+            name = mCoreAPI.coreSettings().getSzFullName();
+            if(name==null || name.isEmpty()) {
+                name = " ";
+            }
+        }
+        String advertiseText = address + name;
+        advertiseText = advertiseText.length()>26 ?
+                advertiseText.substring(0, 26) : advertiseText;
+        Log.d(TAG, "AdvertiseText = "+adapter.getName());
+        adapter.setName(advertiseText);
+        setupAdvertiser();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupAdvertiser() {
+        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter adapter = manager.getAdapter();
 
         mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
         AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
         mGattServer = BleUtil.getManager(mActivity).openGattServer(mActivity, bgsc);
-        bgsc.setupServices(mActivity, mGattServer, data);
+        bgsc.setupServices(mActivity, mGattServer, mData);
 
         mAdvCallback = new AdvertiseCallback() {
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
@@ -630,6 +653,7 @@ public class RequestQRCodeFragment extends Fragment implements
         mBleAdvertiser.startAdvertising(
                 createAirbitzAdvertiseSettings(true, 0),
                 createAirbitzAdvertiseData(),
+                createAirbitzScanResponseData(),
                 mAdvCallback);
     }
 
@@ -651,24 +675,25 @@ public class RequestQRCodeFragment extends Fragment implements
         AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
         builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
         builder.setConnectable(connectable);
-        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
+        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
         return builder.build();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static AdvertiseData createAirbitzAdvertiseData() {
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
-
-//        // Testing byte lengths
-//        byte mNameData[] = {49, 69, 119, 83, 70, 120, 105}; //, 117, 115, 112, 70, 105, 114, 115, 116, 32, 76, 97, 115, 116, 32, 45, 32, 78, 105, 99, 107};
-//
-////        byte mNameData[] = { (byte)0x31, (byte)0x45, (byte)0x01, (byte)0x02, (byte)0xc5};
-//        builder.addManufacturerData(0x2009, mNameData);
-
         builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
-        builder.setIncludeDeviceName(true);
+        builder.setIncludeTxPowerLevel(false);
         AdvertiseData data = builder.build();
         return data;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static AdvertiseData createAirbitzScanResponseData() {
+        AdvertiseData.Builder builder = new AdvertiseData.Builder();
+        builder.setIncludeDeviceName(true);
+        builder.setIncludeTxPowerLevel(false);
+        AdvertiseData data = builder.build();
+        return data;
+    }
 }

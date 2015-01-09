@@ -304,7 +304,6 @@ public class BluetoothListView extends ListView {
         mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
     }
 
-
     // Various callback methods defined by the BLE API.
     private final BluetoothGattCallback mGattCallback =
             new BluetoothGattCallback() {
