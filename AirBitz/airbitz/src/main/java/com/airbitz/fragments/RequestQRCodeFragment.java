@@ -659,12 +659,16 @@ public class RequestQRCodeFragment extends Fragment implements
     public static AdvertiseData createAirbitzAdvertiseData() {
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
 
-//        byte mServiceData[] = { (byte)0x67, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03, (byte)0x04 };
-//        builder.addManufacturerData(0x0067, mServiceData);
+//        // Testing byte lengths
+//        byte mNameData[] = {49, 69, 119, 83, 70, 120, 105}; //, 117, 115, 112, 70, 105, 114, 115, 116, 32, 76, 97, 115, 116, 32, 45, 32, 78, 105, 99, 107};
+//
+////        byte mNameData[] = { (byte)0x31, (byte)0x45, (byte)0x01, (byte)0x02, (byte)0xc5};
+//        builder.addManufacturerData(0x2009, mNameData);
 
-        builder.setIncludeDeviceName(true)
-            .addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
-        return builder.build();
+        builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
+        builder.setIncludeDeviceName(true);
+        AdvertiseData data = builder.build();
+        return data;
     }
 
 }
