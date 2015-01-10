@@ -35,19 +35,22 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattServer;
+import android.bluetooth.BluetoothGattServerCallback;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -81,7 +84,6 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.Contact;
-import com.airbitz.objects.AirbitzGattServerCallback;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -578,6 +580,7 @@ public class RequestQRCodeFragment extends Fragment implements
     }
 
     //******************************** BLE support
+    // See BluetoothListView for protocol explanation
     private BluetoothLeAdvertiser mBleAdvertiser;
     private BluetoothGattServer mGattServer;
     private AdvertiseCallback mAdvCallback;
@@ -637,7 +640,7 @@ public class RequestQRCodeFragment extends Fragment implements
             }
 
             public void onStartFailure(int errorCode) {
-                Log.d(TAG, "onStartFailure errorCode=" + errorCode);
+                mActivity.ShowFadingDialog(getString(R.string.request_qr_ble_advertise_start_failed));
             };
         };
 
@@ -684,5 +687,88 @@ public class RequestQRCodeFragment extends Fragment implements
         builder.setIncludeDeviceName(true);
         AdvertiseData data = builder.build();
         return data;
+    }
+
+    /*
+    * Callback for BLE peripheral mode beacon
+    */
+    @TargetApi(21)
+    public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
+        private String TAG = getClass().getSimpleName();
+
+        private NavigationActivity mActivity;
+
+        String mData;
+
+        private BluetoothGattServer mGattServer;
+
+        public void setupServices(NavigationActivity activity, BluetoothGattServer gattServer, String data) {
+            mActivity = activity;
+            if (gattServer == null || data == null) {
+                throw new IllegalArgumentException("gattServer or data is null");
+            }
+            mGattServer = gattServer;
+            mData = data;
+
+            // setup Airbitz services
+            {
+                BluetoothGattService ias = new BluetoothGattService(
+                        UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID),
+                        BluetoothGattService.SERVICE_TYPE_PRIMARY);
+                // alert level char.
+                BluetoothGattCharacteristic alc = new BluetoothGattCharacteristic(
+                        UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID),
+                        BluetoothGattCharacteristic.PROPERTY_READ |
+                                BluetoothGattCharacteristic.PROPERTY_WRITE,
+                        BluetoothGattCharacteristic.PERMISSION_READ |
+                                BluetoothGattCharacteristic.PERMISSION_WRITE);
+                ias.addCharacteristic(alc);
+                mGattServer.addService(ias);
+            }
+        }
+
+        public void onServiceAdded(int status, BluetoothGattService service) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d(TAG, "onServiceAdded status=GATT_SUCCESS service="
+                        + service.getUuid().toString());
+            } else {
+                mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_service));
+            }
+        }
+
+        public void onConnectionStateChange(BluetoothDevice device, int status,
+                                            int newState) {
+            Log.d(TAG, "onConnectionStateChange status =" + status + "-> state =" + newState);
+        }
+
+        // ghost of didReceiveReadRequest
+        public void onCharacteristicReadRequest(BluetoothDevice device,
+                                                int requestId, int offset, BluetoothGattCharacteristic characteristic) {
+            Log.d(TAG, "onCharacteristicReadRequest requestId=" + requestId + " offset=" + offset);
+            if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
+                Log.d(TAG, "AIRBITZ_CHARACTERISTIC_READ");
+                characteristic.setValue(mData.substring(offset));
+                mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
+                        characteristic.getValue());
+            }
+        }
+
+        public void onCharacteristicWriteRequest(BluetoothDevice device,
+                                                 int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite,
+                                                 boolean responseNeeded, int offset, byte[] value) {
+            Log.d(TAG, "onCharacteristicWriteRequest requestId=" + requestId + " preparedWrite="
+                    + Boolean.toString(preparedWrite) + " responseNeeded="
+                    + Boolean.toString(responseNeeded) + " offset=" + offset
+                    + " value=" + new String(value) );
+            if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
+                Log.d(TAG, "Airbitz characteristic received");
+                if (value != null && value.length > 0) {
+                    mActivity.ShowFadingDialog(new String(value));
+                } else {
+                    mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_value));
+                }
+                mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
+            }
+        }
     }
 }

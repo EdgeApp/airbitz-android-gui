@@ -55,6 +55,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.models.BleDevice;
@@ -66,13 +67,13 @@ import java.util.UUID;
 /*
  * Airbitz protocol
  *
- * Peripheral     Central   (Peripheral is the advertiser)
- *   |------------->|     Advertises partial bitcoin: request + Name
- *   |              |
- *   |<-------------|     Send Name by writeCharacteristic, requesting a response
- *   |              |
- *   |------------->|     Respond with full bitcoin: request
- *
+ * Peripheral     Central   (Peripheral is the advertiser, this is Central)
+ *    |------------->|     Advertises partial bitcoin: request + Name
+ *    |     ...      |
+ *    |<-------------|     Subscribe then send Name, requesting a response
+ *    |------------->|     ACK
+ *    |<-------------|     Read Characteristic
+ *    |------------->|     Respond with full bitcoin: request
  */
 
 @TargetApi(21)
@@ -229,16 +230,8 @@ public class BluetoothListView extends ListView {
         }
 
         @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
-            for (ScanResult result : results) {
-                processResult(result);
-            }
-        }
-
-        @Override
         public void onScanFailed(int errorCode) {
-            Log.w(TAG, "LE Scan Failed: "+errorCode);
+            mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_scan_failed));
         }
 
         private void processResult(ScanResult result) {
@@ -290,9 +283,6 @@ public class BluetoothListView extends ListView {
     private BluetoothGatt mBluetoothGatt;
     BluetoothGattCharacteristic mCharacteristic;
     private String mSendName;
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
 
     // Attempt GATT connection
     public void connectGatt(BleDevice result, String sendName) {
@@ -324,7 +314,7 @@ public class BluetoothListView extends ListView {
                         Log.d(TAG, "onServicesDiscovered success");
                         subscribe(gatt, mSendName);
                      } else {
-                        Log.w(TAG, "onServicesDiscovered error: " + status);
+                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_discovery_failed));
                     }
                 }
 
@@ -350,8 +340,10 @@ public class BluetoothListView extends ListView {
 
                         if(mSelectedAdvertisedName == null || partialAddress.isEmpty() ||
                                 !partialAdvertisedAddress.equals(partialAddress)) {
-                            mActivity.ShowOkMessageDialog("Bitcoin address mismatch",
-                                    "The bitcoin address of the device you connected with:%@ does not match the address that was initially advertised:%@");
+                            String message = String.format(getResources().getString(R.string.bluetoothlistview_address_mismatch_message),
+                                    partialAddress, partialAdvertisedAddress);
+                            mActivity.ShowOkMessageDialog(getResources().getString(R.string.bluetoothlistview_address_mismatch_title),
+                                message);
                         }
                         else
                         {
@@ -366,11 +358,8 @@ public class BluetoothListView extends ListView {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
                     if(status == 0) {
                         boolean success = gatt.readCharacteristic(characteristic);
-                        if(success) {
-                            Log.d(TAG, "Read characteristic initiated successfully");
-                        }
-                        else {
-                            Log.d(TAG, "Unsuccessful read characteristic attempt");
+                        if(!success) {
+                            mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
                         }
                     }
                 }
@@ -392,11 +381,8 @@ public class BluetoothListView extends ListView {
                     String sendString = sendName.length()>18 ? sendName.substring(0,18) : sendName;
                     characteristic.setValue(sendString);
                     boolean success = gatt.writeCharacteristic(characteristic);
-                    if(success) {
-                        Log.d(TAG, "Wrote sendName successfully");
-                    }
-                    else {
-                        Log.d(TAG, "Unsuccessful sendName");
+                    if(!success) {
+                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
                     }
                 }
             }
