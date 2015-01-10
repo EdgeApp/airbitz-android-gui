@@ -313,7 +313,7 @@ public class SettingFragment extends Fragment {
         }
 
         mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
-        if(isBLEcapable()) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && isBLEcapable()) {
             mBLESwitchLayout.setVisibility(View.VISIBLE);
         }
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
