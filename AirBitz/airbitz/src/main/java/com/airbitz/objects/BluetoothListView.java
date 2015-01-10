@@ -32,13 +32,11 @@
 package com.airbitz.objects;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -48,7 +46,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
@@ -58,16 +55,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.models.BleDevice;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*
  * Airbitz protocol
@@ -87,47 +81,50 @@ public class BluetoothListView extends ListView {
     private final int SCAN_PERIOD_MILLIS = 2000;
     private final int SCAN_REPEAT_PERIOD = 5000;
 
-    Context mContext;
+    NavigationActivity mActivity;
     OnPeripheralSelected mOnPeripheralSelectedListener = null;
     OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
     OnOneScanEnded mOnOneScanEndedListener = null;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothLeScanner mBluetoothLeScanner;
+    String mSelectedAdvertisedName;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
     BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
 
-    public BluetoothListView(Context context) {
-        super(context);
-        init(context);
+    public BluetoothListView(NavigationActivity activity) {
+        super(activity);
+        init(activity);
     }
 
-    public BluetoothListView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context);
+    public BluetoothListView(NavigationActivity activity, AttributeSet attrs, int defStyle) {
+        super(activity, attrs, defStyle);
+        init(activity);
     }
 
-    public BluetoothListView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+    public BluetoothListView(NavigationActivity activity, AttributeSet attrs) {
+        super(activity, attrs);
+        init(activity);
     }
 
-    public void init(Context context) {
-        mContext = context;
+    public void init(NavigationActivity activity) {
+        mActivity = activity;
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mOnPeripheralSelectedListener != null) {
-                    mOnPeripheralSelectedListener.onPeripheralSelected(mPeripherals.get(i));
+                    BleDevice selectedDevice = mPeripherals.get(i);
+                    mSelectedAdvertisedName = selectedDevice.getDevice().getName();
+                    mOnPeripheralSelectedListener.onPeripheralSelected(selectedDevice);
                 }
             }
         });
 
-        mSearchAdapter = new BluetoothSearchAdapter(mContext, mPeripherals);
+        mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
         setAdapter(mSearchAdapter);
 
-        BluetoothManager manager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = manager.getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
     }
@@ -301,7 +298,7 @@ public class BluetoothListView extends ListView {
     public void connectGatt(BleDevice result, String sendName) {
         BluetoothDevice device = result.getDevice();
         mSendName = sendName == null ? " " : sendName;
-        mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
+        mBluetoothGatt = device.connectGatt(mActivity, false, mGattCallback);
     }
 
     // Various callback methods defined by the BLE API.
@@ -341,7 +338,25 @@ public class BluetoothListView extends ListView {
                     String response = characteristic.getStringValue(0);
                     if(response != null && mOnBitcoinURIReceivedListener != null) {
                         Log.d(TAG, "onCharacteristicRead response = " + response);
-                        mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
+                        //make sure partial bitcoin address that was advertised is contained within the actual full bitcoin address
+                        String[] separate = response.split(":");
+                        String partialAddress;
+                        partialAddress = separate[1] != null && separate[1].length() >= 10 ?
+                            separate[1].substring(0, 10) : "";
+
+                        String partialAdvertisedAddress;
+                        partialAdvertisedAddress = mSelectedAdvertisedName != null && mSelectedAdvertisedName.length() >= 10 ?
+                                mSelectedAdvertisedName.substring(0, 10) : "";
+
+                        if(mSelectedAdvertisedName == null || partialAddress.isEmpty() ||
+                                !partialAdvertisedAddress.equals(partialAddress)) {
+                            mActivity.ShowOkMessageDialog("Bitcoin address mismatch",
+                                    "The bitcoin address of the device you connected with:%@ does not match the address that was initially advertised:%@");
+                        }
+                        else
+                        {
+                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
+                        }
                     }
                 }
 
@@ -358,9 +373,6 @@ public class BluetoothListView extends ListView {
                             Log.d(TAG, "Unsuccessful read characteristic attempt");
                         }
                     }
-                    else {
-                        Log.d(TAG, "onCharacteristicWrite error = " + status);
-                    }
                 }
             };
 
@@ -375,8 +387,11 @@ public class BluetoothListView extends ListView {
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                     // Write sendName to this characteristic requesting a response
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-                    characteristic.setValue(sendName);
-                    boolean success = mBluetoothGatt.writeCharacteristic(characteristic);
+
+                    // sendString has a limit of 18 characters.
+                    String sendString = sendName.length()>18 ? sendName.substring(0,18) : sendName;
+                    characteristic.setValue(sendString);
+                    boolean success = gatt.writeCharacteristic(characteristic);
                     if(success) {
                         Log.d(TAG, "Wrote sendName successfully");
                     }

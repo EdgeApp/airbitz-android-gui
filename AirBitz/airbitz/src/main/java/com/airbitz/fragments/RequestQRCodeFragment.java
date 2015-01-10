@@ -618,13 +618,6 @@ public class RequestQRCodeFragment extends Fragment implements
                 advertiseText.substring(0, 26) : advertiseText;
         Log.d(TAG, "AdvertiseText = "+adapter.getName());
         adapter.setName(advertiseText);
-        setupAdvertiser();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupAdvertiser() {
-        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter adapter = manager.getAdapter();
 
         mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
         AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
@@ -681,7 +674,6 @@ public class RequestQRCodeFragment extends Fragment implements
     public static AdvertiseData createAirbitzAdvertiseData() {
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
         builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
-        builder.setIncludeTxPowerLevel(false);
         AdvertiseData data = builder.build();
         return data;
     }
@@ -690,7 +682,6 @@ public class RequestQRCodeFragment extends Fragment implements
     public static AdvertiseData createAirbitzScanResponseData() {
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
         builder.setIncludeDeviceName(true);
-        builder.setIncludeTxPowerLevel(false);
         AdvertiseData data = builder.build();
         return data;
     }
