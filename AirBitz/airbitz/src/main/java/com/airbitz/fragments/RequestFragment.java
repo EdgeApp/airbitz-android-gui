@@ -380,24 +380,24 @@ public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRates
 
         if (!mWallets.isEmpty()) {
             mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-        }
 
-        Bundle bundle = getArguments();
-        if (mUUID == null && bundle != null && bundle.getString(FROM_UUID) != null) {
-            mUUID = bundle.getString(FROM_UUID);
-            mSelectedWallet = mCoreAPI.getWalletFromUUID(mUUID);
-            for (int i = 0; i < mWallets.size(); i++) {
-                if (mSelectedWallet.getUUID().equals(mWallets.get(i).getUUID())) {
-                    pickWalletSpinner.setSelection(i);
-                    mFromIndex = i;
+            Bundle bundle = getArguments();
+            if (mUUID == null && bundle != null && bundle.getString(FROM_UUID) != null) {
+                mUUID = bundle.getString(FROM_UUID);
+                mSelectedWallet = mCoreAPI.getWalletFromUUID(mUUID);
+                for (int i = 0; i < mWallets.size(); i++) {
+                    if (mSelectedWallet.getUUID().equals(mWallets.get(i).getUUID())) {
+                        pickWalletSpinner.setSelection(i);
+                        mFromIndex = i;
+                    }
                 }
+            } else if (bundle != null && bundle.getString(MERCHANT_MODE) != null) {
+                focus(mFiatField);
+            } else {
+                mFromIndex = 0;
+                if (mWallets != null && !mWallets.isEmpty())
+                    mSelectedWallet = mWallets.get(mFromIndex);
             }
-        } else if (bundle != null && bundle.getString(MERCHANT_MODE) != null) {
-            focus(mFiatField);
-        } else {
-            mFromIndex = 0;
-            if (mWallets != null && !mWallets.isEmpty())
-                mSelectedWallet = mWallets.get(mFromIndex);
         }
 
         if(mSelectedWallet==null && mWallets!=null) {
