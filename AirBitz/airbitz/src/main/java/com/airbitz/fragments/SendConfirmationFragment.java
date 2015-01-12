@@ -924,9 +924,8 @@ public class SendConfirmationFragment extends Fragment {
             if (txResult.getError() != null) {
                 Log.d(TAG, "Error during send " + txResult.getError());
                 if (mActivity != null) {
-                    mActivity.popFragment(); // stop the sending screen
-                    mActivity.getFragmentManager().executePendingTransactions();
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+                    mActivity.popFragment(); // stop the sending screen
                 }
             } else {
                 if (mActivity != null) {
