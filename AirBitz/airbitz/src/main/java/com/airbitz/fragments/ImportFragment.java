@@ -659,7 +659,11 @@ public class ImportFragment extends Fragment
 
         mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
 
+        // Clear out sweep info
+        mSweptID = "";
         mSweptAmount = -1;
+        mSweptAddress = "";
+        mToEdittext.setText(mSweptAddress);
     }
 
     // This is only called for HiddenBits
