@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -425,6 +426,17 @@ public class ImportFragment extends Fragment
 
         mFromWallet = mWallets.get(0);
         mCoreAPI.setOnWalletSweepListener(this);
+
+        checkCameraFlash();
+    }
+
+    private void checkCameraFlash() {
+        if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            mFlashButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mFlashButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
