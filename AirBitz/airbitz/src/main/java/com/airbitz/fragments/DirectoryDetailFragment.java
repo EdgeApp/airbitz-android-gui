@@ -167,7 +167,7 @@ public class DirectoryDetailFragment extends Fragment {
             setDistance(mBusinessDistance);
         }
 
-        mTask = new GetBusinessDetailTask(getActivity());
+        mTask = new GetBusinessDetailTask();
         mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mBusinessId);
 
         int timeout = 5000;
@@ -280,15 +280,13 @@ public class DirectoryDetailFragment extends Fragment {
 
     private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
         AirbitzAPI mApi = AirbitzAPI.getApi();
-        Activity mActivity;
 
-        public GetBusinessDetailTask(Activity activity) {
-            mActivity = activity;
+        public GetBusinessDetailTask() {
         }
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity) mActivity).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -416,9 +414,13 @@ public class DirectoryDetailFragment extends Fragment {
                         if ((mBusinessDetail.getPhone().length() != 0) && mBusinessDetail.getPhone() != null) {
                             Intent intent = new Intent(Intent.ACTION_DIAL);
                             intent.setData(Uri.parse("tel:" + mBusinessDetail.getPhone()));
-                            startActivity(intent);
+                            if(intent.resolveActivity(mActivity.getPackageManager()) != null) {
+                                startActivity(intent);
+                            }
+                            else {
+                                mActivity.ShowFadingDialog("No Activity installed to handle a phone call.");
+                            }
                         }
-
                     }
                 });
 
