@@ -537,7 +537,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     }
 
                     mInput = editable.toString();
-                    String strippedTerm = mInput.substring(currentType.length());
+                    String strippedTerm = "";
+                    if(mInput.length() >= currentType.length()) {
+                        strippedTerm = mInput.substring(currentType.length());
+                    }
 
                     Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
                     updateBlanks(strippedTerm);
