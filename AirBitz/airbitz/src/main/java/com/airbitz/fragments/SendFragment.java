@@ -639,12 +639,26 @@ public class SendFragment extends Fragment implements
     }
 
     private void checkCameraFlash() {
-        if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+        if(hasFlash()) {
             mFlashButton.setVisibility(View.VISIBLE);
         }
         else {
             mFlashButton.setVisibility(View.GONE);
         }
+    }
+    public boolean hasFlash() {
+        if (mCamera == null) {
+            return false;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+        if (parameters.getFlashMode() == null) {
+            return false;
+        }
+        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
+        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
