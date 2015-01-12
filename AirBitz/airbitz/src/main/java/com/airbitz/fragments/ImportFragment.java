@@ -548,7 +548,7 @@ public class ImportFragment extends Fragment
     }
 
     private void attemptSubmit() {
-        String uriString = mToEdittext.getText().toString();
+        String uriString = mToEdittext.getText().toString().trim();
         String token = getHiddenBitsToken(uriString);
 
         String entry = token != null ? token : uriString;
