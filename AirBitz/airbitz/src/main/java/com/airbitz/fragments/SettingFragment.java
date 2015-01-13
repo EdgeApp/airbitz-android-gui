@@ -84,8 +84,8 @@ public class SettingFragment extends Fragment {
     static final int EUR_NUM = 978;
     static final int PESO_NUM = 484;
     static final int YUAN_NUM = 156;
-    static final String[] USD_EXCHANGES = new String[]{"Bitstamp", "Coinbase"};
-    static final String[] OTHER_EXCHANGES = new String[]{"Coinbase"};
+    static final String[] USD_EXCHANGES = new String[]{"Bitstamp", "BraveNewCoin", "Coinbase"};
+    static final String[] OTHER_EXCHANGES = new String[]{"BraveNewCoin", "Coinbase"};
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
     private static final String NFC_PREF = "NFCPref";
