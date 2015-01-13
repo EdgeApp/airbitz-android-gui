@@ -428,6 +428,7 @@ public class ImportFragment extends Fragment
         mCoreAPI.setOnWalletSweepListener(this);
 
         checkCameraFlash();
+        clearSweepAddress();
     }
 
     private void checkCameraFlash() {
