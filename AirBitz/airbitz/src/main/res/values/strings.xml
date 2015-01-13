@@ -54,12 +54,13 @@
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
     <string name="fragment_business_no_categories_retreived">No categories retrieved from server</string>
     <string name="fragment_business_near_you">Near You</string>
+
+    <!-- Strings for DirectoryDetail -->
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
     <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>
     <string name="fragment_directory_detail_directions">Directions</string>
     <string name="fragment_directory_detail_discount">"Discount "</string>
-
-    <!-- Strings for DirectoryDetail -->
+    <string name="fragment_directory_detail_no_phone">No Activity installed to handle a phone call.</string>
     <string name="fragment_directory_detail_share">"Share"</string>
     <string name="fragment_directory_detail_facebook">"Facebook"</string>
     <string name="fragment_directory_detail_twitter">"Twitter"</string>
@@ -346,6 +347,7 @@
     <string name="transaction_details_advanced_destination">"Destination"</string>
     <string name="transaction_details_advanced_miner_fee">"Miner Fee"</string>
     <string name="transaction_details_advanced_fee">" fee"</string>
+    <string name="transaction_details_transaction_save_failed">Unable to save all transaction data</string>
 
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>

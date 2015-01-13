@@ -18,7 +18,7 @@
         android:background="@drawable/bg_search_bar_new"
         android:orientation="vertical">
 
-        <EditText
+        <com.airbitz.objects.LimitedEditText
             android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="28.35dp"
@@ -45,7 +45,7 @@
             android:layout_marginRight="12.6dp"
             android:layout_marginTop="6.3dp">
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/add_field"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -239,7 +239,7 @@
             android:paddingRight="9.45dp"
             android:paddingTop="9.45dp">
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/item_popup_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

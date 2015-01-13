@@ -38,6 +38,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -633,6 +634,31 @@ public class SendFragment extends Fragment implements
         else {
             mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
+
+        checkCameraFlash();
+    }
+
+    private void checkCameraFlash() {
+        if(hasFlash()) {
+            mFlashButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mFlashButton.setVisibility(View.GONE);
+        }
+    }
+    public boolean hasFlash() {
+        if (mCamera == null) {
+            return false;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+        if (parameters.getFlashMode() == null) {
+            return false;
+        }
+        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
+        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

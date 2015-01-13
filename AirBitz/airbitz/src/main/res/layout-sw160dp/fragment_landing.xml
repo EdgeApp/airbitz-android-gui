@@ -44,7 +44,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_username_edittext"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"
@@ -60,7 +60,7 @@
                     style="@style/LandingEditText"
                     />
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_password_edittext"
                     android:layout_width="245.7dp"
                     android:layout_height="37.8dp"

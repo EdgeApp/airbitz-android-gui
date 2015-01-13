@@ -197,8 +197,8 @@ public class MapBusinessDirectoryFragment extends Fragment implements
                 String northEast = "" + ne.getLatitude() + "%2C" + ne.getLongitude();
                 String bound = southWest + "%7C" + northEast;
                 String userLatLong = "";
-                if (ll != null) {
-                    userLatLong = "" + ll.getLatitude() + "," + ll.getLongitude();
+                if (mCurrentLocation != null) {
+                    userLatLong = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
                 }
 
                 if (mGetVenuesByBoundAsyncTask != null

@@ -50,6 +50,8 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
+    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
+    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
 
     private static Login airbitzLogin = new Login();
     private static long mBackgroundedTime = 0;

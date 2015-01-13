@@ -123,14 +123,35 @@ public class LandingFragment extends Fragment implements
         mSwipeLayout = (LinearLayout) view.findViewById(R.id.fragment_landing_swipe_layout);
 
         mUserNameEditText = (EditText) view.findViewById(R.id.fragment_landing_username_edittext);
+        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    refreshView(false, true);
+                } else {
+                    refreshView(false, false);
+                }
+            }
+        });
+
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
+        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    refreshView(false, true);
+                } else {
+                    refreshView(false, false);
+                }
+            }
+        });
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
         mLandingSubtextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
 
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.fragment_landing_button_back);
         mBackButton.setVisibility(View.VISIBLE);
@@ -243,7 +264,7 @@ public class LandingFragment extends Fragment implements
         if(!AirbitzApplication.isLoggedIn()) {
             mPinEditText.setText("");
             if (mActivity.networkIsAvailable() && mCoreAPI.PinLoginExists(mUsername)) {
-                refreshView(true, false);
+                refreshView(true, true);
                 mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 return;
             }
@@ -289,6 +310,16 @@ public class LandingFragment extends Fragment implements
             mForgotTextView.setText(getString(R.string.fragment_landing_forgot_password));
             mLandingSubtextView.setVisibility(View.VISIBLE);
             mSwipeLayout.setVisibility(View.VISIBLE);
+            if(isKeyboardUp) {
+                mDetailTextView.setVisibility(View.GONE);
+                mLandingSubtextView.setVisibility(View.GONE);
+                mSwipeLayout.setVisibility(View.GONE);
+            }
+            else {
+                mDetailTextView.setVisibility(View.VISIBLE);
+                mLandingSubtextView.setVisibility(View.VISIBLE);
+                mSwipeLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 

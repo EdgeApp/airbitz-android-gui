@@ -94,7 +94,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/edittext_to"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

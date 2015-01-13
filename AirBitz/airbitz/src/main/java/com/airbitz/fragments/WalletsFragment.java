@@ -457,13 +457,15 @@ public class WalletsFragment extends Fragment
     }
 
     private void showWalletFragment(String uUID) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FROM_SOURCE, "");
         Wallet w = mCoreAPI.getWalletFromUUID(uUID);
-        bundle.putString(Wallet.WALLET_UUID, w.getUUID());
-        Fragment fragment = new WalletFragment();
-        fragment.setArguments(bundle);
-        mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+        if(w != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(FROM_SOURCE, "");
+            bundle.putString(Wallet.WALLET_UUID, w.getUUID());
+            Fragment fragment = new WalletFragment();
+            fragment.setArguments(bundle);
+            mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+        }
     }
 
     public void addNewWallet(String name, int currencyNum) {

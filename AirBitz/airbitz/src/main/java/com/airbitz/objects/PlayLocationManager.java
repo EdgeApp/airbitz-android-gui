@@ -118,7 +118,10 @@ public class PlayLocationManager implements
         mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME_MILLIS * 2);
         mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME_MILLIS);
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
-        locationClient.requestLocationUpdates(mLocationRequest, this);
+        if(locationClient.isConnected()) {
+            locationClient.requestLocationUpdates(mLocationRequest, this);
+        }
+
         mCurrentLocation = locationClient.getLastLocation();
         if (mCurrentLocation != null) {
             onLocationChanged(mCurrentLocation);

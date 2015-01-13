@@ -879,17 +879,19 @@ public class SettingFragment extends Fragment {
                 .setPositiveButton(getResources().getString(R.string.string_yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                                if (SettingFragment.this.isAdded()) {
+                                    startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                                }
                                 dialog.cancel();
                             }
                         })
                 .setNegativeButton(getResources().getString(R.string.string_no),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            mNFCSwitch.setChecked(false);
-                            dialog.cancel();
-                        }
-                    });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mNFCSwitch.setChecked(false);
+                                dialog.cancel();
+                            }
+                        });
         builder.create().show();
     }
 

@@ -251,7 +251,7 @@
                         android:background="@drawable/wallet_list_standard"
                         android:orientation="horizontal">
 
-                        <EditText
+                        <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_first_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"
@@ -277,7 +277,7 @@
                         android:background="@drawable/wallet_list_standard"
                         android:orientation="horizontal">
 
-                        <EditText
+                        <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_last_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"
@@ -303,7 +303,7 @@
                         android:background="@drawable/wallet_list_bottom"
                         android:orientation="horizontal">
 
-                        <EditText
+                        <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_nick_name"
                             android:layout_width="match_parent"
                             android:layout_height="37.8dp"

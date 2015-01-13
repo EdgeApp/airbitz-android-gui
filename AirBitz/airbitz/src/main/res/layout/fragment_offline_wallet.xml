@@ -95,7 +95,7 @@
                     android:layout_marginBottom="5dp"
                     android:src="@drawable/img_qr_code" />
 
-                <EditText
+                <com.airbitz.objects.LimitedEditText
                     android:id="@+id/edittext_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/edittext_privatekey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

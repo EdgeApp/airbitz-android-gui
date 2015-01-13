@@ -112,7 +112,7 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <EditText
+        <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_wallets_addwallet_name_edittext"
             android:layout_width="match_parent"
             android:layout_height="31.5dp"

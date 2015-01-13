@@ -70,7 +70,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/search_button" />
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/fragment_wallet_walletname_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
@@ -124,7 +124,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <EditText
+        <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_search_edittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

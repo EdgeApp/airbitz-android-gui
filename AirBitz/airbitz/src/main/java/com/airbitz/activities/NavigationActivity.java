@@ -928,46 +928,50 @@ public class NavigationActivity extends Activity
     }
 
     private void showIncomingBitcoinDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
-                .setTitle(getResources().getString(R.string.received_bitcoin_title))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.received_bitcoin_positive),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                gotoDetailsNow();
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
+                    .setTitle(getResources().getString(R.string.received_bitcoin_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.received_bitcoin_positive),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    gotoDetailsNow();
+                                }
                             }
-                        }
-                )
-                .setNegativeButton(getResources().getString(R.string.received_bitcoin_negative),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-                                updateWalletListener();
-                                dialog.cancel();
+                    )
+                    .setNegativeButton(getResources().getString(R.string.received_bitcoin_negative),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+                                    updateWalletListener();
+                                    dialog.cancel();
+                                }
                             }
-                        }
-                );
-        mIncomingDialog = builder.create();
-        mIncomingDialog.show();
-        mHandler.postDelayed(dialogKiller, 5000);
+                    );
+            mIncomingDialog = builder.create();
+            mIncomingDialog.show();
+            mHandler.postDelayed(dialogKiller, 5000);
+        }
     }
 
     private void showRemotePasswordChangeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.remote_password_change_message))
-                .setTitle(getResources().getString(R.string.remote_password_change_title))
-                .setCancelable(false)
-                .setNegativeButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Logout();
-                                dialog.cancel();
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(getResources().getString(R.string.remote_password_change_message))
+                    .setTitle(getResources().getString(R.string.remote_password_change_title))
+                    .setCancelable(false)
+                    .setNegativeButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Logout();
+                                    dialog.cancel();
+                                }
                             }
-                        }
-                );
-        AlertDialog dialog = builder.create();
-        dialog.show();
+                    );
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     public void UserJustLoggedIn() {
@@ -1150,22 +1154,24 @@ public class NavigationActivity extends Activity
     }
 
     public void ShowOkMessageDialog(String title, String message) {
-        if (mMessageDialog != null) {
-            mMessageDialog.dismiss();
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
+        if (!this.isFinishing()) {
+            if (mMessageDialog != null) {
+                mMessageDialog.dismiss();
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setNeutralButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
                             }
-                        }
-                );
-        mMessageDialog = builder.create();
-        mMessageDialog.show();
+                    );
+            mMessageDialog = builder.create();
+            mMessageDialog.show();
+        }
     }
 
     public void ShowOkMessageDialog(String title, String message, int timeoutMillis) {
@@ -1174,44 +1180,48 @@ public class NavigationActivity extends Activity
     }
 
     public void ShowExitMessageDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_yes),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                // This emulates user pressing Home button, rather than finish this activity
-                                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(homeIntent);
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.string_no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        builder.create().show();
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_yes),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    // This emulates user pressing Home button, rather than finish this activity
+                                    Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                                    homeIntent.addCategory(Intent.CATEGORY_HOME);
+                                    homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(homeIntent);
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.string_no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            builder.create().show();
+        }
     }
 
     public void ShowMessageDialogBackPress(String title, String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                NavigationActivity.this.onBackPressed();
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(reason)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setNeutralButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    NavigationActivity.this.onBackPressed();
+                                }
                             }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
+                    );
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     //**************** Fading Dialog
@@ -1243,37 +1253,44 @@ public class NavigationActivity extends Activity
 
     private Dialog mFadingDialog = null;
     public void ShowFadingDialog(String message, int timeout, boolean cancelable) {
-        if(timeout == 0) {
-            mFadingDialog.dismiss();
-            return;
-        }
-        if(mFadingDialog != null) {
-            mFadingDialog.dismiss();
-        }
-        mFadingDialog = new Dialog(this);
-        mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        mFadingDialog.setCancelable(cancelable);
-        mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
-        ((TextView)view.findViewById(R.id.fading_alert_text)).setText(message);
-        mFadingDialog.setContentView(view);
-        AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
-        fadeOut.setStartOffset(timeout);
-        fadeOut.setDuration(1000);
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
+        if (!this.isFinishing()) {
+            if (timeout == 0) {
                 mFadingDialog.dismiss();
-                updateFadingDialogFinished();
+                return;
             }
+            if (mFadingDialog != null) {
+                mFadingDialog.dismiss();
+            }
+            mFadingDialog = new Dialog(this);
+            mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            mFadingDialog.setCancelable(cancelable);
+            mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
+            ((TextView) view.findViewById(R.id.fading_alert_text)).setText(message);
+            mFadingDialog.setContentView(view);
+            AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
+            fadeOut.setStartOffset(timeout);
+            fadeOut.setDuration(1000);
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mFadingDialog.dismiss();
+                    updateFadingDialogFinished();
+                }
 
-            @Override public void onAnimationStart(Animation animation) { }
-            @Override public void onAnimationRepeat(Animation animation) { }
-        });
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
 
-        view.setAnimation(fadeOut);
-        mFadingDialog.show();
-        view.startAnimation(fadeOut);
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+
+            view.setAnimation(fadeOut);
+            mFadingDialog.show();
+            view.startAnimation(fadeOut);
+        }
     }
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
@@ -1304,31 +1321,33 @@ public class NavigationActivity extends Activity
     }
 
     public void ShowHiddenBitsTweet(String title, String reason, final String tweet) {
-        if (mMessageDialog != null) {
-            mMessageDialog.dismiss();
+        if (!this.isFinishing()) {
+            if (mMessageDialog != null) {
+                mMessageDialog.dismiss();
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(reason)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // invoke Twitter to send tweet
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
+                                    startActivity(i);
+                                    dialog.dismiss();
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.string_no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            mMessageDialog = builder.create();
+            mMessageDialog.show();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // invoke Twitter to send tweet
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
-                                startActivity(i);
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.string_no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-        mMessageDialog = builder.create();
-        mMessageDialog.show();
     }
 
     public void hideSoftKeyboard(View v) {
@@ -1515,54 +1534,56 @@ public class NavigationActivity extends Activity
 
     private Dialog mAlertNotificationDialog;
     private void showNotificationAlert() {
-        if(mNotificationMap == null || mNotificationMap.size()==0)
-            return;
+        if (!this.isFinishing()) {
+            if (mNotificationMap == null || mNotificationMap.size() == 0)
+                return;
 
-        if(mAlertNotificationDialog != null)
-            mAlertNotificationDialog.dismiss();
+            if (mAlertNotificationDialog != null)
+                mAlertNotificationDialog.dismiss();
 
-        StringBuilder s = new StringBuilder();
-        int max = -1;
-        for(Integer i : mNotificationMap.keySet() ) {
-            if(max < i) {
-                max = i;
+            StringBuilder s = new StringBuilder();
+            int max = -1;
+            for (Integer i : mNotificationMap.keySet()) {
+                if (max < i) {
+                    max = i;
+                }
+                String title = mNotificationMap.get(i).mTitle;
+                String message = mNotificationMap.get(i).mMessage;
+
+                s.append(title).append("\n");
+                s.append(message).append("\n\n");
             }
-            String title = mNotificationMap.get(i).mTitle;
-            String message = mNotificationMap.get(i).mMessage;
 
-            s.append(title) .append("\n");
-            s.append(message) .append("\n\n");
+            final int saveInt = max;
+
+            mAlertNotificationDialog = new Dialog(this);
+            mAlertNotificationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
+            mAlertNotificationDialog.setCancelable(false);
+            WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
+            wv.setVisibility(View.VISIBLE);
+            wv.loadData(s.toString(), "text/html; charset=UTF-8", null);
+            Button ok = (Button) mAlertNotificationDialog.findViewById(R.id.dialog_notification_ok_button);
+            ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mAlertNotificationDialog.cancel();
+                    saveMessageIDPref(saveInt);
+                }
+            });
+            mAlertNotificationDialog.show();
         }
-
-        final int saveInt = max;
-
-        mAlertNotificationDialog = new Dialog(this);
-        mAlertNotificationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
-        mAlertNotificationDialog.setCancelable(false);
-        WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
-        wv.setVisibility(View.VISIBLE);
-        wv.loadData(s.toString(), "text/html; charset=UTF-8", null);
-        Button ok = (Button) mAlertNotificationDialog.findViewById(R.id.dialog_notification_ok_button);
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAlertNotificationDialog.cancel();
-                saveMessageIDPref(saveInt);
-            }
-        });
-        mAlertNotificationDialog.show();
     }
 
     private void checkDailyLimitPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
 
         // On first install/load, copy synchronized to local setting
-        if(!prefs.contains(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF)) {
+        if(!prefs.contains(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(SpendingLimitsFragment.DAILY_LIMIT_PREF, mCoreAPI.GetDailySpendLimit());
-            editor.putBoolean(SpendingLimitsFragment.DAILY_LIMIT_SETTING_PREF, mCoreAPI.GetDailySpendLimitSetting());
+            editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
+            editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
         }
     }

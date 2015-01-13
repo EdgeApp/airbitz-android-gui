@@ -58,7 +58,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -149,6 +148,8 @@ public class ImportFragment extends Fragment
         public void run() {
             showBusyLayout(false);
             if(isVisible()) {
+                clearSweepAddress();
+                mSweptAmount = -1;
                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
             }
         }
@@ -425,6 +426,32 @@ public class ImportFragment extends Fragment
 
         mFromWallet = mWallets.get(0);
         mCoreAPI.setOnWalletSweepListener(this);
+
+        checkCameraFlash();
+        clearSweepAddress();
+    }
+
+    private void checkCameraFlash() {
+        if(hasFlash()) {
+            mFlashButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mFlashButton.setVisibility(View.GONE);
+        }
+    }
+    public boolean hasFlash() {
+        if (mCamera == null) {
+            return false;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+        if (parameters.getFlashMode() == null) {
+            return false;
+        }
+        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
+        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -548,7 +575,7 @@ public class ImportFragment extends Fragment
     }
 
     private void attemptSubmit() {
-        String uriString = mToEdittext.getText().toString();
+        String uriString = mToEdittext.getText().toString().trim();
         String token = getHiddenBitsToken(uriString);
 
         String entry = token != null ? token : uriString;
@@ -657,9 +684,15 @@ public class ImportFragment extends Fragment
         // if a private address sweep
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
+        clearSweepAddress();
         mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
-
         mSweptAmount = -1;
+    }
+
+    private void clearSweepAddress() {
+        // Clear out sweep info
+        mSweptAddress = "";
+        mToEdittext.setText(mSweptAddress);
     }
 
     // This is only called for HiddenBits
