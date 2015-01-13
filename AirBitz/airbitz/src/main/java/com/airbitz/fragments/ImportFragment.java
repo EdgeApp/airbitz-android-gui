@@ -35,7 +35,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,7 +58,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -151,6 +149,7 @@ public class ImportFragment extends Fragment
             showBusyLayout(false);
             if(isVisible()) {
                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
+                clearSweepInfo();
             }
         }
     };
@@ -684,7 +683,10 @@ public class ImportFragment extends Fragment
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
         mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
+        clearSweepInfo();
+    }
 
+    private void clearSweepInfo() {
         // Clear out sweep info
         mSweptID = "";
         mSweptAmount = -1;
