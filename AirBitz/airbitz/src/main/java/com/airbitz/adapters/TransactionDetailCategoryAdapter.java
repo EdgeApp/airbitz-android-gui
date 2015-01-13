@@ -36,10 +36,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.models.Category;
 
 import java.util.List;
 
@@ -48,9 +50,17 @@ import java.util.List;
  */
 public class TransactionDetailCategoryAdapter extends ArrayAdapter {
     private Context mContext;
-    private List<String> mCategories;
+    private List<Category> mCategories;
 
-    public TransactionDetailCategoryAdapter(Context context, List<String> categories) {
+    private OnNewCategory mOnNewCategory;
+    public interface OnNewCategory {
+        public void onNewCategory(String categoryName);
+    }
+    public void setOnNewCategoryListener(OnNewCategory listener) {
+        mOnNewCategory = listener;
+    }
+
+    public TransactionDetailCategoryAdapter(Context context, List<Category> categories) {
         super(context, R.layout.item_listview_transaction_detail, categories);
         mContext = context;
         mCategories = categories;
@@ -62,18 +72,30 @@ public class TransactionDetailCategoryAdapter extends ArrayAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Category getItem(int position) {
         return mCategories.get(position);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final String category = mCategories.get(position);
+        final Category category = mCategories.get(position);
         convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
         textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        textView.setText(category);
+        textView.setText(category.getCategoryName());
+        if(category.getCategoryLevel().equals("base")) {
+            ImageButton button = (ImageButton) convertView.findViewById(R.id.transaction_detail_item_new);
+            button.setVisibility(View.VISIBLE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mOnNewCategory != null) {
+                        mOnNewCategory.onNewCategory(category.getCategoryName());
+                    }
+                }
+            });
+        }
         return convertView;
     }
 }

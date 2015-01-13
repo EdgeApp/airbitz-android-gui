@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/transaction_detail_item_name"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transaction_category_item_layout"
     android:layout_width="match_parent"
     android:layout_height="37.8dp"
     android:background="@android:color/transparent"
@@ -10,4 +10,35 @@
     android:textColor="#000000"
     android:textSize="14sp">
 
-</TextView>
+    <TextView
+        android:id="@+id/transaction_detail_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="37.8dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:textColor="#000000"
+        android:text="Income:test"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="37.8dp"
+        android:background="@android:color/transparent"
+        android:gravity="right|top"
+        android:layout_marginRight="10dp"
+        android:textColor="#000000"
+        android:text="+"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/transaction_detail_item_new"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/btn_add_category"
+        android:visibility="gone"/>
+
+</RelativeLayout>

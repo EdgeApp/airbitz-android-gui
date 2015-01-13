@@ -47,12 +47,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -88,6 +86,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
+import com.airbitz.models.Category;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
@@ -110,13 +109,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment implements CurrentLocationManager.OnCurrentLocationChange {
+public class TransactionDetailFragment extends Fragment
+        implements CurrentLocationManager.OnCurrentLocationChange,
+        TransactionDetailCategoryAdapter.OnNewCategory {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
 
@@ -172,8 +171,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private HashMap<String, Long> mBizIds = new LinkedHashMap<String, Long>();
     private long mBizId;
     private String mBizDistance;
-    private List<String> mCategories;
-    private List<String> mOriginalCategories;
+    private List<Category> mOriginalCategories;
+    private List<Category> mCategories;
     private boolean mFromSend = false;
     private boolean mFromRequest = false;
     private ListView mSearchListView;
@@ -185,6 +184,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+
+    private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
 
     private Picasso mPicasso;
 
@@ -311,30 +312,20 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
 
         mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
 
-        mCategories = mCoreAPI.loadCategories();
-        mCategories.addAll(Arrays.asList(getActivity().getResources().getStringArray(R.array.transaction_categories_list)));
-        for (int index = 0; index < mCategories.size(); index++) {
-            String cat = mCategories.get(index);
-            if (cat.equals(getString(R.string.fragment_category_income))) {
-                baseIncomePosition = index;
-                originalBaseIncomePosition = index;
-            }
-            if (cat.equals(getString(R.string.fragment_category_expense))) {
-                baseExpensePosition = index;
-                originalBaseExpensePosition = index;
-            }
-            if (cat.equals(getString(R.string.fragment_category_transfer))) {
-                baseTransferPosition = index;
-                originalBaseTransferPosition = index;
-            }
-            if (cat.equals(getString(R.string.fragment_category_exchange))) {
-                baseExchangePosition = index;
-                originalBaseExchangePosition = index;
-            }
+        // Initialize category items
+        mOriginalCategories = new ArrayList<Category>();
+        List<String> catStrings = mCoreAPI.loadCategories();
+        for(String cat : catStrings) {
+            mOriginalCategories.add(new Category(cat, ""));
         }
-        mOriginalCategories = new ArrayList<String>();
-        mOriginalCategories.addAll(mCategories);
 
+        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
+        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
+        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
+        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
+
+        mCategories = new ArrayList<Category>();
+        mCategories.addAll(mOriginalCategories);
 
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
@@ -368,7 +359,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mPayeeImageViewFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mBizId != 0) {
+                if (mBizId != 0) {
                     Bundle bundle = new Bundle();
                     bundle.putString(DirectoryDetailFragment.BIZID, String.valueOf(mBizId));
                     bundle.putString("", mPayeeEditText.getText().toString());
@@ -472,8 +463,7 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         highlightEditableText(mCategoryEdittext);
 //                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
-                    }
-                    else {
+                    } else {
                         mCategoryEdittext.append(currentType);
 //                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
@@ -578,18 +568,18 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mCategories.get(i).startsWith(getString(R.string.fragment_category_income))) {
+                if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_income))) {
                     currentType = getString(R.string.fragment_category_income);
-                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_expense))) {
+                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_expense))) {
                     currentType = getString(R.string.fragment_category_expense);
-                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_transfer))) {
+                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_transfer))) {
                     currentType = getString(R.string.fragment_category_transfer);
-                } else if (mCategories.get(i).startsWith(getString(R.string.fragment_category_exchange))) {
+                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_exchange))) {
                     currentType = getString(R.string.fragment_category_exchange);
                 }
 
                 doEdit = true;
-                mCategoryEdittext.setText(mCategoryAdapter.getItem(i));
+                mCategoryEdittext.setText(mCategoryAdapter.getItem(i).getCategoryName());
                 doEdit = false;
                 if (i == baseIncomePosition || i == baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition) {
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
@@ -706,6 +696,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
             UpdateView(mTransaction);
         }
+
+        mCategoryAdapter.setOnNewCategoryListener(this);
     }
 
 
@@ -792,7 +784,6 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
                 startOnlineBusinessSearch(strTerm);
             }
 
-//                    mArrayAutoComplete = [arrayAutoComplete sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         } else {
             if (mFromRequest) {
                 // this is a receive so use the address book
@@ -951,31 +942,10 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     private void updateBlanks(String term) {
-        if (baseIncomePosition < mCategories.size()) {
-            mCategories.remove(baseIncomePosition);
-            mCategories.add(baseIncomePosition, getString(R.string.fragment_category_income) + term);
-        }
-        if (baseExpensePosition < mCategories.size()) {
-            mCategories.remove(baseExpensePosition);
-            mCategories.add(baseExpensePosition, getString(R.string.fragment_category_expense) + term);
-        }
-        if (baseTransferPosition < mCategories.size()) {
-            mCategories.remove(baseTransferPosition);
-            mCategories.add(baseTransferPosition, getString(R.string.fragment_category_transfer) + term);
-        }
-        if (baseExchangePosition < mCategories.size()) {
-            mCategories.remove(baseExchangePosition);
-            mCategories.add(baseExchangePosition, getString(R.string.fragment_category_exchange) + term);
-        }
-
-        mOriginalCategories.remove(originalBaseIncomePosition);
-        mOriginalCategories.add(originalBaseIncomePosition, getString(R.string.fragment_category_income) + term);
-        mOriginalCategories.remove(originalBaseExpensePosition);
-        mOriginalCategories.add(originalBaseExpensePosition, getString(R.string.fragment_category_expense) + term);
-        mOriginalCategories.remove(originalBaseTransferPosition);
-        mOriginalCategories.add(originalBaseTransferPosition, getString(R.string.fragment_category_transfer) + term);
-        mOriginalCategories.remove(originalBaseExchangePosition);
-        mOriginalCategories.add(originalBaseExchangePosition, getString(R.string.fragment_category_exchange) + term);
+        baseIncomeCat.setCategoryName(getString(R.string.fragment_category_income) + term);
+        baseExpenseCat.setCategoryName(getString(R.string.fragment_category_expense) + term);
+        baseTransferCat.setCategoryName(getString(R.string.fragment_category_transfer) + term);
+        baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
     }
 
     private void ShowAdvancedDetails(boolean hasFocus) {
@@ -1141,24 +1111,15 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
     }
 
     public void goCreateCategoryList(String term) {
+        List<String> cumulativeStrings = new ArrayList<String>();
         mCategories.clear();
         for (int i = 0; i < mOriginalCategories.size(); i++) {
-            String s = mOriginalCategories.get(i);
+            String s = mOriginalCategories.get(i).getCategoryName();
+
             if (s.toLowerCase().substring(s.indexOf(':') + 1).contains(term.toLowerCase())) {
-                if (!mCategories.contains(s)) {
-                    mCategories.add(s);
-                    if (i == originalBaseIncomePosition) {
-                        baseIncomePosition = mCategories.indexOf(s);
-                    }
-                    if (i == originalBaseTransferPosition) {
-                        baseTransferPosition = mCategories.indexOf(s);
-                    }
-                    if (i == originalBaseExpensePosition) {
-                        baseExpensePosition = mCategories.indexOf(s);
-                    }
-                    if (i == originalBaseExchangePosition) {
-                        baseExchangePosition = mCategories.indexOf(s);
-                    }
+                if (!cumulativeStrings.contains(s)) {
+                    cumulativeStrings.add(s);
+                    mCategories.add(mOriginalCategories.get(i));
                 }
             }
         }
@@ -1170,6 +1131,22 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         mLocationManager.removeLocationChangeListener(this);
         mNearBusinessSearchAsyncTask = new NearBusinessSearchAsyncTask();
         mNearBusinessSearchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mLocationManager.getLocation().getLatitude() + "," + mLocationManager.getLocation().getLongitude());
+    }
+
+    @Override
+    public void onNewCategory(String categoryName) {
+        Log.d(TAG, "TODO add: "+ categoryName);
+
+        if (!categoryName.substring(categoryName.indexOf(':') + 1).trim().isEmpty()) {
+            mCategories.add(new Category(categoryName, ""));
+            mCoreAPI.addCategory(categoryName);
+        }
+
+        doEdit = true;
+        mCategoryEdittext.setText(categoryName);
+        doEdit = false;
+        mDummyFocus.requestFocus();
+        showCategoryPopup(false);
     }
 
     class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
@@ -1266,6 +1243,8 @@ public class TransactionDetailFragment extends Fragment implements CurrentLocati
         task.execute();
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        mCategoryAdapter.setOnNewCategoryListener(null);
     }
 
     private void startOnlineBusinessSearch(String term) {
