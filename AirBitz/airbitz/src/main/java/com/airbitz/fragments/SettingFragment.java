@@ -520,6 +520,9 @@ public class SettingFragment extends Fragment {
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
+        mExchanges = mCoreAPI.getExchangeRateSources(
+                        mCoreSettings.getExchangeRateSources());
+
         // Default Exchanges
         for (CoreAPI.ExchangeRateSource source : mExchanges) {
             switch (source.getCurrencyNum()) {
