@@ -148,8 +148,9 @@ public class ImportFragment extends Fragment
         public void run() {
             showBusyLayout(false);
             if(isVisible()) {
+                clearSweepAddress();
+                mSweptAmount = -1;
                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
-                clearSweepInfo();
             }
         }
     };
@@ -682,14 +683,13 @@ public class ImportFragment extends Fragment
         // if a private address sweep
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
+        clearSweepAddress();
         mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
-        clearSweepInfo();
+        mSweptAmount = -1;
     }
 
-    private void clearSweepInfo() {
+    private void clearSweepAddress() {
         // Clear out sweep info
-        mSweptID = "";
-        mSweptAmount = -1;
         mSweptAddress = "";
         mToEdittext.setText(mSweptAddress);
     }
