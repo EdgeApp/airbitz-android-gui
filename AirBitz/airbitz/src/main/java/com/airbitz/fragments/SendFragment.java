@@ -306,6 +306,7 @@ public class SendFragment extends Fragment implements
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     goAutoCompleteWalletListing();
+                    mActivity.showSoftKeyboard(mToEdittext);
                 } else {
                     mListviewContainer.setVisibility(View.GONE);
                 }
