@@ -117,6 +117,7 @@ public class SettingFragment extends Fragment {
     private EditText mLastEditText;
     private EditText mNicknameEditText;
     private HighlightOnPressButton mAutoLogoffButton;
+    private HighlightOnPressButton mDebugButton;
     private HighlightOnPressButton mDefaultCurrencyButton;
     private HighlightOnPressButton mDefaultDistanceButton;
     private TextView mAccountTitle;
@@ -201,6 +202,16 @@ public class SettingFragment extends Fragment {
         mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
 
         mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
+
+
+        mDebugButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_debug);
+        mDebugButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new DebugFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+            }
+        });
 
         mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
@@ -381,15 +392,6 @@ public class SettingFragment extends Fragment {
         });
 
         mAccountTitle.setText(getString(R.string.settings_account_title) + ": " + AirbitzApplication.getUsername());
-        try {
-            String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-            Integer iVersionCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
-            TextView debugInfo = (TextView) mView.findViewById(R.id.fragment_settings_debug_info);
-            s = s.concat(" (" + iVersionCode.toString() + ")");
-            debugInfo.setText(s);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
 
         setUserNameState(mSendNameSwitch.isChecked());
 

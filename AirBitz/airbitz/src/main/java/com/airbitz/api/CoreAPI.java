@@ -2746,4 +2746,14 @@ public class CoreAPI {
             return getStringAtPtr(core.longp_value(lp));
         }
     }
+
+    public String getCoreVersion() {
+        return core.ABC_VERSION;
+    }
+
+    public void uploadLogs() {
+        tABC_Error Error = new tABC_Error();
+        core.ABC_UploadLogs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                Error);
+    }
 }

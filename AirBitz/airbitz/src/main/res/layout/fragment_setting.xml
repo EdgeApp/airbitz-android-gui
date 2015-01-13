@@ -899,7 +899,7 @@
                 android:id="@+id/settings_button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/btn_blue"
@@ -909,13 +909,19 @@
                 android:textSize="18sp"
                 android:textStyle="normal" />
 
-            <TextView
-                android:id="@+id/fragment_settings_debug_info"
-                android:layout_width="wrap_content"
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/settings_button_debug"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/btn_blue"
+                android:padding="5dp"
+                android:text="@string/settings_button_debug"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
 
         </LinearLayout>
     </ScrollView>

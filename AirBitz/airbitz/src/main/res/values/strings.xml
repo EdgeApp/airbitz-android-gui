@@ -211,6 +211,7 @@
     <string name="settings_title_peso">Mexican Peso</string>
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Log Out</string>
+    <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>
     <string name="settings_categories_income">Income:</string>
@@ -395,6 +396,14 @@
     <!-- Strings for Contact Picker fragment -->
     <string name="fragment_contact_picker_title_email">Email Search</string>
     <string name="fragment_contact_picker_title_sms">SMS Search</string>
+
+    <!-- Strings for Debug fragment -->
+    <string name="fragment_debug_title">Debug View</string>
+    <string name="fragment_debug_version_title">Version:</string>
+    <string name="fragment_debug_core_version_title">Core Version:</string>
+    <string name="fragment_debug_network_title">Network:</string>
+    <string name="fragment_debug_clear_watcher_button">Clear Watcher Cache</string>
+    <string name="fragment_debug_upload_log_files_button">Upload Log Files</string>
 
     <!-- Strings for MapBusinessDirectory fragment -->
     <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>

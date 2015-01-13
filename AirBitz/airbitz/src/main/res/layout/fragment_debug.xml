@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/layout_title_header"
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/debug_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="8dp"
+                android:weightSum="6">
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="@string/fragment_debug_version_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="1"/>
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="test"
+                    android:id="@+id/debug_app_version_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="5" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="8dp"
+                android:weightSum="6">
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="@string/fragment_debug_core_version_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="1"/>
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="test"
+                    android:id="@+id/debug_core_version_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="5" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="8dp"
+                android:weightSum="6">
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="@string/fragment_debug_network_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="1"/>
+                <TextView
+                    style="@style/BlackDropShadow"
+                    android:text="test"
+                    android:id="@+id/debug_network_version_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="5" />
+            </TableRow>
+
+        </TableLayout>
+
+            <com.airbitz.objects.HighlightOnPressButton
+                style="@style/BlackDropShadow"
+                android:id="@+id/fragment_debug_clear_watcher_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/btn_green"
+                android:padding="5dp"
+                android:text="@string/fragment_debug_clear_watcher_button"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <com.airbitz.objects.HighlightOnPressButton
+                style="@style/BlackDropShadow"
+                android:id="@+id/fragment_debug_upload_log_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/btn_green"
+                android:padding="5dp"
+                android:text="@string/fragment_debug_upload_log_files_button"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
