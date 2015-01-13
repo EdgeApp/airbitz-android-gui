@@ -44,6 +44,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.objects.HighlightOnPressImageButton;
 
 /*
  * Information and actions for User debugging assistance
@@ -53,6 +54,7 @@ public class DebugFragment extends Fragment {
     View mView;
     private HighlightOnPressButton mClearWatchersButton;
     private HighlightOnPressButton mUploadLogButton;
+    private HighlightOnPressImageButton mBackButton;
     private TextView mTitleTextView;
     private NavigationActivity mActivity;
     private CoreAPI mCoreAPI;
@@ -72,6 +74,16 @@ public class DebugFragment extends Fragment {
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setText(getString(R.string.fragment_debug_title));
+
+        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mActivity.onBackPressed();
+            }
+        });
+
 
         mClearWatchersButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_debug_clear_watcher_button);
         mClearWatchersButton.setOnClickListener(new View.OnClickListener() {
