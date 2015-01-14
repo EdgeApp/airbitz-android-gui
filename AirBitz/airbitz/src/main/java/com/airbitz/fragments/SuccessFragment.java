@@ -48,7 +48,7 @@ import com.airbitz.activities.NavigationActivity;
 /**
  * Created on 2/22/14.
  */
-public class SuccessFragment extends Fragment {
+public class SuccessFragment extends BaseFragment {
     public static final String TYPE_SEND = "com.airbitz.fragments.receivedsuccess.send";
     public static final String TYPE_REQUEST = "com.airbitz.fragments.receivedsuccess.request";
     private final String TAG = getClass().getSimpleName();

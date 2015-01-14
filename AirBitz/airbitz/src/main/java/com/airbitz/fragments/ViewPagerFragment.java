@@ -60,7 +60,7 @@ import java.util.List;
 /**
  * Created on 10/27/14.
  */
-public class ViewPagerFragment extends Fragment {
+public class ViewPagerFragment extends BaseFragment {
     final String TAG = getClass().getSimpleName();
 
     private HighlightOnPressImageButton mQuitButton;

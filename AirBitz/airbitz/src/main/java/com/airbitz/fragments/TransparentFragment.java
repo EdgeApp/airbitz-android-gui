@@ -39,7 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class TransparentFragment extends Fragment {
+public class TransparentFragment extends BaseFragment {
 
     private View mView;
 

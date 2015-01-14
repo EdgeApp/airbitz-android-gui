@@ -87,7 +87,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-public class BusinessDirectoryFragment extends Fragment implements
+public class BusinessDirectoryFragment extends BaseFragment implements
         NavigationActivity.OnBackPress,
         CurrentLocationManager.OnCurrentLocationChange {
 

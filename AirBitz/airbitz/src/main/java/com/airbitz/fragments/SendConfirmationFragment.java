@@ -71,7 +71,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 /**
  * Created on 2/21/14.
  */
-public class SendConfirmationFragment extends Fragment {
+public class SendConfirmationFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;

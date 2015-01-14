@@ -51,7 +51,7 @@ import com.airbitz.utils.Common;
 /**
  * Created by tom 8/16/2014
  */
-public class HelpFragment extends Fragment {
+public class HelpFragment extends BaseFragment {
     public static final int INFO = R.raw.info;
     public static final int EXPORT_WALLET = R.raw.info_export_wallet;
     public static final int EXPORT_WALLET_OPTIONS = R.raw.info_export_wallet_options;

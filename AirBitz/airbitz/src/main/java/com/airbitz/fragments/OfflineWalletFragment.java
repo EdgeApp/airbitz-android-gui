@@ -67,7 +67,7 @@ import java.io.FileOutputStream;
 /**
  * Created on 2/12/14.
  */
-public class OfflineWalletFragment extends Fragment implements GestureDetector.OnGestureListener {
+public class OfflineWalletFragment extends BaseFragment implements GestureDetector.OnGestureListener {
 
     private static String[] menus = {"Copy Public Address", "External Storage/Print"};
     private EditText mAddressField;

@@ -68,7 +68,7 @@ import com.airbitz.utils.Common;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandingFragment extends Fragment implements
+public class LandingFragment extends BaseFragment implements
     NavigationActivity.OnFadingDialogFinished {
     private final String TAG = getClass().getSimpleName();
 

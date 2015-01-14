@@ -79,7 +79,7 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class WalletsFragment extends Fragment
+public class WalletsFragment extends BaseFragment
         implements DynamicListView.OnListReordered,
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated,

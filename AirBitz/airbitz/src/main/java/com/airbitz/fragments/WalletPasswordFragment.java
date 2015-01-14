@@ -54,7 +54,7 @@ import com.airbitz.api.CoreAPI;
 /**
  * Created on 2/24/14.
  */
-public class WalletPasswordFragment extends Fragment {
+public class WalletPasswordFragment extends BaseFragment {
 
     private EditText mPasswordEditText;
     private ImageView mValidPasswordImageView;

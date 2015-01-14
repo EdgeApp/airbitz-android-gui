@@ -48,7 +48,7 @@ import com.airbitz.activities.NavigationActivity;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class NavigationBarFragment extends Fragment {
+public class NavigationBarFragment extends BaseFragment {
 
     private RelativeLayout mDirectoryButton;
     private ImageView mDirectoryImage;

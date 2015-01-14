@@ -57,7 +57,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 /**
  * Created on 2/10/14.
  */
-public class SpendingLimitsFragment extends Fragment {
+public class SpendingLimitsFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
     private EditText mPasswordEditText;

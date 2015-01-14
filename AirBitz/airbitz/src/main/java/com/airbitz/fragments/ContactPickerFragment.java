@@ -64,7 +64,7 @@ import java.util.List;
 /**
  * Created by tom on 9/25/14.
  */
-public class ContactPickerFragment extends Fragment {
+public class ContactPickerFragment extends BaseFragment {
     public final static String TYPE = "com.airbitz.contact_picker_fragment.type";
     public final static String EMAIL = "com.airbitz.contact_picker_fragment.email";
     public final static String SMS = "com.airbitz.contact_picker_fragment.sms";

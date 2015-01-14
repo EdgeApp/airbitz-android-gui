@@ -98,7 +98,7 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends Fragment implements
+public class SendFragment extends BaseFragment implements
         Camera.PreviewCallback,
         Camera.AutoFocusCallback,
         BluetoothListView.OnPeripheralSelected,

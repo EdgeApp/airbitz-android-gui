@@ -113,7 +113,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created on 2/20/14.
  */
-public class TransactionDetailFragment extends Fragment
+public class TransactionDetailFragment extends BaseFragment
         implements CurrentLocationManager.OnCurrentLocationChange,
         TransactionDetailCategoryAdapter.OnNewCategory {
     private final String TAG = getClass().getSimpleName();

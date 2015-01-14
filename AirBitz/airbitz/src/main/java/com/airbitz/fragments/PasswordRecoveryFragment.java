@@ -70,7 +70,7 @@ import java.util.Map;
 /**
  * Created on 2/10/14.
  */
-public class PasswordRecoveryFragment extends Fragment implements NavigationActivity.OnBackPress {
+public class PasswordRecoveryFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     public static final String MODE = "com.airbitz.passwordrecovery.type";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";

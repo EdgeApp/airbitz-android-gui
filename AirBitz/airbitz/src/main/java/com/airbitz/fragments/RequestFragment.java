@@ -69,7 +69,7 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends Fragment implements CoreAPI.OnExchangeRatesChange {
+public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeRatesChange {
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";

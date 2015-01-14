@@ -49,7 +49,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 /*
  * Information and actions for User debugging assistance
  */
-public class DebugFragment extends Fragment {
+public class DebugFragment extends BaseFragment {
 
     View mView;
     private HighlightOnPressButton mClearWatchersButton;

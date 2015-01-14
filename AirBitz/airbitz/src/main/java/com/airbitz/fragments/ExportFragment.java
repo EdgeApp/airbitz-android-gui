@@ -55,7 +55,7 @@ import java.util.List;
 /**
  * Created on 2/22/14.
  */
-public class ExportFragment extends Fragment {
+public class ExportFragment extends BaseFragment {
 
     View mView;
     private HighlightOnPressButton mCSVButton;

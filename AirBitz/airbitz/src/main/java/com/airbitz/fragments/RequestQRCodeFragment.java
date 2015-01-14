@@ -79,7 +79,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RequestQRCodeFragment extends Fragment implements
+public class RequestQRCodeFragment extends BaseFragment implements
         ContactPickerFragment.ContactSelection,
         NfcAdapter.CreateNdefMessageCallback,
         SwipeRefreshLayout.OnRefreshListener

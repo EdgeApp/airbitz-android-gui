@@ -90,7 +90,7 @@ import java.util.List;
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends Fragment
+public class ImportFragment extends BaseFragment
         implements Camera.PreviewCallback,
         Camera.AutoFocusCallback,
         CoreAPI.OnWalletSweep

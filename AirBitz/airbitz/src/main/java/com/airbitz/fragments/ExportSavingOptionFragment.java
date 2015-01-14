@@ -75,7 +75,7 @@ import google.com.android.cloudprint.PrintDialogActivity;
 /**
  * Created on 2/22/14.
  */
-public class ExportSavingOptionFragment extends Fragment {
+public class ExportSavingOptionFragment extends BaseFragment {
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
     private final String TAG = getClass().getSimpleName();
     View mView;

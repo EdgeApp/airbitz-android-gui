@@ -76,7 +76,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 2/10/14.
  */
-public class SignUpFragment extends Fragment implements NavigationActivity.OnBackPress {
+public class SignUpFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     public static final int MIN_PIN_LENGTH = 4;
     public static String MODE = "com.airbitz.signup.mode";
     public static int SIGNUP = 0;

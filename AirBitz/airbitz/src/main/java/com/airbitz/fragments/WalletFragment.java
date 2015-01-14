@@ -77,7 +77,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WalletFragment extends Fragment
+public class WalletFragment extends BaseFragment
         implements CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated,
         SwipeRefreshLayout.OnRefreshListener {

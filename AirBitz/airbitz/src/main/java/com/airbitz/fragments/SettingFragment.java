@@ -78,7 +78,7 @@ import java.util.List;
 /**
  * Created on 2/12/14.
  */
-public class SettingFragment extends Fragment {
+public class SettingFragment extends BaseFragment {
     static final int USD_NUM = 840;
     static final int CAD_NUM = 124;
     static final int EUR_NUM = 978;

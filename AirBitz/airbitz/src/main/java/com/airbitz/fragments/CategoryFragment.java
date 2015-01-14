@@ -68,7 +68,7 @@ import java.util.List;
 /**
  * Created by matt on 6/24/14.
  */
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
     Activity mParentActivity;
     CoreAPI mCoreAPI;

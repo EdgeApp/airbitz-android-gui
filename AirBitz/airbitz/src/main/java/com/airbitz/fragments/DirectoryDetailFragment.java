@@ -31,8 +31,6 @@
 
 package com.airbitz.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -62,11 +60,11 @@ import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
-import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.Hour;
 import com.airbitz.models.Image;
 import com.airbitz.models.Location;
 import com.airbitz.models.Social;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.widgets.TouchImageView;
 import com.squareup.picasso.Picasso;
 
@@ -79,7 +77,7 @@ import java.util.List;
 /**
  * Created by Thomas Baker on 4/22/14.
  */
-public class DirectoryDetailFragment extends Fragment {
+public class DirectoryDetailFragment extends BaseFragment {
 
     public static final String BIZID = "bizId";
     public static final String BIZNAME = "bizName";
