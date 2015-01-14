@@ -625,7 +625,7 @@ public class NavigationActivity extends Activity
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if (!AirbitzApplication.isLoggedIn()) {
-            if (mDataUri != null)
+//            if (mDataUri != null)
                 DisplayLoginOverlay(true);
 
             mNavThreadId = Tabs.BD.ordinal();
