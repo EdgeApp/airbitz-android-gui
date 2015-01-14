@@ -1135,8 +1135,6 @@ public class TransactionDetailFragment extends Fragment
 
     @Override
     public void onNewCategory(String categoryName) {
-        Log.d(TAG, "TODO add: "+ categoryName);
-
         if (!categoryName.substring(categoryName.indexOf(':') + 1).trim().isEmpty()) {
             mCategories.add(new Category(categoryName, ""));
             mCoreAPI.addCategory(categoryName);
