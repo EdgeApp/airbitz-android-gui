@@ -1590,9 +1590,10 @@ public class NavigationActivity extends Activity
     }
 
     private void checkNoWallets() {
+        SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        String username = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         List<Wallet> wallets = mCoreAPI.loadWallets(false);
-        if(wallets.size() == 2) { // 2 means only the two headers are there
-            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        if(wallets.size() == 2 && username.isEmpty()) { // 2 means only the two headers are there
             int count = prefs.getInt(AirbitzApplication.WALLET_CHECK_PREF, 0);
             count++;
             SharedPreferences.Editor editor = prefs.edit();
