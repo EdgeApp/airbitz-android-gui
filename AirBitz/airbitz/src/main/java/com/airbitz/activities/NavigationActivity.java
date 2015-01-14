@@ -399,7 +399,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
 
-        getFragmentManager().executePendingTransactions();
+//        getFragmentManager().executePendingTransactions();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -1590,8 +1590,8 @@ public class NavigationActivity extends Activity
     }
 
     private void checkNoWallets() {
-        List<String> wallets = mCoreAPI.loadWalletUUIDs();
-        if(wallets.isEmpty()) {
+        List<Wallet> wallets = mCoreAPI.loadWallets(false);
+        if(wallets.size() == 2) { // 2 means only the two headers are there
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
             int count = prefs.getInt(AirbitzApplication.WALLET_CHECK_PREF, 0);
             count++;
