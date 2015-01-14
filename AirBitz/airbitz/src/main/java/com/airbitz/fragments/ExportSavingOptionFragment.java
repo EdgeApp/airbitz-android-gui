@@ -32,7 +32,7 @@
 package com.airbitz.fragments;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -64,6 +64,7 @@ import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -250,12 +251,13 @@ public class ExportSavingOptionFragment extends BaseFragment {
                 } else {
                     data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
                 }
-                if(data != null) {
-                    File file = createPDFFile(data);
+                if(data != null && !data.isEmpty()) {
+                    File file = createLocalTempFile(data);
                     if(file != null) {
+                        String printName = mFromButton.getText().toString() + " - " + mToButton.getText().toString();
                         Intent printIntent = new Intent(getActivity(), PrintDialogActivity.class);
-                        printIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
-                        printIntent.putExtra("title", "Airbitz Print");
+                        printIntent.setDataAndType(Uri.fromFile(file), "text/plain");
+                        printIntent.putExtra("title", printName);
                         startActivity(printIntent);
                     }
                 }
@@ -585,9 +587,18 @@ public class ExportSavingOptionFragment extends BaseFragment {
         }
     }
 
-    private File createPDFFile(String data) {
+    private File createLocalTempFile(String data) {
+        File file = new File(getActivity().getFilesDir(), "print");
+        FileOutputStream outputStream;
 
-        return null;
+        try {
+            outputStream = getActivity().openFileOutput("print", Context.MODE_PRIVATE);
+            outputStream.write(data.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     private void showExportButtons() {
@@ -596,8 +607,8 @@ public class ExportSavingOptionFragment extends BaseFragment {
             setAllButtonViews(View.GONE);
             mEmailButton.setVisibility(View.VISIBLE);
             mEmailImage.setVisibility(View.VISIBLE);
-//            mPrintButton.setVisibility(View.VISIBLE);
-//            mPrintImage.setVisibility(View.VISIBLE);
+            mPrintButton.setVisibility(View.VISIBLE);
+            mPrintImage.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
