@@ -51,8 +51,6 @@ public class BaseFragment extends Fragment {
         float displayWidth = size.x;
         Animator animator = null;
 
-        Log.d("BaseFragment", "onCreateAnimator transit, enter, nextAnim: " + transit + ", "+enter+", "+nextAnim);
-
         int duration = 300;
         switch(nextAnim) {
             case R.animator.slide_in_from_left:
