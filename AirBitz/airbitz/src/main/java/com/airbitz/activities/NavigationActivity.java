@@ -399,7 +399,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
 
-//        getFragmentManager().executePendingTransactions();
+        getFragmentManager().executePendingTransactions();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {

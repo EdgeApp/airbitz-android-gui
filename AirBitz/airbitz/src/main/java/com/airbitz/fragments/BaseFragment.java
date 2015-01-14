@@ -66,12 +66,14 @@ public class BaseFragment extends Fragment {
                 animator = ObjectAnimator.ofFloat(this, "translationX", 0, displayWidth);
                 break;
             default:
-                animator = enter ? ObjectAnimator.ofFloat(this, "alpha", 0, 1) :
-                        ObjectAnimator.ofFloat(this, "alpha", 1, 0);
-                duration = 100;
+                animator = null; //enter ? ObjectAnimator.ofFloat(this, "alpha", 0, 1) :
+                        //ObjectAnimator.ofFloat(this, "alpha", 1, 0);
+                duration = 0;
         }
 
-        animator.setDuration(duration);
+        if(animator != null) {
+            animator.setDuration(duration);
+        }
         return animator;
     }
 }
