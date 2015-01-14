@@ -329,6 +329,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // Reuse mUserNameEditText for old mPassword too
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mUserNameRedRingCover.setVisibility(View.GONE);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
