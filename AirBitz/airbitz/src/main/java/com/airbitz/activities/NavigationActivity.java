@@ -93,7 +93,6 @@ import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.fragments.SpendingLimitsFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
@@ -640,6 +639,8 @@ public class NavigationActivity extends Activity
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
 
         checkNotifications();
+
+        checkNoWallets();
 
         if (SettingFragment.getNFCPref()) {
             setupNFCForegrounding();
@@ -1585,6 +1586,45 @@ public class NavigationActivity extends Activity
             editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
             editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
+        }
+    }
+
+    private void checkNoWallets() {
+        List<String> wallets = mCoreAPI.loadWalletUUIDs();
+        if(wallets.isEmpty()) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+            int count = prefs.getInt(AirbitzApplication.WALLET_CHECK_PREF, 0);
+            count++;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(AirbitzApplication.WALLET_CHECK_PREF, count);
+            editor.apply();
+            if(count > 2) {
+                ShowCreateWalletDialog(getString(R.string.fragment_business_no_wallet_title),
+                        getString(R.string.fragment_business_no_wallet_message));
+            }
+        }
+    }
+
+    public void ShowCreateWalletDialog(String title, String message) {
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_yes),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    startSignUp();
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.string_no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            builder.create().show();
         }
     }
 }
