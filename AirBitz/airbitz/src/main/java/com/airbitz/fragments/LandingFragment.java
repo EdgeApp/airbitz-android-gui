@@ -171,7 +171,7 @@ public class LandingFragment extends BaseFragment implements
                     refreshView(false, false);
                 } else {
                     if (mActivity.networkIsAvailable()) {
-                        mActivity.startSignUp();
+                        mActivity.startSignUp(mUserNameEditText.getText().toString());
                     } else {
                         mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
                     }

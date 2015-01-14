@@ -339,6 +339,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
+            mUserNameEditText.requestFocus();
         } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             // change mUsername label, title
             mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
@@ -362,6 +363,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
             mTitleTextView.setText(R.string.activity_signup_title_change_pin);
+            mUserNameEditText.requestFocus();
+        } else if (mMode == SIGNUP) {
+            mUserNameEditText.setText(bundle.getString(PasswordRecoveryFragment.USERNAME));
+            mPasswordEditText.requestFocus();
         }
     }
 
@@ -578,7 +583,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     public void onResume() {
         super.onResume();
         setupUI(getArguments());
-        mUserNameEditText.requestFocus();
     }
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {

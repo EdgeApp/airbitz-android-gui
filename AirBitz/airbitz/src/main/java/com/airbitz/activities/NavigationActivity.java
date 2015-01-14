@@ -1010,10 +1010,13 @@ public class NavigationActivity extends Activity
         DisplayLoginOverlay(false, true);
     }
 
-    public void startSignUp() {
+    public void startSignUp(String userName) {
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
+        Bundle bundle = new Bundle();
+        bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
         Fragment frag = new SignUpFragment();
+        frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
     }
@@ -1616,7 +1619,7 @@ public class NavigationActivity extends Activity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
-                                    startSignUp();
+                                    startSignUp("");
                                 }
                             })
                     .setNegativeButton(getResources().getString(R.string.string_no),
