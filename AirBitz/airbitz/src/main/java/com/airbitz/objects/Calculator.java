@@ -225,14 +225,14 @@ public class Calculator extends LinearLayout {
         if (mEditText == null)
             return;
 
+        String buttonTag = v.getTag().toString();
         Editable editable = mEditText.getText();
         int start = mEditText.getSelectionStart();
         // delete the selection, if chars are selected:
         int end = mEditText.getSelectionEnd();
-        if (end > start) {
+        if (end > start && !buttonTag.equals("done")) {
             editable.delete(start, end);
         }
-        String buttonTag = v.getTag().toString();
 
         if (buttonTag.equals("back")) {
             String s = mEditText.getText().toString();
