@@ -48,9 +48,11 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -135,6 +137,7 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
+        mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText = (EditText) view.findViewById(R.id.fragment_landing_password_edittext);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -147,11 +150,20 @@ public class LandingFragment extends BaseFragment implements
                 }
             }
         });
+        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    attemptPasswordLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mRightArrow = (ImageView) view.findViewById(R.id.fragment_landing_arrowright_imageview);
         mLandingSubtextView = (TextView) view.findViewById(R.id.fragment_landing_detail_textview);
 
-        mPasswordLayout = view.findViewById(R.id.fragment_landing_password_layout);
 
         mBackButton = (HighlightOnPressImageButton) view.findViewById(R.id.fragment_landing_button_back);
         mBackButton.setVisibility(View.VISIBLE);
