@@ -398,10 +398,10 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
                 if (mWallets != null && !mWallets.isEmpty())
                     mSelectedWallet = mWallets.get(mFromIndex);
             }
-        }
 
-        if(mSelectedWallet==null && mWallets!=null) {
-            mSelectedWallet = mWallets.get(0);
+            if(mSelectedWallet==null) {
+                mSelectedWallet = mWallets.get(0);
+            }
         }
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
