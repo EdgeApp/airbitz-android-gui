@@ -103,7 +103,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -120,7 +119,6 @@ public class TransactionDetailFragment extends BaseFragment
     private final int MIN_AUTOCOMPLETE = 5;
 
     private HighlightOnPressButton mDoneButton;
-    private RelativeLayout mAdvanceDetailsButtonLayout;
     private HighlightOnPressButton mAdvanceDetailsButton;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
@@ -136,6 +134,7 @@ public class TransactionDetailFragment extends BaseFragment
     private TextView mCategoryTextView;
     private LinearLayout mCategoryEdittextLayout;
     private LinearLayout mCategoryPopupLayout;
+    private View mUpperLayout, mMiddleLayout, mLowerLayout;
     private View mDummyFocus;
     private CurrentLocationManager mLocationManager;
     private boolean locationEnabled;
@@ -147,18 +146,11 @@ public class TransactionDetailFragment extends BaseFragment
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
     private int baseExchangePosition = 3;
-    private int originalBaseIncomePosition = 0;
-    private int originalBaseExpensePosition = 1;
-    private int originalBaseTransferPosition = 2;
-    private int originalBaseExchangePosition = 3;
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
-    private LinearLayout mSentDetailLayout;
-    private LinearLayout mNoteDetailLayout;
     private EditText mFiatValueEdittext;
     private String mFiatValue;
     private TextView mFiatDenominationLabel;
-    private LinearLayout mEdittextNotesLayout;
     private EditText mNoteEdittext;
     private EditText mCategoryEdittext;
     private List<BusinessSearchResult> mBusinesses;
@@ -260,7 +252,6 @@ public class TransactionDetailFragment extends BaseFragment
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
-        mAdvanceDetailsButtonLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_button_advanced_layout);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
@@ -285,14 +276,13 @@ public class TransactionDetailFragment extends BaseFragment
         mFiatDenominationLabel = (TextView) mView.findViewById(R.id.transaction_detail_textview_currency_sign);
         mBitcoinSignTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_sign);
 
-        mEdittextNotesLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
         mCategoryTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_category);
         mCategoryEdittextLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_edittext_category_layout);
         mCategoryPopupLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_category_popup_layout);
 
-
-        mSentDetailLayout = (LinearLayout) mView.findViewById(R.id.layout_sent_detail);
-        mNoteDetailLayout = (LinearLayout) mView.findViewById(R.id.transaction_detail_layout_note);
+        mUpperLayout = mView.findViewById(R.id.transactiondetail_upper_layout);
+        mMiddleLayout = mView.findViewById(R.id.transactiondetail_middle_layout);
+        mLowerLayout = mView.findViewById(R.id.transactiondetail_lower_layout);
 
         mDummyFocus = mView.findViewById(R.id.fragment_transactiondetail_dummy_focus);
 
@@ -427,15 +417,8 @@ public class TransactionDetailFragment extends BaseFragment
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    mAdvanceDetailsButtonLayout.setVisibility(View.GONE);
-                    mSentDetailLayout.setVisibility(View.GONE);
-                    mDoneButton.setVisibility(View.GONE);
-                } else {
-                    mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
-                    mSentDetailLayout.setVisibility(View.VISIBLE);
-                    mDoneButton.setVisibility(View.VISIBLE);
-                }
+                showUpperLayout(!hasFocus);
+                showMiddleLayout(!hasFocus);
             }
         });
         mNoteEdittext.setHorizontallyScrolling(false);
@@ -462,10 +445,8 @@ public class TransactionDetailFragment extends BaseFragment
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         highlightEditableText(mCategoryEdittext);
-//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     } else {
                         mCategoryEdittext.append(currentType);
-//                        mCategoryEdittext.dispatchKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, KeyEvent.META_SHIFT_ON));
                     }
                     updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
                     goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
@@ -550,10 +531,8 @@ public class TransactionDetailFragment extends BaseFragment
                 }
                 updateBizId();
                 updatePhoto();
-                mDateTextView.setVisibility(View.VISIBLE);
-                mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
-                mSentDetailLayout.setVisibility(View.VISIBLE);
-                mNoteDetailLayout.setVisibility(View.VISIBLE);
+                showUpperLayout(true);
+                showMiddleLayout(true);
                 mSearchListView.setVisibility(View.GONE);
                 if (mFromRequest || mFromSend) {
                     mCategoryEdittext.requestFocus();
@@ -589,7 +568,7 @@ public class TransactionDetailFragment extends BaseFragment
             }
         });
 
-        final TextWatcher mBTCTextWatcher = new TextWatcher() {
+        final TextWatcher mFiatTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
@@ -605,31 +584,19 @@ public class TransactionDetailFragment extends BaseFragment
             }
         };
 
-        mFiatValueEdittext.addTextChangedListener(mBTCTextWatcher);
+        mFiatValueEdittext.addTextChangedListener(mFiatTextWatcher);
         mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                showUpperLayout(!hasFocus);
                 if (hasFocus) {
                     mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mCalculator.setEditText(mFiatValueEdittext);
                     mFiatValueEdittext.selectAll();
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    mFiatValueEdittext.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mFiatValueEdittext.setText(mFiatValue);
-                        }
-                    }, 1000);
                     ((NavigationActivity) getActivity()).hideCalculator();
                 }
-            }
-        });
-
-        mFiatValueEdittext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).showCalculator();
             }
         });
 
@@ -650,6 +617,7 @@ public class TransactionDetailFragment extends BaseFragment
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mDummyFocus.requestFocus();
                     return true;
                 }
@@ -684,6 +652,22 @@ public class TransactionDetailFragment extends BaseFragment
         }
 
         return mView;
+    }
+
+    private void showUpperLayout(boolean visible) {
+        if (visible) {
+            mUpperLayout.setVisibility(View.VISIBLE);
+        } else {
+            mUpperLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showMiddleLayout(boolean visible) {
+        if (visible) {
+            mMiddleLayout.setVisibility(View.VISIBLE);
+        } else {
+            mMiddleLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -817,106 +801,31 @@ public class TransactionDetailFragment extends BaseFragment
                 mPicasso.load(payeeImage).noFade().into(mPayeeImageView);
             }
         } else {
-            mPayeeImageViewFrame.setVisibility(View.GONE);
+            mPayeeImageViewFrame.setVisibility(View.INVISIBLE);
         }
     }
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
-            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT, 95.0f);
-
-            mAdvanceDetailsButton.setVisibility(View.GONE);
-            mSentDetailLayout.setVisibility(View.GONE);
-            mNoteDetailLayout.setVisibility(View.GONE);
-            mPayeeNameLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.VISIBLE);
-
 
             updateAutoCompleteArray(mPayeeEditText.getText().toString());
             updateBizId();
             updatePhoto();
             mSearchAdapter.notifyDataSetChanged();
         } else {
-            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
-
-            mAdvanceDetailsButton.setVisibility(View.VISIBLE);
-            mSentDetailLayout.setVisibility(View.VISIBLE);
-            mNoteDetailLayout.setVisibility(View.VISIBLE);
-            mPayeeNameLayout.setLayoutParams(params);
             mSearchListView.setVisibility(View.GONE);
         }
     }
 
     private void showCategoryPopup(boolean hasFocus) {
+        showUpperLayout(!hasFocus);
+        showMiddleLayout(!hasFocus);
         if (hasFocus) {
-            mDateTextView.setVisibility(View.GONE);
-            mPayeeNameLayout.setVisibility(View.GONE);
-            mAdvanceDetailsButtonLayout.setVisibility(View.GONE);
-            mSentDetailLayout.setVisibility(View.GONE);
-            mDoneButton.setVisibility(View.GONE);
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 75.0f);
-                mNoteDetailLayout.setLayoutParams(params);
-            }
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 6.66f);
-                mCategoryTextView.setLayoutParams(params);
-            }
-
             mCategoryPopupLayout.setVisibility(View.VISIBLE);
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 13.2f);
-                mCategoryEdittextLayout.setLayoutParams(params);
-            }
-
-            mEdittextNotesLayout.setVisibility(View.GONE);
-            mNotesTextView.setVisibility(View.GONE);
-            mNoteEdittext.setVisibility(View.GONE);
         } else {
-
-            mDateTextView.setVisibility(View.VISIBLE);
-            mPayeeNameLayout.setVisibility(View.VISIBLE);
-            mAdvanceDetailsButtonLayout.setVisibility(View.VISIBLE);
-            mSentDetailLayout.setVisibility(View.VISIBLE);
-            mDoneButton.setVisibility(View.VISIBLE);
-
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 50.0f);
-                mNoteDetailLayout.setLayoutParams(params);
-            }
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 10.0f);
-                mCategoryTextView.setLayoutParams(params);
-            }
-
             mCategoryPopupLayout.setVisibility(View.GONE);
-
-            if (true) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0, 20.0f);
-                mCategoryEdittextLayout.setLayoutParams(params);
-            }
-
-            mEdittextNotesLayout.setVisibility(View.VISIBLE);
-            mNotesTextView.setVisibility(View.VISIBLE);
-            mNoteEdittext.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1240,7 +1149,7 @@ public class TransactionDetailFragment extends BaseFragment
                 mFiatValueEdittext.getText().toString());
         task.execute();
 
-        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mCategoryAdapter.setOnNewCategoryListener(null);
     }

@@ -149,7 +149,12 @@ public class NavigationActivity extends Activity
     final Runnable delayedShowCalculator = new Runnable() {
         @Override
         public void run() {
+            mCalculatorView.setAlpha(0f);
             mCalculatorView.setVisibility(View.VISIBLE);
+            mCalculatorView.animate()
+                    .alpha(1f)
+                    .setDuration(200)
+                    .setListener(null);
             mCalculatorView.setEnabled(true);
         }
     };
