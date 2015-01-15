@@ -281,7 +281,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     Runnable animatePopupDown = new Runnable() {
         @Override
         public void run() {
-            if(mPopupContainer != null && mWidgetContainer != null) {
+            if(mPopupContainer != null && mWidgetContainer != null && isAdded()) {
                 ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
                         -getResources().getDimension(R.dimen.activity_signup_popup_height), 0);
                 ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
@@ -302,7 +302,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     Runnable animatePopupUp = new Runnable() {
         @Override
         public void run() {
-            if(mPopupContainer != null && mWidgetContainer != null) {
+            if(mPopupContainer != null && mWidgetContainer != null && isAdded()) {
                 ObjectAnimator animator = ObjectAnimator.ofFloat(mPopupContainer, "translationY",
                         0, -getResources().getDimension(R.dimen.activity_signup_popup_height));
                 ObjectAnimator animatorWidget = ObjectAnimator.ofFloat(mWidgetContainer, "translationY",
