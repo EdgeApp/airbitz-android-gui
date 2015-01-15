@@ -36,6 +36,7 @@ import android.app.Fragment;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowManager;
 
 import com.airbitz.R;
 
@@ -73,6 +74,29 @@ public class BaseFragment extends Fragment {
 
         if(animator != null) {
             animator.setDuration(duration);
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    Log.d("BaseFragment", "Animation starting, setting FLAG_NOT_TOUCHABLE");
+                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    Log.d("BaseFragment", "Animation ended, clearing FLAG_NOT_TOUCHABLE");
+                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
         }
         return animator;
     }
