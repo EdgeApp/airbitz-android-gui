@@ -90,7 +90,7 @@ public class PlayLocationManager implements
     public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mObservers.remove(listener);
         Log.d(TAG, "Listener removed: " + listener);
-        if (mObservers.size() <= 0) {
+        if (mObservers.size() <= 0 && locationClient.isConnected()) {
             locationClient.disconnect();
         }
     }
