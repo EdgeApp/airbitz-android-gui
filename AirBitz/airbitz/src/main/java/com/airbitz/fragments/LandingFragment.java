@@ -261,6 +261,11 @@ public class LandingFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
+
         if(!AirbitzApplication.isLoggedIn()) {
             mPinEditText.setText("");
             if (mActivity.networkIsAvailable() && mCoreAPI.PinLoginExists(mUsername)) {
@@ -270,6 +275,17 @@ public class LandingFragment extends BaseFragment implements
             }
         }
         refreshView(false, false);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed())
+        {
+            //Only manually call onResume if fragment is already visible
+            //Otherwise allow natural fragment lifecycle to call onResume
+            onResume();
+        }
     }
 
     @Override
@@ -302,6 +318,7 @@ public class LandingFragment extends BaseFragment implements
                 mLandingSubtextView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
+            mPinEditText.requestFocus();
         } else {
             mPasswordLayout.setVisibility(View.VISIBLE);
             mPinLayout.setVisibility(View.GONE);

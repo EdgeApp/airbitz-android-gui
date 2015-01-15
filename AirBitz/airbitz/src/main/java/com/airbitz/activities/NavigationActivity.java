@@ -286,10 +286,6 @@ public class NavigationActivity extends Activity
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
         if (overlay) {
-            // We are already showing so don't bother
-            if (mViewPager.getCurrentItem() == 1) {
-                return;
-            }
             mViewPager.setCurrentItem(1, false);
             if (animate) {
                 Animation anim = new AlphaAnimation(0.0f, 1.0f);
@@ -297,8 +293,14 @@ public class NavigationActivity extends Activity
                 mViewPager.startAnimation(anim);
             }
             mViewPager.setVisibility(View.VISIBLE);
+            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
+                mOverlayFragments.get(1).setUserVisibleHint(true);
+            }
         } else {
             mViewPager.setCurrentItem(0, animate);
+            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
+                mOverlayFragments.get(1).setUserVisibleHint(false);
+            }
         }
     }
 
