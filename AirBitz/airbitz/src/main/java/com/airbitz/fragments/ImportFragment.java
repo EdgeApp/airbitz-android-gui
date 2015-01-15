@@ -406,6 +406,8 @@ public class ImportFragment extends BaseFragment
                 }
                 mCamera.setParameters(params);
         }
+
+        checkCameraFlash();
     }
 
     @Override
@@ -427,7 +429,6 @@ public class ImportFragment extends BaseFragment
         mFromWallet = mWallets.get(0);
         mCoreAPI.setOnWalletSweepListener(this);
 
-        checkCameraFlash();
         clearSweepAddress();
     }
 

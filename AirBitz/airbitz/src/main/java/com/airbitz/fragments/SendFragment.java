@@ -466,6 +466,7 @@ public class SendFragment extends BaseFragment implements
                 mCamera.setParameters(params);
             }
         }
+        checkCameraFlash();
     }
 
     @Override
@@ -635,8 +636,6 @@ public class SendFragment extends BaseFragment implements
         else {
             mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
-
-        checkCameraFlash();
     }
 
     private void checkCameraFlash() {
