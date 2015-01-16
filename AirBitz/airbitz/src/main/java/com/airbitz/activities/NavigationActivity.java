@@ -592,6 +592,8 @@ public class NavigationActivity extends Activity
             hideCalculator();
         }
 
+        showModalProgress(false);
+
         if (mNavStacks[mNavThreadId].size() == 1) {
             if (!calcVisible || mCalcLocked) {
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
