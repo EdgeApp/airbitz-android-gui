@@ -316,6 +316,7 @@
     <string name="request_qr_ble_advertise_start_failed">Bluetooth advertising failed to start.</string>
     <string name="request_qr_ble_invalid_value">Bluetooth sender sent an invalid name. Try again.</string>
     <string name="request_qr_ble_invalid_service">Airbitz could not advertise the Bluetooth service. Please check Bluetooth on your device.</string>
+    <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>

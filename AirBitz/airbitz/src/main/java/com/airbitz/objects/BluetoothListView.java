@@ -383,23 +383,26 @@ public class BluetoothListView extends ListView {
                         //make sure partial bitcoin address that was advertised is contained within the actual full bitcoin address
                         String[] separate = response.split(":");
                         String partialAddress;
-                        partialAddress = separate[1] != null && separate[1].length() >= 10 ?
-                            separate[1].substring(0, 10) : "";
+                        if(separate.length > 1) {
+                            partialAddress = separate[1] != null && separate[1].length() >= 10 ?
+                                    separate[1].substring(0, 10) : "";
 
-                        String partialAdvertisedAddress;
-                        partialAdvertisedAddress = mSelectedAdvertisedName != null && mSelectedAdvertisedName.length() >= 10 ?
-                                mSelectedAdvertisedName.substring(0, 10) : "";
+                            String partialAdvertisedAddress;
+                            partialAdvertisedAddress = mSelectedAdvertisedName != null && mSelectedAdvertisedName.length() >= 10 ?
+                                    mSelectedAdvertisedName.substring(0, 10) : "";
 
-                        if(mSelectedAdvertisedName == null || partialAddress.isEmpty() ||
-                                !partialAdvertisedAddress.equals(partialAddress)) {
-                            String message = String.format(getResources().getString(R.string.bluetoothlistview_address_mismatch_message),
-                                    partialAddress, partialAdvertisedAddress);
-                            mActivity.ShowOkMessageDialog(getResources().getString(R.string.bluetoothlistview_address_mismatch_title),
-                                message);
+                            if (mSelectedAdvertisedName == null || partialAddress.isEmpty() ||
+                                    !partialAdvertisedAddress.equals(partialAddress)) {
+                                String message = String.format(getResources().getString(R.string.bluetoothlistview_address_mismatch_message),
+                                        partialAddress, partialAdvertisedAddress);
+                                mActivity.ShowOkMessageDialog(getResources().getString(R.string.bluetoothlistview_address_mismatch_title),
+                                        message);
+                            } else {
+                                mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
+                            }
                         }
-                        else
-                        {
-                            mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
+                        else {
+                            mActivity.ShowFadingDialog(getResources().getString(R.string.request_qr_ble_invalid_uri));
                         }
                     }
                 }
@@ -408,7 +411,7 @@ public class BluetoothListView extends ListView {
                 @Override
                 public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                     Log.v(TAG, "onCharacteristicWrite: " + status);
-                    if(status == 0) {
+                    if(status == BluetoothGatt.GATT_SUCCESS) {
                         boolean success = gatt.readCharacteristic(characteristic);
                         if(!success) {
                             mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
