@@ -1912,10 +1912,6 @@ public class CoreAPI {
 
     public void startExchangeRateUpdates() {
         if(AirbitzApplication.isLoggedIn()) {
-            if(mExchangeRateSources==null) {
-                tABC_AccountSettings settings = coreSettings();
-                mExchangeRateSources = getExchangeRateSources(settings.getExchangeRateSources());
-            }
             mPeriodicTaskHandler.post(ExchangeRateUpdater);
         }
     }
@@ -1926,10 +1922,9 @@ public class CoreAPI {
         if (AirbitzApplication.isLoggedIn())
         {
             tABC_Error error = new tABC_Error();
-            for(int i=0; i< mExchangeRateSources.size(); i++) {
-                ExchangeRateSource source = mExchangeRateSources.get(i);
+            for(int i = 0; i < mFauxCurrencyNumbers.length; i++) {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        source.getCurrencyNum(), null, null, error);
+                        mFauxCurrencyNumbers[i], null, null, error);
             }
         }
     }
