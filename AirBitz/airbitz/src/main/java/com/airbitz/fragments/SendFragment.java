@@ -76,6 +76,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BleDevice;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
+import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.BluetoothListView;
 import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressButton;
@@ -104,6 +105,8 @@ public class SendFragment extends BaseFragment implements
         BluetoothListView.OnPeripheralSelected,
         BluetoothListView.OnBitcoinURIReceived,
         BluetoothListView.OnOneScanEnded {
+    private final String TAG = getClass().getSimpleName();
+
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -111,7 +114,6 @@ public class SendFragment extends BaseFragment implements
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
     private static int RESULT_LOAD_IMAGE = 678;
     private final int FOCUS_MILLIS = 2000;
-    private final String TAG = getClass().getSimpleName();
     Runnable cameraDelayRunner = new Runnable() {
         @Override
         public void run() {
@@ -155,6 +157,7 @@ public class SendFragment extends BaseFragment implements
     private Wallet mFromWallet;
     private List<Wallet> mCurrentListing;
     private WalletPickerAdapter listingAdapter;
+    private String mSendName;
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
     private boolean mFocused = true;
@@ -383,6 +386,18 @@ public class SendFragment extends BaseFragment implements
                 }
             }
         }
+        // if BLE is supported on the device, enable
+        if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            if (SettingFragment.getBLEPref()) {
+                mBluetoothListView = new BluetoothListView(mActivity);
+                mBluetoothLayout.addView(mBluetoothListView, 0);
+                mBluetoothButton.setVisibility(View.VISIBLE);
+            }
+            else {
+                // Bluetooth is not enabled - ask for enabling?
+            }
+        }
+
 
         updateWalletOtherList();
 
@@ -403,7 +418,9 @@ public class SendFragment extends BaseFragment implements
             GotoSendConfirmation(results.address, results.amountSatoshi, results.label, false);
         } else {
             ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(getResources().getString(R.string.fragment_send_failure_title), getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+            ((NavigationActivity) getActivity()).ShowOkMessageDialog(
+                    getResources().getString(R.string.fragment_send_failure_title),
+                    getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
         }
     }
 
@@ -621,7 +638,20 @@ public class SendFragment extends BaseFragment implements
             mHandler = new Handler();
         }
 
-        ViewBluetoothPeripherals(false);
+        if(mBluetoothButton.getVisibility() == View.VISIBLE) {
+            if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+                mSendName = mCoreAPI.coreSettings().getSzFullName();
+                if(mSendName==null || mSendName.isEmpty()) {
+                    mSendName = getString(R.string.request_qr_unknown);
+                }
+            }
+
+            ViewBluetoothPeripherals(true);
+            mBluetoothListView.setOnOneScanEndedListener(this);
+        }
+        else {
+            ViewBluetoothPeripherals(false);
+        }
 
         if (walletSpinner != null && walletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) walletSpinner.getAdapter()).notifyDataSetChanged();
@@ -764,7 +794,7 @@ public class SendFragment extends BaseFragment implements
 
     // Start the Bluetooth search
     private void startBluetoothSearch() {
-        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
+        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
             mBluetoothScanningLayout.setVisibility(View.VISIBLE);
             mBluetoothListView.setOnPeripheralSelectedListener(this);
             mBluetoothListView.scanForBleDevices(true);
@@ -774,7 +804,7 @@ public class SendFragment extends BaseFragment implements
 
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
-        if(mBluetoothListView != null && mBluetoothListView.isAvailable()) {
+        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
             mBluetoothListView.scanForBleDevices(false);
             mBluetoothListView.close();
         }
@@ -785,7 +815,7 @@ public class SendFragment extends BaseFragment implements
         stopBluetoothSearch();
         mBluetoothListView.setOnPeripheralSelectedListener(null);
         mBluetoothListView.setOnBitcoinURIReceivedListener(this);
-        mBluetoothListView.connectGatt(device);
+        mBluetoothListView.connectGatt(device, mSendName);
     }
 
     @Override
@@ -819,8 +849,8 @@ public class SendFragment extends BaseFragment implements
             }
         }
         else {
-            mBluetoothLayout.setVisibility(View.GONE);
-            mBluetoothScanningLayout.setVisibility(View.GONE);
+//            mBluetoothLayout.setVisibility(View.GONE);
+//            mBluetoothScanningLayout.setVisibility(View.GONE);
         }
     }
 }

@@ -317,6 +317,10 @@
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_title">Request Bitcoin</string>
+    <string name="request_qr_ble_advertise_start_failed">Bluetooth advertising failed to start.</string>
+    <string name="request_qr_ble_invalid_value">Bluetooth sender sent an invalid name. Try again.</string>
+    <string name="request_qr_ble_invalid_service">Airbitz could not advertise the Bluetooth service. Please check Bluetooth on your device.</string>
+    <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
@@ -411,6 +415,13 @@
 
     <!-- Strings for MapBusinessDirectory fragment -->
     <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>
+
+    <!-- Strings for BluetoothListView -->
+    <string name="bluetoothlistview_connection_failed">Bluetooth connection failed. Try again.</string>
+    <string name="bluetoothlistview_discovery_failed">Bluetooth service discovery failed. Try again.</string>
+    <string name="bluetoothlistview_scan_failed">Bluetooth scan failed. Try again.</string>
+    <string name="bluetoothlistview_address_mismatch_title">Bitcoin address mismatch</string>
+    <string name="bluetoothlistview_address_mismatch_message">The bitcoin address of the device you connected with:%1$s does not match the address that was initially advertised:%2$s</string>
 
     <!-- Errors -->
     <string name="error_invalid_credentials">Invalid User Name or Password</string>

@@ -80,11 +80,23 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
 
         TextView nameView = (TextView) convertView.findViewById(R.id.bluetooth_item_name);
         nameView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        nameView.setText(device.getDevice().getName());
-
         TextView addressView = (TextView) convertView.findViewById(R.id.bluetooth_item_address);
         addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-        addressView.setText(device.getDevice().getAddress());
+
+        String partialAddress = null;
+        String name = null;
+        if(device.getDevice().getName().length() > 10) {
+            partialAddress = device.getDevice().getName().substring(0, 10);
+            name = device.getDevice().getName().substring(10);
+        }
+        if(name != null) {
+            nameView.setText(name);
+            addressView.setText(partialAddress);
+        }
+        else {
+            nameView.setText("Unknown");
+            addressView.setText("Error in advertiser string");
+        }
 
         ImageView rssiView = (ImageView) convertView.findViewById(R.id.bluetooth_item_rssi_image);
         int mappedRssi = mapRSSI(device.getRSSI());
@@ -98,31 +110,11 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
     }
 
     private int mapRSSI(int rssi) {
-        if(rssi >= -41)
-        {
-            return 5;
-        }
-        else if(rssi >= -53)
-        {
-            return 4;
-        }
-        else if(rssi >= -65)
-        {
-            return 3;
-        }
-        else if(rssi >= -77)
-        {
-            return 2;
-        }
-        else if(rssi >= -89)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        if(rssi >= -41)      return 5;
+        else if(rssi >= -53) return 4;
+        else if(rssi >= -65) return 3;
+        else if(rssi >= -77) return 2;
+        else if(rssi >= -89) return 1;
+        else                 return 0;
     }
-
-
 }
