@@ -917,5 +917,4 @@ public class SettingFragment extends BaseFragment {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         return prefs.getBoolean(BLE_PREF, false);
     }
-
 }

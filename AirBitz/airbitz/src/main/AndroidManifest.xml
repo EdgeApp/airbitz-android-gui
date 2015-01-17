@@ -48,8 +48,6 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <application
         android:name=".AirbitzApplication"
         android:allowBackup="true"

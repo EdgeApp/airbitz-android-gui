@@ -273,7 +273,7 @@ public class BluetoothListView extends ListView {
         mBluetoothLeScanner.stopScan(mScanCallback);
     }
 
-
+    // TODO refactor for 4.3 and above as this is limiting customer devices
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
