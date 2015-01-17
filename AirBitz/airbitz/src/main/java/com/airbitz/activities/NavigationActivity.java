@@ -1266,44 +1266,50 @@ public class NavigationActivity extends Activity
     }
 
     private Dialog mFadingDialog = null;
-    public void ShowFadingDialog(String message, int timeout, boolean cancelable) {
+    public void ShowFadingDialog(final String message, final int timeout, final boolean cancelable) {
         if (!this.isFinishing()) {
-            if (timeout == 0) {
-                mFadingDialog.dismiss();
-                return;
-            }
-            if (mFadingDialog != null) {
-                mFadingDialog.dismiss();
-            }
-            mFadingDialog = new Dialog(this);
-            mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            mFadingDialog.setCancelable(cancelable);
-            mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            View view = this.getLayoutInflater().inflate(R.layout.fading_alert, null);
-            ((TextView) view.findViewById(R.id.fading_alert_text)).setText(message);
-            mFadingDialog.setContentView(view);
-            AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
-            fadeOut.setStartOffset(timeout);
-            fadeOut.setDuration(1000);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mFadingDialog.dismiss();
-                    updateFadingDialogFinished();
-                }
+            NavigationActivity.this.runOnUiThread(new Runnable() {
 
                 @Override
-                public void onAnimationStart(Animation animation) {
-                }
+                public void run() {
+                    if (timeout == 0) {
+                        mFadingDialog.dismiss();
+                        return;
+                    }
+                    if (mFadingDialog != null) {
+                        mFadingDialog.dismiss();
+                    }
+                    mFadingDialog = new Dialog(NavigationActivity.this);
+                    mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    mFadingDialog.setCancelable(cancelable);
+                    mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                    View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
+                    ((TextView) view.findViewById(R.id.fading_alert_text)).setText(message);
+                    mFadingDialog.setContentView(view);
+                    AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
+                    fadeOut.setStartOffset(timeout);
+                    fadeOut.setDuration(1000);
+                    fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            mFadingDialog.dismiss();
+                            updateFadingDialogFinished();
+                        }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+
+                    view.setAnimation(fadeOut);
+                    mFadingDialog.show();
+                    view.startAnimation(fadeOut);
                 }
             });
-
-            view.setAnimation(fadeOut);
-            mFadingDialog.show();
-            view.startAnimation(fadeOut);
         }
     }
 
