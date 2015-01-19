@@ -120,9 +120,11 @@ public class PlayLocationManager implements
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         if(locationClient.isConnected()) {
             locationClient.requestLocationUpdates(mLocationRequest, this);
+            mCurrentLocation = locationClient.getLastLocation();
+        } else {
+            locationClient.connect();
         }
 
-        mCurrentLocation = locationClient.getLastLocation();
         if (mCurrentLocation != null) {
             onLocationChanged(mCurrentLocation);
         }
