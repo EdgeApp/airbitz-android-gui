@@ -46,6 +46,7 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
@@ -60,6 +61,8 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.models.BleDevice;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -128,7 +131,7 @@ import java.util.UUID;
  announced back to this list's observer.
  */
 
-@TargetApi(21)
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BluetoothListView extends ListView {
     private final String TAG = getClass().getSimpleName();
     private final int SCAN_PERIOD_MILLIS = 2000;
@@ -174,12 +177,10 @@ public class BluetoothListView extends ListView {
             }
         });
 
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
         setAdapter(mSearchAdapter);
-
-        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = manager.getAdapter();
-        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
     }
 
     public void close() {
@@ -244,92 +245,65 @@ public class BluetoothListView extends ListView {
      * Scans for BLE devices with a timeout
      * @param enable if set, enables BLE, otherwise disables
      */
-    public void scanLeDevice(final boolean start) {
-        if (start) {
+    public void scanLeDevice(final boolean enable) {
+        if (enable) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(mScanStopperRunnable, SCAN_PERIOD_MILLIS);
-            startScan();
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
         } else {
-            stopScan();
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
         }
     }
-
-    private void startScan() {
-        //Scan for devices advertising the Airbitz service
-        ScanFilter airbitzFilter = new ScanFilter.Builder()
-                .setServiceUuid(ParcelUuid.fromString(BleUtil.AIRBITZ_SERVICE_UUID))
-                .build();
-        ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
-        filters.add(airbitzFilter);
-
-        ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-                .build();
-
-        mBluetoothLeScanner.startScan(filters, settings, mScanCallback);
-    }
-
-    private void stopScan() {
-        mBluetoothLeScanner.stopScan(mScanCallback);
-    }
-
-    // TODO refactor for 4.3 and above as this is limiting customer devices
-    private ScanCallback mScanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-//            Log.d(TAG, "onScanResult");
-            processResult(result);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_scan_failed));
-        }
-
-        private void processResult(ScanResult result) {
-            boolean alreadyFound = false;
-            String name = "test";
-            for(BleDevice ble : mPeripherals) {
-                name = ble.getDevice().getName();
-                if(name != null && ble.getDevice().getName().equals(result.getDevice().getName())) {
-                    alreadyFound = true;
-                    break;
-                }
-                else if (name == null) {
-                    name = "test";
-                    alreadyFound = true;
-                }
-            }
-            if(!alreadyFound) {
-                Log.i(TAG, "New LE Device: " + name + " @ " + result.getRssi());
-                BleDevice device = new BleDevice(result.getDevice(), result.getRssi());
-                mMessageHandler.sendMessage(Message.obtain(null, 0, device));
-            }
-        }
-    };
-
-    /*
-     * We have a Handler to process scan results on the main thread,
-     * add them to our list adapter, and update the view
-     */
-    private Handler mMessageHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            BleDevice device = (BleDevice) msg.obj;
-            mPeripherals.add(device);
-            mSearchAdapter.notifyDataSetChanged();
-        }
-    };
 
     Runnable mScanStopperRunnable = new Runnable() {
         @Override
         public void run() {
-            stopScan();
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
             if(mOnOneScanEndedListener != null) {
                 mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
             }
         }
     };
+
+    // Device scan callback.
+    private BluetoothAdapter.LeScanCallback mLeScanCallback =
+            new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(final BluetoothDevice device, final int rssi,
+                                     final byte[] scanRecord) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<UUID> uuids = parseUuids(scanRecord);
+                            if(device.getName() != null && uuids.get(0).toString().equalsIgnoreCase(BleUtil.AIRBITZ_SERVICE_UUID)) {
+                                processResult(new BleDevice(device, rssi));
+                            }
+                        }
+                    });
+                }
+            };
+
+    private void processResult(BleDevice bleDevice) {
+        boolean alreadyFound = false;
+        String name = "test";
+        for(BleDevice ble : mPeripherals) {
+            name = ble.getDevice().getName();
+            if(name != null && ble.getDevice().getName().equals(bleDevice.getDevice().getName())) {
+                alreadyFound = true;
+                break;
+            }
+            else if (name == null) {
+                name = "test";
+                alreadyFound = true;
+            }
+        }
+        if(!alreadyFound) {
+            Log.i(TAG, "New LE Device: " + name + " @ " + bleDevice.getRSSI());
+            mPeripherals.add(bleDevice);
+            mSearchAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
@@ -442,5 +416,48 @@ public class BluetoothListView extends ListView {
                 }
             }
         }
+    }
+
+    /*
+ * Android BLE does not filter on 128 bit UUIDs, so this filter is needed instead
+ * Don't use startLeScan(uuids, callback), use no uuids method
+ * See - http://stackoverflow.com/questions/18019161/startlescan-with-128-bit-uuids-doesnt-work-on-native-android-ble-implementation/21986475#21986475
+ */
+    private List<UUID> parseUuids(byte[] advertisedData) {
+        List<UUID> uuids = new ArrayList<UUID>();
+
+        ByteBuffer buffer = ByteBuffer.wrap(advertisedData).order(ByteOrder.LITTLE_ENDIAN);
+        while (buffer.remaining() > 2) {
+            byte length = buffer.get();
+            if (length == 0) break;
+
+            byte type = buffer.get();
+            switch (type) {
+                case 0x02: // Partial list of 16-bit UUIDs
+                case 0x03: // Complete list of 16-bit UUIDs
+                    while (length >= 2) {
+                        uuids.add(UUID.fromString(String.format(
+                                "%08x-0000-1000-8000-00805f9b34fb", buffer.getShort())));
+                        length -= 2;
+                    }
+                    break;
+
+                case 0x06: // Partial list of 128-bit UUIDs
+                case 0x07: // Complete list of 128-bit UUIDs
+                    while (length >= 16) {
+                        long lsb = buffer.getLong();
+                        long msb = buffer.getLong();
+                        uuids.add(new UUID(msb, lsb));
+                        length -= 16;
+                    }
+                    break;
+
+                default:
+                    buffer.position(buffer.position() + length - 1);
+                    break;
+            }
+        }
+
+        return uuids;
     }
 }

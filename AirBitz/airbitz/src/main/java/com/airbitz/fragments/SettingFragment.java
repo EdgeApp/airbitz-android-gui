@@ -71,6 +71,7 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
@@ -901,10 +902,9 @@ public class SettingFragment extends BaseFragment {
         builder.create().show();
     }
 
-    @TargetApi(18)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private boolean isBLEcapable() {
-        final BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        return (manager.getAdapter() != null) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        return BleUtil.isBleAvailable(getActivity());
     }
 
     private void saveBLEPref(boolean state) {
