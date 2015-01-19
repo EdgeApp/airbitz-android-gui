@@ -85,12 +85,16 @@ public class BaseFragment extends Fragment {
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     Log.d("BaseFragment", "Animation ended, clearing FLAG_NOT_TOUCHABLE");
-                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    if(isAdded()) {
+                        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animator) {
-                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    if(isAdded()) {
+                        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
                 }
 
                 @Override
