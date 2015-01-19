@@ -172,6 +172,7 @@ public class BluetoothListView extends ListView {
                 if (mOnPeripheralSelectedListener != null) {
                     BleDevice selectedDevice = mPeripherals.get(i);
                     mSelectedAdvertisedName = selectedDevice.getDevice().getName();
+                    mSearchAdapter.selectItem(view);
                     mOnPeripheralSelectedListener.onPeripheralSelected(selectedDevice);
                 }
             }

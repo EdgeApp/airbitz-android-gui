@@ -109,7 +109,11 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         return convertView;
     }
 
-    private int mapRSSI(int rssi) {
+    public void selectItem(View view) {
+        view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selected));
+    }
+
+        private int mapRSSI(int rssi) {
         if(rssi >= -41)      return 5;
         else if(rssi >= -53) return 4;
         else if(rssi >= -65) return 3;
