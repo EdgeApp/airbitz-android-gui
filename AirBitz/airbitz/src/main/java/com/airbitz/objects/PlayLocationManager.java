@@ -122,7 +122,7 @@ public class PlayLocationManager implements
             locationClient.requestLocationUpdates(mLocationRequest, this);
             mCurrentLocation = locationClient.getLastLocation();
         } else {
-            locationClient.connect();
+            onDisconnected();
         }
 
         if (mCurrentLocation != null) {
