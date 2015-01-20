@@ -997,6 +997,7 @@ public class NavigationActivity extends Activity
             }
             mDataUri = null;
         } else {
+            AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
             switchFragmentThread(AirbitzApplication.getLastNavTab());
         }
         DisplayLoginOverlay(false, true);
