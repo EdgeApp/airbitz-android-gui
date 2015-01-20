@@ -64,10 +64,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -1921,10 +1923,17 @@ public class CoreAPI {
     {
         if (AirbitzApplication.isLoggedIn())
         {
+            List<Wallet> walletList = getCoreWallets(false);
+            Set<Integer> currencies = new HashSet();
+            for(Wallet wallet : walletList) {
+                if(wallet.getCurrencyNum() != -1) {
+                    currencies.add(wallet.getCurrencyNum());
+                }
+            }
             tABC_Error error = new tABC_Error();
-            for(int i = 0; i < mFauxCurrencyNumbers.length; i++) {
+            for(Integer currency : currencies) {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        mFauxCurrencyNumbers[i], null, null, error);
+                        currency, null, null, error);
             }
         }
     }
