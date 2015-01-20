@@ -54,8 +54,6 @@
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
     <string name="fragment_business_no_categories_retreived">No categories retrieved from server</string>
     <string name="fragment_business_near_you">Near You</string>
-    <string name="fragment_business_no_wallet_title">Try a Wallet</string>
-    <string name="fragment_business_no_wallet_message">"Did you know Airbitz is also a powerful, secure, and easy to use wallet? Would you like to create a wallet now?"</string>
 
     <!-- Strings for DirectoryDetail -->
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>

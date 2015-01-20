@@ -650,8 +650,6 @@ public class NavigationActivity extends Activity
 
         checkNotifications();
 
-        checkNoWallets();
-
         if (SettingFragment.getNFCPref()) {
             setupNFCForegrounding();
         }
@@ -1627,46 +1625,6 @@ public class NavigationActivity extends Activity
             editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
             editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
-        }
-    }
-
-    private void checkNoWallets() {
-        SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        String username = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-        List<Wallet> wallets = mCoreAPI.loadWallets(false);
-        if(wallets.size() == 2 && username.isEmpty()) { // 2 means only the two headers are there
-            int count = prefs.getInt(AirbitzApplication.WALLET_CHECK_PREF, 0);
-            count++;
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(AirbitzApplication.WALLET_CHECK_PREF, count);
-            editor.apply();
-            if(count > 2) {
-                ShowCreateWalletDialog(getString(R.string.fragment_business_no_wallet_title),
-                        getString(R.string.fragment_business_no_wallet_message));
-            }
-        }
-    }
-
-    public void ShowCreateWalletDialog(String title, String message) {
-        if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-            builder.setMessage(message)
-                    .setTitle(title)
-                    .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.string_yes),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    startSignUp("");
-                                }
-                            })
-                    .setNegativeButton(getResources().getString(R.string.string_no),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-            builder.create().show();
         }
     }
 }
