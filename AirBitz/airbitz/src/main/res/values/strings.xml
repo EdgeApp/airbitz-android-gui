@@ -33,6 +33,7 @@
     <string name="string_connection_problem_title">Connection Problem</string>
     <string name="string_no_connection_title">No connection</string>
     <string name="string_no_connection_message">Please turn on WiFi or Mobile Data</string>
+    <string name="string_no_connection_pin_message">You are offline but can still login to your account.</string>
     <string name="string_no_connection_response">There is a problem reaching the server. Please try again.</string>
     <string name="string_connection_error_server">Connection Error: Cannot reach server</string>
 

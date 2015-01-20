@@ -209,9 +209,14 @@ public class LandingFragment extends BaseFragment implements
                 // set views based on length
                 setPinViews(mPinEditText.length());
                 if (mPinEditText.length() >= 4) {
-                    mActivity.hideSoftKeyboard(mPinEditText);
-                    refreshView(true, false);
-                    attemptPinLogin();
+                    if (mActivity.networkIsAvailable()) {
+                        mActivity.hideSoftKeyboard(mPinEditText);
+                        refreshView(true, false);
+                        attemptPinLogin();
+                    } else {
+                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
+                        abortPermanently();
+                    }
                 }
             }
         };
@@ -278,15 +283,22 @@ public class LandingFragment extends BaseFragment implements
             return;
         }
 
-        if(!AirbitzApplication.isLoggedIn()) {
-            mPinEditText.setText("");
-            if (mActivity.networkIsAvailable() && mCoreAPI.PinLoginExists(mUsername)) {
-                refreshView(true, true);
-                mHandler.postDelayed(delayedShowPinKeyboard, 100);
-                return;
+        if(mActivity.networkIsAvailable()) {
+            if(!AirbitzApplication.isLoggedIn()) {
+                mPinEditText.setText("");
+                if (mCoreAPI.PinLoginExists(mUsername)) {
+                    refreshView(true, true);
+                    mHandler.postDelayed(delayedShowPinKeyboard, 100);
+                }
+                else {
+                    abortPermanently();
+                }
             }
         }
-        refreshView(false, false);
+        else {
+            mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
+            abortPermanently();
+        }
     }
 
     @Override
