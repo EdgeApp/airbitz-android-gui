@@ -580,6 +580,8 @@ public class SendConfirmationFragment extends BaseFragment {
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
+
+            mSlideLayout.setVisibility(View.INVISIBLE);
         } else if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
             mConversionTextView.setTextColor(color);
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -594,6 +596,8 @@ public class SendConfirmationFragment extends BaseFragment {
             String fiatFeeString = "+ " + mCoreAPI.formatCurrency(fiatFee, mWalletForConversions.getCurrencyNum(), false);
             mFiatDenominationTextView.setText(fiatFeeString + " " + mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
             mConversionTextView.setText(mCoreAPI.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
+
+            mSlideLayout.setVisibility(View.VISIBLE);
         }
         mAutoUpdatingTextFields = false;
     }

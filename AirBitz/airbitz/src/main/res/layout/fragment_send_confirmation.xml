@@ -300,16 +300,14 @@
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
 
-        </RelativeLayout>
+            <ImageButton
+                android:id="@+id/button_confirm_swipe"
+                android:layout_width="63dp"
+                android:layout_height="44.1dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/left_arrow" />
 
-        <ImageButton
-            android:id="@+id/button_confirm_swipe"
-            android:layout_width="63dp"
-            android:layout_height="44.1dp"
-            android:layout_alignRight="@id/layout_slide"
-            android:layout_alignTop="@id/layout_slide"
-            android:layout_gravity="right"
-            android:background="@drawable/left_arrow" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
