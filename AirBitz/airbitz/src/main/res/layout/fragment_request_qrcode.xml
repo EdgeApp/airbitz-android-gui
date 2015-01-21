@@ -9,6 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
 
+    <com.airbitz.objects.HighlightOnPressButton
+        android:id="@+id/fragment_request_qr_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+        android:background="@drawable/refresh" />
+    
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fragment_request_qrcode_swipe_layout"
         android:layout_width="match_parent"
@@ -24,14 +35,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/fragment_request_qr_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="4dp"
-                android:background="@drawable/refresh" />
 
             <ImageView
                 android:id="@+id/qr_code_view"
