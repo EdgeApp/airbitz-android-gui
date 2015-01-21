@@ -383,7 +383,7 @@
                     android:visibility="visible" />
 
                 <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_exportsaving_button_dropbox"
+                    android:id="@+id/fragment_exportsaving_button_share"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
@@ -393,25 +393,25 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="56.7dp"
                     android:paddingRight="18.9dp"
-                    android:text="@string/export_saving_dropbox_label"
+                    android:text="@string/export_saving_share_label"
                     android:textColor="#005f96"
                     android:visibility="visible" />
 
                 <ImageView
-                    android:id="@+id/fragment_exportsaving_image_dropbox"
+                    android:id="@+id/fragment_exportsaving_image_share"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
                     android:layout_below="@id/fragment_exportsaving_button_google_drive"
                     android:background="@android:color/transparent"
                     android:padding="12.6dp"
-                    android:src="@drawable/ico_dropbox"
+                    android:src="@android:drawable/ic_menu_share"
                     android:visibility="visible" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_exportsaving_button_view"
                     android:layout_width="match_parent"
                     android:layout_height="44.1dp"
-                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
+                    android:layout_below="@id/fragment_exportsaving_button_share"
                     android:background="@drawable/wallet_list_bottom"
                     android:drawableRight="@drawable/arrow_right"
                     android:enabled="true"
@@ -426,7 +426,7 @@
                     android:id="@+id/fragment_exportsaving_image_view"
                     android:layout_width="44.1dp"
                     android:layout_height="44.1dp"
-                    android:layout_below="@id/fragment_exportsaving_button_dropbox"
+                    android:layout_below="@id/fragment_exportsaving_button_share"
                     android:background="@android:color/transparent"
                     android:padding="12.6dp"
                     android:src="@drawable/ico_view"

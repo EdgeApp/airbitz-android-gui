@@ -379,7 +379,7 @@
     <string name="export_saving_save_SD_label">Save to SD card</string>
     <string name="export_saving_email_label">Email</string>
     <string name="export_saving_google_drive_label">Google Drive</string>
-    <string name="export_saving_dropbox_label">Dropbox</string>
+    <string name="export_saving_share_label">Share</string>
     <string name="export_saving_view_label">View</string>
 
     <!-- Strings for Export Saving Option fragment -->

@@ -114,8 +114,8 @@ public class ExportSavingOptionFragment extends BaseFragment
     private ImageView mEmailImage;
     private HighlightOnPressButton mGoogleDriveButton;
     private ImageView mGoogleDriveImage;
-    private HighlightOnPressButton mDropBoxButton;
-    private ImageView mDropBoxImage;
+    private HighlightOnPressButton mShareButton;
+    private ImageView mShareImage;
     private HighlightOnPressButton mViewButton;
     private ImageView mViewImage;
 
@@ -197,8 +197,8 @@ public class ExportSavingOptionFragment extends BaseFragment
         mEmailImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_email);
         mGoogleDriveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
         mGoogleDriveImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_google_drive);
-        mDropBoxButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_dropbox);
-        mDropBoxImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_dropbox);
+        mShareButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_share);
+        mShareImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_share);
         mViewButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_view);
         mViewImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_view);
 
@@ -326,10 +326,32 @@ public class ExportSavingOptionFragment extends BaseFragment
             }
         });
 
-        mDropBoxButton.setOnClickListener(new View.OnClickListener() {
+        mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//TODO
+                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                String data;
+                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        data = mCoreApi.getPrivateSeed(wallet);
+                    } else {
+                        data = null;
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
+                } else {
+                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                }
+                if(data != null && !data.isEmpty()) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, data);
+                    sendIntent.setType("text/plain");
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
+                }
+                else {
+                    ((NavigationActivity) getActivity()).ShowFadingDialog(
+                            getString(R.string.export_saving_option_no_transactions_message));
+                }
             }
         });
 
@@ -629,10 +651,10 @@ public class ExportSavingOptionFragment extends BaseFragment
         int type = mBundle.getInt(EXPORT_TYPE);
         if (type == ExportTypes.CSV.ordinal()) {
             setAllButtonViews(View.GONE);
-            mEmailButton.setVisibility(View.VISIBLE);
-            mEmailImage.setVisibility(View.VISIBLE);
             mSDCardButton.setVisibility(View.VISIBLE);
             mSDCardImage.setVisibility(View.VISIBLE);
+            mShareButton.setVisibility(View.VISIBLE);
+            mShareImage.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
             mPrintImage.setVisibility(View.VISIBLE);
         }
@@ -651,9 +673,9 @@ public class ExportSavingOptionFragment extends BaseFragment
 //            mViewButton.setVisibility(View.GONE);
 //            mViewImage.setVisibility(View.GONE);
 //            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mShareButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
 //            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mShareButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
 //        }
 //        else if (type == ExportTypes.Quickbooks.ordinal()) {
 //            mPrintButton.setVisibility(View.GONE);
@@ -661,9 +683,9 @@ public class ExportSavingOptionFragment extends BaseFragment
 //            mViewButton.setVisibility(View.GONE);
 //            mViewImage.setVisibility(View.GONE);
 //            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mDropBoxButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
+//            mShareButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
 //            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mDropBoxButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
+//            mShareButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
 //        }
     }
 
@@ -676,8 +698,8 @@ public class ExportSavingOptionFragment extends BaseFragment
         mEmailImage.setVisibility(state);
         mGoogleDriveButton.setVisibility(state);
         mGoogleDriveImage.setVisibility(state);
-        mDropBoxButton.setVisibility(state);
-        mDropBoxImage.setVisibility(state);
+        mShareButton.setVisibility(state);
+        mShareImage.setVisibility(state);
         mViewButton.setVisibility(state);
         mViewImage.setVisibility(state);
         mPasswordEditText.setVisibility(state);

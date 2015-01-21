@@ -717,7 +717,7 @@
   <string name="export_saving_google_drive_label">
     Google Drive
   </string>
-  <string name="export_saving_dropbox_label">
+  <string name="export_saving_share_label">
     Dropbox
   </string>
   <string name="export_saving_view_label">
