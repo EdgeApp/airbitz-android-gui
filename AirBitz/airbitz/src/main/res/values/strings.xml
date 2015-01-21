@@ -12,6 +12,7 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
     <string name="string_done">Done</string>
+    <string name="string_save">Save</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>

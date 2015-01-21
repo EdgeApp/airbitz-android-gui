@@ -37,6 +37,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -58,6 +60,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.FileSaveLocationDialog;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
@@ -67,6 +70,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -76,7 +81,8 @@ import google.com.android.cloudprint.PrintDialogActivity;
 /**
  * Created on 2/22/14.
  */
-public class ExportSavingOptionFragment extends BaseFragment {
+public class ExportSavingOptionFragment extends BaseFragment
+    implements FileSaveLocationDialog.FileSaveLocation {
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
     private final String TAG = getClass().getSimpleName();
     View mView;
@@ -254,7 +260,7 @@ public class ExportSavingOptionFragment extends BaseFragment {
                 if(data != null && !data.isEmpty()) {
                     File file = createLocalTempFile(data);
                     if(file != null) {
-                        String printName = mFromButton.getText().toString() + " - " + mToButton.getText().toString();
+                        String printName = saveName();
                         Intent printIntent = new Intent(getActivity(), PrintDialogActivity.class);
                         printIntent.setDataAndType(Uri.fromFile(file), "text/plain");
                         printIntent.putExtra("title", printName);
@@ -272,7 +278,25 @@ public class ExportSavingOptionFragment extends BaseFragment {
         mSDCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//TODO
+                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                String data;
+                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+                        data = mCoreApi.getPrivateSeed(wallet);
+                    } else {
+                        data = null;
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                    }
+                } else {
+                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                }
+                if(data != null && !data.isEmpty()) {
+                    chooseDirectoryAndSave(data);
+                }
+                else {
+                    ((NavigationActivity) getActivity()).ShowFadingDialog(
+                            getString(R.string.export_saving_option_no_transactions_message));
+                }
             }
         });
 
@@ -607,6 +631,8 @@ public class ExportSavingOptionFragment extends BaseFragment {
             setAllButtonViews(View.GONE);
             mEmailButton.setVisibility(View.VISIBLE);
             mEmailImage.setVisibility(View.VISIBLE);
+            mSDCardButton.setVisibility(View.VISIBLE);
+            mSDCardImage.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
             mPrintImage.setVisibility(View.VISIBLE);
         }
@@ -825,6 +851,36 @@ public class ExportSavingOptionFragment extends BaseFragment {
         }
     }
 
-    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF}
+    String mDataToSave;
+    private void chooseDirectoryAndSave(String data) {
+        mDataToSave = data;
+        String strDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(strDir);
+        if (!file.exists())
+            file.mkdirs();
+        FileSaveLocationDialog dialog = new FileSaveLocationDialog(getActivity(), file, this);
+    }
 
+    @Override
+    public void onFileSaveLocation(File file) {
+        if(file != null && mDataToSave != null) {
+            try {
+                FileOutputStream fos = new FileOutputStream(new File(file.getAbsolutePath()+ "/" +saveName()));
+                Writer out = new OutputStreamWriter(fos, "UTF-8");
+                out.write(mDataToSave);
+                out.flush();
+                out.close();
+                ((NavigationActivity) getActivity()).ShowFadingDialog("File saved: " + saveName());
+            } catch (Throwable t) {
+                Log.d(TAG, "createFileFromString failed for " + file.getAbsolutePath());
+            }
+        }
+    }
+
+    private String saveName() {
+        String filename = mFromButton.getText().toString() + " - " + mToButton.getText().toString();
+        return filename.replace("/", "_");
+    }
+
+    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF}
 }
