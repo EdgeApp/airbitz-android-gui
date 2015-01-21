@@ -366,13 +366,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mTitleTextView.setText(R.string.activity_signup_title_change_pin);
             mUserNameEditText.requestFocus();
         } else if (mMode == SIGNUP) {
-            if(!bundle.getString(PasswordRecoveryFragment.USERNAME).isEmpty()) {
-                mUserNameEditText.setText(bundle.getString(PasswordRecoveryFragment.USERNAME));
-                mPasswordEditText.requestFocus();
-            }
-            else {
-                mUserNameEditText.requestFocus();
-            }
+            mUserNameEditText.setText(bundle.getString(PasswordRecoveryFragment.USERNAME));
+            mUserNameEditText.requestFocus();
+            mUserNameEditText.setSelection(mUserNameEditText.getText().length());
         }
     }
 
