@@ -303,6 +303,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.request_qr_title), mAddress);
         clipboard.setPrimaryClip(clip);
+        mActivity.ShowFadingDialog(getString(R.string.request_qr_ble_copied));
     }
 
     private void startSMS() {
