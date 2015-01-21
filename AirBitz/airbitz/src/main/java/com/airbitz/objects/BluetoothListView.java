@@ -276,7 +276,7 @@ public class BluetoothListView extends ListView {
                         @Override
                         public void run() {
                             List<UUID> uuids = parseUuids(scanRecord);
-                            if(device.getName() != null && uuids.get(0).toString().equalsIgnoreCase(BleUtil.AIRBITZ_SERVICE_UUID)) {
+                            if(device.getName() != null && uuids.size() > 0 && uuids.get(0).toString().equalsIgnoreCase(BleUtil.AIRBITZ_SERVICE_UUID)) {
                                 processResult(new BleDevice(device, rssi));
                             }
                         }
