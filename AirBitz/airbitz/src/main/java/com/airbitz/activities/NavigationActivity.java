@@ -637,9 +637,7 @@ public class NavigationActivity extends Activity
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if (!AirbitzApplication.isLoggedIn()) {
-//            if (mDataUri != null)
-                DisplayLoginOverlay(true);
-
+            DisplayLoginOverlay(true);
             mNavThreadId = Tabs.BD.ordinal();
         } else {
             DisplayLoginOverlay(false);
@@ -1271,7 +1269,6 @@ public class NavigationActivity extends Activity
     }
 
     private Dialog mFadingDialog = null;
-    private Picasso mPicasso;
     public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         if (!this.isFinishing()) {
             NavigationActivity.this.runOnUiThread(new Runnable() {
@@ -1284,9 +1281,6 @@ public class NavigationActivity extends Activity
                     }
                     if (mFadingDialog != null) {
                         mFadingDialog.dismiss();
-                    }
-                    if (mPicasso == null) {
-                        mPicasso = Picasso.with(NavigationActivity.this);
                     }
                     mFadingDialog = new Dialog(NavigationActivity.this);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
