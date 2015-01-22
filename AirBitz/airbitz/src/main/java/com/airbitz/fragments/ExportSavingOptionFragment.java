@@ -246,17 +246,23 @@ public class ExportSavingOptionFragment extends BaseFragment
             @Override
             public void onClick(View view) {
                 Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
-                String data;
+                String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
                         data = mCoreApi.getPrivateSeed(wallet);
                     } else {
-                        data = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                        return;
                     }
                 } else {
                     data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                    if(data == null || data.isEmpty()) {
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(
+                                getString(R.string.export_saving_option_no_transactions_message));
+                        return;
+                    }
                 }
+
                 if(data != null && !data.isEmpty()) {
                     File file = createLocalTempFile(data);
                     if(file != null) {
@@ -267,11 +273,7 @@ public class ExportSavingOptionFragment extends BaseFragment
                         startActivity(printIntent);
                     }
                 }
-                else {
-                    ((NavigationActivity) getActivity()).ShowFadingDialog(
-                            getString(R.string.export_saving_option_no_transactions_message));
-                    return;
-                }
+
             }
         });
 
@@ -279,23 +281,27 @@ public class ExportSavingOptionFragment extends BaseFragment
             @Override
             public void onClick(View view) {
                 Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
-                String data;
+                String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
                         data = mCoreApi.getPrivateSeed(wallet);
                     } else {
-                        data = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                        return;
                     }
-                } else {
-                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                }
-                if(data != null && !data.isEmpty()) {
-                    chooseDirectoryAndSave(data);
                 }
                 else {
-                    ((NavigationActivity) getActivity()).ShowFadingDialog(
-                            getString(R.string.export_saving_option_no_transactions_message));
+                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+
+                    if(data == null || data.isEmpty()) {
+                        ((NavigationActivity) getActivity()).ShowFadingDialog(
+                                getString(R.string.export_saving_option_no_transactions_message));
+                        return;
+                    }
+                }
+
+                if(data != null && !data.isEmpty()) {
+                    chooseDirectoryAndSave(data);
                 }
             }
         });
@@ -660,6 +666,10 @@ public class ExportSavingOptionFragment extends BaseFragment
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
+            mPrintButton.setVisibility(View.VISIBLE);
+            mPrintImage.setVisibility(View.VISIBLE);
+            mSDCardButton.setVisibility(View.VISIBLE);
+            mSDCardImage.setVisibility(View.VISIBLE);
             mViewButton.setVisibility(View.VISIBLE);
             mViewImage.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
@@ -876,18 +886,19 @@ public class ExportSavingOptionFragment extends BaseFragment
     String mDataToSave;
     private void chooseDirectoryAndSave(String data) {
         mDataToSave = data;
-        String strDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File file = new File(strDir);
-        if (!file.exists())
+        String directory = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(directory);
+        if (!file.exists()) {
             file.mkdirs();
+        }
         FileSaveLocationDialog dialog = new FileSaveLocationDialog(getActivity(), file, this);
     }
 
     @Override
     public void onFileSaveLocation(File file) {
-        if(file != null && mDataToSave != null) {
+        if (file != null && mDataToSave != null) {
             try {
-                FileOutputStream fos = new FileOutputStream(new File(file.getAbsolutePath()+ "/" +saveName()));
+                FileOutputStream fos = new FileOutputStream(new File(file.getAbsolutePath() + "/" + saveName()));
                 Writer out = new OutputStreamWriter(fos, "UTF-8");
                 out.write(mDataToSave);
                 out.flush();
@@ -900,7 +911,11 @@ public class ExportSavingOptionFragment extends BaseFragment
     }
 
     private String saveName() {
-        String filename = mFromButton.getText().toString() + " - " + mToButton.getText().toString();
+        String filename = mFromButton.getText().toString() + "-" + mToButton.getText().toString() + ".csv";
+        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+            filename = mWallet.getName()+".txt";
+        }
+
         return filename.replace("/", "_");
     }
 
