@@ -48,9 +48,11 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -66,6 +68,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelUuid;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -764,13 +767,69 @@ public class RequestQRCodeFragment extends BaseFragment implements
                     + " value=" + new String(value) );
             if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
                 Log.d(TAG, "Airbitz characteristic received");
-                if (value != null && value.length > 0) {
-                    mActivity.ShowFadingDialog(new String(value));
-                } else {
-                    mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_value));
+                String displayName = new String(value);
+                if(displayName.isEmpty()) {
+                    displayName = getString(R.string.request_qr_unknown);
                 }
+                Contact nameInContacts = findMatchingContact(displayName);
+                displayName += "\nConnected";
+                if(nameInContacts != null) {
+                    mActivity.ShowFadingDialog(displayName, nameInContacts.getThumbnail(), 2000, true);
+                }
+                else {
+                    mActivity.ShowFadingDialog(displayName, 1000);
+                }
+
                 mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
             }
         }
+    }
+
+    private Contact findMatchingContact(String displayName) {
+        String id = null;
+        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI,Uri.encode(displayName.trim()));
+        Cursor mapContact = mActivity.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}, null, null, null);
+        if(mapContact.moveToNext())
+        {
+            id = mapContact.getString(mapContact.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+            return new Contact(displayName, null, null, id);
+        }
+        else {
+            return null;
+        }
+
+//        List<Contact> contacts = new ArrayList<>();
+//        Uri uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+//        String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+//                ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
+//
+//        String[] nameArray = displayName.split(" ");
+//        if(nameArray.length >= 2) {
+//            displayName = nameArray[0] + " " + nameArray[1];
+//        }
+//
+//        ContentResolver cr = mActivity.getContentResolver();
+//        Cursor people = cr.query(uri, projection, null, null, null);
+//
+//        if (people != null) {
+//            int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
+//            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+//
+//            people.moveToFirst();
+//            while (people.moveToNext()) {
+//                String name = people.getString(indexName);
+//                if(name.toLowerCase().equals(displayName.toLowerCase())) {
+//                    contacts.add(new Contact(name, null, null, people.getString(indexThumbnail)));
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if(contacts.size()>0) {
+//            return contacts.get(0);
+//        }
+//        else {
+//            return null;
+//        }
     }
 }

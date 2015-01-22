@@ -71,6 +71,7 @@ import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,6 +105,7 @@ import com.airbitz.models.AirbitzNotification;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
+import com.squareup.picasso.Picasso;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -1264,8 +1266,13 @@ public class NavigationActivity extends Activity
         ShowFadingDialog(message, timeout, true);
     }
 
+    public void ShowFadingDialog(String message, int timeout, boolean cancelable) {
+        ShowFadingDialog(message, null, timeout, cancelable);
+    }
+
     private Dialog mFadingDialog = null;
-    public void ShowFadingDialog(final String message, final int timeout, final boolean cancelable) {
+    private Picasso mPicasso;
+    public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         if (!this.isFinishing()) {
             NavigationActivity.this.runOnUiThread(new Runnable() {
 
@@ -1278,12 +1285,21 @@ public class NavigationActivity extends Activity
                     if (mFadingDialog != null) {
                         mFadingDialog.dismiss();
                     }
+                    if (mPicasso == null) {
+                        mPicasso = Picasso.with(NavigationActivity.this);
+                    }
                     mFadingDialog = new Dialog(NavigationActivity.this);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                     mFadingDialog.setCancelable(cancelable);
                     mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                     View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
-                    ((TextView) view.findViewById(R.id.fading_alert_text)).setText(message);
+                    TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
+                    tv.setText(message);
+                    tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                    if(thumbnail != null) {
+                        view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
+                        ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
+                    }
                     mFadingDialog.setContentView(view);
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
