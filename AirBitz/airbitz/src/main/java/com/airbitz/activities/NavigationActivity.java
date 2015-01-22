@@ -1298,7 +1298,9 @@ public class NavigationActivity extends Activity
                     tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
                     if(thumbnail != null) {
                         view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
-                        ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
+                        if(!thumbnail.isEmpty()) {
+                            ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
+                        }
                     }
                     mFadingDialog.setContentView(view);
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);

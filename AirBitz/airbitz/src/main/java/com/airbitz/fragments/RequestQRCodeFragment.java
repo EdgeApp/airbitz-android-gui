@@ -777,7 +777,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
                     mActivity.ShowFadingDialog(displayName, nameInContacts.getThumbnail(), 2000, true);
                 }
                 else {
-                    mActivity.ShowFadingDialog(displayName, 1000);
+                    mActivity.ShowFadingDialog(displayName, "", 2000, true); // Show the default icon
                 }
 
                 mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
@@ -797,39 +797,5 @@ public class RequestQRCodeFragment extends BaseFragment implements
         else {
             return null;
         }
-
-//        List<Contact> contacts = new ArrayList<>();
-//        Uri uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
-//        String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-//                ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-//
-//        String[] nameArray = displayName.split(" ");
-//        if(nameArray.length >= 2) {
-//            displayName = nameArray[0] + " " + nameArray[1];
-//        }
-//
-//        ContentResolver cr = mActivity.getContentResolver();
-//        Cursor people = cr.query(uri, projection, null, null, null);
-//
-//        if (people != null) {
-//            int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
-//            int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
-//
-//            people.moveToFirst();
-//            while (people.moveToNext()) {
-//                String name = people.getString(indexName);
-//                if(name.toLowerCase().equals(displayName.toLowerCase())) {
-//                    contacts.add(new Contact(name, null, null, people.getString(indexThumbnail)));
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if(contacts.size()>0) {
-//            return contacts.get(0);
-//        }
-//        else {
-//            return null;
-//        }
     }
 }
