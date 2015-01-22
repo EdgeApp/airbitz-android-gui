@@ -305,11 +305,11 @@ public class NavigationActivity extends Activity
                 mOverlayFragments.get(1).setUserVisibleHint(true);
             }
         } else {
-            mViewPager.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0, animate);
             if(mOverlayFragments != null && mOverlayFragments.size()==2) {
                 mOverlayFragments.get(1).setUserVisibleHint(false);
             }
+            mViewPager.setVisibility(View.GONE);
         }
     }
 
@@ -335,8 +335,10 @@ public class NavigationActivity extends Activity
 
             public void onPageSelected(int position) {
                 // Disappear if transparent page shows
+                Log.d(TAG, "page selected = " + position);
                 if (position == 0) {
                     hideSoftKeyboard(mNavBarFragmentLayout);
+                    mViewPager.setVisibility(View.GONE);
                 }
             }
         });
@@ -998,14 +1000,15 @@ public class NavigationActivity extends Activity
             }
             mDataUri = null;
         } else {
+            resetFragmentThreadToBaseFragment(mNavThreadId);
             AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
-        DisplayLoginOverlay(false, true);
         checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
         }
+        DisplayLoginOverlay(false, true);
     }
 
     public void startRecoveryQuestions(String questions, String username) {
@@ -1640,5 +1643,13 @@ public class NavigationActivity extends Activity
             editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        // TODO Auto-generated method stub
+        super.dispatchTouchEvent(ev);
+        Log.d(TAG, ev.toString());
+        return false;
     }
 }

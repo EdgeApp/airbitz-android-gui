@@ -709,8 +709,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 settings.setRecoveryReminderCount(0);
                 mCoreAPI.saveAccountSettings(settings);
 
-                mActivity.popFragment();
-
                 mActivity.UserJustLoggedIn();
             } else {
                 mActivity.ShowFadingDialog(mFailureReason);
