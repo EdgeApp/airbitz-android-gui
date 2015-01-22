@@ -336,28 +336,12 @@ public class ExportSavingOptionFragment extends BaseFragment
             @Override
             public void onClick(View view) {
                 Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
-                String data;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        data = mCoreApi.getPrivateSeed(wallet);
-                    } else {
-                        data = null;
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
-                    }
-                } else {
-                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                }
-                if(data != null && !data.isEmpty()) {
                     String filePath = getExportFilePath(wallet, mExportType);
+                if(filePath != null) {
                     Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sendIntent.setType("text/csv");
                     sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
-                    startActivity(Intent.createChooser(sendIntent, ""));
                     startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
-                }
-                else {
-                    ((NavigationActivity) getActivity()).ShowFadingDialog(
-                            getString(R.string.export_saving_option_no_transactions_message));
                 }
             }
         });
@@ -827,7 +811,7 @@ public class ExportSavingOptionFragment extends BaseFragment
                     return null;
                 }
                 else {
-                    filepath = Common.createTempFileFromString("export.csv", temp);
+                    filepath = "file://" + Common.createTempFileFromString("export.csv", temp);
                 }
             }
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
@@ -871,7 +855,7 @@ public class ExportSavingOptionFragment extends BaseFragment
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri file = Uri.parse("file://" + filepath);
+        Uri file = Uri.parse(filepath);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
         intent.putExtra(Intent.EXTRA_STREAM, file);
