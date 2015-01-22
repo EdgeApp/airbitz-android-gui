@@ -348,10 +348,11 @@ public class ExportSavingOptionFragment extends BaseFragment
                     data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
                 }
                 if(data != null && !data.isEmpty()) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, data);
-                    sendIntent.setType("text/plain");
+                    String filePath = getExportFilePath(wallet, mExportType);
+                    Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sendIntent.setType("text/csv");
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
+                    startActivity(Intent.createChooser(sendIntent, ""));
                     startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
                 }
                 else {
