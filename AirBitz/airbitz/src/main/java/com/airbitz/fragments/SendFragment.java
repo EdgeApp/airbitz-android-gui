@@ -157,7 +157,6 @@ public class SendFragment extends BaseFragment implements
     private Wallet mFromWallet;
     private List<Wallet> mCurrentListing;
     private WalletPickerAdapter listingAdapter;
-    private String mSendName;
     private int BACK_CAMERA_INDEX = 0;
     private boolean mFlashOn = false;
     private boolean mFocused = true;
@@ -639,13 +638,6 @@ public class SendFragment extends BaseFragment implements
         }
 
         if(mBluetoothButton.getVisibility() == View.VISIBLE) {
-            if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-                mSendName = mCoreAPI.coreSettings().getSzFullName();
-                if(mSendName==null || mSendName.isEmpty()) {
-                    mSendName = getString(R.string.request_qr_unknown);
-                }
-            }
-
             ViewBluetoothPeripherals(true);
             mBluetoothListView.setOnOneScanEndedListener(this);
         }
@@ -815,7 +807,7 @@ public class SendFragment extends BaseFragment implements
         stopBluetoothSearch();
         mBluetoothListView.setOnPeripheralSelectedListener(null);
         mBluetoothListView.setOnBitcoinURIReceivedListener(this);
-        mBluetoothListView.connectGatt(device, mSendName);
+        mBluetoothListView.connectGatt(device);
     }
 
     @Override

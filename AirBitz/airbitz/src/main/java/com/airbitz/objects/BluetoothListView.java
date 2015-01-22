@@ -59,6 +59,7 @@ import android.widget.ListView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BleDevice;
 
 import java.nio.ByteBuffer;
@@ -148,6 +149,7 @@ public class BluetoothListView extends ListView {
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
     BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
+    CoreAPI mCoreAPI;
 
     public BluetoothListView(NavigationActivity activity) {
         super(activity);
@@ -166,6 +168,7 @@ public class BluetoothListView extends ListView {
 
     public void init(NavigationActivity activity) {
         mActivity = activity;
+        mCoreAPI = CoreAPI.getApi();
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -309,12 +312,10 @@ public class BluetoothListView extends ListView {
     //************ Connecting to Device to get data
     private BluetoothGatt mBluetoothGatt;
     BluetoothGattCharacteristic mCharacteristic;
-    private String mSendName;
 
     // Attempt GATT connection
-    public void connectGatt(BleDevice result, String sendName) {
+    public void connectGatt(BleDevice result) {
         BluetoothDevice device = result.getDevice();
-        mSendName = sendName == null ? " " : sendName;
         mBluetoothGatt = device.connectGatt(mActivity, false, mGattCallback);
     }
 
@@ -339,7 +340,7 @@ public class BluetoothListView extends ListView {
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         Log.d(TAG, "onServicesDiscovered success");
-                        subscribe(gatt, mSendName);
+                        subscribe(gatt);
                      } else {
                         mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_discovery_failed));
                     }
@@ -395,7 +396,7 @@ public class BluetoothListView extends ListView {
                 }
             };
 
-    private void subscribe(BluetoothGatt gatt, final String sendName) {
+    private void subscribe(BluetoothGatt gatt) {
         // Find our Airbitz service and characteristic
         List<BluetoothGattService> services = gatt.getServices();
         for(BluetoothGattService service : services) {
@@ -406,7 +407,10 @@ public class BluetoothListView extends ListView {
                 if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                     // Write sendName to this characteristic requesting a response
                     characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-
+                    String sendName = getResources().getString(R.string.request_qr_unknown);
+                    if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+                        sendName = mCoreAPI.coreSettings().getSzFullName();
+                    }
                     // sendString has a limit of 18 characters.
                     String sendString = sendName.length()>18 ? sendName.substring(0,18) : sendName;
                     characteristic.setValue(sendString);
