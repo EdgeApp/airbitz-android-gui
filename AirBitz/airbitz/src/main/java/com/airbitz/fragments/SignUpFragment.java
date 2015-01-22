@@ -710,8 +710,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 mCoreAPI.saveAccountSettings(settings);
 
                 mActivity.popFragment();
-                mActivity.DisplayLoginOverlay(false);
-                mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
 
                 mActivity.UserJustLoggedIn();
             } else {

@@ -305,6 +305,7 @@ public class NavigationActivity extends Activity
                 mOverlayFragments.get(1).setUserVisibleHint(true);
             }
         } else {
+            mViewPager.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0, animate);
             if(mOverlayFragments != null && mOverlayFragments.size()==2) {
                 mOverlayFragments.get(1).setUserVisibleHint(false);
@@ -998,7 +999,7 @@ public class NavigationActivity extends Activity
             mDataUri = null;
         } else {
             AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
-            switchFragmentThread(AirbitzApplication.getLastNavTab());
+            switchFragmentThread(Tabs.WALLET.ordinal());
         }
         DisplayLoginOverlay(false, true);
         checkFirstWalletSetup();
@@ -1026,7 +1027,7 @@ public class NavigationActivity extends Activity
         bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
         Fragment frag = new SignUpFragment();
         frag.setArguments(bundle);
-        pushFragmentNoAnimation(frag, mNavThreadId);
+        pushFragment(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
     }
 
