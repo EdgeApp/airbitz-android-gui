@@ -58,15 +58,14 @@ public class BleUtil {
     }
 
     /*
-     * Determine if Airbitz can scan for Advertisers
+     * Determine if Airbitz can at least see Advertisers
      */
     public static boolean isBleAvailable(Context context) {
         BluetoothManager manager = getManager(context);
         if (manager == null || !isBLESupported(context)) {
             return false;
         }
-        BluetoothAdapter adapter = manager.getAdapter();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && adapter != null && adapter.isEnabled()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return true;
         } else {
             return false;

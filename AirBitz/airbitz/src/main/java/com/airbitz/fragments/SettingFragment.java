@@ -35,6 +35,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,6 +47,7 @@ import android.nfc.NfcManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -325,10 +327,21 @@ public class SettingFragment extends BaseFragment {
         }
 
         mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && isBLEcapable()) {
-            mBLESwitchLayout.setVisibility(View.VISIBLE);
-        }
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
+        if(isBLEcapable()) {
+            mBLESwitchLayout.setVisibility(View.VISIBLE);
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                mBLESwitch.setText(getString(R.string.settings_title_ble_send_only));
+            }
+            mBLESwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+                        ShowBLEMessageDialog();
+                    }
+                }
+            });
+        }
 
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -915,6 +928,30 @@ public class SettingFragment extends BaseFragment {
 
     static public boolean getBLEPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        return prefs.getBoolean(BLE_PREF, false);
+        return prefs.getBoolean(BLE_PREF, true);
+    }
+
+    public void ShowBLEMessageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setMessage(getString(R.string.settings_ble_turn_on_message))
+                .setTitle(getString(R.string.settings_ble_turn_on_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (SettingFragment.this.isAdded()) {
+                                    startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
+                                }
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mBLESwitch.setChecked(false);
+                                dialog.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 }
