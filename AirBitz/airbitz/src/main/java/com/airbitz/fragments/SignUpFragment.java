@@ -49,6 +49,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -334,6 +335,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
             mTitleTextView.setText(R.string.activity_signup_title_change_password);
