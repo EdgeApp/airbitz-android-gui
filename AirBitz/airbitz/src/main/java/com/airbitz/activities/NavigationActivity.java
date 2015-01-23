@@ -986,7 +986,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public void UserJustLoggedIn() {
+    public void UserJustLoggedIn(boolean fullLogin) {
         showNavBar();
         checkDailyLimitPref();
         mCoreAPI.setupAccountSettings();
@@ -1005,7 +1005,7 @@ public class NavigationActivity extends Activity
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
         checkFirstWalletSetup();
-        if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
+        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
         }
         DisplayLoginOverlay(false, true);
@@ -1129,7 +1129,7 @@ public class NavigationActivity extends Activity
 
     public void LoginNow(String username, char[] password) {
         AirbitzApplication.Login(username, password);
-        UserJustLoggedIn();
+        UserJustLoggedIn(password != null);
         setViewPager();
     }
 

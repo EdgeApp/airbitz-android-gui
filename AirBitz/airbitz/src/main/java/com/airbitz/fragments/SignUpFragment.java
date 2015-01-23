@@ -636,7 +636,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     AirbitzApplication.Login(mUsername, mPassword);
                     mCoreAPI.SetPin(mPin);
                     mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
-                    mActivity.UserJustLoggedIn();
+                    mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.showModalProgress(false);
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
@@ -709,7 +709,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 settings.setRecoveryReminderCount(0);
                 mCoreAPI.saveAccountSettings(settings);
 
-                mActivity.UserJustLoggedIn();
+                mActivity.UserJustLoggedIn(true);
             } else {
                 mActivity.ShowFadingDialog(mFailureReason);
             }
