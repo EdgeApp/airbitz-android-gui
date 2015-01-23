@@ -33,7 +33,6 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -50,7 +49,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -111,9 +109,9 @@ public class SendConfirmationFragment extends BaseFragment {
     private HighlightOnPressImageButton mHelpButton;
     private ImageButton mConfirmSwipeButton;
 
-    private float mConfirmCenter;
-    private float dX = 0;
-    private float rX = 0;
+    private float mSlideHalfWidth;
+    private float downX = 0;
+    private float moveX = 0;
 
     private Calculator mCalculator;
 
@@ -238,8 +236,6 @@ public class SendConfirmationFragment extends BaseFragment {
         mAuthorizationLayout = mView.findViewById(R.id.fragment_send_confirmation_layout_authorization);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
-
-        mConfirmCenter = mConfirmSwipeButton.getWidth() / 2;
 
         String balance = mCoreAPI.formatSatoshi(mSourceWallet.getBalanceSatoshi(), true);
         mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
@@ -401,32 +397,27 @@ public class SendConfirmationFragment extends BaseFragment {
         mBitcoinField.setOnEditorActionListener(tvListener);
         mFiatField.setOnEditorActionListener(tvListener);
 
-        mSlideLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (!mSuccess) {
-                    mLeftThreshold = (int) mSlideLayout.getX();
-                }
-            }
-        });
-
         mConfirmSwipeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        dX = (int) event.getX();
-                        mRightThreshold = (int) mConfirmSwipeButton.getX();
+                        downX = (int) event.getX();
+                        mSlideHalfWidth = mConfirmSwipeButton.getWidth() / 2;
+                        mLeftThreshold = (int) (mSlideLayout.getX());
+                        mRightThreshold = (int) (mSlideLayout.getX() + mSlideLayout.getWidth() - mConfirmSwipeButton.getWidth() - mLeftThreshold);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        rX = event.getRawX();
-                        float delta = rX - dX;
-                        if (delta < mLeftThreshold - mConfirmCenter) {
-                            mConfirmSwipeButton.setX(mLeftThreshold - mConfirmCenter);
-                        } else if (delta > mRightThreshold) {
+                        moveX = event.getRawX() - mLeftThreshold;
+                        float leftSlide = moveX - mSlideHalfWidth;
+                        Log.d(TAG, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
+                                + mLeftThreshold +", "+ mRightThreshold +", "+ leftSlide +", "+ mConfirmSwipeButton.getWidth());
+                        if (leftSlide < 0) {
+                            mConfirmSwipeButton.setX(0);
+                        } else if (leftSlide > mRightThreshold) {
                             mConfirmSwipeButton.setX(mRightThreshold);
                         } else {
-                            mConfirmSwipeButton.setX(delta);
+                            mConfirmSwipeButton.setX(leftSlide);
                         }
                         return false;
                     case MotionEvent.ACTION_UP:
@@ -690,7 +681,7 @@ public class SendConfirmationFragment extends BaseFragment {
     }
 
     private void finishSlider() {
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), -(mRightThreshold - (mLeftThreshold - mConfirmCenter)));
+        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), -(mRightThreshold - (mLeftThreshold)));
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
