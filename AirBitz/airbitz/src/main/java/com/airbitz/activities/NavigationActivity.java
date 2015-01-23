@@ -1644,12 +1644,4 @@ public class NavigationActivity extends Activity
             editor.apply();
         }
     }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        // TODO Auto-generated method stub
-        super.dispatchTouchEvent(ev);
-        Log.d(TAG, ev.toString());
-        return false;
-    }
 }
