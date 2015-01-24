@@ -31,10 +31,16 @@
 
 package com.airbitz.objects;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.view.ContextThemeWrapper;
 
 import com.airbitz.AirbitzApplication;
+import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -57,7 +63,7 @@ public class UserReview {
         mEditor = mPrefs.edit();
     }
 
-    public static boolean checkUserReview() {
+    public static boolean offerUserReview() {
         setupPrefs();
         boolean notified = mPrefs.getBoolean(ALREADY_NOTIFIED, false);
         if(! notified && loginCountTriggered() || transactionCountTriggered() || timeUseTriggered()) {
@@ -114,5 +120,26 @@ public class UserReview {
             mEditor.apply();
             return false;
         }
+    }
+
+    public static void ShowUserReviewDialog(final Context context) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+            builder.setMessage(context.getString(R.string.user_review_message))
+                    .setTitle(context.getString(R.string.user_review_title))
+                    .setCancelable(false)
+                    .setPositiveButton(context.getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+                                    dialog.dismiss();
+                                }
+                            })
+                    .setNegativeButton(context.getResources().getString(R.string.string_no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            builder.create().show();
     }
 }

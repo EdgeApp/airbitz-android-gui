@@ -53,19 +53,15 @@ public class BleUtil {
         return (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
     }
 
-    public static boolean isBLESupported(Context context) {
-        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
-    }
-
     /*
      * Determine if Airbitz can at least see Advertisers
      */
     public static boolean isBleAvailable(Context context) {
-        BluetoothManager manager = getManager(context);
-        if (manager == null || !isBLESupported(context)) {
-            return false;
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            BluetoothManager manager = getManager(context);
+            if (manager == null || !context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+                return false;
+            }
             return true;
         } else {
             return false;

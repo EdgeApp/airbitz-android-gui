@@ -105,6 +105,7 @@ import com.airbitz.models.AirbitzNotification;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
+import com.airbitz.objects.UserReview;
 import com.squareup.picasso.Picasso;
 
 import net.hockeyapp.android.CrashManager;
@@ -1009,6 +1010,10 @@ public class NavigationActivity extends Activity
             mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
         }
         DisplayLoginOverlay(false, true);
+
+        if(UserReview.offerUserReview()) {
+//            UserReview.ShowUserReviewDialog(this);
+        }
     }
 
     public void startRecoveryQuestions(String questions, String username) {

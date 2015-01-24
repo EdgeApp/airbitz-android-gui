@@ -280,14 +280,11 @@
 
         <RelativeLayout
             android:id="@+id/layout_slide"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="44.1dp"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentTop="false"
-            android:layout_alignWithParentIfMissing="false"
             android:layout_below="@+id/fragment_send_confirmation_layout_authorization"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
+            android:layout_margin="40dp"
             android:background="@drawable/bg_textfield"
             android:gravity="center_horizontal">
 
