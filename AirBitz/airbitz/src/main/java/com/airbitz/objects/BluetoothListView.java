@@ -145,6 +145,7 @@ public class BluetoothListView extends ListView {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothLeScanner mBluetoothLeScanner;
     String mSelectedAdvertisedName;
+    Boolean mBluetoothTransacting;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
     BluetoothSearchAdapter mSearchAdapter;
@@ -332,6 +333,9 @@ public class BluetoothListView extends ListView {
 
                     } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                         Log.d(TAG, "Disconnected from GATT server.");
+                        if(mBluetoothTransacting) {
+                            mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed)+"\nConnection lost");
+                        }
                     }
                 }
 
@@ -354,7 +358,7 @@ public class BluetoothListView extends ListView {
                     Log.d(TAG, "onCharacteristicRead: " + status);
                     mCharacteristic = characteristic;
                     String response = characteristic.getStringValue(0);
-                    if(response != null && mOnBitcoinURIReceivedListener != null) {
+                    if(status == 0 && response != null && mOnBitcoinURIReceivedListener != null) {
                         Log.d(TAG, "onCharacteristicRead response = " + response);
                         //make sure partial bitcoin address that was advertised is contained within the actual full bitcoin address
                         String[] separate = response.split(":");
@@ -376,10 +380,14 @@ public class BluetoothListView extends ListView {
                             } else {
                                 mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
                             }
+                            mBluetoothTransacting = false;
                         }
                         else {
                             mActivity.ShowFadingDialog(getResources().getString(R.string.request_qr_ble_invalid_uri));
                         }
+                    }
+                    else {
+                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed)+"\nOCR:"+status);
                     }
                 }
 
@@ -392,6 +400,9 @@ public class BluetoothListView extends ListView {
                         if(!success) {
                             mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
                         }
+                    }
+                    else {
+                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed)+"\nOCW:"+status);
                     }
                 }
             };
@@ -416,7 +427,10 @@ public class BluetoothListView extends ListView {
                     characteristic.setValue(sendString);
                     boolean success = gatt.writeCharacteristic(characteristic);
                     if(!success) {
-                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
+                        mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed)+"\nSubscribe");
+                    }
+                    else {
+                        mBluetoothTransacting = true;
                     }
                 }
             }
