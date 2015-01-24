@@ -330,7 +330,7 @@ public class SettingFragment extends BaseFragment {
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
         if(isBLEcapable()) {
             mBLESwitchLayout.setVisibility(View.VISIBLE);
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || !BleUtil.isBleAdvertiseAvailable(getActivity())) {
                 mBLESwitch.setText(getString(R.string.settings_title_ble_send_only));
             }
             mBLESwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
