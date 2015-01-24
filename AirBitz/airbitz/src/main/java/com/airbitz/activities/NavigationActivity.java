@@ -1266,7 +1266,7 @@ public class NavigationActivity extends Activity
     }
 
     public void ShowFadingDialog(String message) {
-        ShowFadingDialog(message, 2000);
+        ShowFadingDialog(message, 3000);
     }
 
     public void ShowFadingDialog(String message, int timeout) {
@@ -1308,7 +1308,7 @@ public class NavigationActivity extends Activity
                     mFadingDialog.setContentView(view);
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
-                    fadeOut.setDuration(2000);
+                    fadeOut.setDuration(3000);
                     fadeOut.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationEnd(Animation animation) {
