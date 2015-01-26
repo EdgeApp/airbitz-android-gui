@@ -139,7 +139,7 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         String id = null;
         Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, Uri.encode(displayName.trim()));
         Cursor mapContact = mContext.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}, null, null, null);
-        while(mapContact.moveToNext())
+        while(mapContact != null && mapContact.moveToNext())
         {
             String name = mapContact.getString(mapContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             id = mapContact.getString(mapContact.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
