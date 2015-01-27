@@ -152,16 +152,7 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    boolean tempFlag = false;
-                    for (Wallet wallet : mWalletList) {
-                        if (mWalletList.indexOf(wallet) != pos && !wallet.isArchiveHeader() && !wallet.isHeader()) {
-                            if (!wallet.isArchived()) {
-                                System.out.println("pos: " + pos + " walletcheckpos: " + mWalletList.indexOf(wallet));
-                                tempFlag = true;
-                            }
-                        }
-                    }
-                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader() && tempFlag) {
+                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()) {
                         mTotalOffset = 0;
 
                         int position = pointToPosition(mDownX, mDownY);
@@ -500,14 +491,18 @@ public class DynamicListView extends ListView {
 
             final long switchItemID = isBelow ? mBelowItemId : mAboveItemId;
             View switchView = isBelow ? belowView : aboveView;
-            final int originalItem = getPositionForView(mobileView);
 
-            if (switchView == null) {
-                updateNeighborViewsForID(mMobileItemId);
-                return;
+            if(mobileView != null) {
+                final int originalItem = getPositionForView(mobileView);
+
+                if (switchView == null) {
+                    updateNeighborViewsForID(mMobileItemId);
+                    return;
+                }
+
+                swapElements(mWalletList, originalItem, getPositionForView(switchView));
+                mobileView.setVisibility(View.VISIBLE);
             }
-
-            swapElements(mWalletList, originalItem, getPositionForView(switchView));
 
             ((BaseAdapter) getAdapter()).notifyDataSetChanged();
 
@@ -515,7 +510,6 @@ public class DynamicListView extends ListView {
 
             final int switchViewStartTop = switchView.getTop();
 
-            mobileView.setVisibility(View.VISIBLE);
             switchView.setVisibility(View.INVISIBLE);
 
             ((WalletAdapter) getAdapter()).setSelectedViewPos(getPositionForView(switchView));
@@ -560,7 +554,7 @@ public class DynamicListView extends ListView {
      */
     private void touchEventsEnded() {
         final View mobileView = getViewForID(mMobileItemId);
-        if (mCellIsMobile || mIsWaitingForScrollFinish) {
+        if ((mCellIsMobile || mIsWaitingForScrollFinish)) {
             mCellIsMobile = false;
             mIsWaitingForScrollFinish = false;
             mIsMobileScrolling = false;
@@ -574,7 +568,9 @@ public class DynamicListView extends ListView {
                 return;
             }
 
-            mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
+            if(mobileView != null) {
+                mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
+            }
 
             ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
                     sBoundEvaluator, mHoverCellCurrentBounds);
@@ -592,7 +588,9 @@ public class DynamicListView extends ListView {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mobileView.setVisibility(VISIBLE);
+                    if(mobileView != null) {
+                        mobileView.setVisibility(VISIBLE);
+                    }
                     int pos = getPositionForID(mMobileItemId);
                     if (pos > ((WalletAdapter) getAdapter()).getArchivePos() && archiveClosed) {
                         Wallet w = mWalletList.remove(pos);
