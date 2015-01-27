@@ -33,6 +33,7 @@ package com.airbitz.objects;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -62,6 +63,7 @@ import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.BleDevice;
 
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -188,12 +190,10 @@ public class BluetoothListView extends ListView {
     }
 
     public void close() {
+        mHandler.removeCallbacks(mContinuousScanRunnable);
         if(mBluetoothGatt != null) {
             mBluetoothGatt.disconnect();
-            mBluetoothGatt.close();
         }
-        mHandler.removeCallbacks(mContinuousScanRunnable);
-        mBluetoothGatt = null;
     }
 
     //************** Callback for notification of peripheral selected
@@ -227,6 +227,7 @@ public class BluetoothListView extends ListView {
      */
     public void scanForBleDevices(boolean enable) {
         if(enable) {
+
             mHandler.post(mContinuousScanRunnable);
         }
         else {
@@ -244,6 +245,21 @@ public class BluetoothListView extends ListView {
             mHandler.postDelayed(this, SCAN_REPEAT_PERIOD);
         }
     };
+
+    private boolean refreshDeviceCache(BluetoothGatt gatt){
+        try {
+            BluetoothGatt localBluetoothGatt = gatt;
+            Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
+            if (localMethod != null) {
+                boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
+                return bool;
+            }
+        }
+        catch (Exception localException) {
+            Log.e(TAG, "An exception occured while refreshing device");
+        }
+        return false;
+    }
 
     /*
      * Scans for BLE devices with a timeout
@@ -317,6 +333,7 @@ public class BluetoothListView extends ListView {
     public void connectGatt(BleDevice result) {
         BluetoothDevice device = result.getDevice();
         mBluetoothGatt = device.connectGatt(mActivity, false, mGattCallback);
+        refreshDeviceCache(mBluetoothGatt);
     }
 
     // Various callback methods defined by the BLE API.
@@ -332,6 +349,8 @@ public class BluetoothListView extends ListView {
 
                     } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                         Log.d(TAG, "Disconnected from GATT server.");
+                        mBluetoothGatt.close();
+                        mBluetoothGatt = null;
                     }
                 }
 
