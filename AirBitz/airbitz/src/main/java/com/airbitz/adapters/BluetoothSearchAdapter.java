@@ -32,6 +32,9 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +45,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.models.BleDevice;
+import com.airbitz.models.Contact;
 
 import java.util.List;
 
@@ -89,7 +93,13 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
             partialAddress = device.getDevice().getName().substring(0, 10);
             name = device.getDevice().getName().substring(10);
         }
+        Contact nameInContacts = null;
         if(name != null) {
+            nameInContacts = findMatchingContact(name);
+            if(nameInContacts != null && nameInContacts.getThumbnail() != null && !nameInContacts.getThumbnail().isEmpty()) {
+                ImageView thumbnail = ((ImageView) convertView.findViewById(R.id.bluetooth_item_imageview));
+                thumbnail.setImageURI(Uri.parse(nameInContacts.getThumbnail()));
+            }
             nameView.setText(name);
             addressView.setText(partialAddress);
         }
@@ -120,5 +130,23 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         else if(rssi >= -77) return 2;
         else if(rssi >= -89) return 1;
         else                 return 0;
+    }
+
+    private Contact findMatchingContact(String displayName) {
+        if(displayName.split(" ").length < 2) {
+            return null;
+        }
+        String id = null;
+        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, Uri.encode(displayName.trim()));
+        Cursor mapContact = mContext.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}, null, null, null);
+        while(mapContact != null && mapContact.moveToNext())
+        {
+            String name = mapContact.getString(mapContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            id = mapContact.getString(mapContact.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+            if(displayName.toLowerCase().contains(name.toLowerCase())) {
+                return new Contact(displayName, null, null, id);
+            }
+        }
+        return null;
     }
 }
