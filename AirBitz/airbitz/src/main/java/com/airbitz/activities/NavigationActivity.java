@@ -658,6 +658,13 @@ public class NavigationActivity extends Activity
             setupNFCForegrounding();
         }
 
+        Intent intent = getIntent();
+        if(intent != null) {
+            Uri data = intent.getData();
+            if(data != null && data.getScheme().equals("bitcoin")) {
+                onBitcoinUri(data);
+            }
+        }
         super.onResume();
     }
 
@@ -1211,11 +1218,7 @@ public class NavigationActivity extends Activity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
-                                    // This emulates user pressing Home button, rather than finish this activity
-                                    Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                                    homeIntent.addCategory(Intent.CATEGORY_HOME);
-                                    homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(homeIntent);
+                                    finish();
                                 }
                             })
                     .setNegativeButton(getResources().getString(R.string.string_no),
