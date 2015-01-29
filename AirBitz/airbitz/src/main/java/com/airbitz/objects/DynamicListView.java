@@ -64,17 +64,11 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.airbitz.R;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
@@ -168,6 +162,9 @@ public class DynamicListView extends ListView {
 
                         updateNeighborViewsForID(mMobileItemId);
 
+                        if (mOnListReordered != null) {
+                            mOnListReordered.onListReordering(true);
+                        }
                         return true;
                     }
                     return false;
@@ -267,7 +264,7 @@ public class DynamicListView extends ListView {
         }
     };
     // Callback interface when the list has been reordered
-    private OnListReordered mOnListReordered;
+    private OnListReordering mOnListReordered;
 
     public DynamicListView(Context context) {
         super(context);
@@ -414,7 +411,6 @@ public class DynamicListView extends ListView {
                 mDownX = (int) event.getX();
                 mDownY = (int) event.getY();
                 mActivePointerId = event.getPointerId(0);
-
                 break;
             case MotionEvent.ACTION_MOVE:
 
@@ -610,14 +606,15 @@ public class DynamicListView extends ListView {
             });
             hoverViewAnimator.start();
             // send the callback that the list was reordered
-            if (mOnListReordered != null)
-                mOnListReordered.onListReordered();
+            if (mOnListReordered != null) {
+                mOnListReordered.onListReordering(false);
+            }
         } else {
             touchEventsCancelled();
         }
     }
 
-    public void setOnListReorderedListener(OnListReordered listener) {
+    public void setOnListReorderedListener(OnListReordering listener) {
         mOnListReordered = listener;
     }
 
@@ -724,7 +721,7 @@ public class DynamicListView extends ListView {
         }
     }
 
-    public interface OnListReordered {
-        public void onListReordered();
+    public interface OnListReordering {
+        public void onListReordering(boolean started);
     }
 }

@@ -80,7 +80,7 @@ import java.util.List;
  * Created on 2/12/14.
  */
 public class WalletsFragment extends BaseFragment
-        implements DynamicListView.OnListReordered,
+        implements DynamicListView.OnListReordering,
         CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated,
         WalletAdapter.OnHeaderButtonPress,
@@ -479,10 +479,17 @@ public class WalletsFragment extends BaseFragment
 
     // Callback when the listview was reordered by the user
     @Override
-    public void onListReordered() {
-        mCoreAPI.setWalletOrder(mLatestWalletList);
-        updateWalletList(mArchiveClosed);
-        UpdateBalances();
+    public void onListReordering(boolean started) {
+        Log.d(TAG, "List reordering is "+started);
+        if(started) {
+            mCoreAPI.stopAllAsyncUpdates();
+        }
+        else {
+            mCoreAPI.setWalletOrder(mLatestWalletList);
+            updateWalletList(mArchiveClosed);
+            UpdateBalances();
+            mCoreAPI.startAllAsyncUpdates();
+        }
     }
 
     @Override
