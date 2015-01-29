@@ -33,7 +33,6 @@ package com.airbitz.fragments;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -48,7 +47,6 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -84,9 +82,9 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.models.Contact;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -105,6 +103,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
     private final String TAG = getClass().getSimpleName();
 
     private final double BORDER_THICKNESS = 0.03;
+    private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
     public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
@@ -161,6 +160,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
     public void onPause() {
         mCoreAPI.prioritizeAddress(null, mWallet.getUUID());
         stopAirbitzAdvertise();
+        mHandler.removeCallbacks(mContinuousReAdvertiseRunnable);
         super.onPause();
     }
 
@@ -596,6 +596,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
             mBLEImageView.setVisibility(View.VISIBLE);
             startAirbitzAdvertise(mRequestURI);
+            mHandler.postDelayed(mContinuousReAdvertiseRunnable, READVERTISE_REPEAT_PERIOD);
         }
     }
 
@@ -605,7 +606,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter adapter = manager.getAdapter();
 
-        mData = data;
         // The name maximum is 26 characters tested
         String[] separate = data.split(":");
         String address, name = " ";
@@ -630,7 +630,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
         AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
         mGattServer = BleUtil.getManager(mActivity).openGattServer(mActivity, bgsc);
-        bgsc.setupServices(mActivity, mGattServer, mData);
+        bgsc.setupServices(mActivity, mGattServer, data);
 
         mAdvCallback = new AdvertiseCallback() {
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
@@ -798,4 +798,13 @@ public class RequestQRCodeFragment extends BaseFragment implements
             return null;
         }
     }
+
+    Runnable mContinuousReAdvertiseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            stopAirbitzAdvertise();
+            startAirbitzAdvertise(mRequestURI);
+            mHandler.postDelayed(this, READVERTISE_REPEAT_PERIOD);
+        }
+    };
 }
