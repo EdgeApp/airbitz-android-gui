@@ -67,6 +67,8 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -149,6 +151,7 @@ public class BluetoothListView extends ListView {
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
     List<BleDevice> mFoundPeripherals = new ArrayList<BleDevice>();
+    BluetoothDeviceComparator mBluetoothDeviceComparator;
     BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
     CoreAPI mCoreAPI;
@@ -279,6 +282,10 @@ public class BluetoothListView extends ListView {
         public void run() {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mPeripherals.clear();
+            if(mBluetoothDeviceComparator == null) {
+                mBluetoothDeviceComparator = new BluetoothDeviceComparator();
+            }
+            Collections.sort(mFoundPeripherals, mBluetoothDeviceComparator);
             mPeripherals.addAll(mFoundPeripherals);
             mFoundPeripherals.clear();
             mSearchAdapter.notifyDataSetChanged();
@@ -287,6 +294,12 @@ public class BluetoothListView extends ListView {
             }
         }
     };
+
+    class BluetoothDeviceComparator implements Comparator<BleDevice> {
+        public int compare(BleDevice devA, BleDevice devB) {
+            return devA.getDevice().getName().compareToIgnoreCase(devB.getDevice().getName());
+        }
+    }
 
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
