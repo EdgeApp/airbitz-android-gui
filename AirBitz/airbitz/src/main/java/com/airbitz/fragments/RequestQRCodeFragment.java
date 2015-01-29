@@ -697,7 +697,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
     /*
     * Callback for BLE peripheral mode beacon
     */
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
         private String TAG = getClass().getSimpleName();
 
