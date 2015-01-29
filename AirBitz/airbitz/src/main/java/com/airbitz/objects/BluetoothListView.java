@@ -137,18 +137,18 @@ import java.util.UUID;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BluetoothListView extends ListView {
     private final String TAG = getClass().getSimpleName();
-    private final int SCAN_PERIOD_MILLIS = 2000;
-    private final int SCAN_REPEAT_PERIOD = 5000;
+    private final int SCAN_PERIOD_MILLIS = 1000;
+    private final int SCAN_REPEAT_PERIOD = 3000;
 
     NavigationActivity mActivity;
     OnPeripheralSelected mOnPeripheralSelectedListener = null;
     OnBitcoinURIReceived mOnBitcoinURIReceivedListener = null;
     OnOneScanEnded mOnOneScanEndedListener = null;
     BluetoothAdapter mBluetoothAdapter;
-    BluetoothLeScanner mBluetoothLeScanner;
     String mSelectedAdvertisedName;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
+    List<BleDevice> mFoundPeripherals = new ArrayList<BleDevice>();
     BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
     CoreAPI mCoreAPI;
@@ -239,7 +239,6 @@ public class BluetoothListView extends ListView {
     Runnable mContinuousScanRunnable = new Runnable() {
         @Override
         public void run() {
-            mPeripherals.clear();
             mSearchAdapter.notifyDataSetChanged();
             scanLeDevice(true);
             mHandler.postDelayed(this, SCAN_REPEAT_PERIOD);
@@ -279,6 +278,10 @@ public class BluetoothListView extends ListView {
         @Override
         public void run() {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mPeripherals.clear();
+            mPeripherals.addAll(mFoundPeripherals);
+            mFoundPeripherals.clear();
+            mSearchAdapter.notifyDataSetChanged();
             if(mOnOneScanEndedListener != null) {
                 mOnOneScanEndedListener.onOneScanEnded(!mPeripherals.isEmpty());
             }
@@ -306,7 +309,7 @@ public class BluetoothListView extends ListView {
     private void processResult(BleDevice bleDevice) {
         boolean alreadyFound = false;
         String name = "test";
-        for(BleDevice ble : mPeripherals) {
+        for(BleDevice ble : mFoundPeripherals) {
             name = ble.getDevice().getName();
             if(name != null && ble.getDevice().getName().equals(bleDevice.getDevice().getName())) {
                 alreadyFound = true;
@@ -319,8 +322,7 @@ public class BluetoothListView extends ListView {
         }
         if(!alreadyFound) {
             Log.i(TAG, "New LE Device: " + name + " @ " + bleDevice.getRSSI());
-            mPeripherals.add(bleDevice);
-            mSearchAdapter.notifyDataSetChanged();
+            mFoundPeripherals.add(bleDevice);
         }
     }
 
