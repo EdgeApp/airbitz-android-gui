@@ -325,6 +325,7 @@
     <string name="request_qr_ble_invalid_service">Airbitz could not advertise the Bluetooth service. Please check Bluetooth on your device.</string>
     <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
     <string name="request_qr_ble_copied">Request is copied to the clipboard.</string>
+    <string name="request_qr_first_usage">Present QR code to Sender and have them scan to send you payment</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>

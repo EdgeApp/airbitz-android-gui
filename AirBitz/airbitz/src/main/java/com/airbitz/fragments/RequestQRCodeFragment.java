@@ -50,6 +50,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -79,6 +80,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
@@ -101,6 +103,8 @@ public class RequestQRCodeFragment extends BaseFragment implements
         SwipeRefreshLayout.OnRefreshListener
 {
     private final String TAG = getClass().getSimpleName();
+
+    private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.twoshowings";
 
     private final double BORDER_THICKNESS = 0.03;
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
@@ -261,6 +265,20 @@ public class RequestQRCodeFragment extends BaseFragment implements
         super.onResume();
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        checkFirstUsage();
+    }
+
+    private void checkFirstUsage() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+        if(count <= 2) {
+            count++;
+            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), 3000);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(FIRST_USAGE_COUNT, count);
+            editor.apply();
+        }
     }
 
     private void checkNFC() {
