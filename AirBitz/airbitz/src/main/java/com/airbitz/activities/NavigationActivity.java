@@ -831,6 +831,7 @@ public class NavigationActivity extends Activity
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
             bundle.putString(Transaction.TXID, mTxId);
             bundle.putString(Wallet.WALLET_UUID, mUUID);
+            switchToWallets(bundle);
             resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
         }
         else {
@@ -865,7 +866,7 @@ public class NavigationActivity extends Activity
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(INCOMING_COUNT, count);
             editor.apply();
-            message += getString(R.string.received_bitcoin_fading_message_teaching);
+            message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
             delay = 5000;
         }
         ShowFadingDialog(message, delay);

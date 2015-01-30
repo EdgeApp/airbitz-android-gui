@@ -450,7 +450,7 @@
     <string name="received_bitcoin_title">Received Bitcoin</string>
     <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
     <string name="received_bitcoin_fading_message">You received %1$s (~%2$s) of Bitcoin.</string>
-    <string name="received_bitcoin_fading_message_teaching"> Use the Payee, Category, and Notes field to optionally tag your transaction</string>
+    <string name="received_bitcoin_fading_message_teaching">Use the Payee, Category, and Notes field to optionally tag your transaction</string>
     <string name="received_partial_bitcoin_title">Partial Payment Received</string>
     <string name="received_partial_bitcoin_message">Warning: Partial Payment Received</string>
     <string name="bitcoing_remaining">%1$s Remaining…</string>
