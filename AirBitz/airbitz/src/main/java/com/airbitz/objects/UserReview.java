@@ -37,10 +37,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.text.Html;
 import android.view.ContextThemeWrapper;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -122,24 +124,29 @@ public class UserReview {
         }
     }
 
-    public static void ShowUserReviewDialog(final Context context) {
+    public static void ShowUserReviewDialog(final NavigationActivity activity) {
         setupPrefs();
         mEditor.putBoolean(ALREADY_NOTIFIED, true);
         mEditor.apply();
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-            builder.setMessage(context.getString(R.string.user_review_message))
-                    .setTitle(context.getString(R.string.user_review_title))
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+            builder.setMessage(activity.getString(R.string.user_review_message))
+                    .setTitle(activity.getString(R.string.user_review_title))
                     .setCancelable(false)
-                    .setPositiveButton(context.getResources().getString(R.string.string_yes),
+                    .setPositiveButton(activity.getResources().getString(R.string.string_yes),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    ShowReviewOKDialog(context);
+                                    ShowReviewOKDialog(activity);
                                     dialog.dismiss();
                                 }
                             })
-                    .setNegativeButton(context.getResources().getString(R.string.string_no),
+                    .setNegativeButton(activity.getResources().getString(R.string.string_no),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                                    intent.setData(Uri.parse("mailto:"));
+                                    intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { "support@airbitz.co" });
+                                    intent.putExtra(Intent.EXTRA_SUBJECT, "Airbitz Feedback");
+                                    activity.startActivity(Intent.createChooser(intent, "Choose Email"));
                                     dialog.cancel();
                                 }
                             });
