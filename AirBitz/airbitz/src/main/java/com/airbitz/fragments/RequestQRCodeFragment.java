@@ -104,7 +104,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
 {
     private final String TAG = getClass().getSimpleName();
 
-    private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.twoshowings";
+    private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.firstusagecount";
 
     private final double BORDER_THICKNESS = 0.03;
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
