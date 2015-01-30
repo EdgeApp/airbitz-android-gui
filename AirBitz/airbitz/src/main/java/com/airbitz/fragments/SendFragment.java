@@ -792,7 +792,6 @@ public class SendFragment extends BaseFragment implements
 
     //************** Bluetooth support
 
-    private boolean mDialogShowing = false;
     private void checkFirstBLEUsage() {
         if(hasCheckedFirstUsage) {
             return;
