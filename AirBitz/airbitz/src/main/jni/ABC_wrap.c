@@ -723,7 +723,7 @@ SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_ABC_1VERSION_1get(JNIEnv
   
   (void)jenv;
   (void)jcls;
-  result = (char *)("1.1.2");
+  result = (char *)("1.1.3");
   if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
   return jresult;
 }
