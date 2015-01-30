@@ -439,14 +439,9 @@ public class LandingFragment extends BaseFragment implements
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                 }
             }
-            else if(result == tABC_CC.ABC_CC_PinExpired) {
-                mActivity.ShowFadingDialog(getString(R.string.server_error_pin_expired));
-                abortPermanently();
-                return;
-            }
             else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
-                mActivity.ShowFadingDialog(result.toString());
+                mActivity.ShowFadingDialog(Common.errorMap(getActivity(), result));
                 abortPermanently();
                 return;
             }
