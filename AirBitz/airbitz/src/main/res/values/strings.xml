@@ -440,8 +440,9 @@
     <string name="alert_new_business_message">Touch to see new businesses</string>
 
     <!-- User Review -->
-    <string name="user_review_title">Rate Airbitz</string>
-    <string name="user_review_message">"Please consider rating our App on Google Play. We will appreciate it!"</string>
+    <string name="user_review_title">Airbitz</string>
+    <string name="user_review_message">"Do you like Airbitz?"</string>
+    <string name="user_review_ok_message">"Please write a review in the Play Store"</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>

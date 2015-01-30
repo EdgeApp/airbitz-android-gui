@@ -1019,7 +1019,7 @@ public class NavigationActivity extends Activity
         DisplayLoginOverlay(false, true);
 
         if(UserReview.offerUserReview()) {
-//            UserReview.ShowUserReviewDialog(this);
+            UserReview.ShowUserReviewDialog(this);
         }
     }
 

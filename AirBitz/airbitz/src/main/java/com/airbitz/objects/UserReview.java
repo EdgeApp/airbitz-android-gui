@@ -66,7 +66,7 @@ public class UserReview {
     public static boolean offerUserReview() {
         setupPrefs();
         boolean notified = mPrefs.getBoolean(ALREADY_NOTIFIED, false);
-        if(! notified && loginCountTriggered() || transactionCountTriggered() || timeUseTriggered()) {
+        if(!notified && (loginCountTriggered() || transactionCountTriggered() || timeUseTriggered())) {
             return true;
         }
         return false;
@@ -123,14 +123,17 @@ public class UserReview {
     }
 
     public static void ShowUserReviewDialog(final Context context) {
+        setupPrefs();
+        mEditor.putBoolean(ALREADY_NOTIFIED, true);
+        mEditor.apply();
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
             builder.setMessage(context.getString(R.string.user_review_message))
                     .setTitle(context.getString(R.string.user_review_title))
                     .setCancelable(false)
-                    .setPositiveButton(context.getResources().getString(R.string.string_ok),
+                    .setPositiveButton(context.getResources().getString(R.string.string_yes),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+                                    ShowReviewOKDialog(context);
                                     dialog.dismiss();
                                 }
                             })
@@ -141,5 +144,20 @@ public class UserReview {
                                 }
                             });
             builder.create().show();
+    }
+
+    public static void ShowReviewOKDialog(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+        builder.setMessage(context.getString(R.string.user_review_ok_message))
+                .setTitle(context.getString(R.string.user_review_title))
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+                                dialog.dismiss();
+                            }
+                        });
+        builder.create().show();
     }
 }
