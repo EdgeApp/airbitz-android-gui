@@ -121,7 +121,9 @@ public class SendFragment extends BaseFragment implements
     Runnable cameraDelayRunner = new Runnable() {
         @Override
         public void run() {
-            startCamera();
+            if(isAdded()) {
+                startCamera();
+            }
         }
     };
     Runnable cameraFocusRunner = new Runnable() {
