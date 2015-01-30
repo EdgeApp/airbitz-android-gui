@@ -40,6 +40,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,7 +63,6 @@ import com.airbitz.objects.HighlightOnPressSpinner;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
 
@@ -86,7 +86,7 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
-    private HighlightOnPressButton mExpandButton;
+    private HighlightOnPressButton mNextButton;
     private TextView mTitleTextView;
     private TextView mWalletTextView;
     private TextView mConverterTextView;
@@ -133,7 +133,7 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
 
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 
-        mExpandButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
+        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
 
         pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
@@ -149,45 +149,10 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
 
-        mExpandButton.setOnClickListener(new View.OnClickListener() {
+        mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-                symbols.setDecimalSeparator('.');
-                DecimalFormat format = new DecimalFormat("0.#");
-                format.setDecimalFormatSymbols(symbols);
-                float f = 0f;
-                try {
-                    f = format.parse(mBitcoinField.getText().toString()).floatValue();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if (!mBitcoinField.getText().toString().isEmpty() && f < 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-                    builder.setMessage(getString(R.string.request_invalid_amount))
-                            .setCancelable(false)
-                            .setNeutralButton(getResources().getString(R.string.string_ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                        }
-                                    }
-                            );
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
-                    mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
-
-                    Fragment frag = new RequestQRCodeFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
-                    bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
-                    bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
-                    bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
-                    frag.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
-                }
+                goNext();
             }
         });
 
@@ -284,6 +249,25 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
             }
         });
 
+        TextView.OnEditorActionListener calcDoneListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if(((NavigationActivity) getActivity()).isLargeDpi()) {
+                        goNext();
+                    }
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        };
+
+        mBitcoinField.setOnEditorActionListener(calcDoneListener);
+        mFiatField.setOnEditorActionListener(calcDoneListener);
+
         View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
@@ -320,6 +304,45 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
         });
 
         return mView;
+    }
+
+    private void goNext() {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat format = new DecimalFormat("0.#");
+        format.setDecimalFormatSymbols(symbols);
+        float f = 0f;
+        try {
+            f = format.parse(mBitcoinField.getText().toString()).floatValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (!mBitcoinField.getText().toString().isEmpty() && f < 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            builder.setMessage(getString(R.string.request_invalid_amount))
+                    .setCancelable(false)
+                    .setNeutralButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            }
+                    );
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+            mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
+
+            Fragment frag = new RequestQRCodeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(Wallet.WALLET_UUID, ((Wallet) pickWalletSpinner.getSelectedItem()).getUUID());
+            bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+            bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
+            bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
+            frag.setArguments(bundle);
+            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
+        }
     }
 
 

@@ -36,6 +36,7 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -80,7 +81,7 @@ public class Calculator extends LinearLayout {
     private double mCalculatorMemory;
     private EditText mEditText;
     private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private View mDone;
+    private Button mDone;
 
     // public static final String EQUALS = "=";
 
@@ -102,7 +103,7 @@ public class Calculator extends LinearLayout {
     // constructor
     private void init() {
         mView = inflate(getContext(), R.layout.calculator, this);
-        mDone = mView.findViewById(R.id.imageButtonDone);
+        mDone = (Button) mView.findViewById(R.id.imageButtonDone);
     }
 
     // This is where the text enters and the results return
@@ -119,11 +120,13 @@ public class Calculator extends LinearLayout {
     }
 
     public void hideDoneButton() {
-        mDone.setVisibility(View.INVISIBLE);
+        mDone.setBackground(getResources().getDrawable(R.drawable.bg_btn_green));
+        mDone.setText(getResources().getString(R.string.request_next));
     }
 
     public void showDoneButton() {
-        mDone.setVisibility(View.VISIBLE);
+        mDone.setBackground(getResources().getDrawable(R.drawable.calc_btn_blue_bg));
+        mDone.setText(getResources().getString(R.string.calculator_done));
     }
 
     public void setOperand(double operand) {
