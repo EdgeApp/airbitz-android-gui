@@ -94,19 +94,17 @@ import com.airbitz.fragments.SendConfirmationFragment;
 import com.airbitz.fragments.SendFragment;
 import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.fragments.SpendingLimitsFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
 import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
-import com.airbitz.models.AirbitzNotification;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.UserReview;
-import com.squareup.picasso.Picasso;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -130,8 +128,9 @@ public class NavigationActivity extends Activity
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
-    public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
+    public final String INCOMING_COUNT = "com.airbitz.navigation.incomingcount";
 
+    public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
     private Map<Integer, AirbitzNotification> mNotificationMap;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
@@ -807,15 +806,12 @@ public class NavigationActivity extends Activity
         Log.d(TAG, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
-            if (diff == 0) {
+            if (diff <= 0) {
                 // sender paid exact amount
                 AudioPlayer.play(this, R.raw.bitcoin_received);
                 handleReceiveFromQR();
-            } else if (diff < 0) {
-                // sender paid too much
-                AudioPlayer.play(this, R.raw.bitcoin_received);
-                handleReceiveFromQR();
-            } else {
+            }
+            else {
                 // Request the remainder of the funds
                 f.updateWithAmount(diff);
                 AudioPlayer.play(this, R.raw.bitcoin_received_partial);
@@ -831,15 +827,48 @@ public class NavigationActivity extends Activity
 
     private void handleReceiveFromQR() {
         if (!SettingFragment.getMerchantModePref()) {
-            startReceivedSuccess();
-        } else {
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
+            bundle.putString(Transaction.TXID, mTxId);
+            bundle.putString(Wallet.WALLET_UUID, mUUID);
+            resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+        }
+        else {
             hideSoftKeyboard(mFragmentLayout);
             Bundle bundle = new Bundle();
             bundle.putString(RequestFragment.MERCHANT_MODE, "merchant");
             resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
             switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
-            ShowFadingDialog(getString(R.string.string_payment_received), ALERT_PAYMENT_TIMEOUT);
         }
+        showIncomingDialog(mUUID, mTxId);
+    }
+
+    private void showIncomingDialog(String uuid, String txId) {
+        Wallet wallet = mCoreAPI.getWalletFromUUID(uuid);
+        Transaction transaction = mCoreAPI.getTransaction(uuid, txId);
+        String coinValue = mCoreAPI.formatSatoshi(transaction.getAmountSatoshi(), true);
+        String currencyValue = null;
+        // If no value set, then calculate it
+        if (transaction.getAmountFiat() == 0.0) {
+            currencyValue = mCoreAPI.FormatCurrency(transaction.getAmountSatoshi(), wallet.getCurrencyNum(),
+                    false, true);
+        } else {
+            currencyValue = mCoreAPI.formatCurrency(transaction.getAmountFiat(),
+                    wallet.getCurrencyNum(), true);
+        }
+        String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
+        int delay = 4000;
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        int count = prefs.getInt(INCOMING_COUNT, 1);
+        if(count <= 2 && !SettingFragment.getMerchantModePref()) {
+            count++;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(INCOMING_COUNT, count);
+            editor.apply();
+            message += getString(R.string.received_bitcoin_fading_message_teaching);
+            delay = 5000;
+        }
+        ShowFadingDialog(message, delay);
     }
 
     private RequestQRCodeFragment requestMatchesQR(String uuid, String txid) {
@@ -907,19 +936,6 @@ public class NavigationActivity extends Activity
         if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
             showRemotePasswordChangeDialog();
         }
-    }
-
-    private void startReceivedSuccess() {
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
-        bundle.putString(Transaction.TXID, mTxId);
-        bundle.putString(Wallet.WALLET_UUID, mUUID);
-
-        Fragment frag = new SuccessFragment();
-        frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
-
-        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
     private void gotoDetailsNow() {
