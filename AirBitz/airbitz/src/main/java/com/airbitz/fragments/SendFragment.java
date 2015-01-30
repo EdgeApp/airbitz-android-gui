@@ -109,6 +109,7 @@ public class SendFragment extends BaseFragment implements
     private final String TAG = getClass().getSimpleName();
 
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.send.firstusagecount";
+    private final String FIRST_BLE_USAGE_COUNT = "com.airbitz.fragments.send.firstusageblecount";
 
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
@@ -134,6 +135,7 @@ public class SendFragment extends BaseFragment implements
         }
     };
     private Handler mHandler;
+    private boolean hasCheckedFirstUsage;
     private EditText mToEdittext;
     private TextView mFromTextView;
     private TextView mToTextView;
@@ -650,6 +652,7 @@ public class SendFragment extends BaseFragment implements
         mWallets = mCoreAPI.getCoreActiveWallets();
 
         dummyFocus.requestFocus();
+        hasCheckedFirstUsage = false;
         if (mHandler == null) {
             mHandler = new Handler();
         }
@@ -755,6 +758,8 @@ public class SendFragment extends BaseFragment implements
             mBluetoothListView.close();
             mBluetoothListView.setOnOneScanEndedListener(null);
         }
+
+        hasCheckedFirstUsage = false;
     }
 
     @Override
@@ -786,6 +791,24 @@ public class SendFragment extends BaseFragment implements
     }
 
     //************** Bluetooth support
+
+    private boolean mDialogShowing = false;
+    private void checkFirstBLEUsage() {
+        if(hasCheckedFirstUsage) {
+            return;
+        }
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        int count = prefs.getInt(FIRST_BLE_USAGE_COUNT, 1);
+        if(count <= 2) {
+            count++;
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage_ble), 5000);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(FIRST_BLE_USAGE_COUNT, count);
+            editor.apply();
+        }
+        hasCheckedFirstUsage = true;
+    }
+
     // Show Bluetooth peripherals
     private void ViewBluetoothPeripherals(boolean bluetooth) {
         if(bluetooth) {
@@ -858,8 +881,7 @@ public class SendFragment extends BaseFragment implements
             }
         }
         else {
-//            mBluetoothLayout.setVisibility(View.GONE);
-//            mBluetoothScanningLayout.setVisibility(View.GONE);
+            checkFirstBLEUsage();
         }
     }
 }

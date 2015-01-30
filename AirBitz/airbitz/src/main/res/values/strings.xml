@@ -267,6 +267,7 @@
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_first_usage">Scan the QR code of payee to send payment</string>
+    <string name="fragment_send_first_usage_ble">Bluetooth payment requests are listed here. Tap on a user to send them a payment</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
