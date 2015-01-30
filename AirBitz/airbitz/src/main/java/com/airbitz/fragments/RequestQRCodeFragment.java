@@ -274,7 +274,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
         if(count <= 2) {
             count++;
-            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), 3000);
+            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), 5000);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(FIRST_USAGE_COUNT, count);
             editor.apply();
