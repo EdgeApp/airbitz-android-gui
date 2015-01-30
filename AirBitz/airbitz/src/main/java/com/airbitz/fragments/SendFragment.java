@@ -38,6 +38,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -106,6 +107,8 @@ public class SendFragment extends BaseFragment implements
         BluetoothListView.OnBitcoinURIReceived,
         BluetoothListView.OnOneScanEnded {
     private final String TAG = getClass().getSimpleName();
+
+    private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.send.firstusagecount";
 
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
@@ -483,6 +486,20 @@ public class SendFragment extends BaseFragment implements
             }
         }
         checkCameraFlash();
+
+        checkFirstUsage();
+    }
+
+    private void checkFirstUsage() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+        if(count <= 2) {
+            count++;
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage), 5000);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(FIRST_USAGE_COUNT, count);
+            editor.apply();
+        }
     }
 
     @Override
