@@ -1027,6 +1027,7 @@ public class NavigationActivity extends Activity
         } else {
             resetFragmentThreadToBaseFragment(mNavThreadId);
             AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
+            resetFragmentThreadToBaseFragment(Tabs.WALLET.ordinal());
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
         checkFirstWalletSetup();
