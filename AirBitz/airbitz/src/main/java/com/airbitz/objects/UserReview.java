@@ -144,9 +144,9 @@ public class UserReview {
                                 public void onClick(DialogInterface dialog, int id) {
                                     Intent intent = new Intent(Intent.ACTION_SENDTO);
                                     intent.setData(Uri.parse("mailto:"));
-                                    intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { "support@airbitz.co" });
-                                    intent.putExtra(Intent.EXTRA_SUBJECT, "Airbitz Feedback");
-                                    activity.startActivity(Intent.createChooser(intent, "Choose Email"));
+                                    intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { AirbitzApplication.getContext().getString(R.string.user_review_support_email_address) });
+                                    intent.putExtra(Intent.EXTRA_SUBJECT, AirbitzApplication.getContext().getString(R.string.user_review_support_subject));
+                                    activity.startActivity(Intent.createChooser(intent, AirbitzApplication.getContext().getString(R.string.user_review_support_title)));
                                     dialog.cancel();
                                 }
                             });

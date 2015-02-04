@@ -443,6 +443,9 @@
     <string name="user_review_title">Airbitz</string>
     <string name="user_review_message">"Do you like Airbitz?"</string>
     <string name="user_review_ok_message">"Please write a review in the Play Store"</string>
+    <string name="user_review_support_email_address">support@airbitz.co</string>
+    <string name="user_review_support_subject">Airbitz Feedback</string>
+    <string name="user_review_support_title">Choose Email</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
