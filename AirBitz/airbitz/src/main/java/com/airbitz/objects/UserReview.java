@@ -68,7 +68,7 @@ public class UserReview {
     public static boolean offerUserReview() {
         setupPrefs();
         boolean notified = mPrefs.getBoolean(ALREADY_NOTIFIED, false);
-        if(!notified && (loginCountTriggered() || transactionCountTriggered() || timeUseTriggered())) {
+        if(!notified && loginCountTriggered() && transactionCountTriggered() && timeUseTriggered()) {
             return true;
         }
         return false;
