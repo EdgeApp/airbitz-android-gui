@@ -94,7 +94,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/button_expand"
-                        android:background="@drawable/bg_btn_green" />
+                        android:background="@drawable/btn_expand" />
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="32dp"
@@ -109,7 +109,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="4dp"
                         android:text="@string/request_next"
-                        android:textColor="@color/off_white" />
+                        android:textColor="@color/gray_text" />
 
                     </RelativeLayout>
 
