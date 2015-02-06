@@ -60,13 +60,6 @@
             android:thumb="@drawable/btn_toggle_thumb"
             android:track="@drawable/toggle_selector" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_below="@id/fragment_twofactor_show_toggle_enabled"
-            android:layout_above="@id/fragment_twofactor_show_buttons" />
-
         <LinearLayout
             android:id="@+id/fragment_twofactor_show_buttons"
             android:layout_width="match_parent"
@@ -105,6 +98,13 @@
                 android:textStyle="normal" />
 
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@id/fragment_twofactor_show_toggle_enabled"
+            android:layout_above="@id/fragment_twofactor_show_buttons" />
 
     </RelativeLayout>
 
