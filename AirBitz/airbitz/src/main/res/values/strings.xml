@@ -447,6 +447,14 @@
     <string name="user_review_support_subject">Airbitz Feedback</string>
     <string name="user_review_support_title">Choose Email</string>
 
+    <!-- Two Factor screens -->
+    <string name="fragment_twofactor_show_enabled">Enabled</string>
+    <string name="fragment_twofactor_show_approve">Approved</string>
+    <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
+    <string name="fragment_twofactor_menu_button_request_reset">Request Reset</string>
+    <string name="fragment_twofactor_menu_scan_message">Scan the Two Factor token from another device</string>
+    <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 1 day if no action is taken by other users.</string>
+
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
