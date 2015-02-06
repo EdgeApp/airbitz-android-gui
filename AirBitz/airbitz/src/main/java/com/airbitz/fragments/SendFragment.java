@@ -83,6 +83,7 @@ import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.objects.QRCamera;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -101,8 +102,7 @@ import java.util.List;
  * Created on 2/22/14.
  */
 public class SendFragment extends BaseFragment implements
-        Camera.PreviewCallback,
-        Camera.AutoFocusCallback,
+        QRCamera.OnScanResult,
         BluetoothListView.OnPeripheralSelected,
         BluetoothListView.OnBitcoinURIReceived,
         BluetoothListView.OnOneScanEnded {
@@ -116,8 +116,6 @@ public class SendFragment extends BaseFragment implements
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
-    private static int RESULT_LOAD_IMAGE = 678;
-    private final int FOCUS_MILLIS = 2000;
     Runnable cameraDelayRunner = new Runnable() {
         @Override
         public void run() {
@@ -126,16 +124,7 @@ public class SendFragment extends BaseFragment implements
             }
         }
     };
-    Runnable cameraFocusRunner = new Runnable() {
-        @Override
-        public void run() {
-            if(mCamera != null) {
-                mCamera.autoFocus(SendFragment.this);
-            }
-            mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
-            mFocused = false;
-        }
-    };
+
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
     private EditText mToEdittext;
@@ -144,8 +133,6 @@ public class SendFragment extends BaseFragment implements
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
     private HighlightOnPressImageButton mHelpButton;
-    private ImageButton mFlashButton;
-    private ImageButton mGalleryButton;
     private ImageButton mBluetoothButton;
     private ListView mListingListView;
     private RelativeLayout mListviewContainer;
@@ -153,9 +140,6 @@ public class SendFragment extends BaseFragment implements
     private RelativeLayout mBluetoothLayout;
     private RelativeLayout mBluetoothScanningLayout;
     private BluetoothListView mBluetoothListView;
-    private Camera mCamera;
-    private CameraSurfacePreview mPreview;
-    private FrameLayout mPreviewFrame;
     private View dummyFocus;
     private HighlightOnPressSpinner walletSpinner;
     private HighlightOnPressButton mScanQRButton;
@@ -164,13 +148,11 @@ public class SendFragment extends BaseFragment implements
     private Wallet mFromWallet;
     private List<Wallet> mCurrentListing;
     private WalletPickerAdapter listingAdapter;
-    private int BACK_CAMERA_INDEX = 0;
-    private boolean mFlashOn = false;
-    private boolean mFocused = true;
     private boolean mForcedBluetoothScanning = false;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    QRCamera mQRCamera;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -189,13 +171,11 @@ public class SendFragment extends BaseFragment implements
         mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
         mBluetoothScanningLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_scanning_layout);
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
+        mQRCamera = new QRCamera(mActivity, mCameraLayout);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
 
-        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
-        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
-        mBluetoothButton = (ImageButton) mView.findViewById(R.id.button_bluetooth);
         mScanQRButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_send_scanning_button);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
@@ -239,13 +219,7 @@ public class SendFragment extends BaseFragment implements
             }
         });
 
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PickAPicture();
-            }
-        });
-
+        mBluetoothButton = mQRCamera.getBluetoothButton();
         mBluetoothButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -259,28 +233,6 @@ public class SendFragment extends BaseFragment implements
             public void onClick(View view) {
                 mForcedBluetoothScanning = false;
                 ViewBluetoothPeripherals(false);
-            }
-        });
-
-        mFlashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mCamera == null) {
-                    return;
-                }
-                if (!mFlashOn) {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
-                    mFlashOn = true;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(parameters);
-                } else {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
-                    mFlashOn = false;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
             }
         });
 
@@ -356,9 +308,6 @@ public class SendFragment extends BaseFragment implements
             }
         });
 
-        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
-
-
         if (!mWallets.isEmpty()) {
             mFromWallet = mWallets.get(0);
         }
@@ -432,65 +381,13 @@ public class SendFragment extends BaseFragment implements
 
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
-        if (mCamera != null) {
-            mHandler.removeCallbacks(cameraFocusRunner);
-            mCamera.cancelAutoFocus();
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            mPreviewFrame.removeView(mPreview);
-            mCamera.release();
-        }
-        mCamera = null;
+        mQRCamera.stopCamera();
+        mQRCamera.setOnScanResultListener(null);
     }
 
     public void startCamera() {
-        //Get back camera unless there is none, then try the front camera - fix for Nexus 7
-        int numCameras = Camera.getNumberOfCameras();
-        if (numCameras == 0) {
-            Log.d(TAG, "No cameras!");
-            return;
-        }
-
-        int cameraIndex = 0;
-        while (cameraIndex < numCameras) {
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            Camera.getCameraInfo(cameraIndex, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                break;
-            }
-            cameraIndex++;
-        }
-
-        if (cameraIndex >= numCameras)
-            cameraIndex = 0; //Front facing camera if no other camera index returned
-
-        try {
-            Log.d(TAG, "Opening Camera");
-            mCamera = Camera.open(cameraIndex);
-        } catch (Exception e) {
-            Log.d(TAG, "Camera Does Not exist");
-            return;
-        }
-
-        mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        mPreviewFrame.removeView(mPreview);
-        mPreviewFrame.addView(mPreview);
-        if (mCamera != null) {
-            mCamera.setPreviewCallback(SendFragment.this);
-            Camera.Parameters params = mCamera.getParameters();
-            if (params != null) {
-                List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                    mHandler.post(cameraFocusRunner);
-                }
-                mCamera.setParameters(params);
-            }
-        }
-        checkCameraFlash();
-
+        mQRCamera.startCamera();
+        mQRCamera.setOnScanResultListener(this);
         checkFirstUsage();
     }
 
@@ -507,123 +404,12 @@ public class SendFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPreviewFrame(byte[] bytes, Camera camera) {
-        if (mListviewContainer.getVisibility() == View.GONE && mFocused) {
-            CoreAPI.BitcoinURIInfo info = AttemptDecodeBytes(bytes, camera);
-            if (info != null && info.address != null) {
-                Log.d(TAG, "Bitcoin found");
-                stopCamera();
-                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-            } else if (info != null) {
-                stopCamera();
-                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
-            }
-        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-
-            CoreAPI.BitcoinURIInfo info = AttemptDecodePicture(thumbnail);
-            if (info != null && info.address != null) {
-                Log.d(TAG, "Bitcoin found");
-                stopCamera();
-                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-            } else if (info != null) {
-                stopCamera();
-                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
-            }
+        if (mQRCamera != null && requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+            mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    // Select a picture from the Gallery
-    private void PickAPicture() {
-        mToEdittext.clearFocus();
-        Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(in, RESULT_LOAD_IMAGE);
-    }
-
-    private CoreAPI.BitcoinURIInfo AttemptDecodeBytes(byte[] bytes, Camera camera) {
-        Result rawResult = null;
-        Reader reader = new QRCodeReader();
-        int w = camera.getParameters().getPreviewSize().width;
-        int h = camera.getParameters().getPreviewSize().height;
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
-        if (source.getMatrix() != null) {
-            BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
-            try {
-                rawResult = reader.decode(bitmap);
-            } catch (ReaderException re) {
-                // nothing to do here
-            } finally {
-                reader.reset();
-            }
-        }
-        if (rawResult != null) {
-            Log.d(TAG, "QR code found " + rawResult.getText());
-            return mCoreAPI.CheckURIResults(rawResult.getText());
-        } else {
-//            Log.d(TAG, "No QR code found");
-            return null;
-        }
-    }
-
-    private CoreAPI.BitcoinURIInfo AttemptDecodePicture(Bitmap thumbnail) {
-        if (thumbnail == null) {
-            Log.d(TAG, "No picture selected");
-        } else {
-            Log.d(TAG, "Picture selected");
-            Result rawResult = null;
-            Reader reader = new QRCodeReader();
-            int w = thumbnail.getWidth();
-            int h = thumbnail.getHeight();
-            int maxOneDimension = 500;
-            if(w * h > maxOneDimension * maxOneDimension) { //too big, reduce
-                float bitmapRatio = (float)w / (float) h;
-                if (bitmapRatio > 0) {
-                    w = maxOneDimension;
-                    h = (int) (w / bitmapRatio);
-                } else {
-                    h = maxOneDimension;
-                    w = (int) (h * bitmapRatio);
-                }
-                thumbnail = Bitmap.createScaledBitmap(thumbnail, w, h, true);
-
-            }
-            int[] pixels = new int[w * h];
-            thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
-            RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
-            if (source.getMatrix() != null) {
-                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-                try {
-                    rawResult = reader.decode(bitmap);
-                } catch (ReaderException re) {
-                    re.printStackTrace();
-                } finally {
-                    reader.reset();
-                }
-            }
-            if (rawResult != null) {
-                Log.d(TAG, "QR code found " + rawResult.getText());
-                return mCoreAPI.CheckURIResults(rawResult.getText());
-            } else {
-                Log.d(TAG, "Picture No QR code found");
-            }
-        }
-        return null;
     }
 
     public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
@@ -682,37 +468,14 @@ public class SendFragment extends BaseFragment implements
         }
     }
 
-    private void checkCameraFlash() {
-        if(hasFlash()) {
-            mFlashButton.setVisibility(View.VISIBLE);
-        }
-        else {
-            mFlashButton.setVisibility(View.GONE);
-        }
-    }
-    public boolean hasFlash() {
-        if (mCamera == null) {
-            return false;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        if (parameters.getFlashMode() == null) {
-            return false;
-        }
-        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
-        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             mHandler.postDelayed(cameraDelayRunner, 500);
         } else {
-            if (mCamera != null) {
-                stopCamera();
+            if (mQRCamera != null) {
+                mQRCamera.stopCamera();
             }
         }
     }
@@ -785,11 +548,6 @@ public class SendFragment extends BaseFragment implements
                 );
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    @Override
-    public void onAutoFocus(boolean b, Camera camera) {
-        mFocused = true;
     }
 
     //************** Bluetooth support
@@ -883,6 +641,19 @@ public class SendFragment extends BaseFragment implements
         }
         else {
             checkFirstBLEUsage();
+        }
+    }
+
+    @Override
+    public void onScanResult(String result) {
+        CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
+        if (info != null && info.address != null) {
+            Log.d(TAG, "Bitcoin found");
+            stopCamera();
+            GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+        } else if (info != null) {
+            stopCamera();
+            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
         }
     }
 }
