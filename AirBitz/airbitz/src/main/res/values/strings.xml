@@ -301,7 +301,7 @@
     <!-- Strings for Wallet fragment -->
     <string name="fragment_wallet_title">Transactions</string>
     <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
-    <string name="fragment_wallet_unconfirmed">Unconfirmed</string>
+    <string name="fragment_wallet_unconfirmed">Pending</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
     <string name="fragment_wallet_request_button">Request</string>
