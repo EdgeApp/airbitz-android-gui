@@ -852,7 +852,7 @@ public class CoreAPI {
             return false;
         }
 
-        if (wallet.getBalanceSatoshi() < 2000000) {
+        if (wallet.getBalanceSatoshi() < 10000000) {
             // they does not have enough money to care
             return false;
         }
