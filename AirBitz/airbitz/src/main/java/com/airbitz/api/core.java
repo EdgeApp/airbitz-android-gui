@@ -209,46 +209,6 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_ListAccounts(SWIGTYPE_p_p_char.getCPtr(pszUserNames), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_EnableTwoFactor(String szUserName, String szPassword, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_EnableTwoFactor(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_DisableTwoFactor(String szUserName, String szPassword, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_DisableTwoFactor(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_StatusTwoFactor(String szUserName, String szPassword, SWIGTYPE_p_bool on, SWIGTYPE_p_long timeout, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_StatusTwoFactor(szUserName, szPassword, SWIGTYPE_p_bool.getCPtr(on), SWIGTYPE_p_long.getCPtr(timeout), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_TwoFactorSignIn(String szUserName, String szPassword, String szSecret, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_TwoFactorSignIn(szUserName, szPassword, szSecret, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_GetTwoFactorSecret(String szUserName, String szPassword, SWIGTYPE_p_p_char pszSecret, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetTwoFactorSecret(szUserName, szPassword, SWIGTYPE_p_p_char.getCPtr(pszSecret), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_GetTwoFactorQrCode(String szUserName, String szPassword, SWIGTYPE_p_p_unsigned_char paData, SWIGTYPE_p_unsigned_int pWidth, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetTwoFactorQrCode(szUserName, szPassword, SWIGTYPE_p_p_unsigned_char.getCPtr(paData), SWIGTYPE_p_unsigned_int.getCPtr(pWidth), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_SetTwoFactorSecret(String szUserName, String szPassword, String szSecret, boolean persist, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SetTwoFactorSecret(szUserName, szPassword, szSecret, persist, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_RequestTwoFactorReset(String szUserName, String szPassword, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_RequestTwoFactorReset(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_IsTwoFactorResetPending(SWIGTYPE_p_p_char szUsernames, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_IsTwoFactorResetPending(SWIGTYPE_p_p_char.getCPtr(szUsernames), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_CancelTwoFactorReset(String szUserName, String szPassword, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_CancelTwoFactorReset(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
-  }
-
   public static tABC_CC ABC_ChangePassword(String szUserName, String szPassword, String szNewPassword, String szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_ChangePassword(szUserName, szPassword, szNewPassword, szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
   }
